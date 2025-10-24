@@ -24,7 +24,7 @@
     <dependency>
       <groupId>com.azure</groupId>
       <artifactId>azure-core</artifactId>
-      <version>1.57.0</version>
+      <version>1.56.0</version>
     </dependency>
     <dependency>
       <groupId>io.clientcore</groupId>
@@ -56,12 +56,6 @@
       <artifactId>javaparser-core</artifactId>
       <version>3.27.0</version>
     </dependency>
-    <!-- 1.24.0 is the last version that supports Java 11 -->
-    <dependency>
-      <groupId>com.google.googlejavaformat</groupId>
-      <artifactId>google-java-format</artifactId>
-      <version>1.24.0</version>
-    </dependency>
     <dependency>
       <groupId>org.atteo</groupId>
       <artifactId>evo-inflector</artifactId>
@@ -72,17 +66,92 @@
       <artifactId>slf4j-simple</artifactId>
       <version>1.7.36</version>
     </dependency>
+    <!-- 1.28.0 is the last version that supports Java 17 -->
+    <dependency>
+      <groupId>com.google.googlejavaformat</groupId>
+      <artifactId>google-java-format</artifactId>
+      <version>1.28.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jdt</groupId>
+      <artifactId>org.eclipse.jdt.core</artifactId>
+      <version>3.43.0</version>
+    </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-      <version>5.13.4</version>
+      <version>5.13.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
-      <version>5.13.4</version>
+      <version>5.13.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <!-- This profile is used to generate a sources JAR with dependencies shaded into com.microsoft.typespec.http.client.generator.core.implementation.shaded -->
+    <!-- DO NOT run this profile with release, it is only meant to be run locally when the shaded dependencies need to be updated. -->
+    <!-- Shaded dependencies should rarely be updated as they require manual tree shaking to remove unneeded code. -->
+    <!-- -->
+    <!-- To update the shaded dependencies code, run Maven build with '-Dshaded-dependencies' included in the command. -->
+    <!-- In the target folder, extract the sources JAR, the path com/microsoft/typespec/http/client/generator/core/implementation/shaded will contain the shaded source code. -->
+    <!-- Delete the existing code in com.microsoft.typespec.http.client.generator.core.implementation.shaded and copy the new shaded code into that folder. -->
+    <!-- -->
+    <!-- After following the steps above the project should be rebuilt with the 'add-license-comment' profile enable to add a comment about the shaded code's license. -->
+    <profile>
+      <id>shaded-dependencies</id>
+      <activation>
+        <property>
+          <name>shaded-dependencies</name>
+        </property>
+      </activation>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>3.6.0</version>
+
+            <executions>
+              <execution>
+                <id>shade</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>shade</goal>
+                </goals>
+              </execution>
+            </executions>
+
+            <configuration>
+              <createSourcesJar>true</createSourcesJar>
+              <shadeSourcesContent>true</shadeSourcesContent>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
+              <minimizeJar>true</minimizeJar>
+
+              <entryPoints>
+                <entryPoint>com.microsoft.typespec.http.client.generator.core.Javagen</entryPoint>
+              </entryPoints>
+
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <!-- remove the dependencies signature as not relevant-->
+                    <exclude>META-INF/*.MF</exclude>
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

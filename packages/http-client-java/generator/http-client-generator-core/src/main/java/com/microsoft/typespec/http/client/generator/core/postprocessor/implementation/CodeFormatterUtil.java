@@ -6,23 +6,24 @@ package com.microsoft.typespec.http.client.generator.core.postprocessor.implemen
 import com.google.googlejavaformat.FormatterDiagnostic;
 import com.google.googlejavaformat.java.FormatterException;
 import com.google.googlejavaformat.java.RemoveUnusedImports;
-import com.microsoft.typespec.http.client.generator.core.customization.implementation.Utils;
-import com.microsoft.typespec.http.client.generator.core.extension.base.util.FileUtils;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.NewPlugin;
-import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.eclipse.jdt.core.ToolFactory;
+import org.eclipse.jdt.core.formatter.CodeFormatter;
+import org.eclipse.jdt.internal.compiler.env.IModule;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.text.edits.TextEdit;
 import org.slf4j.Logger;
+import org.w3c.dom.NodeList;
 
 /**
  * Utility class that handles code formatting.
@@ -54,42 +55,45 @@ public final class CodeFormatterUtil {
             .collect(Collectors.toList());
     }
 
-    @SuppressWarnings("DataFlowIssue")
     private static List<Map.Entry<String, String>> formatCodeInternal(Collection<Map.Entry<String, String>> files,
         Logger logger) {
         // First step to formatting code is to use the in-memory Google Java Formatter to remove unused imports.
         files = removeUnusedImports(files, logger);
 
+        Map<String, String> eclipseSettings = loadEclipseSettings();
+        return files.parallelStream().map(fileEntry -> {
+            try {
+                String file = formatCode(fileEntry.getValue(), fileEntry.getKey(),
+                    ToolFactory.createCodeFormatter(eclipseSettings));
+                return new AbstractMap.SimpleImmutableEntry<>(fileEntry.getKey(), file);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }).collect(Collectors.toList());
+    }
+
+    /**
+     * Loads the Eclipse formatter settings from the XML file.
+     *
+     * @return The Eclipse formatter settings.
+     */
+    private static Map<String, String> loadEclipseSettings() {
         try {
-            Path tmpDir = FileUtils.createTempDirectory("spotless" + UUID.randomUUID());
+            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            org.w3c.dom.Document document = documentBuilder.parse(CodeFormatterUtil.class.getClassLoader()
+                .getResourceAsStream("readme/eclipse-format-azure-sdk-for-java.xml"));
 
-            for (Map.Entry<String, String> javaFile : files) {
-                Path file = tmpDir.resolve(javaFile.getKey());
-                Files.createDirectories(file.getParent());
-                Files.writeString(file, javaFile.getValue());
+            NodeList formatterSettingXml = document.getElementsByTagName("setting");
+            Map<String, String> formatterSettings = new HashMap<>();
+            for (int i = 0; i < formatterSettingXml.getLength(); i++) {
+                org.w3c.dom.Node node = formatterSettingXml.item(i);
+                formatterSettings.put(node.getAttributes().getNamedItem("id").getNodeValue(),
+                    node.getAttributes().getNamedItem("value").getNodeValue());
             }
 
-            Path pomPath = tmpDir.resolve("spotless-pom.xml");
-            Files.copy(CodeFormatterUtil.class.getClassLoader().getResourceAsStream("readme/pom.xml"), pomPath);
-            Files.copy(
-                CodeFormatterUtil.class.getClassLoader()
-                    .getResourceAsStream("readme/eclipse-format-azure-sdk-for-java.xml"),
-                pomPath.resolveSibling("eclipse-format-azure-sdk-for-java.xml"));
-
-            attemptMavenSpotless(pomPath);
-
-            List<Map.Entry<String, String>> formattedFiles = new ArrayList<>(files.size());
-            for (Map.Entry<String, String> javaFile : files) {
-                Path file = tmpDir.resolve(javaFile.getKey());
-                formattedFiles.add(new AbstractMap.SimpleEntry<>(javaFile.getKey(), Files.readString(file)));
-            }
-
-            // only delete the temporary directory if all files were formatted successfully
-            Utils.deleteDirectory(tmpDir.toFile());
-
-            return formattedFiles;
-        } catch (IOException ex) {
-            throw new UncheckedIOException(ex);
+            return formatterSettings;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
     }
 
@@ -131,7 +135,7 @@ public final class CodeFormatterUtil {
             file.setValue(content);
         }
 
-        if (errorCapture.length() > 0) {
+        if (!errorCapture.isEmpty()) {
             throw new IllegalStateException("Google Java Formatter encountered errors:\n" + errorCapture);
         }
 
@@ -167,44 +171,17 @@ public final class CodeFormatterUtil {
         errorCapture.append(diagnosticMessage);
     }
 
-    private static void attemptMavenSpotless(Path pomPath) {
-        String[] command;
-        if (Utils.isWindows()) {
-            command = new String[] { "cmd", "/c", "mvn", "spotless:apply", "-P", "spotless", "-f", pomPath.toString() };
-        } else {
-            command = new String[] { "mvn", "spotless:apply", "-P", "spotless", "-f", pomPath.toString() };
-        }
+    private static String formatCode(String file, String fileName, CodeFormatter codeFormatter) throws Exception {
+        IDocument doc = new Document(file);
 
-        try {
-            File outputFile = Files.createTempFile(pomPath.getParent(), "spotless", ".log").toFile();
-            Process process = new ProcessBuilder(command).redirectErrorStream(true)
-                .redirectOutput(ProcessBuilder.Redirect.to(outputFile))
-                .start();
-            process.waitFor(300, TimeUnit.SECONDS);
+        int kind = IModule.MODULE_INFO_JAVA.equals(fileName)
+            ? CodeFormatter.K_MODULE_INFO
+            : CodeFormatter.K_COMPILATION_UNIT;
+        kind |= CodeFormatter.F_INCLUDE_COMMENTS;
+        TextEdit edit = codeFormatter.format(kind, file, 0, file.length(), 0, null);
+        edit.apply(doc);
 
-            String errorType = null;
-            if (process.exitValue() != 0) {
-                errorType = "Process failed with exit code " + process.exitValue();
-            }
-
-            if (process.isAlive()) {
-                process.destroyForcibly();
-                errorType = "Process was killed after 300 seconds timeout";
-            }
-
-            if (errorType != null) {
-                throw new SpotlessException(
-                    String.format("Spotless failed to format code. Error type: %s, log file: '%s', output:\n%s",
-                        errorType, outputFile.getAbsolutePath(), Files.readString(outputFile.toPath())));
-            }
-        } catch (IOException | InterruptedException ex) {
-            throw new RuntimeException("Failed to run Spotless on generated code.", ex);
-        }
+        return doc.get();
     }
 
-    private static final class SpotlessException extends RuntimeException {
-        public SpotlessException(String message) {
-            super(message);
-        }
-    }
 }
