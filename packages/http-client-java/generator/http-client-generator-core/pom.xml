@@ -90,6 +90,18 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>16</source>
+          <target>16</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
   <profiles>
     <!-- This profile is used to generate a sources JAR with dependencies shaded into com.microsoft.typespec.http.client.generator.core.implementation.shaded -->
@@ -135,6 +147,37 @@
               <entryPoints>
                 <entryPoint>com.microsoft.typespec.http.client.generator.core.Javagen</entryPoint>
               </entryPoints>
+
+              <relocations>
+                <relocation>
+                  <pattern>com.google</pattern>
+                  <shadedPattern>com.microsoft.typespec.http.client.generator.core.implementation.shaded.google</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.eclipse</pattern>
+                  <shadedPattern>com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.osgi</pattern>
+                  <shadedPattern>com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.checkerframework</pattern>
+                  <shadedPattern>com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.sun.jna</pattern>
+                  <shadedPattern>com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>javax</pattern>
+                  <shadedPattern>com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.felix</pattern>
+                  <shadedPattern>com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix</shadedPattern>
+                </relocation>
+              </relocations>
 
               <filters>
                 <filter>

@@ -1,0 +1,28 @@
+package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.common.aliasing.qual;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.DefaultFor;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.DefaultQualifierInHierarchy;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.TypeUseLocation;
+
+/**
+ * An expression with this type might have an alias. In other words, some other expression,
+ * evaluated at the same program point, might evaluate to the exact same object value.
+ *
+ * @see Unique
+ * @checker_framework.manual #aliasing-checker Aliasing Checker
+ */
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE_PARAMETER, ElementType.TYPE_USE})
+@SubtypeOf({})
+@DefaultQualifierInHierarchy
+@DefaultFor(
+    value = {TypeUseLocation.UPPER_BOUND, TypeUseLocation.LOWER_BOUND},
+    types = Void.class)
+public @interface MaybeAliased {}

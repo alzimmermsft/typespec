@@ -1,0 +1,58 @@
+/*******************************************************************************
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.expressions;
+
+import org.w3c.dom.Element;
+
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.expressions.CompositeExpression;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.expressions.EvaluationResult;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.expressions.IEvaluationContext;
+
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IConfigurationElement;
+
+public class EnablementExpression extends CompositeExpression {
+
+	/**
+	 * Creates a {@link EnablementExpression}.
+	 *
+	 * @param configElement the configuration element
+	 */
+	public EnablementExpression(IConfigurationElement configElement) {
+		// config element not used yet.
+	}
+
+	/**
+	 * Creates a {@link EnablementExpression}.
+	 *
+	 * @param element the XML element
+	 */
+	public EnablementExpression(Element element) {
+		// element not used yet.
+	}
+
+	@Override
+	public boolean equals(final Object object) {
+		if (!(object instanceof final EnablementExpression that)) {
+			return false;
+		}
+
+		return equals(this.fExpressions, that.fExpressions);
+	}
+
+	@Override
+	public EvaluationResult evaluate(IEvaluationContext context) throws CoreException {
+        return evaluateAnd(context);
+	}
+}

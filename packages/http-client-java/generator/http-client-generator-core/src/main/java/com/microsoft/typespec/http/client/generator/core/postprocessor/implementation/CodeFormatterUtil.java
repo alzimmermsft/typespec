@@ -3,10 +3,21 @@
 
 package com.microsoft.typespec.http.client.generator.core.postprocessor.implementation;
 
-import com.google.googlejavaformat.FormatterDiagnostic;
-import com.google.googlejavaformat.java.FormatterException;
-import com.google.googlejavaformat.java.RemoveUnusedImports;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.NewPlugin;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ToolFactory;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.formatter.CodeFormatter;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IModule;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.Document;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.IDocument;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.text.edits.TextEdit;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.googlejavaformat.FormatterDiagnostic;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.googlejavaformat.java.FormatterException;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.googlejavaformat.java.RemoveUnusedImports;
+import org.slf4j.Logger;
+import org.w3c.dom.NodeList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,16 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import org.eclipse.jdt.core.ToolFactory;
-import org.eclipse.jdt.core.formatter.CodeFormatter;
-import org.eclipse.jdt.internal.compiler.env.IModule;
-import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.text.edits.TextEdit;
-import org.slf4j.Logger;
-import org.w3c.dom.NodeList;
 
 /**
  * Utility class that handles code formatting.
