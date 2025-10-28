@@ -17,6 +17,7 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 /**
  * Common marker interface for AST nodes that represent fragments in doc elements.
  * These are node types that can legitimately be included in {@link TagElement#fragments()}.
+ * 
  * <pre>
  * IDocElement:
  *   {@link MemberRef}
@@ -34,5 +35,5 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IDocElement {
-	// marker-type interfaces have no members
+    // marker-type interfaces have no members
 }

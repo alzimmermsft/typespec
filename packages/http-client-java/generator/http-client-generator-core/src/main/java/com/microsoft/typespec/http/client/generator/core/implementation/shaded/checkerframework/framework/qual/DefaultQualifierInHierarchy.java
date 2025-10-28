@@ -23,11 +23,12 @@ import java.lang.annotation.Target;
  * DefaultQualifierInHierarchy}.
  *
  * @checker_framework.manual #effective-qualifier The effective qualifier on a type (defaults and
- *     inference)
+ * inference)
  * @checker_framework.manual #defaults Default qualifiers for unannotated types
  * @see org.checkerframework.framework.qual.DefaultQualifier
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
-public @interface DefaultQualifierInHierarchy {}
+public @interface DefaultQualifierInHierarchy {
+}

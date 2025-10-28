@@ -22,16 +22,18 @@ import java.lang.annotation.Target;
  *
  * <p>Here is an example use:
  *
- * <pre>{@code @Covariant(0)
+ * <pre>
+ * {@code @Covariant(0)
  * public interface Iterator<E extends @Nullable Object> { ... }
- * }</pre>
+ * }
+ * </pre>
  *
  * @checker_framework.manual #covariant-type-parameters Covariant type parameters
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
+@Target({ ElementType.TYPE })
 public @interface Covariant {
-  /** The zero-based indices of the type parameters that should be treated covariantly. */
-  int[] value();
+    /** The zero-based indices of the type parameters that should be treated covariantly. */
+    int[] value();
 }

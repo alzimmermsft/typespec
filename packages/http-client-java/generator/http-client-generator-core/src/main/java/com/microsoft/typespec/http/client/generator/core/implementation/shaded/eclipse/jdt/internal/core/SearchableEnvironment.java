@@ -15,7 +15,36 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
-import java.io.IOException;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IProject;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IClasspathEntry;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaElement;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaProject;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IModuleDescription;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IPackageFragment;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IPackageFragmentRoot;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IType;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaCore;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.WorkingCopyOwner;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CharOperation;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.search.IJavaSearchConstants;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.codeassist.ISearchRequestor;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IBinaryType;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.ICompilationUnit;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IModule;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IModuleAwareNameEnvironment;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.ISourceType;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IUpdatableModule;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IUpdatableModule.UpdateKind;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.ModuleBinding;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeConstants;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.NameLookup.Answer;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.DeduplicationUtil;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Util;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -24,45 +53,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IProject;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IStorage;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.OperationCanceledException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.*;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CharOperation;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.search.IJavaSearchConstants;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.search.IJavaSearchScope;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.search.SearchPattern;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.codeassist.ISearchRequestor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.classfmt.ExternalAnnotationDecorator;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.classfmt.ExternalAnnotationProvider;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.AccessRestriction;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IBinaryType;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.ICompilationUnit;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IModule;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IModule.IModuleReference;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IModule.IPackageExport;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IModuleAwareNameEnvironment;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.ISourceType;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IUpdatableModule;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IUpdatableModule.UpdateKind;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.impl.CompilerOptions;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.BinaryTypeBinding.ExternalAnnotationStatus;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.ModuleBinding;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeConstants;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.NameLookup.Answer;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.search.BasicSearchEngine;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.search.IRestrictedAccessConstructorRequestor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.search.IRestrictedAccessTypeRequestor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.search.indexing.IndexManager;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.search.processing.IJob;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.DeduplicationUtil;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Util;
 
 /**
  *	This class provides a <code>SearchableBuilderEnvironment</code> for code assist which
@@ -72,14 +62,12 @@ public class SearchableEnvironment
 	implements IModuleAwareNameEnvironment, IJavaSearchConstants {
 
 	public NameLookup nameLookup;
-	protected ICompilationUnit unitToSkip;
-	protected com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ICompilationUnit[] workingCopies;
+    protected com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ICompilationUnit[] workingCopies;
 	protected WorkingCopyOwner owner;
 
 	protected JavaProject project;
-	protected IJavaSearchScope searchScope;
 
-	protected boolean checkAccessRestrictions;
+    protected boolean checkAccessRestrictions;
 	// moduleName -> IPackageFragmentRoot[](lazily populated)
 	private Map<String,IPackageFragmentRoot[]> knownModuleLocations; // null indicates: not using JPMS
 	private final boolean excludeTestCode;
@@ -92,7 +80,7 @@ public class SearchableEnvironment
 
 	private List<IPackageFragmentRoot> unnamedModulePackageFragmentRoots;
 
-	private int release;
+	private final int release;
 
 	@Deprecated
 	public SearchableEnvironment(JavaProject project, com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ICompilationUnit[] workingCopies) throws JavaModelException {
@@ -103,45 +91,16 @@ public class SearchableEnvironment
 	 * <p>
 	 * When {@code release} is not {@link JavaProject#NO_RELEASE} then this SearchableEnvironment
 	 * will define a view that prefers to search in locations that best match the given release.
-	 * See {@link NameLookup#findType(String, String, boolean, int, boolean, boolean, boolean, IProgressMonitor, IPackageFragmentRoot[], int)}.
 	 * </p>
 	 */
 	public SearchableEnvironment(JavaProject project, com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ICompilationUnit[] workingCopies, boolean excludeTestCode, int release) throws JavaModelException {
 		this.project = project;
 		this.excludeTestCode = excludeTestCode;
 		this.release = release;
-		this.checkAccessRestrictions =
-			!JavaCore.IGNORE.equals(project.getOption(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, true))
-			|| !JavaCore.IGNORE.equals(project.getOption(JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE, true));
+        this.checkAccessRestrictions = true;
 		this.workingCopies = workingCopies;
 		this.nameLookup = project.newNameLookup(workingCopies, excludeTestCode);
-		boolean java9plus = JavaCore.callReadOnly(() -> CompilerOptions
-				.versionToJdkLevel(project.getOption(JavaCore.COMPILER_COMPLIANCE, true)) >= ClassFileConstants.JDK9);
-		if (java9plus) {
-			this.knownModuleLocations = new HashMap<>();
-
-			this.moduleUpdater = new ModuleUpdater(project);
-			if (!excludeTestCode) {
-				IClasspathEntry[] expandedClasspath = project.getExpandedClasspath();
-				if(Arrays.stream(expandedClasspath).anyMatch(IClasspathEntry::isTest)) {
-					this.moduleUpdater.addReadUnnamedForNonEmptyClasspath(project, expandedClasspath);
-				}
-			}
-			for (IClasspathEntry entry : project.getRawClasspath())
-				if(!excludeTestCode || !entry.isTest()) {
-					this.moduleUpdater.computeModuleUpdates(entry);
-				}
-
-			this.unnamedModulePackageFragmentRoots = new ArrayList<>();
-			IPackageFragmentRoot[] packageFragmentRoots = project.getAllPackageFragmentRoots();
-			for (IPackageFragmentRoot packageFragmentRoot : packageFragmentRoots) {
-				IModuleDescription moduleDescription = packageFragmentRoot.getModuleDescription();
-				if (moduleDescription == null) {
-					this.unnamedModulePackageFragmentRoots.add(packageFragmentRoot);
-				}
-			}
-		}
-	}
+    }
 
 	/**
 	 * Note: this is required for (abandoned) Scala-IDE
@@ -159,25 +118,7 @@ public class SearchableEnvironment
 		this.owner = owner;
 	}
 
-	private static int convertSearchFilterToModelFilter(int searchFilter) {
-		switch (searchFilter) {
-			case IJavaSearchConstants.CLASS:
-				return NameLookup.ACCEPT_CLASSES;
-			case IJavaSearchConstants.INTERFACE:
-				return NameLookup.ACCEPT_INTERFACES;
-			case IJavaSearchConstants.ENUM:
-				return NameLookup.ACCEPT_ENUMS;
-			case IJavaSearchConstants.ANNOTATION_TYPE:
-				return NameLookup.ACCEPT_ANNOTATIONS;
-			case IJavaSearchConstants.CLASS_AND_ENUM:
-				return NameLookup.ACCEPT_CLASSES | NameLookup.ACCEPT_ENUMS;
-			case IJavaSearchConstants.CLASS_AND_INTERFACE:
-				return NameLookup.ACCEPT_CLASSES | NameLookup.ACCEPT_INTERFACES;
-			default:
-				return NameLookup.ACCEPT_ALL;
-		}
-	}
-	/**
+    /**
 	 * Returns the given type in the the given package if it exists,
 	 * otherwise <code>null</code>.
 	 */
@@ -208,7 +149,7 @@ public class SearchableEnvironment
 		if (answer != null) {
 			// construct name env answer
 			if (answer.type instanceof BinaryType) { // BinaryType
-				return createAnswer(answer, packageName, typeName, (BinaryType) answer.type);
+				return createAnswer(answer, (BinaryType) answer.type);
 			} else { //SourceType
 				try {
 					// retrieve the requested type
@@ -254,64 +195,19 @@ public class SearchableEnvironment
 		return path.toOSString();
 	}
 
-	private NameEnvironmentAnswer createAnswer(Answer lookupAnswer, String packageName, String typeName, BinaryType binaryType) {
+	private NameEnvironmentAnswer createAnswer(Answer lookupAnswer, BinaryType binaryType) {
 		char[] moduleName = lookupAnswer.module != null ? lookupAnswer.module.getElementName().toCharArray() : null;
 		try {
 			IBinaryType iBinaryType = binaryType.getElementInfo();
-			if (iBinaryType.getExternalAnnotationStatus() == ExternalAnnotationStatus.NOT_EEA_CONFIGURED
-					&& JavaCore.ENABLED.equals(this.project.getOption(JavaCore.CORE_JAVA_BUILD_EXTERNAL_ANNOTATIONS_FROM_ALL_LOCATIONS, true)))
-			{
-				String soughtName = typeName+ExternalAnnotationProvider.ANNOTATION_FILE_SUFFIX;
-				boolean isAnnotated = false;
-				IPackageFragment[] packageFragments = this.nameLookup.findPackageFragments(packageName, false);
-				if (packageFragments != null) {
-					String packageNameSlash = packageName.replace('.', '/');
-					for (IPackageFragment fragment : packageFragments) {
-						if (fragment.exists()) {
-							for (Object rc : fragment.getNonJavaResources()) {
-								if (rc instanceof IStorage && soughtName.equals(((IStorage) rc).getName())) {
-									if (isAnnotated) {
-										// TODO: if merging at method granularity should be supported, this is where to implement it.
-										// Otherwise we could raise/log a warning?
-										break;
-									}
-									try {
-										iBinaryType = new ExternalAnnotationDecorator(iBinaryType,
-												new ExternalAnnotationProvider(((IStorage) rc).getContents(), packageNameSlash+'/'+typeName));
-										isAnnotated = true;
-										break;
-									} catch (IOException | CoreException e) {
-										// ignore
-									}
-								}
-							}
-						}
-					}
-					if (!isAnnotated) {
-						// project is configured to globally consider external annotations, but no .eea found => decorate in order to answer NO_EEA_FILE:
-						iBinaryType = new ExternalAnnotationDecorator(iBinaryType, null);
-					}
-				}
-			}
-			return new NameEnvironmentAnswer(iBinaryType, lookupAnswer.restriction, moduleName);
+            iBinaryType.getExternalAnnotationStatus();
+            return new NameEnvironmentAnswer(iBinaryType, lookupAnswer.restriction, moduleName);
 		} catch (JavaModelException e) {
 			// fallback to null
 		}
 		return null;
 	}
 
-	/**
-	 * Find the modules that start with the given prefix.
-	 * A valid prefix is a qualified name separated by periods
-	 * (ex. java.util).
-	 * The packages found are passed to:
-	 *    ISearchRequestor.acceptModule(char[][] moduleName)
-	 */
-	public void findModules(char[] prefix, ISearchRequestor requestor, IJavaProject javaProject) {
-		this.nameLookup.seekModule(prefix, true, new SearchableEnvironmentRequestor(requestor));
-	}
-
-	@Override
+    @Override
 	public boolean isOnModulePath(ICompilationUnit unit) {
 		if (unit instanceof CompilationUnit cUnit) {
 			IPackageFragmentRoot root = cUnit.originalFromClone().getPackageFragmentRoot();
@@ -341,203 +237,7 @@ public class SearchableEnvironment
 			new SearchableEnvironmentRequestor(requestor));
 	}
 
-	/**
-	 * Find the packages that start with the given prefix and belong to the given module.
-	 * A valid prefix is a qualified name separated by periods
-	 * (ex. java.util).
-	 * The packages found are passed to:
-	 *    ISearchRequestor.acceptPackage(char[][] packageName)
-	 */
-	public void findPackages(char[] prefix, ISearchRequestor requestor, IPackageFragmentRoot[] moduleContext, boolean followRequires) {
-		this.nameLookup.seekPackageFragments(
-			new String(prefix),
-			true,
-			new SearchableEnvironmentRequestor(requestor), moduleContext);
-		if (followRequires && this.knownModuleLocations != null) {
-			try {
-				boolean isMatchAllPrefix = CharOperation.equals(CharOperation.ALL_PREFIX, prefix);
-				Set<IModuleDescription> modDescs = new HashSet<>();
-				for (IPackageFragmentRoot root : moduleContext) {
-					IModuleDescription desc = root.getJavaProject().getModuleDescription();
-					if (desc instanceof AbstractModule)
-						modDescs.add(desc);
-				}
-				for (IModuleDescription md : modDescs) {
-					IModuleReference[] reqModules = ((AbstractModule) md).getRequiredModules();
-					char[] modName = md.getElementName().toCharArray();
-					Set<IModuleReference> visited = new HashSet<>();
-					for (IModuleReference moduleReference : reqModules) {
-						findPackagesFromRequires(prefix, isMatchAllPrefix, requestor, moduleReference, modName, visited);
-					}
-				}
-			} catch (JavaModelException e) {
-				// silent
-			}
-		}
-	}
-
-	private void findPackagesFromRequires(char[] prefix, boolean isMatchAllPrefix, ISearchRequestor requestor, IModuleReference moduleReference, char[] clientModuleName, Set<IModuleReference> visited) {
-		if (!visited.add(moduleReference)) {
-			return;
-		}
-		IPackageFragmentRoot[] fragmentRoots = findModuleContext(moduleReference.name());
-		if (fragmentRoots == null) return;
-		for (IPackageFragmentRoot root : fragmentRoots) {
-			IJavaProject requiredProject = root.getJavaProject();
-			try {
-				IModuleDescription module = requiredProject.getModuleDescription();
-				if (module instanceof AbstractModule) {
-					AbstractModule requiredModule = (AbstractModule) module;
-					for (IPackageExport packageExport : requiredModule.getExportedPackages()) {
-						if (!packageExport.isQualified() || CharOperation.containsEqual(packageExport.targets(), clientModuleName)) {
-							char[] exportName = packageExport.name();
-							if (isMatchAllPrefix || CharOperation.prefixEquals(prefix, exportName))
-								requestor.acceptPackage(exportName);
-						}
-					}
-					for (IModuleReference ref : requiredModule.getRequiredModules()) {
-						if (ref.isTransitive())
-							findPackagesFromRequires(prefix, isMatchAllPrefix, requestor, ref, clientModuleName, visited);
-					}
-				}
-			} catch (JavaModelException e) {
-				// silent
-			}
-		}
-	}
-	/**
-	 * Find the top-level types that are defined
-	 * in the current environment and whose simple name matches the given name.
-	 *
-	 * The types found are passed to one of the following methods (if additional
-	 * information is known about the types):
-	 *    ISearchRequestor.acceptType(char[][] packageName, char[] typeName)
-	 *    ISearchRequestor.acceptClass(char[][] packageName, char[] typeName, int modifiers)
-	 *    ISearchRequestor.acceptInterface(char[][] packageName, char[] typeName, int modifiers)
-	 *
-	 * This method can not be used to find member types... member
-	 * types are found relative to their enclosing type.
-	 */
-	public void findExactTypes(char[] name, final boolean findMembers, int searchFor, final ISearchRequestor storage) {
-
-		try {
-			final String excludePath;
-			if (this.unitToSkip != null) {
-				if (!(this.unitToSkip instanceof IJavaElement)) {
-					// revert to model investigation
-					findExactTypes(
-						new String(name),
-						storage,
-						convertSearchFilterToModelFilter(searchFor));
-					return;
-				}
-				excludePath = ((IJavaElement) this.unitToSkip).getPath().toString();
-			} else {
-				excludePath = null;
-			}
-
-			IProgressMonitor progressMonitor = new IProgressMonitor() {
-				boolean isCanceled = false;
-				@Override
-				public void beginTask(String n, int totalWork) {
-					// implements interface method
-				}
-				@Override
-				public void done() {
-					// implements interface method
-				}
-				@Override
-				public void internalWorked(double work) {
-					// implements interface method
-				}
-				@Override
-				public boolean isCanceled() {
-					return this.isCanceled;
-				}
-				@Override
-				public void setCanceled(boolean value) {
-					this.isCanceled = value;
-				}
-				@Override
-				public void setTaskName(String n) {
-					// implements interface method
-				}
-				@Override
-				public void subTask(String n) {
-					// implements interface method
-				}
-				@Override
-				public void worked(int work) {
-					// implements interface method
-				}
-			};
-			IRestrictedAccessTypeRequestor typeRequestor = new IRestrictedAccessTypeRequestor() {
-				@Override
-				public void acceptType(int modifiers, char[] packageName, char[] simpleTypeName, char[][] enclosingTypeNames, String path, AccessRestriction access) {
-					if (excludePath != null && excludePath.equals(path))
-						return;
-					if (!findMembers && enclosingTypeNames != null && enclosingTypeNames.length > 0)
-						return; // accept only top level types
-					storage.acceptType(packageName, simpleTypeName, enclosingTypeNames, modifiers, access);
-				}
-			};
-			try {
-				new BasicSearchEngine(this.workingCopies).searchAllTypeNames(
-					null,
-					SearchPattern.R_EXACT_MATCH,
-					name,
-					SearchPattern.R_EXACT_MATCH,
-					searchFor,
-					getSearchScope(),
-					typeRequestor,
-					CANCEL_IF_NOT_READY_TO_SEARCH,
-					progressMonitor);
-			} catch (OperationCanceledException e) {
-				findExactTypes(
-					new String(name),
-					storage,
-					convertSearchFilterToModelFilter(searchFor));
-			}
-		} catch (JavaModelException e) {
-			findExactTypes(
-				new String(name),
-				storage,
-				convertSearchFilterToModelFilter(searchFor));
-		}
-	}
-
-	/**
-	 * Returns all types whose simple name matches with the given <code>name</code>.
-	 */
-	private void findExactTypes(String name, ISearchRequestor storage, int type) {
-		SearchableEnvironmentRequestor requestor =
-			new SearchableEnvironmentRequestor(storage, this.unitToSkip, this.project, this.nameLookup);
-		this.nameLookup.seekTypes(name, null, false, type, requestor);
-	}
-
-	/**
-	 * Find a type in the given module or any module read by it.
-	 * Does not check accessibility / unique visibility, but returns the first observable type found.
-	 * @param compoundTypeName name of the sought type
-	 * @param module start into the module graph
-	 * @return the answer :)
-	 */
-	public NameEnvironmentAnswer findTypeInModules(char[][] compoundTypeName, ModuleBinding module) {
-		char[] nameForLookup = module.nameForLookup();
-		NameEnvironmentAnswer answer = findType(compoundTypeName, nameForLookup);
-		if (answer != null)
-			return answer;
-		if (LookupStrategy.get(nameForLookup) == LookupStrategy.Named) {
-			for (ModuleBinding required : module.getAllRequiredModules()) {
-				answer = findType(compoundTypeName, required.nameForLookup());
-				if (answer != null)
-					return answer;
-			}
-		}
-		return null;
-	}
-
-	/**
+    /**
 	 * @see org.eclipse.jdt.internal.compiler.env.IModuleAwareNameEnvironment#findType(char[][],char[])
 	 */
 	@Override
@@ -578,443 +278,7 @@ public class SearchableEnvironment
 			moduleLocations);
 	}
 
-	/**
-	 * Find the top-level types that are defined
-	 * in the current environment and whose name starts with the
-	 * given prefix. The prefix is a qualified name separated by periods
-	 * or a simple name (ex. java.util.V or V).
-	 *
-	 * The types found are passed to one of the following methods (if additional
-	 * information is known about the types):
-	 *    ISearchRequestor.acceptType(char[][] packageName, char[] typeName)
-	 *    ISearchRequestor.acceptClass(char[][] packageName, char[] typeName, int modifiers)
-	 *    ISearchRequestor.acceptInterface(char[][] packageName, char[] typeName, int modifiers)
-	 *
-	 * This method can not be used to find member types... member
-	 * types are found relative to their enclosing type.
-	 */
-	public void findTypes(char[] prefix, final boolean findMembers, boolean camelCaseMatch, int searchFor, final ISearchRequestor storage) {
-		findTypes(prefix, findMembers, camelCaseMatch ? SearchPattern.R_PREFIX_MATCH | SearchPattern.R_CAMELCASE_MATCH : SearchPattern.R_PREFIX_MATCH, searchFor, storage, null);
-	}
-	/**
-	 * Must be used only by CompletionEngine.
-	 * The progress monitor is used to be able to cancel completion operations
-	 *
-	 * Find the top-level types that are defined
-	 * in the current environment and whose name starts with the
-	 * given prefix. The prefix is a qualified name separated by periods
-	 * or a simple name (ex. java.util.V or V).
-	 *
-	 * The types found are passed to one of the following methods (if additional
-	 * information is known about the types):
-	 *    ISearchRequestor.acceptType(char[][] packageName, char[] typeName)
-	 *    ISearchRequestor.acceptClass(char[][] packageName, char[] typeName, int modifiers)
-	 *    ISearchRequestor.acceptInterface(char[][] packageName, char[] typeName, int modifiers)
-	 *
-	 * This method can not be used to find member types... member
-	 * types are found relative to their enclosing type.
-	 */
-	public void findTypes(char[] prefix, final boolean findMembers, int matchRule, int searchFor, final ISearchRequestor storage, IProgressMonitor monitor) {
-		findTypes(prefix, findMembers, matchRule, searchFor, true, storage, monitor);
-	}
-
-	/**
-	 * Must be used only by CompletionEngine.
-	 * The progress monitor is used to be able to cancel completion operations
-	 *
-	 * Find the top-level types that are defined
-	 * in the current environment and whose name starts with the
-	 * given prefix. The prefix is a qualified name separated by periods
-	 * or a simple name (ex. java.util.V or V).
-	 *
-	 * The types found are passed to one of the following methods (if additional
-	 * information is known about the types):
-	 *    ISearchRequestor.acceptType(char[][] packageName, char[] typeName)
-	 *    ISearchRequestor.acceptClass(char[][] packageName, char[] typeName, int modifiers)
-	 *    ISearchRequestor.acceptInterface(char[][] packageName, char[] typeName, int modifiers)
-	 *
-	 * This method can not be used to find member types... member
-	 * types are found relative to their enclosing type.
-	 */
-	public void findTypes(char[] prefix, final boolean findMembers, int matchRule, int searchFor, final boolean resolveDocumentName, final ISearchRequestor storage, IProgressMonitor monitor) {
-		long start = -1;
-		if (NameLookup.VERBOSE)
-			start = System.currentTimeMillis();
-
-		boolean camelCaseMatch = (matchRule & SearchPattern.R_CAMELCASE_MATCH) != 0;
-		/*
-			if (true){
-				findTypes(new String(prefix), storage, NameLookup.ACCEPT_CLASSES | NameLookup.ACCEPT_INTERFACES);
-				return;
-			}
-		*/
-		try {
-			final String excludePath;
-			if (this.unitToSkip != null) {
-				if (!(this.unitToSkip instanceof IJavaElement)) {
-					// revert to model investigation
-					findTypes(
-						new String(prefix),
-						storage,
-						convertSearchFilterToModelFilter(searchFor));
-					return;
-				}
-				excludePath = ((IJavaElement) this.unitToSkip).getPath().toString();
-			} else {
-				excludePath = null;
-			}
-			int lastDotIndex = CharOperation.lastIndexOf('.', prefix);
-			char[] qualification, simpleName;
-			if (lastDotIndex < 0) {
-				qualification = null;
-				if (camelCaseMatch) {
-					simpleName = prefix;
-				} else {
-					simpleName = CharOperation.toLowerCase(prefix);
-				}
-			} else {
-				qualification = CharOperation.subarray(prefix, 0, lastDotIndex);
-				if (camelCaseMatch) {
-					simpleName = CharOperation.subarray(prefix, lastDotIndex + 1, prefix.length);
-				} else {
-					simpleName =
-						CharOperation.toLowerCase(
-							CharOperation.subarray(prefix, lastDotIndex + 1, prefix.length));
-				}
-			}
-
-			IProgressMonitor progressMonitor = new IProgressMonitor() {
-				boolean isCanceled = false;
-				@Override
-				public void beginTask(String name, int totalWork) {
-					// implements interface method
-				}
-				@Override
-				public void done() {
-					// implements interface method
-				}
-				@Override
-				public void internalWorked(double work) {
-					// implements interface method
-				}
-				@Override
-				public boolean isCanceled() {
-					return this.isCanceled;
-				}
-				@Override
-				public void setCanceled(boolean value) {
-					this.isCanceled = value;
-				}
-				@Override
-				public void setTaskName(String name) {
-					// implements interface method
-				}
-				@Override
-				public void subTask(String name) {
-					// implements interface method
-				}
-				@Override
-				public void worked(int work) {
-					// implements interface method
-				}
-			};
-			IRestrictedAccessTypeRequestor typeRequestor = new IRestrictedAccessTypeRequestor() {
-				@Override
-				public void acceptType(int modifiers, char[] packageName, char[] simpleTypeName, char[][] enclosingTypeNames, String path, AccessRestriction access) {
-					if (excludePath != null && excludePath.equals(path))
-						return;
-					if (!findMembers && enclosingTypeNames != null && enclosingTypeNames.length > 0)
-						return; // accept only top level types
-					storage.acceptType(packageName, simpleTypeName, enclosingTypeNames, modifiers, access);
-				}
-			};
-
-			if (monitor != null) {
-				IndexManager indexManager = JavaModelManager.getIndexManager();
-				if (indexManager.awaitingJobsCount() == 0) {
-					// indexes were already there, so perform an immediate search to avoid any index rebuilt
-					new BasicSearchEngine(this.workingCopies).searchAllTypeNames(
-						qualification,
-						SearchPattern.R_EXACT_MATCH,
-						simpleName,
-						matchRule, // not case sensitive
-						searchFor,
-						getSearchScope(),
-						resolveDocumentName,
-						typeRequestor,
-						FORCE_IMMEDIATE_SEARCH,
-						progressMonitor);
-				} else {
-					// indexes were not ready, give the indexing a chance to finish small jobs by sleeping 100ms...
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						// Do nothing
-					}
-					if (monitor.isCanceled()) {
-						throw new OperationCanceledException();
-					}
-					if (indexManager.awaitingJobsCount() == 0) {
-						// indexes are now ready, so perform an immediate search to avoid any index rebuilt
-						new BasicSearchEngine(this.workingCopies).searchAllTypeNames(
-							qualification,
-							SearchPattern.R_EXACT_MATCH,
-							simpleName,
-							matchRule,
-							searchFor,
-							getSearchScope(),
-							resolveDocumentName,
-							typeRequestor,
-							FORCE_IMMEDIATE_SEARCH,
-							progressMonitor);
-					} else {
-						// Indexes are still not ready, so look for types in the model instead of a search request
-						findTypes(
-							new String(prefix),
-							storage,
-							convertSearchFilterToModelFilter(searchFor));
-					}
-				}
-			} else {
-				try {
-					new BasicSearchEngine(this.workingCopies).searchAllTypeNames(
-						qualification,
-						SearchPattern.R_EXACT_MATCH,
-						simpleName,
-						matchRule, // not case sensitive
-						searchFor,
-						getSearchScope(),
-						resolveDocumentName,
-						typeRequestor,
-						CANCEL_IF_NOT_READY_TO_SEARCH,
-						progressMonitor);
-				} catch (OperationCanceledException e) {
-					findTypes(
-						new String(prefix),
-						storage,
-						convertSearchFilterToModelFilter(searchFor));
-				}
-			}
-		} catch (JavaModelException e) {
-			findTypes(
-				new String(prefix),
-				storage,
-				convertSearchFilterToModelFilter(searchFor));
-		} finally {
-			if (NameLookup.VERBOSE)
-				this.timeSpentInFindTypes += System.currentTimeMillis()-start;
-		}
-	}
-
-	/**
-	 * Must be used only by CompletionEngine.
-	 * The progress monitor is used to be able to cancel completion operations
-	 *
-	 * Find constructor declarations that are defined
-	 * in the current environment and whose name starts with the
-	 * given prefix. The prefix is a qualified name separated by periods
-	 * or a simple name (ex. java.util.V or V).
-	 *
-	 * The constructors found are passed to one of the following methods:
-	 *    ISearchRequestor.acceptConstructor(...)
-	 */
-	public void findConstructorDeclarations(char[] prefix, int matchRule, final boolean resolveDocumentName, final ISearchRequestor storage, IProgressMonitor monitor) {
-		try {
-			final String excludePath;
-			if (this.unitToSkip != null && this.unitToSkip instanceof IJavaElement) {
-				excludePath = ((IJavaElement) this.unitToSkip).getPath().toString();
-			} else {
-				excludePath = null;
-			}
-
-			int lastDotIndex = CharOperation.lastIndexOf('.', prefix);
-			boolean camelCaseMatch = (matchRule & SearchPattern.R_CAMELCASE_MATCH) != 0;
-			char[] qualification, simpleName;
-			if (lastDotIndex < 0) {
-				qualification = null;
-				if (camelCaseMatch) {
-					simpleName = prefix;
-				} else {
-					simpleName = CharOperation.toLowerCase(prefix);
-				}
-			} else {
-				qualification = CharOperation.subarray(prefix, 0, lastDotIndex);
-				if (camelCaseMatch) {
-					simpleName = CharOperation.subarray(prefix, lastDotIndex + 1, prefix.length);
-				} else {
-					simpleName =
-						CharOperation.toLowerCase(
-							CharOperation.subarray(prefix, lastDotIndex + 1, prefix.length));
-				}
-			}
-
-			IProgressMonitor progressMonitor = new IProgressMonitor() {
-				boolean isCanceled = false;
-				@Override
-				public void beginTask(String name, int totalWork) {
-					// implements interface method
-				}
-				@Override
-				public void done() {
-					// implements interface method
-				}
-				@Override
-				public void internalWorked(double work) {
-					// implements interface method
-				}
-				@Override
-				public boolean isCanceled() {
-					return this.isCanceled;
-				}
-				@Override
-				public void setCanceled(boolean value) {
-					this.isCanceled = value;
-				}
-				@Override
-				public void setTaskName(String name) {
-					// implements interface method
-				}
-				@Override
-				public void subTask(String name) {
-					// implements interface method
-				}
-				@Override
-				public void worked(int work) {
-					// implements interface method
-				}
-			};
-
-			IRestrictedAccessConstructorRequestor constructorRequestor = new IRestrictedAccessConstructorRequestor() {
-				@Override
-				public void acceptConstructor(
-						int modifiers,
-						char[] simpleTypeName,
-						int parameterCount,
-						char[] signature,
-						char[][] parameterTypes,
-						char[][] parameterNames,
-						int typeModifiers,
-						char[] packageName,
-						int extraFlags,
-						String path,
-						AccessRestriction access) {
-					if (excludePath != null && excludePath.equals(path))
-						return;
-
-					storage.acceptConstructor(
-							modifiers,
-							simpleTypeName,
-							parameterCount,
-							signature,
-							parameterTypes,
-							parameterNames,
-							typeModifiers,
-							packageName,
-							extraFlags,
-							path,
-							access);
-				}
-			};
-
-			if (monitor != null) {
-				IndexManager indexManager = JavaModelManager.getIndexManager();
-				// Wait for the end of indexing or a cancel
-				indexManager.performConcurrentJob(new IJob() {
-					@Override
-					public boolean belongsTo(String jobFamily) {
-						return true;
-					}
-
-					@Override
-					public void cancel() {
-						// job is cancelled through progress
-					}
-
-					@Override
-					public void ensureReadyToRun() {
-						// always ready
-					}
-
-					@Override
-					public boolean execute(IProgressMonitor progress) {
-						return progress == null || !progress.isCanceled();
-					}
-
-					@Override
-					public String getJobFamily() {
-						return ""; //$NON-NLS-1$
-					}
-
-				}, IJob.WaitUntilReady, monitor);
-				new BasicSearchEngine(this.workingCopies).searchAllConstructorDeclarations(
-						qualification,
-						simpleName,
-						matchRule,
-						getSearchScope(),
-						resolveDocumentName,
-						constructorRequestor,
-						FORCE_IMMEDIATE_SEARCH,
-						progressMonitor);
-			} else {
-				try {
-					new BasicSearchEngine(this.workingCopies).searchAllConstructorDeclarations(
-							qualification,
-							simpleName,
-							matchRule,
-							getSearchScope(),
-							resolveDocumentName,
-							constructorRequestor,
-							CANCEL_IF_NOT_READY_TO_SEARCH,
-							progressMonitor);
-				} catch (OperationCanceledException e) {
-					// Do nothing
-				}
-			}
-		} catch (JavaModelException e) {
-			// Do nothing
-		}
-	}
-
-	/**
-	 * Returns all types whose name starts with the given (qualified) <code>prefix</code>.
-	 *
-	 * If the <code>prefix</code> is unqualified, all types whose simple name matches
-	 * the <code>prefix</code> are returned.
-	 */
-	private void findTypes(String prefix, ISearchRequestor storage, int type) {
-		//TODO (david) should add camel case support
-		SearchableEnvironmentRequestor requestor =
-			new SearchableEnvironmentRequestor(storage, this.unitToSkip, this.project, this.nameLookup);
-		int index = prefix.lastIndexOf('.');
-		if (index == -1) {
-			this.nameLookup.seekTypes(prefix, null, true, type, requestor);
-		} else {
-			String packageName = prefix.substring(0, index);
-			JavaElementRequestor elementRequestor = new JavaElementRequestor();
-			this.nameLookup.seekPackageFragments(packageName, false, elementRequestor);
-			IPackageFragment[] fragments = elementRequestor.getPackageFragments();
-			if (fragments != null) {
-				String className = prefix.substring(index + 1);
-				for (IPackageFragment fragment : fragments)
-					if (fragment != null)
-						this.nameLookup.seekTypes(className, fragment, true, type, requestor);
-			}
-		}
-	}
-
-	private IJavaSearchScope getSearchScope() {
-		if (this.searchScope == null) {
-			// Create search scope with visible entry on the project's classpath
-			if(this.checkAccessRestrictions) {
-				this.searchScope = BasicSearchEngine.createJavaSearchScope(this.excludeTestCode, new IJavaElement[] {this.project});
-			} else {
-				this.searchScope = BasicSearchEngine.createJavaSearchScope(this.excludeTestCode, this.nameLookup.packageFragmentRoots);
-			}
-		}
-		return this.searchScope;
-	}
-
-	/**
+    /**
 	 * @see org.eclipse.jdt.internal.compiler.env.IModuleAwareNameEnvironment#getModulesDeclaringPackage(char[][], char[])
 	 */
 	@Override
@@ -1197,26 +461,7 @@ public class SearchableEnvironment
 		return moduleContext;
 	}
 
-	/**
-	 * Returns a printable string for the array.
-	 */
-	protected String toStringChar(char[] name) {
-		return "["  //$NON-NLS-1$
-		+ new String(name) + "]" ; //$NON-NLS-1$
-	}
-
-	/**
-	 * Returns a printable string for the array.
-	 */
-	protected String toStringCharChar(char[][] names) {
-		StringBuilder result = new StringBuilder();
-		for (char[] name : names) {
-			result.append(toStringChar(name));
-		}
-		return result.toString();
-	}
-
-	@Override
+    @Override
 	public void cleanup() {
 		// nothing to do
 	}

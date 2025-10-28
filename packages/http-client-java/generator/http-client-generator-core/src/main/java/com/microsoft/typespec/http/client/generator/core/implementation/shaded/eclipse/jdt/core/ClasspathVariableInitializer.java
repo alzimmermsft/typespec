@@ -17,7 +17,8 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 /**
  * Abstract base implementation of all classpath variable initializers.
  * Classpath variable initializers are used in conjunction with the
- * "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.classpathVariableInitializer" extension point.
+ * "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.classpathVariableInitializer"
+ * extension point.
  * <p>
  * Clients should subclass this class to implement a specific classpath
  * variable initializer. The subclass must have a public 0-argument
@@ -32,7 +33,7 @@ public abstract class ClasspathVariableInitializer {
      * Creates a new classpath variable initializer.
      */
     public ClasspathVariableInitializer() {
-    	// a classpath variable initializer must have a public 0-argument constructor
+        // a classpath variable initializer must have a public 0-argument constructor
     }
 
     /**
@@ -45,7 +46,7 @@ public abstract class ClasspathVariableInitializer {
      * <code>JavaCore#setClasspathVariable</code>.
      *
      * @param variable the name of the workspace classpath variable
-     *    that requires a binding
+     * that requires a binding
      *
      */
     public abstract void initialize(String variable);

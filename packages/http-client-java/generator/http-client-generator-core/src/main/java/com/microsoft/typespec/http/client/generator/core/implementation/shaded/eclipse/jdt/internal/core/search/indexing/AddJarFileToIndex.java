@@ -50,19 +50,14 @@ class AddJarFileToIndex extends BinaryContainer {
 	private IndexLocation indexFileURL;
 	private final boolean forceIndexUpdate;
 
-	public AddJarFileToIndex(IFile resource, IndexLocation indexFile, IndexManager manager) {
-		this(resource, indexFile, manager, false);
-	}
-	public AddJarFileToIndex(IFile resource, IndexLocation indexFile, IndexManager manager, final boolean updateIndex) {
+    public AddJarFileToIndex(IFile resource, IndexLocation indexFile, IndexManager manager, final boolean updateIndex) {
 		super(resource.getFullPath(), manager);
 		this.resource = resource;
 		this.indexFileURL = indexFile;
 		this.forceIndexUpdate = updateIndex;
 	}
-	public AddJarFileToIndex(IPath jarPath, IndexLocation indexFile, IndexManager manager) {
-		this(jarPath, indexFile, manager, false);
-	}
-	public AddJarFileToIndex(IPath jarPath, IndexLocation indexFile, IndexManager manager, final boolean updateIndex) {
+
+    public AddJarFileToIndex(IPath jarPath, IndexLocation indexFile, IndexManager manager, final boolean updateIndex) {
 		// external JAR scenario - no resource
 		super(jarPath, manager);
 		this.indexFileURL = indexFile;

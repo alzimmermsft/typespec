@@ -69,7 +69,7 @@ import java.util.*;
  *
  * <pre>
  * bundleContext.registerService(IResourceChangeListener.class, myListener, IResourceChangeListener.getMaskProperties(
- * 		IResourceChangeEvent.POST_CHANGE | IResourceChangeEvent.PRE_CLOSE | IResourceChangeEvent.PRE_DELETE));
+ *     IResourceChangeEvent.POST_CHANGE | IResourceChangeEvent.PRE_CLOSE | IResourceChangeEvent.PRE_DELETE));
  * </pre>
  *
  *
@@ -79,31 +79,5 @@ import java.util.*;
 
 @FunctionalInterface
 public interface IResourceChangeListener extends EventListener {
-
-	/**
-	 * @since 3.17
-	 */
-	String PROPERTY_EVENT_MASK = "event.mask"; //$NON-NLS-1$
-
-	/**
-	 * Notifies this listener that some resource changes
-	 * are happening, or have already happened.
-	 * <p>
-	 * The supplied event gives details. This event object (and the
-	 * resource delta within it) is valid only for the duration of
-	 * the invocation of this method.
-	 * </p>
-	 * <p>
-	 * Note: This method is called by the platform; it is not intended
-	 * to be called directly by clients.
-	 * <p>
-	 * Note that during resource change event notification, further changes
-	 * to resources may be disallowed.
-	 * </p>
-	 *
-	 * @param event the resource change event
-	 * @see IResourceDelta
-	 */
-	void resourceChanged(IResourceChangeEvent event);
 
 }

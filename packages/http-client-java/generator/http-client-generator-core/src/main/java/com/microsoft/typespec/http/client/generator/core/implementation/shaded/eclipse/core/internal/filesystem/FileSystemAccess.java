@@ -14,10 +14,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.filesystem;
 
-import java.io.File;
-import java.net.URL;
-import java.util.Collections;
-import java.util.Enumeration;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IStatus;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.service.datalocation.Location;
@@ -26,54 +22,60 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.FrameworkUtil;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.InvalidSyntaxException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.util.tracker.ServiceTracker;
+import java.io.File;
+import java.net.URL;
+import java.util.Collections;
+import java.util.Enumeration;
 
 /**
  * This class abstracts away implementation details of the filesystem
  * bundle that depend on the OSGi framework being started. All
  * file system bundle functionality is enabled regardless of whether
  * OSGi is running.
+ * 
  * @since org.eclipse.core.filesystem 1.1
  */
 public class FileSystemAccess {
 
-	/**
-	 * Returns the local file system location that should be used for
-	 * caching file data.
-	 */
-	public static IPath getCacheLocation() {
-		//try to put the cache in the instance location if possible (3.2 behaviour)
-		try {
-			Bundle bundle = FrameworkUtil.getBundle(FileSystemAccess.class);
-			if (bundle != null) {
-				BundleContext context = bundle.getBundleContext();
-				if (context != null) {
-					ServiceTracker<Location, Location> tracker = new ServiceTracker<>(context, context.createFilter(Location.INSTANCE_FILTER), null);
-					tracker.open();
-					try {
-						Location location = tracker.getService();
-						if (location != null) {
-							IPath instancePath = IPath.fromOSString(new File(location.getURL().getFile()).toString());
-							return instancePath.append(".metadata/.plugins").append(Policy.PI_FILE_SYSTEM); //$NON-NLS-1$
-						}
-					} finally {
-						tracker.close();
-					}
-				}
-			}
-		} catch (InvalidSyntaxException e) {
-			Policy.log(IStatus.INFO, null, e);
-			//fall through below and use user home
-		}
-		//just put the cache in the user home directory
-		return IPath.fromOSString(System.getProperty("user.home")); //$NON-NLS-1$
-	}
+    /**
+     * Returns the local file system location that should be used for
+     * caching file data.
+     */
+    public static IPath getCacheLocation() {
+        // try to put the cache in the instance location if possible (3.2 behaviour)
+        try {
+            Bundle bundle = FrameworkUtil.getBundle(FileSystemAccess.class);
+            if (bundle != null) {
+                BundleContext context = bundle.getBundleContext();
+                if (context != null) {
+                    ServiceTracker<Location, Location> tracker
+                        = new ServiceTracker<>(context, context.createFilter(Location.INSTANCE_FILTER), null);
+                    tracker.open();
+                    try {
+                        Location location = tracker.getService();
+                        if (location != null) {
+                            IPath instancePath = IPath.fromOSString(new File(location.getURL().getFile()).toString());
+                            return instancePath.append(".metadata/.plugins").append(Policy.PI_FILE_SYSTEM); //$NON-NLS-1$
+                        }
+                    } finally {
+                        tracker.close();
+                    }
+                }
+            }
+        } catch (InvalidSyntaxException e) {
+            Policy.log(IStatus.INFO, null, e);
+            // fall through below and use user home
+        }
+        // just put the cache in the user home directory
+        return IPath.fromOSString(System.getProperty("user.home")); //$NON-NLS-1$
+    }
 
-	public static Enumeration<URL> findEntries(String path, String filePattern, boolean recurse) {
-		Bundle bundle = FrameworkUtil.getBundle(FileSystemAccess.class);
-		if (bundle != null) {
-			return bundle.findEntries(path, filePattern, recurse);
-		}
-		return Collections.emptyEnumeration();
-	}
+    public static Enumeration<URL> findEntries(String path, String filePattern, boolean recurse) {
+        Bundle bundle = FrameworkUtil.getBundle(FileSystemAccess.class);
+        if (bundle != null) {
+            return bundle.findEntries(path, filePattern, recurse);
+        }
+        return Collections.emptyEnumeration();
+    }
 
 }

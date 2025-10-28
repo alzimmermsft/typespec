@@ -20,64 +20,64 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class ExportedPreferences extends EclipsePreferences implements IExportedPreferences {
 
-	private boolean isExportRoot = false;
-	private String version;
+    private boolean isExportRoot = false;
+    private String version;
 
-	public static IExportedPreferences newRoot() {
-		return new ExportedPreferences(null, ""); //$NON-NLS-1$
-	}
+    public static IExportedPreferences newRoot() {
+        return new ExportedPreferences(null, ""); //$NON-NLS-1$
+    }
 
-	protected ExportedPreferences(EclipsePreferences parent, String name) {
-		super(parent, name);
-	}
+    protected ExportedPreferences(EclipsePreferences parent, String name) {
+        super(parent, name);
+    }
 
-	@Override
-	public boolean isExportRoot() {
-		return isExportRoot;
-	}
+    @Override
+    public boolean isExportRoot() {
+        return isExportRoot;
+    }
 
-	/*
-	 * Internal method called only by the import/export mechanism.
-	 */
-	public void setExportRoot() {
-		isExportRoot = true;
-	}
+    /*
+     * Internal method called only by the import/export mechanism.
+     */
+    public void setExportRoot() {
+        isExportRoot = true;
+    }
 
-	/*
-	 * Internal method called only by the import/export mechanism to validate bundle
-	 * versions.
-	 */
-	public String getVersion() {
-		return version;
-	}
+    /*
+     * Internal method called only by the import/export mechanism to validate bundle
+     * versions.
+     */
+    public String getVersion() {
+        return version;
+    }
 
-	/*
-	 * Internal method called only by the import/export mechanism to validate bundle
-	 * versions.
-	 */
-	public void setVersion(String version) {
-		this.version = version;
-	}
+    /*
+     * Internal method called only by the import/export mechanism to validate bundle
+     * versions.
+     */
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
-	@Override
-	protected EclipsePreferences internalCreate(EclipsePreferences nodeParent, String nodeName, Object context) {
-		return new ExportedPreferences(nodeParent, nodeName);
-	}
+    @Override
+    protected EclipsePreferences internalCreate(EclipsePreferences nodeParent, String nodeName, Object context) {
+        return new ExportedPreferences(nodeParent, nodeName);
+    }
 
-	/*
-	 * Return a string representation of this object. To be used for debugging
-	 * purposes only.
-	 */
-	@Override
-	public String toString() {
-		StringBuilder buffer = new StringBuilder();
-		if (isExportRoot) {
-			buffer.append("* "); //$NON-NLS-1$
-		}
-		buffer.append(absolutePath());
-		if (version != null) {
-			buffer.append(" (" + version + ')'); //$NON-NLS-1$
-		}
-		return buffer.toString();
-	}
+    /*
+     * Return a string representation of this object. To be used for debugging
+     * purposes only.
+     */
+    @Override
+    public String toString() {
+        StringBuilder buffer = new StringBuilder();
+        if (isExportRoot) {
+            buffer.append("* "); //$NON-NLS-1$
+        }
+        buffer.append(absolutePath());
+        if (version != null) {
+            buffer.append(" (" + version + ')'); //$NON-NLS-1$
+        }
+        return buffer.toString();
+    }
 }

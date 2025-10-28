@@ -18,34 +18,40 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 
 public class CompletionOnKeyword1 extends SingleTypeReference implements CompletionOnKeyword {
-	private final char[][] possibleKeywords;
+    private final char[][] possibleKeywords;
 
-	public CompletionOnKeyword1(char[] token, long pos, char[] possibleKeyword) {
-		this(token, pos, new char[][]{possibleKeyword});
-	}
-	public CompletionOnKeyword1(char[] token, long pos, char[][] possibleKeywords) {
-		super(token, pos);
-		this.possibleKeywords = possibleKeywords;
-	}
-	@Override
-	public char[] getToken() {
-		return this.token;
-	}
-	@Override
-	public char[][] getPossibleKeywords() {
-		return this.possibleKeywords;
-	}
-	@Override
-	public void aboutToResolve(Scope scope) {
-		getTypeBinding(scope);
-	}
-	@Override
-	protected TypeBinding getTypeBinding(Scope scope) {
-		throw new CompletionNodeFound(this, scope);
-	}
-	@Override
-	public StringBuilder printExpression(int indent, StringBuilder output){
+    public CompletionOnKeyword1(char[] token, long pos, char[] possibleKeyword) {
+        this(token, pos, new char[][] { possibleKeyword });
+    }
 
-		return output.append("<CompleteOnKeyword:").append(this.token).append('>');  //$NON-NLS-1$
-	}
+    public CompletionOnKeyword1(char[] token, long pos, char[][] possibleKeywords) {
+        super(token, pos);
+        this.possibleKeywords = possibleKeywords;
+    }
+
+    @Override
+    public char[] getToken() {
+        return this.token;
+    }
+
+    @Override
+    public char[][] getPossibleKeywords() {
+        return this.possibleKeywords;
+    }
+
+    @Override
+    public void aboutToResolve(Scope scope) {
+        getTypeBinding(scope);
+    }
+
+    @Override
+    protected TypeBinding getTypeBinding(Scope scope) {
+        throw new CompletionNodeFound(this, scope);
+    }
+
+    @Override
+    public StringBuilder printExpression(int indent, StringBuilder output) {
+
+        return output.append("<CompleteOnKeyword:").append(this.token).append('>');  //$NON-NLS-1$
+    }
 }

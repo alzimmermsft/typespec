@@ -14,26 +14,16 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
-import java.util.Map.Entry;
+
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IProject;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResourceChangeEvent;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResourceChangeListener;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResourceDelta;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.ISafeRunnable;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IStatus;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Path;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.SafeRunner;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Status;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IClasspathEntry;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IElementChangedListener;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaElement;
@@ -42,7 +32,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaCore;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.DeltaProcessor.RootInfo;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaModelManager.PerProjectInfo;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Util;
 
 /**
@@ -69,13 +58,7 @@ public class DeltaProcessingState implements IResourceChangeListener {
 	 */
 	private final ThreadLocal<DeltaProcessor> deltaProcessors = new ThreadLocal<>();
 
-	public void doNotUse() {
-		// reset the delta processor of the current thread to avoid to keep it in memory
-		// https://bugs.eclipse.org/bugs/show_bug.cgi?id=269476
-		this.deltaProcessors.remove();
-	}
-
-	/* A table from IPath (from a classpath entry) to DeltaProcessor.RootInfo */
+    /* A table from IPath (from a classpath entry) to DeltaProcessor.RootInfo */
 	public Map<IPath, RootInfo> roots = new LinkedHashMap<>();
 
 	/* A table from IPath (from a classpath entry) to ArrayList of DeltaProcessor.RootInfo
@@ -216,36 +199,13 @@ public class DeltaProcessingState implements IResourceChangeListener {
 		}
 	}
 
-	public ClasspathChange getClasspathChange(IProject project) {
-		synchronized (this.mutex) {
-			return this.classpathChanges.get(project);
-		}
-	}
-
-	public Map<IProject, ClasspathChange> removeAllClasspathChanges() {
-		synchronized (this.mutex) {
-			Map<IProject, ClasspathChange> result = this.classpathChanges;
-			this.classpathChanges = new LinkedHashMap<>(result.size());
-			return result;
-		}
-	}
-
-	public synchronized ClasspathValidation addClasspathValidation(JavaProject project) {
-		ClasspathValidation validation = this.classpathValidations.get(project);
-		if (validation == null) {
-			validation = new ClasspathValidation(project);
-			this.classpathValidations.put(project, validation);
-	    }
-		return validation;
+    public synchronized ClasspathValidation addClasspathValidation(JavaProject project) {
+        return this.classpathValidations.computeIfAbsent(project, ClasspathValidation::new);
 	}
 
 	public synchronized void addExternalFolderChange(JavaProject project, IClasspathEntry[] oldResolvedClasspath) {
-		ExternalFolderChange change = this.externalFolderChanges.get(project);
-		if (change == null) {
-			change = new ExternalFolderChange(project, oldResolvedClasspath);
-			this.externalFolderChanges.put(project, change);
-		}
-	}
+        this.externalFolderChanges.computeIfAbsent(project, p -> new ExternalFolderChange(p, oldResolvedClasspath));
+    }
 
 	public synchronized void addProjectReferenceChange(IJavaProject project) {
 		this.projectReferenceChanges.add(project);
@@ -268,7 +228,7 @@ public class DeltaProcessingState implements IResourceChangeListener {
 				// ensure that containers are initialized in one batch
 				JavaModelManager.getJavaModelManager().forceBatchInitializations(initAfterLoad);
 
-				rootInfos = getRootInfos(false/*don't use previous session values*/);
+				rootInfos = getRootInfos(/*don't use previous session values*/);
 
 			} finally {
 				if (addedCurrentThread) {
@@ -289,18 +249,7 @@ public class DeltaProcessingState implements IResourceChangeListener {
 		}
 	}
 
-	synchronized void initializeRootsWithPreviousSession() {
-		RootInfos rootInfos = getRootInfos(true/*use previous session values*/);
-		if (rootInfos != null) {
-			this.roots = rootInfos.roots;
-			this.otherRoots = rootInfos.otherRoots;
-			this.sourceAttachments = rootInfos.sourceAttachments;
-			this.projectDependencies = rootInfos.projectDependencies;
-			this.rootsAreStale = false;
-		}
-	}
-
-	private RootInfos getRootInfos(boolean usePreviousSession) {
+    private RootInfos getRootInfos() {
 		RootInfos ri = new RootInfos();
 
 		IJavaModel model = JavaModelManager.getJavaModelManager().getJavaModel();
@@ -315,14 +264,8 @@ public class DeltaProcessingState implements IResourceChangeListener {
 			JavaProject project = (JavaProject) p;
 			IClasspathEntry[] classpath;
 			try {
-				if (usePreviousSession) {
-					PerProjectInfo perProjectInfo = project.getPerProjectInfo();
-					project.resolveClasspath(perProjectInfo, true/*use previous session values*/, false/*don't add classpath change*/);
-					classpath = perProjectInfo.resolvedClasspath;
-				} else {
-					classpath = project.getResolvedClasspath();
-				}
-			} catch (JavaModelException e) {
+                classpath = project.getResolvedClasspath();
+            } catch (JavaModelException e) {
 				// continue with next project
 				continue;
 			}
@@ -346,12 +289,8 @@ public class DeltaProcessingState implements IResourceChangeListener {
 				if (ri.roots.get(path) == null) {
 					ri.roots.put(path, new RootInfo(project, path, ((ClasspathEntry)entry).fullInclusionPatternChars(), ((ClasspathEntry)entry).fullExclusionPatternChars(), entry));
 				} else {
-					List<RootInfo> rootList = ri.otherRoots.get(path);
-					if (rootList == null) {
-						rootList = new ArrayList<>();
-						ri.otherRoots.put(path, rootList);
-					}
-					rootList.add(new RootInfo(project, path, ((ClasspathEntry)entry).fullInclusionPatternChars(), ((ClasspathEntry)entry).fullExclusionPatternChars(), entry));
+                    List<RootInfo> rootList = ri.otherRoots.computeIfAbsent(path, k -> new ArrayList<>());
+                    rootList.add(new RootInfo(project, path, ((ClasspathEntry)entry).fullInclusionPatternChars(), ((ClasspathEntry)entry).fullExclusionPatternChars(), entry));
 				}
 
 				// source attachment path
@@ -379,37 +318,7 @@ public class DeltaProcessingState implements IResourceChangeListener {
 		return ri;
 	}
 
-	public synchronized ClasspathValidation[] removeClasspathValidations() {
-	    int length = this.classpathValidations.size();
-	    if (length == 0) return null;
-	    ClasspathValidation[]  validations = new ClasspathValidation[length];
-	    this.classpathValidations.values().toArray(validations);
-	    this.classpathValidations.clear();
-	    return validations;
-	}
-
-	public synchronized ExternalFolderChange[] removeExternalFolderChanges() {
-	    int length = this.externalFolderChanges.size();
-	    if (length == 0) return null;
-	    ExternalFolderChange[]  updates = new ExternalFolderChange[length];
-	    this.externalFolderChanges.values().toArray(updates);
-	    this.externalFolderChanges.clear();
-	    return updates;
-	}
-
-	public synchronized Set<IJavaProject> removeProjectReferenceChanges() {
-		Set<IJavaProject> result = this.projectReferenceChanges;
-		this.projectReferenceChanges = new HashSet<>();
-		return result;
-	}
-
-	public synchronized Set<IJavaElement> removeExternalElementsToRefresh() {
-		Set<IJavaElement> result = this.externalElementsToRefresh;
-		this.externalElementsToRefresh = null;
-		return result;
-	}
-
-	public synchronized void removeElementChangedListener(IElementChangedListener listener) {
+    public synchronized void removeElementChangedListener(IElementChangedListener listener) {
 
 		for (int i = 0; i < this.elementChangedListenerCount; i++){
 
@@ -437,68 +346,6 @@ public class DeltaProcessingState implements IResourceChangeListener {
 				return;
 			}
 		}
-	}
-
-	public synchronized void removePreResourceChangedListener(IResourceChangeListener listener) {
-
-		for (int i = 0; i < this.preResourceChangeListenerCount; i++){
-
-			if (this.preResourceChangeListeners[i] == listener){
-
-				// need to clone defensively since we might be in the middle of listener notifications (#fire)
-				int length = this.preResourceChangeListeners.length;
-				IResourceChangeListener[] newListeners = new IResourceChangeListener[length];
-				int[] newEventMasks = new int[length];
-				System.arraycopy(this.preResourceChangeListeners, 0, newListeners, 0, i);
-				System.arraycopy(this.preResourceChangeEventMasks, 0, newEventMasks, 0, i);
-
-				// copy trailing listeners
-				int trailingLength = this.preResourceChangeListenerCount - i - 1;
-				if (trailingLength > 0) {
-					System.arraycopy(this.preResourceChangeListeners, i+1, newListeners, i, trailingLength);
-					System.arraycopy(this.preResourceChangeEventMasks, i+1, newEventMasks, i, trailingLength);
-				}
-
-				// update manager listener state (#fire need to iterate over original listeners through a local variable to hold onto
-				// the original ones)
-				this.preResourceChangeListeners = newListeners;
-				this.preResourceChangeEventMasks = newEventMasks;
-				this.preResourceChangeListenerCount--;
-				return;
-			}
-		}
-	}
-
-	@Override
-	public void resourceChanged(final IResourceChangeEvent event) {
-		for (int i = 0; i < this.preResourceChangeListenerCount; i++) {
-			// wrap callbacks with Safe runnable for subsequent listeners to be called when some are causing grief
-			final IResourceChangeListener listener = this.preResourceChangeListeners[i];
-			if ((this.preResourceChangeEventMasks[i] & event.getType()) != 0)
-				SafeRunner.run(new ISafeRunnable() {
-					@Override
-					public void handleException(Throwable exception) {
-						Util.log(exception, "Exception occurred in listener of pre Java resource change notification"); //$NON-NLS-1$
-					}
-					@Override
-					public void run() throws Exception {
-						listener.resourceChanged(event);
-					}
-				});
-		}
-		try {
-			getDeltaProcessor().resourceChanged(event);
-		} finally {
-			// TODO (jerome) see 47631, may want to get rid of following so as to reuse delta processor ?
-			if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
-				this.deltaProcessors.remove();
-			} else {
-				// If we are going to reuse the delta processor of this thread, don't hang on to state
-				// that isn't meant to be reused. https://bugs.eclipse.org/bugs/show_bug.cgi?id=273385
-				getDeltaProcessor().overridenEventType = -1;
-			}
-		}
-
 	}
 
 	public Hashtable<IPath, Long> getExternalLibTimeStamps() {
@@ -549,87 +396,11 @@ public class DeltaProcessingState implements IResourceChangeListener {
 		return this.javaProjectNamesCache;
 	}
 
-	public synchronized void resetOldJavaProjectNames() {
-		this.javaProjectNamesCache = null;
-	}
-
-	private File getTimeStampsFile() {
+    private File getTimeStampsFile() {
 		return JavaCore.getPlugin().getStateLocation().append("externalLibsTimeStamps").toFile(); //$NON-NLS-1$
 	}
 
-	public void saveExternalLibTimeStamps() throws CoreException {
-		if (this.externalTimeStamps == null) return;
-
-		// cleanup to avoid any leak ( https://bugs.eclipse.org/bugs/show_bug.cgi?id=244849 )
-		HashSet<IPath> toRemove = new HashSet<>();
-		if (this.roots != null) {
-			Enumeration<IPath> keys = this.externalTimeStamps.keys();
-			while (keys.hasMoreElements()) {
-				IPath key = keys.nextElement();
-				if (this.roots.get(key) == null) {
-					toRemove.add(key);
-				}
-			}
-		}
-
-		File timestamps = getTimeStampsFile();
-		try (DataOutputStream out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(timestamps)))){
-			out.writeInt(this.externalTimeStamps.size() - toRemove.size());
-			for (Entry<IPath, Long> entry : this.externalTimeStamps.entrySet()) {
-				IPath key = entry.getKey();
-				if (!toRemove.contains(key)) {
-					out.writeUTF(key.toPortableString());
-					Long timestamp = entry.getValue();
-					out.writeLong(timestamp.longValue());
-				}
-			}
-		} catch (IOException e) {
-			IStatus status = new Status(IStatus.ERROR, JavaCore.PLUGIN_ID, IStatus.ERROR, "Problems while saving timestamps", e); //$NON-NLS-1$
-			throw new CoreException(status);
-		}
-	}
-
-	/*
-	 * Update the roots that are affected by the addition or the removal of the given container resource.
-	 */
-	public synchronized void updateRoots(IPath containerPath, IResourceDelta containerDelta, DeltaProcessor deltaProcessor) {
-		Map<IPath, RootInfo> updatedRoots;
-		Map<IPath, List<RootInfo>> otherUpdatedRoots;
-		if (containerDelta.getKind() == IResourceDelta.REMOVED) {
-			updatedRoots = this.oldRoots;
-			otherUpdatedRoots = this.oldOtherRoots;
-		} else {
-			updatedRoots = this.roots;
-			otherUpdatedRoots = this.otherRoots;
-		}
-		int containerSegmentCount = containerPath.segmentCount();
-		boolean containerIsProject = containerSegmentCount == 1;
-		for (Entry<IPath, RootInfo> entry : updatedRoots.entrySet()) {
-			IPath path = entry.getKey();
-			if (containerPath.isPrefixOf(path) && !containerPath.equals(path)) {
-				IResourceDelta rootDelta = containerDelta.findMember(path.removeFirstSegments(containerSegmentCount));
-				if (rootDelta == null) continue;
-				RootInfo rootInfo = entry.getValue();
-
-				if (!containerIsProject
-						|| !rootInfo.project.getPath().isPrefixOf(path)) { // only consider folder roots that are not included in the container
-					deltaProcessor.updateCurrentDeltaAndIndex(rootDelta, IJavaElement.PACKAGE_FRAGMENT_ROOT, rootInfo);
-				}
-
-				List<RootInfo> rootList = otherUpdatedRoots.get(path);
-				if (rootList != null) {
-					for (RootInfo ri : rootList) {
-						if (!containerIsProject
-								|| !ri.project.getPath().isPrefixOf(path)) { // only consider folder roots that are not included in the container
-							deltaProcessor.updateCurrentDeltaAndIndex(rootDelta, IJavaElement.PACKAGE_FRAGMENT_ROOT, ri);
-						}
-					}
-				}
-			}
-		}
-	}
-
-	private static final class RootInfos {
+    private static final class RootInfos {
 		final Map<IPath, RootInfo> roots;
 		final Map<IPath, List<RootInfo>> otherRoots;
 		final Map<IPath, IPath> sourceAttachments;

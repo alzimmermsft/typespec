@@ -1,23 +1,20 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.signature.qual;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 
 /**
  * An identifier.
  *
  * @checker_framework.manual #signature-checker Signature Checker
  */
-@SubtypeOf({
-  DotSeparatedIdentifiers.class,
-  BinaryNameWithoutPackage.class,
-  IdentifierOrPrimitiveType.class
-})
+@SubtypeOf({ DotSeparatedIdentifiers.class, BinaryNameWithoutPackage.class, IdentifierOrPrimitiveType.class })
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
-public @interface Identifier {}
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
+public @interface Identifier {
+}

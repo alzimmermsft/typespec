@@ -22,55 +22,57 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 
 public class CompletionOnAnnotationMemberValuePair extends NormalAnnotation implements CompletionNode {
-	public MemberValuePair completedMemberValuePair;
-	public CompletionOnAnnotationMemberValuePair(TypeReference type, int sourceStart, MemberValuePair[] memberValuePairs, MemberValuePair completedMemberValuePair) {
-		super(type, sourceStart);
-		this.memberValuePairs = memberValuePairs;
-		this.completedMemberValuePair = completedMemberValuePair;
-	}
+    public MemberValuePair completedMemberValuePair;
 
-	@Override
-	public TypeBinding resolveType(BlockScope scope) {
-		super.resolveType(scope);
+    public CompletionOnAnnotationMemberValuePair(TypeReference type, int sourceStart,
+        MemberValuePair[] memberValuePairs, MemberValuePair completedMemberValuePair) {
+        super(type, sourceStart);
+        this.memberValuePairs = memberValuePairs;
+        this.completedMemberValuePair = completedMemberValuePair;
+    }
 
-		CompletionNodeFound exception;
-		if (this.resolvedType == null || !this.resolvedType.isValidBinding()) {
-			exception = new CompletionNodeFound();
-		} else {
-			exception = new CompletionNodeFound(this.completedMemberValuePair, scope);
-		}
-		return exception.throwOrDeferAndReturn(() -> this.resolvedType);
-	}
+    @Override
+    public TypeBinding resolveType(BlockScope scope) {
+        super.resolveType(scope);
 
-	@Override
-	public StringBuilder printExpression(int indent, StringBuilder output) {
-		output.append('@');
-		this.type.printExpression(0, output);
-		output.append('(');
-		if (this.memberValuePairs != null) {
-			for (int i = 0, max = this.memberValuePairs.length; i < max; i++) {
-				if (i > 0) {
-					output.append(',');
-				}
-				this.memberValuePairs[i].print(indent, output);
-			}
-			output.append(',');
-		}
-		this.completedMemberValuePair.print(indent, output);
-		output.append(')');
+        CompletionNodeFound exception;
+        if (this.resolvedType == null || !this.resolvedType.isValidBinding()) {
+            exception = new CompletionNodeFound();
+        } else {
+            exception = new CompletionNodeFound(this.completedMemberValuePair, scope);
+        }
+        return exception.throwOrDeferAndReturn(() -> this.resolvedType);
+    }
 
-		return output;
-	}
+    @Override
+    public StringBuilder printExpression(int indent, StringBuilder output) {
+        output.append('@');
+        this.type.printExpression(0, output);
+        output.append('(');
+        if (this.memberValuePairs != null) {
+            for (int i = 0, max = this.memberValuePairs.length; i < max; i++) {
+                if (i > 0) {
+                    output.append(',');
+                }
+                this.memberValuePairs[i].print(indent, output);
+            }
+            output.append(',');
+        }
+        this.completedMemberValuePair.print(indent, output);
+        output.append(')');
 
-	@Override
-	public void traverse(ASTVisitor visitor, ClassScope scope) {
-		super.traverse(visitor, scope);
-		this.completedMemberValuePair.traverse(visitor, scope);
-	}
+        return output;
+    }
 
-	@Override
-	public void traverse(ASTVisitor visitor, BlockScope scope) {
-		super.traverse(visitor, scope);
-		this.completedMemberValuePair.traverse(visitor, scope);
-	}
+    @Override
+    public void traverse(ASTVisitor visitor, ClassScope scope) {
+        super.traverse(visitor, scope);
+        this.completedMemberValuePair.traverse(visitor, scope);
+    }
+
+    @Override
+    public void traverse(ASTVisitor visitor, BlockScope scope) {
+        super.traverse(visitor, scope);
+        this.completedMemberValuePair.traverse(visitor, scope);
+    }
 }

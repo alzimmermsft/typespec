@@ -18,23 +18,23 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class CompletionOnKeywordModuleDeclaration extends ModuleDeclaration implements CompletionOnKeyword {
 
-	private final char[] token;
-	private final char[][] possibleKeywords;
+    private final char[] token;
+    private final char[][] possibleKeywords;
 
-	public CompletionOnKeywordModuleDeclaration(char[] token, long pos, char[][] possibleKeywords) {
-		super(null, new char[][]{token}, new long[]{pos});
-		this.token = token;
-		this.possibleKeywords = possibleKeywords;
-	}
+    public CompletionOnKeywordModuleDeclaration(char[] token, long pos, char[][] possibleKeywords) {
+        super(null, new char[][] { token }, new long[] { pos });
+        this.token = token;
+        this.possibleKeywords = possibleKeywords;
+    }
 
-	@Override
-	public char[] getToken() {
-		return this.token;
-	}
+    @Override
+    public char[] getToken() {
+        return this.token;
+    }
 
-	@Override
-	public char[][] getPossibleKeywords() {
-		return this.possibleKeywords;
-	}
+    @Override
+    public char[][] getPossibleKeywords() {
+        return this.possibleKeywords;
+    }
 
 }

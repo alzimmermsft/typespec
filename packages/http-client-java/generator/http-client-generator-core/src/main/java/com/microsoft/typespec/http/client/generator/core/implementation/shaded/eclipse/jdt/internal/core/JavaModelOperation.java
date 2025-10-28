@@ -17,29 +17,19 @@ import static com.microsoft.typespec.http.client.generator.core.implementation.s
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IContainer;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IFile;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IFolder;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
+
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResourceStatus;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IWorkspace;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IWorkspaceRoot;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IWorkspaceRunnable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.ResourcesPlugin;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.OperationCanceledException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Path;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.SubMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.jobs.ISchedulingRule;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.*;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.dom.AST;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Messages;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.BadLocationException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.IDocument;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.text.edits.TextEdit;
 
 /**
  * Defines behavior common to all Java Model operations
@@ -130,38 +120,12 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 	protected JavaModelOperation(IJavaElement[] elements) {
 		this.elementsToProcess = elements;
 	}
-	/**
-	 * Common constructor for all Java Model operations.
-	 */
-	protected JavaModelOperation(IJavaElement[] elementsToProcess, IJavaElement[] parentElements) {
-		this.elementsToProcess = elementsToProcess;
-		this.parentElements= parentElements;
-	}
-	/**
-	 * A common constructor for all Java Model operations.
-	 */
-	protected JavaModelOperation(IJavaElement[] elementsToProcess, IJavaElement[] parentElements, boolean force) {
-		this.elementsToProcess = elementsToProcess;
-		this.parentElements= parentElements;
-		this.force= force;
-	}
-	/**
-	 * A common constructor for all Java Model operations.
-	 */
-	protected JavaModelOperation(IJavaElement[] elements, boolean force) {
-		this.elementsToProcess = elements;
-		this.force= force;
-	}
 
-	/**
+    /**
 	 * Common constructor for all Java Model operations.
 	 */
 	protected JavaModelOperation(IJavaElement element) {
 		this.elementsToProcess = new IJavaElement[]{element};
-	}
-
-	protected int getLatestASTLevel() {
-		return AST.getJLSLatest();
 	}
 
     /*
@@ -170,43 +134,15 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 	protected void addDelta(IJavaElementDelta delta) {
 		JavaModelManager.getJavaModelManager().getDeltaProcessor().registerJavaModelDelta(delta);
 	}
-	/*
-	 * Registers the given reconcile delta with the Java Model Manager.
-	 */
-	protected void addReconcileDelta(ICompilationUnit workingCopy, IJavaElementDelta delta) {
-		Map<ICompilationUnit, IJavaElementDelta> reconcileDeltas = JavaModelManager.getJavaModelManager().getDeltaProcessor().reconcileDeltas;
-		JavaElementDelta previousDelta = (JavaElementDelta)reconcileDeltas.get(workingCopy);
-		if (previousDelta != null) {
-			IJavaElementDelta[] children = delta.getAffectedChildren();
-			for (IJavaElementDelta d : children) {
-				JavaElementDelta child = (JavaElementDelta)d;
-				previousDelta.insertDeltaTree(child.getElement(), child);
-			}
-			// note that the last delta's AST always takes precedence over the existing delta's AST
-			// since it is the result of the last reconcile operation
-			if ((delta.getFlags() & IJavaElementDelta.F_AST_AFFECTED) != 0) {
-				previousDelta.changedAST(delta.getCompilationUnitAST());
-			}
 
-		} else {
-			reconcileDeltas.put(workingCopy, delta);
-		}
-	}
-	/*
+    /*
 	 * Deregister the reconcile delta for the given working copy
 	 */
 	protected void removeReconcileDelta(ICompilationUnit workingCopy) {
 		JavaModelManager.getJavaModelManager().getDeltaProcessor().reconcileDeltas.remove(workingCopy);
 	}
-	protected void applyTextEdit(ICompilationUnit cu, TextEdit edits) throws JavaModelException {
-		try {
-			edits.apply(getDocument(cu));
-		} catch (BadLocationException e) {
-			// content changed under us
-			throw new JavaModelException(e, IJavaModelStatusConstants.INVALID_CONTENTS);
-		}
-	}
-	/**
+
+    /**
 	 * @see IProgressMonitor
 	 */
 	@Override
@@ -249,114 +185,8 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 		}
 		return JavaModelStatus.VERIFIED_OK;
 	}
-	/**
-	 * Convenience method to copy resources
-	 */
-	protected void copyResources(IResource[] resources, IPath container) throws JavaModelException {
-		IProgressMonitor subProgressMonitor = getSubProgressMonitor(resources.length);
-		IWorkspaceRoot root =  ResourcesPlugin.getWorkspace().getRoot();
-		try {
-			for (IResource resource : resources) {
-				IPath destination = container.append(resource.getName());
-				if (root.findMember(destination) == null) {
-					resource.copy(destination, false, subProgressMonitor);
-				}
-			}
-			setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE);
-		} catch (CoreException e) {
-			throw new JavaModelException(e);
-		}
-	}
-	/**
-	 * Convenience method to create a file
-	 */
-	protected void createFile(IContainer folder, String name, byte[] contents, boolean forceFlag) throws JavaModelException {
-		IFile file= folder.getFile(new Path(name));
-		try {
-			file.create(
-				contents,
-				forceFlag ? IResource.FORCE | IResource.KEEP_HISTORY : IResource.KEEP_HISTORY,
-				getSubProgressMonitor(1));
-				setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE);
-		} catch (CoreException e) {
-			throw new JavaModelException(e);
-		}
-	}
-	/**
-	 * Convenience method to create a folder
-	 */
-	protected void createFolder(IContainer parentFolder, String name, boolean forceFlag) throws JavaModelException {
-		IFolder folder= parentFolder.getFolder(new Path(name));
-		try {
-			// we should use true to create the file locally. Only VCM should use tru/false
-			folder.create(
-				forceFlag ? IResource.FORCE | IResource.KEEP_HISTORY : IResource.KEEP_HISTORY,
-				true, // local
-				getSubProgressMonitor(1));
-			setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE);
-		} catch (CoreException e) {
-			throw new JavaModelException(e);
-		}
-	}
-	/**
-	 * Convenience method to delete an empty package fragment
-	 */
-	protected void deleteEmptyPackageFragment(
-		IPackageFragment fragment, IResource rootResource)
-		throws JavaModelException {
 
-		IContainer resource = (IContainer) ((JavaElement)fragment).resource();
-
-		try {
-			resource.delete(IResource.KEEP_HISTORY,
-				getSubProgressMonitor(1));
-			setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE);
-			while (resource instanceof IFolder) {
-				// deleting a package: delete the parent if it is empty (e.g. deleting x.y where folder x doesn't have resources but y)
-				// without deleting the package fragment root
-				resource = resource.getParent();
-				if (!resource.equals(rootResource) && resource.members().length == 0) {
-					resource.delete(IResource.KEEP_HISTORY,
-						getSubProgressMonitor(1));
-					setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE);
-				} else {
-					// we didn't delete the package, so its parent packages cannot be empty
-					break;
-				}
-			}
-		} catch (CoreException e) {
-			throw new JavaModelException(e);
-		}
-	}
-	/**
-	 * Convenience method to delete a resource
-	 */
-	protected void deleteResource(IResource resource,int flags) throws JavaModelException {
-		try {
-			resource.delete(flags, getSubProgressMonitor(1));
-			setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE);
-		} catch (CoreException e) {
-			throw new JavaModelException(e);
-		}
-	}
-	/**
-	 * Convenience method to delete resources
-	 */
-	protected void deleteResources(IResource[] resources, boolean forceFlag) throws JavaModelException {
-		if (resources == null || resources.length == 0) return;
-		IProgressMonitor subProgressMonitor = getSubProgressMonitor(resources.length);
-		IWorkspace workspace = resources[0].getWorkspace();
-		try {
-			workspace.delete(
-				resources,
-				forceFlag ? IResource.FORCE | IResource.KEEP_HISTORY : IResource.KEEP_HISTORY,
-				subProgressMonitor);
-				setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE);
-		} catch (CoreException e) {
-			throw new JavaModelException(e);
-		}
-	}
-	/**
+    /**
 	 * @see IProgressMonitor
 	 */
 	@Override
@@ -365,46 +195,8 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 			this.progressMonitor.done();
 		}
 	}
-	/*
-	 * Returns whether the given path is equals to one of the given other paths.
-	 */
-	protected boolean equalsOneOf(IPath path, IPath[] otherPaths) {
-		for (IPath otherPath : otherPaths) {
-			if (path.equals(otherPath)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	/**
-	 * Convenience method to run an operation within this operation
-	 */
-	public void executeNestedOperation(JavaModelOperation operation, int subWorkAmount) throws JavaModelException {
-		IJavaModelStatus status= operation.verify();
-		if (!status.isOK()) {
-			throw new JavaModelException(status);
-		}
-		IProgressMonitor subProgressMonitor = getSubProgressMonitor(subWorkAmount);
-		// fix for 1FW7IKC, part (1)
-		try {
-			operation.setNested();
-			operation.run(subProgressMonitor);
-		} catch (CoreException ce) {
-			if (ce instanceof JavaModelException) {
-				throw (JavaModelException)ce;
-			} else {
-				// translate the core exception to a java model exception
-				if (ce.getStatus().getCode() == IResourceStatus.OPERATION_FAILED) {
-					Throwable e = ce.getStatus().getException();
-					if (e instanceof JavaModelException) {
-						throw (JavaModelException) e;
-					}
-				}
-				throw new JavaModelException(ce);
-			}
-		}
-	}
-	/**
+
+    /**
 	 * Performs the operation specific behavior. Subclasses must override.
 	 */
 	protected abstract void executeOperation() throws JavaModelException;
@@ -422,16 +214,8 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 			return topLevelOp.attributes.get(key);
 		}
 	}
-	/**
-	 * Returns the compilation unit the given element is contained in,
-	 * or the element itself (if it is a compilation unit),
-	 * otherwise <code>null</code>.
-	 */
-	protected ICompilationUnit getCompilationUnitFor(IJavaElement element) {
 
-		return ((JavaElement)element).getCompilationUnit();
-	}
-	/*
+    /*
 	 * Returns the stack of operations running in the current thread.
 	 * Returns an empty stack if no operations are currently running in this thread.
 	 */
@@ -468,41 +252,8 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 	public IJavaModel getJavaModel() {
 		return JavaModelManager.getJavaModelManager().getJavaModel();
 	}
-	protected IPath[] getNestedFolders(IPackageFragmentRoot root) throws JavaModelException {
-		IPath rootPath = root.getPath();
-		IClasspathEntry[] classpath = root.getJavaProject().getRawClasspath();
-		int length = classpath.length;
-		IPath[] result = new IPath[length];
-		int index = 0;
-        for (IClasspathEntry iClasspathEntry : classpath) {
-            IPath path = iClasspathEntry.getPath();
-            if (rootPath.isPrefixOf(path) && !rootPath.equals(path)) {
-                result[index++] = path;
-            }
-        }
-		if (index < length) {
-			System.arraycopy(result, 0, result = new IPath[index], 0, index);
-		}
-		return result;
-	}
-	/**
-	 * Returns the parent element to which this operation applies,
-	 * or <code>null</code> if not applicable.
-	 */
-	protected IJavaElement getParentElement() {
-		if (this.parentElements == null || this.parentElements.length == 0) {
-			return null;
-		}
-		return this.parentElements[0];
-	}
 
-    /**
-	 * Returns the elements created by this operation.
-	 */
-	public IJavaElement[] getResultElements() {
-		return this.resultElements;
-	}
-	/*
+    /*
 	 * Returns the scheduling rule for this operation (i.e. the resource that needs to be locked
 	 * while this operation is running.
 	 * Subclasses can override.
@@ -510,14 +261,8 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 	protected ISchedulingRule getSchedulingRule() {
 		return ResourcesPlugin.getWorkspace().getRoot();
 	}
-	/**
-	 * Creates and returns a subprogress monitor if appropriate.
-	 */
-	protected IProgressMonitor getSubProgressMonitor(int workAmount) {
-		return this.progressMonitor.split(workAmount);
-	}
 
-	/**
+    /**
 	 * Returns whether this operation has performed any resource modifications.
 	 * Returns false if this operation has not been executed yet.
 	 */
@@ -556,32 +301,7 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 			&& stack.get(0) == this;
 	}
 
-    /**
-	 * Convenience method to move resources
-	 */
-	protected void moveResources(IResource[] resources, IPath container) throws JavaModelException {
-		SubMonitor subProgressMonitor = this.progressMonitor.newChild(resources.length);
-		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		try {
-			for (IResource resource : resources) {
-				IPath destination = container.append(resource.getName());
-				if (root.findMember(destination) == null) {
-					resource.move(destination, false, subProgressMonitor.split(1));
-				}
-			}
-			setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE);
-		} catch (CoreException e) {
-			throw new JavaModelException(e);
-		}
-	}
-	/**
-	 * Creates and returns a new <code>IJavaElementDelta</code>
-	 * on the Java Model.
-	 */
-	public JavaElementDelta newJavaElementDelta() {
-		return new JavaElementDelta(getJavaModel());
-	}
-	/*
+    /*
 	 * Removes the last pushed operation from the stack of running operations.
 	 * Returns the poped operation or null if the stack was empty.
 	 */
@@ -599,17 +319,6 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 	}
 
     /*
-	 * Returns whether the given path is the prefix of one of the given other paths.
-	 */
-	protected boolean prefixesOneOf(IPath path, IPath[] otherPaths) {
-		for (IPath otherPath : otherPaths) {
-			if (path.isPrefixOf(otherPath)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	/*
 	 * Pushes the given operation on the stack of operations currently running in this thread.
 	 */
 	protected void pushOperation(JavaModelOperation operation) {
@@ -756,14 +465,8 @@ public abstract class JavaModelOperation implements IWorkspaceRunnable, IProgres
 			this.progressMonitor.setCanceled(b);
 		}
 	}
-	/**
-	 * Sets whether this operation is nested or not.
-	 * @see CreateElementInCUOperation#checkCanceled
-	 */
-	protected void setNested() {
-		this.isNested = true;
-	}
-	/**
+
+    /**
 	 * @see IProgressMonitor
 	 */
 	@Override

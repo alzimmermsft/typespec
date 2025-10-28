@@ -25,8 +25,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  *
  * <p>NOTE: An external package fragment root never has an associated resource.
  *
- * @see org.eclipse.jdt.core.IPackageFragmentRoot
- * @see org.eclipse.jdt.internal.core.PackageFragmentRootInfo
  */
 public class ExternalPackageFragmentRoot extends PackageFragmentRoot {
 
@@ -51,14 +49,7 @@ public class ExternalPackageFragmentRoot extends PackageFragmentRoot {
 		this.externalPath = externalPath == null ? linkedFolder.getLocation() : externalPath;
 	}
 
-	/**
-	 * An external class folder is always K_BINARY.
-	 */
-	@Override
-	protected int determineKind(IResource underlyingResource) {
-		return IPackageFragmentRoot.K_BINARY;
-	}
-	/**
+    /**
 	 * Returns true if this handle represents the same external folder
 	 * as the given handle.
 	 *

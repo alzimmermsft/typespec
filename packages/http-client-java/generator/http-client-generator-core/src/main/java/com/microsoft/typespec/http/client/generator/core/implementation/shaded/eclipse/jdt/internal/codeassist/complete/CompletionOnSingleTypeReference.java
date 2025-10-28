@@ -35,95 +35,112 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 
 public class CompletionOnSingleTypeReference extends SingleTypeReference implements CompletionNode {
-public static final int K_TYPE = 0;
-public static final int K_CLASS = 1;
-public static final int K_INTERFACE = 2;
-public static final int K_EXCEPTION = 3;
+    public static final int K_TYPE = 0;
+    public static final int K_CLASS = 1;
+    public static final int K_INTERFACE = 2;
+    public static final int K_EXCEPTION = 3;
 
-private int kind = K_TYPE;
-public boolean isCompletionNode;
-public boolean isConstructorType;
-public CompletionOnFieldType fieldTypeCompletionNode;
-public char[][] possibleKeywords;
-public boolean canBeExplicitConstructor;
+    private int kind = K_TYPE;
+    public boolean isCompletionNode;
+    public boolean isConstructorType;
+    public CompletionOnFieldType fieldTypeCompletionNode;
+    public char[][] possibleKeywords;
+    public boolean canBeExplicitConstructor;
 
-public CompletionOnSingleTypeReference(char[] source, long pos) {
-	this(source, pos, K_TYPE);
-}
-public CompletionOnSingleTypeReference(char[] source, long pos, int kind) {
-	super(source, pos);
-	this.isCompletionNode = true;
-	this.kind = kind;
-}
-public CompletionOnSingleTypeReference(char[] assistName, long position, char[][] keywords, boolean canBeSuperCall) {
-	this(assistName, position);
-	this.possibleKeywords = keywords;
-	this.canBeExplicitConstructor = canBeSuperCall;
-}
-@Override
-public void aboutToResolve(Scope scope) {
-	getTypeBinding(scope);
-}
-/*
- * No expansion of the completion reference into an array one
- */
-@Override
-public TypeReference augmentTypeWithAdditionalDimensions(int additionalDimensions, Annotation[][] additionalAnnotations, boolean isVarargs) {
-	return this;
-}
-@Override
-protected TypeBinding getTypeBinding(Scope scope) {
-    if (this.fieldTypeCompletionNode != null) {
-		throw new CompletionNodeFound(this.fieldTypeCompletionNode, scope);
+    public CompletionOnSingleTypeReference(char[] source, long pos) {
+        this(source, pos, K_TYPE);
     }
-	if(this.isCompletionNode) {
-		throw new CompletionNodeFound(this, scope);
-	} else {
-		return super.getTypeBinding(scope);
-	}
-}
-public boolean isClass(){
-	return this.kind == K_CLASS;
-}
-public boolean isInterface(){
-	return this.kind == K_INTERFACE;
-}
-public boolean isException(){
-	return this.kind == K_EXCEPTION;
-}
-public boolean isSuperType(){
-	return this.kind == K_CLASS || this.kind == K_INTERFACE;
-}
-@Override
-public StringBuilder printExpression(int indent, StringBuilder output){
-	switch (this.kind) {
-		case K_CLASS :
-			output.append("<CompleteOnClass:");//$NON-NLS-1$
-			break;
-		case K_INTERFACE :
-			output.append("<CompleteOnInterface:");//$NON-NLS-1$
-			break;
-		case K_EXCEPTION :
-			output.append("<CompleteOnException:");//$NON-NLS-1$
-			break;
-		default :
-			output.append("<CompleteOnType:");//$NON-NLS-1$
-			break;
-	}
-	return output.append(this.token).append('>');
-}
-@Override
-public TypeBinding resolveTypeEnclosing(BlockScope scope, ReferenceBinding enclosingType) {
-    if (this.fieldTypeCompletionNode != null) {
-		throw new CompletionNodeFound(this.fieldTypeCompletionNode, scope);
+
+    public CompletionOnSingleTypeReference(char[] source, long pos, int kind) {
+        super(source, pos);
+        this.isCompletionNode = true;
+        this.kind = kind;
     }
-	if(this.isCompletionNode) {
-		throw new CompletionNodeFound(this, enclosingType, scope);
-	} else {
-		return super.resolveTypeEnclosing(scope, enclosingType);
-	}
-}
-public void setKind(int kind) {
-	this.kind = kind;
-}
+
+    public CompletionOnSingleTypeReference(char[] assistName, long position, char[][] keywords,
+        boolean canBeSuperCall) {
+        this(assistName, position);
+        this.possibleKeywords = keywords;
+        this.canBeExplicitConstructor = canBeSuperCall;
+    }
+
+    @Override
+    public void aboutToResolve(Scope scope) {
+        getTypeBinding(scope);
+    }
+
+    /*
+     * No expansion of the completion reference into an array one
+     */
+    @Override
+    public TypeReference augmentTypeWithAdditionalDimensions(int additionalDimensions,
+        Annotation[][] additionalAnnotations, boolean isVarargs) {
+        return this;
+    }
+
+    @Override
+    protected TypeBinding getTypeBinding(Scope scope) {
+        if (this.fieldTypeCompletionNode != null) {
+            throw new CompletionNodeFound(this.fieldTypeCompletionNode, scope);
+        }
+        if (this.isCompletionNode) {
+            throw new CompletionNodeFound(this, scope);
+        } else {
+            return super.getTypeBinding(scope);
+        }
+    }
+
+    public boolean isClass() {
+        return this.kind == K_CLASS;
+    }
+
+    public boolean isInterface() {
+        return this.kind == K_INTERFACE;
+    }
+
+    public boolean isException() {
+        return this.kind == K_EXCEPTION;
+    }
+
+    public boolean isSuperType() {
+        return this.kind == K_CLASS || this.kind == K_INTERFACE;
+    }
+
+    @Override
+    public StringBuilder printExpression(int indent, StringBuilder output) {
+        switch (this.kind) {
+            case K_CLASS:
+                output.append("<CompleteOnClass:");//$NON-NLS-1$
+                break;
+
+            case K_INTERFACE:
+                output.append("<CompleteOnInterface:");//$NON-NLS-1$
+                break;
+
+            case K_EXCEPTION:
+                output.append("<CompleteOnException:");//$NON-NLS-1$
+                break;
+
+            default:
+                output.append("<CompleteOnType:");//$NON-NLS-1$
+                break;
+        }
+        return output.append(this.token).append('>');
+    }
+
+    @Override
+    public TypeBinding resolveTypeEnclosing(BlockScope scope, ReferenceBinding enclosingType) {
+        if (this.fieldTypeCompletionNode != null) {
+            throw new CompletionNodeFound(this.fieldTypeCompletionNode, scope);
+        }
+        if (this.isCompletionNode) {
+            throw new CompletionNodeFound(this, enclosingType, scope);
+        } else {
+            return super.resolveTypeEnclosing(scope, enclosingType);
+        }
+    }
+
+    public void setKind(int kind) {
+        this.kind = kind;
+    }
 }

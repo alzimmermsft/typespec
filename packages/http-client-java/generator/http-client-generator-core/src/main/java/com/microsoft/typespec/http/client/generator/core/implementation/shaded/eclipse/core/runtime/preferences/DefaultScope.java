@@ -43,38 +43,38 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public final class DefaultScope extends AbstractScope {
 
-	/**
-	 * String constant (value of <code>"default"</code>) used for the scope name for
-	 * the default preference scope.
-	 */
-	public static final String SCOPE = "default"; //$NON-NLS-1$
+    /**
+     * String constant (value of <code>"default"</code>) used for the scope name for
+     * the default preference scope.
+     */
+    public static final String SCOPE = "default"; //$NON-NLS-1$
 
-	/**
-	 * Singleton instance of a Default Scope object. Typical usage is:
-	 * <code>DefaultScope.INSTANCE.getNode(...);</code>
-	 *
-	 * @since 3.4
-	 */
-	public static final IScopeContext INSTANCE = new DefaultScope();
+    /**
+     * Singleton instance of a Default Scope object. Typical usage is:
+     * <code>DefaultScope.INSTANCE.getNode(...);</code>
+     *
+     * @since 3.4
+     */
+    public static final IScopeContext INSTANCE = new DefaultScope();
 
-	/**
-	 * Create and return a new default scope instance.
-	 *
-	 * @deprecated use <code>DefaultScope.INSTANCE</code> instead
-	 */
-	@Deprecated
-	public DefaultScope() {
-		super();
-	}
+    /**
+     * Create and return a new default scope instance.
+     *
+     * @deprecated use <code>DefaultScope.INSTANCE</code> instead
+     */
+    @Deprecated
+    public DefaultScope() {
+        super();
+    }
 
-	@Override
-	public String getName() {
-		return SCOPE;
-	}
+    @Override
+    public String getName() {
+        return SCOPE;
+    }
 
-	@Override
-	public IPath getLocation() {
-		// We don't persist defaults so return null.
-		return null;
-	}
+    @Override
+    public IPath getLocation() {
+        // We don't persist defaults so return null.
+        return null;
+    }
 }

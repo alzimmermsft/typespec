@@ -14,16 +14,19 @@ import java.lang.annotation.Target;
  * taking the arguments.
  *
  * <p>For example, the following code declares a postcondition annotation for the {@link
- * com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.common.value.qual.MinLen} qualifier, allowing to specify its value:
+ * com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.common.value.qual.MinLen}
+ * qualifier, allowing to specify its value:
  *
- * <pre><code>
+ * <pre>
+ * <code>
  * {@literal @}PostconditionAnnotation(qualifier = MinLen.class)
  * {@literal @}Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
  * public {@literal @}interface EnsuresMinLen {
  *   String[] value();
  *   {@literal @}QualifierArgument("value")
  *   int targetValue() default 0;
- * </code></pre>
+ * </code>
+ * </pre>
  *
  * The {@code value} element holds the expressions to which the qualifier applies and {@code
  * targetValue} holds the value for the {@code value} argument of {@link
@@ -37,10 +40,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface QualifierArgument {
-  /**
-   * Specifies the name of the argument of the qualifier, that is passed the values held in the
-   * annotated element. If the value is omitted or is empty, then the name of the annotated element
-   * is used as the argument name.
-   */
-  String value() default "";
+    /**
+     * Specifies the name of the argument of the qualifier, that is passed the values held in the
+     * annotated element. If the value is omitted or is empty, then the name of the annotated element
+     * is used as the argument name.
+     */
+    String value() default "";
 }

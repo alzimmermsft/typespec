@@ -17,11 +17,12 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 /**
  * Abstract base class of AST nodes that represent patterns.
  * There are several kinds of patterns.
+ * 
  * <pre>
  * Expression:
  *    {@link TypePattern}, {@link GuardedPattern} and {@link NullPattern}
  *
-
+ * 
  * </pre>
  *
  * @since 3.27
@@ -29,30 +30,29 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public abstract class Pattern extends Expression {
 
-	/**
-	 * Creates a new AST node for an expression owned by the given AST.
-	 * <p>
-	 * N.B. This constructor is package-private.
-	 * </p>
-	 *
-	 * @param ast the AST that is to own this node
-	 */
-	Pattern(AST ast) {
-		super(ast);
-		supportedOnlyIn21();
+    /**
+     * Creates a new AST node for an expression owned by the given AST.
+     * <p>
+     * N.B. This constructor is package-private.
+     * </p>
+     *
+     * @param ast the AST that is to own this node
+     */
+    Pattern(AST ast) {
+        super(ast);
+        supportedOnlyIn21();
 
-	}
+    }
 
-	/**
-	 * Creates and returns a structural property descriptor for the
-	 * "pattern" property declared on the given concrete node type).
-	 *
-	 * @return the pattern property descriptor
-	 */
-	@SuppressWarnings("rawtypes")
-	static final ChildPropertyDescriptor internalPatternPropertyFactory(Class nodeClass) {
-		return new ChildPropertyDescriptor(nodeClass, "pattern", Javadoc.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
-	}
+    /**
+     * Creates and returns a structural property descriptor for the
+     * "pattern" property declared on the given concrete node type).
+     *
+     * @return the pattern property descriptor
+     */
+    @SuppressWarnings("rawtypes")
+    static final ChildPropertyDescriptor internalPatternPropertyFactory(Class nodeClass) {
+        return new ChildPropertyDescriptor(nodeClass, "pattern", Javadoc.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
+    }
 
 }
-

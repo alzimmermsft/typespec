@@ -197,11 +197,7 @@ public String toString() {
 	return start;
 }
 
-@Override
-public String debugPathString() {
-	return this.zipFilename;
-}
-@Override
+    @Override
 public NameEnvironmentAnswer findClass(char[] typeName, String qualifiedPackageName, String moduleName, String qualifiedBinaryFileName,
 		boolean asBinaryOnly, Predicate<String> moduleNameFilter) {
 	String fileName = new String(typeName);

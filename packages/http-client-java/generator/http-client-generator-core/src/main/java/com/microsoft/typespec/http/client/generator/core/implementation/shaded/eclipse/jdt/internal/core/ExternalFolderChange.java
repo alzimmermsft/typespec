@@ -14,13 +14,13 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
-import java.util.Iterator;
-import java.util.Set;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IClasspathEntry;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
+
+import java.util.Set;
 
 public class ExternalFolderChange {
 
@@ -42,17 +42,16 @@ public class ExternalFolderChange {
 		if (newFolders == null)
 			return;
 		ExternalFoldersManager foldersManager = JavaModelManager.getExternalManager();
-		Iterator<IPath> iterator = newFolders.iterator();
-		while (iterator.hasNext()) {
-			Object folderPath = iterator.next();
-			if (oldFolders == null || !oldFolders.remove(folderPath) || foldersManager.removePendingFolder(folderPath)) {
-				try {
-					foldersManager.createLinkFolder((IPath) folderPath, refreshIfExistAlready, monitor);
-				} catch (CoreException e) {
-					throw new JavaModelException(e);
-				}
-			}
-		}
+        for (Object folderPath : newFolders) {
+            if (oldFolders == null || !oldFolders.remove(folderPath) || foldersManager.removePendingFolder(
+                folderPath)) {
+                try {
+                    foldersManager.createLinkFolder((IPath) folderPath, refreshIfExistAlready, monitor);
+                } catch (CoreException e) {
+                    throw new JavaModelException(e);
+                }
+            }
+        }
 		// removal of linked folders is done during save
 	}
 	@Override

@@ -435,9 +435,6 @@ public class HierarchyScope extends AbstractSearchScope implements SuffixConstan
 		}
 		return this.enclosingProjectsAndJars;
 	}
-	protected void initialize() throws JavaModelException {
-		initialize(null);
-	}
 	protected void initialize(IProgressMonitor progressMonitor) throws JavaModelException {
 		this.resourcePaths = new HashSet<>();
 		this.elements = new HashSet<>();
@@ -455,11 +452,6 @@ public class HierarchyScope extends AbstractSearchScope implements SuffixConstan
 		buildResourceVector();
 	}
 
-	@Override
-	public void processDelta(IJavaElementDelta delta, int eventType) {
-		if (this.needsRefresh) return;
-		this.needsRefresh = this.hierarchy == null ? false : ((TypeHierarchy)this.hierarchy).isAffected(delta, eventType);
-	}
 	protected void refresh() throws JavaModelException {
 		refresh(null);
 	}

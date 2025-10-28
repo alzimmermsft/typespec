@@ -1,11 +1,11 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.signature.qual;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 
 /**
  * The syntax for binary names that appears in a class file, as defined in the <a
@@ -25,6 +25,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
 @SubtypeOf(SignatureUnknown.class)
-public @interface InternalForm {}
+public @interface InternalForm {
+}

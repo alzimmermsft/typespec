@@ -17,41 +17,40 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.LocalDeclaration;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.BlockScope;
 
-
 public class CompletionOnLocalName extends LocalDeclaration implements CompletionNode {
-	private static final char[] FAKENAMESUFFIX = " ".toCharArray(); //$NON-NLS-1$
-	public char[] realName;
+    private static final char[] FAKENAMESUFFIX = " ".toCharArray(); //$NON-NLS-1$
+    public char[] realName;
 
-	public CompletionOnLocalName(char[] name, int sourceStart, int sourceEnd){
+    public CompletionOnLocalName(char[] name, int sourceStart, int sourceEnd) {
 
-		super(CharOperation.concat(name, FAKENAMESUFFIX), sourceStart, sourceEnd);
-		this.realName = name;
-	}
+        super(CharOperation.concat(name, FAKENAMESUFFIX), sourceStart, sourceEnd);
+        this.realName = name;
+    }
 
-	@Override
-	public void resolve(BlockScope scope) {
+    @Override
+    public void resolve(BlockScope scope) {
 
-		super.resolve(scope);
-		throw new CompletionNodeFound(this, scope);
-	}
+        super.resolve(scope);
+        throw new CompletionNodeFound(this, scope);
+    }
 
-	@Override
-	public StringBuilder printAsExpression(int indent, StringBuilder output) {
-		printIndent(indent, output);
-		output.append("<CompleteOnLocalName:"); //$NON-NLS-1$
-		if (this.type != null)  this.type.print(0, output).append(' ');
-		output.append(this.realName);
-		if (this.initialization != null) {
-			output.append(" = "); //$NON-NLS-1$
-			this.initialization.printExpression(0, output);
-		}
-		return output.append('>');
-	}
+    @Override
+    public StringBuilder printAsExpression(int indent, StringBuilder output) {
+        printIndent(indent, output);
+        output.append("<CompleteOnLocalName:"); //$NON-NLS-1$
+        if (this.type != null)
+            this.type.print(0, output).append(' ');
+        output.append(this.realName);
+        if (this.initialization != null) {
+            output.append(" = "); //$NON-NLS-1$
+            this.initialization.printExpression(0, output);
+        }
+        return output.append('>');
+    }
 
-	@Override
-	public StringBuilder printStatement(int indent, StringBuilder output) {
-		printAsExpression(indent, output);
-		return output.append(';');
-	}
+    @Override
+    public StringBuilder printStatement(int indent, StringBuilder output) {
+        printAsExpression(indent, output);
+        return output.append(';');
+    }
 }
-

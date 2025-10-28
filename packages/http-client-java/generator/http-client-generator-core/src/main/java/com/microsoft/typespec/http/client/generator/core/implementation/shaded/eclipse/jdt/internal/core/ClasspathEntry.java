@@ -90,8 +90,7 @@ public class ClasspathEntry implements IClasspathEntry {
 		}
 	}
 
-	public static final String TAG_CLASSPATH = "classpath"; //$NON-NLS-1$
-	public static final String TAG_CLASSPATHENTRY = "classpathentry"; //$NON-NLS-1$
+    public static final String TAG_CLASSPATHENTRY = "classpathentry"; //$NON-NLS-1$
 	public static final String TAG_REFERENCED_ENTRY = "referencedentry"; //$NON-NLS-1$
 	public static final String TAG_OUTPUT = "output"; //$NON-NLS-1$
 	public static final String TAG_KIND = "kind"; //$NON-NLS-1$
@@ -430,10 +429,8 @@ public class ClasspathEntry implements IClasspathEntry {
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				Element attribute = (Element)node;
 				String name = attribute.getAttribute(TAG_ATTRIBUTE_NAME);
-				if (name == null) continue;
-				String value = attribute.getAttribute(TAG_ATTRIBUTE_VALUE);
-				if (value == null) continue;
-				result[index++] = new ClasspathAttribute(name, value);
+                String value = attribute.getAttribute(TAG_ATTRIBUTE_VALUE);
+                result[index++] = new ClasspathAttribute(name, value);
 			}
 		}
 		if (index != length)
@@ -452,17 +449,16 @@ public class ClasspathEntry implements IClasspathEntry {
 			if (accessRule.getNodeType() == Node.ELEMENT_NODE) {
 				Element elementAccessRule = (Element) accessRule;
 				String pattern = elementAccessRule.getAttribute(TAG_PATTERN);
-				if (pattern == null) continue;
-				String tagKind =  elementAccessRule.getAttribute(TAG_KIND);
+                String tagKind =  elementAccessRule.getAttribute(TAG_KIND);
 				int kind;
-				if (TAG_ACCESSIBLE.equals(tagKind))
-					kind = IAccessRule.K_ACCESSIBLE;
-				else if (TAG_NON_ACCESSIBLE.equals(tagKind))
-					kind = IAccessRule.K_NON_ACCESSIBLE;
-				else if (TAG_DISCOURAGED.equals(tagKind))
-					kind = IAccessRule.K_DISCOURAGED;
-				else
-					continue;
+                switch (tagKind) {
+                    case TAG_ACCESSIBLE -> kind = IAccessRule.K_ACCESSIBLE;
+                    case TAG_NON_ACCESSIBLE -> kind = IAccessRule.K_NON_ACCESSIBLE;
+                    case TAG_DISCOURAGED -> kind = IAccessRule.K_DISCOURAGED;
+                    default -> {
+                        continue;
+                    }
+                }
 				boolean ignoreIfBetter = "true".equals(elementAccessRule.getAttribute(TAG_IGNORE_IF_BETTER)); //$NON-NLS-1$
 				result[index++] = JavaCore.newAccessRule(new Path(pattern), ignoreIfBetter ? kind | IAccessRule.IGNORE_IF_BETTER : kind);
 			}
@@ -477,7 +473,7 @@ public class ClasspathEntry implements IClasspathEntry {
 	 */
 	private static IPath[] decodePatterns(NamedNodeMap nodeMap, String tag) {
 		String sequence = removeAttribute(tag, nodeMap);
-		if (!sequence.equals("")) { //$NON-NLS-1$
+		if (!sequence.isEmpty()) { //$NON-NLS-1$
 			char[][] patterns = CharOperation.splitOn('|', sequence.toCharArray());
 			int patternCount;
 			if ((patternCount = patterns.length) > 0) {
@@ -502,7 +498,7 @@ public class ClasspathEntry implements IClasspathEntry {
 			decodeUnknownNode(node, xmlWriter, true/*insert new line*/);
 			xmlWriter.flush();
 		}
-		buffer.append(writer.toString());
+		buffer.append(writer);
 	}
 
 	private static void decodeUnknownNode(Node node, XMLWriter xmlWriter, boolean insertNewLine) {
@@ -572,118 +568,28 @@ public class ClasspathEntry implements IClasspathEntry {
 		return this.fullInclusionPatternChars;
 	}
 
-	/**
-	 * Returns the XML encoding of the class path.
-	 */
-	public void elementEncode(XMLWriter writer, IPath projectPath, boolean indent, boolean newLine, Map unknownElements, boolean isReferencedEntry) {
-		HashMap parameters = new HashMap();
-
-		parameters.put(TAG_KIND, ClasspathEntry.kindToString(this.entryKind));
-
-		IPath xmlPath = this.path;
-		if (this.entryKind != IClasspathEntry.CPE_VARIABLE && this.entryKind != IClasspathEntry.CPE_CONTAINER) {
-			// translate to project relative from absolute (unless a device path)
-			if (xmlPath.isAbsolute()) {
-				if (projectPath != null && projectPath.isPrefixOf(xmlPath)) {
-					if (xmlPath.segment(0).equals(projectPath.segment(0))) {
-						xmlPath = xmlPath.removeFirstSegments(1);
-						xmlPath = xmlPath.makeRelative();
-					} else {
-						xmlPath = xmlPath.makeAbsolute();
-					}
-				}
-			}
-		}
-		parameters.put(TAG_PATH, String.valueOf(xmlPath));
-
-		if (this.sourceAttachmentPath != null) {
-			xmlPath = this.sourceAttachmentPath;
-			// translate to project relative from absolute
-			if (this.entryKind != IClasspathEntry.CPE_VARIABLE && projectPath != null && projectPath.isPrefixOf(xmlPath)) {
-				if (xmlPath.segment(0).equals(projectPath.segment(0))) {
-					xmlPath = xmlPath.removeFirstSegments(1);
-					xmlPath = xmlPath.makeRelative();
-				}
-			}
-			parameters.put(TAG_SOURCEPATH, String.valueOf(xmlPath));
-		}
-		if (this.sourceAttachmentRootPath != null) {
-			parameters.put(TAG_ROOTPATH, String.valueOf(this.sourceAttachmentRootPath));
-		}
-		if (this.isExported) {
-			parameters.put(TAG_EXPORTED, "true");//$NON-NLS-1$
-		}
-		encodePatterns(this.inclusionPatterns, TAG_INCLUDING, parameters);
-		encodePatterns(this.exclusionPatterns, TAG_EXCLUDING, parameters);
-		if (this.entryKind == CPE_PROJECT && !this.combineAccessRules)
-			parameters.put(TAG_COMBINE_ACCESS_RULES, "false"); //$NON-NLS-1$
-
-
-		// unknown attributes
-		UnknownXmlElements unknownXmlElements = unknownElements == null ? null : (UnknownXmlElements) unknownElements.get(this.path);
-		String[] unknownAttributes;
-		if (unknownXmlElements != null && (unknownAttributes = unknownXmlElements.attributes) != null)
-			for (int i = 0, length = unknownAttributes.length; i < length; i+=2) {
-				String tagName = unknownAttributes[i];
-				String tagValue = unknownAttributes[i+1];
-				parameters.put(tagName, tagValue);
-			}
-
-		if (this.specificOutputLocation != null) {
-			IPath outputLocation = this.specificOutputLocation.removeFirstSegments(1);
-			outputLocation = outputLocation.makeRelative();
-			parameters.put(TAG_OUTPUT, String.valueOf(outputLocation));
-		}
-
-		boolean hasExtraAttributes = this.extraAttributes.length != 0;
-		boolean hasRestrictions = getAccessRuleSet() != null; // access rule set is null if no access rules
-		ArrayList unknownChildren = unknownXmlElements != null ? unknownXmlElements.children : null;
-		boolean hasUnknownChildren = unknownChildren != null;
-
-		/* close tag if no extra attributes, no restriction and no unknown children */
-		String tagName = isReferencedEntry ? TAG_REFERENCED_ENTRY : TAG_CLASSPATHENTRY;
-		writer.printTag(
-			tagName,
-			parameters,
-			indent,
-			newLine,
-			!hasExtraAttributes && !hasRestrictions && !hasUnknownChildren);
-
-		if (hasExtraAttributes)
-			encodeExtraAttributes(writer, indent, newLine);
-
-		if (hasRestrictions)
-			encodeAccessRules(writer, indent, newLine);
-
-		if (hasUnknownChildren)
-			encodeUnknownChildren(writer, indent, newLine, unknownChildren);
-
-		if (hasExtraAttributes || hasRestrictions || hasUnknownChildren)
-			writer.endTag(tagName, indent, true/*insert new line*/);
-	}
-
-	void encodeExtraAttributes(XMLWriter writer, boolean indent, boolean newLine) {
-		writer.startTag(TAG_ATTRIBUTES, indent);
+    void encodeExtraAttributes(XMLWriter writer) {
+		writer.startTag(TAG_ATTRIBUTES, true);
 		for (IClasspathAttribute attribute : this.extraAttributes) {
 			HashMap parameters = new HashMap();
 	    	parameters.put(TAG_ATTRIBUTE_NAME, attribute.getName());
 			parameters.put(TAG_ATTRIBUTE_VALUE, attribute.getValue());
-			writer.printTag(TAG_ATTRIBUTE, parameters, indent, newLine, true);
+			writer.printTag(TAG_ATTRIBUTE, parameters, true, true, true);
 		}
-		writer.endTag(TAG_ATTRIBUTES, indent, true/*insert new line*/);
+		writer.endTag(TAG_ATTRIBUTES, true, true/*insert new line*/);
 	}
 
-	void encodeAccessRules(XMLWriter writer, boolean indent, boolean newLine) {
+	void encodeAccessRules(XMLWriter writer) {
 
-		writer.startTag(TAG_ACCESS_RULES, indent);
+		writer.startTag(TAG_ACCESS_RULES, true);
 		AccessRule[] rules = getAccessRuleSet().getAccessRules();
 		for (AccessRule rule : rules) {
-			encodeAccessRule(rule, writer, indent, newLine);
+			encodeAccessRule(rule, writer);
 		}
-		writer.endTag(TAG_ACCESS_RULES, indent, true/*insert new line*/);
+		writer.endTag(TAG_ACCESS_RULES, true, true/*insert new line*/);
 	}
 
-	private void encodeAccessRule(AccessRule accessRule, XMLWriter writer, boolean indent, boolean newLine) {
+	private void encodeAccessRule(AccessRule accessRule, XMLWriter writer) {
 
 		HashMap parameters = new HashMap();
 		parameters.put(TAG_PATTERN, new String(accessRule.pattern));
@@ -702,18 +608,11 @@ public class ClasspathEntry implements IClasspathEntry {
 		if (accessRule.ignoreIfBetter())
 			parameters.put(TAG_IGNORE_IF_BETTER, "true"); //$NON-NLS-1$
 
-		writer.printTag(TAG_ACCESS_RULE, parameters, indent, newLine, true);
+		writer.printTag(TAG_ACCESS_RULE, parameters, true, true, true);
 
 	}
 
-	private void encodeUnknownChildren(XMLWriter writer, boolean indent, boolean newLine, ArrayList unknownChildren) {
-		for (Object unknownChild : unknownChildren) {
-			String child = (String) unknownChild;
-			writer.printString(child, indent, false/*don't insert new line*/);
-		}
-	}
-
-	public static IClasspathEntry elementDecode(Element element, IJavaProject project, Map unknownElements) {
+    public static IClasspathEntry elementDecode(Element element, IJavaProject project, Map unknownElements) {
 
 		IPath projectPath = project.getProject().getFullPath();
 		NamedNodeMap attributes = element.getAttributes();
@@ -803,7 +702,7 @@ public class ClasspathEntry implements IClasspathEntry {
 		}
 
 		// recreate the CP entry
-		IClasspathEntry entry = null;
+		IClasspathEntry entry;
 		switch (kind) {
 
 			case IClasspathEntry.CPE_PROJECT :
@@ -953,9 +852,9 @@ public class ClasspathEntry implements IClasspathEntry {
 	public static IPath[] resolvedChainedLibraries(IPath jarPath) {
 		ArrayList result = new ArrayList();
 		resolvedChainedLibraries(jarPath, new HashSet(), result);
-		if (result.size() == 0)
+		if (result.isEmpty())
 			return NO_PATHS;
-		return (IPath[]) result.toArray(new IPath[result.size()]);
+		return (IPath[]) result.toArray(new IPath[0]);
 	}
 
 	private static void resolvedChainedLibraries(IPath jarPath, HashSet visited, ArrayList result) {
@@ -1097,21 +996,7 @@ public class ClasspathEntry implements IClasspathEntry {
 		return newPath;
 	}
 
-	/**
-	 * Encode some patterns into XML parameter tag
-	 */
-	private static void encodePatterns(IPath[] patterns, String tag, Map parameters) {
-		if (patterns != null && patterns.length > 0) {
-			StringBuilder rule = new StringBuilder(10);
-			for (int i = 0, max = patterns.length; i < max; i++){
-				if (i > 0) rule.append('|');
-				rule.append(patterns[i]);
-			}
-			parameters.put(tag, String.valueOf(rule));
-		}
-	}
-
-	/**
+    /**
 	 * Returns true if the given object is a classpath entry
 	 * with equivalent attributes.
 	 */
@@ -1119,10 +1004,9 @@ public class ClasspathEntry implements IClasspathEntry {
 	public boolean equals(Object object) {
 		if (this == object)
 			return true;
-		if (object instanceof ClasspathEntry) {
-			ClasspathEntry otherEntry = (ClasspathEntry) object;
+		if (object instanceof ClasspathEntry otherEntry) {
 
-			if (this.contentKind != otherEntry.getContentKind())
+            if (this.contentKind != otherEntry.getContentKind())
 				return false;
 
 			if (this.entryKind != otherEntry.getEntryKind())
@@ -1516,30 +1400,7 @@ public class ClasspathEntry implements IClasspathEntry {
 		return -1;
 	}
 
-	/**
-	 * Returns a <code>String</code> for the kind of a class path entry.
-	 */
-	static String kindToString(int kind) {
-
-		switch (kind) {
-			case IClasspathEntry.CPE_PROJECT :
-				return "src"; // backward compatibility //$NON-NLS-1$
-			case IClasspathEntry.CPE_SOURCE :
-				return "src"; //$NON-NLS-1$
-			case IClasspathEntry.CPE_LIBRARY :
-				return "lib"; //$NON-NLS-1$
-			case IClasspathEntry.CPE_VARIABLE :
-				return "var"; //$NON-NLS-1$
-			case IClasspathEntry.CPE_CONTAINER :
-				return "con"; //$NON-NLS-1$
-			case ClasspathEntry.K_OUTPUT :
-				return "output"; //$NON-NLS-1$
-			default :
-				return "unknown"; //$NON-NLS-1$
-		}
-	}
-
-	/*
+    /*
 	 * Backward compatibility: only accessible and non-accessible files are supported.
 	 */
 	public static IAccessRule[] getAccessRules(IPath[] accessibleFiles, IPath[] nonAccessibleFiles) {
@@ -1567,7 +1428,7 @@ public class ClasspathEntry implements IClasspathEntry {
 		if (target instanceof File)
 			buffer.append(getPath().toOSString());
 		else
-			buffer.append(String.valueOf(getPath()));
+			buffer.append(getPath());
 		buffer.append('[');
 		switch (getEntryKind()) {
 			case IClasspathEntry.CPE_LIBRARY :
@@ -1766,7 +1627,7 @@ public class ClasspathEntry implements IClasspathEntry {
 						String pathString = getPath().toPortableString();
 						CRC32 checksumCalculator = new CRC32();
 						checksumCalculator.update(pathString.getBytes());
-						String fileName = Long.toString(checksumCalculator.getValue()) + ".index"; //$NON-NLS-1$
+						String fileName = checksumCalculator.getValue() + ".index"; //$NON-NLS-1$
 						return Paths.get(SHARED_INDEX_LOCATION, DiskIndex.INDEX_VERSION, fileName).toUri().toURL();
 					} catch (MalformedURLException e1) {
 						Util.log(e1); // should not happen if protocol known (eg. 'file')
@@ -1868,13 +1729,15 @@ public class ClasspathEntry implements IClasspathEntry {
 		// check duplicate entries on raw classpath only (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=175226 )
 		int rawLength = rawClasspath.length;
 		HashSet pathes = new HashSet(rawLength);
-		for (int i = 0 ; i < rawLength; i++) {
-			IPath entryPath = rawClasspath[i].getPath();
-			if (!pathes.add(entryPath)){
-				String entryPathMsg = projectName.equals(entryPath.segment(0)) ? entryPath.removeFirstSegments(1).toString() : entryPath.makeRelative().toString();
-				return new JavaModelStatus(IJavaModelStatusConstants.NAME_COLLISION, Messages.bind(Messages.classpath_duplicateEntryPath, new String[] {entryPathMsg, projectName}));
-			}
-		}
+        for (IClasspathEntry iClasspathEntry : rawClasspath) {
+            IPath entryPath = iClasspathEntry.getPath();
+            if (!pathes.add(entryPath)) {
+                String entryPathMsg = projectName.equals(entryPath.segment(0)) ? entryPath.removeFirstSegments(1)
+                    .toString() : entryPath.makeRelative().toString();
+                return new JavaModelStatus(IJavaModelStatusConstants.NAME_COLLISION,
+                    Messages.bind(Messages.classpath_duplicateEntryPath, new String[] { entryPathMsg, projectName }));
+            }
+        }
 
 		// retrieve resolved classpath
 		IClasspathEntry[] classpath;
@@ -1893,50 +1756,42 @@ public class ClasspathEntry implements IClasspathEntry {
 		// retrieve and check output locations
 		IPath potentialNestedOutput = null; // for error reporting purpose
 		int sourceEntryCount = 0;
-		boolean disableExclusionPatterns = JavaCore.DISABLED.equals(javaProject.getOption(JavaCore.CORE_ENABLE_CLASSPATH_EXCLUSION_PATTERNS, true));
-		boolean disableCustomOutputLocations = JavaCore.DISABLED.equals(javaProject.getOption(JavaCore.CORE_ENABLE_CLASSPATH_MULTIPLE_OUTPUT_LOCATIONS, true));
+		boolean disableExclusionPatterns = false;
+		boolean disableCustomOutputLocations = false;
 		ArrayList<IClasspathEntry> testSourcesFolders=new ArrayList<>();
 		HashSet<IPath> mainOutputLocations=new HashSet<>();
 		for (IClasspathEntry resolvedEntry : classpath) {
-			if (disableExclusionPatterns &&
-			        ((resolvedEntry.getInclusionPatterns() != null && resolvedEntry.getInclusionPatterns().length > 0)
-			        || (resolvedEntry.getExclusionPatterns() != null && resolvedEntry.getExclusionPatterns().length > 0))) {
-				return new JavaModelStatus(IJavaModelStatusConstants.DISABLED_CP_EXCLUSION_PATTERNS, javaProject, resolvedEntry.getPath());
-			}
-			switch(resolvedEntry.getEntryKind()){
-				case IClasspathEntry.CPE_SOURCE :
-					sourceEntryCount++;
-					boolean isTest = resolvedEntry.isTest();
-					if(isTest) {
-						testSourcesFolders.add(resolvedEntry);
-					}
+            if (resolvedEntry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+                sourceEntryCount++;
+                boolean isTest = resolvedEntry.isTest();
+                if (isTest) {
+                    testSourcesFolders.add(resolvedEntry);
+                }
 
-					IPath customOutput;
-					if ((customOutput = resolvedEntry.getOutputLocation()) != null) {
+                IPath customOutput;
+                if ((customOutput = resolvedEntry.getOutputLocation()) != null) {
 
-						if (disableCustomOutputLocations) {
-							return new JavaModelStatus(IJavaModelStatusConstants.DISABLED_CP_MULTIPLE_OUTPUT_LOCATIONS, javaProject, resolvedEntry.getPath());
-						}
-						// ensure custom output is in project
-						if (customOutput.isAbsolute()) {
-							if (!javaProject.getPath().isPrefixOf(customOutput)) {
-								return new JavaModelStatus(IJavaModelStatusConstants.PATH_OUTSIDE_PROJECT, javaProject, customOutput.toString());
-							}
-						} else {
-							return new JavaModelStatus(IJavaModelStatusConstants.RELATIVE_PATH, customOutput);
-						}
-						if(!isTest) {
-							mainOutputLocations.add(customOutput);
-						}
-						// ensure custom output doesn't conflict with other outputs
-						// check exact match
-						if (Util.indexOfMatchingPath(customOutput, outputLocations, outputCount) != -1) {
-							continue; // already found
-						}
-						// accumulate all outputs, will check nesting once all available (to handle ordering issues)
-						outputLocations[outputCount++] = customOutput;
-					}
-			}
+                    // ensure custom output is in project
+                    if (customOutput.isAbsolute()) {
+                        if (!javaProject.getPath().isPrefixOf(customOutput)) {
+                            return new JavaModelStatus(IJavaModelStatusConstants.PATH_OUTSIDE_PROJECT, javaProject,
+                                customOutput.toString());
+                        }
+                    } else {
+                        return new JavaModelStatus(IJavaModelStatusConstants.RELATIVE_PATH, customOutput);
+                    }
+                    if (!isTest) {
+                        mainOutputLocations.add(customOutput);
+                    }
+                    // ensure custom output doesn't conflict with other outputs
+                    // check exact match
+                    if (Util.indexOfMatchingPath(customOutput, outputLocations, outputCount) != -1) {
+                        continue; // already found
+                    }
+                    // accumulate all outputs, will check nesting once all available (to handle ordering issues)
+                    outputLocations[outputCount++] = customOutput;
+                }
+            }
 		}
 		// check nesting across output locations
 		for (int i = 1 /*no check for default output*/ ; i < outputCount; i++) {
@@ -2100,28 +1955,13 @@ public class ClasspathEntry implements IClasspathEntry {
 						case IClasspathEntry.CPE_SOURCE :
 							// Bug 287164 : Report errors of overlapping output locations only if the user sets the corresponding preference.
 							// The check is required for backward compatibility with bug-fix 36465.
-							String option = javaProject.getOption(JavaCore.CORE_OUTPUT_LOCATION_OVERLAPPING_ANOTHER_SOURCE, true);
-							if (otherEntry.getPath().equals(output)
-									&& !JavaCore.IGNORE.equals(option)) {
+                            if (otherEntry.getPath().equals(output)) {
 								boolean opStartsWithProject = projectName.equals(otherEntry.getPath().segment(0));
 								String otherPathMsg = opStartsWithProject ? otherEntry.getPath().removeFirstSegments(1).toString() : otherEntry.getPath().makeRelative().toString();
-								if (JavaCore.ERROR.equals(option)) {
-									return new JavaModelStatus(IStatus.ERROR, IJavaModelStatusConstants.OUTPUT_LOCATION_OVERLAPPING_ANOTHER_SOURCE,
-											Messages.bind(Messages.classpath_cannotUseDistinctSourceFolderAsOutput, new String[] {
-											entryPathMsg, otherPathMsg, projectName }));
-								}
-								if (cachedStatus == null) {
-									// Note that the isOK() is being overridden to return true. This is an exceptional scenario
-									cachedStatus = new JavaModelStatus(IStatus.OK, IJavaModelStatusConstants.OUTPUT_LOCATION_OVERLAPPING_ANOTHER_SOURCE,
-										Messages.bind(Messages.classpath_cannotUseDistinctSourceFolderAsOutput, new String[] {
-										entryPathMsg, otherPathMsg, projectName })){
-										@Override
-										public boolean isOK() {
-											return true;
-										}
-									};
-								}
-							}
+                                return new JavaModelStatus(IStatus.ERROR, IJavaModelStatusConstants.OUTPUT_LOCATION_OVERLAPPING_ANOTHER_SOURCE,
+                                    Messages.bind(Messages.classpath_cannotUseDistinctSourceFolderAsOutput, new String[] {
+                                        entryPathMsg, otherPathMsg, projectName }));
+                            }
 							break;
 						case IClasspathEntry.CPE_LIBRARY :
 							if (output != projectOutputLocation && otherEntry.getPath().equals(output)) {
@@ -2134,7 +1974,7 @@ public class ClasspathEntry implements IClasspathEntry {
 			}
 		}
 
-		if (hasSource && testSourcesFolders.size() == 0 && !JavaCore.IGNORE.equals(javaProject.getOption(JavaCore.CORE_MAIN_ONLY_PROJECT_HAS_TEST_ONLY_DEPENDENCY, true))) {
+		if (hasSource && testSourcesFolders.isEmpty()) {
 			for (IClasspathEntry entry : classpath) {
 				if (entry == null)
 					continue;
@@ -2227,16 +2067,18 @@ public class ClasspathEntry implements IClasspathEntry {
 						if (extraAttributes != null) {
 							int length = extraAttributes.length;
 							HashSet set = new HashSet(length);
-							for (int i=0; i<length; i++) {
-								String attName = extraAttributes[i].getName();
-								if (!set.add(attName)) {
-									status = new JavaModelStatus(IJavaModelStatusConstants.NAME_COLLISION, Messages.bind(Messages.classpath_duplicateEntryExtraAttribute, new String[] {attName, entryPathMsg, projectName}));
-									break;
-								}
-								if (IClasspathAttribute.ADD_EXPORTS.equals(attName)) {
-									addExports = extraAttributes[i].getValue();
-								}
-							}
+                            for (IClasspathAttribute extraAttribute : extraAttributes) {
+                                String attName = extraAttribute.getName();
+                                if (!set.add(attName)) {
+                                    status = new JavaModelStatus(IJavaModelStatusConstants.NAME_COLLISION,
+                                        Messages.bind(Messages.classpath_duplicateEntryExtraAttribute,
+                                            new String[] { attName, entryPathMsg, projectName }));
+                                    break;
+                                }
+                                if (IClasspathAttribute.ADD_EXPORTS.equals(attName)) {
+                                    addExports = extraAttribute.getValue();
+                                }
+                            }
 							if (status == null) {
 								String annotationPath = getRawExternalAnnotationPath(entry);
 								if (annotationPath != null) {
@@ -2256,16 +2098,10 @@ public class ClasspathEntry implements IClasspathEntry {
 							// don't create a marker if initialization is in progress (case of cp initialization batching)
 							return JavaModelStatus.VERIFIED_OK;
 						}
-						if ((container.getKind() == IClasspathContainer.K_DEFAULT_SYSTEM || container.getKind() == IClasspathContainer.K_SYSTEM)
-								&& addExports != null
-								&& JavaCore.ENABLED.equals(project.getOption(JavaCore.COMPILER_RELEASE, false))) {
-							int idx = addExports.indexOf('/');
-							if (idx > 0) {
-								String moduleName = addExports.substring(0, idx);
-								return  new JavaModelStatus(IJavaModelStatusConstants.INVALID_CLASSPATH, Messages.bind(Messages.classpath_illegalAddExportsSystemModule, new String[] {moduleName}));
-							}
-						}
-						IClasspathEntry[] containerEntries = container.getClasspathEntries();
+                        if (container.getKind() != IClasspathContainer.K_DEFAULT_SYSTEM) {
+                            container.getKind();
+                        }
+                        IClasspathEntry[] containerEntries = container.getClasspathEntries();
 						if (containerEntries != null){
 							for (IClasspathEntry containerEntry : containerEntries) {
 								int kind = containerEntry == null ? 0 : containerEntry.getEntryKind();
@@ -2352,21 +2188,7 @@ public class ClasspathEntry implements IClasspathEntry {
 						if (!prereqProjectRsc.isOpen()){
 							return new JavaModelStatus(IJavaModelStatusConstants.INVALID_CLASSPATH, Messages.bind(Messages.classpath_closedProject, new String[] {path.segment(0)}));
 						}
-						if (!JavaCore.IGNORE.equals(project.getOption(JavaCore.CORE_INCOMPATIBLE_JDK_LEVEL, true))) {
-							long projectTargetJDK = CompilerOptions.versionToJdkLevel(project.getOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, true));
-							long prereqProjectTargetJDK = CompilerOptions.versionToJdkLevel(prereqProject.getOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, true));
-							if (prereqProjectTargetJDK > projectTargetJDK) {
-								return new JavaModelStatus(IJavaModelStatusConstants.INCOMPATIBLE_JDK_LEVEL,
-										project, path,
-										Messages.bind(Messages.classpath_incompatibleLibraryJDKLevel,
-												new String[] {
-													project.getElementName(),
-													CompilerOptions.versionFromJdkLevel(projectTargetJDK),
-													path.makeRelative().toString(),
-													CompilerOptions.versionFromJdkLevel(prereqProjectTargetJDK)}));
-							}
-						}
-					} catch (CoreException e){
+                    } catch (CoreException e){
 						return new JavaModelStatus(IJavaModelStatusConstants.INVALID_CLASSPATH, Messages.bind(Messages.classpath_unboundProject, new String[] {path.segment(0), projectName}));
 					}
 				} else {
@@ -2376,15 +2198,13 @@ public class ClasspathEntry implements IClasspathEntry {
 
 			// project source folder
 			case IClasspathEntry.CPE_SOURCE :
-				if (((entry.getInclusionPatterns() != null && entry.getInclusionPatterns().length > 0)
-						|| (entry.getExclusionPatterns() != null && entry.getExclusionPatterns().length > 0))
-						&& JavaCore.DISABLED.equals(project.getOption(JavaCore.CORE_ENABLE_CLASSPATH_EXCLUSION_PATTERNS, true))) {
-					return new JavaModelStatus(IJavaModelStatusConstants.DISABLED_CP_EXCLUSION_PATTERNS, project, path);
-				}
-				if (entry.getOutputLocation() != null && JavaCore.DISABLED.equals(project.getOption(JavaCore.CORE_ENABLE_CLASSPATH_MULTIPLE_OUTPUT_LOCATIONS, true))) {
-					return new JavaModelStatus(IJavaModelStatusConstants.DISABLED_CP_MULTIPLE_OUTPUT_LOCATIONS, project, path);
-				}
-				if (path.isAbsolute() && !path.isEmpty()) {
+                if ((entry.getInclusionPatterns() == null || entry.getInclusionPatterns().length <= 0)) {
+                    if (entry.getExclusionPatterns() != null) {
+                        entry.getExclusionPatterns();
+                    }
+                }
+                entry.getOutputLocation();
+                if (path.isAbsolute() && !path.isEmpty()) {
 					IPath projectPath= project.getProject().getFullPath();
 					if (!projectPath.isPrefixOf(path) || JavaModel.getTarget(entry, true) == null){
 						return new JavaModelStatus(IJavaModelStatusConstants.INVALID_CLASSPATH, Messages.bind(Messages.classpath_unboundSourceFolder, new String[] {entryPathMsg, projectName}));
@@ -2400,12 +2220,14 @@ public class ClasspathEntry implements IClasspathEntry {
 		if (extraAttributes != null) {
 			int length = extraAttributes.length;
 			HashSet set = new HashSet(length);
-			for (int i=0; i<length; i++) {
-				String attName = extraAttributes[i].getName();
-				if (!set.add(attName)) {
-					return new JavaModelStatus(IJavaModelStatusConstants.NAME_COLLISION, Messages.bind(Messages.classpath_duplicateEntryExtraAttribute, new String[] {attName, entryPathMsg, projectName}));
-				}
-			}
+            for (IClasspathAttribute extraAttribute : extraAttributes) {
+                String attName = extraAttribute.getName();
+                if (!set.add(attName)) {
+                    return new JavaModelStatus(IJavaModelStatusConstants.NAME_COLLISION,
+                        Messages.bind(Messages.classpath_duplicateEntryExtraAttribute,
+                            new String[] { attName, entryPathMsg, projectName }));
+                }
+            }
 		}
 
 		return JavaModelStatus.VERIFIED_OK;
@@ -2416,7 +2238,7 @@ public class ClasspathEntry implements IClasspathEntry {
 	// more fully.
 	private static IJavaModelStatus validateLibraryEntry(IPath path, IJavaProject project, String container, IPath sourceAttachment, String entryPathMsg, boolean isOptionalLibrary) {
 		if (path.isAbsolute() && !path.isEmpty()) {
-			boolean validateJdkLevelCompatibility = !JavaCore.IGNORE.equals(project.getOption(JavaCore.CORE_INCOMPATIBLE_JDK_LEVEL, true));
+			boolean validateJdkLevelCompatibility = false;
 			// https://bugs.eclipse.org/bugs/show_bug.cgi?id=412882, avoid validating optional entries
 			if (!validateJdkLevelCompatibility && isOptionalLibrary) {
 				return JavaModelStatus.VERIFIED_OK;
@@ -2428,38 +2250,8 @@ public class ClasspathEntry implements IClasspathEntry {
 					target = JavaModel.getTarget(path.makeRelativeTo(workspaceLocation).makeAbsolute(), true);
 				}
 			}
-			if (target != null && validateJdkLevelCompatibility) {
-				long projectTargetJDK = CompilerOptions.versionToJdkLevel(project.getOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, true));
-				long libraryJDK = Util.getJdkLevel(target);
-				if (libraryJDK != 0 && libraryJDK > projectTargetJDK) {
-					if (container != null) {
-						return new JavaModelStatus(IJavaModelStatusConstants.INCOMPATIBLE_JDK_LEVEL,
-								project, path,
-								Messages.bind(Messages.classpath_incompatibleLibraryJDKLevelInContainer,
-										new String [] {
-											project.getElementName(),
-											CompilerOptions.versionFromJdkLevel(projectTargetJDK),
-											path.makeRelative().toString(),
-											container,
-											CompilerOptions.versionFromJdkLevel(libraryJDK)}));
-					} else {
-						return new JavaModelStatus(IJavaModelStatusConstants.INCOMPATIBLE_JDK_LEVEL,
-								project, path,
-								Messages.bind(Messages.classpath_incompatibleLibraryJDKLevel,
-										new String[] {
-											project.getElementName(),
-											CompilerOptions.versionFromJdkLevel(projectTargetJDK),
-											path.makeRelative().toString(),
-											CompilerOptions.versionFromJdkLevel(libraryJDK)}));
-					}
-				}
-			}
-			if (isOptionalLibrary) {
-				return JavaModelStatus.VERIFIED_OK;
-			}
-			if (target instanceof IResource){
-				IResource resolvedResource = (IResource) target;
-				switch(resolvedResource.getType()){
+            if (target instanceof IResource resolvedResource){
+                switch(resolvedResource.getType()){
 					case IResource.FILE :
 						if (sourceAttachment != null
 							&& !sourceAttachment.isEmpty()
@@ -2555,18 +2347,7 @@ public class ClasspathEntry implements IClasspathEntry {
 		return JavaModelStatus.VERIFIED_OK;
 	}
 
-	/*
-	 * For testing shared index location in JavaIndexTests only
-	 */
-	public static void setSharedIndexLocation(String value, Class<?> clazz) throws IllegalArgumentException{
-		if (clazz != null && "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.tests.model.JavaIndexTests".equals(clazz.getName())) { //$NON-NLS-1$
-			SHARED_INDEX_LOCATION = value;
-		} else {
-			throw new IllegalArgumentException("Cannot set index location for specified test class"); //$NON-NLS-1$
-		}
-	}
-
-	/**
+    /**
 	 * Checks if the specified classpath entry is on the module path for compilation.
 	 * @param classpathEntry The entry for which to check.
 	 * @return {@code true} if this classpath entry is on the compile module path, {@code false} otherwise.

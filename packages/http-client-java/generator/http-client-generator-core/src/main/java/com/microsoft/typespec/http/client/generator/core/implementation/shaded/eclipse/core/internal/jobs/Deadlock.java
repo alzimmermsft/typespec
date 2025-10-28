@@ -22,28 +22,28 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * held by that thread that are going to be suspended to resolve the deadlock.
  */
 class Deadlock {
-	//all the threads which are involved in the deadlock
-	private final Thread[] threads;
-	//the thread whose locks will be suspended to resolve deadlock
-	private final Thread candidate;
-	//the locks that will be suspended
-	private final ISchedulingRule[] locks;
+    // all the threads which are involved in the deadlock
+    private final Thread[] threads;
+    // the thread whose locks will be suspended to resolve deadlock
+    private final Thread candidate;
+    // the locks that will be suspended
+    private final ISchedulingRule[] locks;
 
-	public Deadlock(Thread[] threads, ISchedulingRule[] locks, Thread candidate) {
-		this.threads = threads;
-		this.locks = locks;
-		this.candidate = candidate;
-	}
+    public Deadlock(Thread[] threads, ISchedulingRule[] locks, Thread candidate) {
+        this.threads = threads;
+        this.locks = locks;
+        this.candidate = candidate;
+    }
 
-	public ISchedulingRule[] getLocks() {
-		return locks;
-	}
+    public ISchedulingRule[] getLocks() {
+        return locks;
+    }
 
-	public Thread getCandidate() {
-		return candidate;
-	}
+    public Thread getCandidate() {
+        return candidate;
+    }
 
-	public Thread[] getThreads() {
-		return threads;
-	}
+    public Thread[] getThreads() {
+        return threads;
+    }
 }

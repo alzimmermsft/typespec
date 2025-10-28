@@ -1,11 +1,11 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.common.aliasing.qual;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 
 /**
  * An expression with this type has no aliases. In other words, no other expression, evaluated at
@@ -20,6 +20,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
-@SubtypeOf({MaybeAliased.class})
-public @interface Unique {}
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
+@SubtypeOf({ MaybeAliased.class })
+public @interface Unique {
+}

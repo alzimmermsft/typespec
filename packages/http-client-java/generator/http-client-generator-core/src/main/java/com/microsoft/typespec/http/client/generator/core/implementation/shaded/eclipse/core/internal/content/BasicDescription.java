@@ -18,20 +18,20 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public abstract class BasicDescription implements IContentDescription {
 
-	protected IContentTypeInfo contentTypeInfo;
+    protected IContentTypeInfo contentTypeInfo;
 
-	public BasicDescription(IContentTypeInfo contentTypeInfo) {
-		this.contentTypeInfo = contentTypeInfo;
-	}
+    public BasicDescription(IContentTypeInfo contentTypeInfo) {
+        this.contentTypeInfo = contentTypeInfo;
+    }
 
-	@Override
-	public IContentType getContentType() {
-		ContentType contentType = contentTypeInfo.getContentType();
-		//TODO performance: potential creation of garbage
-		return new ContentTypeHandler(contentType, contentType.getCatalog().getGeneration());
-	}
+    @Override
+    public IContentType getContentType() {
+        ContentType contentType = contentTypeInfo.getContentType();
+        // TODO performance: potential creation of garbage
+        return new ContentTypeHandler(contentType, contentType.getCatalog().getGeneration());
+    }
 
-	public IContentTypeInfo getContentTypeInfo() {
-		return contentTypeInfo;
-	}
+    public IContentTypeInfo getContentTypeInfo() {
+        return contentTypeInfo;
+    }
 }

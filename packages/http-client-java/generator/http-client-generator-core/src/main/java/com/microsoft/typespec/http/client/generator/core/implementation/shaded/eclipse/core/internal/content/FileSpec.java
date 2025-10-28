@@ -20,50 +20,51 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * as file names, file extensions and regular expressions.
  */
 class FileSpec {
-	final static int BASIC_TYPE = IContentType.FILE_EXTENSION_SPEC | IContentType.FILE_NAME_SPEC;
-	private final String text;
-	private final int type;
+    final static int BASIC_TYPE = IContentType.FILE_EXTENSION_SPEC | IContentType.FILE_NAME_SPEC;
+    private final String text;
+    private final int type;
 
-	public FileSpec(String text, int type) {
-		this.text = text;
-		this.type = type;
-	}
+    public FileSpec(String text, int type) {
+        this.text = text;
+        this.type = type;
+    }
 
-	public String getText() {
-		return text;
-	}
+    public String getText() {
+        return text;
+    }
 
-	public int getType() {
-		return type;
-	}
+    public int getType() {
+        return type;
+    }
 
-	public static int getBasicType(int type) {
-		return BASIC_TYPE & type;
-	}
+    public static int getBasicType(int type) {
+        return BASIC_TYPE & type;
+    }
 
-	@Override
-	public boolean equals(Object other) {
-		if (!(other instanceof FileSpec otherFileSpec)) {
-			return false;
-		}
-		return equals(text, otherFileSpec.getType(), false);
-	}
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof FileSpec otherFileSpec)) {
+            return false;
+        }
+        return equals(text, otherFileSpec.getType(), false);
+    }
 
-	public boolean equals(final String text, final int otherType, final boolean strict) {
-		return ((!strict && getBasicType(type) == getBasicType(otherType)) || type == otherType) && this.text.equalsIgnoreCase(text);
-	}
+    public boolean equals(final String text, final int otherType, final boolean strict) {
+        return ((!strict && getBasicType(type) == getBasicType(otherType)) || type == otherType)
+            && this.text.equalsIgnoreCase(text);
+    }
 
-	@Override
-	public int hashCode() {
-		return text.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return text.hashCode();
+    }
 
-	public static String getMappingKeyFor(String fileSpecText) {
-		return fileSpecText.toLowerCase();
-	}
+    public static String getMappingKeyFor(String fileSpecText) {
+        return fileSpecText.toLowerCase();
+    }
 
-	@Override
-	public String toString() {
-		return getText();
-	}
+    @Override
+    public String toString() {
+        return getText();
+    }
 }

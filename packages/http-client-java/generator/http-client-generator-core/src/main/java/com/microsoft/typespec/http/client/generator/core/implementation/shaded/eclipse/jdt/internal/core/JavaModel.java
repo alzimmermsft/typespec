@@ -16,7 +16,7 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Map;
+
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IFolder;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IProject;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
@@ -24,7 +24,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.ResourcesPlugin;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IStatus;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Path;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IClasspathEntry;
@@ -61,65 +60,8 @@ public class JavaModel extends Openable implements IJavaModel {
 protected JavaModel() throws Error {
 	super(null);
 }
-@Override
-protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map newElements, IResource underlyingResource)	/*throws JavaModelException*/ {
 
-	// determine my children
-	IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-	int length = projects.length;
-	IJavaElement[] children = new IJavaElement[length];
-	int index = 0;
-	for (int i = 0; i < length; i++) {
-		IProject project = projects[i];
-		if (JavaProject.hasJavaNature(project)) {
-			children[index++] = getJavaProject(project);
-		}
-	}
-	if (index < length)
-		System.arraycopy(children, 0, children = new IJavaElement[index], 0, index);
-	info.setChildren(children);
-
-	newElements.put(this, info);
-
-	return true;
-}
-/*
- * @see IJavaModel
- */
-@Override
-public boolean contains(IResource resource) {
-	switch (resource.getType()) {
-		case IResource.ROOT:
-		case IResource.PROJECT:
-			return true;
-	}
-	// file or folder
-	IJavaProject[] projects;
-	try {
-		projects = getJavaProjects();
-	} catch (JavaModelException e) {
-		return false;
-	}
-	for (IJavaProject p : projects) {
-		JavaProject project = (JavaProject)p;
-		if (!project.contains(resource)) {
-			return false;
-		}
-	}
-	return true;
-}
-/**
- * @see IJavaModel
- */
-@Override
-public void copy(IJavaElement[] elements, IJavaElement[] containers, IJavaElement[] siblings, String[] renamings, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	if (elements != null && elements.length > 0 && elements[0] != null && elements[0].getElementType() < IJavaElement.TYPE) {
-		runOperation(new CopyResourceElementsOperation(elements, containers, force), elements, siblings, renamings, monitor);
-	} else {
-		runOperation(new CopyElementsOperation(elements, containers, force), elements, siblings, renamings, monitor);
-	}
-}
-/**
+    /**
  * Returns a new element info for this element.
  */
 @Override
@@ -127,17 +69,6 @@ protected JavaModelInfo createElementInfo() {
 	return new JavaModelInfo();
 }
 
-/**
- * @see IJavaModel
- */
-@Override
-public void delete(IJavaElement[] elements, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	if (elements != null && elements.length > 0 && elements[0] != null && elements[0].getElementType() < IJavaElement.TYPE) {
-		new DeleteResourceElementsOperation(elements, force).runOperation(monitor);
-	} else {
-		new DeleteElementsOperation(elements, force).runOperation(monitor);
-	}
-}
 @Override
 public boolean equals(Object o) {
 	if (!(o instanceof JavaModel)) return false;
@@ -225,13 +156,6 @@ public IJavaProject[] getJavaProjects() throws JavaModelException {
 	return array;
 
 }
-/**
- * @see IJavaModel
- */
-@Override
-public Object[] getNonJavaResources() throws JavaModelException {
-		return ((JavaModelInfo) getElementInfo()).getNonJavaResources();
-}
 
 /*
  * @see IJavaElement
@@ -254,63 +178,7 @@ public IResource resource(PackageFragmentRoot root) {
 public IResource getUnderlyingResource() {
 	return null;
 }
-/**
- * Returns the workbench associated with this object.
- */
-@Override
-public IWorkspace getWorkspace() {
-	return ResourcesPlugin.getWorkspace();
-}
 
-/**
- * @see IJavaModel
- */
-@Override
-public void move(IJavaElement[] elements, IJavaElement[] containers, IJavaElement[] siblings, String[] renamings, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	if (elements != null && elements.length > 0 && elements[0] != null && elements[0].getElementType() < IJavaElement.TYPE) {
-		runOperation(new MoveResourceElementsOperation(elements, containers, force), elements, siblings, renamings, monitor);
-	} else {
-		runOperation(new MoveElementsOperation(elements, containers, force), elements, siblings, renamings, monitor);
-	}
-}
-
-/**
- * @see IJavaModel#refreshExternalArchives(IJavaElement[], IProgressMonitor)
- */
-@Override
-public void refreshExternalArchives(IJavaElement[] elementsScope, IProgressMonitor monitor) throws JavaModelException {
-	if (elementsScope == null){
-		elementsScope = new IJavaElement[] { this };
-	}
-	JavaModelManager.getJavaModelManager().getDeltaProcessor().checkExternalArchiveChanges(elementsScope, monitor);
-}
-
-/**
- * @see IJavaModel
- */
-@Override
-public void rename(IJavaElement[] elements, IJavaElement[] destinations, String[] renamings, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	MultiOperation op;
-	if (elements != null && elements.length > 0 && elements[0] != null && elements[0].getElementType() < IJavaElement.TYPE) {
-		op = new RenameResourceElementsOperation(elements, destinations, renamings, force);
-	} else {
-		op = new RenameElementsOperation(elements, destinations, renamings, force);
-	}
-
-	op.runOperation(monitor);
-}
-/**
- * Configures and runs the <code>MultiOperation</code>.
- */
-protected void runOperation(MultiOperation op, IJavaElement[] elements, IJavaElement[] siblings, String[] renamings, IProgressMonitor monitor) throws JavaModelException {
-	op.setRenamings(renamings);
-	if (siblings != null) {
-		for (int i = 0; i < elements.length; i++) {
-			op.setInsertBefore(elements[i], siblings[i]);
-		}
-	}
-	op.runOperation(monitor);
-}
 /**
  * for debugging only
  */

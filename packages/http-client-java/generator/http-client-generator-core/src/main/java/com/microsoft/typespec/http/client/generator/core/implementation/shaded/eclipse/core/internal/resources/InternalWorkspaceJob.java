@@ -23,37 +23,37 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * lock.
  */
 public abstract class InternalWorkspaceJob extends Job {
-	private final Workspace workspace;
+    private final Workspace workspace;
 
-	public InternalWorkspaceJob(String name, Workspace workspace) {
-		super(name);
-		this.workspace = workspace;
-	}
+    public InternalWorkspaceJob(String name, Workspace workspace) {
+        super(name);
+        this.workspace = workspace;
+    }
 
-	@Override
-	public final IStatus run(IProgressMonitor monitor) {
-		monitor = Policy.monitorFor(monitor);
-		try {
-			int depth = -1;
-			final WorkManager workManager = workspace.getWorkManager();
-			try {
-				workspace.prepareOperation(null, monitor);
-				workspace.beginOperation(true);
-				depth = workManager.beginUnprotected();
-				return runInWorkspace(monitor);
-			} catch (OperationCanceledException e) {
-				workManager.operationCanceled();
-				return Status.CANCEL_STATUS;
-			} finally {
-				if (depth >= 0) {
-					workManager.endUnprotected(depth);
-				}
-				workspace.endOperation(null, false);
-			}
-		} catch (CoreException e) {
-			return e.getStatus();
-		}
-	}
+    @Override
+    public final IStatus run(IProgressMonitor monitor) {
+        monitor = Policy.monitorFor(monitor);
+        try {
+            int depth = -1;
+            final WorkManager workManager = workspace.getWorkManager();
+            try {
+                workspace.prepareOperation(null, monitor);
+                workspace.beginOperation(true);
+                depth = workManager.beginUnprotected();
+                return runInWorkspace(monitor);
+            } catch (OperationCanceledException e) {
+                workManager.operationCanceled();
+                return Status.CANCEL_STATUS;
+            } finally {
+                if (depth >= 0) {
+                    workManager.endUnprotected(depth);
+                }
+                workspace.endOperation(null, false);
+            }
+        } catch (CoreException e) {
+            return e.getStatus();
+        }
+    }
 
-	protected abstract IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException;
+    protected abstract IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException;
 }

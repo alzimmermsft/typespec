@@ -11,11 +11,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *
- *******************************************************************************/package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.codeassist.complete;
+ *******************************************************************************/
+package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.codeassist.complete;
 
 public class CompletionOnUsesSingleTypeReference extends CompletionOnSingleTypeReference {
 
-	public CompletionOnUsesSingleTypeReference(char[] source, long pos) {
-		super(source, pos);
-	}
+    public CompletionOnUsesSingleTypeReference(char[] source, long pos) {
+        super(source, pos);
+    }
 }

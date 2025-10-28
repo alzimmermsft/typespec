@@ -29,11 +29,11 @@ import java.lang.annotation.Target;
  * of the following Java constructs:
  *
  * <ol>
- *   <li>Assignment to any expression, except for local variables and method parameters.<br>
- *       (Note that storing into an array element, such a {@code a[i] = x}, is not an assignment to
- *       a variable and is therefore forbidden.)
- *   <li>A method invocation of a method that is not {@code @SideEffectFree}.
- *   <li>Construction of a new object where the constructor is not {@code @SideEffectFree}.
+ * <li>Assignment to any expression, except for local variables and method parameters.<br>
+ * (Note that storing into an array element, such a {@code a[i] = x}, is not an assignment to
+ * a variable and is therefore forbidden.)
+ * <li>A method invocation of a method that is not {@code @SideEffectFree}.
+ * <li>Construction of a new object where the constructor is not {@code @SideEffectFree}.
  * </ol>
  *
  * These rules are conservative: any code that passes the checks is side-effect-free, but the
@@ -48,11 +48,12 @@ import java.lang.annotation.Target;
  * {@code @InheritedAnnotation}.
  *
  * @checker_framework.manual #type-refinement-purity Side effects, determinism, purity, and
- *     flow-sensitive analysis
+ * flow-sensitive analysis
  */
 // @InheritedAnnotation cannot be written here, because "dataflow" project cannot depend on
 // "framework" project.
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
-public @interface SideEffectFree {}
+@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
+public @interface SideEffectFree {
+}

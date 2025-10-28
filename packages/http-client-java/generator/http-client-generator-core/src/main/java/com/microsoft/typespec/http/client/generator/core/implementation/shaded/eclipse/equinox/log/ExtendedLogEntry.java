@@ -24,21 +24,21 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 public interface ExtendedLogEntry extends LogEntry {
 
     /**
-	 * Returns the context associated with this <code>LogEntry</code>
-	 * object.
-	 *
-	 * @return <code>Object</code> containing the context associated with this
-	 *         <code>LogEntry</code> object;<code>null</code> if no context is
-	 *         associated with this <code>LogEntry</code> object.
-	 */
-	Object getContext();
+     * Returns the context associated with this <code>LogEntry</code>
+     * object.
+     *
+     * @return <code>Object</code> containing the context associated with this
+     * <code>LogEntry</code> object;<code>null</code> if no context is
+     * associated with this <code>LogEntry</code> object.
+     */
+    Object getContext();
 
     /**
-	 * Returns the log sequence number associated with this <code>LogEntry</code>
-	 * object.
-	 *
-	 * @return <code>long</code> containing the sequence number associated with this
-	 *         <code>LogEntry</code> object.
-	 */
-	long getSequenceNumber();
+     * Returns the log sequence number associated with this <code>LogEntry</code>
+     * object.
+     *
+     * @return <code>long</code> containing the sequence number associated with this
+     * <code>LogEntry</code> object.
+     */
+    long getSequenceNumber();
 }

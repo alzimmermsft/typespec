@@ -17,11 +17,13 @@ import java.lang.annotation.Target;
  * href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html#charAt(int)">
  * {@code String.charAt(int)}</a> method is declared as
  *
- * <pre>{@code
+ * <pre>
+ * {@code
  * class String {
  *   char charAt(@IndexFor("this") index) { ... }
  * }
- * }</pre>
+ * }
+ * </pre>
  *
  * <p>Writing {@code @IndexFor("arr")} is equivalent to writing {@link NonNegative @NonNegative}
  * {@link LTLengthOf @LTLengthOf("arr")}, and that is how it is treated internally by the checker.
@@ -34,8 +36,8 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
 public @interface IndexFor {
-  /** Sequences that the annotated expression is a valid index for. */
-  String[] value();
+    /** Sequences that the annotated expression is a valid index for. */
+    String[] value();
 }

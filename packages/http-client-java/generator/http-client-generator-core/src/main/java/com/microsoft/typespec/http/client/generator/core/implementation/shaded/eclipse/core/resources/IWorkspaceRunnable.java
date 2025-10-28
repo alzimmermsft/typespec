@@ -21,17 +21,19 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * <p>
  * Clients may implement this interface.
  * </p>
+ * 
  * @see IWorkspace#run(ICoreRunnable, IProgressMonitor)
  */
 public interface IWorkspaceRunnable extends ICoreRunnable {
-	/**
-	 * @param monitor a progress monitor, or {@code null} if progress reporting and
-	 *     cancellation are not desired.  The monitor is only valid for the duration
-	 *     of the invocation of this method.  Callers may call {@link IProgressMonitor#done()}
-	 *     after this method returns or throws an exception, but this is not strictly
-	 *     required.
-	 * @exception CoreException if this operation fails
-	 * @exception OperationCanceledException if this operation is canceled
-	 */
-	@Override void run(IProgressMonitor monitor) throws CoreException;
+    /**
+     * @param monitor a progress monitor, or {@code null} if progress reporting and
+     * cancellation are not desired. The monitor is only valid for the duration
+     * of the invocation of this method. Callers may call {@link IProgressMonitor#done()}
+     * after this method returns or throws an exception, but this is not strictly
+     * required.
+     * @exception CoreException if this operation fails
+     * @exception OperationCanceledException if this operation is canceled
+     */
+    @Override
+    void run(IProgressMonitor monitor) throws CoreException;
 }

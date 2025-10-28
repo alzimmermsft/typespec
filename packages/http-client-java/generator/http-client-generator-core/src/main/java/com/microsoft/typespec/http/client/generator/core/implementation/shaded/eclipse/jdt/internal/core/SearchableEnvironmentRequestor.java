@@ -70,9 +70,7 @@ public SearchableEnvironmentRequestor(ISearchRequestor requestor, ICompilationUn
 	this.unitToSkip= unitToSkip;
 	this.project= project;
 	this.nameLookup = nameLookup;
-	this.checkAccessRestrictions =
-		!JavaCore.IGNORE.equals(project.getOption(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, true))
-		|| !JavaCore.IGNORE.equals(project.getOption(JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE, true));
+    this.checkAccessRestrictions = true;
 }
 /**
  * Do nothing, a SearchRequestor does not accept initializers

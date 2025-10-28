@@ -21,9 +21,10 @@ import java.lang.annotation.Target;
  * determined to be neither {@code @SideEffectFree} nor {@code @Deterministic}).
  *
  * @checker_framework.manual #type-refinement-purity Side effects, determinism, purity, and
- *     flow-sensitive analysis
+ * flow-sensitive analysis
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
-public @interface Impure {}
+@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
+public @interface Impure {
+}

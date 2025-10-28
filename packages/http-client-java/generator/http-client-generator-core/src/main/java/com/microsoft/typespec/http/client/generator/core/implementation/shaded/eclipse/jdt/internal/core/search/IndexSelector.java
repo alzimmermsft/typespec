@@ -14,17 +14,19 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.search;
 
-import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaModelManager.trace;
-
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Stream;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IFolder;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.ResourcesPlugin;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.*;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IClasspathEntry;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaElement;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaModel;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaProject;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IMethod;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IPackageFragmentRoot;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IType;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ITypeHierarchy;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ITypeRoot;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CharOperation;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.search.IJavaSearchScope;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.search.SearchPattern;
@@ -43,6 +45,14 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.search.matching.MethodPattern;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.search.matching.ModulePattern;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.search.processing.JobManager;
+
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Stream;
+
+import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaModelManager.trace;
 
 /**
  * Selects the indexes that correspond to projects in a given search scope
@@ -66,51 +76,16 @@ public IndexSelector(
 	this.searchScope = searchScope;
 	this.pattern = pattern;
 }
-/**
- * Returns whether elements of the given project or jar can see the given focus (an IJavaProject or
- * a JarPackageFragmentRot) either because the focus is part of the project or the jar, or because it is
- * accessible throught the project's classpath
- */
-public static int canSeeFocus(SearchPattern pattern, IPath projectOrJarPath) {
-	try {
-		IJavaModel model = JavaModelManager.getJavaModelManager().getJavaModel();
-		IJavaProject project = getJavaProject(projectOrJarPath, model);
-		IJavaElement[] focuses = getFocusedElementsAndTypes(pattern, project, null);
-		if (focuses.length == 0) return PROJECT_CAN_NOT_SEE_FOCUS;
-		if (project != null) {
-			return canSeeFocus(focuses, (JavaProject) project, null);
-		}
 
-		// projectOrJarPath is a jar
-		// it can see the focus only if it is on the classpath of a project that can see the focus
-		int result = PROJECT_CAN_NOT_SEE_FOCUS;
-		IJavaProject[] allProjects = model.getJavaProjects();
-		for (IJavaProject p : allProjects) {
-			JavaProject otherProject = (JavaProject) p;
-			IClasspathEntry entry = otherProject.getClasspathEntryFor(projectOrJarPath);
-			if (entry != null && entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
-				int canSeeFocus = canSeeFocus(focuses, otherProject, null);
-				if (canSeeFocus == PROJECT_CAN_SEE_FOCUS)
-					return PROJECT_CAN_SEE_FOCUS;
-				if (canSeeFocus == PROJECT_SOURCE_CAN_NOT_SEE_FOCUS)
-					result = PROJECT_SOURCE_CAN_NOT_SEE_FOCUS;
-			}
-		}
-		return result;
-	} catch (JavaModelException e) {
-		return PROJECT_CAN_NOT_SEE_FOCUS;
-	}
-}
-private static int canSeeFocus(IJavaElement[] focuses, JavaProject javaProject, char[][][] focusQualifiedNames) {
+    private static int canSeeFocus(IJavaElement[] focuses, JavaProject javaProject, char[][][] focusQualifiedNames) {
 	int result = PROJECT_CAN_NOT_SEE_FOCUS;
-	int length = focuses.length;
-	for (int i=0; i<length; i++) {
-		int canSeeFocus = canSeeFocus(focuses[i], javaProject, focusQualifiedNames);
-		if (canSeeFocus == PROJECT_CAN_SEE_FOCUS)
-			return PROJECT_CAN_SEE_FOCUS;
-		if (canSeeFocus == PROJECT_SOURCE_CAN_NOT_SEE_FOCUS)
-			result = PROJECT_SOURCE_CAN_NOT_SEE_FOCUS;
-	}
+        for (IJavaElement focus : focuses) {
+            int canSeeFocus = canSeeFocus(focus, javaProject, focusQualifiedNames);
+            if (canSeeFocus == PROJECT_CAN_SEE_FOCUS)
+                return PROJECT_CAN_SEE_FOCUS;
+            if (canSeeFocus == PROJECT_SOURCE_CAN_NOT_SEE_FOCUS)
+                result = PROJECT_SOURCE_CAN_NOT_SEE_FOCUS;
+        }
 	return result;
 }
 private static int canSeeFocus(IJavaElement focus, JavaProject javaProject, char[][][] focusQualifiedNames) {
@@ -156,50 +131,6 @@ private static int canSeeFocus(IJavaElement focus, JavaProject javaProject, char
 }
 
 /*
- * Create the list of focused jars or projects.
- */
-private static IJavaElement[] getFocusedElementsAndTypes(SearchPattern pattern, IJavaElement focusElement, ObjectVector superTypes) throws JavaModelException {
-	if (pattern instanceof MethodPattern) {
-		// For method pattern, it needs to walk along the focus type super hierarchy
-		// and add jars/projects of all the encountered types.
-		IType type = (IType) pattern.focus.getAncestor(IJavaElement.TYPE);
-		MethodPattern methodPattern = (MethodPattern) pattern;
-		String selector = new String(methodPattern.selector);
-		int parameterCount = methodPattern.parameterCount;
-		ITypeHierarchy superHierarchy = type.newSupertypeHierarchy(null);
-		IType[] allTypes = superHierarchy.getAllSupertypes(type);
-		int length = allTypes.length;
-		SimpleSet focusSet = new SimpleSet(length+1);
-		if (focusElement != null) focusSet.add(focusElement);
-		for (int i=0; i<length; i++) {
-			IMethod[] methods = allTypes[i].getMethods();
-			int mLength = methods.length;
-			for (int m=0; m<mLength; m++) {
-				if (parameterCount == methods[m].getNumberOfParameters() && methods[m].getElementName().equals(selector)) {
-					IPackageFragmentRoot root = (IPackageFragmentRoot) allTypes[i].getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
-					IJavaElement element = root.isArchive() ? root : root.getParent();
-					focusSet.add(element);
-					if (superTypes != null) superTypes.add(allTypes[i]);
-					break;
-				}
-			}
-		}
-		// Rebuilt a contiguous array
-		IJavaElement[] focuses = new IJavaElement[focusSet.elementSize];
-		Object[] values = focusSet.values;
-		int count = 0;
-		for (int i = values.length; --i >= 0;) {
-			if (values[i] != null) {
-				focuses[count++] = (IJavaElement) values[i];
-			}
-		}
-		return focuses;
-	}
-	if (focusElement == null) return new IJavaElement[0];
-	return new IJavaElement[] { focusElement };
-}
-
-/*
  *  Compute the list of paths which are keying index files.
  */
 private void initializeIndexLocations() {
@@ -234,22 +165,21 @@ private void initializeIndexLocations() {
 				focusQualifiedNames = getQualifiedNames(superTypes);
 			}
 			IJavaModel model = JavaModelManager.getJavaModelManager().getJavaModel();
-			for (int i = 0; i < length; i++) {
-				IPath path = projectsAndJars[i];
-				JavaProject project = (JavaProject) getJavaProject(path, model);
-				if (project != null) {
-					visitedProjects.add(project);
-					int canSeeFocus = canSeeFocus(focuses, project, focusQualifiedNames);
-					if (canSeeFocus == PROJECT_CAN_SEE_FOCUS) {
-						locations.add(manager.computeIndexLocation(path));
-					}
-					if (canSeeFocus != PROJECT_CAN_NOT_SEE_FOCUS) {
-						projectsCanSeeFocus[projectIndex++] = project;
-					}
-				} else {
-					externalLibsToCheck.add(path);
-				}
-			}
+            for (IPath path : projectsAndJars) {
+                JavaProject project = (JavaProject) getJavaProject(path, model);
+                if (project != null) {
+                    visitedProjects.add(project);
+                    int canSeeFocus = canSeeFocus(focuses, project, focusQualifiedNames);
+                    if (canSeeFocus == PROJECT_CAN_SEE_FOCUS) {
+                        locations.add(manager.computeIndexLocation(path));
+                    }
+                    if (canSeeFocus != PROJECT_CAN_NOT_SEE_FOCUS) {
+                        projectsCanSeeFocus[projectIndex++] = project;
+                    }
+                } else {
+                    externalLibsToCheck.add(path);
+                }
+            }
 			for (int i = 0; i < projectIndex && externalLibsToCheck.elementSize > 0; i++) {
 				IClasspathEntry[] entries = projectsCanSeeFocus[i].getResolvedClasspath();
 				for (int j = entries.length; --j >= 0;) {

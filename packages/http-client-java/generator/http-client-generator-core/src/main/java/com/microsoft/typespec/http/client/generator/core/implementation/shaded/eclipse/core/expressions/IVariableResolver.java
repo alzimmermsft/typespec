@@ -25,18 +25,18 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public interface IVariableResolver {
 
-	/**
-	 * Resolves a variable for the given name and arguments. The
-	 * handler is allowed to return <code>null</code> to indicate
-	 * that it is not able to resolve the requested variable.
-	 *
-	 * @param name the variable to resolve
-	 * @param args an object array of arguments used to resolve the
-	 *  variable
-	 * @return the variable's value or <code>null</code> if no variable
-	 *  could be resolved
-	 * @exception CoreException if an errors occurs while resolving
-	 *  the variable
-	 */
-	Object resolve(String name, Object[] args) throws CoreException;
+    /**
+     * Resolves a variable for the given name and arguments. The
+     * handler is allowed to return <code>null</code> to indicate
+     * that it is not able to resolve the requested variable.
+     *
+     * @param name the variable to resolve
+     * @param args an object array of arguments used to resolve the
+     * variable
+     * @return the variable's value or <code>null</code> if no variable
+     * could be resolved
+     * @exception CoreException if an errors occurs while resolving
+     * the variable
+     */
+    Object resolve(String name, Object[] args) throws CoreException;
 }

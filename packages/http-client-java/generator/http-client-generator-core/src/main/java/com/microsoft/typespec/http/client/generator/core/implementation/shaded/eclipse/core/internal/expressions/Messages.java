@@ -15,7 +15,6 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.util.NLS;
 
-
 /**
  * Helper class to format message strings.
  *
@@ -23,15 +22,15 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class Messages {
 
-	public static String format(String message, Object object) {
-		return NLS.bind(message, object);
-	}
+    public static String format(String message, Object object) {
+        return NLS.bind(message, object);
+    }
 
-	public static String format(String message, Object[] objects) {
-		return NLS.bind(message, objects);
-	}
+    public static String format(String message, Object[] objects) {
+        return NLS.bind(message, objects);
+    }
 
-	private Messages() {
-		// Not for instantiation
-	}
+    private Messages() {
+        // Not for instantiation
+    }
 }

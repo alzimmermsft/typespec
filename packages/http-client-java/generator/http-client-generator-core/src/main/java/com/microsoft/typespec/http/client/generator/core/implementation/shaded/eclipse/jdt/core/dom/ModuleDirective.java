@@ -29,8 +29,8 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public abstract class ModuleDirective extends ASTNode {
 
-	ModuleDirective(AST ast) {
-		super(ast);
-		unsupportedBelow9();
-	}
+    ModuleDirective(AST ast) {
+        super(ast);
+        unsupportedBelow9();
+    }
 }

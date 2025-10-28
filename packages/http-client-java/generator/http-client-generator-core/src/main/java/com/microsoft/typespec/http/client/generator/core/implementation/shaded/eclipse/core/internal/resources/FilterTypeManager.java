@@ -24,75 +24,75 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IExtensionPoint;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IRegistryEventListener;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.RegistryFactory;
-
 import java.util.HashMap;
 
 /**
- *  This class collects all the registered {@link AbstractFileInfoMatcher} instances along
- *  with their properties.
+ * This class collects all the registered {@link AbstractFileInfoMatcher} instances along
+ * with their properties.
  */
 class FilterTypeManager {
 
-	private static final String FILTER_ELEMENT = "filterMatcher"; //$NON-NLS-1$
+    private static final String FILTER_ELEMENT = "filterMatcher"; //$NON-NLS-1$
 
-	private final HashMap<String, IFilterMatcherDescriptor> factories = new HashMap<>();
+    private final HashMap<String, IFilterMatcherDescriptor> factories = new HashMap<>();
 
-	public FilterTypeManager() {
-		IExtensionPoint point = RegistryFactory.getRegistry().getExtensionPoint(ResourcesPlugin.PI_RESOURCES, ResourcesPlugin.PT_FILTER_MATCHERS);
-		if (point != null) {
-			// initial population
-			for (IExtension extension : point.getExtensions()) {
-				processExtension(extension);
-			}
-			RegistryFactory.getRegistry().addListener(new IRegistryEventListener() {
-				@Override
-				public void added(IExtension[] extensions) {
-					for (IExtension extension : extensions) {
-						processExtension(extension);
-					}
-				}
+    public FilterTypeManager() {
+        IExtensionPoint point = RegistryFactory.getRegistry()
+            .getExtensionPoint(ResourcesPlugin.PI_RESOURCES, ResourcesPlugin.PT_FILTER_MATCHERS);
+        if (point != null) {
+            // initial population
+            for (IExtension extension : point.getExtensions()) {
+                processExtension(extension);
+            }
+            RegistryFactory.getRegistry().addListener(new IRegistryEventListener() {
+                @Override
+                public void added(IExtension[] extensions) {
+                    for (IExtension extension : extensions) {
+                        processExtension(extension);
+                    }
+                }
 
-				@Override
-				public void added(IExtensionPoint[] extensionPoints) {
-					// nothing to do
-				}
+                @Override
+                public void added(IExtensionPoint[] extensionPoints) {
+                    // nothing to do
+                }
 
-				@Override
-				public void removed(IExtension[] extensions) {
-					for (IExtension extension : extensions) {
-						processRemovedExtension(extension);
-					}
-				}
+                @Override
+                public void removed(IExtension[] extensions) {
+                    for (IExtension extension : extensions) {
+                        processRemovedExtension(extension);
+                    }
+                }
 
-				@Override
-				public void removed(IExtensionPoint[] extensionPoints) {
-					// nothing to do
-				}
-			});
-		}
-	}
+                @Override
+                public void removed(IExtensionPoint[] extensionPoints) {
+                    // nothing to do
+                }
+            });
+        }
+    }
 
-	public IFilterMatcherDescriptor getFilterDescriptor(String id) {
-		return factories.get(id);
-	}
+    public IFilterMatcherDescriptor getFilterDescriptor(String id) {
+        return factories.get(id);
+    }
 
     protected void processExtension(IExtension extension) {
-		IConfigurationElement[] elements = extension.getConfigurationElements();
-		for (IConfigurationElement element : elements) {
-			if (element.getName().equalsIgnoreCase(FILTER_ELEMENT)) {
-				IFilterMatcherDescriptor desc = new FilterDescriptor(element);
-				factories.put(desc.getId(), desc);
-			}
-		}
-	}
+        IConfigurationElement[] elements = extension.getConfigurationElements();
+        for (IConfigurationElement element : elements) {
+            if (element.getName().equalsIgnoreCase(FILTER_ELEMENT)) {
+                IFilterMatcherDescriptor desc = new FilterDescriptor(element);
+                factories.put(desc.getId(), desc);
+            }
+        }
+    }
 
-	protected void processRemovedExtension(IExtension extension) {
-		IConfigurationElement[] elements = extension.getConfigurationElements();
-		for (IConfigurationElement element : elements) {
-			if (element.getName().equalsIgnoreCase(FILTER_ELEMENT)) {
-				IFilterMatcherDescriptor desc = new FilterDescriptor(element, false);
-				factories.remove(desc.getId());
-			}
-		}
-	}
+    protected void processRemovedExtension(IExtension extension) {
+        IConfigurationElement[] elements = extension.getConfigurationElements();
+        for (IConfigurationElement element : elements) {
+            if (element.getName().equalsIgnoreCase(FILTER_ELEMENT)) {
+                IFilterMatcherDescriptor desc = new FilterDescriptor(element, false);
+                factories.remove(desc.getId());
+            }
+        }
+    }
 }

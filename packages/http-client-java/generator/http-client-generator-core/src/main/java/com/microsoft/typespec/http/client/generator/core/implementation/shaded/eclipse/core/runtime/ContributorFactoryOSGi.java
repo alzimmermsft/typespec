@@ -30,54 +30,54 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 public final class ContributorFactoryOSGi {
 
-	/**
-	 * Creates registry contributor object based on a Bundle. The bundle must not be
-	 * <code>null</code>.
-	 *
-	 * @param contributor bundle associated with the contribution
-	 * @return new registry contributor based on the Bundle
-	 */
-	public static IContributor createContributor(Bundle contributor) {
-		String id = Long.toString(contributor.getBundleId());
-		String name = contributor.getSymbolicName();
-		String hostId = null;
-		String hostName = null;
+    /**
+     * Creates registry contributor object based on a Bundle. The bundle must not be
+     * <code>null</code>.
+     *
+     * @param contributor bundle associated with the contribution
+     * @return new registry contributor based on the Bundle
+     */
+    public static IContributor createContributor(Bundle contributor) {
+        String id = Long.toString(contributor.getBundleId());
+        String name = contributor.getSymbolicName();
+        String hostId = null;
+        String hostName = null;
 
-		// determine host properties, if any
-		if (OSGIUtils.getDefault().isFragment(contributor)) {
-			Bundle[] hosts = OSGIUtils.getDefault().getHosts(contributor);
-			if (hosts != null) {
-				Bundle hostBundle = hosts[0];
-				hostId = Long.toString(hostBundle.getBundleId());
-				hostName = hostBundle.getSymbolicName();
-			}
-		}
+        // determine host properties, if any
+        if (OSGIUtils.getDefault().isFragment(contributor)) {
+            Bundle[] hosts = OSGIUtils.getDefault().getHosts(contributor);
+            if (hosts != null) {
+                Bundle hostBundle = hosts[0];
+                hostId = Long.toString(hostBundle.getBundleId());
+                hostName = hostBundle.getSymbolicName();
+            }
+        }
 
-		return new RegistryContributor(id, name, hostId, hostName);
-	}
+        return new RegistryContributor(id, name, hostId, hostName);
+    }
 
-	/**
-	 * Returns the OSGi bundle used to define this contributor. If a fragment was
-	 * used to create the contributor, the fragment is returned.
-	 *
-	 * <p>
-	 * The method may return null if the contributor is not based on a bundle, if
-	 * the bundle can't be found, or if the bundle is presently unresolved or
-	 * uninstalled.
-	 * </p>
-	 *
-	 * @param contributor bundle-based registry contributor
-	 * @return the actual OSGi bundle associated with this contributor
-	 * @since org.eclipse.equinox.registry 3.3
-	 */
-	public static Bundle resolve(IContributor contributor) {
-		if (contributor == null) {
-			return null;
-		}
-		if (!(contributor instanceof RegistryContributor)) {
-			return null;
-		}
-		String symbolicName = ((RegistryContributor) contributor).getActualName();
-		return OSGIUtils.getDefault().getBundle(symbolicName);
-	}
+    /**
+     * Returns the OSGi bundle used to define this contributor. If a fragment was
+     * used to create the contributor, the fragment is returned.
+     *
+     * <p>
+     * The method may return null if the contributor is not based on a bundle, if
+     * the bundle can't be found, or if the bundle is presently unresolved or
+     * uninstalled.
+     * </p>
+     *
+     * @param contributor bundle-based registry contributor
+     * @return the actual OSGi bundle associated with this contributor
+     * @since org.eclipse.equinox.registry 3.3
+     */
+    public static Bundle resolve(IContributor contributor) {
+        if (contributor == null) {
+            return null;
+        }
+        if (!(contributor instanceof RegistryContributor)) {
+            return null;
+        }
+        String symbolicName = ((RegistryContributor) contributor).getActualName();
+        return OSGIUtils.getDefault().getBundle(symbolicName);
+    }
 }

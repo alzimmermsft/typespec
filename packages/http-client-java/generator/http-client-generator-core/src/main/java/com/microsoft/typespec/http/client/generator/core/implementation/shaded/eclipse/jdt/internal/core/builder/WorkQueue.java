@@ -45,15 +45,7 @@ public void finished(SourceFile element) {
 	this.compiledList.add(element);
 }
 
-public boolean isCompiled(SourceFile element) {
-	return this.compiledList.contains(element);
-}
-
-public boolean isWaiting(SourceFile element) {
-	return this.needsCompileList.contains(element);
-}
-
-@Override
+    @Override
 public String toString() {
 	return "WorkQueue: " + this.needsCompileList; //$NON-NLS-1$
 }

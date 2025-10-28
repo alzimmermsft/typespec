@@ -50,7 +50,7 @@ public class AssistSourceField extends ResolvedSourceField {
 			} else {
 				this.isResolved = false;
 				try {
-					this.uniqueKey = getKey(this, false/*don't open*/);
+					this.uniqueKey = getKey(this /*don't open*/);
 				} catch (JavaModelException e) {
 					// happen only if force open is true
 					return null;

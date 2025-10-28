@@ -37,6 +37,6 @@ public class EclipseStarter {
     public static final String PROP_LOGFILE = "osgi.logfile"; //$NON-NLS-1$
 
     public static final String PROP_EXITCODE = "eclipse.exitcode"; //$NON-NLS-1$
-	public static final String PROP_EXITDATA = "eclipse.exitdata"; //$NON-NLS-1$
-	public static final String PROP_CONSOLE_LOG = "eclipse.consoleLog"; //$NON-NLS-1$
+    public static final String PROP_EXITDATA = "eclipse.exitdata"; //$NON-NLS-1$
+    public static final String PROP_CONSOLE_LOG = "eclipse.consoleLog"; //$NON-NLS-1$
 }

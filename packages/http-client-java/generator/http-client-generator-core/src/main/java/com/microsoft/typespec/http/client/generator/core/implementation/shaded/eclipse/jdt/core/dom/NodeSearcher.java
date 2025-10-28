@@ -24,85 +24,74 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.MethodScope;
 
 class NodeSearcher extends ASTVisitor {
-	public com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode found;
-	public TypeDeclaration enclosingType;
-	public int position;
+    public com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode found;
+    public TypeDeclaration enclosingType;
+    public int position;
 
-	NodeSearcher(int position) {
-		this.position = position;
-	}
+    NodeSearcher(int position) {
+        this.position = position;
+    }
 
-	@Override
-	public boolean visit(
-		ConstructorDeclaration constructorDeclaration,
-		ClassScope scope) {
+    @Override
+    public boolean visit(ConstructorDeclaration constructorDeclaration, ClassScope scope) {
 
-		if (constructorDeclaration.declarationSourceStart <= this.position
-			&& this.position <= constructorDeclaration.declarationSourceEnd) {
-				this.found = constructorDeclaration;
-				return false;
-		}
-		return true;
-	}
+        if (constructorDeclaration.declarationSourceStart <= this.position
+            && this.position <= constructorDeclaration.declarationSourceEnd) {
+            this.found = constructorDeclaration;
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	public boolean visit(
-		FieldDeclaration fieldDeclaration,
-		MethodScope scope) {
-			if (fieldDeclaration.declarationSourceStart <= this.position
-				&& this.position <= fieldDeclaration.declarationSourceEnd) {
-					this.found = fieldDeclaration;
-					return false;
-			}
-			return true;
-	}
+    @Override
+    public boolean visit(FieldDeclaration fieldDeclaration, MethodScope scope) {
+        if (fieldDeclaration.declarationSourceStart <= this.position
+            && this.position <= fieldDeclaration.declarationSourceEnd) {
+            this.found = fieldDeclaration;
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	public boolean visit(Initializer initializer, MethodScope scope) {
-		if (initializer.declarationSourceStart <= this.position
-			&& this.position <= initializer.declarationSourceEnd) {
-				this.found = initializer;
-				return false;
-		}
-		return true;
-	}
+    @Override
+    public boolean visit(Initializer initializer, MethodScope scope) {
+        if (initializer.declarationSourceStart <= this.position && this.position <= initializer.declarationSourceEnd) {
+            this.found = initializer;
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	public boolean visit(
-		TypeDeclaration memberTypeDeclaration,
-		ClassScope scope) {
-			if (memberTypeDeclaration.declarationSourceStart <= this.position
-				&& this.position <= memberTypeDeclaration.declarationSourceEnd) {
-					this.enclosingType = memberTypeDeclaration;
-					return true;
+    @Override
+    public boolean visit(TypeDeclaration memberTypeDeclaration, ClassScope scope) {
+        if (memberTypeDeclaration.declarationSourceStart <= this.position
+            && this.position <= memberTypeDeclaration.declarationSourceEnd) {
+            this.enclosingType = memberTypeDeclaration;
+            return true;
 
-			}
-			return false;
-	}
+        }
+        return false;
+    }
 
-	@Override
-	public boolean visit(
-		MethodDeclaration methodDeclaration,
-		ClassScope scope) {
+    @Override
+    public boolean visit(MethodDeclaration methodDeclaration, ClassScope scope) {
 
-		if (methodDeclaration.declarationSourceStart <= this.position
-			&& this.position <= methodDeclaration.declarationSourceEnd) {
-				this.found = methodDeclaration;
-				return false;
-		}
-		return true;
-	}
+        if (methodDeclaration.declarationSourceStart <= this.position
+            && this.position <= methodDeclaration.declarationSourceEnd) {
+            this.found = methodDeclaration;
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	public boolean visit(
-		TypeDeclaration typeDeclaration,
-		CompilationUnitScope scope) {
-			if (typeDeclaration.declarationSourceStart <= this.position
-				&& this.position <= typeDeclaration.declarationSourceEnd) {
-					this.enclosingType = typeDeclaration;
-					return true;
-			}
-			return false;
-	}
+    @Override
+    public boolean visit(TypeDeclaration typeDeclaration, CompilationUnitScope scope) {
+        if (typeDeclaration.declarationSourceStart <= this.position
+            && this.position <= typeDeclaration.declarationSourceEnd) {
+            this.enclosingType = typeDeclaration;
+            return true;
+        }
+        return false;
+    }
 
 }

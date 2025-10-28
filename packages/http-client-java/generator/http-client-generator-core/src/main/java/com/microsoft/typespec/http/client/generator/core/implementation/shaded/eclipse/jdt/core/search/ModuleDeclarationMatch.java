@@ -27,18 +27,19 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class ModuleDeclarationMatch extends SearchMatch {
 
-	/**
-	 * Creates a new type declaration match.
-	 *
-	 * @param element the module declaration
-	 * @param accuracy one of A_ACCURATE or A_INACCURATE
-	 * @param offset the offset the match starts at, or -1 if unknown
-	 * @param length the length of the match, or -1 if unknown
-	 * @param participant the search participant that created the match
-	 * @param resource the resource of the element
-	 */
-	public ModuleDeclarationMatch(IJavaElement element, int accuracy, int offset, int length, SearchParticipant participant, IResource resource) {
-		super(element, accuracy, offset, length, participant, resource);
-	}
+    /**
+     * Creates a new type declaration match.
+     *
+     * @param element the module declaration
+     * @param accuracy one of A_ACCURATE or A_INACCURATE
+     * @param offset the offset the match starts at, or -1 if unknown
+     * @param length the length of the match, or -1 if unknown
+     * @param participant the search participant that created the match
+     * @param resource the resource of the element
+     */
+    public ModuleDeclarationMatch(IJavaElement element, int accuracy, int offset, int length,
+        SearchParticipant participant, IResource resource) {
+        super(element, accuracy, offset, length, participant, resource);
+    }
 
 }

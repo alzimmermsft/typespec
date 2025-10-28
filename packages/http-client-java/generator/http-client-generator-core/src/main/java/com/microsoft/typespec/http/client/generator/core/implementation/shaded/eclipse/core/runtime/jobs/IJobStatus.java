@@ -23,10 +23,10 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * @noextend This interface is not intended to be extended by clients.
  */
 public interface IJobStatus extends IStatus {
-	/**
-	 * Returns the job associated with this status.
-	 *
-	 * @return the job associated with this status
-	 */
-	Job getJob();
+    /**
+     * Returns the job associated with this status.
+     *
+     * @return the job associated with this status
+     */
+    Job getJob();
 }

@@ -1,12 +1,12 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.optional.qual;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.DefaultQualifierInHierarchy;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.DefaultQualifierInHierarchy;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 
 /**
  * The {@link java.util.Optional Optional} container may or may not contain a value.
@@ -15,7 +15,8 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
-@SubtypeOf({})
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
+@SubtypeOf({ })
 @DefaultQualifierInHierarchy
-public @interface MaybePresent {}
+public @interface MaybePresent {
+}

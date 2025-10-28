@@ -18,19 +18,19 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public final class RegistryProviderOSGI implements IRegistryProvider {
 
-	private final IExtensionRegistry registry;
+    private final IExtensionRegistry registry;
 
-	public RegistryProviderOSGI(IExtensionRegistry registry) {
-		this.registry = registry;
-	}
+    public RegistryProviderOSGI(IExtensionRegistry registry) {
+        this.registry = registry;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.eclipse.equinox.registry.IRegistryProvider#getRegistry()
-	 */
-	@Override
-	public IExtensionRegistry getRegistry() {
-		return registry;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.equinox.registry.IRegistryProvider#getRegistry()
+     */
+    @Override
+    public IExtensionRegistry getRegistry() {
+        return registry;
+    }
 }

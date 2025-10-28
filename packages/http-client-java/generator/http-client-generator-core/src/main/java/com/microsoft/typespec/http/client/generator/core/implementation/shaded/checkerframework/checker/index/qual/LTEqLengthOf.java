@@ -1,12 +1,12 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.index.qual;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.JavaExpression;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.JavaExpression;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 
 /**
  * The annotated expression evaluates to an integer whose value is less than or equal to the lengths
@@ -24,10 +24,10 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
 @SubtypeOf(UpperBoundUnknown.class)
 public @interface LTEqLengthOf {
-  /** Sequences, each of which is at least as long as the annotated expression's value. */
-  @JavaExpression
-  public String[] value();
+    /** Sequences, each of which is at least as long as the annotated expression's value. */
+    @JavaExpression
+    public String[] value();
 }

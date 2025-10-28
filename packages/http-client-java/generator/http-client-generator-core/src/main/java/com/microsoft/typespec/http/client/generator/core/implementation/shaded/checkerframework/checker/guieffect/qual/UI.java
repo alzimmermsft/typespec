@@ -1,11 +1,11 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.guieffect.qual;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 
 /**
  * Annotation for the UI effect.
@@ -14,6 +14,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
-@SubtypeOf({})
-public @interface UI {}
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
+@SubtypeOf({ })
+public @interface UI {
+}

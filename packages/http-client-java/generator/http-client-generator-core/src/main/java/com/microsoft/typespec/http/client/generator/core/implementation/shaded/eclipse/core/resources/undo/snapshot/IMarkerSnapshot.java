@@ -28,24 +28,24 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public interface IMarkerSnapshot {
 
-	/**
-	 * Create a marker from the marker description.
-	 *
-	 * @return the created marker
-	 */
-	public IMarker createMarker() throws CoreException;
+    /**
+     * Create a marker from the marker description.
+     *
+     * @return the created marker
+     */
+    public IMarker createMarker() throws CoreException;
 
     /**
-	 * Return the resource associated with this marker.
-	 *
-	 * @return the resource associated with this marker
-	 */
-	public IResource getResource();
+     * Return the resource associated with this marker.
+     *
+     * @return the resource associated with this marker
+     */
+    public IResource getResource();
 
-	/**
-	 * Return the marker type associated with this marker.
-	 *
-	 * @return the string marker type of this marker
-	 */
-	public String getType();
+    /**
+     * Return the marker type associated with this marker.
+     *
+     * @return the string marker type of this marker
+     */
+    public String getType();
 }

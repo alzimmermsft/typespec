@@ -14,11 +14,11 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.resources;
 
-import java.util.regex.*;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.filesystem.IFileInfo;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.*;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.filtermatchers.AbstractFileInfoMatcher;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.*;
+import java.util.regex.*;
 
 /**
  * A Filter provider for Java Regular expression supported by
@@ -26,29 +26,30 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class RegexFileInfoMatcher extends AbstractFileInfoMatcher {
 
-	Pattern pattern = null;
+    Pattern pattern = null;
 
-	public RegexFileInfoMatcher() {
-		// nothing to do
-	}
+    public RegexFileInfoMatcher() {
+        // nothing to do
+    }
 
-	@Override
-	public boolean matches(IContainer parent, IFileInfo fileInfo) {
-		if (pattern != null) {
-			Matcher m = pattern.matcher(fileInfo.getName());
-			return m.matches();
-		}
-		return false;
-	}
+    @Override
+    public boolean matches(IContainer parent, IFileInfo fileInfo) {
+        if (pattern != null) {
+            Matcher m = pattern.matcher(fileInfo.getName());
+            return m.matches();
+        }
+        return false;
+    }
 
-	@Override
-	public void initialize(IProject project, Object arguments) throws CoreException {
-		if (arguments != null) {
-			try {
-				pattern = Pattern.compile((String) arguments);
-			} catch (PatternSyntaxException e) {
-				throw new CoreException(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, Platform.PLUGIN_ERROR, e.getMessage(), e));
-			}
-		}
-	}
+    @Override
+    public void initialize(IProject project, Object arguments) throws CoreException {
+        if (arguments != null) {
+            try {
+                pattern = Pattern.compile((String) arguments);
+            } catch (PatternSyntaxException e) {
+                throw new CoreException(
+                    new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, Platform.PLUGIN_ERROR, e.getMessage(), e));
+            }
+        }
+    }
 }

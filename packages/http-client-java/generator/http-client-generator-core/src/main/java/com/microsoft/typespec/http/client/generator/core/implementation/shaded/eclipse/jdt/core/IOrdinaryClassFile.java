@@ -20,15 +20,15 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IOrdinaryClassFile extends IClassFile {
-	/**
-	 * Returns the type contained in this class file.
-	 * This is a handle-only method. The type may or may not exist.
-	 *
-	 * <p>This method supersedes the corresponding super method.
-	 * This method will never throw {@link UnsupportedOperationException}.</p>
-	 *
-	 * @return the type contained in this class file
-	 */
-	@Override
-	IType getType();
+    /**
+     * Returns the type contained in this class file.
+     * This is a handle-only method. The type may or may not exist.
+     *
+     * <p>This method supersedes the corresponding super method.
+     * This method will never throw {@link UnsupportedOperationException}.</p>
+     *
+     * @return the type contained in this class file
+     */
+    @Override
+    IType getType();
 }

@@ -25,27 +25,29 @@ import java.util.Enumeration;
  * @since 3.7
  */
 public final class LogPermissionCollection extends PermissionCollection {
-	private static final long serialVersionUID = -1955409691185916778L;
-	LogPermission logPermission;
+    private static final long serialVersionUID = -1955409691185916778L;
+    LogPermission logPermission;
 
-	@Override
-	public void add(Permission permission) {
-		if (!(permission instanceof LogPermission))
-			throw new IllegalArgumentException("invalid permission: " + permission); //$NON-NLS-1$
-		if (isReadOnly())
-			throw new SecurityException("attempt to add a LogPermission to a readonly LogPermissionCollection"); //$NON-NLS-1$
-		if (permission != null)
-			logPermission = (LogPermission) permission;
-	}
+    @Override
+    public void add(Permission permission) {
+        if (!(permission instanceof LogPermission))
+            throw new IllegalArgumentException("invalid permission: " + permission); //$NON-NLS-1$
+        if (isReadOnly())
+            throw new SecurityException("attempt to add a LogPermission to a readonly LogPermissionCollection"); //$NON-NLS-1$
+        if (permission != null)
+            logPermission = (LogPermission) permission;
+    }
 
-	@Override
-	public Enumeration<Permission> elements() {
-		return logPermission != null ? Collections.enumeration(Collections.singleton(logPermission)) : Collections.emptyEnumeration();
-	}
+    @Override
+    public Enumeration<Permission> elements() {
+        return logPermission != null
+            ? Collections.enumeration(Collections.singleton(logPermission))
+            : Collections.emptyEnumeration();
+    }
 
-	@Override
-	public boolean implies(Permission permission) {
-		return logPermission != null && logPermission.implies(permission);
-	}
+    @Override
+    public boolean implies(Permission permission) {
+        return logPermission != null && logPermission.implies(permission);
+    }
 
 }

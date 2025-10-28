@@ -25,9 +25,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * is hidden from clients. THe package fragments appear to be directly under the
  * package fragment roots.
  * <p>NOTE: A JMod package fragment root may or may not have an associated resource.
- *
- * @see org.eclipse.jdt.core.IPackageFragmentRoot
- * @see org.eclipse.jdt.internal.core.JarPackageFragmentRootInfo
  */
 public class JModPackageFragmentRoot extends JarPackageFragmentRoot {
 

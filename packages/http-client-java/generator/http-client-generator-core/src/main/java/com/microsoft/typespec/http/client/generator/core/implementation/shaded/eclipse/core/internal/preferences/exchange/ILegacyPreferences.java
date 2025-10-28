@@ -21,12 +21,12 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 @Deprecated
 public interface ILegacyPreferences {
-	/**
-	 * The method tries to initialize the preferences using the legacy
-	 * Plugin#initializeDefaultPluginPreferences method.
-	 *
-	 * @param object - plugin to initialize
-	 * @param name   - ID of the plugin to be initialized
-	 */
-	public Object init(Object object, String name);
+    /**
+     * The method tries to initialize the preferences using the legacy
+     * Plugin#initializeDefaultPluginPreferences method.
+     *
+     * @param object - plugin to initialize
+     * @param name - ID of the plugin to be initialized
+     */
+    Object init(Object object, String name);
 }

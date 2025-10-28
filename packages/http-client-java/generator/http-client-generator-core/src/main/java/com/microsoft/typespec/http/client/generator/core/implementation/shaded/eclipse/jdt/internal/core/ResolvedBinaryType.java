@@ -35,12 +35,8 @@ public class ResolvedBinaryType extends BinaryType {
 		super(parent, name, occurrenceCount);
 		this.uniqueKey = uniqueKey;
 	}
-	@Override
-	public String getFullyQualifiedParameterizedName() throws JavaModelException {
-		return getFullyQualifiedParameterizedName(getFullyQualifiedName('.'), this.uniqueKey);
-	}
 
-	@Override
+    @Override
 	public String getKey() {
 		return this.uniqueKey;
 	}

@@ -20,6 +20,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * <p>
  * Usage:
  * </p>
+ * 
  * <pre>
  * class Visitor implements IResourceDeltaVisitor {
  *     public boolean visit(IResourceDelta delta) {
@@ -40,6 +41,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * IResourceDelta rootDelta = ...;
  * rootDelta.accept(new Visitor());
  * </pre>
+ * 
  * <p>
  * Clients may implement this interface.
  * </p>
@@ -47,12 +49,12 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * @see IResource#accept(IResourceVisitor)
  */
 public interface IResourceDeltaVisitor {
-	/**
-	 * Visits the given resource delta.
-	 *
-	 * @return <code>true</code> if the resource delta's children should
-	 *		be visited; <code>false</code> if they should be skipped.
-	 * @exception CoreException if the visit fails for some reason.
-	 */
-	boolean visit(IResourceDelta delta) throws CoreException;
+    /**
+     * Visits the given resource delta.
+     *
+     * @return <code>true</code> if the resource delta's children should
+     * be visited; <code>false</code> if they should be skipped.
+     * @exception CoreException if the visit fails for some reason.
+     */
+    boolean visit(IResourceDelta delta) throws CoreException;
 }

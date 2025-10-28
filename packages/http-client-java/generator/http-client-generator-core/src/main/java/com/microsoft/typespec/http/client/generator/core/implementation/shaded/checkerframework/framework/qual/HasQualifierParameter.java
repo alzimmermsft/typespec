@@ -18,11 +18,11 @@ import java.lang.annotation.Target;
  * <p>Writing {@code @HasQualifierParameter} on a type declaration has two effects.
  *
  * <ol>
- *   <li>Invariant subtyping is used for occurrences of the type: no two occurrences of the type
- *       with different qualifiers have a subtyping relationship.
- *   <li>The polymorphic qualifier is the default for all occurrences of that type in its own
- *       compilation unit, including as the receiver, as another formal parameter, or as a return
- *       type.
+ * <li>Invariant subtyping is used for occurrences of the type: no two occurrences of the type
+ * with different qualifiers have a subtyping relationship.
+ * <li>The polymorphic qualifier is the default for all occurrences of that type in its own
+ * compilation unit, including as the receiver, as another formal parameter, or as a return
+ * type.
  * </ol>
  *
  * Here is an example of the effect of invariant subtyping. Suppose we have the following
@@ -67,13 +67,13 @@ import java.lang.annotation.Target;
 @Inherited
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.PACKAGE})
+@Target({ ElementType.TYPE, ElementType.PACKAGE })
 public @interface HasQualifierParameter {
 
-  /**
-   * Class of the top qualifier for the hierarchy for which this class has a qualifier parameter.
-   *
-   * @return the value
-   */
-  Class<? extends Annotation>[] value();
+    /**
+     * Class of the top qualifier for the hierarchy for which this class has a qualifier parameter.
+     *
+     * @return the value
+     */
+    Class<? extends Annotation>[] value();
 }

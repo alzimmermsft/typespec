@@ -39,39 +39,39 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public final class InstanceScope extends AbstractScope {
 
-	/**
-	 * String constant (value of <code>"instance"</code>) used for the scope name
-	 * for the instance preference scope.
-	 */
-	public static final String SCOPE = "instance"; //$NON-NLS-1$
+    /**
+     * String constant (value of <code>"instance"</code>) used for the scope name
+     * for the instance preference scope.
+     */
+    public static final String SCOPE = "instance"; //$NON-NLS-1$
 
-	/**
-	 * Singleton instance of an Instance Scope object. Typical usage is:
-	 * <code>InstanceScope.INSTANCE.getNode(...);</code>
-	 *
-	 * @since 3.4
-	 */
-	public static final IScopeContext INSTANCE = new InstanceScope();
+    /**
+     * Singleton instance of an Instance Scope object. Typical usage is:
+     * <code>InstanceScope.INSTANCE.getNode(...);</code>
+     *
+     * @since 3.4
+     */
+    public static final IScopeContext INSTANCE = new InstanceScope();
 
-	/**
-	 * Create and return a new instance scope instance.
-	 *
-	 * @deprecated call <code>InstanceScope.INSTANCE</code> instead.
-	 */
-	@Deprecated
-	public InstanceScope() {
-		super();
-	}
+    /**
+     * Create and return a new instance scope instance.
+     *
+     * @deprecated call <code>InstanceScope.INSTANCE</code> instead.
+     */
+    @Deprecated
+    public InstanceScope() {
+        super();
+    }
 
-	@Override
-	public IPath getLocation() {
-		// Return null. The instance location usually corresponds to the state
-		// location of the bundle and we don't know what bundle we are dealing with.
-		return null;
-	}
+    @Override
+    public IPath getLocation() {
+        // Return null. The instance location usually corresponds to the state
+        // location of the bundle and we don't know what bundle we are dealing with.
+        return null;
+    }
 
-	@Override
-	public String getName() {
-		return SCOPE;
-	}
+    @Override
+    public String getName() {
+        return SCOPE;
+    }
 }

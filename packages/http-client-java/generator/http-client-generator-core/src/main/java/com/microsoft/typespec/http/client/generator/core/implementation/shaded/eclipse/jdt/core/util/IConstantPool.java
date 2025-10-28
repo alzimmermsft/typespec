@@ -22,36 +22,36 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IConstantPool {
 
-	/**
-	 * Answer back the number of entries in the constant pool.
-	 *
-	 * @return the number of entries in the constant pool
-	 */
-	int getConstantPoolCount();
+    /**
+     * Answer back the number of entries in the constant pool.
+     *
+     * @return the number of entries in the constant pool
+     */
+    int getConstantPoolCount();
 
-	/**
-	 * Answer back the type of the entry at the given index in the constant pool.
-	 *
-	 * @param index the index of the entry in the constant pool
-	 * @return the type of the entry at the index @index in the constant pool
-	 */
-	int getEntryKind(int index);
+    /**
+     * Answer back the type of the entry at the given index in the constant pool.
+     *
+     * @param index the index of the entry in the constant pool
+     * @return the type of the entry at the index @index in the constant pool
+     */
+    int getEntryKind(int index);
 
-	/**
-	 * Answer back the entry at the given index in the constant pool.
-	 *
-	 * <p>The return value can be an instance of {@link IConstantPoolEntry2} if the value returned
-	 * by {@link #getEntryKind(int)} is either {@link IConstantPoolConstant#CONSTANT_MethodHandle},
-	 * {@link IConstantPoolConstant#CONSTANT_MethodType},
-	 * {@link IConstantPoolConstant#CONSTANT_InvokeDynamic},
-	 * {@link IConstantPoolConstant#CONSTANT_Dynamic}.</p>
-	 *
-	 * <p>The return value can be an instance of {@link IConstantPoolEntry3} if the value returned
-	 * by {@link #getEntryKind(int)} is either {@link IConstantPoolConstant#CONSTANT_Module}
-	 * or {@link IConstantPoolConstant#CONSTANT_Package}.</p>
-	 *
-	 * @param index the index of the entry in the constant pool
-	 * @return the entry at the given index in the constant pool
-	 */
-	IConstantPoolEntry decodeEntry(int index);
+    /**
+     * Answer back the entry at the given index in the constant pool.
+     *
+     * <p>The return value can be an instance of {@link IConstantPoolEntry2} if the value returned
+     * by {@link #getEntryKind(int)} is either {@link IConstantPoolConstant#CONSTANT_MethodHandle},
+     * {@link IConstantPoolConstant#CONSTANT_MethodType},
+     * {@link IConstantPoolConstant#CONSTANT_InvokeDynamic},
+     * {@link IConstantPoolConstant#CONSTANT_Dynamic}.</p>
+     *
+     * <p>The return value can be an instance of {@link IConstantPoolEntry3} if the value returned
+     * by {@link #getEntryKind(int)} is either {@link IConstantPoolConstant#CONSTANT_Module}
+     * or {@link IConstantPoolConstant#CONSTANT_Package}.</p>
+     *
+     * @param index the index of the entry in the constant pool
+     * @return the entry at the given index in the constant pool
+     */
+    IConstantPoolEntry decodeEntry(int index);
 }

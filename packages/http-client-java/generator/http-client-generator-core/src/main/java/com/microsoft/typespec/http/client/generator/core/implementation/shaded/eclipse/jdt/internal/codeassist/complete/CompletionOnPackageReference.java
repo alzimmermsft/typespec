@@ -38,17 +38,19 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
 
 public class CompletionOnPackageReference extends ImportReference implements CompletionNode {
-public CompletionOnPackageReference(char[][] tokens , long[] positions) {
-	super(tokens, positions, false, ClassFileConstants.AccDefault);
-}
-@Override
-public StringBuilder print(int indent, StringBuilder output, boolean withOnDemand) {
+    public CompletionOnPackageReference(char[][] tokens, long[] positions) {
+        super(tokens, positions, false, ClassFileConstants.AccDefault);
+    }
 
-	printIndent(indent, output).append("<CompleteOnPackage:"); //$NON-NLS-1$
-	for (int i = 0; i < this.tokens.length; i++) {
-		if (i > 0) output.append('.');
-		output.append(this.tokens[i]);
-	}
-	return output.append('>');
-}
+    @Override
+    public StringBuilder print(int indent, StringBuilder output, boolean withOnDemand) {
+
+        printIndent(indent, output).append("<CompleteOnPackage:"); //$NON-NLS-1$
+        for (int i = 0; i < this.tokens.length; i++) {
+            if (i > 0)
+                output.append('.');
+            output.append(this.tokens[i]);
+        }
+        return output.append('>');
+    }
 }

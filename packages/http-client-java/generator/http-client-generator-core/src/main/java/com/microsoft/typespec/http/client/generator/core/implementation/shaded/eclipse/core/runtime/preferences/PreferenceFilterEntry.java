@@ -23,62 +23,62 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public final class PreferenceFilterEntry {
 
-	private final String key;
-	private String matchType;
+    private final String key;
+    private String matchType;
 
-	/**
-	 * Constructor for the class. Create a new preference filter entry with the
-	 * given key. The key must <em>not</em> be <code>null</code> or empty.
-	 *
-	 * @param key the name of the preference key
-	 */
-	public PreferenceFilterEntry(String key) {
-		super();
-		if (key == null || key.length() == 0) {
-			throw new IllegalArgumentException();
-		}
-		this.key = key;
-	}
+    /**
+     * Constructor for the class. Create a new preference filter entry with the
+     * given key. The key must <em>not</em> be <code>null</code> or empty.
+     *
+     * @param key the name of the preference key
+     */
+    public PreferenceFilterEntry(String key) {
+        super();
+        if (key == null || key.length() == 0) {
+            throw new IllegalArgumentException();
+        }
+        this.key = key;
+    }
 
-	/**
-	 * Constructor for the class. Create a new preference filter entry with the
-	 * given key and match type. The key must <em>not</em> be <code>null</code> or
-	 * empty.
-	 * <p>
-	 * Setting matchType to "prefix" treats the key as if it were a regular
-	 * expression with an asterisk at the end. If matchType is <code>null</code>,
-	 * the key must be an exact match.
-	 * </p>
-	 *
-	 * @param key       the name of the preference key
-	 * @param matchType specifies key match type, may be <code>null</code> to
-	 *                  indicate that exact match is required
-	 * @since 3.3
-	 */
-	public PreferenceFilterEntry(String key, String matchType) {
-		this(key);
-		this.matchType = matchType;
-	}
+    /**
+     * Constructor for the class. Create a new preference filter entry with the
+     * given key and match type. The key must <em>not</em> be <code>null</code> or
+     * empty.
+     * <p>
+     * Setting matchType to "prefix" treats the key as if it were a regular
+     * expression with an asterisk at the end. If matchType is <code>null</code>,
+     * the key must be an exact match.
+     * </p>
+     *
+     * @param key the name of the preference key
+     * @param matchType specifies key match type, may be <code>null</code> to
+     * indicate that exact match is required
+     * @since 3.3
+     */
+    public PreferenceFilterEntry(String key, String matchType) {
+        this(key);
+        this.matchType = matchType;
+    }
 
-	/**
-	 * Return the name of the preference key for this filter entry. It will
-	 * <em>not</em> return <code>null</code> or the empty string.
-	 *
-	 * @return the name of the preference key
-	 */
-	public String getKey() {
-		return key;
-	}
+    /**
+     * Return the name of the preference key for this filter entry. It will
+     * <em>not</em> return <code>null</code> or the empty string.
+     *
+     * @return the name of the preference key
+     */
+    public String getKey() {
+        return key;
+    }
 
-	/**
-	 * Return the match type specified for this filter. May return <code>null</code>
-	 * to indicate that exact match is used.
-	 *
-	 * @return matchType the match type, might be <code>null</code> indicating that
-	 *         exact match is used
-	 * @since 3.3
-	 */
-	public String getMatchType() {
-		return matchType;
-	}
+    /**
+     * Return the match type specified for this filter. May return <code>null</code>
+     * to indicate that exact match is used.
+     *
+     * @return matchType the match type, might be <code>null</code> indicating that
+     * exact match is used
+     * @since 3.3
+     */
+    public String getMatchType() {
+        return matchType;
+    }
 }

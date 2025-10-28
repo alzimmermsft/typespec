@@ -66,53 +66,17 @@ public class PublicScanner implements IScanner, ITerminalSymbols {
 		return this.delegate.getCurrentTokenSource();
 	}
 
-	@Override
-	public final char[] getRawTokenSource() {
-		return this.delegate.getRawTokenSource();
-	}
-
-	@Override
+    @Override
 	public int getCurrentTokenStartPosition(){
 		return this.delegate.startPosition;
 	}
 
-	/*
-	 * Search the source position corresponding to the end of a given line number
-	 *
-	 * Line numbers are 1-based, and relative to the scanner initialPosition.
-	 * Character positions are 0-based.
-	 *
-	 * In case the given line number is inconsistent, answers -1.
-	 */
-	@Override
-	public final int getLineEnd(int lineNumber) {
-		return this.delegate.getLineEnd(lineNumber);
-	}
-
-	@Override
+    @Override
 	public final int[] getLineEnds() {
 		return this.delegate.getLineEnds();
 	}
 
-	/**
-	 * Search the source position corresponding to the beginning of a given line number
-	 *
-	 * Line numbers are 1-based, and relative to the scanner initialPosition.
-	 * Character positions are 0-based.
-	 *
-	 * e.g.	getLineStart(1) --> 0	indicates that the first line starts at character 0.
-	 *
-	 * In case the given line number is inconsistent, answers -1.
-	 *
-	 * @param lineNumber int
-	 * @return int
-	 */
-	@Override
-	public final int getLineStart(int lineNumber) {
-		return this.delegate.getLineStart(lineNumber);
-	}
-
-	@Override
+    @Override
 	public int getNextToken() throws InvalidInputException {
 		TerminalToken nextToken = this.delegate.getNextToken();
 		int symbol  = translateTokenToTerminalSymbol(nextToken);

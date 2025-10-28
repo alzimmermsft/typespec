@@ -14,7 +14,6 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.dom;
 
-
 /**
  * Abstract base class of all type reference AST node types. A type node represents a
  * reference to a primitive type (including void), to an array type, or to a
@@ -24,6 +23,7 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * meaningful in the type argument position of a parameterized type.
  * UnionType got introduced in JLS4 to support common catch blocks for disjunctive types.
  * For JLS8, optional annotations indicated by {Annotation} got added.
+ * 
  * <pre>
  * Type:
  *    AnnotatableType:
@@ -69,180 +69,180 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public abstract class Type extends ASTNode {
 
-	/**
-	 * Creates a new AST node for a type owned by the given AST.
-	 * <p>
-	 * N.B. This constructor is package-private.
-	 * </p>
-	 *
-	 * @param ast the AST that is to own this node
-	 */
-	Type(AST ast) {
-		super(ast);
-	}
+    /**
+     * Creates a new AST node for a type owned by the given AST.
+     * <p>
+     * N.B. This constructor is package-private.
+     * </p>
+     *
+     * @param ast the AST that is to own this node
+     */
+    Type(AST ast) {
+        super(ast);
+    }
 
-	/**
-	 * Returns whether this type is a primitive type
-	 * ({@link PrimitiveType}).
-	 *
-	 * @return <code>true</code> if this is a primitive type, and
-	 *    <code>false</code> otherwise
-	 */
-	public final boolean isPrimitiveType() {
-		return (this instanceof PrimitiveType);
-	}
+    /**
+     * Returns whether this type is a primitive type
+     * ({@link PrimitiveType}).
+     *
+     * @return <code>true</code> if this is a primitive type, and
+     * <code>false</code> otherwise
+     */
+    public final boolean isPrimitiveType() {
+        return (this instanceof PrimitiveType);
+    }
 
-	/**
-	 * Returns whether this type is a simple type
-	 * ({@link SimpleType}).
-	 *
-	 * @return <code>true</code> if this is a simple type, and
-	 *    <code>false</code> otherwise
-	 */
-	public final boolean isSimpleType() {
-		return (this instanceof SimpleType);
-	}
+    /**
+     * Returns whether this type is a simple type
+     * ({@link SimpleType}).
+     *
+     * @return <code>true</code> if this is a simple type, and
+     * <code>false</code> otherwise
+     */
+    public final boolean isSimpleType() {
+        return (this instanceof SimpleType);
+    }
 
-	/**
-	 * Returns whether this type is an array type
-	 * ({@link ArrayType}).
-	 *
-	 * @return <code>true</code> if this is an array type, and
-	 *    <code>false</code> otherwise
-	 */
-	public final boolean isArrayType() {
-		return (this instanceof ArrayType);
-	}
+    /**
+     * Returns whether this type is an array type
+     * ({@link ArrayType}).
+     *
+     * @return <code>true</code> if this is an array type, and
+     * <code>false</code> otherwise
+     */
+    public final boolean isArrayType() {
+        return (this instanceof ArrayType);
+    }
 
-	/**
-	 * Returns whether this type is a name qualified type
-	 * ({@link NameQualifiedType}).
-	 *
-	 * @return <code>true</code> if this is a name qualified type, and
-	 *    <code>false</code> otherwise
-	 * @since 3.10
-	 */
-	public final boolean isNameQualifiedType() {
-		return (this instanceof NameQualifiedType);
-	}
+    /**
+     * Returns whether this type is a name qualified type
+     * ({@link NameQualifiedType}).
+     *
+     * @return <code>true</code> if this is a name qualified type, and
+     * <code>false</code> otherwise
+     * @since 3.10
+     */
+    public final boolean isNameQualifiedType() {
+        return (this instanceof NameQualifiedType);
+    }
 
-	/**
-	 * Returns whether this type is a parameterized type
-	 * ({@link ParameterizedType}).
-	 *
-	 * @return <code>true</code> if this is a parameterized type, and
-	 *    <code>false</code> otherwise
-	 * @since 3.1
-	 */
-	public final boolean isParameterizedType() {
-		return (this instanceof ParameterizedType);
-	}
+    /**
+     * Returns whether this type is a parameterized type
+     * ({@link ParameterizedType}).
+     *
+     * @return <code>true</code> if this is a parameterized type, and
+     * <code>false</code> otherwise
+     * @since 3.1
+     */
+    public final boolean isParameterizedType() {
+        return (this instanceof ParameterizedType);
+    }
 
-	/**
-	 * Returns whether this type is a qualified type
-	 * ({@link QualifiedType}).
-	 * <p>
-	 * Note that a type like "A.B" can be represented either of two ways:
-	 * <ol>
-	 * <li>
-	 * <code>QualifiedType(SimpleType(SimpleName("A")),SimpleName("B"))</code>
-	 * </li>
-	 * <li>
-	 * <code>SimpleType(QualifiedName(SimpleName("A"),SimpleName("B")))</code>
-	 * </li>
-	 * </ol>
-	 * The first form is preferred when "A" is known to be a type. However, a
-	 * parser cannot always determine this. Clients should be prepared to handle
-	 * either rather than make assumptions. (Note also that the first form
-	 * became possible as of JLS3; only the second form existed in the
-	 * JLS2 API.)
-	 *
-	 * @return <code>true</code> if this is a qualified type, and
-	 *    <code>false</code> otherwise
-	 * @since 3.1
-	 */
-	public final boolean isQualifiedType() {
-		return (this instanceof QualifiedType);
-	}
+    /**
+     * Returns whether this type is a qualified type
+     * ({@link QualifiedType}).
+     * <p>
+     * Note that a type like "A.B" can be represented either of two ways:
+     * <ol>
+     * <li>
+     * <code>QualifiedType(SimpleType(SimpleName("A")),SimpleName("B"))</code>
+     * </li>
+     * <li>
+     * <code>SimpleType(QualifiedName(SimpleName("A"),SimpleName("B")))</code>
+     * </li>
+     * </ol>
+     * The first form is preferred when "A" is known to be a type. However, a
+     * parser cannot always determine this. Clients should be prepared to handle
+     * either rather than make assumptions. (Note also that the first form
+     * became possible as of JLS3; only the second form existed in the
+     * JLS2 API.)
+     *
+     * @return <code>true</code> if this is a qualified type, and
+     * <code>false</code> otherwise
+     * @since 3.1
+     */
+    public final boolean isQualifiedType() {
+        return (this instanceof QualifiedType);
+    }
 
-	/**
-	 * Returns whether this type is a union type
-	 * ({@link UnionType}).
-	 *
-	 * @return <code>true</code> if this is a union type, and
-	 *    <code>false</code> otherwise
-	 * @since 3.7.1
-	 */
-	public final boolean isUnionType() {
-		return (this instanceof UnionType);
-	}
+    /**
+     * Returns whether this type is a union type
+     * ({@link UnionType}).
+     *
+     * @return <code>true</code> if this is a union type, and
+     * <code>false</code> otherwise
+     * @since 3.7.1
+     */
+    public final boolean isUnionType() {
+        return (this instanceof UnionType);
+    }
 
-	/**
-	 * Returns whether this type is a var. The convenience method checks
-	 * whether the type is so named.
-	 *
-	 * @return <code>true</code> if this is a var, and
-	 *    <code>false</code> otherwise
-	 * @exception UnsupportedOperationException if this operation is used in
-	 * an AST of level less than JLS10
-	 * @since 3.14
-	 */
-	public boolean isVar() {
-		return false;
-	}
+    /**
+     * Returns whether this type is a var. The convenience method checks
+     * whether the type is so named.
+     *
+     * @return <code>true</code> if this is a var, and
+     * <code>false</code> otherwise
+     * @exception UnsupportedOperationException if this operation is used in
+     * an AST of level less than JLS10
+     * @since 3.14
+     */
+    public boolean isVar() {
+        return false;
+    }
 
-	/**
-	 * Returns whether this type is an intersection type
-	 * ({@link IntersectionType}).
-	 *
-	 * @return <code>true</code> if this is an intersection type, and
-	 * 		<code>false</code> otherwise
-	 * @since 3.10
-	 */
-	public final boolean isIntersectionType() {
-		return (this instanceof IntersectionType);
-	}
+    /**
+     * Returns whether this type is an intersection type
+     * ({@link IntersectionType}).
+     *
+     * @return <code>true</code> if this is an intersection type, and
+     * <code>false</code> otherwise
+     * @since 3.10
+     */
+    public final boolean isIntersectionType() {
+        return (this instanceof IntersectionType);
+    }
 
-	/**
-	 * Returns whether this type is a wildcard type
-	 * ({@link WildcardType}).
-	 * <p>
-	 * Note that a wildcard type is only meaningful as a
-	 * type argument of a {@link ParameterizedType} node.
-	 * </p>
-	 *
-	 * @return <code>true</code> if this is a wildcard type, and
-	 *    <code>false</code> otherwise
-	 * @since 3.1
-	 */
-	public final boolean isWildcardType() {
-		return (this instanceof WildcardType);
-	}
+    /**
+     * Returns whether this type is a wildcard type
+     * ({@link WildcardType}).
+     * <p>
+     * Note that a wildcard type is only meaningful as a
+     * type argument of a {@link ParameterizedType} node.
+     * </p>
+     *
+     * @return <code>true</code> if this is a wildcard type, and
+     * <code>false</code> otherwise
+     * @since 3.1
+     */
+    public final boolean isWildcardType() {
+        return (this instanceof WildcardType);
+    }
 
-	/**
-	 * Returns whether this type can be annotated. All sub-classes of
-	 * {@link AnnotatableType} can be annotated.
-	 *
-	 * @return <code>true</code> if this type is an instance of {@link AnnotatableType}, and
-	 * <code>false</code> otherwise
-	 *
-	 * @since 3.10
-	 */
-	public boolean isAnnotatable() {
-		return (this instanceof AnnotatableType);
-	}
+    /**
+     * Returns whether this type can be annotated. All sub-classes of
+     * {@link AnnotatableType} can be annotated.
+     *
+     * @return <code>true</code> if this type is an instance of {@link AnnotatableType}, and
+     * <code>false</code> otherwise
+     *
+     * @since 3.10
+     */
+    public boolean isAnnotatable() {
+        return (this instanceof AnnotatableType);
+    }
 
-	/**
-	 * Resolves and returns the binding for this type.
-	 * <p>
-	 * Note that bindings are generally unavailable unless requested when the
-	 * AST is being built.
-	 * </p>
-	 *
-	 * @return the type binding, or <code>null</code> if the binding cannot be
-	 *    resolved
-	 */
-	public final ITypeBinding resolveBinding() {
-		return this.ast.getBindingResolver().resolveType(this);
-	}
+    /**
+     * Resolves and returns the binding for this type.
+     * <p>
+     * Note that bindings are generally unavailable unless requested when the
+     * AST is being built.
+     * </p>
+     *
+     * @return the type binding, or <code>null</code> if the binding cannot be
+     * resolved
+     */
+    public final ITypeBinding resolveBinding() {
+        return this.ast.getBindingResolver().resolveType(this);
+    }
 }

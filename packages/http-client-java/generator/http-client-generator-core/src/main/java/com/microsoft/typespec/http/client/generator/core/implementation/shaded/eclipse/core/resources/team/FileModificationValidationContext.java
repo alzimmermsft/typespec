@@ -13,8 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.team;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IWorkspace;
-
 /**
  * A context that is used in conjunction with the {@link FileModificationValidator}
  * to indicate that UI-based validation is desired.
@@ -26,34 +24,32 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class FileModificationValidationContext {
 
-	/**
-	 * Constant that can be passed to {@link IWorkspace#validateEdit(com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IFile[], Object)}
-	 * to indicate that the caller does not have access to a UI context but would still
-	 * like to have UI-based validation if possible.
-	 */
-	public static final FileModificationValidationContext VALIDATE_PROMPT = new FileModificationValidationContext(null);
+    private final Object shell;
 
-	private final Object shell;
+    /**
+     * Create a context with the given shell.
+     *
+     * @param shell the shell
+     */
+    FileModificationValidationContext(Object shell) {
+        this.shell = shell;
+    }
 
-	/**
-	 * Create a context with the given shell.
-	 *
-	 * @param shell the shell
-	 */
-	FileModificationValidationContext(Object shell) {
-		this.shell = shell;
-	}
-
-	/**
-	 * Return the <code>com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.swt.widgets.Shell</code> that is to be used to
-	 * parent any dialogs with the user, or <code>null</code> if there is no UI context
-	 * available (declared as an <code>Object</code> to avoid any direct references on the SWT component).
-	 * If there is no shell, the {@link FileModificationValidator} may still perform
-	 * UI-based validation if they can obtain a Shell from another source.
-	 * @return the <code>com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.swt.widgets.Shell</code> that is to be used to
-	 *    parent any dialogs with the user, or <code>null</code>
-	 */
-	public Object getShell() {
-		return shell;
-	}
+    /**
+     * Return the
+     * <code>com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.swt.widgets.Shell</code>
+     * that is to be used to
+     * parent any dialogs with the user, or <code>null</code> if there is no UI context
+     * available (declared as an <code>Object</code> to avoid any direct references on the SWT component).
+     * If there is no shell, the {@link FileModificationValidator} may still perform
+     * UI-based validation if they can obtain a Shell from another source.
+     * 
+     * @return the
+     * <code>com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.swt.widgets.Shell</code>
+     * that is to be used to
+     * parent any dialogs with the user, or <code>null</code>
+     */
+    public Object getShell() {
+        return shell;
+    }
 }

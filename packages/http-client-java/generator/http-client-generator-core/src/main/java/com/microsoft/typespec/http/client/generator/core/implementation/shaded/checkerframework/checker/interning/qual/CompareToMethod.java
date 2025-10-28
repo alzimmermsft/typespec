@@ -1,11 +1,11 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.interning.qual;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.InheritedAnnotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.InheritedAnnotation;
 
 /**
  * Method declaration annotation that indicates a method has a specification like {@code
@@ -18,4 +18,5 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @InheritedAnnotation
-public @interface CompareToMethod {}
+public @interface CompareToMethod {
+}

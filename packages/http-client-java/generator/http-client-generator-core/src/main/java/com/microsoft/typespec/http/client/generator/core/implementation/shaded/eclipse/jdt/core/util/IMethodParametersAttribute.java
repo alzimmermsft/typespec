@@ -22,30 +22,30 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IMethodParametersAttribute extends IClassFileAttribute {
 
-	/**
-	 * Answer back the number of parameters for this method as specified in
-	 * the JVM specifications.
-	 *
-	 * @return the number of parameters for this method as specified in
-	 * the JVM specifications
-	 */
-	int getMethodParameterLength();
+    /**
+     * Answer back the number of parameters for this method as specified in
+     * the JVM specifications.
+     *
+     * @return the number of parameters for this method as specified in
+     * the JVM specifications
+     */
+    int getMethodParameterLength();
 
-	/**
-	 * Answer back the name for the i'th parameter. Answer null if no
-	 * name is available.
-	 *
-	 * @return back the name for the i'th parameter. Returns null if no
-	 * name is available.
-	 */
-	char[] getParameterName(int i);
+    /**
+     * Answer back the name for the i'th parameter. Answer null if no
+     * name is available.
+     *
+     * @return back the name for the i'th parameter. Returns null if no
+     * name is available.
+     */
+    char[] getParameterName(int i);
 
-	/**
-	 * Answer back the access flags for the i'th parameter, a mask of
-	 * <code>ACC_FINAL</code>, <code>ACC_SYNTHETIC</code>, and <code>ACC_MANDATED</code>.
-	 *
-	 * @return the access flags for the i'th parameter.
-	 */
-	short getAccessFlags(int i);
+    /**
+     * Answer back the access flags for the i'th parameter, a mask of
+     * <code>ACC_FINAL</code>, <code>ACC_SYNTHETIC</code>, and <code>ACC_MANDATED</code>.
+     *
+     * @return the access flags for the i'th parameter.
+     */
+    short getAccessFlags(int i);
 
 }

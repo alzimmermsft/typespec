@@ -21,13 +21,13 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IAdapterManagerProvider {
 
-	/**
-	 * Add factories. The method called before the AdapterManager starts using
-	 * factories.
-	 *
-	 * @param adapterManager the adapter manager that is about to be used
-	 * @return <code>true</code> if factories were added; <code>false</code> if no
-	 *         factories were added in this method call.
-	 */
-	public boolean addFactories(AdapterManager adapterManager);
+    /**
+     * Add factories. The method called before the AdapterManager starts using
+     * factories.
+     *
+     * @param adapterManager the adapter manager that is about to be used
+     * @return <code>true</code> if factories were added; <code>false</code> if no
+     * factories were added in this method call.
+     */
+    public boolean addFactories(AdapterManager adapterManager);
 }

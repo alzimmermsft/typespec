@@ -39,38 +39,38 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public final class BundleDefaultsScope extends AbstractScope {
 
-	/**
-	 * String constant (value of <code>"default"</code>) used for the scope name for
-	 * the default preference scope.
-	 */
-	public static final String SCOPE = "bundle_defaults"; //$NON-NLS-1$
+    /**
+     * String constant (value of <code>"default"</code>) used for the scope name for
+     * the default preference scope.
+     */
+    public static final String SCOPE = "bundle_defaults"; //$NON-NLS-1$
 
-	/**
-	 * Singleton instance of a Bundle Defaults Scope object. Typical usage is:
-	 * <code>BundleDefaultsScope.INSTANCE.getNode(...);</code>
-	 *
-	 * @since 3.4
-	 */
-	public static final IScopeContext INSTANCE = new BundleDefaultsScope();
+    /**
+     * Singleton instance of a Bundle Defaults Scope object. Typical usage is:
+     * <code>BundleDefaultsScope.INSTANCE.getNode(...);</code>
+     *
+     * @since 3.4
+     */
+    public static final IScopeContext INSTANCE = new BundleDefaultsScope();
 
-	/**
-	 * Create and return a new default scope instance.
-	 *
-	 * @deprecated use <code>BundleDefaultsScope.INSTANCE</code> instead
-	 */
-	@Deprecated
-	public BundleDefaultsScope() {
-		super();
-	}
+    /**
+     * Create and return a new default scope instance.
+     *
+     * @deprecated use <code>BundleDefaultsScope.INSTANCE</code> instead
+     */
+    @Deprecated
+    public BundleDefaultsScope() {
+        super();
+    }
 
-	@Override
-	public String getName() {
-		return SCOPE;
-	}
+    @Override
+    public String getName() {
+        return SCOPE;
+    }
 
-	@Override
-	public IPath getLocation() {
-		// We don't persist defaults so return null.
-		return null;
-	}
+    @Override
+    public IPath getLocation() {
+        // We don't persist defaults so return null.
+        return null;
+    }
 }

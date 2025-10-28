@@ -12,20 +12,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.builder;
-import java.io.IOException;
-import java.nio.file.FileSystem;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Predicate;
+
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Status;
@@ -40,6 +27,19 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.JRTUtil;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.SuffixConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Util;
+
+import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
 
 public class ClasspathJrtWithReleaseOption extends ClasspathJrt {
 
@@ -212,15 +212,7 @@ public class ClasspathJrtWithReleaseOption extends ClasspathJrt {
 		}
 	}
 
-	@Override
-	public Collection<String> getModuleNames(Collection<String> limitModules) {
-		Set<String> cache = ClasspathJrt.getModuleNames(this);
-		if (cache != null)
-			return selectModules(cache, limitModules);
-		return Collections.emptyList();
-	}
-
-	@Override
+    @Override
 	public void cleanup() {
 		try {
 			super.cleanup();

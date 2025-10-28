@@ -170,37 +170,29 @@ public class SetContainerOperation extends ChangeClasspathOperation {
 			"	container path: " + this.containerPath + '\n' + //$NON-NLS-1$
 			"	projects: {" +//$NON-NLS-1$
 			org.eclipse.jdt.internal.compiler.util.Util.toString(
-				this.affectedProjects,
-				new org.eclipse.jdt.internal.compiler.util.Util.Displayable(){
-					@Override
-					public String displayString(Object o) { return ((IJavaProject) o).getElementName(); }
-				}) +
+				this.affectedProjects, o -> ((IJavaProject) o).getElementName()) +
 			"}\n	values: {\n"  +//$NON-NLS-1$
 			org.eclipse.jdt.internal.compiler.util.Util.toString(
-				this.respectiveContainers,
-				new org.eclipse.jdt.internal.compiler.util.Util.Displayable(){
-					@Override
-					public String displayString(Object o) {
-						StringBuilder buffer = new StringBuilder("		"); //$NON-NLS-1$
-						if (o == null) {
-							buffer.append("<null>"); //$NON-NLS-1$
-							return buffer.toString();
-						}
-						IClasspathContainer container = (IClasspathContainer) o;
-						buffer.append(container.getDescription());
-						buffer.append(" {\n"); //$NON-NLS-1$
-						IClasspathEntry[] entries = container.getClasspathEntries();
-						if (entries != null){
-							for (IClasspathEntry entry : entries) {
-								buffer.append(" 			"); //$NON-NLS-1$
-								buffer.append(entry);
-								buffer.append('\n');
-							}
-						}
-						buffer.append(" 		}"); //$NON-NLS-1$
-						return buffer.toString();
-					}
-				}) +
+				this.respectiveContainers, o -> {
+                    StringBuilder buffer = new StringBuilder("		"); //$NON-NLS-1$
+                    if (o == null) {
+                        buffer.append("<null>"); //$NON-NLS-1$
+                        return buffer.toString();
+                    }
+                    IClasspathContainer container = (IClasspathContainer) o;
+                    buffer.append(container.getDescription());
+                    buffer.append(" {\n"); //$NON-NLS-1$
+                    IClasspathEntry[] entries = container.getClasspathEntries();
+                    if (entries != null){
+                        for (IClasspathEntry entry : entries) {
+                            buffer.append(" 			"); //$NON-NLS-1$
+                            buffer.append(entry);
+                            buffer.append('\n');
+                        }
+                    }
+                    buffer.append(" 		}"); //$NON-NLS-1$
+                    return buffer.toString();
+                }) +
 			"\n	}");//$NON-NLS-1$
 	}
 

@@ -33,20 +33,20 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 @FunctionalInterface
 public interface ISafeRunnableWithResult<T> extends ISafeRunnable {
-	@Override
-	default void run() throws Exception {
-		runWithResult();
-	}
+    @Override
+    default void run() throws Exception {
+        runWithResult();
+    }
 
-	/**
-	 * Runs this runnable and returns the result. Any exceptions thrown from this
-	 * method will be logged by the caller and passed to this runnable's
-	 * {@link #handleException} method.
-	 *
-	 * @return the result
-	 *
-	 * @exception Exception if a problem occurred while running this method
-	 * @see SafeRunner#run(ISafeRunnable)
-	 */
-	public T runWithResult() throws Exception;
+    /**
+     * Runs this runnable and returns the result. Any exceptions thrown from this
+     * method will be logged by the caller and passed to this runnable's
+     * {@link #handleException} method.
+     *
+     * @return the result
+     *
+     * @exception Exception if a problem occurred while running this method
+     * @see SafeRunner#run(ISafeRunnable)
+     */
+    public T runWithResult() throws Exception;
 }

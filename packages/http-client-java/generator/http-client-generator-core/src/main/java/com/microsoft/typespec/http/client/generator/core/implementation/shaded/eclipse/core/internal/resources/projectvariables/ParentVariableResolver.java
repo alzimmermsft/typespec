@@ -14,10 +14,10 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.resources.projectvariables;
 
-import java.net.URI;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.filesystem.URIUtil;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.variableresolvers.PathVariableResolver;
+import java.net.URI;
 
 /**
  * Path Variable representing the parent directory of the variable provided
@@ -27,44 +27,44 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class ParentVariableResolver extends PathVariableResolver {
 
-	final public static String NAME = "PARENT"; //$NON-NLS-1$
+    final public static String NAME = "PARENT"; //$NON-NLS-1$
 
-	public ParentVariableResolver() {
-		// nothing
-	}
+    public ParentVariableResolver() {
+        // nothing
+    }
 
-	@Override
-	public String getValue(String variable, IResource resource) {
-		int index = variable.indexOf('-');
-		if (index == -1 || index == (variable.length() - 1)) {
-			return null;
-		}
+    @Override
+    public String getValue(String variable, IResource resource) {
+        int index = variable.indexOf('-');
+        if (index == -1 || index == (variable.length() - 1)) {
+            return null;
+        }
 
-		String countRemaining = variable.substring(index + 1);
-		index = countRemaining.indexOf('-');
-		if (index == -1 || index == (variable.length() - 1)) {
-			return null;
-		}
+        String countRemaining = variable.substring(index + 1);
+        index = countRemaining.indexOf('-');
+        if (index == -1 || index == (variable.length() - 1)) {
+            return null;
+        }
 
-		String countString = countRemaining.substring(0, index);
-		int count = 0;
-		try {
-			count = Integer.parseInt(countString);
-			if (count < 0) {
-				return null;
-			}
-		} catch (NumberFormatException e) {
-			return null;
-		}
-		String argument = countRemaining.substring(index + 1);
+        String countString = countRemaining.substring(0, index);
+        int count = 0;
+        try {
+            count = Integer.parseInt(countString);
+            if (count < 0) {
+                return null;
+            }
+        } catch (NumberFormatException e) {
+            return null;
+        }
+        String argument = countRemaining.substring(index + 1);
 
-		URI value = resource.getPathVariableManager().getURIValue(argument);
-		if (value == null) {
-			return null;
-		}
-		value = resource.getPathVariableManager().resolveURI(value);
-		value = URIUtil.toURI(URIUtil.toPath(value).removeLastSegments(count));
+        URI value = resource.getPathVariableManager().getURIValue(argument);
+        if (value == null) {
+            return null;
+        }
+        value = resource.getPathVariableManager().resolveURI(value);
+        value = URIUtil.toURI(URIUtil.toPath(value).removeLastSegments(count));
 
-		return value.toASCIIString();
-	}
+        return value.toASCIIString();
+    }
 }

@@ -63,294 +63,295 @@ import java.util.ResourceBundle;
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IExtensionRegistry {
-	/**
-	 * <b>Note:</b> for new implementations consider using
-	 * {@link #addListener(IRegistryEventListener, String)}.
-	 * <p>
-	 * Adds the given listener for registry change events related to extension
-	 * points in the given namespace. Has no effect if an identical listener is
-	 * already registered. After completion of this method, the given listener will
-	 * be registered for events related to extension points in the specified
-	 * namespace. If no namespace is specified, the listener will receive
-	 * notifications for changes to extension points in any namespace.
-	 * </p>
-	 * <p>
-	 * Once registered, a listener starts receiving notification of changes to the
-	 * registry. Registry change notifications are sent asynchronously. The listener
-	 * continues to receive notifications until it is removed.
-	 * </p>
-	 *
-	 * @param listener  the listener
-	 * @param namespace the namespace in which to listen for changes
-	 * @see IRegistryChangeListener
-	 * @see IRegistryChangeEvent
-	 * @see #removeRegistryChangeListener(IRegistryChangeListener)
-	 */
+    /**
+     * <b>Note:</b> for new implementations consider using
+     * {@link #addListener(IRegistryEventListener, String)}.
+     * <p>
+     * Adds the given listener for registry change events related to extension
+     * points in the given namespace. Has no effect if an identical listener is
+     * already registered. After completion of this method, the given listener will
+     * be registered for events related to extension points in the specified
+     * namespace. If no namespace is specified, the listener will receive
+     * notifications for changes to extension points in any namespace.
+     * </p>
+     * <p>
+     * Once registered, a listener starts receiving notification of changes to the
+     * registry. Registry change notifications are sent asynchronously. The listener
+     * continues to receive notifications until it is removed.
+     * </p>
+     *
+     * @param listener the listener
+     * @param namespace the namespace in which to listen for changes
+     * @see IRegistryChangeListener
+     * @see IRegistryChangeEvent
+     * @see #removeRegistryChangeListener(IRegistryChangeListener)
+     */
     void addRegistryChangeListener(IRegistryChangeListener listener, String namespace);
 
-	/**
-	 * <b>Note:</b> for new implementations consider using
-	 * {@link #addListener(IRegistryEventListener)}.
-	 * <p>
-	 * Adds the given listener for registry change events. Has no effect if an
-	 * identical listener is already registered.
-	 *
-	 * </p>
-	 * <p>
-	 * This method is equivalent to:
-	 * </p>
-	 *
-	 * <pre>
-	 * addRegistryChangeListener(listener, null);
-	 * </pre>
-	 *
-	 * @param listener the listener
-	 * @see IRegistryChangeListener
-	 * @see IRegistryChangeEvent
-	 * @see #addRegistryChangeListener(IRegistryChangeListener, String)
-	 * @see #removeRegistryChangeListener(IRegistryChangeListener)
-	 */
+    /**
+     * <b>Note:</b> for new implementations consider using
+     * {@link #addListener(IRegistryEventListener)}.
+     * <p>
+     * Adds the given listener for registry change events. Has no effect if an
+     * identical listener is already registered.
+     *
+     * </p>
+     * <p>
+     * This method is equivalent to:
+     * </p>
+     *
+     * <pre>
+     * addRegistryChangeListener(listener, null);
+     * </pre>
+     *
+     * @param listener the listener
+     * @see IRegistryChangeListener
+     * @see IRegistryChangeEvent
+     * @see #addRegistryChangeListener(IRegistryChangeListener, String)
+     * @see #removeRegistryChangeListener(IRegistryChangeListener)
+     */
     void addRegistryChangeListener(IRegistryChangeListener listener);
 
     /**
-	 * Returns all configuration elements from all extensions configured into the
-	 * identified extension point. Returns an empty array if the extension point
-	 * does not exist, has no extensions configured, or none of the extensions
-	 * contain configuration elements.
-	 *
-	 * @param namespace          the namespace for the extension point (e.g.
-	 *                           <code>"com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources"</code>)
-	 * @param extensionPointName the simple identifier of the extension point (e.g.
-	 *                           <code>"builders"</code>)
-	 * @return the configuration elements
-	 */
+     * Returns all configuration elements from all extensions configured into the
+     * identified extension point. Returns an empty array if the extension point
+     * does not exist, has no extensions configured, or none of the extensions
+     * contain configuration elements.
+     *
+     * @param namespace the namespace for the extension point (e.g.
+     * <code>"com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources"</code>)
+     * @param extensionPointName the simple identifier of the extension point (e.g.
+     * <code>"builders"</code>)
+     * @return the configuration elements
+     */
     IConfigurationElement[] getConfigurationElementsFor(String namespace, String extensionPointName);
 
-	/**
-	 * Returns all configuration elements from the identified extension. Returns an
-	 * empty array if the extension does not exist or contains no configuration
-	 * elements.
-	 *
-	 * @param namespace          the namespace for the extension point (e.g.
-	 *                           <code>"com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources"</code>)
-	 * @param extensionPointName the simple identifier of the extension point (e.g.
-	 *                           <code>"builders"</code>)
-	 * @param extensionId        the unique identifier of the extension (e.g.
-	 *                           <code>"com.example.acme.coolbuilder"</code>)
-	 * @return the configuration elements
-	 */
-    IConfigurationElement[] getConfigurationElementsFor(String namespace, String extensionPointName, String extensionId);
+    /**
+     * Returns all configuration elements from the identified extension. Returns an
+     * empty array if the extension does not exist or contains no configuration
+     * elements.
+     *
+     * @param namespace the namespace for the extension point (e.g.
+     * <code>"com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources"</code>)
+     * @param extensionPointName the simple identifier of the extension point (e.g.
+     * <code>"builders"</code>)
+     * @param extensionId the unique identifier of the extension (e.g.
+     * <code>"com.example.acme.coolbuilder"</code>)
+     * @return the configuration elements
+     */
+    IConfigurationElement[] getConfigurationElementsFor(String namespace, String extensionPointName,
+        String extensionId);
 
-	/**
-	 * Returns the specified extension in this extension registry, or
-	 * <code>null</code> if there is no such extension.
-	 *
-	 * @param extensionId the unique identifier of the extension (e.g.
-	 *                    <code>"com.example.acme.coolbuilder"</code>)
-	 * @return the extension, or <code>null</code>
-	 */
+    /**
+     * Returns the specified extension in this extension registry, or
+     * <code>null</code> if there is no such extension.
+     *
+     * @param extensionId the unique identifier of the extension (e.g.
+     * <code>"com.example.acme.coolbuilder"</code>)
+     * @return the extension, or <code>null</code>
+     */
     IExtension getExtension(String extensionId);
 
-	/**
-	 * Returns the specified extension in this extension registry, or
-	 * <code>null</code> if there is no such extension. The first parameter
-	 * identifies the extension point, and the second parameter identifies an
-	 * extension plugged in to that extension point.
-	 *
-	 * @param extensionPointId the unique identifier of the extension point (e.g.
-	 *                         <code>"com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.builders"</code>)
-	 * @param extensionId      the unique identifier of the extension (e.g.
-	 *                         <code>"com.example.acme.coolbuilder"</code>)
-	 * @return the extension, or <code>null</code>
-	 */
+    /**
+     * Returns the specified extension in this extension registry, or
+     * <code>null</code> if there is no such extension. The first parameter
+     * identifies the extension point, and the second parameter identifies an
+     * extension plugged in to that extension point.
+     *
+     * @param extensionPointId the unique identifier of the extension point (e.g.
+     * <code>"com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.builders"</code>)
+     * @param extensionId the unique identifier of the extension (e.g.
+     * <code>"com.example.acme.coolbuilder"</code>)
+     * @return the extension, or <code>null</code>
+     */
     IExtension getExtension(String extensionPointId, String extensionId);
 
-	/**
-	 * Returns the specified extension in this extension registry, or
-	 * <code>null</code> if there is no such extension. The first two parameters
-	 * identify the extension point, and the third parameter identifies an extension
-	 * plugged in to that extension point.
-	 *
-	 * @param namespace          the namespace for the extension point (e.g.
-	 *                           <code>"com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources"</code>)
-	 * @param extensionPointName the simple identifier of the extension point (e.g.
-	 *                           <code>"builders"</code>)
-	 * @param extensionId        the unique identifier of the extension (e.g.
-	 *                           <code>"com.example.acme.coolbuilder"</code>)
-	 * @return the extension, or <code>null</code>
-	 */
+    /**
+     * Returns the specified extension in this extension registry, or
+     * <code>null</code> if there is no such extension. The first two parameters
+     * identify the extension point, and the third parameter identifies an extension
+     * plugged in to that extension point.
+     *
+     * @param namespace the namespace for the extension point (e.g.
+     * <code>"com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources"</code>)
+     * @param extensionPointName the simple identifier of the extension point (e.g.
+     * <code>"builders"</code>)
+     * @param extensionId the unique identifier of the extension (e.g.
+     * <code>"com.example.acme.coolbuilder"</code>)
+     * @return the extension, or <code>null</code>
+     */
     IExtension getExtension(String namespace, String extensionPointName, String extensionId);
 
-	/**
-	 * Returns the extension point with the given extension point identifier in this
-	 * extension registry, or <code>null</code> if there is no such extension point.
-	 *
-	 * @param extensionPointId the unique identifier of the extension point (e.g.,
-	 *                         <code>"com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.builders"</code>)
-	 * @return the extension point, or <code>null</code>
-	 */
+    /**
+     * Returns the extension point with the given extension point identifier in this
+     * extension registry, or <code>null</code> if there is no such extension point.
+     *
+     * @param extensionPointId the unique identifier of the extension point (e.g.,
+     * <code>"com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.builders"</code>)
+     * @return the extension point, or <code>null</code>
+     */
     IExtensionPoint getExtensionPoint(String extensionPointId);
 
-	/**
-	 * Returns the extension point in this extension registry with the given
-	 * namespace and extension point simple identifier, or <code>null</code> if
-	 * there is no such extension point.
-	 *
-	 * @param namespace          the namespace for the given extension point (e.g.
-	 *                           <code>"com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources"</code>)
-	 * @param extensionPointName the simple identifier of the extension point (e.g.
-	 *                           <code>"builders"</code>)
-	 * @return the extension point, or <code>null</code>
-	 */
+    /**
+     * Returns the extension point in this extension registry with the given
+     * namespace and extension point simple identifier, or <code>null</code> if
+     * there is no such extension point.
+     *
+     * @param namespace the namespace for the given extension point (e.g.
+     * <code>"com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources"</code>)
+     * @param extensionPointName the simple identifier of the extension point (e.g.
+     * <code>"builders"</code>)
+     * @return the extension point, or <code>null</code>
+     */
     IExtensionPoint getExtensionPoint(String namespace, String extensionPointName);
 
-	/**
-	 * Returns all extension points known to this extension registry. Returns an
-	 * empty array if there are no extension points.
-	 *
-	 * @return the extension points known to this extension registry
-	 */
+    /**
+     * Returns all extension points known to this extension registry. Returns an
+     * empty array if there are no extension points.
+     *
+     * @return the extension points known to this extension registry
+     */
     IExtensionPoint[] getExtensionPoints();
 
     /**
-	 * Returns all extensions declared in the given namespace. Returns an empty
-	 * array if no extensions are declared in the namespace.
-	 *
-	 * @param namespace the namespace for the extensions (e.g.
-	 *                  <code>"com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources"</code>)
-	 * @return the extensions in this registry declared in the given namespace
-	 */
+     * Returns all extensions declared in the given namespace. Returns an empty
+     * array if no extensions are declared in the namespace.
+     *
+     * @param namespace the namespace for the extensions (e.g.
+     * <code>"com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources"</code>)
+     * @return the extensions in this registry declared in the given namespace
+     */
     IExtension[] getExtensions(String namespace);
 
-	/**
-	 * Returns all extensions supplied by the contributor, or <code>null</code> if
-	 * there are no such extensions.
-	 *
-	 * @param contributor the contributor for the extensions (for OSGi registry,
-	 *                    bundles and fragments are different contributors)
-	 * @return the extensions, or <code>null</code>
-	 * @since 3.4
-	 */
+    /**
+     * Returns all extensions supplied by the contributor, or <code>null</code> if
+     * there are no such extensions.
+     *
+     * @param contributor the contributor for the extensions (for OSGi registry,
+     * bundles and fragments are different contributors)
+     * @return the extensions, or <code>null</code>
+     * @since 3.4
+     */
     IExtension[] getExtensions(IContributor contributor);
 
-	/**
-	 * Returns all namespaces currently used by extensions and extension points in
-	 * this registry. Returns an empty array if there are no known
-	 * extensions/extension points in this registry.
-	 * <p>
-	 * The fully-qualified name of an extension point or an extension consist of a
-	 * namespace and a simple name (much like a qualified Java class name consist of
-	 * a package name and a class name). The simple names are presumed to be unique
-	 * in the namespace.
-	 * </p>
-	 *
-	 * @return all namespaces known to this registry
-	 */
+    /**
+     * Returns all namespaces currently used by extensions and extension points in
+     * this registry. Returns an empty array if there are no known
+     * extensions/extension points in this registry.
+     * <p>
+     * The fully-qualified name of an extension point or an extension consist of a
+     * namespace and a simple name (much like a qualified Java class name consist of
+     * a package name and a class name). The simple names are presumed to be unique
+     * in the namespace.
+     * </p>
+     *
+     * @return all namespaces known to this registry
+     */
     String[] getNamespaces();
 
-	/**
-	 * Removes the given registry change listener from this registry. Has no effect
-	 * if an identical listener is not registered.
-	 *
-	 * @param listener the listener
-	 * @see IRegistryChangeListener
-	 * @see #addRegistryChangeListener(IRegistryChangeListener)
-	 * @see #addRegistryChangeListener(IRegistryChangeListener, String)
-	 */
+    /**
+     * Removes the given registry change listener from this registry. Has no effect
+     * if an identical listener is not registered.
+     *
+     * @param listener the listener
+     * @see IRegistryChangeListener
+     * @see #addRegistryChangeListener(IRegistryChangeListener)
+     * @see #addRegistryChangeListener(IRegistryChangeListener, String)
+     */
     void removeRegistryChangeListener(IRegistryChangeListener listener);
 
-	/**
-	 * Adds to this extension registry an extension point(s), extension(s), or a
-	 * combination of those described by the XML file. The information in the XML
-	 * file should be supplied in the same format as the plugin.xml; in fact,
-	 * Plug-in Manifest editor can be used to prepare the XML file. The top token of
-	 * the contribution (normally, "plugin" or "fragment" in the Plug-in Manifest
-	 * editor) is ignored by this method.
-	 * <p>
-	 * This method is an access controlled method. Proper token (master token or
-	 * user token) should be passed as an argument. Two registry keys are set in the
-	 * registry constructor
-	 * {@link RegistryFactory#createRegistry(com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.spi.RegistryStrategy, Object, Object)}:
-	 * master token and a user token. Master token allows all operations; user token
-	 * allows non-persisted registry elements to be modified.
-	 * </p>
-	 *
-	 * @param is                stream open on the XML file. The XML file can
-	 *                          contain an extension point(s) or/and extension(s)
-	 *                          described in the format similar to plugin.xml. The
-	 *                          method closes the stream before returning
-	 * @param contributor       the contributor making this contribution.
-	 * @param persist           indicates if the contribution(s) should be stored in
-	 *                          the registry cache. If <code>false</code>,
-	 *                          contribution is not persisted in the registry cache
-	 *                          and is lost on Eclipse restart
-	 * @param name              optional name of the contribution. Used for error
-	 *                          reporting; might be <code>null</code>
-	 * @param translationBundle optional resource bundle used for translations;
-	 *                          might be <code>null</code>
-	 * @param token             the key used to check permissions
-	 * @return <code>true</code> if the contribution was successfully processed and
-	 *         <code>false</code> otherwise
-	 * @throws IllegalArgumentException if an incorrect token is passed
-	 *
-	 * @see IContributor
-	 * @since org.eclipse.equinox.registry 3.2
-	 */
+    /**
+     * Adds to this extension registry an extension point(s), extension(s), or a
+     * combination of those described by the XML file. The information in the XML
+     * file should be supplied in the same format as the plugin.xml; in fact,
+     * Plug-in Manifest editor can be used to prepare the XML file. The top token of
+     * the contribution (normally, "plugin" or "fragment" in the Plug-in Manifest
+     * editor) is ignored by this method.
+     * <p>
+     * This method is an access controlled method. Proper token (master token or
+     * user token) should be passed as an argument. Two registry keys are set in the
+     * registry constructor
+     * {@link RegistryFactory#createRegistry(com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.spi.RegistryStrategy, Object, Object)}:
+     * master token and a user token. Master token allows all operations; user token
+     * allows non-persisted registry elements to be modified.
+     * </p>
+     *
+     * @param is stream open on the XML file. The XML file can
+     * contain an extension point(s) or/and extension(s)
+     * described in the format similar to plugin.xml. The
+     * method closes the stream before returning
+     * @param contributor the contributor making this contribution.
+     * @param persist indicates if the contribution(s) should be stored in
+     * the registry cache. If <code>false</code>,
+     * contribution is not persisted in the registry cache
+     * and is lost on Eclipse restart
+     * @param name optional name of the contribution. Used for error
+     * reporting; might be <code>null</code>
+     * @param translationBundle optional resource bundle used for translations;
+     * might be <code>null</code>
+     * @param token the key used to check permissions
+     * @return <code>true</code> if the contribution was successfully processed and
+     * <code>false</code> otherwise
+     * @throws IllegalArgumentException if an incorrect token is passed
+     *
+     * @see IContributor
+     * @since org.eclipse.equinox.registry 3.2
+     */
     boolean addContribution(InputStream is, IContributor contributor, boolean persist, String name,
         ResourceBundle translationBundle, Object token) throws IllegalArgumentException;
 
-	/**
-	 * Adds the given listener for registry change events. Listener will be notified
-	 * on changes to all extension points and underlying extensions.
-	 * <p>
-	 * Depending on activity, listeners of this type might receive a large number of
-	 * modifications and negatively impact overall system performance. Whenever
-	 * possible, consider registering listener specific to an extension point rather
-	 * than a "global" listener.
-	 * </p>
-	 * <p>
-	 * Once registered, a listener starts receiving notification of changes to the
-	 * registry. Registry change notifications are sent asynchronously. The listener
-	 * continues to receive notifications until it is removed.
-	 * </p>
-	 * <p>
-	 * This method has no effect if the listener is already registered.
-	 * </p>
-	 *
-	 * @param listener the listener
-	 * @since org.eclipse.equinox.registry 3.4
-	 */
+    /**
+     * Adds the given listener for registry change events. Listener will be notified
+     * on changes to all extension points and underlying extensions.
+     * <p>
+     * Depending on activity, listeners of this type might receive a large number of
+     * modifications and negatively impact overall system performance. Whenever
+     * possible, consider registering listener specific to an extension point rather
+     * than a "global" listener.
+     * </p>
+     * <p>
+     * Once registered, a listener starts receiving notification of changes to the
+     * registry. Registry change notifications are sent asynchronously. The listener
+     * continues to receive notifications until it is removed.
+     * </p>
+     * <p>
+     * This method has no effect if the listener is already registered.
+     * </p>
+     *
+     * @param listener the listener
+     * @since org.eclipse.equinox.registry 3.4
+     */
     void addListener(IRegistryEventListener listener);
 
-	/**
-	 * Adds the given listener for registry change events related to specified
-	 * extension point.
-	 * <p>
-	 * Once registered, a listener starts receiving notification of changes to the
-	 * registry. Registry change notifications are sent asynchronously. The listener
-	 * continues to receive notifications until it is removed.
-	 * </p>
-	 * <p>
-	 * This method has no effect if the listener is already registered.
-	 * </p>
-	 *
-	 * @param listener         the listener
-	 * @param extensionPointId the unique identifier of extension point
-	 * @see IExtensionPoint#getUniqueIdentifier()
-	 * @since org.eclipse.equinox.registry 3.4
-	 */
+    /**
+     * Adds the given listener for registry change events related to specified
+     * extension point.
+     * <p>
+     * Once registered, a listener starts receiving notification of changes to the
+     * registry. Registry change notifications are sent asynchronously. The listener
+     * continues to receive notifications until it is removed.
+     * </p>
+     * <p>
+     * This method has no effect if the listener is already registered.
+     * </p>
+     *
+     * @param listener the listener
+     * @param extensionPointId the unique identifier of extension point
+     * @see IExtensionPoint#getUniqueIdentifier()
+     * @since org.eclipse.equinox.registry 3.4
+     */
     void addListener(IRegistryEventListener listener, String extensionPointId);
 
-	/**
-	 * Removes the given registry change listener from this registry.
-	 * <p>
-	 * This method has no effect if the listener is not registered.
-	 * </p>
-	 *
-	 * @param listener the listener
-	 * @see #addListener(IRegistryEventListener)
-	 * @see #addListener(IRegistryEventListener, String)
-	 * @since org.eclipse.equinox.registry 3.4
-	 */
+    /**
+     * Removes the given registry change listener from this registry.
+     * <p>
+     * This method has no effect if the listener is not registered.
+     * </p>
+     *
+     * @param listener the listener
+     * @see #addListener(IRegistryEventListener)
+     * @see #addListener(IRegistryEventListener, String)
+     * @since org.eclipse.equinox.registry 3.4
+     */
     void removeListener(IRegistryEventListener listener);
 }

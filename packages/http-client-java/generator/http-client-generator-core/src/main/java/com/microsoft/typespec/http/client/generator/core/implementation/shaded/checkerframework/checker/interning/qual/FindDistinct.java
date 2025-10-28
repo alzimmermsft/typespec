@@ -19,5 +19,6 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER})
-public @interface FindDistinct {}
+@Target({ ElementType.PARAMETER })
+public @interface FindDistinct {
+}

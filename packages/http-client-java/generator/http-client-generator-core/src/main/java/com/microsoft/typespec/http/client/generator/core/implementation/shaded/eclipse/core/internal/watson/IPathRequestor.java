@@ -20,7 +20,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * are visiting. This avoids creating paths when they are not needed.
  */
 public interface IPathRequestor {
-	IPath requestPath();
+    IPath requestPath();
 
-	String requestName();
+    String requestName();
 }

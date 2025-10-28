@@ -158,18 +158,8 @@ public SuperTypeReferencePattern(
 	this.mustResolve = superQualification != null;
 	this.superRefKind = superRefKind;
 }
-public SuperTypeReferencePattern(
-	char[] superQualification,
-	char[] superSimpleName,
-	int superRefKind,
-	char typeSuffix,
-	int matchRule) {
 
-	this(superQualification, superSimpleName, superRefKind, matchRule);
-	this.typeSuffix = typeSuffix;
-	this.mustResolve = superQualification != null || typeSuffix != TYPE_SUFFIX;
-}
-SuperTypeReferencePattern(int matchRule) {
+    SuperTypeReferencePattern(int matchRule) {
 	super(SUPER_REF_PATTERN, matchRule);
 }
 /*

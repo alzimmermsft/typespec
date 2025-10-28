@@ -20,12 +20,12 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IModularClassFile extends IClassFile {
-	/**
-	 * Returns the module description contained in this type root.
-	 * An error-free {@link IModularClassFile} should always have a module.
-	 *
-	 * @return the module description contained in the type root.
-	 */
-	@Override
-	IModuleDescription getModule() throws JavaModelException;
+    /**
+     * Returns the module description contained in this type root.
+     * An error-free {@link IModularClassFile} should always have a module.
+     *
+     * @return the module description contained in the type root.
+     */
+    @Override
+    IModuleDescription getModule() throws JavaModelException;
 }

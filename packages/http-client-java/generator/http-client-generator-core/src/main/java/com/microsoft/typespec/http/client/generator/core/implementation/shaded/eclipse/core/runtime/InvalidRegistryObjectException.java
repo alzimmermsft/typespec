@@ -28,17 +28,17 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class InvalidRegistryObjectException extends RuntimeException {
-	/*
-	 * Declare a stable serialVersionUID.
-	 */
-	private static final long serialVersionUID = 1L;
+    /*
+     * Declare a stable serialVersionUID.
+     */
+    private static final long serialVersionUID = 1L;
 
-	private static final String MESSAGE = "Invalid registry object"; //$NON-NLS-1$
+    private static final String MESSAGE = "Invalid registry object"; //$NON-NLS-1$
 
-	/**
-	 * Creates a new exception instance with null as its detail message.
-	 */
-	public InvalidRegistryObjectException() {
-		super(MESSAGE);
-	}
+    /**
+     * Creates a new exception instance with null as its detail message.
+     */
+    public InvalidRegistryObjectException() {
+        super(MESSAGE);
+    }
 }

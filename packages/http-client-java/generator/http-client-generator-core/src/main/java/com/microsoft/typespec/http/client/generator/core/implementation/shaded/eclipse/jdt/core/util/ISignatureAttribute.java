@@ -23,18 +23,18 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface ISignatureAttribute extends IClassFileAttribute {
 
-	/**
-	 * Answer back the signature index as described in the JVM specifications.
-	 *
-	 * @return the signature index as described in the JVM specifications
-	 */
-	int getSignatureIndex();
+    /**
+     * Answer back the signature index as described in the JVM specifications.
+     *
+     * @return the signature index as described in the JVM specifications
+     */
+    int getSignatureIndex();
 
-	/**
-	 * Answer back the signature as described in the JVM specifications.
-	 *
-	 * @return the signature as described in the JVM specifications
-	 */
-	char[] getSignature();
+    /**
+     * Answer back the signature as described in the JVM specifications.
+     *
+     * @return the signature as described in the JVM specifications
+     */
+    char[] getSignature();
 
 }

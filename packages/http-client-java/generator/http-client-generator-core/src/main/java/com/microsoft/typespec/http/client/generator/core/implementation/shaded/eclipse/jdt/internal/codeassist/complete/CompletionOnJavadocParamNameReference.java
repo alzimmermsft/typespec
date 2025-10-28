@@ -18,37 +18,39 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 
 public class CompletionOnJavadocParamNameReference extends JavadocSingleNameReference implements CompletionOnJavadoc {
-	public int completionFlags = JAVADOC;
-	public char[][] missingParams;
-	public char[][] missingTypeParams;
+    public int completionFlags = JAVADOC;
+    public char[][] missingParams;
+    public char[][] missingTypeParams;
 
-	public CompletionOnJavadocParamNameReference(char[] name, long pos, int start, int end) {
-		super(name, pos, start, end);
-	}
+    public CompletionOnJavadocParamNameReference(char[] name, long pos, int start, int end) {
+        super(name, pos, start, end);
+    }
 
-	public CompletionOnJavadocParamNameReference(JavadocSingleNameReference nameRef) {
-		super(nameRef.token, (((long)nameRef.sourceStart)<<32)+nameRef.sourceEnd, nameRef.tagSourceStart, nameRef.tagSourceStart);
-	}
+    public CompletionOnJavadocParamNameReference(JavadocSingleNameReference nameRef) {
+        super(nameRef.token, (((long) nameRef.sourceStart) << 32) + nameRef.sourceEnd, nameRef.tagSourceStart,
+            nameRef.tagSourceStart);
+    }
 
-	@Override
-	public void addCompletionFlags(int flags) {
-		this.completionFlags |= flags;
-	}
+    @Override
+    public void addCompletionFlags(int flags) {
+        this.completionFlags |= flags;
+    }
 
-	@Override
-	public int getCompletionFlags() {
-		return this.completionFlags;
-	}
+    @Override
+    public int getCompletionFlags() {
+        return this.completionFlags;
+    }
 
-	@Override
-	public StringBuilder printExpression(int indent, StringBuilder output) {
-		output.append("<CompletionOnJavadocParamNameReference:"); //$NON-NLS-1$
-		if (this.token != null) super.printExpression(indent, output);
-		return output.append('>');
-	}
+    @Override
+    public StringBuilder printExpression(int indent, StringBuilder output) {
+        output.append("<CompletionOnJavadocParamNameReference:"); //$NON-NLS-1$
+        if (this.token != null)
+            super.printExpression(indent, output);
+        return output.append('>');
+    }
 
-	@Override
-	public TypeBinding reportError(BlockScope scope) {
-		return null;
-	}
+    @Override
+    public TypeBinding reportError(BlockScope scope) {
+        return null;
+    }
 }

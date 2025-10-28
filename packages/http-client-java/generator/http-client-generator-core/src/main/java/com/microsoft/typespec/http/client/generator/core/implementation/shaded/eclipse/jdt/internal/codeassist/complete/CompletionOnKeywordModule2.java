@@ -17,24 +17,24 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ModuleReference;
 
 public class CompletionOnKeywordModule2 extends ModuleReference implements CompletionOnKeyword {
-	private final char[] token;
-	private final char[][] possibleKeywords;
+    private final char[] token;
+    private final char[][] possibleKeywords;
 
-	public CompletionOnKeywordModule2(char[] token, long pos, char[][] possibleKeywords) {
-		super(new char[][] {token}, new long[] {pos}); // dummy
-		this.token = token;
-		this.possibleKeywords = possibleKeywords;
-		this.sourceStart = (int) (pos>>>32)  ;
-		this.sourceEnd = (int) (pos & 0x00000000FFFFFFFFL);
-	}
+    public CompletionOnKeywordModule2(char[] token, long pos, char[][] possibleKeywords) {
+        super(new char[][] { token }, new long[] { pos }); // dummy
+        this.token = token;
+        this.possibleKeywords = possibleKeywords;
+        this.sourceStart = (int) (pos >>> 32);
+        this.sourceEnd = (int) (pos & 0x00000000FFFFFFFFL);
+    }
 
-	@Override
-	public char[] getToken() {
-		return this.token;
-	}
+    @Override
+    public char[] getToken() {
+        return this.token;
+    }
 
-	@Override
-	public char[][] getPossibleKeywords() {
-		return this.possibleKeywords;
-	}
+    @Override
+    public char[][] getPossibleKeywords() {
+        return this.possibleKeywords;
+    }
 }

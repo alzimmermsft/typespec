@@ -19,9 +19,6 @@ import java.util.Map;
 import java.util.Objects;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.*;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CharOperation;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.IScanner;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.ITerminalSymbols;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.InvalidInputException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.impl.Constant;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.impl.JavaFeature;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeIds;
@@ -317,65 +314,8 @@ public Member getOuterMostLocalContext() {
 	}
 	return lastLocalContext;
 }
-@Override
-public ISourceRange getJavadocRange() throws JavaModelException {
-	ISourceRange range= getSourceRange();
-	if (range == null) return null;
-	IBuffer buf= null;
-	if (isBinary()) {
-		buf = getClassFile().getBuffer();
-	} else {
-		ICompilationUnit compilationUnit = getCompilationUnit();
-		if (!compilationUnit.isConsistent()) {
-			return null;
-		}
-		buf = compilationUnit.getBuffer();
-	}
-	final int start= range.getOffset();
-	final int length= range.getLength();
-	if (length > 0 && buf.getChar(start) == '/') {
-		IScanner scanner;
-		IJavaProject project = getJavaProject();
-        if (project != null) {
-            String sourceLevel = project.getOption(JavaCore.COMPILER_SOURCE, true);
-            String complianceLevel = project.getOption(JavaCore.COMPILER_COMPLIANCE, true);
-            scanner = ToolFactory.createScanner(true, false, false, sourceLevel, complianceLevel);
-        } else {
-        	scanner= ToolFactory.createScanner(true, false, false, false);
-        }
-		try {
-			scanner.setSource(buf.getText(start, length).toCharArray());
-			int docOffset= -1;
-			int docEnd= -1;
 
-			int terminal= scanner.getNextToken();
-			loop: while (true) {
-				switch(terminal) {
-					case ITerminalSymbols.TokenNameCOMMENT_MARKDOWN :
-					case ITerminalSymbols.TokenNameCOMMENT_JAVADOC :
-						docOffset= scanner.getCurrentTokenStartPosition();
-						docEnd= scanner.getCurrentTokenEndPosition() + 1;
-						terminal= scanner.getNextToken();
-						break;
-					case ITerminalSymbols.TokenNameCOMMENT_LINE :
-					case ITerminalSymbols.TokenNameCOMMENT_BLOCK :
-					case ITerminalSymbols.TokenNameCOMMA:
-						terminal= scanner.getNextToken();
-						continue loop;
-					default :
-						break loop;
-				}
-			}
-			if (docOffset != -1) {
-				return new SourceRange(docOffset + start, docEnd - docOffset);
-			}
-		} catch (InvalidInputException | IndexOutOfBoundsException e) {
-			// https://bugs.eclipse.org/bugs/show_bug.cgi?id=305001
-		}
-	}
-	return null;
-}
-/**
+    /**
  * @see IMember
  */
 @Override

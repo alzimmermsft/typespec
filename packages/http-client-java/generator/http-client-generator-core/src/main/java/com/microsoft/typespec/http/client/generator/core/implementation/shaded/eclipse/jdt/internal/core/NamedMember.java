@@ -13,11 +13,19 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.*;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CategorizedProblem;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ICompilationUnit;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IField;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaElement;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IMember;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IMethod;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IModularClassFile;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IModuleDescription;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IPackageFragment;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IType;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ITypeParameter;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.Signature;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CharOperation;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.codeassist.ISelectionRequestor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.codeassist.SelectionEngine;
 
 public abstract class NamedMember extends Member {
 
@@ -65,11 +73,11 @@ public abstract class NamedMember extends Member {
 		return this.name;
 	}
 
-	protected String getKey(IField field, boolean forceOpen) throws JavaModelException {
+	protected String getKey(IField field) throws JavaModelException {
 		StringBuilder key = new StringBuilder();
 
 		// declaring class
-		String declaringKey = getKey((IType) field.getParent(), forceOpen);
+		String declaringKey = getKey((IType) field.getParent());
 		key.append(declaringKey);
 
 		// field name
@@ -83,7 +91,7 @@ public abstract class NamedMember extends Member {
 		StringBuilder key = new StringBuilder();
 
 		// declaring class
-		String declaringKey = getKey((IType) method.getParent(), forceOpen);
+		String declaringKey = getKey((IType) method.getParent());
 		key.append(declaringKey);
 
 		// selector
@@ -131,7 +139,7 @@ public abstract class NamedMember extends Member {
 		return key.toString();
 	}
 
-	protected String getKey(IType type, boolean forceOpen) throws JavaModelException {
+	protected String getKey(IType type) throws JavaModelException {
 		StringBuilder key = new StringBuilder();
 		key.append('L');
 		String packageName = type.getPackageFragment().getElementName();
@@ -164,24 +172,7 @@ public abstract class NamedMember extends Member {
 		return key.toString();
 	}
 
-	protected String getFullyQualifiedParameterizedName(String fullyQualifiedName, String uniqueKey) throws JavaModelException {
-		String[] typeArguments = new BindingKey(uniqueKey).getTypeArguments();
-		int length = typeArguments.length;
-		if (length == 0) return fullyQualifiedName;
-		StringBuilder buffer = new StringBuilder();
-		buffer.append(fullyQualifiedName);
-		buffer.append('<');
-		for (int i = 0; i < length; i++) {
-			String typeArgument = typeArguments[i];
-			buffer.append(Signature.toString(typeArgument));
-			if (i < length-1)
-				buffer.append(',');
-		}
-		buffer.append('>');
-		return buffer.toString();
-	}
-
-	protected IPackageFragment getPackageFragment() {
+    protected IPackageFragment getPackageFragment() {
 		return null;
 	}
 
@@ -252,75 +243,5 @@ public abstract class NamedMember extends Member {
 	}
 	protected ITypeParameter[] getTypeParameters() throws JavaModelException {
 		return null;
-	}
-
-	/**
-	 * @see IType#resolveType(String)
-	 */
-	public String[][] resolveType(String typeName) throws JavaModelException {
-		return resolveType(typeName, DefaultWorkingCopyOwner.PRIMARY);
-	}
-
-	/**
-	 * @see IType#resolveType(String, WorkingCopyOwner)
-	 */
-	public String[][] resolveType(String typeName, WorkingCopyOwner owner) throws JavaModelException {
-		JavaProject project = getJavaProject();
-		SearchableEnvironment environment = project.newSearchableNameEnvironment(owner);
-
-		class TypeResolveRequestor implements ISelectionRequestor {
-			String[][] answers = null;
-			@Override
-			public void acceptType(char[] packageName, char[] tName, int modifiers, boolean isDeclaration, char[] uniqueKey, int start, int end) {
-				String[] answer = new String[]  {new String(packageName), new String(tName) };
-				if (this.answers == null) {
-					this.answers = new String[][]{ answer };
-				} else {
-					// grow
-					int length = this.answers.length;
-					System.arraycopy(this.answers, 0, this.answers = new String[length+1][], 0, length);
-					this.answers[length] = answer;
-				}
-			}
-			@Override
-			public void acceptError(CategorizedProblem error) {
-				// ignore
-			}
-			@Override
-			public void acceptField(char[] declaringTypePackageName, char[] declaringTypeName, char[] fieldName, boolean isDeclaration, char[] uniqueKey, int start, int end) {
-				// ignore
-			}
-			@Override
-			public void acceptMethod(char[] declaringTypePackageName, char[] declaringTypeName, String enclosingDeclaringTypeSignature, char[] selector, char[][] parameterPackageNames, char[][] parameterTypeNames, String[] parameterSignatures, char[][] typeParameterNames, char[][][] typeParameterBoundNames, boolean isConstructor, boolean isDeclaration, char[] uniqueKey, int start, int end) {
-				// ignore
-			}
-			@Override
-			public void acceptPackage(char[] packageName){
-				// ignore
-			}
-			@Override
-			public void acceptTypeParameter(char[] declaringTypePackageName, char[] declaringTypeName, char[] typeParameterName, boolean isDeclaration, int start, int end) {
-				// ignore
-			}
-			@Override
-			public void acceptMethodTypeParameter(char[] declaringTypePackageName, char[] declaringTypeName, char[] selector, int selectorStart, int selcetorEnd, char[] typeParameterName, boolean isDeclaration, int start, int end) {
-				// ignore
-			}
-			@Override
-			public void acceptModule(char[] moduleName, char[] uniqueKey, int start, int end) {
-				// ignore
-			}
-
-		}
-		TypeResolveRequestor requestor = new TypeResolveRequestor();
-		SelectionEngine engine =
-			new SelectionEngine(environment, requestor, project.getOptions(true), owner);
-
-		engine.selectType(typeName.toCharArray(), (IType) this);
-		if (NameLookup.VERBOSE) {
-			JavaModelManager.trace(Thread.currentThread() + " TIME SPENT in NameLoopkup#seekTypesInSourcePackage: " + environment.nameLookup.timeSpentInSeekTypesInSourcePackage + "ms");  //$NON-NLS-1$ //$NON-NLS-2$
-			JavaModelManager.trace(Thread.currentThread() + " TIME SPENT in NameLoopkup#seekTypesInBinaryPackage: " + environment.nameLookup.timeSpentInSeekTypesInBinaryPackage + "ms");  //$NON-NLS-1$ //$NON-NLS-2$
-		}
-		return requestor.answers;
 	}
 }

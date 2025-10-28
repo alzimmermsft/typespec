@@ -20,7 +20,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.jobs.ISchedulingRule;
 
 /**
- * A job that makes an atomic modification to the workspace.  Clients must
+ * A job that makes an atomic modification to the workspace. Clients must
  * implement the abstract method <code>runInWorkspace</code> instead
  * of the usual <code>Job.run</code> method.
  * <p>
@@ -46,43 +46,44 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * <p>
  * Note that the workspace is not locked against other threads during the execution
  * of a workspace job. Other threads can be modifying the workspace concurrently
- * with a workspace job.  To obtain exclusive access to a portion of the workspace,
- * set the scheduling rule on the job to be a resource scheduling rule.  The
- * interface {@link IResourceRuleFactory} is used to create a  scheduling rule
+ * with a workspace job. To obtain exclusive access to a portion of the workspace,
+ * set the scheduling rule on the job to be a resource scheduling rule. The
+ * interface {@link IResourceRuleFactory} is used to create a scheduling rule
  * for a particular workspace modification operation.
  * </p>
+ * 
  * @see ICoreRunnable
  * @see org.eclipse.core.resources.IResourceRuleFactory
  * @see IWorkspace#run(ICoreRunnable, ISchedulingRule, int, IProgressMonitor)
  * @since 3.0
  */
 public abstract class WorkspaceJob extends InternalWorkspaceJob {
-	/**
-	 * Creates a new workspace job with the specified name. The job name is
-	 * a human-readable value that is displayed to users. The name does not
-	 * need to be unique, but it must not be <code>null</code>.
-	 *
-	 * @param name the name of the job
-	 */
-	public WorkspaceJob(String name) {
-		super(name, (Workspace) ResourcesPlugin.getWorkspace());
-	}
+    /**
+     * Creates a new workspace job with the specified name. The job name is
+     * a human-readable value that is displayed to users. The name does not
+     * need to be unique, but it must not be <code>null</code>.
+     *
+     * @param name the name of the job
+     */
+    public WorkspaceJob(String name) {
+        super(name, (Workspace) ResourcesPlugin.getWorkspace());
+    }
 
-	/**
-	 * Runs the operation, reporting progress to and accepting
-	 * cancellation requests from the given progress monitor.
-	 * <p>
-	 * Implementors of this method should check the progress monitor
-	 * for cancellation when it is safe and appropriate to do so.  The cancellation
-	 * request should be propagated to the caller by throwing
-	 * <code>OperationCanceledException</code>.
-	 * </p>
-	 *
-	 * @param monitor a progress monitor, or <code>null</code> if progress
-	 *     reporting and cancellation are not desired
-	 * @return the result of running the operation
-	 * @exception CoreException if this operation fails.
-	 */
-	@Override
-	public abstract IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException;
+    /**
+     * Runs the operation, reporting progress to and accepting
+     * cancellation requests from the given progress monitor.
+     * <p>
+     * Implementors of this method should check the progress monitor
+     * for cancellation when it is safe and appropriate to do so. The cancellation
+     * request should be propagated to the caller by throwing
+     * <code>OperationCanceledException</code>.
+     * </p>
+     *
+     * @param monitor a progress monitor, or <code>null</code> if progress
+     * reporting and cancellation are not desired
+     * @return the result of running the operation
+     * @exception CoreException if this operation fails.
+     */
+    @Override
+    public abstract IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException;
 }

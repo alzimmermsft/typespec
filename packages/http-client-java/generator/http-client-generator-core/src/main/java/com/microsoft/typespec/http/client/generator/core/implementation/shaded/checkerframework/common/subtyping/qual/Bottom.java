@@ -1,11 +1,11 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.common.subtyping.qual;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Target;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.TargetLocations;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.TypeUseLocation;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
 
 /**
  * A special annotation intended solely for representing the bottom type in the qualifier hierarchy.
@@ -26,7 +26,8 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  * @checker_framework.manual #subtyping-checker Subtyping Checker
  */
 @Documented
-@SubtypeOf({})
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
-@TargetLocations({TypeUseLocation.EXPLICIT_LOWER_BOUND, TypeUseLocation.EXPLICIT_UPPER_BOUND})
-public @interface Bottom {}
+@SubtypeOf({ })
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
+@TargetLocations({ TypeUseLocation.EXPLICIT_LOWER_BOUND, TypeUseLocation.EXPLICIT_UPPER_BOUND })
+public @interface Bottom {
+}

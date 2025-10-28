@@ -29,15 +29,15 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  *       }
  */
 public class CompletionOnMemberValueName extends MemberValuePair implements CompletionNode {
-	public CompletionOnMemberValueName(char[] token, int sourceStart, int sourceEnd) {
-		super(token, sourceStart, sourceEnd, null);
-	}
+    public CompletionOnMemberValueName(char[] token, int sourceStart, int sourceEnd) {
+        super(token, sourceStart, sourceEnd, null);
+    }
 
-	@Override
-	public StringBuilder print(int indent, StringBuilder output) {
-		output.append("<CompleteOnAttributeName:"); //$NON-NLS-1$
-		output.append(this.name);
-		output.append('>');
-		return output;
-	}
+    @Override
+    public StringBuilder print(int indent, StringBuilder output) {
+        output.append("<CompleteOnAttributeName:"); //$NON-NLS-1$
+        output.append(this.name);
+        output.append('>');
+        return output;
+    }
 }

@@ -48,53 +48,57 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 
 public class CompletionOnQualifiedNameReference extends QualifiedNameReference implements CompletionNode {
-	public char[] completionIdentifier;
-	public boolean isInsideAnnotationAttribute;
-public CompletionOnQualifiedNameReference(char[][] previousIdentifiers, char[] completionIdentifier, long[] positions, boolean isInsideAnnotationAttribute) {
-	super(previousIdentifiers, positions, (int) (positions[0] >>> 32), (int) positions[positions.length - 1]);
-	this.completionIdentifier = completionIdentifier;
-	this.isInsideAnnotationAttribute = isInsideAnnotationAttribute;
-}
-@Override
-public StringBuilder printExpression(int indent, StringBuilder output) {
+    public char[] completionIdentifier;
+    public boolean isInsideAnnotationAttribute;
 
-	output.append("<CompleteOnName:"); //$NON-NLS-1$
-	for (char[] token : this.tokens) {
-		output.append(token);
-		output.append('.');
-	}
-	output.append(this.completionIdentifier).append('>');
-	return output;
-}
-@Override
-public TypeBinding resolveType(BlockScope scope) {
-	// it can be a package, type, member type, local variable or field
-	this.binding = scope.getBinding(this.tokens, this);
-	if (!this.binding.isValidBinding()) {
-		if (this.binding instanceof ProblemFieldBinding) {
-			scope.problemReporter().invalidField(this, (FieldBinding) this.binding);
-		} else if (this.binding instanceof ProblemReferenceBinding || this.binding instanceof MissingTypeBinding) {
-			scope.problemReporter().invalidType(this, (TypeBinding) this.binding);
-		} else {
-			scope.problemReporter().unresolvableReference(this, this.binding);
-		}
+    public CompletionOnQualifiedNameReference(char[][] previousIdentifiers, char[] completionIdentifier,
+        long[] positions, boolean isInsideAnnotationAttribute) {
+        super(previousIdentifiers, positions, (int) (positions[0] >>> 32), (int) positions[positions.length - 1]);
+        this.completionIdentifier = completionIdentifier;
+        this.isInsideAnnotationAttribute = isInsideAnnotationAttribute;
+    }
 
-		if (this.binding.problemId() == ProblemReasons.NotFound) {
-			throw new CompletionNodeFound(this, this.binding, scope);
-		}
+    @Override
+    public StringBuilder printExpression(int indent, StringBuilder output) {
 
-		throw new CompletionNodeFound();
-	}
+        output.append("<CompleteOnName:"); //$NON-NLS-1$
+        for (char[] token : this.tokens) {
+            output.append(token);
+            output.append('.');
+        }
+        output.append(this.completionIdentifier).append('>');
+        return output;
+    }
 
-	return new CompletionNodeFound(this, this.binding, scope).throwOrDeferAndReturn(() -> {
-		// probably not in the position to do useful resolution, just provide some binding
-		// but perform minimal setup so downstream resolving doesn't throw exceptions:
-		this.constant = Constant.NotAConstant;
-		if ((this.bits & Binding.FIELD) != 0)
-			this.binding = new ProblemFieldBinding(
-					this.binding instanceof ReferenceBinding ? (ReferenceBinding) this.binding : null,
-					this.completionIdentifier, ProblemReasons.NotFound);
-		return this.resolvedType = new ProblemReferenceBinding(this.tokens, null, ProblemReasons.NotFound);
-	});
-}
+    @Override
+    public TypeBinding resolveType(BlockScope scope) {
+        // it can be a package, type, member type, local variable or field
+        this.binding = scope.getBinding(this.tokens, this);
+        if (!this.binding.isValidBinding()) {
+            if (this.binding instanceof ProblemFieldBinding) {
+                scope.problemReporter().invalidField(this, (FieldBinding) this.binding);
+            } else if (this.binding instanceof ProblemReferenceBinding || this.binding instanceof MissingTypeBinding) {
+                scope.problemReporter().invalidType(this, (TypeBinding) this.binding);
+            } else {
+                scope.problemReporter().unresolvableReference(this, this.binding);
+            }
+
+            if (this.binding.problemId() == ProblemReasons.NotFound) {
+                throw new CompletionNodeFound(this, this.binding, scope);
+            }
+
+            throw new CompletionNodeFound();
+        }
+
+        return new CompletionNodeFound(this, this.binding, scope).throwOrDeferAndReturn(() -> {
+            // probably not in the position to do useful resolution, just provide some binding
+            // but perform minimal setup so downstream resolving doesn't throw exceptions:
+            this.constant = Constant.NotAConstant;
+            if ((this.bits & Binding.FIELD) != 0)
+                this.binding = new ProblemFieldBinding(
+                    this.binding instanceof ReferenceBinding ? (ReferenceBinding) this.binding : null,
+                    this.completionIdentifier, ProblemReasons.NotFound);
+            return this.resolvedType = new ProblemReferenceBinding(this.tokens, null, ProblemReasons.NotFound);
+        });
+    }
 }

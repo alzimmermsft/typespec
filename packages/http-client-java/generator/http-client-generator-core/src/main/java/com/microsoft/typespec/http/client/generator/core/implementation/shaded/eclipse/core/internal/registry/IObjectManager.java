@@ -17,13 +17,13 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * @since 3.1
  */
 public interface IObjectManager {
-	Handle getHandle(int id, byte type);
+    Handle getHandle(int id, byte type);
 
-	Handle[] getHandles(int[] ids, byte type);
+    Handle[] getHandles(int[] ids, byte type);
 
-	Object getObject(int id, byte type);
+    Object getObject(int id, byte type);
 
-	RegistryObject[] getObjects(int[] values, byte type);
+    RegistryObject[] getObjects(int[] values, byte type);
 
-	void close();
+    void close();
 }

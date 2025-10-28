@@ -63,43 +63,37 @@ class AddFolderToIndex extends IndexRequest {
 			final IndexManager indexManager = this.manager;
 			final SourceElementParser parser = indexManager.getSourceElementParser(JavaCore.create(this.project), null/*requestor will be set by indexer*/);
 			if (this.exclusionPatterns == null && this.inclusionPatterns == null) {
-				folder.accept(
-					new IResourceProxyVisitor() {
-						@Override
-						public boolean visit(IResourceProxy proxy) /* throws CoreException */{
-							if (proxy.getType() == IResource.FILE) {
-								if (Util.isJavaLikeFileName(proxy.getName()))
-									indexManager.addSource((IFile) proxy.requestResource(), container, parser);
-								return false;
-							}
-							return true;
-						}
-					},
+                /* throws CoreException */
+                folder.accept((IResourceProxyVisitor) proxy -> {
+                    if (proxy.getType() == IResource.FILE) {
+                        if (Util.isJavaLikeFileName(proxy.getName()))
+                            indexManager.addSource((IFile) proxy.requestResource(), container, parser);
+                        return false;
+                    }
+                    return true;
+                },
 					IResource.NONE
 				);
 			} else {
-				folder.accept(
-					new IResourceProxyVisitor() {
-						@Override
-						public boolean visit(IResourceProxy proxy) /* throws CoreException */{
-							switch(proxy.getType()) {
-								case IResource.FILE :
-									if (Util.isJavaLikeFileName(proxy.getName())) {
-										IResource resource = proxy.requestResource();
-										if (!Util.isExcluded(resource, AddFolderToIndex.this.inclusionPatterns, AddFolderToIndex.this.exclusionPatterns))
-											indexManager.addSource((IFile)resource, container, parser);
-									}
-									return false;
-								case IResource.FOLDER :
-									if (AddFolderToIndex.this.exclusionPatterns != null && AddFolderToIndex.this.inclusionPatterns == null) {
-										// if there are inclusion patterns then we must walk the children
-										if (Util.isExcluded(proxy.requestFullPath(), AddFolderToIndex.this.inclusionPatterns, AddFolderToIndex.this.exclusionPatterns, true))
-										    return false;
-									}
-							}
-							return true;
-						}
-					},
+                /* throws CoreException */
+                folder.accept((IResourceProxyVisitor) proxy -> {
+                    switch(proxy.getType()) {
+                        case IResource.FILE :
+                            if (Util.isJavaLikeFileName(proxy.getName())) {
+                                IResource resource = proxy.requestResource();
+                                if (!Util.isExcluded(resource, AddFolderToIndex.this.inclusionPatterns, AddFolderToIndex.this.exclusionPatterns))
+                                    indexManager.addSource((IFile)resource, container, parser);
+                            }
+                            return false;
+                        case IResource.FOLDER :
+                            if (AddFolderToIndex.this.exclusionPatterns != null && AddFolderToIndex.this.inclusionPatterns == null) {
+                                // if there are inclusion patterns then we must walk the children
+                                if (Util.isExcluded(proxy.requestFullPath(), AddFolderToIndex.this.inclusionPatterns, AddFolderToIndex.this.exclusionPatterns, true))
+                                    return false;
+                            }
+                    }
+                    return true;
+                },
 					IResource.NONE
 				);
 			}

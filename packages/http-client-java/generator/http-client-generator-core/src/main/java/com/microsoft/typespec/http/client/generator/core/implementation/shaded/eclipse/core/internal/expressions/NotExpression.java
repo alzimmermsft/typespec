@@ -17,53 +17,52 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.expressions.Expression;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.expressions.ExpressionInfo;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.expressions.IEvaluationContext;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 
 public class NotExpression extends Expression {
-	/**
-	 * The seed for the hash code for all not expressions.
-	 */
-	private static final int HASH_INITIAL= NotExpression.class.getName().hashCode();
+    /**
+     * The seed for the hash code for all not expressions.
+     */
+    private static final int HASH_INITIAL = NotExpression.class.getName().hashCode();
 
-	private final Expression fExpression;
+    private final Expression fExpression;
 
-	public NotExpression(Expression expression) {
-		Assert.isNotNull(expression);
-		fExpression= expression;
-	}
+    public NotExpression(Expression expression) {
+        Assert.isNotNull(expression);
+        fExpression = expression;
+    }
 
-	@Override
-	public EvaluationResult evaluate(IEvaluationContext context) throws CoreException {
-		return fExpression.evaluate(context).not();
-	}
+    @Override
+    public EvaluationResult evaluate(IEvaluationContext context) throws CoreException {
+        return fExpression.evaluate(context).not();
+    }
 
-	@Override
-	public void collectExpressionInfo(ExpressionInfo info) {
-		fExpression.collectExpressionInfo(info);
-	}
+    @Override
+    public void collectExpressionInfo(ExpressionInfo info) {
+        fExpression.collectExpressionInfo(info);
+    }
 
-	@Override
-	public boolean equals(final Object object) {
-		if (!(object instanceof final NotExpression that)) {
-			return false;
-		}
+    @Override
+    public boolean equals(final Object object) {
+        if (!(object instanceof final NotExpression that)) {
+            return false;
+        }
 
-		return this.fExpression.equals(that.fExpression);
-	}
+        return this.fExpression.equals(that.fExpression);
+    }
 
-	@Override
-	protected int computeHashCode() {
-		return HASH_INITIAL * HASH_FACTOR + fExpression.hashCode();
-	}
+    @Override
+    protected int computeHashCode() {
+        return HASH_INITIAL * HASH_FACTOR + fExpression.hashCode();
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder(getClass().getSimpleName());
-		builder.append(" [expression="); //$NON-NLS-1$
-		builder.append(fExpression);
-		builder.append("]"); //$NON-NLS-1$
-		return builder.toString();
-	}
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder(getClass().getSimpleName());
+        builder.append(" [expression="); //$NON-NLS-1$
+        builder.append(fExpression);
+        builder.append("]"); //$NON-NLS-1$
+        return builder.toString();
+    }
 }

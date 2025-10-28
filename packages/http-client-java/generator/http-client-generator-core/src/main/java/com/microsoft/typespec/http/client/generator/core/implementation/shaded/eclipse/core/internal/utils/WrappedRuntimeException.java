@@ -15,24 +15,24 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 public class WrappedRuntimeException extends RuntimeException {
 
-	/**
-	 * All serializable objects should have a stable serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * All serializable objects should have a stable serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
-	private final Throwable target;
+    private final Throwable target;
 
-	public WrappedRuntimeException(Throwable target) {
-		super();
-		this.target = target;
-	}
+    public WrappedRuntimeException(Throwable target) {
+        super();
+        this.target = target;
+    }
 
-	public Throwable getTargetException() {
-		return this.target;
-	}
+    public Throwable getTargetException() {
+        return this.target;
+    }
 
-	@Override
-	public String getMessage() {
-		return target.getMessage();
-	}
+    @Override
+    public String getMessage() {
+        return target.getMessage();
+    }
 }

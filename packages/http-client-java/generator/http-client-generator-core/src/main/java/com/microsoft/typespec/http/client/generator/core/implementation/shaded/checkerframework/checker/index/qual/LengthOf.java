@@ -27,8 +27,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 // Has target of METHOD so that it is stored as a declaration annotation and the SameLen Checker can
 // read it.
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER, ElementType.METHOD})
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER, ElementType.METHOD })
 public @interface LengthOf {
-  /** Sequences that the annotated expression is equal to the length of. */
-  String[] value();
+    /** Sequences that the annotated expression is equal to the length of. */
+    String[] value();
 }

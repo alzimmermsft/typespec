@@ -14,5 +14,5 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.resources;
 
 public interface IMarkerSetElement {
-	long getId();
+    long getId();
 }

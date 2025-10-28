@@ -13,73 +13,71 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.expressions;
 
-import org.w3c.dom.Element;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.expressions.Expressions;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IConfigurationElement;
+import org.w3c.dom.Element;
 
 /**
  * @since 3.7
  */
 public class EqualsExpression extends Expression {
-	/**
-	 * The seed for the hash code for all equals expressions.
-	 */
-	private static final int HASH_INITIAL= EqualsExpression.class.getName().hashCode();
+    /**
+     * The seed for the hash code for all equals expressions.
+     */
+    private static final int HASH_INITIAL = EqualsExpression.class.getName().hashCode();
 
-	private final Object fExpectedValue;
+    private final Object fExpectedValue;
 
-	public EqualsExpression(Object expectedValue) {
-		Assert.isNotNull(expectedValue);
-		fExpectedValue= expectedValue;
-	}
+    public EqualsExpression(Object expectedValue) {
+        Assert.isNotNull(expectedValue);
+        fExpectedValue = expectedValue;
+    }
 
-	public EqualsExpression(IConfigurationElement element) throws CoreException {
-		String value= element.getAttribute(ATT_VALUE);
-		Expressions.checkAttribute(ATT_VALUE, value);
-		fExpectedValue= Expressions.convertArgument(value);
-	}
+    public EqualsExpression(IConfigurationElement element) throws CoreException {
+        String value = element.getAttribute(ATT_VALUE);
+        Expressions.checkAttribute(ATT_VALUE, value);
+        fExpectedValue = Expressions.convertArgument(value);
+    }
 
-	public EqualsExpression(Element element) throws CoreException {
-		String value= element.getAttribute(ATT_VALUE);
-		Expressions.checkAttribute(ATT_VALUE, value.isEmpty() ? null : value);
-		fExpectedValue= Expressions.convertArgument(value);
-	}
+    public EqualsExpression(Element element) throws CoreException {
+        String value = element.getAttribute(ATT_VALUE);
+        Expressions.checkAttribute(ATT_VALUE, value.isEmpty() ? null : value);
+        fExpectedValue = Expressions.convertArgument(value);
+    }
 
-	@Override
-	public EvaluationResult evaluate(IEvaluationContext context) throws CoreException {
-		Object element= context.getDefaultVariable();
-		return EvaluationResult.valueOf(element.equals(fExpectedValue));
-	}
+    @Override
+    public EvaluationResult evaluate(IEvaluationContext context) throws CoreException {
+        Object element = context.getDefaultVariable();
+        return EvaluationResult.valueOf(element.equals(fExpectedValue));
+    }
 
-	@Override
-	public void collectExpressionInfo(ExpressionInfo info) {
-		info.markDefaultVariableAccessed();
-	}
+    @Override
+    public void collectExpressionInfo(ExpressionInfo info) {
+        info.markDefaultVariableAccessed();
+    }
 
-	@Override
-	public boolean equals(final Object object) {
-		if (!(object instanceof final EqualsExpression that)) {
-			return false;
-		}
+    @Override
+    public boolean equals(final Object object) {
+        if (!(object instanceof final EqualsExpression that)) {
+            return false;
+        }
 
-		return this.fExpectedValue.equals(that.fExpectedValue);
-	}
+        return this.fExpectedValue.equals(that.fExpectedValue);
+    }
 
-	@Override
-	protected int computeHashCode() {
-		return HASH_INITIAL * HASH_FACTOR + fExpectedValue.hashCode();
-	}
+    @Override
+    protected int computeHashCode() {
+        return HASH_INITIAL * HASH_FACTOR + fExpectedValue.hashCode();
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder(getClass().getSimpleName());
-		builder.append(" [expected="); //$NON-NLS-1$
-		builder.append(fExpectedValue);
-		builder.append("]"); //$NON-NLS-1$
-		return builder.toString();
-	}
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder(getClass().getSimpleName());
+        builder.append(" [expected="); //$NON-NLS-1$
+        builder.append(fExpectedValue);
+        builder.append("]"); //$NON-NLS-1$
+        return builder.toString();
+    }
 }

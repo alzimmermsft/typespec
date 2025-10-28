@@ -14,42 +14,43 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.resources;
 
-import java.io.DataInputStream;
-import java.io.IOException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.utils.Messages;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.util.NLS;
+import java.io.DataInputStream;
+import java.io.IOException;
 
 public class SyncInfoSnapReader {
-	protected Workspace workspace;
-	protected Synchronizer synchronizer;
+    protected Workspace workspace;
+    protected Synchronizer synchronizer;
 
-	public SyncInfoSnapReader(Workspace workspace, Synchronizer synchronizer) {
-		super();
-		this.workspace = workspace;
-		this.synchronizer = synchronizer;
-	}
+    public SyncInfoSnapReader(Workspace workspace, Synchronizer synchronizer) {
+        super();
+        this.workspace = workspace;
+        this.synchronizer = synchronizer;
+    }
 
-	/**
-	 * Returns the appropriate reader for the given version.
-	 */
-	protected SyncInfoSnapReader getReader(int formatVersion) throws IOException {
-		switch (formatVersion) {
-			case 3 :
-				return new SyncInfoSnapReader_3(workspace, synchronizer);
-			default :
-				throw new IOException(NLS.bind(Messages.resources_format, formatVersion));
-		}
-	}
+    /**
+     * Returns the appropriate reader for the given version.
+     */
+    protected SyncInfoSnapReader getReader(int formatVersion) throws IOException {
+        switch (formatVersion) {
+            case 3:
+                return new SyncInfoSnapReader_3(workspace, synchronizer);
 
-	public void readSyncInfo(DataInputStream input) throws IOException {
-		// dispatch to the appropriate reader depending
-		// on the version of the file
-		int formatVersion = readVersionNumber(input);
-		SyncInfoSnapReader reader = getReader(formatVersion);
-		reader.readSyncInfo(input);
-	}
+            default:
+                throw new IOException(NLS.bind(Messages.resources_format, formatVersion));
+        }
+    }
 
-	protected static int readVersionNumber(DataInputStream input) throws IOException {
-		return input.readInt();
-	}
+    public void readSyncInfo(DataInputStream input) throws IOException {
+        // dispatch to the appropriate reader depending
+        // on the version of the file
+        int formatVersion = readVersionNumber(input);
+        SyncInfoSnapReader reader = getReader(formatVersion);
+        reader.readSyncInfo(input);
+    }
+
+    protected static int readVersionNumber(DataInputStream input) throws IOException {
+        return input.readInt();
+    }
 }

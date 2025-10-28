@@ -18,19 +18,19 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class WorkspaceLocationVariableResolver extends PathVariableResolver {
 
-	public static String NAME = "WORKSPACE_LOC"; //$NON-NLS-1$
+    public static String NAME = "WORKSPACE_LOC"; //$NON-NLS-1$
 
-	public WorkspaceLocationVariableResolver() {
-		// nothing to do
-	}
+    public WorkspaceLocationVariableResolver() {
+        // nothing to do
+    }
 
-	@Override
-	public String[] getVariableNames(String variable, IResource resource) {
-		return new String[] {NAME};
-	}
+    @Override
+    public String[] getVariableNames(String variable, IResource resource) {
+        return new String[] { NAME };
+    }
 
-	@Override
-	public String getValue(String variable, IResource resource) {
-		return resource.getWorkspace().getRoot().getLocationURI().toASCIIString();
-	}
+    @Override
+    public String getValue(String variable, IResource resource) {
+        return resource.getWorkspace().getRoot().getLocationURI().toASCIIString();
+    }
 }

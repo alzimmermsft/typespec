@@ -12,7 +12,7 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 /**
  * A delta which describes changes in {@link IClasspathAttribute} of a classpath
- * between two discrete points in time.  Given a delta,
+ * between two discrete points in time. Given a delta,
  * clients can access the name of the affected attribute
  * as well as the current value of the attribute.
  * <p>
@@ -29,46 +29,46 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IClasspathAttributeDelta {
 
-	/**
-	 * Status constant indicating that the attribute has been added.
-	 *
-	 * @see #getKind()
-	 */
-	public int ADDED = 1;
+    /**
+     * Status constant indicating that the attribute has been added.
+     *
+     * @see #getKind()
+     */
+    public int ADDED = 1;
 
-	/**
-	 * Status constant indicating that the attribute has been removed.
-	 *
-	 * @see #getKind()
-	 */
-	public int REMOVED = 2;
+    /**
+     * Status constant indicating that the attribute has been removed.
+     *
+     * @see #getKind()
+     */
+    public int REMOVED = 2;
 
-	/**
-	 * Status constant indicating that the attribute has been changed.
-	 *
-	 * @see #getKind()
-	 */
-	public int CHANGED = 4;
+    /**
+     * Status constant indicating that the attribute has been changed.
+     *
+     * @see #getKind()
+     */
+    public int CHANGED = 4;
 
-	/**
-	 * Returns the kind of this delta - one of {@link #ADDED}, {@link #REMOVED},
-	 * or {@link #CHANGED}.
-	 *
-	 * @return the kind of this delta
-	 */
-	int getKind();
+    /**
+     * Returns the kind of this delta - one of {@link #ADDED}, {@link #REMOVED},
+     * or {@link #CHANGED}.
+     *
+     * @return the kind of this delta
+     */
+    int getKind();
 
-	/**
-	 * Returns the name of the affected attribute.
-	 *
-	 * @return the name of the attribute
-	 */
-	String getAttributeName();
+    /**
+     * Returns the name of the affected attribute.
+     *
+     * @return the name of the attribute
+     */
+    String getAttributeName();
 
-	/**
-	 * Returns the current value of the affected attribute.
-	 *
-	 * @return the value of the attribute
-	 */
-	String getAttributeValue();
+    /**
+     * Returns the current value of the affected attribute.
+     *
+     * @return the value of the attribute
+     */
+    String getAttributeValue();
 }

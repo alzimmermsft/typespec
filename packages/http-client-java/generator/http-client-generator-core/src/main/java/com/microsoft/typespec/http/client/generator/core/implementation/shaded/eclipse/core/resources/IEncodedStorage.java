@@ -28,20 +28,20 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * @since 3.0
  */
 public interface IEncodedStorage extends IStorage {
-	/**
-	 * Returns the name of a charset encoding to be used when decoding this
-	 * storage's contents into characters. Returns <code>null</code> if a proper
-	 * encoding cannot be determined.
-	 * <p>
-	 * Note that this method does not check whether the result is a supported
-	 * charset name. Callers should be prepared to handle
-	 * <code>UnsupportedEncodingException</code> where this charset is used.
-	 * </p>
-	 *
-	 * @return the name of a charset, or <code>null</code>
-	 * @exception CoreException if an error happens while determining
-	 * the charset. See any refinements for more information.
-	 * @see IStorage#getContents()
-	 */
-	String getCharset() throws CoreException;
+    /**
+     * Returns the name of a charset encoding to be used when decoding this
+     * storage's contents into characters. Returns <code>null</code> if a proper
+     * encoding cannot be determined.
+     * <p>
+     * Note that this method does not check whether the result is a supported
+     * charset name. Callers should be prepared to handle
+     * <code>UnsupportedEncodingException</code> where this charset is used.
+     * </p>
+     *
+     * @return the name of a charset, or <code>null</code>
+     * @exception CoreException if an error happens while determining
+     * the charset. See any refinements for more information.
+     * @see IStorage#getContents()
+     */
+    String getCharset() throws CoreException;
 }

@@ -26,33 +26,33 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * @since 3.0
  */
 public class JobChangeAdapter implements IJobChangeListener {
-	@Override
-	public void aboutToRun(IJobChangeEvent event) {
-		// do nothing
-	}
+    @Override
+    public void aboutToRun(IJobChangeEvent event) {
+        // do nothing
+    }
 
-	@Override
-	public void awake(IJobChangeEvent event) {
-		// do nothing
-	}
+    @Override
+    public void awake(IJobChangeEvent event) {
+        // do nothing
+    }
 
-	@Override
-	public void done(IJobChangeEvent event) {
-		// do nothing
-	}
+    @Override
+    public void done(IJobChangeEvent event) {
+        // do nothing
+    }
 
-	@Override
-	public void running(IJobChangeEvent event) {
-		// do nothing
-	}
+    @Override
+    public void running(IJobChangeEvent event) {
+        // do nothing
+    }
 
-	@Override
-	public void scheduled(IJobChangeEvent event) {
-		// do nothing
-	}
+    @Override
+    public void scheduled(IJobChangeEvent event) {
+        // do nothing
+    }
 
-	@Override
-	public void sleeping(IJobChangeEvent event) {
-		// do nothing
-	}
+    @Override
+    public void sleeping(IJobChangeEvent event) {
+        // do nothing
+    }
 }

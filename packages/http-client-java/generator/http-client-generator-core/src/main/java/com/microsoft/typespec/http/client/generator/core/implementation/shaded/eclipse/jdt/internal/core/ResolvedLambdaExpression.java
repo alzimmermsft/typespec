@@ -13,8 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
-
 public class ResolvedLambdaExpression extends LambdaExpression {
 
 	private final String uniqueKey;
@@ -26,12 +24,7 @@ public class ResolvedLambdaExpression extends LambdaExpression {
 		this.unresolved = unresolved;
 	}
 
-	@Override
-	public String getFullyQualifiedParameterizedName() throws JavaModelException {
-		return getFullyQualifiedParameterizedName(getFullyQualifiedName('.'), this.uniqueKey);
-	}
-
-	@Override
+    @Override
 	public String getKey() {
 		return this.uniqueKey;
 	}

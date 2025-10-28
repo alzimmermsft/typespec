@@ -15,8 +15,8 @@ import java.lang.annotation.Target;
  *
  * <pre>
  * if (x == null) {
- *   System.err.println("Bad value supplied");
- *   System.exit(1);
+ *     System.err.println("Bad value supplied");
+ *     System.exit(1);
  * }
  * </pre>
  *
@@ -40,11 +40,12 @@ import java.lang.annotation.Target;
  * </pre>
  *
  * @checker_framework.manual #type-refinement Automatic type refinement (flow-sensitive type
- *     qualifier inference)
+ * qualifier inference)
  */
 // @InheritedAnnotation cannot be written here, because "dataflow" project cannot depend on
 // "framework" project.
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
-public @interface TerminatesExecution {}
+@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
+public @interface TerminatesExecution {
+}

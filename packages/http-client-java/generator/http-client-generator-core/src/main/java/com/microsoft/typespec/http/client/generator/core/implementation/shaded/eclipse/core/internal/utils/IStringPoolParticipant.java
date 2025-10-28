@@ -15,9 +15,9 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 /**
  * A string pool participant is used for sharing strings between several
- * unrelated parties.  Typically a single <code>StringPool</code> instance
+ * unrelated parties. Typically a single <code>StringPool</code> instance
  * will be created, and a group of participants will be asked to store their
- * strings in the pool.  This allows participants to share equal strings
+ * strings in the pool. This allows participants to share equal strings
  * without creating explicit dependencies between each other.
  * <p>
  * Clients may implement this interface.
@@ -27,9 +27,9 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * @since 3.1
  */
 public interface IStringPoolParticipant {
-	/**
-	 * Instructs this participant to share its strings in the provided
-	 * pool.
-	 */
-	void shareStrings(StringPool pool);
+    /**
+     * Instructs this participant to share its strings in the provided
+     * pool.
+     */
+    void shareStrings(StringPool pool);
 }

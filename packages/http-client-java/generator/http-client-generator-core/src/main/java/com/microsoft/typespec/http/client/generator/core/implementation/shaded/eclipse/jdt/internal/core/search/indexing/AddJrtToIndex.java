@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.FileVisitResult;
+import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IFile;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
@@ -90,10 +91,10 @@ public class AddJrtToIndex extends BinaryContainer {
 		}
 
 		@Override
-		public FileVisitResult visitPackage(java.nio.file.Path dir, java.nio.file.Path mod, BasicFileAttributes attrs)
+		public FileVisitResult visitPackage(Path dir, Path mod, BasicFileAttributes attrs)
 				throws IOException {
-			return FileVisitResult.CONTINUE;
-		}
+            return JRTUtil.JrtFileVisitor.super.visitPackage(dir, mod, attrs);
+        }
 
 		@Override
 		public FileVisitResult visitFile(java.nio.file.Path path, java.nio.file.Path mod, BasicFileAttributes attrs)
@@ -106,9 +107,9 @@ public class AddJrtToIndex extends BinaryContainer {
 			return FileVisitResult.CONTINUE;
 		}
 		@Override
-		public FileVisitResult visitModule(java.nio.file.Path path, String name) throws IOException {
-			return FileVisitResult.CONTINUE;
-		}
+		public FileVisitResult visitModule(Path path, String name) throws IOException {
+            return JRTUtil.JrtFileVisitor.super.visitModule(path, name);
+        }
 	}
 
 	private class JrtIndexer extends JrtTraverser {

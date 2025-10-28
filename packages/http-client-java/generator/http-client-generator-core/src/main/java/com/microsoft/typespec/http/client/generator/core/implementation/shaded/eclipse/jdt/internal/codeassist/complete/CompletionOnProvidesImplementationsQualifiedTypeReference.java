@@ -16,9 +16,9 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 public class CompletionOnProvidesImplementationsQualifiedTypeReference extends CompletionOnQualifiedTypeReference {
 
-	public CompletionOnProvidesImplementationsQualifiedTypeReference(char[][] previousIdentifiers, char[] completionIdentifier,
-			long[] positions) {
-		super(previousIdentifiers, completionIdentifier, positions);
-	}
+    public CompletionOnProvidesImplementationsQualifiedTypeReference(char[][] previousIdentifiers,
+        char[] completionIdentifier, long[] positions) {
+        super(previousIdentifiers, completionIdentifier, positions);
+    }
 
 }

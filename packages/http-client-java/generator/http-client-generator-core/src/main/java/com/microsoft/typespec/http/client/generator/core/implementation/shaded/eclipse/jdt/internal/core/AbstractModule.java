@@ -13,14 +13,10 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaElement;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IModuleDescription;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ITypeRoot;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CharOperation;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IModule;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IModule.IModuleReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IModule.IPackageExport;
@@ -49,11 +45,8 @@ public interface AbstractModule extends IModuleDescription {
 		public int getFlags() throws JavaModelException {
 			return 0;
 		}
-		@Override
-		public boolean isAutoModule() {
-			return true;
-		}
-		public boolean isAutoNameFromManifest() {
+
+        public boolean isAutoNameFromManifest() {
 			return this.nameFromManifest;
 		}
 		@Override
@@ -81,39 +74,8 @@ public interface AbstractModule extends IModuleDescription {
 	default IModule getModuleInfo() throws JavaModelException {
 		return (IModule) getElementInfo();
 	}
-	@Override
-	default String[] getExportedPackageNames(IModuleDescription targetModule) throws JavaModelException {
-		IModule info = getModuleInfo();
-		if (info != null) {
-			List<String> result = new ArrayList<>();
-			for (IPackageExport packageExport : info.exports()) {
-				if (targetModule == null || !packageExport.isQualified()
-						|| CharOperation.containsEqual(packageExport.targets(), targetModule.getElementName().toCharArray()))
-				{
-					result.add(new String(packageExport.name()));
-				}
-			}
-			return result.toArray(new String[result.size()]);
-		}
-		return JavaElement.NO_STRINGS;
-	}
-	@Override
-	default String[] getOpenedPackageNames(IModuleDescription targetModule) throws JavaModelException {
-		IModule info = getModuleInfo();
-		if (info != null) {
-			List<String> result = new ArrayList<>();
-			for (IPackageExport packageOpen : info.opens()) {
-				if (targetModule == null || !packageOpen.isQualified()
-						|| CharOperation.containsEqual(packageOpen.targets(), targetModule.getElementName().toCharArray()))
-				{
-					result.add(new String(packageOpen.name()));
-				}
-			}
-			return result.toArray(new String[result.size()]);
-		}
-		return JavaElement.NO_STRINGS;
-	}
-	default IModuleReference[] getRequiredModules() throws JavaModelException {
+
+    default IModuleReference[] getRequiredModules() throws JavaModelException {
 		return getModuleInfo().requires();
 	}
 	default IPackageExport[] getExportedPackages() throws JavaModelException {
@@ -122,38 +84,16 @@ public interface AbstractModule extends IModuleDescription {
 	default IService[] getProvidedServices() throws JavaModelException {
 		return getModuleInfo().provides();
 	}
-	@Override
-	default String[] getProvidedServiceNames() throws JavaModelException {
-		ArrayList<String> results = new ArrayList<>();
-		IService[] services = getProvidedServices();
-		for (IService service : services) {
-			results.add(new String(service.name()));
-		}
-		return results.toArray(String[]::new);
 
-	}
-	default char[][] getUsedServices() throws JavaModelException {
+    default char[][] getUsedServices() throws JavaModelException {
 		return getModuleInfo().uses();
 	}
-	@Override
-	default String[] getUsedServiceNames() throws JavaModelException {
-		ArrayList<String> results = new ArrayList<>();
-		char[][] services = getUsedServices();
-		for (char[] service : services) {
-			results.add(new String(service));
-		}
-		return results.toArray(String[]::new);
-	}
-	default IPackageExport[] getOpenedPackages() throws JavaModelException {
+
+    default IPackageExport[] getOpenedPackages() throws JavaModelException {
 		return getModuleInfo().opens();
 	}
-	@Override
-	default String[] getRequiredModuleNames() throws JavaModelException {
-		IModuleReference[] references = getRequiredModules();
-		return Arrays.stream(references).map(ref -> String.valueOf(ref.name())).toArray(String[]::new);
-	}
 
-	default String toString(String lineDelimiter) {
+    default String toString(String lineDelimiter) {
 		StringBuilder buffer = new StringBuilder();
 		try {
 			toStringContent(buffer, lineDelimiter);

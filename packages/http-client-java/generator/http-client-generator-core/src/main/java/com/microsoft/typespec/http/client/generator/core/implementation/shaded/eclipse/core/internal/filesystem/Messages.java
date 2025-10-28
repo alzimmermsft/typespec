@@ -19,34 +19,35 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * Provides translatable messages for the file system bundle
  */
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.filesystem.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME
+        = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.filesystem.messages"; //$NON-NLS-1$
 
-	public static String copying;
-	public static String couldnotDelete;
-	public static String couldnotDeleteReadOnly;
-	public static String couldNotLoadLibrary;
-	public static String couldNotMove;
-	public static String couldNotRead;
-	public static String couldNotWrite;
-	public static String deleteProblem;
-	public static String deleting;
-	public static String failedCreateWrongType;
-	public static String failedCreateAccessDenied;
-	public static String failedMove;
-	public static String failedCopy;
-	public static String fileExists;
-	public static String fileNotFound;
-	public static String moving;
-	public static String noFileSystem;
-	public static String noImplDelete;
-	public static String noImplWrite;
-	public static String noScheme;
-	public static String notAFile;
-	public static String readOnlyParent;
+    public static String copying;
+    public static String couldnotDelete;
+    public static String couldnotDeleteReadOnly;
+    public static String couldNotLoadLibrary;
+    public static String couldNotMove;
+    public static String couldNotRead;
+    public static String couldNotWrite;
+    public static String deleteProblem;
+    public static String deleting;
+    public static String failedCreateWrongType;
+    public static String failedCreateAccessDenied;
+    public static String failedMove;
+    public static String failedCopy;
+    public static String fileExists;
+    public static String fileNotFound;
+    public static String moving;
+    public static String noFileSystem;
+    public static String noImplDelete;
+    public static String noImplWrite;
+    public static String noScheme;
+    public static String notAFile;
+    public static String readOnlyParent;
 
-	static {
-		// initialize resource bundles
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-	}
+    static {
+        // initialize resource bundles
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
 
 }

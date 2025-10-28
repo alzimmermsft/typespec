@@ -16,69 +16,71 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.resources;
 
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.utils.Messages;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResourceStatus;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.QualifiedName;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.util.NLS;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This class is used to read sync info from disk. Subclasses implement
  * version specific reading code.
  */
 public class SyncInfoReader {
-	protected Workspace workspace;
-	protected Synchronizer synchronizer;
+    protected Workspace workspace;
+    protected Synchronizer synchronizer;
 
-	public SyncInfoReader(Workspace workspace, Synchronizer synchronizer) {
-		super();
-		this.workspace = workspace;
-		this.synchronizer = synchronizer;
-	}
+    public SyncInfoReader(Workspace workspace, Synchronizer synchronizer) {
+        super();
+        this.workspace = workspace;
+        this.synchronizer = synchronizer;
+    }
 
-	/**
-	 * Returns the appropriate reader for the given version.
-	 */
-	protected SyncInfoReader getReader(int formatVersion) throws IOException {
-		switch (formatVersion) {
-			case 2 :
-				return new SyncInfoReader_2(workspace, synchronizer);
-			case 3 :
-				return new SyncInfoReader_3(workspace, synchronizer);
-			default :
-				throw new IOException(NLS.bind(Messages.resources_format, formatVersion));
-		}
-	}
+    /**
+     * Returns the appropriate reader for the given version.
+     */
+    protected SyncInfoReader getReader(int formatVersion) throws IOException {
+        switch (formatVersion) {
+            case 2:
+                return new SyncInfoReader_2(workspace, synchronizer);
 
-	public void readPartners(DataInputStream input) throws CoreException {
-		try {
-			int size = input.readInt();
-			Set<QualifiedName> registry = new HashSet<>(size);
-			for (int i = 0; i < size; i++) {
-				String qualifier = input.readUTF();
-				String local = input.readUTF();
-				registry.add(new QualifiedName(qualifier, local));
-			}
-			synchronizer.setRegistry(registry);
-		} catch (IOException e) {
-			String message = NLS.bind(Messages.resources_readSync, e);
-			throw new ResourceException(new ResourceStatus(IResourceStatus.INTERNAL_ERROR, message));
-		}
-	}
+            case 3:
+                return new SyncInfoReader_3(workspace, synchronizer);
 
-	public void readSyncInfo(DataInputStream input) throws IOException, CoreException {
-		// dispatch to the appropriate reader depending
-		// on the version of the file
-		int formatVersion = readVersionNumber(input);
-		SyncInfoReader reader = getReader(formatVersion);
-		reader.readSyncInfo(input);
-	}
+            default:
+                throw new IOException(NLS.bind(Messages.resources_format, formatVersion));
+        }
+    }
 
-	protected static int readVersionNumber(DataInputStream input) throws IOException {
-		return input.readInt();
-	}
+    public void readPartners(DataInputStream input) throws CoreException {
+        try {
+            int size = input.readInt();
+            Set<QualifiedName> registry = new HashSet<>(size);
+            for (int i = 0; i < size; i++) {
+                String qualifier = input.readUTF();
+                String local = input.readUTF();
+                registry.add(new QualifiedName(qualifier, local));
+            }
+            synchronizer.setRegistry(registry);
+        } catch (IOException e) {
+            String message = NLS.bind(Messages.resources_readSync, e);
+            throw new ResourceException(new ResourceStatus(IResourceStatus.INTERNAL_ERROR, message));
+        }
+    }
+
+    public void readSyncInfo(DataInputStream input) throws IOException, CoreException {
+        // dispatch to the appropriate reader depending
+        // on the version of the file
+        int formatVersion = readVersionNumber(input);
+        SyncInfoReader reader = getReader(formatVersion);
+        reader.readSyncInfo(input);
+    }
+
+    protected static int readVersionNumber(DataInputStream input) throws IOException {
+        return input.readInt();
+    }
 }

@@ -1,14 +1,14 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.common.aliasing.qual;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.DefaultFor;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.DefaultQualifierInHierarchy;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.TypeUseLocation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.DefaultFor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.DefaultQualifierInHierarchy;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.TypeUseLocation;
 
 /**
  * An expression with this type might have an alias. In other words, some other expression,
@@ -19,10 +19,9 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_PARAMETER, ElementType.TYPE_USE})
-@SubtypeOf({})
+@Target({ ElementType.TYPE_PARAMETER, ElementType.TYPE_USE })
+@SubtypeOf({ })
 @DefaultQualifierInHierarchy
-@DefaultFor(
-    value = {TypeUseLocation.UPPER_BOUND, TypeUseLocation.LOWER_BOUND},
-    types = Void.class)
-public @interface MaybeAliased {}
+@DefaultFor(value = { TypeUseLocation.UPPER_BOUND, TypeUseLocation.LOWER_BOUND }, types = Void.class)
+public @interface MaybeAliased {
+}

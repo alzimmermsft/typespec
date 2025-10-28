@@ -15,16 +15,14 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
+
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.*;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CharOperation;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.search.SearchEngine;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.codeassist.CompletionEngine;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.Binding;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.ExtraCompilerModifiers;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.hierarchy.TypeHierarchy;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.DeduplicationUtil;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.MementoTokenizer;
@@ -63,142 +61,8 @@ protected void closing(Object info) throws JavaModelException {
 		((TypeParameter) typeParameter).close();
 	}
 }
-/**
- * @see IType
- * @deprecated
- */
-@Override
-public void codeComplete(char[] snippet,int insertion,int position,char[][] localVariableTypeNames,char[][] localVariableNames,int[] localVariableModifiers,boolean isStatic,ICompletionRequestor requestor) throws JavaModelException {
-	codeComplete(snippet, insertion, position, localVariableTypeNames, localVariableNames, localVariableModifiers, isStatic, requestor, DefaultWorkingCopyOwner.PRIMARY);
-}
-/**
- * @see IType
- * @deprecated
- */
-@Override
-public void codeComplete(char[] snippet,int insertion,int position,char[][] localVariableTypeNames,char[][] localVariableNames,int[] localVariableModifiers,boolean isStatic,ICompletionRequestor requestor, WorkingCopyOwner owner) throws JavaModelException {
-	if (requestor == null) {
-		throw new IllegalArgumentException("Completion requestor cannot be null"); //$NON-NLS-1$
-	}
-	codeComplete(snippet, insertion, position, localVariableTypeNames, localVariableNames, localVariableModifiers, isStatic, new org.eclipse.jdt.internal.codeassist.CompletionRequestorWrapper(requestor), owner);
 
-}
-/**
- * @see IType
- */
-@Override
-public void codeComplete(char[] snippet,int insertion,int position,char[][] localVariableTypeNames,char[][] localVariableNames,int[] localVariableModifiers,boolean isStatic,CompletionRequestor requestor) throws JavaModelException {
-	codeComplete(snippet, insertion, position, localVariableTypeNames, localVariableNames, localVariableModifiers, isStatic, requestor, DefaultWorkingCopyOwner.PRIMARY);
-}
-/**
- * @see IType
- */
-@Override
-public void codeComplete(char[] snippet,int insertion,int position,char[][] localVariableTypeNames,char[][] localVariableNames,int[] localVariableModifiers,boolean isStatic,CompletionRequestor requestor, IProgressMonitor monitor) throws JavaModelException {
-	codeComplete(snippet, insertion, position, localVariableTypeNames, localVariableNames, localVariableModifiers, isStatic, requestor, DefaultWorkingCopyOwner.PRIMARY, monitor);
-}
-/**
- * @see IType
- */
-@Override
-public void codeComplete(char[] snippet,int insertion,int position,char[][] localVariableTypeNames,char[][] localVariableNames,int[] localVariableModifiers,boolean isStatic,CompletionRequestor requestor, WorkingCopyOwner owner) throws JavaModelException {
-	codeComplete(snippet, insertion, position, localVariableTypeNames, localVariableNames, localVariableModifiers, isStatic, requestor, owner, null);
-}
-/**
- * @see IType
- */
-@Override
-public void codeComplete(
-		char[] snippet,
-		int insertion,
-		int position,
-		char[][] localVariableTypeNames,
-		char[][] localVariableNames,
-		int[] localVariableModifiers,
-		boolean isStatic,
-		CompletionRequestor requestor,
-		WorkingCopyOwner owner,
-		IProgressMonitor monitor) throws JavaModelException {
-	if (requestor == null) {
-		throw new IllegalArgumentException("Completion requestor cannot be null"); //$NON-NLS-1$
-	}
-
-	JavaProject project = getJavaProject();
-	SearchableEnvironment environment = project.newSearchableNameEnvironment(owner, requestor.isTestCodeExcluded());
-	CompletionEngine engine = new CompletionEngine(environment, requestor, project.getOptions(true), project, owner, monitor);
-
-	String source = getCompilationUnit().getSource();
-	if (source != null && insertion > -1 && insertion < source.length()) {
-
-		char[] prefix = CharOperation.concat(source.substring(0, insertion).toCharArray(), new char[]{'{'});
-		char[] suffix = CharOperation.concat(new char[]{'}'}, source.substring(insertion).toCharArray());
-		char[] fakeSource = CharOperation.concat(prefix, snippet, suffix);
-
-		BasicCompilationUnit cu =
-			new BasicCompilationUnit(
-				fakeSource,
-				null,
-				getElementName(),
-				getParent());
-
-		engine.complete(cu, prefix.length + position, prefix.length, null/*extended context isn't computed*/);
-	} else {
-		engine.complete(this, snippet, position, localVariableTypeNames, localVariableNames, localVariableModifiers, isStatic);
-	}
-	if (NameLookup.VERBOSE) {
-		JavaModelManager.trace(Thread.currentThread() + " TIME SPENT in NameLoopkup#seekTypesInSourcePackage: " + environment.nameLookup.timeSpentInSeekTypesInSourcePackage + "ms");  //$NON-NLS-1$ //$NON-NLS-2$
-		JavaModelManager.trace(Thread.currentThread() + " TIME SPENT in NameLoopkup#seekTypesInBinaryPackage: " + environment.nameLookup.timeSpentInSeekTypesInBinaryPackage + "ms");  //$NON-NLS-1$ //$NON-NLS-2$
-	}
-}
-/**
- * @see IType
- */
-@Override
-public IField createField(String contents, IJavaElement sibling, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	CreateFieldOperation op = new CreateFieldOperation(this, contents, force);
-	if (sibling != null) {
-		op.createBefore(sibling);
-	}
-	op.runOperation(monitor);
-	return (IField) op.getResultElements()[0];
-}
-/**
- * @see IType
- */
-@Override
-public IInitializer createInitializer(String contents, IJavaElement sibling, IProgressMonitor monitor) throws JavaModelException {
-	CreateInitializerOperation op = new CreateInitializerOperation(this, contents);
-	if (sibling != null) {
-		op.createBefore(sibling);
-	}
-	op.runOperation(monitor);
-	return (IInitializer) op.getResultElements()[0];
-}
-/**
- * @see IType
- */
-@Override
-public IMethod createMethod(String contents, IJavaElement sibling, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	CreateMethodOperation op = new CreateMethodOperation(this, contents, force);
-	if (sibling != null) {
-		op.createBefore(sibling);
-	}
-	op.runOperation(monitor);
-	return (IMethod) op.getResultElements()[0];
-}
-/**
- * @see IType
- */
-@Override
-public IType createType(String contents, IJavaElement sibling, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	CreateTypeOperation op = new CreateTypeOperation(this, contents, force);
-	if (sibling != null) {
-		op.createBefore(sibling);
-	}
-	op.runOperation(monitor);
-	return (IType) op.getResultElements()[0];
-}
-@Override
+    @Override
 public boolean equals(Object o) {
 	if (!(o instanceof SourceType)) return false;
 	if (((SourceType) o).isLambda())
@@ -222,31 +86,8 @@ public IAnnotation[] getAnnotations() throws JavaModelException {
 	AnnotatableInfo info = (AnnotatableInfo) getElementInfo();
 	return info.annotations;
 }
-@Override
-public IJavaElement[] getChildrenForCategory(String category) throws JavaModelException {
-	IJavaElement[] children = getChildren();
-	int length = children.length;
-	if (length == 0) return NO_ELEMENTS;
-	SourceTypeElementInfo info = (SourceTypeElementInfo) getElementInfo();
-	HashMap categories = info.getCategories();
-	if (categories == null) return NO_ELEMENTS;
-	IJavaElement[] result = new IJavaElement[length];
-	int index = 0;
-	for (int i = 0; i < length; i++) {
-		IJavaElement child = children[i];
-		String[] elementCategories = (String[]) categories.get(child);
-		if (elementCategories != null)
-			for (String elementCategory : elementCategories) {
-				if (elementCategory.equals(category))
-					result[index++] = child;
-			}
-	}
-	if (index == 0) return NO_ELEMENTS;
-	if (index < length)
-		System.arraycopy(result, 0, result = new IJavaElement[index], 0, index);
-	return result;
-}
-/**
+
+    /**
  * @see IMember
  */
 @Override
@@ -304,13 +145,8 @@ public IField[] getRecordComponents() throws JavaModelException {
 		return NO_FIELDS;
 	return getFieldsOrComponents(true);
 }
-@Override
-public String[] getPermittedSubtypeNames() throws JavaModelException {
-	SourceTypeElementInfo info = (SourceTypeElementInfo) getElementInfo();
-	char[][] names= info.getPermittedSubtypeNames();
-	return CharOperation.toStrings(names);
-}
-private IField[] getFieldsOrComponents(boolean component) throws JavaModelException {
+
+    private IField[] getFieldsOrComponents(boolean component) throws JavaModelException {
 	ArrayList list = getChildrenOfType(FIELD);
 	if (list.size() == 0) {
 		return NO_FIELDS;
@@ -325,17 +161,8 @@ private IField[] getFieldsOrComponents(boolean component) throws JavaModelExcept
 	fields.toArray(array);
 	return array;
 }
-@Override
-public IField getRecordComponent(String compName) {
-	try {
-		if (isRecord())
-			return new SourceField(this, compName);
-	} catch (JavaModelException e) {
-		// Should throw an exception instead?
-	}
-	return null;
-}
-/**
+
+    /**
  * @see IType#getFullyQualifiedName()
  */
 @Override
@@ -355,11 +182,7 @@ public String getFullyQualifiedName(char enclosingTypeSeparator) {
 	}
 }
 
-@Override
-public String getFullyQualifiedParameterizedName() throws JavaModelException {
-	return getFullyQualifiedName('.', true/*show parameters*/);
-}
-/*
+    /*
  * For source types, the occurrence count is the one computed in the context of the immediately enclosing type.
  */
 @Override
@@ -478,7 +301,7 @@ public IInitializer[] getInitializers() throws JavaModelException {
 @Override
 public String getKey() {
 	try {
-		return getKey(this, false/*don't open*/);
+		return getKey(this /*don't open*/);
 	} catch (JavaModelException e) {
 		// happen only if force open is true
 		return null;
@@ -803,71 +626,8 @@ public ITypeHierarchy loadTypeHierachy(InputStream input, WorkingCopyOwner owner
 	// TODO monitor should be passed to TypeHierarchy.load(...)
 	return TypeHierarchy.load(this, input, owner);
 }
-/**
- * @see IType
- */
-@Override
-public ITypeHierarchy newSupertypeHierarchy(IProgressMonitor monitor) throws JavaModelException {
-	return this.newSupertypeHierarchy(DefaultWorkingCopyOwner.PRIMARY, monitor);
-}
 
-@Override
-public ITypeHierarchy newSupertypeHierarchy(
-	ICompilationUnit[] workingCopies,
-	IProgressMonitor monitor)
-	throws JavaModelException {
-
-	CreateTypeHierarchyOperation op= new CreateTypeHierarchyOperation(this, workingCopies, SearchEngine.createWorkspaceScope(), false);
-	op.runOperation(monitor);
-	return op.getResult();
-}
-/**
- * @param workingCopies the working copies that take precedence over their original compilation units
- * @param monitor the given progress monitor
- * @return a type hierarchy for this type containing this type and all of its supertypes
- * @exception JavaModelException if this element does not exist or if an
- *		exception occurs while accessing its corresponding resource.
- *
- * @see IType#newSupertypeHierarchy(IWorkingCopy[], IProgressMonitor)
- * @deprecated
- */
-@Override
-public ITypeHierarchy newSupertypeHierarchy(
-	IWorkingCopy[] workingCopies,
-	IProgressMonitor monitor)
-	throws JavaModelException {
-
-	ICompilationUnit[] copies;
-	if (workingCopies == null) {
-		copies = null;
-	} else {
-		int length = workingCopies.length;
-		System.arraycopy(workingCopies, 0, copies = new ICompilationUnit[length], 0, length);
-	}
-	return newSupertypeHierarchy(copies, monitor);
-}
-/**
- * @see IType#newSupertypeHierarchy(WorkingCopyOwner, IProgressMonitor)
- */
-@Override
-public ITypeHierarchy newSupertypeHierarchy(
-	WorkingCopyOwner owner,
-	IProgressMonitor monitor)
-	throws JavaModelException {
-
-	ICompilationUnit[] workingCopies = JavaModelManager.getJavaModelManager().getWorkingCopies(owner, true/*add primary working copies*/);
-	CreateTypeHierarchyOperation op= new CreateTypeHierarchyOperation(this, workingCopies, SearchEngine.createWorkspaceScope(), false);
-	op.runOperation(monitor);
-	return op.getResult();
-}
-/**
- * @see IType
- */
-@Override
-public ITypeHierarchy newTypeHierarchy(IJavaProject project, IProgressMonitor monitor) throws JavaModelException {
-	return newTypeHierarchy(project, DefaultWorkingCopyOwner.PRIMARY, monitor);
-}
-/**
+    /**
  * @see IType#newTypeHierarchy(IJavaProject, WorkingCopyOwner, IProgressMonitor)
  */
 @Override
@@ -899,46 +659,8 @@ public ITypeHierarchy newTypeHierarchy(IJavaProject project, WorkingCopyOwner ow
 	op.runOperation(monitor);
 	return op.getResult();
 }
-/**
- * @see IType
- */
-@Override
-public ITypeHierarchy newTypeHierarchy(IProgressMonitor monitor) throws JavaModelException {
-	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=228845, The new type hierarchy should consider changes in primary
-	// working copy.
-	return newTypeHierarchy(DefaultWorkingCopyOwner.PRIMARY, monitor);
-}
 
-@Override
-public ITypeHierarchy newTypeHierarchy(
-	ICompilationUnit[] workingCopies,
-	IProgressMonitor monitor)
-	throws JavaModelException {
-
-	CreateTypeHierarchyOperation op= new CreateTypeHierarchyOperation(this, workingCopies, SearchEngine.createWorkspaceScope(), true);
-	op.runOperation(monitor);
-	return op.getResult();
-}
-/**
- * @see IType#newTypeHierarchy(IWorkingCopy[], IProgressMonitor)
- * @deprecated
- */
-@Override
-public ITypeHierarchy newTypeHierarchy(
-	IWorkingCopy[] workingCopies,
-	IProgressMonitor monitor)
-	throws JavaModelException {
-
-	ICompilationUnit[] copies;
-	if (workingCopies == null) {
-		copies = null;
-	} else {
-		int length = workingCopies.length;
-		System.arraycopy(workingCopies, 0, copies = new ICompilationUnit[length], 0, length);
-	}
-	return newTypeHierarchy(copies, monitor);
-}
-/**
+    /**
  * @see IType#newTypeHierarchy(WorkingCopyOwner, IProgressMonitor)
  */
 @Override
@@ -1013,9 +735,5 @@ protected void toStringInfo(int tab, StringBuilder buffer, Object info, boolean 
 @Override
 public boolean isLambda() {
 	return false;
-}
-@Override
-public boolean isImplicitlyDeclared() throws JavaModelException {
-	return (this.getFlags() & ExtraCompilerModifiers.AccImplicitlyDeclared) != 0;
 }
 }

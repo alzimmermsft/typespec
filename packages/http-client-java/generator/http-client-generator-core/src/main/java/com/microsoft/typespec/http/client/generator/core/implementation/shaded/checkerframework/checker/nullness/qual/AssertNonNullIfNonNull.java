@@ -14,13 +14,15 @@ import java.lang.annotation.Target;
  *
  * <p>Here is an example use:
  *
- * <pre><code>
+ * <pre>
+ * <code>
  *    {@literal @}AssertNonNullIfNonNull("id")
  *    {@literal @}Pure
  *     public @Nullable Long getId() {
  *         return id;
  *     }
- * </code></pre>
+ * </code>
+ * </pre>
  *
  * Note the direction of the implication. This annotation says that if the result is non-null, then
  * the variable {@code id} is also non-null. The annotation does not say that if {@code id} is
@@ -40,10 +42,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface AssertNonNullIfNonNull {
 
-  /**
-   * Java expression(s) that are non-null after the method returns a non-null value.
-   *
-   * @checker_framework.manual #java-expressions-as-arguments Syntax of Java expressions
-   */
-  String[] value();
+    /**
+     * Java expression(s) that are non-null after the method returns a non-null value.
+     *
+     * @checker_framework.manual #java-expressions-as-arguments Syntax of Java expressions
+     */
+    String[] value();
 }

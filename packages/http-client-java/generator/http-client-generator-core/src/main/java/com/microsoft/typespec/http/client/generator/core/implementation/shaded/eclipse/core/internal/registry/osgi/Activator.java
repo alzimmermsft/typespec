@@ -28,10 +28,10 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 public class Activator implements BundleActivator {
 
-	private static BundleContext bundleContext;
+    private static BundleContext bundleContext;
 
     public static BundleContext getContext() {
-		return bundleContext;
-	}
+        return bundleContext;
+    }
 
 }

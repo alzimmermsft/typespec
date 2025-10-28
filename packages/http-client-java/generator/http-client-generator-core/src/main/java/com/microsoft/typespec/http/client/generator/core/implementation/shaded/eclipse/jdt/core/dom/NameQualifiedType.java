@@ -40,245 +40,243 @@ import java.util.List;
  * @since 3.10
  * @noinstantiate This class is not intended to be instantiated by clients.
  */
-@SuppressWarnings({"rawtypes"})
+@SuppressWarnings({ "rawtypes" })
 public class NameQualifiedType extends AnnotatableType {
 
-	/**
-	 * The "qualifier" structural property of this node type (child type: {@link Name}).
-	 */
-	public static final ChildPropertyDescriptor QUALIFIER_PROPERTY =
-		new ChildPropertyDescriptor(NameQualifiedType.class, "qualifier", Name.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
+    /**
+     * The "qualifier" structural property of this node type (child type: {@link Name}).
+     */
+    public static final ChildPropertyDescriptor QUALIFIER_PROPERTY
+        = new ChildPropertyDescriptor(NameQualifiedType.class, "qualifier", Name.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
 
-	/**
-	 * The "annotations" structural property of this node type (element type: {@link Annotation}).
-	 */
-	public static final ChildListPropertyDescriptor ANNOTATIONS_PROPERTY =
-			internalAnnotationsPropertyFactory(NameQualifiedType.class);
+    /**
+     * The "annotations" structural property of this node type (element type: {@link Annotation}).
+     */
+    public static final ChildListPropertyDescriptor ANNOTATIONS_PROPERTY
+        = internalAnnotationsPropertyFactory(NameQualifiedType.class);
 
-	/**
-	 * The "name" structural property of this node type (child type: {@link SimpleName}).
-	 */
-	public static final ChildPropertyDescriptor NAME_PROPERTY =
-		new ChildPropertyDescriptor(NameQualifiedType.class, "name", SimpleName.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
+    /**
+     * The "name" structural property of this node type (child type: {@link SimpleName}).
+     */
+    public static final ChildPropertyDescriptor NAME_PROPERTY
+        = new ChildPropertyDescriptor(NameQualifiedType.class, "name", SimpleName.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
 
-	/**
-	 * A list of property descriptors (element type:
-	 * {@link StructuralPropertyDescriptor}),
-	 * or null if uninitialized.
-	 */
-	private static final List PROPERTY_DESCRIPTORS;
+    /**
+     * A list of property descriptors (element type:
+     * {@link StructuralPropertyDescriptor}),
+     * or null if uninitialized.
+     */
+    private static final List PROPERTY_DESCRIPTORS;
 
-	static {
-		List propertyList = new ArrayList(4);
-		createPropertyList(NameQualifiedType.class, propertyList);
-		addProperty(QUALIFIER_PROPERTY, propertyList);
-		addProperty(ANNOTATIONS_PROPERTY, propertyList);
-		addProperty(NAME_PROPERTY, propertyList);
-		PROPERTY_DESCRIPTORS = reapPropertyList(propertyList);
-	}
+    static {
+        List propertyList = new ArrayList(4);
+        createPropertyList(NameQualifiedType.class, propertyList);
+        addProperty(QUALIFIER_PROPERTY, propertyList);
+        addProperty(ANNOTATIONS_PROPERTY, propertyList);
+        addProperty(NAME_PROPERTY, propertyList);
+        PROPERTY_DESCRIPTORS = reapPropertyList(propertyList);
+    }
 
-	/**
-	 * Returns a list of structural property descriptors for this node type.
-	 * Clients must not modify the result.
-	 *
-	 * @param apiLevel the API level; one of the
-	 * <code>AST.JLS*</code> constants
-	 * @return a list of property descriptors (element type:
-	 * {@link StructuralPropertyDescriptor})
-	 */
-	public static List propertyDescriptors(int apiLevel) {
-		return PROPERTY_DESCRIPTORS;
-	}
+    /**
+     * Returns a list of structural property descriptors for this node type.
+     * Clients must not modify the result.
+     *
+     * @param apiLevel the API level; one of the
+     * <code>AST.JLS*</code> constants
+     * @return a list of property descriptors (element type:
+     * {@link StructuralPropertyDescriptor})
+     */
+    public static List propertyDescriptors(int apiLevel) {
+        return PROPERTY_DESCRIPTORS;
+    }
 
-	/**
-	 * The qualifier node; lazily initialized; defaults to
-	 * an unspecified, but legal, simple name.
-	 */
-	private volatile Name qualifier;
+    /**
+     * The qualifier node; lazily initialized; defaults to
+     * an unspecified, but legal, simple name.
+     */
+    private volatile Name qualifier;
 
-	/**
-	 * The name being qualified; lazily initialized; defaults to a unspecified,
-	 * legal Java identifier.
-	 */
-	private volatile SimpleName name;
+    /**
+     * The name being qualified; lazily initialized; defaults to a unspecified,
+     * legal Java identifier.
+     */
+    private volatile SimpleName name;
 
-	/**
-	 * Creates a new unparented node for a name-qualified type owned by the
-	 * given AST. By default, an unspecified, but legal, qualifier and name.
-	 * <p>
-	 * N.B. This constructor is package-private.
-	 * </p>
-	 *
-	 * @param ast the AST that is to own this node
-	 */
-	NameQualifiedType(AST ast) {
-		super(ast);
-	    unsupportedIn2_3_4();
-	}
+    /**
+     * Creates a new unparented node for a name-qualified type owned by the
+     * given AST. By default, an unspecified, but legal, qualifier and name.
+     * <p>
+     * N.B. This constructor is package-private.
+     * </p>
+     *
+     * @param ast the AST that is to own this node
+     */
+    NameQualifiedType(AST ast) {
+        super(ast);
+        unsupportedIn2_3_4();
+    }
 
-	@Override
-	ChildListPropertyDescriptor internalAnnotationsProperty() {
-		return ANNOTATIONS_PROPERTY;
-	}
+    @Override
+    ChildListPropertyDescriptor internalAnnotationsProperty() {
+        return ANNOTATIONS_PROPERTY;
+    }
 
-	@Override
-	List internalStructuralPropertiesForType(int apiLevel) {
-		return propertyDescriptors(apiLevel);
-	}
+    @Override
+    List internalStructuralPropertiesForType(int apiLevel) {
+        return propertyDescriptors(apiLevel);
+    }
 
-	@Override
-	final List internalGetChildListProperty(ChildListPropertyDescriptor property) {
-		if (property == ANNOTATIONS_PROPERTY) {
-			return annotations();
-		}
-		// allow default implementation to flag the error
-		return super.internalGetChildListProperty(property);
-	}
+    @Override
+    final List internalGetChildListProperty(ChildListPropertyDescriptor property) {
+        if (property == ANNOTATIONS_PROPERTY) {
+            return annotations();
+        }
+        // allow default implementation to flag the error
+        return super.internalGetChildListProperty(property);
+    }
 
-	@Override
-	final ASTNode internalGetSetChildProperty(ChildPropertyDescriptor property, boolean get, ASTNode child) {
-		if (property == QUALIFIER_PROPERTY) {
-			if (get) {
-				return getQualifier();
-			} else {
-				setQualifier((Name) child);
-				return null;
-			}
-		}
-		if (property == NAME_PROPERTY) {
-			if (get) {
-				return getName();
-			} else {
-				setName((SimpleName) child);
-				return null;
-			}
-		}
-		// allow default implementation to flag the error
-		return super.internalGetSetChildProperty(property, get, child);
-	}
+    @Override
+    final ASTNode internalGetSetChildProperty(ChildPropertyDescriptor property, boolean get, ASTNode child) {
+        if (property == QUALIFIER_PROPERTY) {
+            if (get) {
+                return getQualifier();
+            } else {
+                setQualifier((Name) child);
+                return null;
+            }
+        }
+        if (property == NAME_PROPERTY) {
+            if (get) {
+                return getName();
+            } else {
+                setName((SimpleName) child);
+                return null;
+            }
+        }
+        // allow default implementation to flag the error
+        return super.internalGetSetChildProperty(property, get, child);
+    }
 
-	@Override
-	final int getNodeType0() {
-		return NAME_QUALIFIED_TYPE;
-	}
+    @Override
+    final int getNodeType0() {
+        return NAME_QUALIFIED_TYPE;
+    }
 
-	@Override
-	final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
-		// dispatch to correct overloaded match method
-		return matcher.match(this, other);
-	}
+    @Override
+    final boolean subtreeMatch0(ASTMatcher matcher, Object other) {
+        // dispatch to correct overloaded match method
+        return matcher.match(this, other);
+    }
 
-	@Override
-	ASTNode clone0(AST target) {
-		NameQualifiedType result = new NameQualifiedType(target);
-		result.setSourceRange(getStartPosition(), getLength());
-		result.setQualifier((Name) getQualifier().clone(target));
-		result.annotations().addAll(ASTNode.copySubtrees(target, annotations()));
-		result.setName((SimpleName) getName().clone(target));
-		return result;
-	}
+    @Override
+    ASTNode clone0(AST target) {
+        NameQualifiedType result = new NameQualifiedType(target);
+        result.setSourceRange(getStartPosition(), getLength());
+        result.setQualifier((Name) getQualifier().clone(target));
+        result.annotations().addAll(ASTNode.copySubtrees(target, annotations()));
+        result.setName((SimpleName) getName().clone(target));
+        return result;
+    }
 
-	@Override
-	void accept0(ASTVisitor visitor) {
-		boolean visitChildren = visitor.visit(this);
-		if (visitChildren) {
-			// visit children in normal left to right reading order
-			acceptChild(visitor, getQualifier());
-			acceptChildren(visitor, this.annotations);
-			acceptChild(visitor, getName());
-		}
-		visitor.endVisit(this);
-	}
+    @Override
+    void accept0(ASTVisitor visitor) {
+        boolean visitChildren = visitor.visit(this);
+        if (visitChildren) {
+            // visit children in normal left to right reading order
+            acceptChild(visitor, getQualifier());
+            acceptChildren(visitor, this.annotations);
+            acceptChild(visitor, getName());
+        }
+        visitor.endVisit(this);
+    }
 
-	/**
-	 * Returns the qualifier of this name-qualified type.
-	 *
-	 * @return the qualifier of this name-qualified type
-	 */
-	public Name getQualifier() {
-		if (this.qualifier == null) {
-			// lazy init must be thread-safe for readers
-			synchronized (this) {
-				if (this.qualifier == null) {
-					preLazyInit();
-					this.qualifier = postLazyInit(new SimpleName(this.ast), QUALIFIER_PROPERTY);
-				}
-			}
-		}
-		return this.qualifier;
-	}
+    /**
+     * Returns the qualifier of this name-qualified type.
+     *
+     * @return the qualifier of this name-qualified type
+     */
+    public Name getQualifier() {
+        if (this.qualifier == null) {
+            // lazy init must be thread-safe for readers
+            synchronized (this) {
+                if (this.qualifier == null) {
+                    preLazyInit();
+                    this.qualifier = postLazyInit(new SimpleName(this.ast), QUALIFIER_PROPERTY);
+                }
+            }
+        }
+        return this.qualifier;
+    }
 
-	/**
-	 * Sets the qualifier of this name-qualified type to the given name.
-	 *
-	 * @param name the new qualifier of this name-qualified type
-	 * @exception IllegalArgumentException if:
-	 * <ul>
-	 * <li>the node belongs to a different AST</li>
-	 * <li>the node already has a parent</li>
-	 * </ul>
-	 */
-	public void setQualifier(Name name) {
-		if (name == null) {
-			throw new IllegalArgumentException();
-		}
-		ASTNode oldChild = this.qualifier;
-		preReplaceChild(oldChild, name, QUALIFIER_PROPERTY);
-		this.qualifier = name;
-		postReplaceChild(oldChild, name, QUALIFIER_PROPERTY);
-	}
+    /**
+     * Sets the qualifier of this name-qualified type to the given name.
+     *
+     * @param name the new qualifier of this name-qualified type
+     * @exception IllegalArgumentException if:
+     * <ul>
+     * <li>the node belongs to a different AST</li>
+     * <li>the node already has a parent</li>
+     * </ul>
+     */
+    public void setQualifier(Name name) {
+        if (name == null) {
+            throw new IllegalArgumentException();
+        }
+        ASTNode oldChild = this.qualifier;
+        preReplaceChild(oldChild, name, QUALIFIER_PROPERTY);
+        this.qualifier = name;
+        postReplaceChild(oldChild, name, QUALIFIER_PROPERTY);
+    }
 
-	/**
-	 * Returns the name part of this name-qualified type.
-	 *
-	 * @return the name being qualified
-	 */
-	public SimpleName getName() {
-		if (this.name == null) {
-			// lazy init must be thread-safe for readers
-			synchronized (this) {
-				if (this.name == null) {
-					preLazyInit();
-					this.name = postLazyInit(new SimpleName(this.ast), NAME_PROPERTY);
-				}
-			}
-		}
-		return this.name;
-	}
+    /**
+     * Returns the name part of this name-qualified type.
+     *
+     * @return the name being qualified
+     */
+    public SimpleName getName() {
+        if (this.name == null) {
+            // lazy init must be thread-safe for readers
+            synchronized (this) {
+                if (this.name == null) {
+                    preLazyInit();
+                    this.name = postLazyInit(new SimpleName(this.ast), NAME_PROPERTY);
+                }
+            }
+        }
+        return this.name;
+    }
 
-	/**
-	 * Sets the name part of this name-qualified type to the given simple name.
-	 *
-	 * @param name the identifier of this qualified name
-	 * @exception IllegalArgumentException if:
-	 * <ul>
-	 * <li>the node belongs to a different AST</li>
-	 * <li>the node already has a parent</li>
-	 * </ul>
-	 */
-	public void setName(SimpleName name) {
-		if (name == null) {
-			throw new IllegalArgumentException();
-		}
-		ASTNode oldChild = this.name;
-		preReplaceChild(oldChild, name, NAME_PROPERTY);
-		this.name = name;
-		postReplaceChild(oldChild, name, NAME_PROPERTY);
-	}
+    /**
+     * Sets the name part of this name-qualified type to the given simple name.
+     *
+     * @param name the identifier of this qualified name
+     * @exception IllegalArgumentException if:
+     * <ul>
+     * <li>the node belongs to a different AST</li>
+     * <li>the node already has a parent</li>
+     * </ul>
+     */
+    public void setName(SimpleName name) {
+        if (name == null) {
+            throw new IllegalArgumentException();
+        }
+        ASTNode oldChild = this.name;
+        preReplaceChild(oldChild, name, NAME_PROPERTY);
+        this.name = name;
+        postReplaceChild(oldChild, name, NAME_PROPERTY);
+    }
 
-	@Override
-	int memSize() {
-		// treat Code as free
-		return BASE_NODE_SIZE + 2 * 4;
-	}
+    @Override
+    int memSize() {
+        // treat Code as free
+        return BASE_NODE_SIZE + 2 * 4;
+    }
 
-	@Override
-	int treeSize() {
-		return
-			memSize()
-			+ (this.qualifier == null ? 0 : getQualifier().treeSize())
-			+ (this.annotations == null ? 0 : this.annotations.listSize())
-			+ (this.name == null ? 0 : getName().treeSize());
-	}
+    @Override
+    int treeSize() {
+        return memSize() + (this.qualifier == null ? 0 : getQualifier().treeSize())
+            + (this.annotations == null ? 0 : this.annotations.listSize())
+            + (this.name == null ? 0 : getName().treeSize());
+    }
 
 }

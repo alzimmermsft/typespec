@@ -20,15 +20,15 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 public class JobActivator implements BundleActivator {
 
-    //$NON-NLS-1$
+    // $NON-NLS-1$
 
     /**
-	 * The bundle associated this plug-in
-	 */
-	private static BundleContext bundleContext;
+     * The bundle associated this plug-in
+     */
+    private static BundleContext bundleContext;
 
     static BundleContext getContext() {
-		return bundleContext;
-	}
+        return bundleContext;
+    }
 
 }

@@ -12,9 +12,10 @@
  *     Gayan Perera - initial API and implementation
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.codeassist.complete;
+
 /**
  * Marker interface for all completion nodes
  */
 public interface CompletionNode {
-	// Nothing to declare
+    // Nothing to declare
 }

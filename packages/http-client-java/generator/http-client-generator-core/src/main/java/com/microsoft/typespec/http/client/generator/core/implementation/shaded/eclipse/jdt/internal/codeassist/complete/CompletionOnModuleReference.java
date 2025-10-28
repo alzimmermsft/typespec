@@ -20,31 +20,34 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class CompletionOnModuleReference extends ModuleReference implements CompletionNode {
 
-	public CompletionOnModuleReference(char[] ident, long pos) {
-		this(new char[][]{ident}, new long[]{pos});
-	}
-	public CompletionOnModuleReference(char[][] tokens, long[] sourcePositions) {
-		super(tokens, sourcePositions);
-	}
+    public CompletionOnModuleReference(char[] ident, long pos) {
+        this(new char[][] { ident }, new long[] { pos });
+    }
 
-	@Override
-	public ModuleBinding resolve(Scope scope) {
-		super.resolve(scope);
+    public CompletionOnModuleReference(char[][] tokens, long[] sourcePositions) {
+        super(tokens, sourcePositions);
+    }
+
+    @Override
+    public ModuleBinding resolve(Scope scope) {
+        super.resolve(scope);
 //		if (this.binding != null) {
 //			throw new CompletionNodeFound(this, this.binding, scope);
 //		} else {
-			throw new CompletionNodeFound();
-		//}
-	}
-	@Override
-	public StringBuilder print(int indent, StringBuilder output) {
+        throw new CompletionNodeFound();
+        // }
+    }
 
-		printIndent(indent, output).append("<CompleteOnModuleReference:"); //$NON-NLS-1$
-		for (int i = 0; i < this.tokens.length; i++) {
-			if (i > 0) output.append('.');
-			output.append(this.tokens[i]);
-		}
-		return output.append('>');
-	}
+    @Override
+    public StringBuilder print(int indent, StringBuilder output) {
+
+        printIndent(indent, output).append("<CompleteOnModuleReference:"); //$NON-NLS-1$
+        for (int i = 0; i < this.tokens.length; i++) {
+            if (i > 0)
+                output.append('.');
+            output.append(this.tokens[i]);
+        }
+        return output.append('>');
+    }
 
 }

@@ -30,11 +30,11 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public interface IRegistryProvider {
 
-	/**
-	 * Returns the extension registry contributed by this provider; must not be
-	 * <code>null</code>.
-	 *
-	 * @return an extension registry
-	 */
-	public IExtensionRegistry getRegistry();
+    /**
+     * Returns the extension registry contributed by this provider; must not be
+     * <code>null</code>.
+     *
+     * @return an extension registry
+     */
+    public IExtensionRegistry getRegistry();
 }

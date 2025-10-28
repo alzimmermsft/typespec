@@ -55,12 +55,7 @@ public class ProjectEntry implements IModulePathEntry {
 		return null;
 	}
 
-	@Override
-	public boolean isAutomaticModule() {
-		return false;
-	}
-
-	@Override
+    @Override
 	public char[][] getModulesDeclaringPackage(String qualifiedPackageName, String moduleName) {
 		// TODO(SHMOD): verify (is unnamed handled correctly?)
 		IModule mod = getModule();

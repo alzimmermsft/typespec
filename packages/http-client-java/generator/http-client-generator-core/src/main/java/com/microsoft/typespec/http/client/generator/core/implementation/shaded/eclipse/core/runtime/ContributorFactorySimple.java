@@ -31,15 +31,15 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public final class ContributorFactorySimple {
 
-	/**
-	 * Creates registry contributor object based on a determining object.The
-	 * determining object must not be <code>null</code>.
-	 *
-	 * @param determiningObject object associated with the contribution
-	 * @return new registry contributor based on the determining object
-	 */
-	public static IContributor createContributor(Object determiningObject) {
-		String id = determiningObject.toString();
-		return new RegistryContributor(id, id, null, null);
-	}
+    /**
+     * Creates registry contributor object based on a determining object.The
+     * determining object must not be <code>null</code>.
+     *
+     * @param determiningObject object associated with the contribution
+     * @return new registry contributor based on the determining object
+     */
+    public static IContributor createContributor(Object determiningObject) {
+        String id = determiningObject.toString();
+        return new RegistryContributor(id, id, null, null);
+    }
 }

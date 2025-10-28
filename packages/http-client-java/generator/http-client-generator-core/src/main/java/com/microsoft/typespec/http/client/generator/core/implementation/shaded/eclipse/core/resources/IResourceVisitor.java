@@ -20,6 +20,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * <p>
  * Usage:
  * </p>
+ * 
  * <pre>
  * class Visitor implements IResourceVisitor {
  *    public boolean visit(IResource res) {
@@ -30,6 +31,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * IResource root = ...;
  * root.accept(new Visitor());
  * </pre>
+ * 
  * <p>
  * Clients may implement this interface.
  * </p>
@@ -37,13 +39,13 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * @see IResource#accept(IResourceVisitor)
  */
 public interface IResourceVisitor {
-	/**
-	 * Visits the given resource.
-	 *
-	 * @param resource the resource to visit
-	 * @return <code>true</code> if the resource's members should
-	 *		be visited; <code>false</code> if they should be skipped
-	 * @exception CoreException if the visit fails for some reason.
-	 */
-	boolean visit(IResource resource) throws CoreException;
+    /**
+     * Visits the given resource.
+     *
+     * @param resource the resource to visit
+     * @return <code>true</code> if the resource's members should
+     * be visited; <code>false</code> if they should be skipped
+     * @exception CoreException if the visit fails for some reason.
+     */
+    boolean visit(IResource resource) throws CoreException;
 }

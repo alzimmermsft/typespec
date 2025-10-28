@@ -32,5 +32,6 @@ import java.lang.annotation.Target;
  * @checker_framework.manual #resource-leak-checker Resource Leak Checker
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
-public @interface Owning {}
+@Target({ ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD })
+public @interface Owning {
+}

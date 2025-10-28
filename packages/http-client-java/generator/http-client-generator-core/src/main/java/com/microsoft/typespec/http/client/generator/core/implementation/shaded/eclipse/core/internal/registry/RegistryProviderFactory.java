@@ -22,22 +22,22 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public final class RegistryProviderFactory {
 
-	private static IRegistryProvider defaultRegistryProvider;
+    private static IRegistryProvider defaultRegistryProvider;
 
-	public static IRegistryProvider getDefault() {
-		return defaultRegistryProvider;
-	}
+    public static IRegistryProvider getDefault() {
+        return defaultRegistryProvider;
+    }
 
-	public static void setDefault(IRegistryProvider provider) throws CoreException {
-		if (defaultRegistryProvider != null) {
-			Status status = new Status(IStatus.ERROR, RegistryMessages.OWNER_NAME, IRegistryConstants.PLUGIN_ERROR,
-					RegistryMessages.registry_default_exists, null);
-			throw new CoreException(status);
-		}
-		defaultRegistryProvider = provider;
-	}
+    public static void setDefault(IRegistryProvider provider) throws CoreException {
+        if (defaultRegistryProvider != null) {
+            Status status = new Status(IStatus.ERROR, RegistryMessages.OWNER_NAME, IRegistryConstants.PLUGIN_ERROR,
+                RegistryMessages.registry_default_exists, null);
+            throw new CoreException(status);
+        }
+        defaultRegistryProvider = provider;
+    }
 
-	public static void releaseDefault() {
-		defaultRegistryProvider = null;
-	}
+    public static void releaseDefault() {
+        defaultRegistryProvider = null;
+    }
 }

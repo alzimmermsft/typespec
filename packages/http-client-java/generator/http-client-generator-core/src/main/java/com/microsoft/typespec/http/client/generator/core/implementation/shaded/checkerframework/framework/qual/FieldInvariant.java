@@ -17,24 +17,25 @@ import java.lang.annotation.Target;
  * field invariant annotation and override {@code
  * AnnotatedTypeFactory.getFieldInvariantDeclarationAnnotations()} and {@code
  * AnnotatedTypeFactory.getFieldInvariants()}. See {@link
- * com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.common.value.qual.MinLenFieldInvariant} for an example.
+ * com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.common.value.qual.MinLenFieldInvariant}
+ * for an example.
  *
  * @checker_framework.manual #field-invariants Field invariants
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
+@Target({ ElementType.TYPE })
 @Inherited
 public @interface FieldInvariant {
 
-  /**
-   * The qualifier on the field. Must be a subtype of the qualifier on the declaration of the field.
-   */
-  Class<? extends Annotation>[] qualifier();
+    /**
+     * The qualifier on the field. Must be a subtype of the qualifier on the declaration of the field.
+     */
+    Class<? extends Annotation>[] qualifier();
 
-  /**
-   * The field that has a more precise type, in the class on which the {@code FieldInvariant}
-   * annotation is written. The field must be declared in a superclass and must be {@code final}.
-   */
-  String[] field();
+    /**
+     * The field that has a more precise type, in the class on which the {@code FieldInvariant}
+     * annotation is written. The field must be declared in a superclass and must be {@code final}.
+     */
+    String[] field();
 }

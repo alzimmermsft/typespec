@@ -25,241 +25,241 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * map create and return a new map, rather than modifying the receiver.
  */
 public abstract class ImmutableMap implements Cloneable {
-	static class ArrayMap extends ImmutableMap {
-		private static final float LOAD_FACTOR = 0.45f;
-		/**
-		 * number of elements in the table
-		 */
-		private int elementSize;
+    static class ArrayMap extends ImmutableMap {
+        private static final float LOAD_FACTOR = 0.45f;
+        /**
+         * number of elements in the table
+         */
+        private int elementSize;
 
-		/**
-		 * The table keys
-		 */
-		private final String[] keyTable;
+        /**
+         * The table keys
+         */
+        private final String[] keyTable;
 
-		private final int threshold;
-		private final String[] valueTable;
+        private final int threshold;
+        private final String[] valueTable;
 
-		ArrayMap(int size) {
-			this.elementSize = 0;
-			// table size must always be a power of two
-			int tableLen = 1;
-			while (tableLen < size) {
-				tableLen *= 2;
-			}
-			this.keyTable = new String[tableLen];
-			this.valueTable = new String[tableLen];
-			this.threshold = (int) (tableLen * LOAD_FACTOR);
-		}
+        ArrayMap(int size) {
+            this.elementSize = 0;
+            // table size must always be a power of two
+            int tableLen = 1;
+            while (tableLen < size) {
+                tableLen *= 2;
+            }
+            this.keyTable = new String[tableLen];
+            this.valueTable = new String[tableLen];
+            this.threshold = (int) (tableLen * LOAD_FACTOR);
+        }
 
-		@Override
-		public String get(String key) {
-			int lengthMask = keyTable.length - 1;
-			int index = key.hashCode() & lengthMask;
-			String currentKey;
-			while ((currentKey = keyTable[index]) != null) {
-				if (currentKey.equals(key)) {
-					return valueTable[index];
-				}
-				index = (index + 1) & lengthMask;
-			}
-			return null;
-		}
+        @Override
+        public String get(String key) {
+            int lengthMask = keyTable.length - 1;
+            int index = key.hashCode() & lengthMask;
+            String currentKey;
+            while ((currentKey = keyTable[index]) != null) {
+                if (currentKey.equals(key)) {
+                    return valueTable[index];
+                }
+                index = (index + 1) & lengthMask;
+            }
+            return null;
+        }
 
-		/**
-		 * This method destructively adds the key/value pair to the table. The caller
-		 * must ensure the table has an empty slot before calling this method.
-		 */
-		@Override
-		protected void internalPut(String key, String value) {
-			int lengthMask = keyTable.length - 1;
-			int index = key.hashCode() & lengthMask;
-			String currentKey;
-			while ((currentKey = keyTable[index]) != null) {
-				if (currentKey.equals(key)) {
-					valueTable[index] = value;
-					return;
-				}
-				index = (index + 1) & lengthMask;
-			}
-			keyTable[index] = key;
-			valueTable[index] = value;
-			++elementSize;
-		}
+        /**
+         * This method destructively adds the key/value pair to the table. The caller
+         * must ensure the table has an empty slot before calling this method.
+         */
+        @Override
+        protected void internalPut(String key, String value) {
+            int lengthMask = keyTable.length - 1;
+            int index = key.hashCode() & lengthMask;
+            String currentKey;
+            while ((currentKey = keyTable[index]) != null) {
+                if (currentKey.equals(key)) {
+                    valueTable[index] = value;
+                    return;
+                }
+                index = (index + 1) & lengthMask;
+            }
+            keyTable[index] = key;
+            valueTable[index] = value;
+            ++elementSize;
+        }
 
-		/**
-		 * Returns an array of all keys in this map.
-		 */
-		@Override
-		public String[] keys() {
-			if (elementSize == 0) {
-				return EMPTY_STRING_ARRAY;
-			}
-			String[] result = new String[elementSize];
-			int next = 0;
-			for (String key : keyTable) {
-				if (key != null) {
-					result[next++] = key;
-				}
-			}
-			return result;
-		}
+        /**
+         * Returns an array of all keys in this map.
+         */
+        @Override
+        public String[] keys() {
+            if (elementSize == 0) {
+                return EMPTY_STRING_ARRAY;
+            }
+            String[] result = new String[elementSize];
+            int next = 0;
+            for (String key : keyTable) {
+                if (key != null) {
+                    result[next++] = key;
+                }
+            }
+            return result;
+        }
 
-		@Override
-		public ImmutableMap put(String key, String value) {
-			ArrayMap result;
-			final int oldLen = keyTable.length;
-			if (elementSize + 1 > threshold) {
-				// rehash case
-				String currentKey;
-				result = new ArrayMap(oldLen * 2);
-				for (int i = oldLen; --i >= 0;) {
-					if ((currentKey = keyTable[i]) != null) {
-						result.internalPut(currentKey, valueTable[i]);
-					}
-				}
-			} else {
-				result = new ArrayMap(oldLen);
-				System.arraycopy(this.keyTable, 0, result.keyTable, 0, this.keyTable.length);
-				System.arraycopy(this.valueTable, 0, result.valueTable, 0, this.valueTable.length);
-				result.elementSize = this.elementSize;
-			}
-			result.internalPut(key, value);
-			return result;
-		}
+        @Override
+        public ImmutableMap put(String key, String value) {
+            ArrayMap result;
+            final int oldLen = keyTable.length;
+            if (elementSize + 1 > threshold) {
+                // rehash case
+                String currentKey;
+                result = new ArrayMap(oldLen * 2);
+                for (int i = oldLen; --i >= 0;) {
+                    if ((currentKey = keyTable[i]) != null) {
+                        result.internalPut(currentKey, valueTable[i]);
+                    }
+                }
+            } else {
+                result = new ArrayMap(oldLen);
+                System.arraycopy(this.keyTable, 0, result.keyTable, 0, this.keyTable.length);
+                System.arraycopy(this.valueTable, 0, result.valueTable, 0, this.valueTable.length);
+                result.elementSize = this.elementSize;
+            }
+            result.internalPut(key, value);
+            return result;
+        }
 
-		@Override
-		public ImmutableMap removeKey(String key) {
-			final int lengthMask = keyTable.length - 1;
-			int index = key.hashCode() & lengthMask;
-			String currentKey;
-			while ((currentKey = keyTable[index]) != null) {
-				if (currentKey.equals(key)) {
-					if (elementSize <= 1) {
-						return EMPTY;
-					}
-					// return a new map that includes all keys except the current one
-					ImmutableMap result = createMap((int) (elementSize / LOAD_FACTOR));
-					for (int i = 0; i < index; i++) {
-						if ((currentKey = keyTable[i]) != null) {
-							result.internalPut(currentKey, valueTable[i]);
-						}
-					}
-					for (int i = index + 1; i <= lengthMask; i++) {
-						if ((currentKey = keyTable[i]) != null) {
-							result.internalPut(currentKey, valueTable[i]);
-						}
-					}
-					return result;
-				}
-				index = (index + 1) & lengthMask;
-			}
-			return this;
-		}
+        @Override
+        public ImmutableMap removeKey(String key) {
+            final int lengthMask = keyTable.length - 1;
+            int index = key.hashCode() & lengthMask;
+            String currentKey;
+            while ((currentKey = keyTable[index]) != null) {
+                if (currentKey.equals(key)) {
+                    if (elementSize <= 1) {
+                        return EMPTY;
+                    }
+                    // return a new map that includes all keys except the current one
+                    ImmutableMap result = createMap((int) (elementSize / LOAD_FACTOR));
+                    for (int i = 0; i < index; i++) {
+                        if ((currentKey = keyTable[i]) != null) {
+                            result.internalPut(currentKey, valueTable[i]);
+                        }
+                    }
+                    for (int i = index + 1; i <= lengthMask; i++) {
+                        if ((currentKey = keyTable[i]) != null) {
+                            result.internalPut(currentKey, valueTable[i]);
+                        }
+                    }
+                    return result;
+                }
+                index = (index + 1) & lengthMask;
+            }
+            return this;
+        }
 
-		@Override
-		public int size() {
-			return elementSize;
-		}
+        @Override
+        public int size() {
+            return elementSize;
+        }
 
-	}
+    }
 
-	static class EmptyMap extends ImmutableMap {
-		@Override
-		public String get(String value) {
-			return null;
-		}
+    static class EmptyMap extends ImmutableMap {
+        @Override
+        public String get(String value) {
+            return null;
+        }
 
-		@Override
-		public ImmutableMap removeKey(String key) {
-			return this;
-		}
+        @Override
+        public ImmutableMap removeKey(String key) {
+            return this;
+        }
 
-		@Override
-		protected void internalPut(String key, String value) {
-			throw new IllegalStateException();// cannot put elements in the empty map
-		}
+        @Override
+        protected void internalPut(String key, String value) {
+            throw new IllegalStateException();// cannot put elements in the empty map
+        }
 
-		@Override
-		public String[] keys() {
-			return EMPTY_STRING_ARRAY;
-		}
+        @Override
+        public String[] keys() {
+            return EMPTY_STRING_ARRAY;
+        }
 
-		@Override
-		public ImmutableMap put(String key, String value) {
-			ImmutableMap result = createMap(4);
-			result.internalPut(key, value);
-			return result;
-		}
+        @Override
+        public ImmutableMap put(String key, String value) {
+            ImmutableMap result = createMap(4);
+            result.internalPut(key, value);
+            return result;
+        }
 
-		@Override
-		public int size() {
-			return 0;
-		}
-	}
+        @Override
+        public int size() {
+            return 0;
+        }
+    }
 
-	/**
-	 * The empty hash map. Since instances are immutable, the empty map can be a
-	 * singleton, with accessor methods optimized for the empty map case.
-	 */
-	public static final ImmutableMap EMPTY = new EmptyMap();
+    /**
+     * The empty hash map. Since instances are immutable, the empty map can be a
+     * singleton, with accessor methods optimized for the empty map case.
+     */
+    public static final ImmutableMap EMPTY = new EmptyMap();
 
-	protected static final String[] EMPTY_STRING_ARRAY = new String[0];
+    protected static final String[] EMPTY_STRING_ARRAY = new String[0];
 
-	/**
-	 * Returns the value associated with this key in the map, or <code>null</code>
-	 * if the key is not present in the map.
-	 *
-	 * @return The value associated with this key, or <code>null</code>
-	 */
-	public abstract String get(String key);
+    /**
+     * Returns the value associated with this key in the map, or <code>null</code>
+     * if the key is not present in the map.
+     *
+     * @return The value associated with this key, or <code>null</code>
+     */
+    public abstract String get(String key);
 
-	protected static ImmutableMap createMap(int i) {
-		if (i <= 0) {
-			return EMPTY;
-		}
-		return new ArrayMap(i);
-	}
+    protected static ImmutableMap createMap(int i) {
+        if (i <= 0) {
+            return EMPTY;
+        }
+        return new ArrayMap(i);
+    }
 
-	/**
-	 * Destructively adds a key/value pair to this map. The caller must ensure there
-	 * is enough room in this map to proceed.
-	 */
-	protected abstract void internalPut(String key, String value);
+    /**
+     * Destructively adds a key/value pair to this map. The caller must ensure there
+     * is enough room in this map to proceed.
+     */
+    protected abstract void internalPut(String key, String value);
 
-	/**
-	 * Returns an array of all keys in this map.
-	 */
-	public abstract String[] keys();
+    /**
+     * Returns an array of all keys in this map.
+     */
+    public abstract String[] keys();
 
-	/**
-	 * Returns a new map that is equal to this one, except with the given key/value
-	 * pair added.
-	 *
-	 * @return The map containing the given key/value pair
-	 */
-	public abstract ImmutableMap put(String key, String value);
+    /**
+     * Returns a new map that is equal to this one, except with the given key/value
+     * pair added.
+     *
+     * @return The map containing the given key/value pair
+     */
+    public abstract ImmutableMap put(String key, String value);
 
-	/**
-	 * Returns a map that is equal to this one, except without the given key.
-	 *
-	 * @return A map with the given key removed
-	 */
-	public abstract ImmutableMap removeKey(String key);
+    /**
+     * Returns a map that is equal to this one, except without the given key.
+     *
+     * @return A map with the given key removed
+     */
+    public abstract ImmutableMap removeKey(String key);
 
-	/**
-	 * Returns the number of keys in this map.
-	 *
-	 * @return the number of keys in this map.
-	 */
-	public abstract int size();
+    /**
+     * Returns the number of keys in this map.
+     *
+     * @return the number of keys in this map.
+     */
+    public abstract int size();
 
-	@Override
-	public String toString() {
-		StringBuilder s = new StringBuilder();
-		for (String key : keys()) {
-			s.append(key).append(" -> ").append(get(key)).append("\n"); //$NON-NLS-2$ //$NON-NLS-1$
-		}
-		return s.toString();
-	}
+    @Override
+    public String toString() {
+        StringBuilder s = new StringBuilder();
+        for (String key : keys()) {
+            s.append(key).append(" -> ").append(get(key)).append("\n"); //$NON-NLS-2$ //$NON-NLS-1$
+        }
+        return s.toString();
+    }
 }

@@ -35,20 +35,20 @@ import java.util.EventListener;
  * @see IRegistryChangeEvent
  */
 public interface IRegistryChangeListener extends EventListener {
-	/**
-	 * Notifies this listener that some registry changes are happening, or have
-	 * already happened.
-	 * <p>
-	 * The supplied event gives details. This event object (and the deltas in it) is
-	 * valid only for the duration of the invocation of this method.
-	 * </p>
-	 * <p>
-	 * Note: This method is called by the platform; it is not intended to be called
-	 * directly by clients.
-	 * </p>
-	 *
-	 * @param event the registry change event
-	 * @see IRegistryChangeEvent
-	 */
-	public void registryChanged(IRegistryChangeEvent event);
+    /**
+     * Notifies this listener that some registry changes are happening, or have
+     * already happened.
+     * <p>
+     * The supplied event gives details. This event object (and the deltas in it) is
+     * valid only for the duration of the invocation of this method.
+     * </p>
+     * <p>
+     * Note: This method is called by the platform; it is not intended to be called
+     * directly by clients.
+     * </p>
+     *
+     * @param event the registry change event
+     * @see IRegistryChangeEvent
+     */
+    public void registryChanged(IRegistryChangeEvent event);
 }

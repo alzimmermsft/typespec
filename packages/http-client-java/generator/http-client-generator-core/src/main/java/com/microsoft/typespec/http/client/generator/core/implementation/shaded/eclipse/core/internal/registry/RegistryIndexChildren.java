@@ -15,97 +15,97 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 public class RegistryIndexChildren {
 
-	static final int[] EMPTY_ARRAY = new int[0];
+    static final int[] EMPTY_ARRAY = new int[0];
 
-	private int[] children;
+    private int[] children;
 
-	public RegistryIndexChildren() {
-		children = EMPTY_ARRAY;
-	}
+    public RegistryIndexChildren() {
+        children = EMPTY_ARRAY;
+    }
 
-	public RegistryIndexChildren(int[] children) {
-		this.children = children;
-	}
+    public RegistryIndexChildren(int[] children) {
+        this.children = children;
+    }
 
-	public int[] getChildren() {
-		return children;
-	}
+    public int[] getChildren() {
+        return children;
+    }
 
-	public int findChild(int id) {
-		for (int i = 0; i < children.length; i++) {
-			if (children[i] == id) {
-				return i;
-			}
-		}
-		return -1;
-	}
+    public int findChild(int id) {
+        for (int i = 0; i < children.length; i++) {
+            if (children[i] == id) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
-	public boolean unlinkChild(int id) {
-		int index = findChild(id);
-		if (index == -1) {
-			return false; // there is no such element
-		}
+    public boolean unlinkChild(int id) {
+        int index = findChild(id);
+        if (index == -1) {
+            return false; // there is no such element
+        }
 
-		// copy the array except one element at index
-		int[] result = new int[children.length - 1];
-		System.arraycopy(children, 0, result, 0, index);
-		System.arraycopy(children, index + 1, result, index, children.length - index - 1);
-		children = result;
-		return true;
-	}
+        // copy the array except one element at index
+        int[] result = new int[children.length - 1];
+        System.arraycopy(children, 0, result, 0, index);
+        System.arraycopy(children, index + 1, result, index, children.length - index - 1);
+        children = result;
+        return true;
+    }
 
-	public boolean linkChild(int id) {
-		if (children.length == 0) {
-			children = new int[] { id };
-			return true;
-		}
+    public boolean linkChild(int id) {
+        if (children.length == 0) {
+            children = new int[] { id };
+            return true;
+        }
 
-		// add new element at the end
-		int[] result = new int[children.length + 1];
-		System.arraycopy(children, 0, result, 0, children.length);
-		result[children.length] = id;
-		children = result;
-		return true;
-	}
+        // add new element at the end
+        int[] result = new int[children.length + 1];
+        System.arraycopy(children, 0, result, 0, children.length);
+        result[children.length] = id;
+        children = result;
+        return true;
+    }
 
-	public boolean linkChildren(int[] IDs) {
-		if (children.length == 0) {
-			children = IDs;
-			return true;
-		}
-		int[] result = new int[children.length + IDs.length];
-		System.arraycopy(children, 0, result, 0, children.length);
-		System.arraycopy(IDs, 0, result, children.length, IDs.length);
-		children = result;
-		return true;
-	}
+    public boolean linkChildren(int[] IDs) {
+        if (children.length == 0) {
+            children = IDs;
+            return true;
+        }
+        int[] result = new int[children.length + IDs.length];
+        System.arraycopy(children, 0, result, 0, children.length);
+        System.arraycopy(IDs, 0, result, children.length, IDs.length);
+        children = result;
+        return true;
+    }
 
-	public boolean unlinkChildren(int[] IDs) {
-		if (children.length == 0) {
-			return (IDs.length == 0);
-		}
+    public boolean unlinkChildren(int[] IDs) {
+        if (children.length == 0) {
+            return (IDs.length == 0);
+        }
 
-		int size = children.length;
-		for (int i = 0; i < IDs.length; i++) {
-			int index = findChild(IDs[i]);
-			if (index != -1) {
-				children[i] = -1;
-				size--;
-			}
-		}
-		if (size == 0) {
-			children = EMPTY_ARRAY;
-			return true;
-		}
-		int[] result = new int[size];
-		int pos = 0;
-		for (int child : children) {
-			if (child == -1) {
-				continue;
-			}
-			result[pos] = child;
-			pos++;
-		}
-		return true;
-	}
+        int size = children.length;
+        for (int i = 0; i < IDs.length; i++) {
+            int index = findChild(IDs[i]);
+            if (index != -1) {
+                children[i] = -1;
+                size--;
+            }
+        }
+        if (size == 0) {
+            children = EMPTY_ARRAY;
+            return true;
+        }
+        int[] result = new int[size];
+        int pos = 0;
+        for (int child : children) {
+            if (child == -1) {
+                continue;
+            }
+            result[pos] = child;
+            pos++;
+        }
+        return true;
+    }
 }

@@ -14,8 +14,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.filesystem.local;
 
-import java.nio.file.FileSystems;
-import java.util.Set;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.filesystem.IFileInfo;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.filesystem.provider.FileInfo;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.filesystem.local.nio.DefaultHandler;
@@ -23,6 +21,8 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.filesystem.local.unix.UnixFileHandler;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.filesystem.local.unix.UnixFileNatives;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Platform;
+import java.nio.file.FileSystems;
+import java.util.Set;
 
 /**
  * <p>Dispatches methods backed by native code to the appropriate platform specific
@@ -37,54 +37,56 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * without it.</p>
  */
 public class LocalFileNativesManager {
-	public static final boolean PROPERTY_USE_NATIVE_DEFAULT = true;
-	public static final String PROPERTY_USE_NATIVES = "eclipse.filesystem.useNatives"; //$NON-NLS-1$
-	private static NativeHandler HANDLER;
+    public static final boolean PROPERTY_USE_NATIVE_DEFAULT = true;
+    public static final String PROPERTY_USE_NATIVES = "eclipse.filesystem.useNatives"; //$NON-NLS-1$
+    private static NativeHandler HANDLER;
 
-	static {
-		reset();
-	}
+    static {
+        reset();
+    }
 
-	/**
-	 * reset the usage of native to the system default
-	 */
-	public static void reset() {
-		setUsingNative(Boolean.parseBoolean(System.getProperty(PROPERTY_USE_NATIVES, String.valueOf(PROPERTY_USE_NATIVE_DEFAULT))));
-	}
+    /**
+     * reset the usage of native to the system default
+     */
+    public static void reset() {
+        setUsingNative(Boolean
+            .parseBoolean(System.getProperty(PROPERTY_USE_NATIVES, String.valueOf(PROPERTY_USE_NATIVE_DEFAULT))));
+    }
 
-	/**
-	 * Try to set the usage of natives to the provided value
-	 * @return <code>true</code> if natives are used as result of this call <code>false</code> otherwise
-	 */
-	public static boolean setUsingNative(boolean useNatives) {
-		boolean nativesAreUsed;
-		if (useNatives && !Platform.OS.isWindows() && UnixFileNatives.isUsingNatives()) {
-			HANDLER = new UnixFileHandler();
-			nativesAreUsed = true;
-		} else {
-			nativesAreUsed = false;
-			Set<String> views = FileSystems.getDefault().supportedFileAttributeViews();
-			if (views.contains("posix")) { //$NON-NLS-1$
-				HANDLER = new PosixHandler();
-			} else if (views.contains("dos")) { //$NON-NLS-1$
-				HANDLER = new Win32Handler();
-			} else {
-				HANDLER = new DefaultHandler();
-			}
-		}
-		return nativesAreUsed;
-	}
+    /**
+     * Try to set the usage of natives to the provided value
+     * 
+     * @return <code>true</code> if natives are used as result of this call <code>false</code> otherwise
+     */
+    public static boolean setUsingNative(boolean useNatives) {
+        boolean nativesAreUsed;
+        if (useNatives && !Platform.OS.isWindows() && UnixFileNatives.isUsingNatives()) {
+            HANDLER = new UnixFileHandler();
+            nativesAreUsed = true;
+        } else {
+            nativesAreUsed = false;
+            Set<String> views = FileSystems.getDefault().supportedFileAttributeViews();
+            if (views.contains("posix")) { //$NON-NLS-1$
+                HANDLER = new PosixHandler();
+            } else if (views.contains("dos")) { //$NON-NLS-1$
+                HANDLER = new Win32Handler();
+            } else {
+                HANDLER = new DefaultHandler();
+            }
+        }
+        return nativesAreUsed;
+    }
 
-	public static int getSupportedAttributes() {
-		return HANDLER.getSupportedAttributes();
-	}
+    public static int getSupportedAttributes() {
+        return HANDLER.getSupportedAttributes();
+    }
 
-	public static FileInfo fetchFileInfo(String fileName) {
-		return HANDLER.fetchFileInfo(fileName);
-	}
+    public static FileInfo fetchFileInfo(String fileName) {
+        return HANDLER.fetchFileInfo(fileName);
+    }
 
-	public static boolean putFileInfo(String fileName, IFileInfo info, int options) {
-		return HANDLER.putFileInfo(fileName, info, options);
-	}
+    public static boolean putFileInfo(String fileName, IFileInfo info, int options) {
+        return HANDLER.putFileInfo(fileName, info, options);
+    }
 
 }

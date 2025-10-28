@@ -16,50 +16,50 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.QualifiedName;
 
 /**
- * A content description for which all  properties have default values.
+ * A content description for which all properties have default values.
  */
 public final class DefaultDescription extends BasicDescription {
 
-	public DefaultDescription(IContentTypeInfo contentTypeInfo) {
-		super(contentTypeInfo);
-	}
+    public DefaultDescription(IContentTypeInfo contentTypeInfo) {
+        super(contentTypeInfo);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof DefaultDescription)) {
-			return false;
-		}
-		// see ContentType.equals()
-		return contentTypeInfo.equals(((DefaultDescription) obj).contentTypeInfo);
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof DefaultDescription)) {
+            return false;
+        }
+        // see ContentType.equals()
+        return contentTypeInfo.equals(((DefaultDescription) obj).contentTypeInfo);
+    }
 
-	@Override
-	public String getCharset() {
-		return (String) getProperty(CHARSET);
-	}
+    @Override
+    public String getCharset() {
+        return (String) getProperty(CHARSET);
+    }
 
-	@Override
-	public Object getProperty(QualifiedName key) {
-		return contentTypeInfo.getDefaultProperty(key);
-	}
+    @Override
+    public Object getProperty(QualifiedName key) {
+        return contentTypeInfo.getDefaultProperty(key);
+    }
 
-	@Override
-	public int hashCode() {
-		return contentTypeInfo.getContentType().hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return contentTypeInfo.getContentType().hashCode();
+    }
 
-	@Override
-	public boolean isRequested(QualifiedName key) {
-		return false;
-	}
+    @Override
+    public boolean isRequested(QualifiedName key) {
+        return false;
+    }
 
-	@Override
-	public void setProperty(QualifiedName key, Object value) {
-		throw new IllegalStateException();
-	}
+    @Override
+    public void setProperty(QualifiedName key, Object value) {
+        throw new IllegalStateException();
+    }
 
-	@Override
-	public String toString() {
-		return "{default} : " + contentTypeInfo.getContentType(); //$NON-NLS-1$
-	}
+    @Override
+    public String toString() {
+        return "{default} : " + contentTypeInfo.getContentType(); //$NON-NLS-1$
+    }
 }

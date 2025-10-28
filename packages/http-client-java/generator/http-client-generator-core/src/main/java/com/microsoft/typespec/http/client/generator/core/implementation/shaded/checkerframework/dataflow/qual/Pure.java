@@ -18,20 +18,20 @@ import java.lang.annotation.Target;
  * {@code @InheritedAnnotation}.
  *
  * @checker_framework.manual #type-refinement-purity Side effects, determinism, purity, and
- *     flow-sensitive analysis
+ * flow-sensitive analysis
  */
 // @InheritedAnnotation cannot be written here, because "dataflow" project cannot depend on
 // "framework" project.
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
 public @interface Pure {
-  /** The type of purity. */
-  public static enum Kind {
-    /** The method has no visible side effects. */
-    SIDE_EFFECT_FREE,
+    /** The type of purity. */
+    public static enum Kind {
+        /** The method has no visible side effects. */
+        SIDE_EFFECT_FREE,
 
-    /** The method returns exactly the same value when called in the same environment. */
-    DETERMINISTIC
-  }
+        /** The method returns exactly the same value when called in the same environment. */
+        DETERMINISTIC
+    }
 }

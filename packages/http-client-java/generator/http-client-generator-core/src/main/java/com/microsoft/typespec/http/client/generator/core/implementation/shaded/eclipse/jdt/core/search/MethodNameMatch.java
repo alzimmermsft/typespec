@@ -26,43 +26,45 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * @noextend This class is not intended to be subclassed by clients.
  *
  * @see MethodNameMatchRequestor
- * @see SearchEngine#searchAllMethodNames(char[], int, char[], int, char[], int, char[], int, IJavaSearchScope, MethodNameMatchRequestor, int, com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor)
+ * @see SearchEngine#searchAllMethodNames(char[], int, char[], int, char[], int, char[], int, IJavaSearchScope,
+ * MethodNameMatchRequestor, int,
+ * com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor)
  * @since 3.12
  */
 public abstract class MethodNameMatch {
 
-	/**
-	 * Returns the accessibility of the declaring type of the method name match
-	 *
-	 * @see IAccessRule
-	 *
-	 * @return the accessibility of the declaring type of the method name which may be
-	 * 		{@link IAccessRule#K_ACCESSIBLE}, {@link IAccessRule#K_DISCOURAGED}
-	 * 		or {@link IAccessRule#K_NON_ACCESSIBLE}.
-	 * 		The default returned value is {@link IAccessRule#K_ACCESSIBLE}.
-	 */
-	public abstract int getAccessibility();
+    /**
+     * Returns the accessibility of the declaring type of the method name match
+     *
+     * @see IAccessRule
+     *
+     * @return the accessibility of the declaring type of the method name which may be
+     * {@link IAccessRule#K_ACCESSIBLE}, {@link IAccessRule#K_DISCOURAGED}
+     * or {@link IAccessRule#K_NON_ACCESSIBLE}.
+     * The default returned value is {@link IAccessRule#K_ACCESSIBLE}.
+     */
+    public abstract int getAccessibility();
 
-	/**
-	 * Returns the modifiers of the matched method.
-	 * <p>
-	 * This is a handle-only method as neither Java Model nor classpath
-	 * initialization is done while calling this method.
-	 *
-	 * @return the type modifiers
-	 */
-	public abstract int getModifiers();
+    /**
+     * Returns the modifiers of the matched method.
+     * <p>
+     * This is a handle-only method as neither Java Model nor classpath
+     * initialization is done while calling this method.
+     *
+     * @return the type modifiers
+     */
+    public abstract int getModifiers();
 
-	/**
-	 * Returns a java model method handle.
-	 * This handle may exist or not, but is not supposed to be <code>null</code>.
-	 * <p>
-	 * This is a handle-only method as neither Java Model nor classpath
-	 * initializations are done while calling this method.
-	 *
-	 * @see IMethod
-	 * @return the non-null handle on matched java model method.
-	 */
-	public abstract IMethod getMethod();
+    /**
+     * Returns a java model method handle.
+     * This handle may exist or not, but is not supposed to be <code>null</code>.
+     * <p>
+     * This is a handle-only method as neither Java Model nor classpath
+     * initializations are done while calling this method.
+     *
+     * @see IMethod
+     * @return the non-null handle on matched java model method.
+     */
+    public abstract IMethod getMethod();
 
 }

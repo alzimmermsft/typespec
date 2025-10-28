@@ -17,61 +17,61 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
 
 public class VariableDescription implements Comparable<VariableDescription> {
-	private String name;
-	private String value;
+    private String name;
+    private String value;
 
-	public VariableDescription() {
-		this.name = ""; //$NON-NLS-1$
-		this.value = ""; //$NON-NLS-1$
-	}
+    public VariableDescription() {
+        this.name = ""; //$NON-NLS-1$
+        this.value = ""; //$NON-NLS-1$
+    }
 
-	public VariableDescription(String name, String value) {
-		super();
-		Assert.isNotNull(name);
-		Assert.isNotNull(value);
-		this.name = name;
-		this.value = value;
-	}
+    public VariableDescription(String name, String value) {
+        super();
+        Assert.isNotNull(name);
+        Assert.isNotNull(value);
+        this.name = name;
+        this.value = value;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (o == null) {
-			return false;
-		}
-		if (o.getClass() != this.getClass()) {
-			return false;
-		}
-		VariableDescription other = (VariableDescription) o;
-		return name.equals(other.name) && value == other.value;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
+        if (o.getClass() != this.getClass()) {
+            return false;
+        }
+        VariableDescription other = (VariableDescription) o;
+        return name.equals(other.name) && value == other.value;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getValue() {
-		return value;
-	}
+    public String getValue() {
+        return value;
+    }
 
-	@Override
-	public int hashCode() {
-		return name.hashCode() + value.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return name.hashCode() + value.hashCode();
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-	/**
-	 * Compare string descriptions in a way that sorts them topologically by
-	 * name.
-	 */
-	@Override
-	public int compareTo(VariableDescription that) {
-		return name.compareTo(that.name);
-	}
+    /**
+     * Compare string descriptions in a way that sorts them topologically by
+     * name.
+     */
+    @Override
+    public int compareTo(VariableDescription that) {
+        return name.compareTo(that.name);
+    }
 }

@@ -121,8 +121,8 @@ public class FileSystem implements IModuleAwareNameEnvironment, SuffixConstants 
 		/**
 		 * Accepts to represent a module location with the given module description.
 		 */
-		public void acceptModule(IModule module);
-		public String getDestinationPath();
+        void acceptModule(IModule module);
+		String getDestinationPath();
 		Collection<String> getModuleNames(Collection<String> limitModules);
 		Collection<String> getModuleNames(Collection<String> limitModules, Function<String,IModule> getModule);
 		default boolean forbidsExportFrom(String modName) { return false; }
@@ -285,10 +285,8 @@ private void initializeModuleLocations(Set<String> limitedModules) {
 protected FileSystem(Classpath[] paths, String[] initialFileNames, boolean annotationsFromClasspath) {
 	this(paths, initialFileNames, annotationsFromClasspath, null);
 }
-public static Classpath getClasspath(String classpathName, String encoding, AccessRuleSet accessRuleSet) {
-	return getClasspath(classpathName, encoding, false, accessRuleSet, null, null, null);
-}
-public static Classpath getClasspath(String classpathName, String encoding, AccessRuleSet accessRuleSet, Map<String, String> options, String release) {
+
+    public static Classpath getClasspath(String classpathName, String encoding, AccessRuleSet accessRuleSet, Map<String, String> options, String release) {
 	return getClasspath(classpathName, encoding, false, accessRuleSet, null, options, release);
 }
 public static Classpath getJrtClasspath(String jdkHome, String encoding, AccessRuleSet accessRuleSet, Map<String, String> options) {
@@ -419,16 +417,8 @@ private void initializeKnownFileNames(String[] initialFileNames) {
 		matchingPathName = null;
 	}
 }
-/** TESTS ONLY */
-public void scanForModules(Parser parser) {
-	for (Classpath classpath : this.classpaths) {
-		File file = new File(classpath.getPath());
-		IModule iModule = ModuleFinder.scanForModule(classpath, file, parser, false, null);
-		if (iModule != null)
-			this.moduleLocations.put(String.valueOf(iModule.name()), classpath);
-	}
-}
-@Override
+
+    @Override
 public void cleanup() {
 	for (Classpath classpath : this.classpaths)
 		classpath.reset();
@@ -770,15 +760,4 @@ public void applyModuleUpdates(IUpdatableModule compilerModule, UpdateKind kind)
 	}
 }
 
-/**
- * @param nameEnvironmentAnswerListener
- *            a listener for {@link NameEnvironmentAnswer} returned by <code>findType*</code> methods; useful for
- *            tracking used/answered dependencies during compilation (may be <code>null</code> to unset)
- * @return a previously set listener (may be <code>null</code>)
- */
-public Consumer<NameEnvironmentAnswer> setNameEnvironmentAnswerListener(Consumer<NameEnvironmentAnswer> nameEnvironmentAnswerListener) {
-	Consumer<NameEnvironmentAnswer> existing = this.nameEnvironmentAnswerListener;
-	this.nameEnvironmentAnswerListener = nameEnvironmentAnswerListener;
-	return existing;
-}
 }

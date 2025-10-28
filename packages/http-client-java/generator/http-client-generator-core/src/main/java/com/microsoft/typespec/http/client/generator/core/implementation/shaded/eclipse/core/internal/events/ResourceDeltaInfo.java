@@ -14,59 +14,62 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.events;
 
-import java.util.Map;
-import java.util.stream.Collectors;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.resources.MarkerSet;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.resources.Workspace;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ResourceDeltaInfo {
-	protected Workspace workspace;
-	protected Map<IPath, MarkerSet> allMarkerDeltas;
-	protected NodeIDMap nodeIDMap;
-	protected ResourceComparator comparator;
+    protected Workspace workspace;
+    protected Map<IPath, MarkerSet> allMarkerDeltas;
+    protected NodeIDMap nodeIDMap;
+    protected ResourceComparator comparator;
 
-	public ResourceDeltaInfo(Workspace workspace, Map<IPath, MarkerSet> markerDeltas, ResourceComparator comparator) {
-		super();
-		this.workspace = workspace;
-		this.allMarkerDeltas = markerDeltas;
-		this.comparator = comparator;
-	}
+    public ResourceDeltaInfo(Workspace workspace, Map<IPath, MarkerSet> markerDeltas, ResourceComparator comparator) {
+        super();
+        this.workspace = workspace;
+        this.allMarkerDeltas = markerDeltas;
+        this.comparator = comparator;
+    }
 
-	public ResourceComparator getComparator() {
-		return comparator;
-	}
+    public ResourceComparator getComparator() {
+        return comparator;
+    }
 
-	/**
-	 * Table of all marker deltas, IPath -&gt; MarkerSet
-	 */
-	public Map<IPath, MarkerSet> getMarkerDeltas() {
-		return allMarkerDeltas;
-	}
+    /**
+     * Table of all marker deltas, IPath -&gt; MarkerSet
+     */
+    public Map<IPath, MarkerSet> getMarkerDeltas() {
+        return allMarkerDeltas;
+    }
 
-	public NodeIDMap getNodeIDMap() {
-		return nodeIDMap;
-	}
+    public NodeIDMap getNodeIDMap() {
+        return nodeIDMap;
+    }
 
-	public Workspace getWorkspace() {
-		return workspace;
-	}
+    public Workspace getWorkspace() {
+        return workspace;
+    }
 
-	public void setMarkerDeltas(Map<IPath, MarkerSet> value) {
-		allMarkerDeltas = value;
-	}
+    public void setMarkerDeltas(Map<IPath, MarkerSet> value) {
+        allMarkerDeltas = value;
+    }
 
-	public void setNodeIDMap(NodeIDMap map) {
-		nodeIDMap = map;
-	}
+    public void setNodeIDMap(NodeIDMap map) {
+        nodeIDMap = map;
+    }
 
-	/** for debugging only **/
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[allMarkerDeltas=" //$NON-NLS-1$
-				+ ((allMarkerDeltas == null) ? null
-						: allMarkerDeltas.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()) //$NON-NLS-1$
-								.collect(Collectors.joining(", ", "{", "}"))) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				+ "]"; //$NON-NLS-1$
-	}
+    /** for debugging only **/
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[allMarkerDeltas=" //$NON-NLS-1$
+            + ((allMarkerDeltas == null)
+                ? null
+                : allMarkerDeltas.entrySet()
+                    .stream()
+                    .map(e -> e.getKey() + "=" + e.getValue()) //$NON-NLS-1$
+                    .collect(Collectors.joining(", ", "{", "}"))) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            + "]"; //$NON-NLS-1$
+    }
 }

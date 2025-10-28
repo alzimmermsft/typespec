@@ -24,24 +24,24 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * be any module keyword completion and not necessarily related to exports statement.
  */
 public class CompletionOnKeywordModuleInfo extends ExportsStatement implements CompletionOnKeyword {
-	private final char[] token;
-	private final char[][] possibleKeywords;
+    private final char[] token;
+    private final char[][] possibleKeywords;
 
-	public CompletionOnKeywordModuleInfo(char[] token, long pos, char[][] possibleKeywords) {
-		super(new ImportReference(new char[][] {token}, new long[] {pos}, false, 0), null); // dummy
-		this.token = token;
-		this.possibleKeywords = possibleKeywords;
-		this.sourceStart = (int) (pos>>>32)  ;
-		this.sourceEnd = (int) (pos & 0x00000000FFFFFFFFL);
-	}
+    public CompletionOnKeywordModuleInfo(char[] token, long pos, char[][] possibleKeywords) {
+        super(new ImportReference(new char[][] { token }, new long[] { pos }, false, 0), null); // dummy
+        this.token = token;
+        this.possibleKeywords = possibleKeywords;
+        this.sourceStart = (int) (pos >>> 32);
+        this.sourceEnd = (int) (pos & 0x00000000FFFFFFFFL);
+    }
 
-	@Override
-	public char[] getToken() {
-		return this.token;
-	}
+    @Override
+    public char[] getToken() {
+        return this.token;
+    }
 
-	@Override
-	public char[][] getPossibleKeywords() {
-		return this.possibleKeywords;
-	}
+    @Override
+    public char[][] getPossibleKeywords() {
+        return this.possibleKeywords;
+    }
 }

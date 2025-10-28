@@ -26,17 +26,17 @@ import java.util.Properties;
  */
 public interface IProductPreferencesService {
 
-	/**
-	 * Returns properties specified in the product customization file.
-	 *
-	 * @return default preferences specified by the product.
-	 */
-	public Properties getProductCustomization();
+    /**
+     * Returns properties specified in the product customization file.
+     *
+     * @return default preferences specified by the product.
+     */
+    Properties getProductCustomization();
 
-	/**
-	 * Returns translations for the customized properties.
-	 *
-	 * @return translation table for default preferences
-	 */
-	public Properties getProductTranslation();
+    /**
+     * Returns translations for the customized properties.
+     *
+     * @return translation table for default preferences
+     */
+    Properties getProductTranslation();
 }

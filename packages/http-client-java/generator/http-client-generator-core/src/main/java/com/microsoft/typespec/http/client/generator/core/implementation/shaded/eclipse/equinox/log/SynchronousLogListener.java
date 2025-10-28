@@ -14,9 +14,10 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 
 /**
  * Marker interface to denotes a log listener that should be called on the logging thread
+ * 
  * @see LogListener
  * @since 3.7
  */
 public interface SynchronousLogListener extends LogListener {
-	//
+    //
 }

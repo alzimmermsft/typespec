@@ -23,81 +23,81 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IModuleBinding extends IBinding {
 
-	@Override
-	public default int getKind() {
-		return IBinding.MODULE;
-	}
+    @Override
+    public default int getKind() {
+        return IBinding.MODULE;
+    }
 
-	/**
-	 * Returns whether this module is open or not.
-	 *
-	 * @return <code>true</code> if open, <code>false</code> otherwise
-	 */
-	public abstract boolean isOpen();
+    /**
+     * Returns whether this module is open or not.
+     *
+     * @return <code>true</code> if open, <code>false</code> otherwise
+     */
+    public abstract boolean isOpen();
 
-	/**
-	 * Returns all required modules.
-	 * <p>The resulting bindings are in no particular order.</p>
-	 *
-	 * @return all required modules
-	 */
-	public abstract IModuleBinding[] getRequiredModules();
+    /**
+     * Returns all required modules.
+     * <p>The resulting bindings are in no particular order.</p>
+     *
+     * @return all required modules
+     */
+    public abstract IModuleBinding[] getRequiredModules();
 
-	/**
-	 * Returns all exported packages.
-	 * <p>The resulting bindings are in no particular order.</p>
-	 *
-	 * @return array of exported package bindings
-	 */
-	public abstract IPackageBinding[] getExportedPackages();
+    /**
+     * Returns all exported packages.
+     * <p>The resulting bindings are in no particular order.</p>
+     *
+     * @return array of exported package bindings
+     */
+    public abstract IPackageBinding[] getExportedPackages();
 
-	/**
-	 * If this module exports the given package to specific modules, returns the array of names of
-	 * modules, otherwise returns an empty array.
-	 *
-	 * @param packageBinding a package binding for which targeted modules are declared
-	 * @return array of names of targeted modules
-	 */
-	public abstract String[] getExportedTo(IPackageBinding packageBinding);
+    /**
+     * If this module exports the given package to specific modules, returns the array of names of
+     * modules, otherwise returns an empty array.
+     *
+     * @param packageBinding a package binding for which targeted modules are declared
+     * @return array of names of targeted modules
+     */
+    public abstract String[] getExportedTo(IPackageBinding packageBinding);
 
-	/**
-	 * Returns all opened packages.
-	 * <p>The resulting bindings are in no particular order.</p>
-	 *
-	 * @return array of package bindings
-	 */
-	public abstract IPackageBinding[] getOpenedPackages();
+    /**
+     * Returns all opened packages.
+     * <p>The resulting bindings are in no particular order.</p>
+     *
+     * @return array of package bindings
+     */
+    public abstract IPackageBinding[] getOpenedPackages();
 
-	/**
-	 * If this module opens the given package to specific modules, returns the array of names of
-	 * modules, otherwise returns an empty array.
-	 * <p>The resulting bindings are in no particular order.</p>
-	 *
-	 * @param packageBinding a package binding for which targeted modules are declared
-	 * @return array of names of targeted modules
-	 */
-	public abstract String[] getOpenedTo(IPackageBinding packageBinding);
+    /**
+     * If this module opens the given package to specific modules, returns the array of names of
+     * modules, otherwise returns an empty array.
+     * <p>The resulting bindings are in no particular order.</p>
+     *
+     * @param packageBinding a package binding for which targeted modules are declared
+     * @return array of names of targeted modules
+     */
+    public abstract String[] getOpenedTo(IPackageBinding packageBinding);
 
-	/**
-	 * Returns the services used by this module.
-	 * <p>The resulting bindings are in no particular order.</p>
-	 *
-	 * @return array of type bindings
-	 */
-	public abstract ITypeBinding[] getUses();
+    /**
+     * Returns the services used by this module.
+     * <p>The resulting bindings are in no particular order.</p>
+     *
+     * @return array of type bindings
+     */
+    public abstract ITypeBinding[] getUses();
 
-	/**
-	 * Returns the services provided by this module.
-	 * <p>The resulting services are in no particular order.</p>
-	 *
-	 * @return array of services
-	 */
-	public abstract ITypeBinding[] getServices();
+    /**
+     * Returns the services provided by this module.
+     * <p>The resulting services are in no particular order.</p>
+     *
+     * @return array of services
+     */
+    public abstract ITypeBinding[] getServices();
 
-	/**
-	 * Returns the implementations that implement the given service in this module.
-	 *
-	 * @return array of implementation type bindings, in declaration order
-	 */
-	public abstract ITypeBinding[] getImplementations(ITypeBinding service);
+    /**
+     * Returns the implementations that implement the given service in this module.
+     *
+     * @return array of implementation type bindings, in declaration order
+     */
+    public abstract ITypeBinding[] getImplementations(ITypeBinding service);
 }

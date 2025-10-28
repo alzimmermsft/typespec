@@ -15,22 +15,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
-import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaModelManager.trace;
-
-import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IContainer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IFile;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IFolder;
@@ -40,7 +24,21 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IStatus;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Path;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.*;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.Flags;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IField;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaElement;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IMember;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IMethod;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IModuleDescription;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IOrdinaryClassFile;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IPackageFragmentRoot;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ISourceRange;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IType;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ITypeParameter;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaConventions;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.Signature;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.SourceRange;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CategorizedProblem;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CharOperation;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.codeassist.impl.Keywords;
@@ -59,6 +57,22 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.Util;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.DeduplicationUtil;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.ReferenceInfoAdapter;
+
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaModelManager.trace;
 
 /**
  * A SourceMapper maps source code in a ZIP file to binary types or
@@ -124,10 +138,8 @@ public class SourceMapper
 			LocalVariableElementKey other = (LocalVariableElementKey) obj;
 			if (!Objects.equals(this.name, other.name))
 				return false;
-			if (!Objects.equals(this.parent, other.parent))
-				return false;
-			return true;
-		}
+            return Objects.equals(this.parent, other.parent);
+        }
 		@Override
 		public String toString() {
 			StringBuilder buffer = new StringBuilder();
@@ -319,7 +331,7 @@ public class SourceMapper
 			imports = new char[5][];
 			importsCounter = 0;
 		} else {
-			importsCounter = this.importsCounterTable.get(this.binaryTypeOrModule).intValue();
+			importsCounter = this.importsCounterTable.get(this.binaryTypeOrModule);
 		}
 		if (imports.length == importsCounter) {
 			System.arraycopy(
@@ -341,7 +353,7 @@ public class SourceMapper
 		}
 		imports[importsCounter++] = name;
 		this.importsTable.put(this.binaryTypeOrModule, imports);
-		this.importsCounterTable.put(this.binaryTypeOrModule, Integer.valueOf(importsCounter));
+		this.importsCounterTable.put(this.binaryTypeOrModule, importsCounter);
 	}
 
 	/**
@@ -473,8 +485,8 @@ public class SourceMapper
 
 		public final HashSet<String> firstLevelPackageNames;
 		final IPackageFragmentRoot root;
-		public String sourceLevel = null;
-		public String complianceLevel = null;
+		public String sourceLevel;
+		public String complianceLevel;
 		public boolean containsADefaultPackage;
 		public boolean containsJavaSource;
 
@@ -489,9 +501,10 @@ public class SourceMapper
 		}
 
 		@Override
-		public FileVisitResult visitPackage(java.nio.file.Path dir, java.nio.file.Path mod, BasicFileAttributes attrs) throws IOException {
-			return FileVisitResult.CONTINUE;
-		}
+		public FileVisitResult visitPackage(java.nio.file.Path dir, java.nio.file.Path mod, BasicFileAttributes attrs)
+            throws IOException {
+            return JRTUtil.JrtFileVisitor.super.visitPackage(dir, mod, attrs);
+        }
 
 		@Override
 		public FileVisitResult visitFile(java.nio.file.Path file, java.nio.file.Path mod, BasicFileAttributes attrs) throws IOException {
@@ -502,9 +515,9 @@ public class SourceMapper
 					String firstLevelPackageName = entryName.substring(0, index);
 					if (!this.firstLevelPackageNames.contains(firstLevelPackageName)) {
 						if (this.sourceLevel == null) {
-							IJavaProject project = this.root.getJavaProject();
-							this.sourceLevel = project.getOption(JavaCore.COMPILER_SOURCE, true);
-							this.complianceLevel = project.getOption(JavaCore.COMPILER_COMPLIANCE, true);
+                            this.root.getJavaProject();
+                            this.sourceLevel = "1.8";
+							this.complianceLevel = "1.8";
 						}
 						IStatus status = JavaConventions.validatePackageName(firstLevelPackageName, this.sourceLevel, this.complianceLevel);
 						if (status.isOK() || status.getSeverity() == IStatus.WARNING) {
@@ -522,8 +535,8 @@ public class SourceMapper
 
 		@Override
 		public FileVisitResult visitModule(java.nio.file.Path path, String name) throws IOException {
-			return FileVisitResult.CONTINUE;
-		}
+            return JRTUtil.JrtFileVisitor.super.visitModule(path, name);
+        }
 	}
 	private synchronized void computeAllRootPaths(IJavaElement typeOrModule) {
 		if (this.areRootPathsComputed) {
@@ -546,11 +559,9 @@ public class SourceMapper
 		if (Util.isJrt(pkgFragmentRootPath.toOSString())) {
 			try {
 				JrtPackageNamesAdderVisitor jrtPackageNamesAdderVisitor = new JrtPackageNamesAdderVisitor(firstLevelPackageNames,
-						sourceLevel, complianceLevel, containsADefaultPackage, containsJavaSource, root);
+						sourceLevel, complianceLevel, false, containsJavaSource, root);
 				JRTUtil.walkModuleImage(root.getPath().toFile(), jrtPackageNamesAdderVisitor, JRTUtil.NOTIFY_FILES);
-				sourceLevel = jrtPackageNamesAdderVisitor.sourceLevel;
-				complianceLevel = jrtPackageNamesAdderVisitor.complianceLevel;
-				containsADefaultPackage = jrtPackageNamesAdderVisitor.containsADefaultPackage;
+                containsADefaultPackage = jrtPackageNamesAdderVisitor.containsADefaultPackage;
 				containsJavaSource = jrtPackageNamesAdderVisitor.containsJavaSource;
 			} catch (IOException e) {
 				// We are not reading any specific file, so, move on for now
@@ -573,9 +584,9 @@ public class SourceMapper
 								String firstLevelPackageName = entryName.substring(0, index);
 								if (!firstLevelPackageNames.contains(firstLevelPackageName)) {
 									if (sourceLevel == null) {
-										IJavaProject project = root.getJavaProject();
-										sourceLevel = project.getOption(JavaCore.COMPILER_SOURCE, true);
-										complianceLevel = project.getOption(JavaCore.COMPILER_COMPLIANCE, true);
+                                        root.getJavaProject();
+                                        sourceLevel = "1.8";
+										complianceLevel = "1.8";
 									}
 									IStatus status = JavaConventions.validatePackageName(firstLevelPackageName, sourceLevel, complianceLevel);
 									if (status.isOK() || status.getSeverity() == IStatus.WARNING) {
@@ -597,18 +608,17 @@ public class SourceMapper
 			}
 		} else {
 			Object target = JavaModel.getTarget(root, true);
-			if (target instanceof IResource) {
-				IResource resource = (IResource) target;
-				if (resource instanceof IContainer) {
+			if (target instanceof IResource resource) {
+                if (resource instanceof IContainer) {
 					try {
 						IResource[] members = ((IContainer) resource).members();
 						for (IResource member : members) {
 							String resourceName = member.getName();
 							if (member.getType() == IResource.FOLDER) {
 								if (sourceLevel == null) {
-									IJavaProject project = root.getJavaProject();
-									sourceLevel = project.getOption(JavaCore.COMPILER_SOURCE, true);
-									complianceLevel = project.getOption(JavaCore.COMPILER_COMPLIANCE, true);
+                                    root.getJavaProject();
+                                    sourceLevel = "1.8";
+									complianceLevel = "1.8";
 								}
 								IStatus status = JavaConventions.validatePackageName(resourceName, sourceLevel, complianceLevel);
 								if (status.isOK() || status.getSeverity() == IStatus.WARNING) {
@@ -629,9 +639,8 @@ public class SourceMapper
 
 		if (containsJavaSource) { // no need to read source attachment if it contains no Java source (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=190840 )
 			Object target = JavaModel.getTarget(this.sourcePath, true);
-			if (target instanceof IContainer) {
-				IContainer folder = (IContainer)target;
-				computeRootPath(folder, firstLevelPackageNames, containsADefaultPackage, tempRoots, folder.getFullPath().segmentCount()/*if external folder, this is the linked folder path*/);
+			if (target instanceof IContainer folder) {
+                computeRootPath(folder, firstLevelPackageNames, containsADefaultPackage, tempRoots, folder.getFullPath().segmentCount()/*if external folder, this is the linked folder path*/);
 			} else {
 				JavaModelManager manager = JavaModelManager.getJavaModelManager();
 				ZipFile zip = null;
@@ -678,16 +687,10 @@ public class SourceMapper
 		if (size > 0) {
 			ArrayList<IPath> sortedRoots = new ArrayList<>(tempRoots);
 			if (size > 1) {
-				Collections.sort(sortedRoots, new Comparator<>() {
-					@Override
-					public int compare(IPath path1, IPath path2) {
-						return path1.segmentCount() - path2.segmentCount();
-					}
-				});
+				sortedRoots.sort(Comparator.comparingInt(IPath::segmentCount));
 			}
-			for (Object sortedRoot : sortedRoots) {
-				IPath path = (IPath) sortedRoot;
-				this.rootPaths.add(path.toString());
+			for (IPath sortedRoot : sortedRoots) {
+                this.rootPaths.add(sortedRoot.toString());
 			}
 		}
 		this.areRootPathsComputed = true;
@@ -956,7 +959,7 @@ public class SourceMapper
 			if (methodInfo.isConstructor && currentType.getDeclaringType() != null && !Flags.isStatic(currenTypeModifiers)) {
 				IType declaringType = currentType.getDeclaringType();
 				String declaringTypeName = declaringType.getElementName();
-				if (declaringTypeName.length() == 0) {
+				if (declaringTypeName.isEmpty()) {
 					IOrdinaryClassFile classFile = declaringType.getClassFile();
 					int length = parameterTypes != null ? parameterTypes.length : 0;
 					char[][] newParameterTypes = new char[length+1][];
@@ -1041,7 +1044,7 @@ public class SourceMapper
 					this.typeDeclarationStarts[this.typeDepth],
 					declarationEnd - this.typeDeclarationStarts[this.typeDepth] + 1),
 				this.typeNameRanges[this.typeDepth]);
-			if (currentType.getElementName().length() > 0) {
+			if (!currentType.getElementName().isEmpty()) {
 				this.anonymousCountStack[this.anonymousCountPtr] = 0; // no leftover, cleanup.
 				this.anonymousCountPtr--;
 			}
@@ -1170,9 +1173,6 @@ public class SourceMapper
 
 	private char[] internalFindSource(NamedMember typeOrModule, String name) {
 		long time = 0;
-		if (VERBOSE) {
-			time = System.currentTimeMillis();
-		}
 
 		char[] source = null;
 
@@ -1260,7 +1260,7 @@ public class SourceMapper
 			}
 
 			// try to get the entry
-			ZipEntry entry = null;
+			ZipEntry entry;
 			ZipFile zip = null;
 			JavaModelManager manager = JavaModelManager.getJavaModelManager();
 			try {
@@ -1281,13 +1281,12 @@ public class SourceMapper
 
 
 	public int getFlags(IJavaElement element) {
-		switch(element.getElementType()) {
-			case IJavaElement.LOCAL_VARIABLE :
-				LocalVariableElementKey key = new LocalVariableElementKey(element.getParent(), element.getElementName());
-				if (this.finalParameters != null && this.finalParameters.contains(key)) {
-					return Flags.AccFinal;
-				}
-		}
+        if (element.getElementType() == IJavaElement.LOCAL_VARIABLE) {
+            LocalVariableElementKey key = new LocalVariableElementKey(element.getParent(), element.getElementName());
+            if (this.finalParameters != null && this.finalParameters.contains(key)) {
+                return Flags.AccFinal;
+            }
+        }
 		return 0;
 	}
 
@@ -1352,12 +1351,7 @@ public class SourceMapper
 				method = (IMethod) el[0];
 			}
 		}
-		char[][] parameters = this.parameterNames.get(method);
-		if (parameters == null) {
-			return null;
-		} else {
-			return parameters;
-		}
+        return this.parameterNames.get(method);
 	}
 
 	/**
@@ -1410,8 +1404,7 @@ public class SourceMapper
 	private PackageFragment getPackageFromTopElement() {
 		IType type = (IType) this.binaryTypeOrModule;
 		IJavaElement classFile = type.getParent();
-		PackageFragment pkg = (PackageFragment) classFile.getParent();
-		return pkg;
+        return (PackageFragment) classFile.getParent();
 	}
 	private int getLocalTypeCount(String nameKey) {
 		if (this.localTypeCounter == null) {
@@ -1462,7 +1455,7 @@ public class SourceMapper
 		}
 		PackageFragment pkg = getPackageFromTopElement();
 		String typeName = DeduplicationUtil.toString(typeInfo.name);
-		return new BinaryType(new ClassFile(pkg, DeduplicationUtil.intern(classFileName.toString())), typeName);
+		return new BinaryType(new ClassFile(pkg, DeduplicationUtil.intern(classFileName)), typeName);
 	}
 
 	/**
@@ -1574,7 +1567,7 @@ public class SourceMapper
 				return length;
 			default :
 				// primitive type or wildcard
-				unqualifiedTypeSig.append(qualifiedTypeSig.substring(start, end));
+				unqualifiedTypeSig.append(qualifiedTypeSig, start, end);
 				return end;
 		}
 	}
@@ -1625,7 +1618,7 @@ public class SourceMapper
 		}
 		try {
 			IProblemFactory factory = new DefaultProblemFactory();
-			SourceElementParser parser = null;
+			SourceElementParser parser;
 			boolean doFullParse = false;
 			String sourceFileName;
 			if (this.binaryTypeOrModule instanceof BinaryType) {
@@ -1651,8 +1644,7 @@ public class SourceMapper
 				doFullParse,
 				null/*no progress*/);
 			if (elementToFind != null) {
-				ISourceRange range = getNameRange(elementToFind);
-				return range;
+                return getNameRange(elementToFind);
 			} else {
 				return null;
 			}
@@ -1671,11 +1663,9 @@ public class SourceMapper
 	private char[] readSource(ZipEntry entry, ZipFile zip, String charSet) {
 		try {
 			byte[] bytes = Util.getZipEntryByteContent(entry, zip);
-			if (bytes != null) {
-				// Order of preference: charSet supplied, this.encoding or this.defaultEncoding in that order
-				return Util.getBytesAsCharArray(bytes, charSet == null ? (this.encoding == null ? this.defaultEncoding : this.encoding) : charSet);
-			}
-		} catch (IOException e) {
+            // Order of preference: charSet supplied, this.encoding or this.defaultEncoding in that order
+            return Util.getBytesAsCharArray(bytes, charSet == null ? (this.encoding == null ? this.defaultEncoding : this.encoding) : charSet);
+        } catch (IOException e) {
 			// ignore
 		}
 		return null;
@@ -1714,7 +1704,7 @@ public class SourceMapper
 	public char[][] getImports(Member typeOrModule) {
 		char[][] imports = this.importsTable.get(typeOrModule);
 		if (imports != null) {
-			int importsCounter = this.importsCounterTable.get(typeOrModule).intValue();
+			int importsCounter = this.importsCounterTable.get(typeOrModule);
 			if (imports.length != importsCounter) {
 				System.arraycopy(
 					imports,

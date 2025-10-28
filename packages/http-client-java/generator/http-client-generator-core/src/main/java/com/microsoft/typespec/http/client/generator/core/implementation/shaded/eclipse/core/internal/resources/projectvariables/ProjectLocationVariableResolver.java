@@ -19,22 +19,22 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class ProjectLocationVariableResolver extends PathVariableResolver {
 
-	public static String NAME = "PROJECT_LOC"; //$NON-NLS-1$
+    public static String NAME = "PROJECT_LOC"; //$NON-NLS-1$
 
-	public ProjectLocationVariableResolver() {
-		// nothing
-	}
+    public ProjectLocationVariableResolver() {
+        // nothing
+    }
 
-	@Override
-	public String[] getVariableNames(String variable, IResource resource) {
-		return new String[] {NAME};
-	}
+    @Override
+    public String[] getVariableNames(String variable, IResource resource) {
+        return new String[] { NAME };
+    }
 
-	@Override
-	public String getValue(String variable, IResource resource) {
-		if (resource.getProject().getLocationURI() != null) {
-			return resource.getProject().getLocationURI().toASCIIString();
-		}
-		return null;
-	}
+    @Override
+    public String getValue(String variable, IResource resource) {
+        if (resource.getProject().getLocationURI() != null) {
+            return resource.getProject().getLocationURI().toASCIIString();
+        }
+        return null;
+    }
 }

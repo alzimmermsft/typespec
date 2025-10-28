@@ -21,43 +21,43 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * @since 3.14
  */
 public interface IConstantPoolEntry3 extends IConstantPoolEntry2 {
-	/**
-	 * Returns the index for a CONSTANT_Module type entry.
-	 * The value is unspecified otherwise.
-	 *
-	 * @return the index for a CONSTANT_Module type entry
-	 * @see IConstantPoolConstant#CONSTANT_Module
-	 * @see #getModuleName()
-	 */
-	int getModuleIndex();
+    /**
+     * Returns the index for a CONSTANT_Module type entry.
+     * The value is unspecified otherwise.
+     *
+     * @return the index for a CONSTANT_Module type entry
+     * @see IConstantPoolConstant#CONSTANT_Module
+     * @see #getModuleName()
+     */
+    int getModuleIndex();
 
-	/**
-	 * Returns the name of a CONSTANT_Module type entry.
-	 * Returns null otherwise.
-	 *
-	 * @return the name of a CONSTANT_Module type entry
-	 * @see IConstantPoolConstant#CONSTANT_Module
-	 * @see #getModuleIndex()
-	 */
-	char[] getModuleName();
+    /**
+     * Returns the name of a CONSTANT_Module type entry.
+     * Returns null otherwise.
+     *
+     * @return the name of a CONSTANT_Module type entry
+     * @see IConstantPoolConstant#CONSTANT_Module
+     * @see #getModuleIndex()
+     */
+    char[] getModuleName();
 
-	/**
-	 * Returns the index for a CONSTANT_Package type entry.
-	 * The value is unspecified otherwise.
-	 *
-	 * @return the index for a CONSTANT_Package type entry
-	 * @see IConstantPoolConstant#CONSTANT_Package
-	 * @see #getPackageName()
-	 */
-	int getPackageIndex();
+    /**
+     * Returns the index for a CONSTANT_Package type entry.
+     * The value is unspecified otherwise.
+     *
+     * @return the index for a CONSTANT_Package type entry
+     * @see IConstantPoolConstant#CONSTANT_Package
+     * @see #getPackageName()
+     */
+    int getPackageIndex();
 
-	/**
-	 * Returns the name of a CONSTANT_Package type entry.
-	 * Returns null otherwise.
-	 *
-	 * @return the name of a CONSTANT_Package type entry
-	 * @see IConstantPoolConstant#CONSTANT_Package
-	 * @see #getPackageIndex()
-	 */
-	char[] getPackageName();
+    /**
+     * Returns the name of a CONSTANT_Package type entry.
+     * Returns null otherwise.
+     *
+     * @return the name of a CONSTANT_Package type entry
+     * @see IConstantPoolConstant#CONSTANT_Package
+     * @see #getPackageIndex()
+     */
+    char[] getPackageName();
 }

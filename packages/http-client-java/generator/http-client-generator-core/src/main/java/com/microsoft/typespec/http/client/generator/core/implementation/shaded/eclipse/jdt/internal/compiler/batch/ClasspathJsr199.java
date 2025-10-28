@@ -27,10 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.JavaFileManager;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.JavaFileObject;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.JavaFileObject.Kind;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.StandardLocation;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CharOperation;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.CompilationResult;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
@@ -42,6 +38,10 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.parser.Parser;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.tool.ModuleLocationHandler.LocationWrapper;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.JRTUtil;
+
+import javax.tools.JavaFileManager;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardLocation;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class ClasspathJsr199 extends ClasspathLocation {
@@ -120,7 +120,7 @@ public class ClasspathJsr199 extends ClasspathLocation {
 				return null; // most common case
 
 			char[] answerModule = this.module != null ? this.module.name() : null;
-			if (jfo.getKind() == Kind.CLASS) {
+			if (jfo.getKind() == JavaFileObject.Kind.CLASS) {
 				ClassFileReader reader = readJavaClass(jfo, qualifiedBinaryFileName);
 				// To avoid false compiler errors "package collides with type" on case insensitive file systems
 				// (e. g. Windows), make a case sensitive comparison of class name and type name from reader. The

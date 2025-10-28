@@ -16,13 +16,11 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
+
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IContainer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IFolder;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IStatus;
@@ -61,61 +59,8 @@ protected PackageFragment(PackageFragmentRoot root, String[] names) {
 	this.names = names;
 	this.isValidPackageName = internalIsValidPackageName();
 }
-/**
- * @see Openable
- */
-@Override
-protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map newElements, IResource underlyingResource) throws JavaModelException {
-	// add compilation units/class files from resources
-	HashSet vChildren = new HashSet();
-	int kind = getKind();
-	try {
-	    PackageFragmentRoot root = getPackageFragmentRoot();
-		char[][] inclusionPatterns = root.fullInclusionPatternChars();
-		char[][] exclusionPatterns = root.fullExclusionPatternChars();
-		IResource[] members = ((IContainer) underlyingResource).members();
-		int length = members.length;
-		if (length > 0) {
-			IJavaProject project = getJavaProject();
-			String sourceLevel = project.getOption(JavaCore.COMPILER_SOURCE, true);
-			String complianceLevel = project.getOption(JavaCore.COMPILER_COMPLIANCE, true);
-			for (int i = 0; i < length; i++) {
-				IResource child = members[i];
-				if (child.getType() != IResource.FOLDER
-						&& !Util.isExcluded(child, inclusionPatterns, exclusionPatterns)) {
-					IJavaElement childElement;
-					if (kind == IPackageFragmentRoot.K_SOURCE && Util.isValidCompilationUnitName(child.getName(), sourceLevel, complianceLevel)) {
-						childElement = new CompilationUnit(this, DeduplicationUtil.intern(child.getName()), DefaultWorkingCopyOwner.PRIMARY);
-						vChildren.add(childElement);
-					} else if (kind == IPackageFragmentRoot.K_BINARY && Util.isValidClassFileName(child.getName(), sourceLevel, complianceLevel)) {
-						childElement = getClassFile(child.getName());
-						vChildren.add(childElement);
-					}
-				}
-			}
-		}
-	} catch (CoreException e) {
-		throw new JavaModelException(e);
-	}
 
-	if (kind == IPackageFragmentRoot.K_SOURCE) {
-		// add primary compilation units
-		ICompilationUnit[] primaryCompilationUnits = getCompilationUnits(DefaultWorkingCopyOwner.PRIMARY);
-		for (ICompilationUnit primary : primaryCompilationUnits) {
-			vChildren.add(primary);
-		}
-	}
-
-	if (!vChildren.isEmpty()) {
-		IJavaElement[] children = new IJavaElement[vChildren.size()];
-		vChildren.toArray(children);
-		info.setChildren(children);
-	} else {
-		info.setChildren(JavaElement.NO_ELEMENTS);
-	}
-	return true;
-}
-/**
+    /**
  * Returns true if this fragment contains at least one java resource.
  * Returns false otherwise.
  */
@@ -123,49 +68,13 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 public boolean containsJavaResources() throws JavaModelException {
 	return ((PackageFragmentInfo) getElementInfo()).containsJavaResources();
 }
-/**
- * @see ISourceManipulation
- */
-@Override
-public void copy(IJavaElement container, IJavaElement sibling, String rename, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	if (container == null) {
-		throw new IllegalArgumentException(Messages.operation_nullContainer);
-	}
-	IJavaElement[] elements= new IJavaElement[] {this};
-	IJavaElement[] containers= new IJavaElement[] {container};
-	IJavaElement[] siblings= null;
-	if (sibling != null) {
-		siblings= new IJavaElement[] {sibling};
-	}
-	String[] renamings= null;
-	if (rename != null) {
-		renamings= new String[] {rename};
-	}
-	getJavaModel().copy(elements, containers, siblings, renamings, force, monitor);
-}
-/**
- * @see IPackageFragment
- */
-@Override
-public ICompilationUnit createCompilationUnit(String cuName, String contents, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	CreateCompilationUnitOperation op= new CreateCompilationUnitOperation(this, cuName, contents, force);
-	op.runOperation(monitor);
-	return new CompilationUnit(this, cuName, DefaultWorkingCopyOwner.PRIMARY);
-}
-/**
+
+    /**
  * @see JavaElement
  */
 @Override
 protected PackageFragmentInfo createElementInfo() {
 	return new PackageFragmentInfo();
-}
-/**
- * @see ISourceManipulation
- */
-@Override
-public void delete(boolean force, IProgressMonitor monitor) throws JavaModelException {
-	IJavaElement[] elements = new IJavaElement[] {this};
-	getJavaModel().delete(elements, force, monitor);
 }
 @Override
 public boolean equals(Object o) {
@@ -306,12 +215,11 @@ public ICompilationUnit[] getCompilationUnits(WorkingCopyOwner owner) {
 	int length = workingCopies.length;
 	ICompilationUnit[] result = new ICompilationUnit[length];
 	int index = 0;
-	for (int i = 0; i < length; i++) {
-		ICompilationUnit wc = workingCopies[i];
-		if (equals(wc.getParent()) && !Util.isExcluded(wc)) { // 59933 - excluded wc shouldn't be answered back
-			result[index++] = wc;
-		}
-	}
+    for (ICompilationUnit wc : workingCopies) {
+        if (equals(wc.getParent()) && !Util.isExcluded(wc)) { // 59933 - excluded wc shouldn't be answered back
+            result[index++] = wc;
+        }
+    }
 	if (index != length) {
 		System.arraycopy(result, 0, result = new ICompilationUnit[index], 0, index);
 	}
@@ -464,9 +372,8 @@ protected boolean internalIsValidPackageName() {
 	// if package fragment refers to folder in another IProject, then
 	// resource().getProject() is different than getJavaProject().getProject()
 	// use the other java project's options to verify the name
-	IJavaProject javaProject = JavaCore.create(resource().getProject());
-	String sourceLevel = javaProject.getOption(JavaCore.COMPILER_SOURCE, true);
-	String complianceLevel = javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
+    String sourceLevel = "1.8";
+	String complianceLevel = "1.8";
 	for (String name : this.names) {
 		if (!Util.isValidFolderNameForPackage(name, sourceLevel, complianceLevel))
 			return false;
@@ -482,39 +389,6 @@ public boolean isDefaultPackage() {
 }
 protected final boolean isValidPackageName() {
 	return this.isValidPackageName;
-}
-/**
- * @see ISourceManipulation#move(IJavaElement, IJavaElement, String, boolean, IProgressMonitor)
- */
-@Override
-public void move(IJavaElement container, IJavaElement sibling, String rename, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	if (container == null) {
-		throw new IllegalArgumentException(Messages.operation_nullContainer);
-	}
-	IJavaElement[] elements= new IJavaElement[] {this};
-	IJavaElement[] containers= new IJavaElement[] {container};
-	IJavaElement[] siblings= null;
-	if (sibling != null) {
-		siblings= new IJavaElement[] {sibling};
-	}
-	String[] renamings= null;
-	if (rename != null) {
-		renamings= new String[] {rename};
-	}
-	getJavaModel().move(elements, containers, siblings, renamings, force, monitor);
-}
-/**
- * @see ISourceManipulation#rename(String, boolean, IProgressMonitor)
- */
-@Override
-public void rename(String newName, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	if (newName == null) {
-		throw new IllegalArgumentException(Messages.element_nullName);
-	}
-	IJavaElement[] elements= new IJavaElement[] {this};
-	IJavaElement[] dests= new IJavaElement[] {getParent()};
-	String[] renamings= new String[] {newName};
-	getJavaModel().rename(elements, dests, renamings, force, monitor);
 }
 /**
  * Debugging purposes

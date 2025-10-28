@@ -17,8 +17,8 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
 public @interface MinLen {
-  /** The minimum number of elements in this sequence. */
-  int value() default 0;
+    /** The minimum number of elements in this sequence. */
+    int value() default 0;
 }

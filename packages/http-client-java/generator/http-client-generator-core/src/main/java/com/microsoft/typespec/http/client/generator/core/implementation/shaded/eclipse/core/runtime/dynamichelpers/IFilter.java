@@ -29,13 +29,13 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * @since 3.1
  */
 public interface IFilter {
-	/**
-	 * Return <code>true</code> if the given object matches the criteria for this
-	 * filter.
-	 *
-	 * @param target the object to match
-	 * @return <code>true</code> if the target matches this filter and
-	 *         <code>false</code> otherwise
-	 */
-	public boolean matches(IExtensionPoint target);
+    /**
+     * Return <code>true</code> if the given object matches the criteria for this
+     * filter.
+     *
+     * @param target the object to match
+     * @return <code>true</code> if the target matches this filter and
+     * <code>false</code> otherwise
+     */
+    public boolean matches(IExtensionPoint target);
 }

@@ -1,20 +1,20 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.signature.qual;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 
 /**
  * The type representation used by the {@link Class#getName()}, {@link Class#forName(String)}, and
  * {@link Class#forName(String, boolean, ClassLoader)} methods. This format is:
  *
  * <ul>
- *   <li>for any non-array type, the {@link BinaryName binary name}
- *   <li>for any array type, a format like the {@link FieldDescriptor field descriptor}, but using
- *       '.' where the field descriptor uses '/'
+ * <li>for any non-array type, the {@link BinaryName binary name}
+ * <li>for any array type, a format like the {@link FieldDescriptor field descriptor}, but using
+ * '.' where the field descriptor uses '/'
  * </ul>
  *
  * <p>Examples include
@@ -30,6 +30,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
 @SubtypeOf(SignatureUnknown.class)
-public @interface ClassGetName {}
+public @interface ClassGetName {
+}

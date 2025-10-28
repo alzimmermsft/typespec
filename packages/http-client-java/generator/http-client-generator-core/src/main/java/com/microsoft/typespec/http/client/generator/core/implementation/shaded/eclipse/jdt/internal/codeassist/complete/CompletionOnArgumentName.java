@@ -23,49 +23,49 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.MethodScope;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 
-
 public class CompletionOnArgumentName extends Argument implements CompletionNode {
 
-	private static final char[] FAKENAMESUFFIX = " ".toCharArray(); //$NON-NLS-1$
-	public char[] realName;
-	public boolean isCatchArgument = false;
+    private static final char[] FAKENAMESUFFIX = " ".toCharArray(); //$NON-NLS-1$
+    public char[] realName;
+    public boolean isCatchArgument = false;
 
-	public CompletionOnArgumentName(char[] name , long posNom , TypeReference tr , int modifiers){
+    public CompletionOnArgumentName(char[] name, long posNom, TypeReference tr, int modifiers) {
 
-		super(CharOperation.concat(name, FAKENAMESUFFIX), posNom, tr, modifiers);
-		this.realName = name;
-	}
-	/** For type elided lambda argument */
-	public CompletionOnArgumentName(Argument typeElidedArgument, long posNom) {
-		super(typeElidedArgument.name, posNom, null, ClassFileConstants.AccDefault, true);
-	}
+        super(CharOperation.concat(name, FAKENAMESUFFIX), posNom, tr, modifiers);
+        this.realName = name;
+    }
 
-	@Override
-	public TypeBinding bind(MethodScope scope, TypeBinding typeBinding, boolean used) {
+    /** For type elided lambda argument */
+    public CompletionOnArgumentName(Argument typeElidedArgument, long posNom) {
+        super(typeElidedArgument.name, posNom, null, ClassFileConstants.AccDefault, true);
+    }
 
-		super.bind(scope, typeBinding, used);
-		throw new CompletionNodeFound(this, scope);
-	}
+    @Override
+    public TypeBinding bind(MethodScope scope, TypeBinding typeBinding, boolean used) {
 
-	@Override
-	public StringBuilder print(int indent, StringBuilder output) {
+        super.bind(scope, typeBinding, used);
+        throw new CompletionNodeFound(this, scope);
+    }
 
-		printIndent(indent, output);
-		output.append("<CompleteOnArgumentName:"); //$NON-NLS-1$
-		if (this.type != null) this.type.print(0, output).append(' ');
-		output.append(this.realName);
-		if (this.initialization != null) {
-			output.append(" = "); //$NON-NLS-1$
-			this.initialization.printExpression(0, output);
-		}
-		return output.append('>');
-	}
+    @Override
+    public StringBuilder print(int indent, StringBuilder output) {
 
-	@Override
-	public void resolve(BlockScope scope) {
+        printIndent(indent, output);
+        output.append("<CompleteOnArgumentName:"); //$NON-NLS-1$
+        if (this.type != null)
+            this.type.print(0, output).append(' ');
+        output.append(this.realName);
+        if (this.initialization != null) {
+            output.append(" = "); //$NON-NLS-1$
+            this.initialization.printExpression(0, output);
+        }
+        return output.append('>');
+    }
 
-		super.resolve(scope);
-		throw new CompletionNodeFound(this, scope);
-	}
+    @Override
+    public void resolve(BlockScope scope) {
+
+        super.resolve(scope);
+        throw new CompletionNodeFound(this, scope);
+    }
 }
-

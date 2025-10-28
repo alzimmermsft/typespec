@@ -13,15 +13,15 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.codeassist.select;
 
-import java.util.List;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.InvalidInputException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.codeassist.SelectionEngine;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.Expression;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.JavadocQualifiedTypeReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.parser.JavadocParser;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.parser.TerminalToken;
+
+import java.util.List;
 
 /**
  * Parser specialized for decoding javadoc comments which includes code selection.
@@ -52,9 +52,6 @@ public class SelectionJavadocParser extends JavadocParser {
 		this.javadocStart = this.sourceParser.scanner.commentStarts[commentPtr];
 		this.javadocEnd = this.sourceParser.scanner.commentStops[commentPtr];
 		if (this.javadocStart <= this.selectionStart && this.selectionEnd <= this.javadocEnd) {
-			if (SelectionEngine.DEBUG) {
-				System.out.println("SELECTION in Javadoc:"); //$NON-NLS-1$
-			}
 			super.checkDeprecation(commentPtr);
 		} else {
 			this.docComment = null;
@@ -85,9 +82,6 @@ public class SelectionJavadocParser extends JavadocParser {
 		if (start <= this.selectionStart && this.selectionEnd <= end) {
 			this.selectedNode = expression;
 			this.abort = true;
-			if (SelectionEngine.DEBUG) {
-				System.out.println("	selected argument="+this.selectedNode); //$NON-NLS-1$
-			}
 		}
 		return expression;
 	}
@@ -104,9 +98,6 @@ public class SelectionJavadocParser extends JavadocParser {
 		if (start <= this.selectionStart && this.selectionEnd <= end) {
 			this.selectedNode = (ASTNode) super.createFieldReference(receiver);
 			this.abort = true;
-			if (SelectionEngine.DEBUG) {
-				System.out.println("	selected field="+this.selectedNode); //$NON-NLS-1$
-			}
 		}
 		return null;
 	}
@@ -124,9 +115,6 @@ public class SelectionJavadocParser extends JavadocParser {
 		if (start <= this.selectionStart && this.selectionEnd <= end) {
 			this.selectedNode = (ASTNode) super.createMethodReference(receiver, arguments);
 			this.abort = true;
-			if (SelectionEngine.DEBUG) {
-				System.out.println("	selected method="+this.selectedNode); //$NON-NLS-1$
-			}
 		}
 		return null;
 	}
@@ -159,9 +147,6 @@ public class SelectionJavadocParser extends JavadocParser {
 						System.arraycopy(this.identifierPositionStack, ptr, positions, 0, pos);
 						this.selectedNode = new JavadocQualifiedTypeReference(tokens, positions, this.tagSourceStart, this.tagSourceEnd);
 						this.abort = true; // we got selected node => cancel parse
-						if (SelectionEngine.DEBUG) {
-							System.out.println("	selected partial qualified type="+this.selectedNode); //$NON-NLS-1$
-						}
 						return typeRef;
 					}
 				}
@@ -170,9 +155,6 @@ public class SelectionJavadocParser extends JavadocParser {
 			// Store type ref as selected node
 			this.selectedNode = typeRef;
 			this.abort = true; // we got selected node => cancel parse
-			if (SelectionEngine.DEBUG) {
-				System.out.println("	selected type="+this.selectedNode); //$NON-NLS-1$
-			}
 		}
 		return typeRef;
 	}
@@ -189,9 +171,6 @@ public class SelectionJavadocParser extends JavadocParser {
 			if (expression.sourceStart <= this.selectionStart && this.selectionEnd <= expression.sourceEnd) {
 				this.selectedNode = expression;
 				this.abort = true; // we got selected node => cancel parse
-				if (SelectionEngine.DEBUG) {
-					System.out.println("	selected param="+this.selectedNode); //$NON-NLS-1$
-				}
 			}
 		}
 		return false;

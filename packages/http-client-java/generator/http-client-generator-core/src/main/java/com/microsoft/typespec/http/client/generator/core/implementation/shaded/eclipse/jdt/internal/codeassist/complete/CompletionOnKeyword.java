@@ -15,6 +15,7 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 public interface CompletionOnKeyword {
 
-	char[] getToken();
-	char[][] getPossibleKeywords();
+    char[] getToken();
+
+    char[][] getPossibleKeywords();
 }

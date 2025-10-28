@@ -18,7 +18,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaModelStatus;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaModelStatusConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaProject;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IRegion;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IType;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ITypeHierarchy;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
@@ -44,16 +43,7 @@ public class CreateTypeHierarchyOperation extends JavaModelOperation {
 	 */
 	protected TypeHierarchy typeHierarchy;
 
-/**
- * Constructs an operation to create a type hierarchy for the
- * given type within the specified region, in the context of
- * the given project.
- */
-public CreateTypeHierarchyOperation(IRegion region, ICompilationUnit[] workingCopies, IType element, boolean computeSubtypes) {
-	super(element);
-	this.typeHierarchy = new RegionBasedTypeHierarchy(region, workingCopies, element, computeSubtypes);
-}
-/**
+    /**
  * Constructs an operation to create a type hierarchy for the
  * given type and working copies.
  */

@@ -14,7 +14,6 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.search.matching;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CharOperation;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.search.IJavaSearchConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.search.SearchPattern;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ExtraFlags;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode;
@@ -150,29 +149,7 @@ public class MethodDeclarationPattern extends MethodPattern {
 		return typeErasurename;
 	}
 
-public MethodDeclarationPattern(
-		char[] declaringPackageName,
-		char[] declaringQualification,
-		char[] declaringSimpleName,
-		char[] methodName,
-		int matchRule) {
-	super(methodName, declaringQualification, declaringSimpleName,
-			null, null, null, null, null,
-			IJavaSearchConstants.DECLARATIONS, matchRule);
-	this.declaringPackageName = declaringPackageName;
-}
-
-public MethodDeclarationPattern(
-		char[] declaringQualifier,
-		char[] methodName,
-		int matchRule) {
-	super(methodName, CharOperation.NO_CHAR, CharOperation.NO_CHAR,
-			null, null, null, null, null,
-			IJavaSearchConstants.DECLARATIONS, matchRule);
-	this.fusedDeclaringQualifier = declaringQualifier;
-}
-
-public MethodDeclarationPattern(int matchRule) {
+    public MethodDeclarationPattern(int matchRule) {
 	super(matchRule);
 }
 

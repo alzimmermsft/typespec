@@ -22,39 +22,39 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IRequiresInfo {
 
-	/**
-	 * Answer back the requires index.
-	 *
-	 * @return the requires index
-	 */
-	int getRequiresIndex();
+    /**
+     * Answer back the requires index.
+     *
+     * @return the requires index
+     */
+    int getRequiresIndex();
 
-	/**
-	 * Answer back the requires module name.
-	 *
-	 * @return the requires module name
-	 */
-	char[] getRequiresModuleName();
+    /**
+     * Answer back the requires module name.
+     *
+     * @return the requires module name
+     */
+    char[] getRequiresModuleName();
 
-	/**
-	 * Answer back the requires flags.
-	 *
-	 * @return the requires flags
-	 */
-	int getRequiresFlags();
+    /**
+     * Answer back the requires flags.
+     *
+     * @return the requires flags
+     */
+    int getRequiresFlags();
 
-	/**
-	 * Answer back the requires version index.
-	 *
-	 * @return the requires version index
-	 */
-	int getRequiresVersionIndex();
+    /**
+     * Answer back the requires version index.
+     *
+     * @return the requires version index
+     */
+    int getRequiresVersionIndex();
 
-	/**
-	 * Answer back the requires version string.
-	 *
-	 * @return the requires version string
-	 */
-	public char[] getRequiresVersionValue();
+    /**
+     * Answer back the requires version string.
+     *
+     * @return the requires version string
+     */
+    public char[] getRequiresVersionValue();
 
 }

@@ -24,30 +24,30 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface ILocalVariableReferenceInfo {
 
-	/**
-	 * Answer back the start pc of this entry as specified in
-	 * the JVM specifications.
-	 *
-	 * @return the start pc of this entry as specified in
-	 * the JVM specifications
-	 */
-	int getStartPC();
+    /**
+     * Answer back the start pc of this entry as specified in
+     * the JVM specifications.
+     *
+     * @return the start pc of this entry as specified in
+     * the JVM specifications
+     */
+    int getStartPC();
 
-	/**
-	 * Answer back the length of this entry as specified in
-	 * the JVM specifications.
-	 *
-	 * @return the length of this entry as specified in
-	 * the JVM specifications
-	 */
-	int getLength();
+    /**
+     * Answer back the length of this entry as specified in
+     * the JVM specifications.
+     *
+     * @return the length of this entry as specified in
+     * the JVM specifications
+     */
+    int getLength();
 
-	/**
-	 * Answer back the resolved position of the local variable as specified in
-	 * the JVM specifications.
-	 *
-	 * @return the resolved position of the local variable as specified in
-	 * the JVM specifications
-	 */
-	int getIndex();
+    /**
+     * Answer back the resolved position of the local variable as specified in
+     * the JVM specifications.
+     *
+     * @return the resolved position of the local variable as specified in
+     * the JVM specifications
+     */
+    int getIndex();
 }

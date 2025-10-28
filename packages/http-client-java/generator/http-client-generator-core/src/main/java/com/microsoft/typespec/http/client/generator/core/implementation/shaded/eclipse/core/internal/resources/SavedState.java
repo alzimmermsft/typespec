@@ -29,66 +29,65 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * Standard implementation of the ISavedState interface.
  */
 public class SavedState implements ISavedState {
-	ElementTree oldTree;
-	ElementTree newTree;
-	SafeFileTable fileTable;
-	String pluginId;
-	Workspace workspace;
+    ElementTree oldTree;
+    ElementTree newTree;
+    SafeFileTable fileTable;
+    String pluginId;
+    Workspace workspace;
 
-	SavedState(Workspace workspace, String pluginId, ElementTree oldTree, ElementTree newTree) throws CoreException {
-		this.workspace = workspace;
-		this.pluginId = pluginId;
-		this.newTree = newTree;
-		this.oldTree = oldTree;
-		this.fileTable = restoreFileTable();
-	}
+    SavedState(Workspace workspace, String pluginId, ElementTree oldTree, ElementTree newTree) throws CoreException {
+        this.workspace = workspace;
+        this.pluginId = pluginId;
+        this.newTree = newTree;
+        this.oldTree = oldTree;
+        this.fileTable = restoreFileTable();
+    }
 
-	void forgetTrees() {
-		newTree = null;
-		oldTree = null;
-		workspace.saveManager.clearDeltaExpiration(pluginId);
-	}
+    void forgetTrees() {
+        newTree = null;
+        oldTree = null;
+        workspace.saveManager.clearDeltaExpiration(pluginId);
+    }
 
     protected SafeFileTable getFileTable() {
-		return fileTable;
-	}
+        return fileTable;
+    }
 
-	protected SafeFileTable restoreFileTable() throws CoreException {
-		if (fileTable == null) {
-			fileTable = new SafeFileTable(pluginId, workspace);
-		}
-		return fileTable;
-	}
+    protected SafeFileTable restoreFileTable() throws CoreException {
+        if (fileTable == null) {
+            fileTable = new SafeFileTable(pluginId, workspace);
+        }
+        return fileTable;
+    }
 
-	@Override
-	public IPath lookup(IPath file) {
-		return getFileTable().lookup(file);
-	}
+    @Override
+    public IPath lookup(IPath file) {
+        return getFileTable().lookup(file);
+    }
 
-	@Override
-	public IPath[] getFiles() {
-		return getFileTable().getFiles();
-	}
+    @Override
+    public IPath[] getFiles() {
+        return getFileTable().getFiles();
+    }
 
-	@Override
-	public void processResourceChangeEvents(IResourceChangeListener listener) {
-		try {
-			final ISchedulingRule rule = workspace.getRoot();
-			try {
-				workspace.prepareOperation(rule, null);
-				if (oldTree == null || newTree == null) {
-					return;
-				}
-				workspace.beginOperation(true);
-				ResourceDelta delta = ResourceDeltaFactory.computeDelta(workspace, oldTree, newTree, IPath.ROOT, -1);
-				forgetTrees(); // free trees to prevent memory leak
-				workspace.getNotificationManager().broadcastChanges(listener, IResourceChangeEvent.POST_BUILD, delta);
-			} finally {
-				workspace.endOperation(rule, false);
-			}
-		} catch (CoreException e) {
-			// this is unlikely to happen, so, just log it
-			Policy.log(e);
-		}
-	}
+    @Override
+    public void processResourceChangeEvents(IResourceChangeListener listener) {
+        try {
+            final ISchedulingRule rule = workspace.getRoot();
+            try {
+                workspace.prepareOperation(rule, null);
+                if (oldTree == null || newTree == null) {
+                    return;
+                }
+                workspace.beginOperation(true);
+                ResourceDelta delta = ResourceDeltaFactory.computeDelta(workspace, oldTree, newTree, IPath.ROOT, -1);
+                forgetTrees(); // free trees to prevent memory leak
+            } finally {
+                workspace.endOperation(rule, false);
+            }
+        } catch (CoreException e) {
+            // this is unlikely to happen, so, just log it
+            Policy.log(e);
+        }
+    }
 }

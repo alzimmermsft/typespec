@@ -43,42 +43,43 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class CompletionOnSingleNameReference extends SingleNameReference implements CompletionNode {
 
-	public char[][] possibleKeywords;
-	public boolean canBeExplicitConstructor;
-	public boolean isInsideAnnotationAttribute;
-	public boolean isPrecededByModifiers;
+    public char[][] possibleKeywords;
+    public boolean canBeExplicitConstructor;
+    public boolean isInsideAnnotationAttribute;
+    public boolean isPrecededByModifiers;
 
-	public CompletionOnSingleNameReference(char[] source, long pos, boolean isInsideAnnotationAttribute) {
-		this(source, pos, null, false, isInsideAnnotationAttribute);
-	}
+    public CompletionOnSingleNameReference(char[] source, long pos, boolean isInsideAnnotationAttribute) {
+        this(source, pos, null, false, isInsideAnnotationAttribute);
+    }
 
-	public CompletionOnSingleNameReference(char[] source, long pos, char[][] possibleKeywords, boolean canBeExplicitConstructor, boolean isInsideAnnotationAttribute) {
-		super(source, pos);
-		this.possibleKeywords = possibleKeywords;
-		this.canBeExplicitConstructor = canBeExplicitConstructor;
-		this.isInsideAnnotationAttribute = isInsideAnnotationAttribute;
-	}
+    public CompletionOnSingleNameReference(char[] source, long pos, char[][] possibleKeywords,
+        boolean canBeExplicitConstructor, boolean isInsideAnnotationAttribute) {
+        super(source, pos);
+        this.possibleKeywords = possibleKeywords;
+        this.canBeExplicitConstructor = canBeExplicitConstructor;
+        this.isInsideAnnotationAttribute = isInsideAnnotationAttribute;
+    }
 
-	@Override
-	public StringBuilder printExpression(int indent, StringBuilder output) {
+    @Override
+    public StringBuilder printExpression(int indent, StringBuilder output) {
 
-		output.append("<CompleteOnName:"); //$NON-NLS-1$
-		return super.printExpression(0, output).append('>');
-	}
+        output.append("<CompleteOnName:"); //$NON-NLS-1$
+        return super.printExpression(0, output).append('>');
+    }
 
-	@Override
-	public TypeBinding resolveType(BlockScope scope) {
-		CompletionNodeFound exception;
-		if(scope instanceof MethodScope) {
-			exception = new CompletionNodeFound(this, scope, ((MethodScope)scope).insideTypeAnnotation);
-		} else {
-			exception = new CompletionNodeFound(this, scope);
-		}
-		return exception.throwOrDeferAndReturn(() -> {
-			// probably not in the position to do useful resolution, just provide some bindings
-			char[][] compoundName = new char[][] { this.token };
-			this.binding = new ProblemBinding(compoundName, ProblemReasons.NotFound);
-			return new ProblemReferenceBinding(compoundName, null, ProblemReasons.NotFound);
-		});
-	}
+    @Override
+    public TypeBinding resolveType(BlockScope scope) {
+        CompletionNodeFound exception;
+        if (scope instanceof MethodScope) {
+            exception = new CompletionNodeFound(this, scope, ((MethodScope) scope).insideTypeAnnotation);
+        } else {
+            exception = new CompletionNodeFound(this, scope);
+        }
+        return exception.throwOrDeferAndReturn(() -> {
+            // probably not in the position to do useful resolution, just provide some bindings
+            char[][] compoundName = new char[][] { this.token };
+            this.binding = new ProblemBinding(compoundName, ProblemReasons.NotFound);
+            return new ProblemReferenceBinding(compoundName, null, ProblemReasons.NotFound);
+        });
+    }
 }

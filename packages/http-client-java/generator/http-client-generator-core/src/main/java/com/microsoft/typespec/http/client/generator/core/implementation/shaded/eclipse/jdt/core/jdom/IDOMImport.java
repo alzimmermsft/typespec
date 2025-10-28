@@ -24,51 +24,53 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IDOMImport extends IDOMNode {
-/**
- * The <code>IDOMImport</code> refinement of this <code>IDOMNode</code>
- * method returns the name of this import. The syntax for an import name
- * corresponds to a fully qualified type name, or to an on-demand package name
- * as defined by ImportDeclaration (JLS2 7.5).
- *
- * @return  the name of this import
- */
-@Override
-public String getName();
-/**
- * Returns whether this import declaration ends with <code>".*"</code>.
- *
- * @return <code>true</code> if this in an on-demand import
- */
-public boolean isOnDemand();
+    /**
+     * The <code>IDOMImport</code> refinement of this <code>IDOMNode</code>
+     * method returns the name of this import. The syntax for an import name
+     * corresponds to a fully qualified type name, or to an on-demand package name
+     * as defined by ImportDeclaration (JLS2 7.5).
+     *
+     * @return the name of this import
+     */
+    @Override
+    public String getName();
 
-/**
- * Returns the modifier flags for this import. The flags can be examined using class
- * <code>Flags</code>. Only the static flag is meaningful for import declarations.
- * @return the modifier flags for this import
- * @see org.eclipse.jdt.core.Flags
- * @since 3.0
- */
-int getFlags();
+    /**
+     * Returns whether this import declaration ends with <code>".*"</code>.
+     *
+     * @return <code>true</code> if this in an on-demand import
+     */
+    public boolean isOnDemand();
 
-/**
- * Sets the modifier flags for this import. The flags can be examined using class
- * <code>Flags</code>. Only the static flag is meaningful for import declarations.
- *
- * @param flags the modifier flags for this import
- * @see org.eclipse.jdt.core.Flags
- * @since 3.0
- */
-void setFlags(int flags);
+    /**
+     * Returns the modifier flags for this import. The flags can be examined using class
+     * <code>Flags</code>. Only the static flag is meaningful for import declarations.
+     * 
+     * @return the modifier flags for this import
+     * @see org.eclipse.jdt.core.Flags
+     * @since 3.0
+     */
+    int getFlags();
 
-/**
- * The <code>IDOMImport</code> refinement of this <code>IDOMNode</code>
- * method sets the name of this import. The syntax for an import name
- * corresponds to a fully qualified type name, or to an on-demand package name
- * as defined by ImportDeclaration (JLS2 7.5).
- *
- * @param name the given name
- * @exception IllegalArgumentException if <code>null</code> is specified
- */
-@Override
-public void setName(String name);
+    /**
+     * Sets the modifier flags for this import. The flags can be examined using class
+     * <code>Flags</code>. Only the static flag is meaningful for import declarations.
+     *
+     * @param flags the modifier flags for this import
+     * @see org.eclipse.jdt.core.Flags
+     * @since 3.0
+     */
+    void setFlags(int flags);
+
+    /**
+     * The <code>IDOMImport</code> refinement of this <code>IDOMNode</code>
+     * method sets the name of this import. The syntax for an import name
+     * corresponds to a fully qualified type name, or to an on-demand package name
+     * as defined by ImportDeclaration (JLS2 7.5).
+     *
+     * @param name the given name
+     * @exception IllegalArgumentException if <code>null</code> is specified
+     */
+    @Override
+    public void setName(String name);
 }

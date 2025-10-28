@@ -339,186 +339,6 @@ public interface Preferences {
     boolean getBoolean(String key, boolean def);
 
 	/**
-	 * Associates a {@code String} object representing the specified
-	 * {@code float} value with the specified {@code key} in this node. The
-	 * associated {@code String} object is the one that would be returned if the
-	 * {@code float} value were passed to {@code Float.toString(float)}. This
-	 * method is intended for use in conjunction with the
-	 * {@link #getFloat(String, float)} method.
-	 * 
-	 * <p>
-	 * Implementor's note: it is <i>not </i> necessary that the value be
-	 * represented by a string in the backing store. If the backing store
-	 * supports {@code float} values, it is not unreasonable to use them. This
-	 * implementation detail is not visible through the {@code Preferences
-	 * } API, which
-	 * allows the value to be read as a {@code float} (with {@code getFloat}) or
-	 * a {@code String} (with {@code get}) type.
-	 * 
-	 * @param key {@code key} with which the string form of value is to be
-	 *        associated.
-	 * @param value value whose string form is to be associated with {@code key}
-	 *        .
-	 * @throws NullPointerException if {@code key} is {@code null}.
-	 * @throws IllegalStateException if this node (or an ancestor) has been
-	 *         removed with the {@link #removeNode()} method.
-	 * @see #getFloat(String,float)
-	 */
-    void putFloat(String key, float value);
-
-	/**
-	 * Returns the float {@code value} represented by the {@code String} object
-	 * associated with the specified {@code key} in this node. The
-	 * {@code String} object is converted to a {@code float} value as by
-	 * {@code Float.parseFloat(String)}. Returns the specified default if there
-	 * is no value associated with the {@code key}, the backing store is
-	 * inaccessible, or if {@code Float.parseFloat(String)} would throw a
-	 * {@code NumberFormatException} if the associated value were passed. This
-	 * method is intended for use in conjunction with the
-	 * {@link #putFloat(String, float)} method.
-	 * 
-	 * @param key {@code key} whose associated value is to be returned as a
-	 *        {@code float} value.
-	 * @param def the value to be returned in the event that this node has no
-	 *        value associated with {@code key} or the associated value cannot
-	 *        be interpreted as a {@code float} type or the backing store is
-	 *        inaccessible.
-	 * @return the {@code float} value represented by the string associated with
-	 *         {@code key} in this node, or {@code def} if the associated value
-	 *         does not exist or cannot be interpreted as a {@code float} type.
-	 * @throws IllegalStateException if this node (or an ancestor) has been
-	 *         removed with the {@link #removeNode()} method.
-	 * @throws NullPointerException if {@code key} is {@code null}.
-	 * @see #putFloat(String,float)
-	 * @see #get(String,String)
-	 */
-    float getFloat(String key, float def);
-
-	/**
-	 * Associates a {@code String} object representing the specified
-	 * {@code double} value with the specified {@code key} in this node. The
-	 * associated {@code String} object is the one that would be returned if the
-	 * {@code double} value were passed to {@code Double.toString(double)}. This
-	 * method is intended for use in conjunction with the
-	 * {@link #getDouble(String, double)} method
-	 * 
-	 * <p>
-	 * Implementor's note: it is <i>not </i> necessary that the value be
-	 * represented by a string in the backing store. If the backing store
-	 * supports {@code double} values, it is not unreasonable to use them. This
-	 * implementation detail is not visible through the {@code Preferences
-	 * } API, which
-	 * allows the value to be read as a {@code double} (with {@code getDouble})
-	 * or a {@code String} (with {@code get}) type.
-	 * 
-	 * @param key {@code key} with which the string form of value is to be
-	 *        associated.
-	 * @param value value whose string form is to be associated with {@code key}
-	 *        .
-	 * @throws NullPointerException if {@code key} is {@code null}.
-	 * @throws IllegalStateException if this node (or an ancestor) has been
-	 *         removed with the {@link #removeNode()} method.
-	 * @see #getDouble(String,double)
-	 */
-    void putDouble(String key, double value);
-
-	/**
-	 * Returns the {@code double} value represented by the {@code String} object
-	 * associated with the specified {@code key} in this node. The
-	 * {@code String} object is converted to a {@code double} value as by
-	 * {@code Double.parseDouble(String)}. Returns the specified default if
-	 * there is no value associated with the {@code key}, the backing store is
-	 * inaccessible, or if {@code Double.parseDouble(String)} would throw a
-	 * {@code NumberFormatException} if the associated value were passed. This
-	 * method is intended for use in conjunction with the {@link #putDouble}
-	 * method.
-	 * 
-	 * @param key {@code key} whose associated value is to be returned as a
-	 *        {@code double} value.
-	 * @param def the value to be returned in the event that this node has no
-	 *        value associated with {@code key} or the associated value cannot
-	 *        be interpreted as a {@code double} type or the backing store is
-	 *        inaccessible.
-	 * @return the {@code double} value represented by the {@code String} object
-	 *         associated with {@code key} in this node, or {@code def} if the
-	 *         associated value does not exist or cannot be interpreted as a
-	 *         {@code double} type.
-	 * @throws IllegalStateException if this node (or an ancestor) has been
-	 *         removed with the {@link #removeNode()} method.
-	 * @throws NullPointerException if {@code key} is {@code null}.
-	 * @see #putDouble(String,double)
-	 * @see #get(String,String)
-	 */
-    double getDouble(String key, double def);
-
-	/**
-	 * Associates a {@code String} object representing the specified
-	 * {@code byte[]} with the specified {@code key} in this node. The
-	 * associated {@code String} object the <i>Base64 </i> encoding of the
-	 * {@code byte[]}, as defined in <a
-	 * href="http://www.ietf.org/rfc/rfc2045.txt">RFC 2045 </a>, Section 6.8,
-	 * with one minor change: the string will consist solely of characters from
-	 * the <i>Base64 Alphabet </i>; it will not contain any newline characters.
-	 * This method is intended for use in conjunction with the
-	 * {@link #getByteArray(String, byte[])} method.
-	 * 
-	 * <p>
-	 * Implementor's note: it is <i>not </i> necessary that the value be
-	 * represented by a {@code String} type in the backing store. If the backing
-	 * store supports {@code byte[]} values, it is not unreasonable to use them.
-	 * This implementation detail is not visible through the {@code  Preferences}
-	 * API, which allows the value to be read as an a {@code byte[]} object
-	 * (with {@code getByteArray}) or a {@code String} object (with {@code get}
-	 * ).
-	 * 
-	 * @param key {@code key} with which the string form of {@code value} is to
-	 *        be associated.
-	 * @param value {@code value} whose string form is to be associated with
-	 *        {@code key}.
-	 * @throws NullPointerException if {@code key} or {@code value} is
-	 *         {@code null}.
-	 * @throws IllegalStateException if this node (or an ancestor) has been
-	 *         removed with the {@link #removeNode()} method.
-	 * @see #getByteArray(String,byte[])
-	 * @see #get(String,String)
-	 */
-    void putByteArray(String key, byte[] value);
-
-	/**
-	 * Returns the {@code byte[]} value represented by the {@code String} object
-	 * associated with the specified {@code key} in this node. Valid
-	 * {@code String} objects are <i>Base64 </i> encoded binary data, as defined
-	 * in <a href="http://www.ietf.org/rfc/rfc2045.txt">RFC 2045 </a>, Section
-	 * 6.8, with one minor change: the string must consist solely of characters
-	 * from the <i>Base64 Alphabet </i>; no newline characters or extraneous
-	 * characters are permitted. This method is intended for use in conjunction
-	 * with the {@link #putByteArray(String, byte[])} method.
-	 * 
-	 * <p>
-	 * Returns the specified default if there is no value associated with the
-	 * {@code key}, the backing store is inaccessible, or if the associated
-	 * value is not a valid Base64 encoded byte array (as defined above).
-	 * 
-	 * @param key {@code key} whose associated value is to be returned as a
-	 *        {@code byte[]} object.
-	 * @param def the value to be returned in the event that this node has no
-	 *        value associated with {@code key} or the associated value cannot
-	 *        be interpreted as a {@code byte[]} type, or the backing store is
-	 *        inaccessible.
-	 * @return the {@code byte[]} value represented by the {@code String} object
-	 *         associated with {@code key} in this node, or {@code def} if the
-	 *         associated value does not exist or cannot be interpreted as a
-	 *         {@code byte[]}.
-	 * @throws NullPointerException if {@code key} is {@code null}. (A
-	 *         {@code null} value for {@code def} <i>is </i> permitted.)
-	 * @throws IllegalStateException if this node (or an ancestor) has been
-	 *         removed with the {@link #removeNode()} method.
-	 * @see #get(String,String)
-	 * @see #putByteArray(String,byte[])
-	 */
-    byte[] getByteArray(String key, byte[] def);
-
-	/**
 	 * Returns all of the keys that have an associated value in this node. (The
 	 * returned array will be of size zero if this node has no preferences and
 	 * not {@code null}!)
@@ -576,7 +396,6 @@ public interface Preferences {
 	 * @throws IllegalStateException if this node (or an ancestor) has been
 	 *         removed with the {@link #removeNode()} method.
 	 * @throws NullPointerException if path name is {@code null}.
-	 * @see #flush()
 	 */
     Preferences node(String pathName);
 
@@ -628,7 +447,6 @@ public interface Preferences {
 	 * @throws BackingStoreException if this operation cannot be completed due
 	 *         to a failure in the backing store, or inability to communicate
 	 *         with it.
-	 * @see #flush()
 	 */
     void removeNode() throws BackingStoreException;
 
@@ -679,23 +497,6 @@ public interface Preferences {
 	 *         with it.
 	 * @throws IllegalStateException if this node (or an ancestor) has been
 	 *         removed with the {@link #removeNode()} method.
-	 * @see #sync()
 	 */
     void flush() throws BackingStoreException;
-
-	/**
-	 * Ensures that future reads from this node and its descendants reflect any
-	 * changes that were committed to the persistent store (from any VM) prior
-	 * to the {@code sync} invocation. As a side-effect, forces any changes in
-	 * the contents of this node and its descendants to the persistent store, as
-	 * if the {@code flush} method had been invoked on this node.
-	 * 
-	 * @throws BackingStoreException if this operation cannot be completed due
-	 *         to a failure in the backing store, or inability to communicate
-	 *         with it.
-	 * @throws IllegalStateException if this node (or an ancestor) has been
-	 *         removed with the {@link #removeNode()} method.
-	 * @see #flush()
-	 */
-    void sync() throws BackingStoreException;
 }

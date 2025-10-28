@@ -20,37 +20,37 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class UserScope extends AbstractScope {
 
-	/**
-	 * String constant (value of <code>"user"</code>) used for the scope name for
-	 * the user preference scope.
-	 */
-	public static final String SCOPE = "user"; //$NON-NLS-1$
+    /**
+     * String constant (value of <code>"user"</code>) used for the scope name for
+     * the user preference scope.
+     */
+    public static final String SCOPE = "user"; //$NON-NLS-1$
 
-	private static final IPath USER_HOME_PREFERENCE_LOCATION;
-	static {
-		String userHome = System.getProperty("user.home"); //$NON-NLS-1$
-		USER_HOME_PREFERENCE_LOCATION = IPath.forWindows(userHome).append(".eclipse"); //$NON-NLS-1$
-	}
+    private static final IPath USER_HOME_PREFERENCE_LOCATION;
+    static {
+        String userHome = System.getProperty("user.home"); //$NON-NLS-1$
+        USER_HOME_PREFERENCE_LOCATION = IPath.forWindows(userHome).append(".eclipse"); //$NON-NLS-1$
+    }
 
-	/**
-	 * Singleton instance of a User Scope object. Typical usage is:
-	 * <code>UserScope.INSTANCE.getNode(...);</code>
-	 *
-	 * @since 3.4
-	 */
-	public static final IScopeContext INSTANCE = new UserScope();
+    /**
+     * Singleton instance of a User Scope object. Typical usage is:
+     * <code>UserScope.INSTANCE.getNode(...);</code>
+     *
+     * @since 3.4
+     */
+    public static final IScopeContext INSTANCE = new UserScope();
 
-	private UserScope() { // static use only via INSTANCE
-	}
+    private UserScope() { // static use only via INSTANCE
+    }
 
-	@Override
-	public String getName() {
-		return SCOPE;
-	}
+    @Override
+    public String getName() {
+        return SCOPE;
+    }
 
-	@Override
-	public IPath getLocation() {
-		return USER_HOME_PREFERENCE_LOCATION;
-	}
+    @Override
+    public IPath getLocation() {
+        return USER_HOME_PREFERENCE_LOCATION;
+    }
 
 }

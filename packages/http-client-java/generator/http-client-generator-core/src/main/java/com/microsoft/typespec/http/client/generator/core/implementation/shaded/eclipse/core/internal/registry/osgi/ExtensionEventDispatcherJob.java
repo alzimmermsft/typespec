@@ -13,46 +13,46 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.registry.osgi;
 
-import java.util.Map;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IStatus;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.jobs.ISchedulingRule;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.jobs.Job;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.spi.RegistryStrategy;
+import java.util.Map;
 
 /**
  * Use Eclipse job scheduling mechanism.
  */
 final public class ExtensionEventDispatcherJob extends Job {
-	// an "identy rule" that forces extension events to be queued
-	private final static ISchedulingRule EXTENSION_EVENT_RULE = new ISchedulingRule() {
-		@Override
-		public boolean contains(ISchedulingRule rule) {
-			return rule == this;
-		}
+    // an "identy rule" that forces extension events to be queued
+    private final static ISchedulingRule EXTENSION_EVENT_RULE = new ISchedulingRule() {
+        @Override
+        public boolean contains(ISchedulingRule rule) {
+            return rule == this;
+        }
 
-		@Override
-		public boolean isConflicting(ISchedulingRule rule) {
-			return rule == this;
-		}
-	};
-	private final Map<String, ?> deltas;
-	private final Object[] listenerInfos;
-	private final Object registry;
+        @Override
+        public boolean isConflicting(ISchedulingRule rule) {
+            return rule == this;
+        }
+    };
+    private final Map<String, ?> deltas;
+    private final Object[] listenerInfos;
+    private final Object registry;
 
-	public ExtensionEventDispatcherJob(Object[] listenerInfos, Map<String, ?> deltas, Object registry) {
-		// name not NL'd since it is a system job
-		super("Registry event dispatcher"); //$NON-NLS-1$
-		setSystem(true);
-		this.listenerInfos = listenerInfos;
-		this.deltas = deltas;
-		this.registry = registry;
-		// all extension event dispatching jobs use this rule
-		setRule(EXTENSION_EVENT_RULE);
-	}
+    public ExtensionEventDispatcherJob(Object[] listenerInfos, Map<String, ?> deltas, Object registry) {
+        // name not NL'd since it is a system job
+        super("Registry event dispatcher"); //$NON-NLS-1$
+        setSystem(true);
+        this.listenerInfos = listenerInfos;
+        this.deltas = deltas;
+        this.registry = registry;
+        // all extension event dispatching jobs use this rule
+        setRule(EXTENSION_EVENT_RULE);
+    }
 
-	@Override
-	public IStatus run(IProgressMonitor monitor) {
-		return RegistryStrategy.processChangeEvent(listenerInfos, deltas, registry);
-	}
+    @Override
+    public IStatus run(IProgressMonitor monitor) {
+        return RegistryStrategy.processChangeEvent(listenerInfos, deltas, registry);
+    }
 }

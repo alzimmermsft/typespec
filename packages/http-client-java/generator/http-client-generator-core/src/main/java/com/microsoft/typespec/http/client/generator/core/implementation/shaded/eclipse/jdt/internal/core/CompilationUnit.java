@@ -18,7 +18,6 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IContainer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IFile;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IMarker;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
@@ -26,18 +25,12 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IStatus;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Path;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.BufferChangedEvent;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.CompletionRequestor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.Flags;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IBuffer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IBufferFactory;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ICodeAssist;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ICodeCompletionRequestor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ICompilationUnit;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ICompletionRequestor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IImportContainer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IImportDeclaration;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaElement;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaModelMarker;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaModelStatusConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaProject;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IMember;
@@ -45,10 +38,8 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IModuleDescription;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IOpenable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IPackageDeclaration;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IPackageFragment;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IPackageFragmentRoot;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IProblemRequestor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ISourceManipulation;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ISourceRange;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ISourceReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IType;
@@ -60,22 +51,11 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.WorkingCopyOwner;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CategorizedProblem;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CharOperation;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.IProblem;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.dom.AST;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.dom.ASTNode;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.dom.ASTParser;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.codeassist.DOMCodeSelector;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.IProblemFactory;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.SourceElementParser;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IElementInfo;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.problem.AbortCompilationUnit;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.problem.DefaultProblem;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.problem.ProblemSeverities;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.SuffixConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.DeduplicationUtil;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.MementoTokenizer;
@@ -89,26 +69,21 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Stream;
 
 /**
  * @see ICompilationUnit
  */
 public class CompilationUnit extends Openable implements ICompilationUnit, com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.ICompilationUnit, SuffixConstants {
-	public static boolean DOM_BASED_OPERATIONS = Boolean.getBoolean(CompilationUnit.class.getSimpleName() + ".DOM_BASED_OPERATIONS"); //$NON-NLS-1$
-	private static final IImportDeclaration[] NO_IMPORTS = new IImportDeclaration[0];
+    private static final IImportDeclaration[] NO_IMPORTS = new IImportDeclaration[0];
 
 	protected final String name;
 	public final WorkingCopyOwner owner;
-	private com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.dom.CompilationUnit ast;
 
-/**
+    /**
  * Constructs a handle to a compilation unit with the given name in the
  * specified package for the specified owner
  */
@@ -154,199 +129,8 @@ public void becomeWorkingCopy(IProgressMonitor monitor) throws JavaModelExceptio
 	IProblemRequestor requestor = this.owner == null ? null : this.owner.getProblemRequestor(this);
 	becomeWorkingCopy(requestor, monitor);
 }
-@Override
-protected boolean buildStructure(OpenableElementInfo info, final IProgressMonitor pm, Map<IJavaElement, IElementInfo> newElements, IResource underlyingResource) throws JavaModelException {
-	CompilationUnitElementInfo unitInfo = (CompilationUnitElementInfo) info;
 
-	// generate structure and compute syntax problems if needed
-	JavaModelManager.PerWorkingCopyInfo perWorkingCopyInfo = getPerWorkingCopyInfo();
-	IJavaProject project = getJavaProject();
-	boolean createAST = info instanceof ASTHolderCUInfo astHolder ? astHolder.astLevel != NO_AST : false;
-	boolean resolveBindings = info instanceof ASTHolderCUInfo astHolder ? astHolder.resolveBindings : false;
-	int reconcileFlags = info instanceof ASTHolderCUInfo astHolder ? astHolder.reconcileFlags : 0;
-	boolean computeProblems = perWorkingCopyInfo != null && perWorkingCopyInfo.isActive() && project != null && JavaProject.hasJavaNature(project.getProject());
-	Map<String, String> options = this.getOptions(true);
-	if (!computeProblems) {
-		// disable task tags checking to speed up parsing
-		options.put(JavaCore.COMPILER_TASK_TAGS, ""); //$NON-NLS-1$
-	}
-
-	// update timestamp (might be IResource.NULL_STAMP if original does not exist)
-	if (underlyingResource == null) {
-		underlyingResource = getResource();
-	}
-	// underlying resource is null in the case of a working copy on a class file in a jar
-	if (underlyingResource != null)
-		unitInfo.timestamp = underlyingResource.getModificationStamp();
-
-	// ensure buffer is opened
-	IBuffer buffer = getBufferManager().getBuffer(CompilationUnit.this);
-	if (buffer == null) {
-		openBuffer(pm, unitInfo); // open buffer independently from the info, since we are building the info
-	}
-
-	CompilationUnit source = cloneCachingContents();
-	Map<String, CategorizedProblem[]> problems = info instanceof ASTHolderCUInfo astHolder ? astHolder.problems : null;
-	if (DOM_BASED_OPERATIONS) {
-		ASTParser astParser = ASTParser.newParser(info instanceof ASTHolderCUInfo astHolder && astHolder.astLevel > 0 ? astHolder.astLevel : AST.getJLSLatest());
-		astParser.setWorkingCopyOwner(getOwner());
-		astParser.setSource(this instanceof ClassFileWorkingCopy ? source : this);
-		astParser.setProject(getJavaProject());
-		if ("module-info.java".equals(getElementName())) { //$NON-NLS-1$
-//			// workaround https://github.com/eclipse-jdt/eclipse.jdt.core/issues/2204
-//			// prevents from conflicting classpath computation
-			astParser.setProject(null);
-		}
-		astParser.setStatementsRecovery((reconcileFlags & ICompilationUnit.ENABLE_STATEMENTS_RECOVERY) != 0);
-		astParser.setResolveBindings(computeProblems || resolveBindings);
-		astParser.setBindingsRecovery((reconcileFlags & ICompilationUnit.ENABLE_BINDINGS_RECOVERY) != 0);
-		astParser.setIgnoreMethodBodies((reconcileFlags & ICompilationUnit.IGNORE_METHOD_BODIES) != 0);
-		astParser.setCompilerOptions(options);
-		ASTNode dom = null;
-		try {
-			dom = astParser.createAST(pm);
-			if (computeProblems) {
-				// force resolution of bindings to load more problems
-				dom.getAST().resolveWellKnownType(Object.class.getName());
-			}
-		} catch (AbortCompilationUnit e) {
-			var problem = e.problem;
-			if (problem == null && e.exception instanceof IOException ioEx) {
-				String path = source.getPath().toString();
-				String exceptionTrace = ioEx.getClass().getName() + ':' + ioEx.getMessage();
-				problem = new DefaultProblemFactory().createProblem(
-						path.toCharArray(),
-						IProblem.CannotReadSource,
-						new String[] { path, exceptionTrace },
-						new String[] { path, exceptionTrace },
-						ProblemSeverities.AbortCompilation | ProblemSeverities.Error | ProblemSeverities.Fatal,
-						0, 0, 1, 0);
-			}
-			if (problems != null) {
-				problems.put(Integer.toString(CategorizedProblem.CAT_BUILDPATH),
-					new CategorizedProblem[] { problem });
-			} else if (perWorkingCopyInfo != null) {
-				perWorkingCopyInfo.beginReporting();
-				perWorkingCopyInfo.acceptProblem(problem);
-				perWorkingCopyInfo.endReporting();
-			}
-		}
-		if (dom instanceof org.eclipse.jdt.core.dom.CompilationUnit newAST) {
-			if (computeProblems) {
-				IProblem[] interestingProblems = Arrays.stream(newAST.getProblems())
-					.filter(problem ->
-						!ignoreOptionalProblems()
-						|| !(problem instanceof DefaultProblem)
-						|| (problem instanceof DefaultProblem defaultProblem && (defaultProblem.severity & ProblemSeverities.Optional) == 0)
-					).toArray(IProblem[]::new);
-				if (perWorkingCopyInfo != null && problems == null) {
-					try {
-						perWorkingCopyInfo.beginReporting();
-						for (IProblem problem : interestingProblems) {
-							perWorkingCopyInfo.acceptProblem(problem);
-						}
-					} finally {
-						perWorkingCopyInfo.endReporting();
-					}
-				} else if (interestingProblems.length > 0) {
-					problems.put(IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER, Stream.of(interestingProblems)
-						.filter(CategorizedProblem.class::isInstance)
-						.map(CategorizedProblem.class::cast)
-						.toArray(CategorizedProblem[]::new));
-				}
-			}
-			if (info instanceof ASTHolderCUInfo astHolder) {
-				astHolder.ast = newAST;
-			}
-			newAST.accept(new DOMToModelPopulator(newElements, this, unitInfo));
-			boolean structureKnown = true;
-			for (IProblem problem : newAST.getProblems()) {
-				structureKnown &= (IProblem.Syntax & problem.getID()) == 0;
-			}
-			unitInfo.setIsStructureKnown(structureKnown);
-		}
-	} else {
-		CompilerOptions compilerOptions = new CompilerOptions(options);
-		compilerOptions.ignoreMethodBodies = (reconcileFlags & ICompilationUnit.IGNORE_METHOD_BODIES) != 0;
-		CompilationUnitStructureRequestor requestor = new CompilationUnitStructureRequestor(this, unitInfo, newElements);
-		IProblemFactory problemFactory = new DefaultProblemFactory();
-		SourceElementParser parser = new SourceElementParser(
-			requestor,
-			problemFactory,
-			compilerOptions,
-			true/*report local declarations*/,
-			!createAST /*optimize string literals only if not creating a DOM AST*/);
-		parser.reportOnlyOneSyntaxError = !computeProblems;
-		parser.setMethodsFullRecovery(true);
-		parser.setStatementsRecovery((reconcileFlags & ICompilationUnit.ENABLE_STATEMENTS_RECOVERY) != 0);
-
-		if (!computeProblems && !resolveBindings && !createAST) // disable javadoc parsing if not computing problems, not resolving and not creating ast
-			parser.javadocParser.checkDocComment = false;
-		requestor.parser = parser;
-
-		// compute other problems if needed
-		CompilationUnitDeclaration compilationUnitDeclaration = null;
-		try {
-			if (computeProblems) {
-				if (problems == null) {
-					// report problems to the problem requestor
-					problems = new HashMap<>();
-					compilationUnitDeclaration = CompilationUnitProblemFinder.process(source, parser, this.owner, problems, createAST, reconcileFlags, pm);
-					try {
-						perWorkingCopyInfo.beginReporting();
-						for (CategorizedProblem[] categorizedProblems : problems.values()) {
-							if (categorizedProblems == null) continue;
-							for (CategorizedProblem categorizedProblem : categorizedProblems) {
-								perWorkingCopyInfo.acceptProblem(categorizedProblem);
-							}
-						}
-					} finally {
-						perWorkingCopyInfo.endReporting();
-					}
-				} else {
-					// collect problems
-					compilationUnitDeclaration = CompilationUnitProblemFinder.process(source, parser, this.owner, problems, createAST, reconcileFlags, pm);
-				}
-			} else {
-				compilationUnitDeclaration = parser.parseCompilationUnit(source, true /*full parse to find local elements*/, pm);
-			}
-
-			if (createAST) {
-				int astLevel = ((ASTHolderCUInfo) info).astLevel;
-				com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.dom.CompilationUnit cu = AST.convertCompilationUnit(astLevel, compilationUnitDeclaration, options, computeProblems, source, reconcileFlags, pm);
-				((ASTHolderCUInfo) info).ast = cu;
-			}
-		} finally {
-		    if (compilationUnitDeclaration != null) {
-		    	unitInfo.hasFunctionalTypes = compilationUnitDeclaration.hasFunctionalTypes();
-		        compilationUnitDeclaration.cleanUp();
-		    }
-		}
-	}
-
-	return unitInfo.isStructureKnown();
-}
-/*
- * Clone this handle so that it caches its contents in memory.
- * DO NOT PASS TO CLIENTS
- */
-public CompilationUnit cloneCachingContents() {
-	return new CompilationUnit((PackageFragment) this.getParent(), this.name, this.owner) {
-		private char[] cachedContents;
-		@Override
-		public char[] getContents() {
-			if (this.cachedContents == null)
-				this.cachedContents = CompilationUnit.this.getContents();
-			return this.cachedContents;
-		}
-		@Override
-		public CompilationUnit originalFromClone() {
-			return CompilationUnit.this;
-		}
-	};
-}
-
-@Override
+    @Override
 public boolean canBeRemovedFromCache() {
 	if (getPerWorkingCopyInfo() != null) return false; // working copies should remain in the cache until they are destroyed
 	return super.canBeRemovedFromCache();
@@ -370,208 +154,10 @@ protected void closing(Object info) {
 		super.closing(info);
 	} // else the buffer of a working copy must remain open for the lifetime of the working copy
 }
-/**
- * @see ICodeAssist#codeComplete(int, ICompletionRequestor)
- * @deprecated
- */
-@Override
-public void codeComplete(int offset, ICompletionRequestor requestor) throws JavaModelException {
-	codeComplete(offset, requestor, DefaultWorkingCopyOwner.PRIMARY);
-}
-/**
- * @see ICodeAssist#codeComplete(int, ICompletionRequestor, WorkingCopyOwner)
- * @deprecated
- */
-@Override
-public void codeComplete(int offset, ICompletionRequestor requestor, WorkingCopyOwner workingCopyOwner) throws JavaModelException {
-	if (requestor == null) {
-		throw new IllegalArgumentException("Completion requestor cannot be null"); //$NON-NLS-1$
-	}
-	codeComplete(offset, new org.eclipse.jdt.internal.codeassist.CompletionRequestorWrapper(requestor), workingCopyOwner);
-}
-/**
- * @see ICodeAssist#codeComplete(int, ICodeCompletionRequestor)
- * @deprecated - use codeComplete(int, ICompletionRequestor)
- */
-@Override
-public void codeComplete(int offset, final ICodeCompletionRequestor requestor) throws JavaModelException {
 
-	if (requestor == null){
-		codeComplete(offset, (ICompletionRequestor)null);
-		return;
-	}
-	codeComplete(
-		offset,
-		new ICompletionRequestor(){
-			@Override
-			public void acceptAnonymousType(char[] superTypePackageName,char[] superTypeName,char[][] parameterPackageNames,char[][] parameterTypeNames,char[][] parameterNames,char[] completionName,int modifiers,int completionStart,int completionEnd, int relevance){
-				// ignore
-			}
-			@Override
-			public void acceptClass(char[] packageName, char[] className, char[] completionName, int modifiers, int completionStart, int completionEnd, int relevance) {
-				requestor.acceptClass(packageName, className, completionName, modifiers, completionStart, completionEnd);
-			}
-			@Override
-			public void acceptError(IProblem error) {
-				// was disabled in 1.0
-			}
-			@Override
-			public void acceptField(char[] declaringTypePackageName, char[] declaringTypeName, char[] fieldName, char[] typePackageName, char[] typeName, char[] completionName, int modifiers, int completionStart, int completionEnd, int relevance) {
-				requestor.acceptField(declaringTypePackageName, declaringTypeName, fieldName, typePackageName, typeName, completionName, modifiers, completionStart, completionEnd);
-			}
-			@Override
-			public void acceptInterface(char[] packageName,char[] interfaceName,char[] completionName,int modifiers,int completionStart,int completionEnd, int relevance) {
-				requestor.acceptInterface(packageName, interfaceName, completionName, modifiers, completionStart, completionEnd);
-			}
-			@Override
-			public void acceptKeyword(char[] keywordName,int completionStart,int completionEnd, int relevance){
-				requestor.acceptKeyword(keywordName, completionStart, completionEnd);
-			}
-			@Override
-			public void acceptLabel(char[] labelName,int completionStart,int completionEnd, int relevance){
-				requestor.acceptLabel(labelName, completionStart, completionEnd);
-			}
-			@Override
-			public void acceptLocalVariable(char[] localVarName,char[] typePackageName,char[] typeName,int modifiers,int completionStart,int completionEnd, int relevance){
-				// ignore
-			}
-			@Override
-			public void acceptMethod(char[] declaringTypePackageName,char[] declaringTypeName,char[] selector,char[][] parameterPackageNames,char[][] parameterTypeNames,char[][] parameterNames,char[] returnTypePackageName,char[] returnTypeName,char[] completionName,int modifiers,int completionStart,int completionEnd, int relevance){
-				// skip parameter names
-				requestor.acceptMethod(declaringTypePackageName, declaringTypeName, selector, parameterPackageNames, parameterTypeNames, returnTypePackageName, returnTypeName, completionName, modifiers, completionStart, completionEnd);
-			}
-			@Override
-			public void acceptMethodDeclaration(char[] declaringTypePackageName,char[] declaringTypeName,char[] selector,char[][] parameterPackageNames,char[][] parameterTypeNames,char[][] parameterNames,char[] returnTypePackageName,char[] returnTypeName,char[] completionName,int modifiers,int completionStart,int completionEnd, int relevance){
-				// ignore
-			}
-			@Override
-			public void acceptModifier(char[] modifierName,int completionStart,int completionEnd, int relevance){
-				requestor.acceptModifier(modifierName, completionStart, completionEnd);
-			}
-			@Override
-			public void acceptPackage(char[] packageName,char[] completionName,int completionStart,int completionEnd, int relevance){
-				requestor.acceptPackage(packageName, completionName, completionStart, completionEnd);
-			}
-			@Override
-			public void acceptType(char[] packageName,char[] typeName,char[] completionName,int completionStart,int completionEnd, int relevance){
-				requestor.acceptType(packageName, typeName, completionName, completionStart, completionEnd);
-			}
-			@Override
-			public void acceptVariableName(char[] typePackageName,char[] typeName,char[] varName,char[] completionName,int completionStart,int completionEnd, int relevance){
-				// ignore
-			}
-		});
-}
-
-@Override
-public void codeComplete(int offset, CompletionRequestor requestor) throws JavaModelException {
-	codeComplete(offset, requestor, DefaultWorkingCopyOwner.PRIMARY);
-}
-
-@Override
-public void codeComplete(int offset, CompletionRequestor requestor, IProgressMonitor monitor) throws JavaModelException {
-	codeComplete(offset, requestor, DefaultWorkingCopyOwner.PRIMARY, monitor);
-}
-
-@Override
-public void codeComplete(int offset, CompletionRequestor requestor, WorkingCopyOwner workingCopyOwner) throws JavaModelException {
-	codeComplete(offset, requestor, workingCopyOwner, null);
-}
-
-@Override
-public void codeComplete(int offset, CompletionRequestor requestor, WorkingCopyOwner workingCopyOwner, IProgressMonitor monitor) throws JavaModelException {
-	codeComplete(
-			this,
-			isWorkingCopy() ? (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.ICompilationUnit) getOriginalElement() : this,
-			offset,
-			requestor,
-			workingCopyOwner,
-			this,
-			monitor);
-}
-
-/**
- * @see ICodeAssist#codeSelect(int, int)
- */
-@Override
-public IJavaElement[] codeSelect(int offset, int length) throws JavaModelException {
-	return codeSelect(offset, length, DefaultWorkingCopyOwner.PRIMARY);
-}
-/**
- * @see ICodeAssist#codeSelect(int, int, WorkingCopyOwner)
- */
-@Override
-public IJavaElement[] codeSelect(int offset, int length, WorkingCopyOwner workingCopyOwner) throws JavaModelException {
-	if (DOM_BASED_OPERATIONS) {
-		return new DOMCodeSelector(this, workingCopyOwner).codeSelect(offset, length);
-	} else {
-		return super.codeSelect(this, offset, length, workingCopyOwner);
-	}
-}
-
-public com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.dom.CompilationUnit getOrBuildAST(WorkingCopyOwner workingCopyOwner, int focalPosition) throws JavaModelException {
-	if (this.ast != null) {
-		return this.ast;
-	}
-	Map<String, String> options = getOptions(true);
-	ASTParser parser = ASTParser.newParser(new AST(options).apiLevel()); // go through AST constructor to convert options to apiLevel
-	// but we should probably instead just use the latest Java version
-	// supported by the compiler
-	parser.setWorkingCopyOwner(workingCopyOwner);
-	parser.setSource(this);
-	// greedily enable everything assuming the AST will be used extensively for edition
-	parser.setResolveBindings(true);
-	parser.setStatementsRecovery(true);
-	parser.setBindingsRecovery(true);
-	parser.setCompilerOptions(options);
-	parser.setFocalPosition(focalPosition);
-	if (parser.createAST(null) instanceof org.eclipse.jdt.core.dom.CompilationUnit newAST) {
-		if (focalPosition >= 0) {
-			// do not store
-			return newAST;
-		}
-		this.ast = newAST;
-	}
-	return this.ast;
-}
-
-@Override
+    @Override
 public void bufferChanged(BufferChangedEvent event) {
-	this.ast = null;
-	super.bufferChanged(event);
-}
-
-/**
- * @see IWorkingCopy#commit(boolean, IProgressMonitor)
- * @deprecated
- */
-@Override
-public void commit(boolean force, IProgressMonitor monitor) throws JavaModelException {
-	commitWorkingCopy(force, monitor);
-}
-/**
- * @see ICompilationUnit#commitWorkingCopy(boolean, IProgressMonitor)
- */
-@Override
-public void commitWorkingCopy(boolean force, IProgressMonitor monitor) throws JavaModelException {
-	CommitWorkingCopyOperation op= new CommitWorkingCopyOperation(this, force);
-	op.runOperation(monitor);
-}
-/**
- * @see ISourceManipulation#copy(IJavaElement, IJavaElement, String, boolean, IProgressMonitor)
- */
-@Override
-public void copy(IJavaElement container, IJavaElement sibling, String rename, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	if (container == null) {
-		throw new IllegalArgumentException(Messages.operation_nullContainer);
-	}
-	IJavaElement[] elements = new IJavaElement[] {this};
-	IJavaElement[] containers = new IJavaElement[] {container};
-	String[] renamings = null;
-	if (rename != null) {
-		renamings = new String[] {rename};
-	}
-	getJavaModel().copy(elements, containers, null, renamings, force, monitor);
+        super.bufferChanged(event);
 }
 /**
  * Returns a new element info for this element.
@@ -580,91 +166,7 @@ public void copy(IJavaElement container, IJavaElement sibling, String rename, bo
 protected CompilationUnitElementInfo createElementInfo() {
 	return new CompilationUnitElementInfo();
 }
-/**
- * @see ICompilationUnit#createImport(String, IJavaElement, IProgressMonitor)
- */
-@Override
-public IImportDeclaration createImport(String importName, IJavaElement sibling, IProgressMonitor monitor) throws JavaModelException {
-	return createImport(importName, sibling, Flags.AccDefault, monitor);
-}
 
-/**
- * @see ICompilationUnit#createImport(String, IJavaElement, int, IProgressMonitor)
- * @since 3.0
- */
-@Override
-public IImportDeclaration createImport(String importName, IJavaElement sibling, int flags, IProgressMonitor monitor) throws JavaModelException {
-	CreateImportOperation op = new CreateImportOperation(importName, this, flags);
-	if (sibling != null) {
-		op.createBefore(sibling);
-	}
-	op.runOperation(monitor);
-	return getImport(importName);
-}
-
-/**
- * @see ICompilationUnit#createPackageDeclaration(String, IProgressMonitor)
- */
-@Override
-public IPackageDeclaration createPackageDeclaration(String pkg, IProgressMonitor monitor) throws JavaModelException {
-
-	CreatePackageDeclarationOperation op= new CreatePackageDeclarationOperation(pkg, this);
-	op.runOperation(monitor);
-	return getPackageDeclaration(pkg);
-}
-/**
- * @see ICompilationUnit#createType(String, IJavaElement, boolean, IProgressMonitor)
- */
-@Override
-public IType createType(String content, IJavaElement sibling, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	if (!exists()) {
-		//autogenerate this compilation unit
-		IPackageFragment pkg = (IPackageFragment) getParent();
-		String source = ""; //$NON-NLS-1$
-		if (!pkg.isDefaultPackage()) {
-			//not the default package...add the package declaration
-			String lineSeparator = Util.getLineSeparator(null/*no existing source*/, getJavaProject());
-			source = "package " + pkg.getElementName() + ";"  + lineSeparator + lineSeparator; //$NON-NLS-1$ //$NON-NLS-2$
-		}
-		CreateCompilationUnitOperation op = new CreateCompilationUnitOperation(pkg, this.name, source, force);
-		op.runOperation(monitor);
-	}
-	CreateTypeOperation op = new CreateTypeOperation(this, content, force);
-	if (sibling != null) {
-		op.createBefore(sibling);
-	}
-	op.runOperation(monitor);
-	return (IType) op.getResultElements()[0];
-}
-/**
- * @see ISourceManipulation#delete(boolean, IProgressMonitor)
- */
-@Override
-public void delete(boolean force, IProgressMonitor monitor) throws JavaModelException {
-	IJavaElement[] elements= new IJavaElement[] {this};
-	getJavaModel().delete(elements, force, monitor);
-}
-/**
- * @see IWorkingCopy#destroy()
- * @deprecated
- */
-@Override
-public void destroy() {
-	try {
-		discardWorkingCopy();
-	} catch (JavaModelException e) {
-		if (JavaModelManager.VERBOSE) {
-			JavaModelManager.trace("", e); //$NON-NLS-1$
-		}
-	}
-}
-
-@Override
-public void discardWorkingCopy() throws JavaModelException {
-	// discard working copy and its children
-	DiscardWorkingCopyOperation op = new DiscardWorkingCopyOperation(this);
-	op.runOperation(null);
-}
 /**
  * Returns true if this handle represents the same Java element
  * as the given handle.
@@ -1240,7 +742,7 @@ protected boolean isSourceElement() {
 	return true;
 }
 protected IStatus validateCompilationUnit(IResource resource) {
-	IPackageFragmentRoot root = getPackageFragmentRoot();
+	PackageFragmentRoot root = getPackageFragmentRoot();
 	// root never null as validation is not done for working copies
 	try {
 		if (root.getKind() != IPackageFragmentRoot.K_SOURCE)
@@ -1249,15 +751,14 @@ protected IStatus validateCompilationUnit(IResource resource) {
 		return e.getJavaModelStatus();
 	}
 	if (resource != null) {
-		char[][] inclusionPatterns = ((PackageFragmentRoot)root).fullInclusionPatternChars();
-		char[][] exclusionPatterns = ((PackageFragmentRoot)root).fullExclusionPatternChars();
+		char[][] inclusionPatterns = root.fullInclusionPatternChars();
+		char[][] exclusionPatterns = root.fullExclusionPatternChars();
 		if (Util.isExcluded(resource, inclusionPatterns, exclusionPatterns))
 			return new JavaModelStatus(IJavaModelStatusConstants.ELEMENT_NOT_ON_CLASSPATH, this);
 		if (!resource.isAccessible())
 			return new JavaModelStatus(IJavaModelStatusConstants.ELEMENT_DOES_NOT_EXIST, this);
 	}
-	IJavaProject project = getJavaProject();
-	return JavaConventions.validateCompilationUnitName(getElementName(),project.getOption(JavaCore.COMPILER_SOURCE, true), project.getOption(JavaCore.COMPILER_COMPLIANCE, true));
+    return JavaConventions.validateCompilationUnitName(getElementName(), "1.8", "1.8");
 }
 
 @Override
@@ -1297,23 +798,6 @@ public com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 	} finally {
 		JavaModelManager.getJavaModelManager().abortOnMissingSource.remove();
 	}
-}
-/**
- * @see ISourceManipulation#move(IJavaElement, IJavaElement, String, boolean, IProgressMonitor)
- */
-@Override
-public void move(IJavaElement container, IJavaElement sibling, String rename, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	if (container == null) {
-		throw new IllegalArgumentException(Messages.operation_nullContainer);
-	}
-	IJavaElement[] elements= new IJavaElement[] {this};
-	IJavaElement[] containers= new IJavaElement[] {container};
-
-	String[] renamings= null;
-	if (rename != null) {
-		renamings= new String[] {rename};
-	}
-	getJavaModel().move(elements, containers, null, renamings, force, monitor);
 }
 
 @Override
@@ -1378,129 +862,13 @@ protected IBuffer openBuffer(IProgressMonitor pm, IElementInfo info) throws Java
 	}
 	return buffer;
 }
-@Override
-protected void openAncestors(Map<IJavaElement, IElementInfo> newElements, IProgressMonitor monitor) throws JavaModelException {
-	if (!isWorkingCopy()) {
-		super.openAncestors(newElements, monitor);
-	}
-	// else don't open ancestors for a working copy to speed up the first becomeWorkingCopy
-	// (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=89411)
-}
 /*
  * @see #cloneCachingContents()
  */
 public CompilationUnit originalFromClone() {
 	return this;
 }
-/**
- * @see ICompilationUnit#reconcile()
- * @deprecated
- */
-@Override
-public IMarker[] reconcile() throws JavaModelException {
-	reconcile(NO_AST, false/*don't force problem detection*/, false, null/*use primary owner*/, null/*no progress monitor*/);
-	return null;
-}
-/**
- * @see ICompilationUnit#reconcile(int, boolean, WorkingCopyOwner, IProgressMonitor)
- */
-@Override
-public void reconcile(boolean forceProblemDetection, IProgressMonitor monitor) throws JavaModelException {
-	reconcile(NO_AST, forceProblemDetection? ICompilationUnit.FORCE_PROBLEM_DETECTION : 0, null/*use primary owner*/, monitor);
-}
 
-/**
- * @see ICompilationUnit#reconcile(int, boolean, WorkingCopyOwner, IProgressMonitor)
- * @since 3.0
- */
-@Override
-public com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.dom.CompilationUnit reconcile(
-		int astLevel,
-		boolean forceProblemDetection,
-		WorkingCopyOwner workingCopyOwner,
-		IProgressMonitor monitor) throws JavaModelException {
-	return reconcile(astLevel, forceProblemDetection? ICompilationUnit.FORCE_PROBLEM_DETECTION : 0, workingCopyOwner, monitor);
-}
-
-/**
- * @see ICompilationUnit#reconcile(int, boolean, WorkingCopyOwner, IProgressMonitor)
- * @since 3.0
- */
-@Override
-public com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.dom.CompilationUnit reconcile(
-		int astLevel,
-		boolean forceProblemDetection,
-		boolean enableStatementsRecovery,
-		WorkingCopyOwner workingCopyOwner,
-		IProgressMonitor monitor) throws JavaModelException {
-	int flags = 0;
-	if (forceProblemDetection) flags |= ICompilationUnit.FORCE_PROBLEM_DETECTION;
-	if (enableStatementsRecovery) flags |= ICompilationUnit.ENABLE_STATEMENTS_RECOVERY;
-	return reconcile(astLevel, flags, workingCopyOwner, monitor);
-}
-
-@Override
-public com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.dom.CompilationUnit reconcile(
-		int astLevel,
-		int reconcileFlags,
-		WorkingCopyOwner workingCopyOwner,
-		IProgressMonitor monitor)
-		throws JavaModelException {
-
-	if (!isWorkingCopy()) return null; // Reconciling is not supported on non working copies
-	if (workingCopyOwner == null) workingCopyOwner = DefaultWorkingCopyOwner.PRIMARY;
-
-	ReconcileWorkingCopyOperation op = new ReconcileWorkingCopyOperation(this, astLevel, reconcileFlags, workingCopyOwner);
-	JavaModelManager manager = JavaModelManager.getJavaModelManager();
-	try {
-		manager.cacheZipFiles(this); // cache zip files for performance (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=134172)
-		op.runOperation(monitor);
-	} finally {
-		manager.flushZipFiles(this);
-	}
-	return op.ast;
-}
-
-/**
- * @see ISourceManipulation#rename(String, boolean, IProgressMonitor)
- */
-@Override
-public void rename(String newName, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	if (newName == null) {
-		throw new IllegalArgumentException(Messages.operation_nullName);
-	}
-	IJavaElement[] elements= new IJavaElement[] {this};
-	IJavaElement[] dests= new IJavaElement[] {getParent()};
-	String[] renamings= new String[] {newName};
-	getJavaModel().rename(elements, dests, renamings, force, monitor);
-}
-
-@Override
-public void restore() throws JavaModelException {
-
-	if (!isWorkingCopy()) return;
-
-	CompilationUnit original = (CompilationUnit) getOriginalElement();
-	IBuffer buffer = getBuffer();
-	if (buffer == null) return;
-	buffer.setContents(original.getContents());
-	updateTimeStamp(original);
-	makeConsistent(null);
-}
-/**
- * @see IOpenable
- */
-@Override
-public void save(IProgressMonitor pm, boolean force) throws JavaModelException {
-	if (isWorkingCopy()) {
-		// no need to save the buffer for a working copy (this is a noop)
-		reconcile();   // not simply makeConsistent, also computes fine-grain deltas
-								// in case the working copy is being reconciled already (if not it would miss
-								// one iteration of deltas).
-	} else {
-		super.save(pm, force);
-	}
-}
 /**
  * Debugging purposes
  */
@@ -1523,25 +891,8 @@ protected void toStringInfo(int tab, StringBuilder buffer, Object info, boolean 
 		}
 	}
 }
-/*
- * Assume that this is a working copy
- */
-protected void updateTimeStamp(CompilationUnit original) throws JavaModelException {
-	long timeStamp =
-		original.getResource().getModificationStamp();
-	if (timeStamp == IResource.NULL_STAMP) {
-		throw new JavaModelException(
-			new JavaModelStatus(IJavaModelStatusConstants.INVALID_RESOURCE));
-	}
-	((CompilationUnitElementInfo) getElementInfo()).timestamp = timeStamp;
-}
 
-@Override
-public void updateTimeStamp() throws JavaModelException {
-	updateTimeStamp(this);
-}
-
-@Override
+    @Override
 protected IStatus validateExistence(IResource underlyingResource) {
 	// check if this compilation unit can be opened
 	if (!isWorkingCopy()) { // no check is done on root kind or exclusion pattern for working copies

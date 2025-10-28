@@ -15,8 +15,8 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.runtime;
 
-import java.util.ArrayList;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.*;
+import java.util.ArrayList;
 
 /**
  * NOT API!!! This log infrastructure was split from the InternalPlatform.
@@ -25,62 +25,62 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public final class RuntimeLog {
 
-	private static final ArrayList<ILogListener> logListeners = new ArrayList<>(5);
-
-	/**
-	 * Keep the messages until the first log listener is registered. Once first log
-	 * listeners is registred, it is going to receive all status messages
-	 * accumulated during the period when no log listener was available.
-	 */
-	private static final ArrayList<IStatus> queuedMessages = new ArrayList<>(5);
+    private static final ArrayList<ILogListener> logListeners = new ArrayList<>(5);
 
     /**
-	 * See org.eclipse.core.runtime.Platform#addLogListener(ILogListener)
-	 */
-	public static void addLogListener(ILogListener listener) {
-		synchronized (logListeners) {
-			boolean firstListener = isEmpty();
-			// replace if already exists (Set behaviour but we use an array
-			// since we want to retain order)
-			logListeners.remove(listener);
-			logListeners.add(listener);
-			if (firstListener) {
-				emptyQueuedMessages();
-			}
-		}
-	}
+     * Keep the messages until the first log listener is registered. Once first log
+     * listeners is registred, it is going to receive all status messages
+     * accumulated during the period when no log listener was available.
+     */
+    private static final ArrayList<IStatus> queuedMessages = new ArrayList<>(5);
 
-	/**
-	 * See org.eclipse.core.runtime.Platform#removeLogListener(ILogListener)
-	 */
-	public static void removeLogListener(ILogListener listener) {
-		synchronized (logListeners) {
-			logListeners.remove(listener);
-		}
-	}
+    /**
+     * See org.eclipse.core.runtime.Platform#addLogListener(ILogListener)
+     */
+    public static void addLogListener(ILogListener listener) {
+        synchronized (logListeners) {
+            boolean firstListener = isEmpty();
+            // replace if already exists (Set behaviour but we use an array
+            // since we want to retain order)
+            logListeners.remove(listener);
+            logListeners.add(listener);
+            if (firstListener) {
+                emptyQueuedMessages();
+            }
+        }
+    }
 
-	/**
-	 * Checks if the given listener is present
-	 */
-	public static boolean contains(ILogListener listener) {
-		synchronized (logListeners) {
-			return logListeners.contains(listener);
-		}
-	}
+    /**
+     * See org.eclipse.core.runtime.Platform#removeLogListener(ILogListener)
+     */
+    public static void removeLogListener(ILogListener listener) {
+        synchronized (logListeners) {
+            logListeners.remove(listener);
+        }
+    }
 
-	/**
-	 * Notifies all listeners of the platform log.
-	 */
-	public static void log(final IStatus status) {
-		// create array to avoid concurrent access
-		ILogListener[] listeners;
+    /**
+     * Checks if the given listener is present
+     */
+    public static boolean contains(ILogListener listener) {
+        synchronized (logListeners) {
+            return logListeners.contains(listener);
+        }
+    }
+
+    /**
+     * Notifies all listeners of the platform log.
+     */
+    public static void log(final IStatus status) {
+        // create array to avoid concurrent access
+        ILogListener[] listeners;
         synchronized (logListeners) {
             if (logListeners.isEmpty()) {
                 queuedMessages.add(status);
                 return;
             }
             listeners = logListeners.toArray(new ILogListener[0]);
-		}
+        }
         for (ILogListener listener : listeners) {
             try {
                 listener.logging(status, IRuntimeConstants.PI_RUNTIME);
@@ -90,62 +90,62 @@ public final class RuntimeLog {
         }
     }
 
-	private static void handleException(Throwable e) {
-		if (!(e instanceof OperationCanceledException)) {
-			// Got a error while logging. Don't try to log again, just put it into stderr
-			e.printStackTrace();
-		}
-	}
+    private static void handleException(Throwable e) {
+        if (!(e instanceof OperationCanceledException)) {
+            // Got a error while logging. Don't try to log again, just put it into stderr
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * Helps determine if the logging mechanism is ready for logging.
-	 *
-	 * @return true the logging mechanism is ready for logging.
-	 */
-	public static boolean isEmpty() {
-		synchronized (logListeners) {
-			return (logListeners.isEmpty());
-		}
-	}
+    /**
+     * Helps determine if the logging mechanism is ready for logging.
+     *
+     * @return true the logging mechanism is ready for logging.
+     */
+    public static boolean isEmpty() {
+        synchronized (logListeners) {
+            return (logListeners.isEmpty());
+        }
+    }
 
-	/**
-	 * Determines if there are any listeners
-	 *
-	 * @return true if there is at least one listener.
-	 */
-	public static boolean hasListeners() {
-		synchronized (logListeners) {
-			return (!logListeners.isEmpty());
-		}
-	}
+    /**
+     * Determines if there are any listeners
+     *
+     * @return true if there is at least one listener.
+     */
+    public static boolean hasListeners() {
+        synchronized (logListeners) {
+            return (!logListeners.isEmpty());
+        }
+    }
 
-	private static void emptyQueuedMessages() {
-		IStatus[] queued;
-		synchronized (logListeners) {
-			if (queuedMessages.isEmpty()) {
-				return;
-			}
-			queued = queuedMessages.toArray(new IStatus[0]);
-			queuedMessages.clear();
-		}
-		for (IStatus s : queued) {
-			log(s);
-		}
-	}
+    private static void emptyQueuedMessages() {
+        IStatus[] queued;
+        synchronized (logListeners) {
+            if (queuedMessages.isEmpty()) {
+                return;
+            }
+            queued = queuedMessages.toArray(new IStatus[0]);
+            queuedMessages.clear();
+        }
+        for (IStatus s : queued) {
+            log(s);
+        }
+    }
 
-	static void logToListeners(IStatus status) {
-		// create array to avoid concurrent access
-		ILogListener[] listeners;
-		synchronized (logListeners) {
-			listeners = logListeners.toArray(new ILogListener[0]);
-		}
-		for (ILogListener listener : listeners) {
-			try {
-				listener.logging(status, IRuntimeConstants.PI_RUNTIME);
-			} catch (Exception | LinkageError e) {
-				handleException(e);
-			}
-		}
-	}
+    static void logToListeners(IStatus status) {
+        // create array to avoid concurrent access
+        ILogListener[] listeners;
+        synchronized (logListeners) {
+            listeners = logListeners.toArray(new ILogListener[0]);
+        }
+        for (ILogListener listener : listeners) {
+            try {
+                listener.logging(status, IRuntimeConstants.PI_RUNTIME);
+            } catch (Exception | LinkageError e) {
+                handleException(e);
+            }
+        }
+    }
 
 }

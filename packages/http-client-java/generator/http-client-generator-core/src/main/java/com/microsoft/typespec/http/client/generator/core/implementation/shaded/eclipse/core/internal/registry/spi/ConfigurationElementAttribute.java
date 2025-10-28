@@ -34,48 +34,48 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public final class ConfigurationElementAttribute {
 
-	/**
-	 * Attribute name.
-	 *
-	 * @see IConfigurationElement#getAttributeNames()
-	 */
-	private final String name;
+    /**
+     * Attribute name.
+     *
+     * @see IConfigurationElement#getAttributeNames()
+     */
+    private final String name;
 
-	/**
-	 * Attribute value.
-	 *
-	 * @see IConfigurationElement#getAttributeAsIs(String)
-	 */
-	private final String value;
+    /**
+     * Attribute value.
+     *
+     * @see IConfigurationElement#getAttributeAsIs(String)
+     */
+    private final String value;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param name  attribute name
-	 * @param value attribute value
-	 */
-	public ConfigurationElementAttribute(String name, String value) {
-		this.name = name;
-		this.value = value;
-	}
+    /**
+     * Constructor.
+     *
+     * @param name attribute name
+     * @param value attribute value
+     */
+    public ConfigurationElementAttribute(String name, String value) {
+        this.name = name;
+        this.value = value;
+    }
 
-	/**
-	 * Returns attribute name.
-	 *
-	 * @return attribute name
-	 * @see IConfigurationElement#getAttributeNames()
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * Returns attribute name.
+     *
+     * @return attribute name
+     * @see IConfigurationElement#getAttributeNames()
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * Returns value of the attribute.
-	 *
-	 * @return attribute value
-	 * @see IConfigurationElement#getAttributeAsIs(String)
-	 */
-	public String getValue() {
-		return value;
-	}
+    /**
+     * Returns value of the attribute.
+     *
+     * @return attribute value
+     * @see IConfigurationElement#getAttributeAsIs(String)
+     */
+    public String getValue() {
+        return value;
+    }
 }

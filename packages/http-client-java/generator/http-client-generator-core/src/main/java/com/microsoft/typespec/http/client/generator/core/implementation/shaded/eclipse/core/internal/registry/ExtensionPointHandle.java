@@ -24,9 +24,9 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public class ExtensionPointHandle extends BaseExtensionPointHandle {
 
-	static final ExtensionPointHandle[] EMPTY_ARRAY = new ExtensionPointHandle[0];
+    static final ExtensionPointHandle[] EMPTY_ARRAY = new ExtensionPointHandle[0];
 
-	public ExtensionPointHandle(IObjectManager objectManager, int id) {
-		super(objectManager, id);
-	}
+    public ExtensionPointHandle(IObjectManager objectManager, int id) {
+        super(objectManager, id);
+    }
 }

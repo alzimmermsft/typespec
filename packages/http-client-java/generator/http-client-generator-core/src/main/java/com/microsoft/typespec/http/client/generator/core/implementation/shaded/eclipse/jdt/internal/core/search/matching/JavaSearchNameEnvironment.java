@@ -19,7 +19,6 @@ import static com.microsoft.typespec.http.client.generator.core.implementation.s
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -34,14 +33,12 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IPackageDeclaration;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IPackageFragment;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IPackageFragmentRoot;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaCore;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CharOperation;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.ICompilationUnit;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IModule;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IModuleAwareNameEnvironment;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.INameEnvironment;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.SuffixConstants;
@@ -161,29 +158,7 @@ public void cleanup() {
 	this.packageNameToClassPathLocations.clear();
 }
 
-protected /* visible for testing only */ void addProjectClassPath(JavaProject javaProject) {
-	addProjectClassPath(javaProject, false);
-}
-
-void addProjectClassPath(JavaProject javaProject, boolean onlyExported) {
-	long start = 0;
-	if (NameLookup.VERBOSE) {
-		trace(" EXTENDING JavaSearchNameEnvironment");  //$NON-NLS-1$
-		trace(" -> project: " + javaProject);  //$NON-NLS-1$
-		start = System.currentTimeMillis();
-	}
-
-	LinkedHashSet<ClasspathLocation> locations = computeClasspathLocations(javaProject, onlyExported);
-	if (locations != null) this.locationSet.addAll(locations);
-
-    if (NameLookup.VERBOSE) {
-		trace(" -> pkg roots size: " + (this.locationSet == null ? 0 : this.locationSet.size()));  //$NON-NLS-1$
-		trace(" -> pkgs size: " + this.packageNameToClassPathLocations.size());  //$NON-NLS-1$
-        trace(" -> spent: " + (System.currentTimeMillis() - start) + "ms");  //$NON-NLS-1$ //$NON-NLS-2$
-    }
-}
-
-private LinkedHashSet<ClasspathLocation> computeClasspathLocations(JavaProject javaProject) {
+    private LinkedHashSet<ClasspathLocation> computeClasspathLocations(JavaProject javaProject) {
 	return computeClasspathLocations(javaProject, false);
 }
 
@@ -276,8 +251,7 @@ private ClasspathLocation mapToClassPathLocation(JavaModelManager manager, Packa
 	try {
 		if (root.isArchive()) {
 			ClasspathEntry rawClasspathEntry = (ClasspathEntry) root.getRawClasspathEntry();
-			IJavaProject project = (IJavaProject) root.getParent();
-			String compliance = project.getOption(JavaCore.COMPILER_COMPLIANCE, true);
+            String compliance = "1.8";
 			cp = (root instanceof JrtPackageFragmentRoot) ?
 					ClasspathLocation.forJrtSystem(path.toOSString(), rawClasspathEntry.getAccessRuleSet(), null, compliance) :
 					ClasspathLocation.forLibrary(manager.getZipFile(path), rawClasspathEntry.getAccessRuleSet(), rawClasspathEntry.isModular(), compliance) ;
@@ -575,20 +549,11 @@ public char[][] getAllAutomaticModules() {
 	return set.toArray(new char[set.size()][]);
 }
 
-public static INameEnvironment createWithReferencedProjects(IJavaProject javaProject, List<IJavaProject> referencedProjects, com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ICompilationUnit[] copies) {
-	JavaSearchNameEnvironment result = new JavaSearchNameEnvironment(javaProject, copies);
-
-	for (IJavaProject referencedProject : referencedProjects) {
-		result.addProjectClassPath((JavaProject)referencedProject, true);
-	}
-	return result;
-}
-
-private static boolean isComplianceJava9OrHigher(IJavaProject javaProject) {
+    private static boolean isComplianceJava9OrHigher(IJavaProject javaProject) {
 	if (javaProject == null) {
 		return false;
 	}
-	return CompilerOptions.versionToJdkLevel(javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true)) >= ClassFileConstants.JDK9;
+	return CompilerOptions.versionToJdkLevel("1.8") >= ClassFileConstants.JDK9;
 }
 
 /**

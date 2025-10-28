@@ -17,9 +17,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.zip.ZipFile;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IProject;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IWorkspaceRoot;
@@ -29,7 +26,20 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IStatus;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Path;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Status;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.*;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IBuffer;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IClassFile;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IClasspathEntry;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ICompilationUnit;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaElement;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaModelStatusConstants;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IMember;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IOrdinaryClassFile;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IPackageFragmentRoot;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IType;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ITypeRoot;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaCore;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.WorkingCopyOwner;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.classfmt.ClassFileReader;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.classfmt.ClassFormatException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.classfmt.ExternalAnnotationDecorator;
@@ -44,6 +54,9 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.DeduplicationUtil;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.MementoTokenizer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Util;
+
+import java.io.IOException;
+import java.util.zip.ZipFile;
 
 /**
  * @see IClassFile
@@ -65,65 +78,7 @@ protected ClassFile(PackageFragment parent, String nameWithoutExtension) {
 	this.typeName = lastDollar > -1 ? DeduplicationUtil.intern(Util.localTypeName(this.name, lastDollar, this.name.length())) : this.name;
 }
 
-/**
- * Creates the children elements for this class file adding the resulting
- * new handles and info objects to the newElements table. Returns true
- * if successful, or false if an error is encountered parsing the class file.
- *
- * @see Openable
- * @see Signature
- */
-@Override
-protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map<IJavaElement, IElementInfo> newElements, IResource underlyingResource) throws JavaModelException {
-	IBinaryType typeInfo = getBinaryTypeInfo();
-	if (typeInfo == null) {
-		// The structure of a class file is unknown if a class file format errors occurred
-		//during the creation of the diet class file representative of this ClassFile.
-		info.setChildren(JavaElement.NO_ELEMENTS);
-		return false;
-	}
-
-	// Make the type
-	IType type = getType();
-	info.setChildren(new IJavaElement[] {type});
-	newElements.put(type, typeInfo);
-	// Read children
-	((ClassFileInfo) info).readBinaryChildren(this, newElements, typeInfo);
-	return true;
-}
-
-@Override
-public void codeComplete(int offset, CompletionRequestor requestor, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaModelException {
-	String source = getSource();
-	if (source != null) {
-		BinaryType type = (BinaryType) getType();
-		BasicCompilationUnit cu =
-			new BasicCompilationUnit(
-				getSource().toCharArray(),
-				null,
-				type.sourceFileName(type.getElementInfo()),
-				getJavaProject()); // use project to retrieve corresponding .java IFile
-		codeComplete(cu, cu, offset, requestor, owner, null/*extended context isn't computed*/, monitor);
-	}
-}
-
-/**
- * @see ICodeAssist#codeSelect(int, int, WorkingCopyOwner)
- */
-@Override
-public IJavaElement[] codeSelect(int offset, int length, WorkingCopyOwner owner) throws JavaModelException {
-	IBuffer buffer = getBuffer();
-	char[] contents;
-	if (buffer != null && (contents = buffer.getCharacters()) != null) {
-	    BinaryType type = (BinaryType) getType();
-		BasicCompilationUnit cu = new BasicCompilationUnit(contents, null, type.sourceFileName(type.getElementInfo()), this);
-		return super.codeSelect(cu, offset, length, owner);
-	} else {
-		//has no associated souce
-		return new IJavaElement[] {};
-	}
-}
-public boolean existsUsingJarTypeCache() {
+    public boolean existsUsingJarTypeCache() {
 	if (getPackageFragmentRoot().isArchive()) {
 		JavaModelManager manager = JavaModelManager.getJavaModelManager();
 		IType type = getType();
@@ -292,14 +247,13 @@ private IBinaryType setupExternalAnnotationProvider(IProject project, final IPat
 	}
 	ZipFile annotationZip = null;
 	try {
-		annotationZip = ExternalAnnotationDecorator.getAnnotationZipFile(resolvedPath, new ExternalAnnotationDecorator.ZipFileProducer() {
-			@Override public ZipFile produce() throws IOException {
-				try {
-					return JavaModelManager.getJavaModelManager().getZipFile(externalAnnotationPath); // use (absolute, but) unresolved path here
-				} catch (CoreException e) {
-					throw new IOException("Failed to read annotation file for "+typeName+" from "+externalAnnotationPath.toString(), e); //$NON-NLS-1$ //$NON-NLS-2$
-				}
-			}});
+		annotationZip = ExternalAnnotationDecorator.getAnnotationZipFile(resolvedPath, () -> {
+            try {
+                return JavaModelManager.getJavaModelManager().getZipFile(externalAnnotationPath); // use (absolute, but) unresolved path here
+            } catch (CoreException e) {
+                throw new IOException("Failed to read annotation file for "+typeName+" from "+externalAnnotationPath.toString(), e); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        });
 
 		ExternalAnnotationProvider annotationProvider = ExternalAnnotationDecorator
 				.externalAnnotationProvider(resolvedPath, typeName, annotationZip);
@@ -382,20 +336,8 @@ public IJavaElement getHandleFromMemento(String token, MementoTokenizer memento,
 protected char getHandleMementoDelimiter() {
 	return JavaElement.JEM_CLASSFILE;
 }
-/*
- * Returns the name of the toplevel type of this class file.
- */
-public String getTopLevelTypeName() {
-    String topLevelTypeName = getElementName();
-    int firstDollar = topLevelTypeName.indexOf('$');
-    if (firstDollar != -1) {
-        topLevelTypeName = topLevelTypeName.substring(0, firstDollar);
-    } else {
-        topLevelTypeName = topLevelTypeName.substring(0, topLevelTypeName.length()-SUFFIX_CLASS.length);
-    }
-    return topLevelTypeName;
-}
-/**
+
+    /**
  * @see IClassFile
  */
 @Override

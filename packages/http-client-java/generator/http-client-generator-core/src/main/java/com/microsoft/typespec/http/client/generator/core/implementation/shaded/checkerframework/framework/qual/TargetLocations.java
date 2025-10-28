@@ -19,7 +19,8 @@ import java.lang.annotation.Target;
  *
  * <p>This enables a type system designer to permit a qualifier to be written only in certain
  * locations. For example, some type systems' top and bottom qualifier (such as {@link
- * com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.KeyForBottom}) should only be written on an explicit
+ * com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.KeyForBottom})
+ * should only be written on an explicit
  * wildcard upper or lower bound. This meta-annotation is a declarative, coarse-grained approach to
  * enable that. For finer-grained control, override {@code visit*} methods that visit trees in
  * BaseTypeVisitor.
@@ -32,6 +33,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface TargetLocations {
-  /** Type uses at which the qualifier is permitted to be written in source code. */
-  TypeUseLocation[] value();
+    /** Type uses at which the qualifier is permitted to be written in source code. */
+    TypeUseLocation[] value();
 }

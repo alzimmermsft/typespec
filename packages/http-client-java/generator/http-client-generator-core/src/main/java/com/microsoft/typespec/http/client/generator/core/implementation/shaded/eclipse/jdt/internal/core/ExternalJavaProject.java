@@ -47,14 +47,6 @@ public class ExternalJavaProject extends JavaProject {
 		return false;
 	}
 
-	@Override
-	public String getOption(String optionName, boolean inheritJavaCoreOptions) {
-		if (JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE.equals(optionName)
-				|| JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE.equals(optionName))
-			return JavaCore.IGNORE;
-		return super.getOption(optionName, inheritJavaCoreOptions);
-	}
-
     @Override
 	protected IStatus validateExistence(IResource underlyingResource) {
 		// allow opening of external project

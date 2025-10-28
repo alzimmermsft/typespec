@@ -14,11 +14,13 @@ import java.lang.annotation.Target;
  * href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Arrays.html#binarySearch(java.lang.Object%5B%5D,int,int,java.lang.Object)">
  * {@code Arrays.binarySearch}</a> method is declared as
  *
- * <pre>{@code
+ * <pre>
+ * {@code
  * class Arrays {
  *   int binarySearch(Object[] a, @IndexFor("#1") int fromIndex, @IndexOrHigh("#1") int toIndex, Object key)
  * }
- * }</pre>
+ * }
+ * </pre>
  *
  * <p>Writing {@code @IndexOrHigh("arr")} is equivalent to writing {@link NonNegative @NonNegative}
  * {@link LTEqLengthOf @LTEqLengthOf("arr")}, and that is how it is treated internally by the
@@ -31,8 +33,8 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
 public @interface IndexOrHigh {
-  /** Sequences that the annotated expression is a valid index for or is equal to the lengeth of. */
-  String[] value();
+    /** Sequences that the annotated expression is a valid index for or is equal to the lengeth of. */
+    String[] value();
 }

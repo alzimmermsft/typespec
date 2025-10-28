@@ -15,7 +15,7 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import java.io.IOException;
 import java.util.Map;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
+
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.*;
@@ -40,61 +40,7 @@ public class ModularClassFile extends AbstractClassFile implements IModularClass
 		super(parent, TypeConstants.MODULE_INFO_NAME_STRING);
 	}
 
-	/**
-	 * Creates the single child element for this class file adding the resulting
-	 * new handle (of type {@link IBinaryModule}) and info object to the newElements table.
-	 * Returns true if successful, or false if an error is encountered parsing the class file.
-	 *
-	 * @see Openable
-	 * @see Signature
-	 */
-	@Override
-	protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map<IJavaElement, IElementInfo> newElements, IResource underlyingResource) throws JavaModelException {
-		IBinaryModule moduleInfo = getBinaryModuleInfo();
-		if (moduleInfo == null) {
-			// The structure of a class file is unknown if a class file format errors occurred
-			//during the creation of the diet class file representative of this ClassFile.
-			info.setChildren(JavaElement.NO_ELEMENTS);
-			return false;
-		}
-
-		// Create & link a handle:
-		BinaryModule module = new BinaryModule(this, moduleInfo);
-		newElements.put(module, moduleInfo);
-		info.setChildren(new IJavaElement[] {module});
-		info.setModule(module);
-		((PackageFragmentRootInfo) getPackageFragmentRoot().getElementInfo()).setModule(module);
-		return true;
-	}
-
-	@Override
-	public void codeComplete(int offset, CompletionRequestor requestor, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaModelException {
-		String source = getSource();
-		if (source != null) {
-			BasicCompilationUnit cu =
-				new BasicCompilationUnit(
-					getSource().toCharArray(),
-					null,
-					TypeConstants.MODULE_INFO_FILE_NAME_STRING,
-					getJavaProject()); // use project to retrieve corresponding .java IFile
-			codeComplete(cu, cu, offset, requestor, owner, null/*extended context isn't computed*/, monitor);
-		}
-	}
-
-	@Override
-	public IJavaElement[] codeSelect(int offset, int length, WorkingCopyOwner owner) throws JavaModelException {
-		IBuffer buffer = getBuffer();
-		char[] contents;
-		if (buffer != null && (contents = buffer.getCharacters()) != null) {
-			BasicCompilationUnit cu = new BasicCompilationUnit(contents, null, TypeConstants.MODULE_INFO_FILE_NAME_STRING, this);
-			return super.codeSelect(cu, offset, length, owner);
-		} else {
-			// has no associated source
-			return new IJavaElement[] {};
-		}
-	}
-
-	@Override
+    @Override
 	public IType findPrimaryType() {
 		return null;
 	}

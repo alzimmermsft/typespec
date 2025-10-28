@@ -1,11 +1,11 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.common.value.qual;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 
 /**
  * An annotation indicating the possible values for a String type. If an expression's type has this
@@ -15,9 +15,9 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_PARAMETER, ElementType.TYPE_USE})
-@SubtypeOf({UnknownVal.class})
+@Target({ ElementType.TYPE_PARAMETER, ElementType.TYPE_USE })
+@SubtypeOf({ UnknownVal.class })
 public @interface StringVal {
-  /** The values that the expression might evaluate to. */
-  String[] value();
+    /** The values that the expression might evaluate to. */
+    String[] value();
 }

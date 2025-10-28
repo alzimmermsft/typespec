@@ -14,12 +14,12 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.content;
 
 public interface ContentTypeVisitor {
-	int CONTINUE = 0;
-	int RETURN = 1;
-	int STOP = 2;
+    int CONTINUE = 0;
+    int RETURN = 1;
+    int STOP = 2;
 
-	/**
-	 * @return CONTINUE, RETURN or STOP
-	 */
-	int visit(ContentType contentType);
+    /**
+     * @return CONTINUE, RETURN or STOP
+     */
+    int visit(ContentType contentType);
 }

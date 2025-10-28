@@ -46,102 +46,102 @@ import java.util.function.Consumer;
  * @since 3.0
  */
 public interface IJobChangeListener {
-	/**
-	 * <p>
-	 * Notification that a job is about to be run. Listeners are allowed to sleep,
-	 * cancel, or change the priority of the job before it is started (and as a
-	 * result may prevent the run from actually occurring).
-	 * </p>
-	 * <p>
-	 * Implementations should not block and return promptly.
-	 * </p>
-	 *
-	 * @param event the event details
-	 */
-	void aboutToRun(IJobChangeEvent event);
+    /**
+     * <p>
+     * Notification that a job is about to be run. Listeners are allowed to sleep,
+     * cancel, or change the priority of the job before it is started (and as a
+     * result may prevent the run from actually occurring).
+     * </p>
+     * <p>
+     * Implementations should not block and return promptly.
+     * </p>
+     *
+     * @param event the event details
+     */
+    void aboutToRun(IJobChangeEvent event);
 
-	/**
-	 * <p>
-	 * Notification that a job was previously sleeping and has now been rescheduled
-	 * to run.
-	 * </p>
-	 * <p>
-	 * Implementations should not block and return promptly.
-	 * </p>
-	 *
-	 * @param event the event details
-	 */
-	void awake(IJobChangeEvent event);
+    /**
+     * <p>
+     * Notification that a job was previously sleeping and has now been rescheduled
+     * to run.
+     * </p>
+     * <p>
+     * Implementations should not block and return promptly.
+     * </p>
+     *
+     * @param event the event details
+     */
+    void awake(IJobChangeEvent event);
 
-	/**
-	 * <p>
-	 * Notification that a job has completed execution, either due to cancelation,
-	 * successful completion, or failure. The event status object indicates how the
-	 * job finished, and the reason for failure, if applicable.
-	 * </p>
-	 * <p>
-	 * Implementations should not block and return promptly.
-	 * </p>
-	 *
-	 * @param event the event details
-	 */
-	void done(IJobChangeEvent event);
+    /**
+     * <p>
+     * Notification that a job has completed execution, either due to cancelation,
+     * successful completion, or failure. The event status object indicates how the
+     * job finished, and the reason for failure, if applicable.
+     * </p>
+     * <p>
+     * Implementations should not block and return promptly.
+     * </p>
+     *
+     * @param event the event details
+     */
+    void done(IJobChangeEvent event);
 
-	/**
-	 * <p>
-	 * Notification that a job has started running.
-	 * </p>
-	 * <p>
-	 * Implementations should not block and return promptly.
-	 * </p>
-	 *
-	 * @param event the event details
-	 */
-	void running(IJobChangeEvent event);
+    /**
+     * <p>
+     * Notification that a job has started running.
+     * </p>
+     * <p>
+     * Implementations should not block and return promptly.
+     * </p>
+     *
+     * @param event the event details
+     */
+    void running(IJobChangeEvent event);
 
-	/**
-	 * <p>
-	 * Notification that a job is being added to the queue of scheduled jobs. The
-	 * event details includes the scheduling delay before the job should start
-	 * running.
-	 * </p>
-	 * <p>
-	 * Implementations should not block and return promptly.
-	 * </p>
-	 *
-	 * @param event the event details, including the job instance and the scheduling
-	 *              delay
-	 */
-	void scheduled(IJobChangeEvent event);
+    /**
+     * <p>
+     * Notification that a job is being added to the queue of scheduled jobs. The
+     * event details includes the scheduling delay before the job should start
+     * running.
+     * </p>
+     * <p>
+     * Implementations should not block and return promptly.
+     * </p>
+     *
+     * @param event the event details, including the job instance and the scheduling
+     * delay
+     */
+    void scheduled(IJobChangeEvent event);
 
-	/**
-	 * <p>
-	 * Notification that a job was waiting to run and has now been put in the
-	 * sleeping state.
-	 * </p>
-	 * <p>
-	 * Implementations should not block and return promptly.
-	 * </p>
-	 *
-	 * @param event the event details
-	 */
-	void sleeping(IJobChangeEvent event);
+    /**
+     * <p>
+     * Notification that a job was waiting to run and has now been put in the
+     * sleeping state.
+     * </p>
+     * <p>
+     * Implementations should not block and return promptly.
+     * </p>
+     *
+     * @param event the event details
+     */
+    void sleeping(IJobChangeEvent event);
 
-	/**
-	 * Static helper method to create an <code>IJobChangeListener</code> for the
-	 * {@link #done(IJobChangeEvent)}) method, given a lambda expression or a method
-	 * reference.
-	 *
-	 * @param c the consumer of the event
-	 * @return IJobChangeAdapter
-	 * @since 3.15
-	 */
-	static IJobChangeListener onDone(Consumer<IJobChangeEvent> c) {
-		return new JobChangeAdapter() {
-			@Override
-			public void done(IJobChangeEvent event) {
-				c.accept(event);
-			}
-		};
-	}
+    /**
+     * Static helper method to create an <code>IJobChangeListener</code> for the
+     * {@link #done(IJobChangeEvent)}) method, given a lambda expression or a method
+     * reference.
+     *
+     * @param c the consumer of the event
+     * @return IJobChangeAdapter
+     * @since 3.15
+     */
+    static IJobChangeListener onDone(Consumer<IJobChangeEvent> c) {
+        return new JobChangeAdapter() {
+            @Override
+            public void done(IJobChangeEvent event) {
+                c.accept(event);
+            }
+        };
+    }
 }

@@ -10,7 +10,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ModuleReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.Binding;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.ModuleBinding;
 
 /*******************************************************************************
  * Copyright (c) 2017 IBM Corporation and others.
@@ -63,41 +62,9 @@ public class ModuleLocator extends PatternLocator {
 		}
 		return IMPOSSIBLE_MATCH;
 	}
-	@Override
-	protected int matchContainer() {
-		return COMPILATION_UNIT_CONTAINER;
-	}
-	@Override
-	public int resolveLevel(ASTNode possibleMatchingNode) {
-		if (this.pattern.findDeclarations && possibleMatchingNode instanceof ModuleDeclaration) {
-			return resolveLevel(((ModuleDeclaration) possibleMatchingNode).binding);
-		}
-		if (this.pattern.findReferences && possibleMatchingNode instanceof ModuleReference) {
-			return resolveLevel(((ModuleReference) possibleMatchingNode).resolve(null));
-		}
-		return IMPOSSIBLE_MATCH;
-	}
-	@Override
-	protected void matchReportReference(ASTNode reference, IJavaElement element, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
-		super.matchReportReference(reference, element, elementBinding, accuracy, locator);
-	}
-	@Override
-	protected void matchReportReference(ASTNode reference, IJavaElement element, IJavaElement localElement, IJavaElement[] otherElements, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
-		matchReportReference(reference, element, elementBinding, accuracy, locator);
-	}
 
-	@Override
-	public SearchMatch newDeclarationMatch(ASTNode node, IJavaElement element, Binding elementBinding, int accuracy, int length, MatchLocator locator) {
-		return super.newDeclarationMatch(node, element, elementBinding, accuracy, length, locator);
-	}
 	@Override
 	protected int referenceType() {
 		return IJavaElement.JAVA_MODULE;
-	}
-	@Override
-	public int resolveLevel(Binding binding) {
-		if (binding == null) return INACCURATE_MATCH;
-		if (!(binding instanceof ModuleBinding)) return IMPOSSIBLE_MATCH;
-		return (matchesName(this.pattern.name, binding.readableName())) ? ACCURATE_MATCH : IMPOSSIBLE_MATCH;
 	}
 }

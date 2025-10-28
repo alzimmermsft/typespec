@@ -68,50 +68,43 @@ public class IndexBinaryFolder extends IndexRequest {
 			final String OK = "OK"; //$NON-NLS-1$
 			final String DELETED = "DELETED"; //$NON-NLS-1$
 			if (paths == null) {
-				this.folder.accept(new IResourceProxyVisitor() {
-					@Override
-					public boolean visit(IResourceProxy proxy) {
-						if (IndexBinaryFolder.this.isCancelled) return false;
-						if (proxy.getType() == IResource.FILE) {
-							if (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.Util.isClassFileName(proxy.getName())) {
-								IFile file = (IFile) proxy.requestResource();
-								String containerRelativePath = Util.relativePath(file.getFullPath(), IndexBinaryFolder.this.containerPath.segmentCount());
-								indexedFileNames.put(containerRelativePath, file);
-							}
-							return false;
-						}
-						return true;
-					}
-				}, IResource.NONE);
+				this.folder.accept((IResourceProxyVisitor) proxy -> {
+                    if (IndexBinaryFolder.this.isCancelled) return false;
+                    if (proxy.getType() == IResource.FILE) {
+                        if (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.Util.isClassFileName(proxy.getName())) {
+                            IFile file = (IFile) proxy.requestResource();
+                            String containerRelativePath = Util.relativePath(file.getFullPath(), IndexBinaryFolder.this.containerPath.segmentCount());
+                            indexedFileNames.put(containerRelativePath, file);
+                        }
+                        return false;
+                    }
+                    return true;
+                }, IResource.NONE);
 			} else {
 				for (int i = 0; i < max; i++) {
 					indexedFileNames.put(paths[i], DELETED);
 				}
 				final long indexLastModified = index.getIndexLastModified();
-				this.folder.accept(
-					new IResourceProxyVisitor() {
-						@Override
-						public boolean visit(IResourceProxy proxy) throws CoreException {
-							if (IndexBinaryFolder.this.isCancelled) return false;
-							if (proxy.getType() == IResource.FILE) {
-								if (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.Util.isClassFileName(proxy.getName())) {
-									IFile file = (IFile) proxy.requestResource();
-									URI location = file.getLocationURI();
-									if (location != null) {
-										String containerRelativePath = Util.relativePath(file.getFullPath(), IndexBinaryFolder.this.containerPath.segmentCount());
-										indexedFileNames.put(containerRelativePath,
-											indexedFileNames.get(containerRelativePath) == null
-													|| indexLastModified <
-													EFS.getStore(location).fetchInfo().getLastModified()
-												? (Object) file
-												: (Object) OK);
-									}
-								}
-								return false;
-							}
-							return true;
-						}
-					},
+				this.folder.accept((IResourceProxyVisitor) proxy -> {
+                    if (IndexBinaryFolder.this.isCancelled) return false;
+                    if (proxy.getType() == IResource.FILE) {
+                        if (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.Util.isClassFileName(proxy.getName())) {
+                            IFile file = (IFile) proxy.requestResource();
+                            URI location = file.getLocationURI();
+                            if (location != null) {
+                                String containerRelativePath = Util.relativePath(file.getFullPath(), IndexBinaryFolder.this.containerPath.segmentCount());
+                                indexedFileNames.put(containerRelativePath,
+                                    indexedFileNames.get(containerRelativePath) == null
+                                            || indexLastModified <
+                                            EFS.getStore(location).fetchInfo().getLastModified()
+                                        ? (Object) file
+                                        : (Object) OK);
+                            }
+                        }
+                        return false;
+                    }
+                    return true;
+                },
 					IResource.NONE
 				);
 			}

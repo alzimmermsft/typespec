@@ -30,23 +30,23 @@ import java.util.*;
  * </p>
  */
 public class SortedProperties extends Properties {
-	// Warning: This class is referenced by our friend
-	// org.eclipse.core.internal.resources.ProjectPreferences
+    // Warning: This class is referenced by our friend
+    // org.eclipse.core.internal.resources.ProjectPreferences
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Override
-	public synchronized Enumeration<Object> keys() {
-		return Collections.enumeration(new TreeSet<>(keySet()));
-	}
+    @Override
+    public synchronized Enumeration<Object> keys() {
+        return Collections.enumeration(new TreeSet<>(keySet()));
+    }
 
-	private static final Comparator<Map.Entry<String, String>> BY_KEY = Comparator.comparing(Map.Entry::getKey);
+    private static final Comparator<Map.Entry<String, String>> BY_KEY = Comparator.comparing(Map.Entry::getKey);
 
-	@Override
-	public Set<Map.Entry<Object, Object>> entrySet() {
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		Set<Map.Entry<Object, Object>> set = new TreeSet<>((Comparator) BY_KEY);
-		set.addAll(super.entrySet());
-		return set;
-	}
+    @Override
+    public Set<Map.Entry<Object, Object>> entrySet() {
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        Set<Map.Entry<Object, Object>> set = new TreeSet<>((Comparator) BY_KEY);
+        set.addAll(super.entrySet());
+        return set;
+    }
 }

@@ -14,11 +14,10 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.undo.snapshot;
 
-import java.net.URI;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IContainer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResourceFilterDescription;
+import java.net.URI;
 
 /**
  * IContainerSnapshot is a lightweight description that describes a container to
@@ -30,33 +29,33 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public interface IContainerSnapshot<T extends IContainer> extends IResourceSnapshot<T> {
 
-	/**
-	 * Get a list of snapshots of members of this container
-	 *
-	 * @return a list of snapshots
-	 */
-	public IResourceSnapshot<? extends IResource>[] getMembers();
+    /**
+     * Get a list of snapshots of members of this container
+     *
+     * @return a list of snapshots
+     */
+    public IResourceSnapshot<? extends IResource>[] getMembers();
 
-	/**
-	 * Add the specified resource description as a member of this resource
-	 * description
-	 *
-	 * @param member the resource description considered a member of this container.
-	 */
-	public void addMember(IResourceSnapshot<? extends IResource> member);
+    /**
+     * Add the specified resource description as a member of this resource
+     * description
+     *
+     * @param member the resource description considered a member of this container.
+     */
+    public void addMember(IResourceSnapshot<? extends IResource> member);
 
-	/**
-	 * Set the location to which this container is linked.
-	 *
-	 * @param linkLocation the location URI, or <code>null</code> if there is no
-	 *                     link
-	 */
-	public void setLocation(URI linkLocation);
+    /**
+     * Set the location to which this container is linked.
+     *
+     * @param linkLocation the location URI, or <code>null</code> if there is no
+     * link
+     */
+    public void setLocation(URI linkLocation);
 
-	/**
-	 * Set the filters to which should be created on this container.
-	 *
-	 * @param filterList the filters
-	 */
-	public void setFilters(IResourceFilterDescription[] filterList);
+    /**
+     * Set the filters to which should be created on this container.
+     *
+     * @param filterList the filters
+     */
+    public void setFilters(IResourceFilterDescription[] filterList);
 }

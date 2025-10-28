@@ -13,8 +13,8 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources;
 
-import java.util.List;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
+import java.util.List;
 
 /**
  * Implementations of this interface are capable of determining a set
@@ -24,14 +24,14 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * @since 3.12
  */
 public interface IDynamicReferenceProvider {
-	/**
-	 * Returns the set of projects which the given project depends upon. If the return
-	 * value of a previous call to this method ever changes, it will fire an event to
-	 * the listeners. This method my be invoked from any thread and may be invoked
-	 * in parallel by multiple threads.
-	 *
-	 * @param buildConfiguration the build configuration being queried.
-	 * @return the set of projects which the given projects depends upon.
-	 */
-	List<IProject> getDependentProjects(IBuildConfiguration buildConfiguration) throws CoreException;
+    /**
+     * Returns the set of projects which the given project depends upon. If the return
+     * value of a previous call to this method ever changes, it will fire an event to
+     * the listeners. This method my be invoked from any thread and may be invoked
+     * in parallel by multiple threads.
+     *
+     * @param buildConfiguration the build configuration being queried.
+     * @return the set of projects which the given projects depends upon.
+     */
+    List<IProject> getDependentProjects(IBuildConfiguration buildConfiguration) throws CoreException;
 }

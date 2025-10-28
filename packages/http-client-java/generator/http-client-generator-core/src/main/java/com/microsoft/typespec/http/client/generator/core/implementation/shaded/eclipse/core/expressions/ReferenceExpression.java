@@ -13,17 +13,16 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.expressions;
 
-import org.w3c.dom.Element;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.expressions.DefinitionRegistry;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.expressions.Expressions;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IConfigurationElement;
+import org.w3c.dom.Element;
 
 /**
- * This class makes use of the <b>com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.expressions.definitions</b>
+ * This class makes use of the
+ * <b>com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.expressions.definitions</b>
  * extension point to evaluate the current context against pre-defined
  * expressions. It provides core expression re-use.
  *
@@ -31,80 +30,80 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class ReferenceExpression extends Expression {
 
-	// consider making this a more general extension manager
-	// for now it's just part of the reference expression
-	private static DefinitionRegistry fgDefinitionRegistry= null;
+    // consider making this a more general extension manager
+    // for now it's just part of the reference expression
+    private static DefinitionRegistry fgDefinitionRegistry = null;
 
-	private static DefinitionRegistry getDefinitionRegistry() {
-		if (fgDefinitionRegistry == null) {
-			fgDefinitionRegistry= new DefinitionRegistry();
-		}
-		return fgDefinitionRegistry;
-	}
+    private static DefinitionRegistry getDefinitionRegistry() {
+        if (fgDefinitionRegistry == null) {
+            fgDefinitionRegistry = new DefinitionRegistry();
+        }
+        return fgDefinitionRegistry;
+    }
 
-	private static final String ATT_DEFINITION_ID= "definitionId"; //$NON-NLS-1$
+    private static final String ATT_DEFINITION_ID = "definitionId"; //$NON-NLS-1$
 
-	/**
-	 * The seed for the hash code for all equals expressions.
-	 */
-	private static final int HASH_INITIAL= ReferenceExpression.class.getName().hashCode();
+    /**
+     * The seed for the hash code for all equals expressions.
+     */
+    private static final int HASH_INITIAL = ReferenceExpression.class.getName().hashCode();
 
-	private final String fDefinitionId;
+    private final String fDefinitionId;
 
-	public ReferenceExpression(String definitionId) {
-		Assert.isNotNull(definitionId);
-		fDefinitionId= definitionId;
-	}
+    public ReferenceExpression(String definitionId) {
+        Assert.isNotNull(definitionId);
+        fDefinitionId = definitionId;
+    }
 
-	public ReferenceExpression(IConfigurationElement element) throws CoreException {
-		fDefinitionId= element.getAttribute(ATT_DEFINITION_ID);
-		Expressions.checkAttribute(ATT_DEFINITION_ID, fDefinitionId);
-	}
+    public ReferenceExpression(IConfigurationElement element) throws CoreException {
+        fDefinitionId = element.getAttribute(ATT_DEFINITION_ID);
+        Expressions.checkAttribute(ATT_DEFINITION_ID, fDefinitionId);
+    }
 
-	public ReferenceExpression(Element element) throws CoreException {
-		fDefinitionId= element.getAttribute(ATT_DEFINITION_ID);
-		Expressions.checkAttribute(ATT_DEFINITION_ID, fDefinitionId.isEmpty() ? null : fDefinitionId);
-	}
+    public ReferenceExpression(Element element) throws CoreException {
+        fDefinitionId = element.getAttribute(ATT_DEFINITION_ID);
+        Expressions.checkAttribute(ATT_DEFINITION_ID, fDefinitionId.isEmpty() ? null : fDefinitionId);
+    }
 
-	@Override
-	public EvaluationResult evaluate(IEvaluationContext context) throws CoreException {
-		Expression expr= getDefinitionRegistry().getExpression(fDefinitionId);
-		return expr.evaluate(context);
-	}
+    @Override
+    public EvaluationResult evaluate(IEvaluationContext context) throws CoreException {
+        Expression expr = getDefinitionRegistry().getExpression(fDefinitionId);
+        return expr.evaluate(context);
+    }
 
-	@Override
-	public void collectExpressionInfo(ExpressionInfo info) {
-		Expression expr;
-		try {
-			expr= getDefinitionRegistry().getExpression(fDefinitionId);
-		} catch (CoreException e) {
-			// We didn't find the expression definition. So no
-			// expression info can be collected.
-			return;
-		}
-		expr.collectExpressionInfo(info);
-	}
+    @Override
+    public void collectExpressionInfo(ExpressionInfo info) {
+        Expression expr;
+        try {
+            expr = getDefinitionRegistry().getExpression(fDefinitionId);
+        } catch (CoreException e) {
+            // We didn't find the expression definition. So no
+            // expression info can be collected.
+            return;
+        }
+        expr.collectExpressionInfo(info);
+    }
 
-	@Override
-	public boolean equals(final Object object) {
-		if (!(object instanceof final ReferenceExpression that)) {
-			return false;
-		}
+    @Override
+    public boolean equals(final Object object) {
+        if (!(object instanceof final ReferenceExpression that)) {
+            return false;
+        }
 
-		return this.fDefinitionId.equals(that.fDefinitionId);
-	}
+        return this.fDefinitionId.equals(that.fDefinitionId);
+    }
 
-	@Override
-	protected int computeHashCode() {
-		return HASH_INITIAL * HASH_FACTOR + fDefinitionId.hashCode();
-	}
+    @Override
+    protected int computeHashCode() {
+        return HASH_INITIAL * HASH_FACTOR + fDefinitionId.hashCode();
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder(getClass().getSimpleName());
-		builder.append(" [definitionId="); //$NON-NLS-1$
-		builder.append(fDefinitionId);
-		builder.append("]"); //$NON-NLS-1$
-		return builder.toString();
-	}
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder(getClass().getSimpleName());
+        builder.append(" [definitionId="); //$NON-NLS-1$
+        builder.append(fDefinitionId);
+        builder.append("]"); //$NON-NLS-1$
+        return builder.toString();
+    }
 }

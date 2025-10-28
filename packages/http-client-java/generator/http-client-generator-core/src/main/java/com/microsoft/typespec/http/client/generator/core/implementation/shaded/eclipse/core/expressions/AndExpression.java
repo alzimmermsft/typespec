@@ -13,7 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.expressions;
 
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 
 /**
@@ -22,17 +21,17 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class AndExpression extends CompositeExpression {
 
-	@Override
-	public boolean equals(final Object object) {
-		if (!(object instanceof final AndExpression that)) {
-			return false;
-		}
+    @Override
+    public boolean equals(final Object object) {
+        if (!(object instanceof final AndExpression that)) {
+            return false;
+        }
 
-		return equals(this.fExpressions, that.fExpressions);
-	}
+        return equals(this.fExpressions, that.fExpressions);
+    }
 
-	@Override
-	public EvaluationResult evaluate(IEvaluationContext context) throws CoreException {
-		return evaluateAnd(context);
-	}
+    @Override
+    public EvaluationResult evaluate(IEvaluationContext context) throws CoreException {
+        return evaluateAnd(context);
+    }
 }

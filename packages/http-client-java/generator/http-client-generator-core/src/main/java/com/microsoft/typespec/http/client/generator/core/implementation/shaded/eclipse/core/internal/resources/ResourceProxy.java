@@ -22,104 +22,104 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * info of the resource currently being visited.
  */
 public class ResourceProxy implements IResourceProxy, ICoreConstants {
-	protected final Workspace workspace = (Workspace) ResourcesPlugin.getWorkspace();
-	protected IPathRequestor requestor;
-	protected ResourceInfo info;
+    protected final Workspace workspace = (Workspace) ResourcesPlugin.getWorkspace();
+    protected IPathRequestor requestor;
+    protected ResourceInfo info;
 
-	//cached info
-	protected IPath fullPath;
-	protected IResource resource;
-
-	/**
-	 * @see org.eclipse.core.resources.IResourceProxy#getModificationStamp()
-	 */
-	@Override
-	public long getModificationStamp() {
-		return info.getModificationStamp();
-	}
-
-	@Override
-	public String getName() {
-		return requestor.requestName();
-	}
-
-    @Override
-	public int getType() {
-		return info.getType();
-	}
-
-	/**
-	 * @see org.eclipse.core.resources.IResourceProxy#isAccessible()
-	 */
-	@Override
-	public boolean isAccessible() {
-		int flags = info.getFlags();
-		if (info.getType() == IResource.PROJECT) {
-			return flags != NULL_FLAG && ResourceInfo.isSet(flags, M_OPEN);
-		}
-		return flags != NULL_FLAG;
-	}
-
-	/**
-	 * @see org.eclipse.core.resources.IResourceProxy#isDerived()
-	 */
-	@Override
-	public boolean isDerived() {
-		int flags = info.getFlags();
-		return flags != NULL_FLAG && ResourceInfo.isSet(flags, M_DERIVED);
-	}
-
-	/**
-	 * @see org.eclipse.core.resources.IResourceProxy#isLinked()
-	 */
-	@Override
-	public boolean isLinked() {
-		int flags = info.getFlags();
-		return flags != NULL_FLAG && ResourceInfo.isSet(flags, M_LINK);
-	}
-
-	/**
-	 * @see org.eclipse.core.resources.IResourceProxy#isPhantom()
-	 */
-	@Override
-	public boolean isPhantom() {
-		int flags = info.getFlags();
-		return flags != NULL_FLAG && ResourceInfo.isSet(flags, M_PHANTOM);
-	}
+    // cached info
+    protected IPath fullPath;
+    protected IResource resource;
 
     /**
-	 * @see org.eclipse.core.resources.IResourceProxy#isHidden()
-	 */
-	@Override
-	public boolean isHidden() {
-		int flags = info.getFlags();
-		return flags != NULL_FLAG && ResourceInfo.isSet(flags, M_HIDDEN);
-	}
+     * @see org.eclipse.core.resources.IResourceProxy#getModificationStamp()
+     */
+    @Override
+    public long getModificationStamp() {
+        return info.getModificationStamp();
+    }
 
-	/**
-	 * @see org.eclipse.core.resources.IResourceProxy#requestFullPath()
-	 */
-	@Override
-	public IPath requestFullPath() {
-		if (fullPath == null) {
-			fullPath = requestor.requestPath();
-		}
-		return fullPath;
-	}
+    @Override
+    public String getName() {
+        return requestor.requestName();
+    }
 
-	/**
-	 * @see org.eclipse.core.resources.IResourceProxy#requestResource()
-	 */
-	@Override
-	public IResource requestResource() {
-		if (resource == null) {
-			resource = workspace.newResource(requestFullPath(), info.getType());
-		}
-		return resource;
-	}
+    @Override
+    public int getType() {
+        return info.getType();
+    }
 
-	protected void reset() {
-		fullPath = null;
-		resource = null;
-	}
+    /**
+     * @see org.eclipse.core.resources.IResourceProxy#isAccessible()
+     */
+    @Override
+    public boolean isAccessible() {
+        int flags = info.getFlags();
+        if (info.getType() == IResource.PROJECT) {
+            return flags != NULL_FLAG && ResourceInfo.isSet(flags, M_OPEN);
+        }
+        return flags != NULL_FLAG;
+    }
+
+    /**
+     * @see org.eclipse.core.resources.IResourceProxy#isDerived()
+     */
+    @Override
+    public boolean isDerived() {
+        int flags = info.getFlags();
+        return flags != NULL_FLAG && ResourceInfo.isSet(flags, M_DERIVED);
+    }
+
+    /**
+     * @see org.eclipse.core.resources.IResourceProxy#isLinked()
+     */
+    @Override
+    public boolean isLinked() {
+        int flags = info.getFlags();
+        return flags != NULL_FLAG && ResourceInfo.isSet(flags, M_LINK);
+    }
+
+    /**
+     * @see org.eclipse.core.resources.IResourceProxy#isPhantom()
+     */
+    @Override
+    public boolean isPhantom() {
+        int flags = info.getFlags();
+        return flags != NULL_FLAG && ResourceInfo.isSet(flags, M_PHANTOM);
+    }
+
+    /**
+     * @see org.eclipse.core.resources.IResourceProxy#isHidden()
+     */
+    @Override
+    public boolean isHidden() {
+        int flags = info.getFlags();
+        return flags != NULL_FLAG && ResourceInfo.isSet(flags, M_HIDDEN);
+    }
+
+    /**
+     * @see org.eclipse.core.resources.IResourceProxy#requestFullPath()
+     */
+    @Override
+    public IPath requestFullPath() {
+        if (fullPath == null) {
+            fullPath = requestor.requestPath();
+        }
+        return fullPath;
+    }
+
+    /**
+     * @see org.eclipse.core.resources.IResourceProxy#requestResource()
+     */
+    @Override
+    public IResource requestResource() {
+        if (resource == null) {
+            resource = workspace.newResource(requestFullPath(), info.getType());
+        }
+        return resource;
+    }
+
+    protected void reset() {
+        fullPath = null;
+        resource = null;
+    }
 }

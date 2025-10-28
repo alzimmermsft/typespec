@@ -21,21 +21,21 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IPermittedSubclassesAttribute extends IClassFileAttribute {
 
-	/**
-	 * Answer back the number of permitted subclasses as specified in
-	 * the JVM specifications.
-	 *
-	 * @return the number of permitted subclasses as specified in
-	 * the JVM specifications
-	 */
-	int getNumberOfPermittedSubclasses();
+    /**
+     * Answer back the number of permitted subclasses as specified in
+     * the JVM specifications.
+     *
+     * @return the number of permitted subclasses as specified in
+     * the JVM specifications
+     */
+    int getNumberOfPermittedSubclasses();
 
-	/**
-	 * Answer back the array of permitted subclass attribute entries as specified in
-	 * the JVM specifications, or an empty array if none.
-	 *
-	 * @return the array of permitted subclass attribute entries as specified in
-	 * the JVM specifications, or an empty array if none
-	 */
-	IPermittedSubclassesAttributeEntry[] getPermittedSubclassAttributesEntries();
+    /**
+     * Answer back the array of permitted subclass attribute entries as specified in
+     * the JVM specifications, or an empty array if none.
+     *
+     * @return the array of permitted subclass attribute entries as specified in
+     * the JVM specifications, or an empty array if none
+     */
+    IPermittedSubclassesAttributeEntry[] getPermittedSubclassAttributesEntries();
 }

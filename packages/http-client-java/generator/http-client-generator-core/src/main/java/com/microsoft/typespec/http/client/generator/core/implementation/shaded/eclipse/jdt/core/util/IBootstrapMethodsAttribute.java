@@ -22,22 +22,22 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IBootstrapMethodsAttribute extends IClassFileAttribute {
 
-	/**
-	 * Answer back the number of bootstrap methods of this entry as specified in
-	 * the JVM specifications.
-	 *
-	 * @return the number of bootstrap methods of this entry as specified in
-	 * the JVM specifications
-	 */
-	int getBootstrapMethodsLength();
+    /**
+     * Answer back the number of bootstrap methods of this entry as specified in
+     * the JVM specifications.
+     *
+     * @return the number of bootstrap methods of this entry as specified in
+     * the JVM specifications
+     */
+    int getBootstrapMethodsLength();
 
-	/**
-	 * Answer back the bootstrap methods table of this entry as specified in
-	 * the JVM specifications. Answer an empty array if none.
-	 *
-	 * @return the bootstrap methods table of this entry as specified in
-	 * the JVM specifications. Answer an empty array if none
-	 */
-	IBootstrapMethodsEntry[] getBootstrapMethods();
+    /**
+     * Answer back the bootstrap methods table of this entry as specified in
+     * the JVM specifications. Answer an empty array if none.
+     *
+     * @return the bootstrap methods table of this entry as specified in
+     * the JVM specifications. Answer an empty array if none
+     */
+    IBootstrapMethodsEntry[] getBootstrapMethods();
 
 }

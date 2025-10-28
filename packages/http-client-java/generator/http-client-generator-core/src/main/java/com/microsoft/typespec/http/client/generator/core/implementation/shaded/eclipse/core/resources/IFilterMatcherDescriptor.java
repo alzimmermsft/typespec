@@ -32,40 +32,44 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * @noextend This interface is not intended to be extended by clients.
  */
 public interface IFilterMatcherDescriptor {
-	/**
-	 * An argument filter type constant (value "none"), denoting that this
-	 * filter does not take any arguments.
-	 */
-	String ARGUMENT_TYPE_NONE = "none"; //$NON-NLS-1$
+    /**
+     * An argument filter type constant (value "none"), denoting that this
+     * filter does not take any arguments.
+     */
+    String ARGUMENT_TYPE_NONE = "none"; //$NON-NLS-1$
 
-	/**
-	 * Returns the argument type expected by this filter. The result will be one of the
-	 * <code>ARGUMENT_TYPE_*</code> constants declared on this class.
-	 * @return The argument type of this filter extension
-	 */
-	String getArgumentType();
+    /**
+     * Returns the argument type expected by this filter. The result will be one of the
+     * <code>ARGUMENT_TYPE_*</code> constants declared on this class.
+     * 
+     * @return The argument type of this filter extension
+     */
+    String getArgumentType();
 
-	/**
-	 * Returns a translated, human-readable description for this filter extension.
-	 * @return The human-readable filter description
-	 */
-	String getDescription();
+    /**
+     * Returns a translated, human-readable description for this filter extension.
+     * 
+     * @return The human-readable filter description
+     */
+    String getDescription();
 
-	/**
-	 * Returns the fully qualified id of the filter extension.
-	 * @return The fully qualified id of the filter extension.
-	 */
-	String getId();
+    /**
+     * Returns the fully qualified id of the filter extension.
+     * 
+     * @return The fully qualified id of the filter extension.
+     */
+    String getId();
 
-	/**
-	 * Returns a translated, human-readable name for this filter extension.
-	 * @return The human-readable filter name
-	 */
-	String getName();
+    /**
+     * Returns a translated, human-readable name for this filter extension.
+     * 
+     * @return The human-readable filter name
+     */
+    String getName();
 
-	/**
-	 * TODO What is this?
-	 */
-	boolean isFirstOrdering();
+    /**
+     * TODO What is this?
+     */
+    boolean isFirstOrdering();
 
 }

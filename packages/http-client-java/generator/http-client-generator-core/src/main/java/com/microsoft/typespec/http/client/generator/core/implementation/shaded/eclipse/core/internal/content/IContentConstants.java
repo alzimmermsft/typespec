@@ -19,14 +19,16 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * @since org.eclipse.core.contenttype 3.2
  */
 public interface IContentConstants {
-	/**
-	 * Backward compatibility: name of the original runtime plugin
-	 */
-	String RUNTIME_NAME = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime"; //$NON-NLS-1$
+    /**
+     * Backward compatibility: name of the original runtime plugin
+     */
+    String RUNTIME_NAME
+        = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime"; //$NON-NLS-1$
 
-	/**
-	 * Name of this plugin
-	 */
-	String CONTENT_NAME = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.contenttype"; //$NON-NLS-1$
+    /**
+     * Name of this plugin
+     */
+    String CONTENT_NAME
+        = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.contenttype"; //$NON-NLS-1$
 
 }

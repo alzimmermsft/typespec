@@ -15,12 +15,12 @@ import java.lang.annotation.Target;
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
+@Target({ ElementType.TYPE })
 public @interface InheritableMustCall {
-  /**
-   * Methods that might need to be called on the expression whose type is annotated.
-   *
-   * @return methods that might need to be called
-   */
-  public String[] value() default {};
+    /**
+     * Methods that might need to be called on the expression whose type is annotated.
+     *
+     * @return methods that might need to be called
+     */
+    public String[] value() default { };
 }

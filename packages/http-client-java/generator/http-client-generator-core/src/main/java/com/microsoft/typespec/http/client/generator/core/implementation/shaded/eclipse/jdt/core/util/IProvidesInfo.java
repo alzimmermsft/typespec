@@ -22,39 +22,39 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IProvidesInfo {
 
-	/**
-	 * Answer back the provides index.
-	 *
-	 * @return the provides index
-	 */
-	int getIndex();
+    /**
+     * Answer back the provides index.
+     *
+     * @return the provides index
+     */
+    int getIndex();
 
-	/**
-	 * Answer back the service class/interface
-	 *
-	 * @return the service class/interface
-	 */
-	char[] getServiceName();
+    /**
+     * Answer back the service class/interface
+     *
+     * @return the service class/interface
+     */
+    char[] getServiceName();
 
-	/**
-	 * Answer back the number of implementations.
-	 *
-	 * @return the number of implementations.
-	 */
-	int getImplementationsCount();
+    /**
+     * Answer back the number of implementations.
+     *
+     * @return the number of implementations.
+     */
+    int getImplementationsCount();
 
-	/**
-	 * Answer back the array of implementation indices.
-	 *
-	 * @return the array of implementation indices.
-	 */
-	int[] getImplementationIndices();
+    /**
+     * Answer back the array of implementation indices.
+     *
+     * @return the array of implementation indices.
+     */
+    int[] getImplementationIndices();
 
-	/**
-	 * Answer back the array of implementation names.
-	 *
-	 * @return the array of implementation names.
-	 */
-	char[][] getImplementationNames();
+    /**
+     * Answer back the array of implementation names.
+     *
+     * @return the array of implementation names.
+     */
+    char[][] getImplementationNames();
 
 }

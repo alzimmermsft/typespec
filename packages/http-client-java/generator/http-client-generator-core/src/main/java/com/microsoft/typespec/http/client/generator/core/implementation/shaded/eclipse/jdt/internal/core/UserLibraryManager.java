@@ -15,19 +15,11 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.ResourcesPlugin;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Path;
+
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.preferences.IEclipsePreferences;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IClasspathContainer;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IClasspathEntry;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaProject;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaCore;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Util;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.prefs.BackingStoreException;
 
@@ -45,16 +37,7 @@ public class UserLibraryManager {
 		return this.userLibraries.get(libName);
 	}
 
-	/*
-	 * Returns the names of all defined user libraries. The corresponding classpath container path
-	 * is the name appended to the CONTAINER_ID.
-	 */
-	public synchronized String[] getUserLibraryNames() {
-		Set<String> set = this.userLibraries.keySet();
-		return set.toArray(String[]::new);
-	}
-
-	public UserLibraryManager() {
+    public UserLibraryManager() {
 		IEclipsePreferences instancePreferences = JavaModelManager.getJavaModelManager().getInstancePreferences();
 		String[] propertyNames;
 		try {
@@ -91,92 +74,6 @@ public class UserLibraryManager {
 				Util.log(e, "Exception while flusing instance preferences"); //$NON-NLS-1$
 			}
 		}
-	}
-
-	public void updateUserLibrary(String libName, String encodedUserLibrary) {
-		try {
-			// find affected projects
-			IPath containerPath = new Path(JavaCore.USER_LIBRARY_CONTAINER_ID).append(libName);
-			IJavaProject[] allJavaProjects = JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaProjects();
-			ArrayList affectedProjects = new ArrayList();
-			for (IJavaProject javaProject : allJavaProjects) {
-				IClasspathEntry[] entries= javaProject.getRawClasspath();
-				for (IClasspathEntry entry : entries) {
-					if (entry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
-						if (containerPath.equals(entry.getPath())) {
-							affectedProjects.add(javaProject);
-							break;
-						}
-					}
-				}
-			}
-
-			// decode user library
-			UserLibrary userLibrary = encodedUserLibrary == null ? null : UserLibrary.createFromString(new StringReader(encodedUserLibrary));
-
-			synchronized (this) {
-				// update user libraries map
-				if (userLibrary != null) {
-					this.userLibraries.put(libName, userLibrary);
-				} else {
-					this.userLibraries.remove(libName);
-				}
-			}
-
-			// update affected projects
-			int length = affectedProjects.size();
-			if (length == 0)
-				return;
-			IJavaProject[] projects = new IJavaProject[length];
-			affectedProjects.toArray(projects);
-			IClasspathContainer[] containers = new IClasspathContainer[length];
-			if (userLibrary != null) {
-				UserLibraryClasspathContainer container = new UserLibraryClasspathContainer(libName);
-				for (int i = 0; i < length; i++) {
-					containers[i] = container;
-				}
-			}
-			JavaCore.setClasspathContainer(containerPath, projects, containers, null);
-		} catch (JavaModelException e) {
-			Util.log(e, "Exception while setting user library '"+ libName +"'."); //$NON-NLS-1$ //$NON-NLS-2$
-		} catch (IOException | ClasspathEntry.AssertionFailedException ase) {
-			Util.log(ase, "Exception while decoding user library '"+ libName +"'."); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-
-	}
-
-	public void removeUserLibrary(String libName)  {
-		synchronized (this.userLibraries) {
-			IEclipsePreferences instancePreferences = JavaModelManager.getJavaModelManager().getInstancePreferences();
-			String propertyName = CP_USERLIBRARY_PREFERENCES_PREFIX+libName;
-			instancePreferences.remove(propertyName);
-			try {
-				instancePreferences.flush();
-			} catch (BackingStoreException e) {
-				Util.log(e, "Exception while removing user library " + libName); //$NON-NLS-1$
-			}
-		}
-		// this.userLibraries was updated during the PreferenceChangeEvent (see preferenceChange(...))
-	}
-
-	public void setUserLibrary(String libName, IClasspathEntry[] entries, boolean isSystemLibrary)  {
-		synchronized (this.userLibraries) {
-			IEclipsePreferences instancePreferences = JavaModelManager.getJavaModelManager().getInstancePreferences();
-			String propertyName = CP_USERLIBRARY_PREFERENCES_PREFIX+libName;
-			try {
-				String propertyValue = UserLibrary.serialize(entries, isSystemLibrary);
-				instancePreferences.put(propertyName, propertyValue); // sends out a PreferenceChangeEvent (see preferenceChange(...))
-			} catch (IOException e) {
-				Util.log(e, "Exception while serializing user library " + libName); //$NON-NLS-1$
-				return;
-			}
-			try {
-				instancePreferences.flush();
-			} catch (BackingStoreException e) {
-				Util.log(e, "Exception while saving user library " + libName); //$NON-NLS-1$
-			}
-		}
-		// this.userLibraries was updated during the PreferenceChangeEvent (see preferenceChange(...))
 	}
 
 }

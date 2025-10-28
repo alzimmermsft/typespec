@@ -162,24 +162,15 @@ abstract class AbstractTracked<S, T, R> {
 				item = initial.removeFirst();
 				if (tracked.get(item) != null) {
 					/* if we are already tracking this item */
-					if (DEBUG) {
-						System.out.println("AbstractTracked.trackInitial[already tracked]: " + item); //$NON-NLS-1$
-					}
 					continue; /* skip this item */
 				}
 				if (adding.contains(item)) {
 					/*
 					 * if this item is already in the process of being added.
 					 */
-					if (DEBUG) {
-						System.out.println("AbstractTracked.trackInitial[already adding]: " + item); //$NON-NLS-1$
-					}
 					continue; /* skip this item */
 				}
 				adding.add(item);
-			}
-			if (DEBUG) {
-				System.out.println("AbstractTracked.trackInitial: " + item); //$NON-NLS-1$
 			}
 			trackAdding(item); /*
 									 * Begin tracking it. We call trackAdding

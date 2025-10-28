@@ -15,7 +15,7 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 public class ConsoleManager {
 
-	public static final String PROP_CONSOLE = "osgi.console"; //$NON-NLS-1$
+    public static final String PROP_CONSOLE = "osgi.console"; //$NON-NLS-1$
 
     public ConsoleManager() {
     }

@@ -15,28 +15,29 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 public interface IRuntimeConstants {
 
-	/**
-	 * The unique identifier constant (value
-	 * "<code>com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime</code>") of the Core Runtime (pseudo-)
-	 * plug-in.
-	 */
+    /**
+     * The unique identifier constant (value
+     * "<code>com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime</code>") of
+     * the Core Runtime (pseudo-)
+     * plug-in.
+     */
     String PI_RUNTIME = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime"; //$NON-NLS-1$
 
-	/**
-	 * Name of this bundle.
-	 */
+    /**
+     * Name of this bundle.
+     */
     String PI_COMMON = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.equinox.common"; //$NON-NLS-1$
 
-	/**
-	 * Status code constant (value 2) indicating an error occurred while running a
-	 * plug-in.
-	 */
+    /**
+     * Status code constant (value 2) indicating an error occurred while running a
+     * plug-in.
+     */
     int PLUGIN_ERROR = 2;
 
-	/**
-	 * Status code constant (value 5) indicating the platform could not write some
-	 * of its metadata.
-	 */
+    /**
+     * Status code constant (value 5) indicating the platform could not write some
+     * of its metadata.
+     */
     int FAILED_WRITE_METADATA = 5;
 
 }

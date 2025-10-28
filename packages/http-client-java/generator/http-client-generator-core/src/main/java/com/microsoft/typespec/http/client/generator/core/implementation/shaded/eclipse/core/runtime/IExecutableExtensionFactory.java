@@ -51,11 +51,11 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * @see org.eclipse.core.runtime.IConfigurationElement
  */
 public interface IExecutableExtensionFactory {
-	/**
-	 * Creates and returns a new instance.
-	 *
-	 * @exception CoreException if an instance of the executable extension could not
-	 *                          be created for any reason
-	 */
-	Object create() throws CoreException;
+    /**
+     * Creates and returns a new instance.
+     *
+     * @exception CoreException if an instance of the executable extension could not
+     * be created for any reason
+     */
+    Object create() throws CoreException;
 }

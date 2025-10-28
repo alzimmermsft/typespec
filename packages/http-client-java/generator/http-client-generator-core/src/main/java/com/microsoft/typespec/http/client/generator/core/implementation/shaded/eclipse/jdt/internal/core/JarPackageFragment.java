@@ -14,23 +14,18 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Path;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IClassFile;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ICompilationUnit;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJarEntryResource;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaElement;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaModelStatusConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeConstants;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JarPackageFragmentRootInfo.PackageContent;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.DeduplicationUtil;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Util;
 
@@ -46,28 +41,8 @@ class JarPackageFragment extends PackageFragment {
 protected JarPackageFragment(PackageFragmentRoot root, String[] names) {
 	super(root, names);
 }
-/**
- * @see Openable
- */
-@Override
-protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map newElements, IResource underlyingResource) throws JavaModelException {
-	JarPackageFragmentRoot root = (JarPackageFragmentRoot) getParent();
-	JarPackageFragmentRootInfo parentInfo = (JarPackageFragmentRootInfo) root.getElementInfo();
-	PackageContent entries = parentInfo.rawPackageInfo.get(Arrays.asList(this.names));
-	if (entries == null)
-		throw newNotPresentException();
-	JarPackageFragmentInfo fragInfo = (JarPackageFragmentInfo) info;
 
-	// compute children
-	fragInfo.setChildren(computeChildren(entries.javaClasses()));
-
-	// compute non-Java resources
-	fragInfo.setNonJavaResources(computeNonJavaResources(entries.resources()));
-
-	newElements.put(this, fragInfo);
-	return true;
-}
-/**
+    /**
  * Compute the children of this package fragment. Children of jar package fragments
  * can only be IClassFile (representing .class files).
  */
@@ -158,14 +133,8 @@ private Object[] computeNonJavaResources(List<String> entryNames) {
 public boolean containsJavaResources() throws JavaModelException {
 	return ((JarPackageFragmentInfo) getElementInfo()).containsJavaResources();
 }
-/**
- * @see org.eclipse.jdt.core.IPackageFragment
- */
-@Override
-public ICompilationUnit createCompilationUnit(String cuName, String contents, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, this));
-}
-/**
+
+    /**
  * @see JavaElement
  */
 @Override

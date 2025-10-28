@@ -18,41 +18,43 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.ClassScope;
 
 public class CompletionOnMethodName extends MethodDeclaration implements CompletionNode {
-	public int selectorEnd;
+    public int selectorEnd;
 
-	public CompletionOnMethodName(CompilationResult compilationResult){
-		super(compilationResult);
-	}
+    public CompletionOnMethodName(CompilationResult compilationResult) {
+        super(compilationResult);
+    }
 
-	@Override
-	public StringBuilder print(int indent, StringBuilder output) {
+    @Override
+    public StringBuilder print(int indent, StringBuilder output) {
 
-		printIndent(indent, output);
-		output.append("<CompletionOnMethodName:"); //$NON-NLS-1$
-		printModifiers(this.modifiers, output);
-		printReturnType(0, output);
-		output.append(this.selector).append('(');
-		if (this.arguments != null) {
-			for (int i = 0; i < this.arguments.length; i++) {
-				if (i > 0) output.append(", "); //$NON-NLS-1$
-				this.arguments[i].print(0, output);
-			}
-		}
-		output.append(')');
-		if (this.thrownExceptions != null) {
-			output.append(" throws "); //$NON-NLS-1$
-			for (int i = 0; i < this.thrownExceptions.length; i++) {
-				if (i > 0) output.append(", "); //$NON-NLS-1$
-				this.thrownExceptions[i].print(0, output);
-			}
-		}
-		return output.append('>');
-	}
+        printIndent(indent, output);
+        output.append("<CompletionOnMethodName:"); //$NON-NLS-1$
+        printModifiers(this.modifiers, output);
+        printReturnType(0, output);
+        output.append(this.selector).append('(');
+        if (this.arguments != null) {
+            for (int i = 0; i < this.arguments.length; i++) {
+                if (i > 0)
+                    output.append(", "); //$NON-NLS-1$
+                this.arguments[i].print(0, output);
+            }
+        }
+        output.append(')');
+        if (this.thrownExceptions != null) {
+            output.append(" throws "); //$NON-NLS-1$
+            for (int i = 0; i < this.thrownExceptions.length; i++) {
+                if (i > 0)
+                    output.append(", "); //$NON-NLS-1$
+                this.thrownExceptions[i].print(0, output);
+            }
+        }
+        return output.append('>');
+    }
 
-	@Override
-	public void resolve(ClassScope upperScope) {
+    @Override
+    public void resolve(ClassScope upperScope) {
 
-		super.resolve(upperScope);
-		throw new CompletionNodeFound(this, upperScope);
-	}
+        super.resolve(upperScope);
+        throw new CompletionNodeFound(this, upperScope);
+    }
 }

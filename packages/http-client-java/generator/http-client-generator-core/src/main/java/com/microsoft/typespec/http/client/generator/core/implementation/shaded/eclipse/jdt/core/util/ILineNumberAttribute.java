@@ -22,22 +22,22 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface ILineNumberAttribute extends IClassFileAttribute {
 
-	/**
-	 * Answer back the line number table length as specified in
-	 * the JVM specifications.
-	 *
-	 * @return the line number table length as specified in
-	 * the JVM specifications
-	 */
-	int getLineNumberTableLength();
+    /**
+     * Answer back the line number table length as specified in
+     * the JVM specifications.
+     *
+     * @return the line number table length as specified in
+     * the JVM specifications
+     */
+    int getLineNumberTableLength();
 
-	/**
-	 * Answer back the array of pairs (start pc, line number) as specified in the
-	 * JVM specifications. Answer an empty array if none.
-	 *
-	 * @return the array of pairs (start pc, line number) as specified in the
-	 * JVM specifications. Answer an empty array if none
-	 */
-	int[][] getLineNumberTable();
+    /**
+     * Answer back the array of pairs (start pc, line number) as specified in the
+     * JVM specifications. Answer an empty array if none.
+     *
+     * @return the array of pairs (start pc, line number) as specified in the
+     * JVM specifications. Answer an empty array if none
+     */
+    int[][] getLineNumberTable();
 
 }

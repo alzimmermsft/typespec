@@ -14,36 +14,36 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.resources.projectvariables;
 
-import java.net.URI;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IContainer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.variableresolvers.PathVariableResolver;
+import java.net.URI;
 
 /**
  * Returns the location of the parent resource
  */
 public class WorkspaceParentLocationVariableResolver extends PathVariableResolver {
 
-	public static String NAME = "PARENT_LOC"; //$NON-NLS-1$
+    public static String NAME = "PARENT_LOC"; //$NON-NLS-1$
 
-	public WorkspaceParentLocationVariableResolver() {
-		// nothing
-	}
+    public WorkspaceParentLocationVariableResolver() {
+        // nothing
+    }
 
-	@Override
-	public String[] getVariableNames(String variable, IResource resource) {
-		return new String[] {NAME};
-	}
+    @Override
+    public String[] getVariableNames(String variable, IResource resource) {
+        return new String[] { NAME };
+    }
 
-	@Override
-	public String getValue(String variable, IResource resource) {
-		IContainer parent = resource.getParent();
-		if (parent != null) {
-			URI locationURI = parent.getLocationURI();
-			if (locationURI != null) {
-				return locationURI.toASCIIString();
-			}
-		}
-		return null;
-	}
+    @Override
+    public String getValue(String variable, IResource resource) {
+        IContainer parent = resource.getParent();
+        if (parent != null) {
+            URI locationURI = parent.getLocationURI();
+            if (locationURI != null) {
+                return locationURI.toASCIIString();
+            }
+        }
+        return null;
+    }
 }

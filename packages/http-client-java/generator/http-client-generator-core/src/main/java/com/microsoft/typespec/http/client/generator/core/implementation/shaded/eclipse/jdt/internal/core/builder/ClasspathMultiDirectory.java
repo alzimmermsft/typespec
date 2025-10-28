@@ -18,12 +18,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CharOperation;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.CompilationResult;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.batch.BasicModule;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.ICompilationUnit;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IModule;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.parser.Parser;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaProject;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Util;
 
@@ -137,20 +132,7 @@ public String toString() {
 		" with " + super.toString(); //$NON-NLS-1$
 }
 
-public void acceptModuleInfo(ICompilationUnit cu, Parser parser) {
-	CompilationResult compilationResult = new CompilationResult(cu, 0, 1, 10);
-	CompilationUnitDeclaration unit = parser.parse(cu, compilationResult);
-	// Request could also come in when module-info has changed or removed.
-	if (unit.isModuleInfo() && unit.moduleDeclaration != null) {
-		this.module = new BasicModule(unit.moduleDeclaration, null);
-	}
-}
-@Override
-public void setModule(IModule mod) {
-	this.module = mod;
-}
-
-public IModule module() {
+    public IModule module() {
 	return this.module;
 }
 

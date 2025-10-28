@@ -15,96 +15,96 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 public class RegistryIndexElement implements KeyedElement {
 
-	// The key on which indexing is done
-	final protected String key;
+    // The key on which indexing is done
+    final protected String key;
 
-	// Extension points matching the key
-	private RegistryIndexChildren extensionPoints;
+    // Extension points matching the key
+    private RegistryIndexChildren extensionPoints;
 
-	// Extensions matching the key
-	private RegistryIndexChildren extensions;
+    // Extensions matching the key
+    private RegistryIndexChildren extensions;
 
-	public RegistryIndexElement(String key) {
-		this.key = key;
-	}
+    public RegistryIndexElement(String key) {
+        this.key = key;
+    }
 
-	public RegistryIndexElement(String key, int[] extensionPoints, int[] extensions) {
-		this.key = key;
-		this.extensionPoints = new RegistryIndexChildren(extensionPoints);
-		this.extensions = new RegistryIndexChildren(extensions);
-	}
+    public RegistryIndexElement(String key, int[] extensionPoints, int[] extensions) {
+        this.key = key;
+        this.extensionPoints = new RegistryIndexChildren(extensionPoints);
+        this.extensions = new RegistryIndexChildren(extensions);
+    }
 
-	protected int[] getExtensions() {
-		if (extensions == null) {
-			return RegistryIndexChildren.EMPTY_ARRAY;
-		}
-		return extensions.getChildren();
-	}
+    protected int[] getExtensions() {
+        if (extensions == null) {
+            return RegistryIndexChildren.EMPTY_ARRAY;
+        }
+        return extensions.getChildren();
+    }
 
-	protected int[] getExtensionPoints() {
-		if (extensionPoints == null) {
-			return RegistryIndexChildren.EMPTY_ARRAY;
-		}
-		return extensionPoints.getChildren();
-	}
+    protected int[] getExtensionPoints() {
+        if (extensionPoints == null) {
+            return RegistryIndexChildren.EMPTY_ARRAY;
+        }
+        return extensionPoints.getChildren();
+    }
 
-	public boolean updateExtension(int id, boolean add) {
-		if (extensions == null) {
-			extensions = new RegistryIndexChildren();
-		}
+    public boolean updateExtension(int id, boolean add) {
+        if (extensions == null) {
+            extensions = new RegistryIndexChildren();
+        }
 
-		if (add) {
-			return extensions.linkChild(id);
-		}
-		return extensions.unlinkChild(id);
-	}
+        if (add) {
+            return extensions.linkChild(id);
+        }
+        return extensions.unlinkChild(id);
+    }
 
-	public boolean updateExtensions(int[] IDs, boolean add) {
-		if (extensions == null) {
-			extensions = new RegistryIndexChildren();
-		}
+    public boolean updateExtensions(int[] IDs, boolean add) {
+        if (extensions == null) {
+            extensions = new RegistryIndexChildren();
+        }
 
-		if (add) {
-			return extensions.linkChildren(IDs);
-		}
-		return extensions.unlinkChildren(IDs);
-	}
+        if (add) {
+            return extensions.linkChildren(IDs);
+        }
+        return extensions.unlinkChildren(IDs);
+    }
 
-	public boolean updateExtensionPoint(int id, boolean add) {
-		if (extensionPoints == null) {
-			extensionPoints = new RegistryIndexChildren();
-		}
+    public boolean updateExtensionPoint(int id, boolean add) {
+        if (extensionPoints == null) {
+            extensionPoints = new RegistryIndexChildren();
+        }
 
-		if (add) {
-			return extensionPoints.linkChild(id);
-		}
-		return extensionPoints.unlinkChild(id);
-	}
+        if (add) {
+            return extensionPoints.linkChild(id);
+        }
+        return extensionPoints.unlinkChild(id);
+    }
 
-	public boolean updateExtensionPoints(int[] IDs, boolean add) {
-		if (extensionPoints == null) {
-			extensionPoints = new RegistryIndexChildren();
-		}
+    public boolean updateExtensionPoints(int[] IDs, boolean add) {
+        if (extensionPoints == null) {
+            extensionPoints = new RegistryIndexChildren();
+        }
 
-		if (add) {
-			return extensionPoints.linkChildren(IDs);
-		}
-		return extensionPoints.unlinkChildren(IDs);
-	}
+        if (add) {
+            return extensionPoints.linkChildren(IDs);
+        }
+        return extensionPoints.unlinkChildren(IDs);
+    }
 
-	// Implements the KeyedElement interface
-	@Override
-	public int getKeyHashCode() {
-		return getKey().hashCode();
-	}
+    // Implements the KeyedElement interface
+    @Override
+    public int getKeyHashCode() {
+        return getKey().hashCode();
+    }
 
-	@Override
-	public Object getKey() {
-		return key;
-	}
+    @Override
+    public Object getKey() {
+        return key;
+    }
 
-	@Override
-	public boolean compare(KeyedElement other) {
-		return key.equals(((RegistryIndexElement) other).key);
-	}
+    @Override
+    public boolean compare(KeyedElement other) {
+        return key.equals(((RegistryIndexElement) other).key);
+    }
 }

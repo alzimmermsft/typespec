@@ -1,11 +1,11 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.signature.qual;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 
 /**
  * Represents a string that is a {@link BinaryName}, an {@link InternalForm}, and a {@link
@@ -14,15 +14,18 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  *
  * <p>Examples:
  *
- * <pre>{@code
+ * <pre>
+ * {@code
  * MyClass
  * MyClass$22
- * }</pre>
+ * }
+ * </pre>
  *
  * @checker_framework.manual #signature-checker Signature Checker
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
-@SubtypeOf({BinaryName.class, InternalForm.class})
-public @interface BinaryNameWithoutPackage {}
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
+@SubtypeOf({ BinaryName.class, InternalForm.class })
+public @interface BinaryNameWithoutPackage {
+}

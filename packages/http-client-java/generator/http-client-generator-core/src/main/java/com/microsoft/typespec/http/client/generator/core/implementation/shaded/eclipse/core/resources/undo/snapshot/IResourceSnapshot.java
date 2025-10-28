@@ -29,54 +29,54 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public interface IResourceSnapshot<T extends IResource> {
 
-	/**
-	 * Create a resource handle that can be used to create a resource from this
-	 * resource description. This handle can be used to create the actual
-	 * resource, or to describe the creation to a resource delta factory.
-	 *
-	 * @return the resource handle that can be used to create a resource from
-	 *         this description
-	 */
+    /**
+     * Create a resource handle that can be used to create a resource from this
+     * resource description. This handle can be used to create the actual
+     * resource, or to describe the creation to a resource delta factory.
+     *
+     * @return the resource handle that can be used to create a resource from
+     * this description
+     */
     T createResourceHandle();
 
-	/**
-	 * Get the name of this resource.
-	 *
-	 * @return the name of the Resource
-	 */
+    /**
+     * Get the name of this resource.
+     *
+     * @return the name of the Resource
+     */
     String getName();
 
     /**
-	 * Return a boolean indicating whether this resource description has enough
-	 * information to create a resource.
-	 *
-	 * @return <code>true</code> if the resource can be created, and
-	 *         <code>false</code> if it does not have enough information
-	 */
+     * Return a boolean indicating whether this resource description has enough
+     * information to create a resource.
+     *
+     * @return <code>true</code> if the resource can be created, and
+     * <code>false</code> if it does not have enough information
+     */
     boolean isValid();
 
-	/**
-	 * Record the appropriate state of this resource description using
-	 * any available resource history.
-	 *
-	 * @param monitor
-	 *            the progress monitor to be used
-	 * @throws CoreException in case of error
-	 */
+    /**
+     * Record the appropriate state of this resource description using
+     * any available resource history.
+     *
+     * @param monitor
+     * the progress monitor to be used
+     * @throws CoreException in case of error
+     */
     void recordStateFromHistory(IProgressMonitor monitor) throws CoreException;
 
-	/**
-	 * Return a boolean indicating whether this description represents an
-	 * existent resource.
-	 *
-	 * @param checkMembers
-	 *            Use <code>true</code> if members should also exist in order
-	 *            for this description to be considered existent. A value of
-	 *            <code>false</code> indicates that the existence of members
-	 *            does not matter.
-	 *
-	 * @return a boolean indicating whether this description represents an
-	 *         existent resource.
-	 */
+    /**
+     * Return a boolean indicating whether this description represents an
+     * existent resource.
+     *
+     * @param checkMembers
+     * Use <code>true</code> if members should also exist in order
+     * for this description to be considered existent. A value of
+     * <code>false</code> indicates that the existence of members
+     * does not matter.
+     *
+     * @return a boolean indicating whether this description represents an
+     * existent resource.
+     */
     boolean verifyExistence(boolean checkMembers);
 }

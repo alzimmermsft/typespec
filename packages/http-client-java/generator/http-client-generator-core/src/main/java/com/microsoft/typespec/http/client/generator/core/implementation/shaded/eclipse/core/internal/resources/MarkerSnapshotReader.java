@@ -14,41 +14,43 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.resources;
 
-import java.io.DataInputStream;
-import java.io.IOException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.utils.Messages;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.util.NLS;
+import java.io.DataInputStream;
+import java.io.IOException;
 
 public class MarkerSnapshotReader {
-	protected Workspace workspace;
+    protected Workspace workspace;
 
-	public MarkerSnapshotReader(Workspace workspace) {
-		super();
-		this.workspace = workspace;
-	}
+    public MarkerSnapshotReader(Workspace workspace) {
+        super();
+        this.workspace = workspace;
+    }
 
-	/**
-	 * Returns the appropriate reader for the given version.
-	 */
-	protected MarkerSnapshotReader getReader(int formatVersion) throws IOException {
-		switch (formatVersion) {
-			case 1 :
-				return new MarkerSnapshotReader_1(workspace);
-			case 2 :
-				return new MarkerSnapshotReader_2(workspace);
-			default :
-				throw new IOException(NLS.bind(Messages.resources_format, formatVersion));
-		}
-	}
+    /**
+     * Returns the appropriate reader for the given version.
+     */
+    protected MarkerSnapshotReader getReader(int formatVersion) throws IOException {
+        switch (formatVersion) {
+            case 1:
+                return new MarkerSnapshotReader_1(workspace);
 
-	public void read(DataInputStream input) throws IOException, CoreException {
-		int formatVersion = readVersionNumber(input);
-		MarkerSnapshotReader reader = getReader(formatVersion);
-		reader.read(input);
-	}
+            case 2:
+                return new MarkerSnapshotReader_2(workspace);
 
-	protected static int readVersionNumber(DataInputStream input) throws IOException {
-		return input.readInt();
-	}
+            default:
+                throw new IOException(NLS.bind(Messages.resources_format, formatVersion));
+        }
+    }
+
+    public void read(DataInputStream input) throws IOException, CoreException {
+        int formatVersion = readVersionNumber(input);
+        MarkerSnapshotReader reader = getReader(formatVersion);
+        reader.read(input);
+    }
+
+    protected static int readVersionNumber(DataInputStream input) throws IOException {
+        return input.readInt();
+    }
 }

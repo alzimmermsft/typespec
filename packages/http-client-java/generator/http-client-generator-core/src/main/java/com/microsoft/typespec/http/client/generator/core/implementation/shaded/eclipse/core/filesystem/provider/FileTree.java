@@ -26,30 +26,31 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public abstract class FileTree implements IFileTree {
 
-	/**
-	 * The root of the file tree
-	 */
-	protected IFileStore treeRoot;
+    /**
+     * The root of the file tree
+     */
+    protected IFileStore treeRoot;
 
-	/**
-	 * Creates a new file tree with tree root as the root
-	 * @param treeRoot	the file store that is to act as the root of their FileTree
-	 */
-	public FileTree(IFileStore treeRoot) {
-		this.treeRoot = treeRoot;
-	}
+    /**
+     * Creates a new file tree with tree root as the root
+     * 
+     * @param treeRoot the file store that is to act as the root of their FileTree
+     */
+    public FileTree(IFileStore treeRoot) {
+        this.treeRoot = treeRoot;
+    }
 
-	@Override
-	public IFileStore getTreeRoot() {
-		return treeRoot;
-	}
+    @Override
+    public IFileStore getTreeRoot() {
+        return treeRoot;
+    }
 
-	@Override
-	public abstract IFileInfo[] getChildInfos(IFileStore store);
+    @Override
+    public abstract IFileInfo[] getChildInfos(IFileStore store);
 
-	@Override
-	public abstract IFileInfo getFileInfo(IFileStore store);
+    @Override
+    public abstract IFileInfo getFileInfo(IFileStore store);
 
-	@Override
-	public abstract IFileStore[] getChildStores(IFileStore store);
+    @Override
+    public abstract IFileStore[] getChildStores(IFileStore store);
 }

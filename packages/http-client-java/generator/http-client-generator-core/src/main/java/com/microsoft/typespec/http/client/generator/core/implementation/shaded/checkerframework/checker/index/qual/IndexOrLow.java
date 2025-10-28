@@ -13,11 +13,13 @@ import java.lang.annotation.Target;
  * href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html#indexOf(java.lang.String)">
  * {@code String.indexOf(String)}</a> method is declared as
  *
- * <pre><code>
+ * <pre>
+ * <code>
  *   class String {
  *    {@literal @}IndexOrLow("this") int indexOf(String str) { ... }
  *   }
- * </code></pre>
+ * </code>
+ * </pre>
  *
  * <p>Writing {@code @IndexOrLow("arr")} is equivalent to writing {@link
  * GTENegativeOne @GTENegativeOne} {@link LTLengthOf @LTLengthOf("arr")}, and that is how it is
@@ -30,8 +32,8 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
 public @interface IndexOrLow {
-  /** Sequences that the annotated expression is a valid index for (or it's -1). */
-  String[] value();
+    /** Sequences that the annotated expression is a valid index for (or it's -1). */
+    String[] value();
 }

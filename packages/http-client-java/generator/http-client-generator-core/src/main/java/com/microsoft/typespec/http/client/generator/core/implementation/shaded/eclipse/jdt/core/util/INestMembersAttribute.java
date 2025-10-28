@@ -18,21 +18,21 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface INestMembersAttribute extends IClassFileAttribute {
 
-	/**
-	 * Answer back the number of nest members as specified in
-	 * the JVM specifications.
-	 *
-	 * @return the number of nest members as specified in
-	 * the JVM specifications
-	 */
-	int getNumberOfNestMembers();
+    /**
+     * Answer back the number of nest members as specified in
+     * the JVM specifications.
+     *
+     * @return the number of nest members as specified in
+     * the JVM specifications
+     */
+    int getNumberOfNestMembers();
 
-	/**
-	 * Answer back the array of nest member attribute entries as specified in
-	 * the JVM specifications, or an empty array if none.
-	 *
-	 * @return the array of nest member attribute entries as specified in
-	 * the JVM specifications, or an empty array if none
-	 */
-	INestMemberAttributeEntry[] getNestMemberAttributesEntries();
+    /**
+     * Answer back the array of nest member attribute entries as specified in
+     * the JVM specifications, or an empty array if none.
+     *
+     * @return the array of nest member attribute entries as specified in
+     * the JVM specifications, or an empty array if none
+     */
+    INestMemberAttributeEntry[] getNestMemberAttributesEntries();
 }

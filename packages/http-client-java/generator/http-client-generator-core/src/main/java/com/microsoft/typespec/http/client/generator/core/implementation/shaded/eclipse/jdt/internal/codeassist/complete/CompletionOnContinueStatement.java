@@ -20,30 +20,30 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class CompletionOnContinueStatement extends ContinueStatement implements CompletionNode {
 
-	public char[][] possibleLabels;
+    public char[][] possibleLabels;
 
-	public CompletionOnContinueStatement(char[] l, int s, int e, char[][] possibleLabels) {
-		super(l, s, e);
-		this.possibleLabels = possibleLabels;
-	}
+    public CompletionOnContinueStatement(char[] l, int s, int e, char[][] possibleLabels) {
+        super(l, s, e);
+        this.possibleLabels = possibleLabels;
+    }
 
-	@Override
-	public FlowInfo analyseCode(BlockScope currentScope,
-			FlowContext flowContext, FlowInfo flowInfo) {
-		// Is never called
-		return null;
-	}
+    @Override
+    public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
+        // Is never called
+        return null;
+    }
 
-	@Override
-	public void resolve(BlockScope scope) {
-		throw new CompletionNodeFound(this, scope);
-	}
-	@Override
-	public StringBuilder printStatement(int indent, StringBuilder output) {
-		printIndent(indent, output);
-		output.append("continue "); //$NON-NLS-1$
-		output.append("<CompleteOnLabel:"); //$NON-NLS-1$
-		output.append(this.label);
-		return output.append(">;"); //$NON-NLS-1$
-	}
+    @Override
+    public void resolve(BlockScope scope) {
+        throw new CompletionNodeFound(this, scope);
+    }
+
+    @Override
+    public StringBuilder printStatement(int indent, StringBuilder output) {
+        printIndent(indent, output);
+        output.append("continue "); //$NON-NLS-1$
+        output.append("<CompleteOnLabel:"); //$NON-NLS-1$
+        output.append(this.label);
+        return output.append(">;"); //$NON-NLS-1$
+    }
 }

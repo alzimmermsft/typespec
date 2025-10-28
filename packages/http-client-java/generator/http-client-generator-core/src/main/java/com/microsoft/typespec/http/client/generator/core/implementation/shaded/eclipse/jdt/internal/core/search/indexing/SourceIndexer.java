@@ -161,7 +161,7 @@ public class SourceIndexer extends AbstractIndexer implements ITypeRequestor, Su
 	}
 
 	public void resolveDocument() {
-		if (usedDomBasedIndexing() && this.dom != null && getUnit() instanceof org.eclipse.jdt.internal.core.CompilationUnit unit) {
+		if (usedDomBasedIndexing() && this.dom != null && getUnit() instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.CompilationUnit unit) {
 			resolveDocumentDomImpl(unit);
 		} else {
 			try {
@@ -240,7 +240,7 @@ public class SourceIndexer extends AbstractIndexer implements ITypeRequestor, Su
 			public boolean visit(MethodDeclaration node) {
 				node.setJavadoc(null);
 				if (node.getParent() instanceof AbstractTypeDeclaration type &&
-					type.getParent() instanceof org.eclipse.jdt.core.dom.CompilationUnit) {
+					type.getParent() instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.dom.CompilationUnit) {
 					// reset
 					this.requiresBinding = false;
 				}
@@ -250,7 +250,7 @@ public class SourceIndexer extends AbstractIndexer implements ITypeRequestor, Su
 			public void endVisit(MethodDeclaration node) {
 				if (!this.requiresBinding &&
 					node.getParent() instanceof AbstractTypeDeclaration type &&
-					type.getParent() instanceof org.eclipse.jdt.core.dom.CompilationUnit &&
+					type.getParent() instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.dom.CompilationUnit &&
 					node.getBody() != null) {
 					node.getBody().statements().clear();
 				}
@@ -331,9 +331,8 @@ public class SourceIndexer extends AbstractIndexer implements ITypeRequestor, Su
 			}
 			for (int i = 0, length = this.cud.functionalExpressionsCount; i < length; i++) {
 				FunctionalExpression expression = this.cud.functionalExpressions[i];
-				if (expression instanceof LambdaExpression) {
-					LambdaExpression lambdaExpression = (LambdaExpression) expression;
-					if (lambdaExpression.binding != null && lambdaExpression.binding.isValidBinding()) {
+				if (expression instanceof LambdaExpression lambdaExpression) {
+                    if (lambdaExpression.binding != null && lambdaExpression.binding.isValidBinding()) {
 						final char[] superinterface = lambdaExpression.resolvedType.sourceName();
 						if (DEBUG) {
 							trace('\t' + new String(superinterface) + '.' +
@@ -428,7 +427,7 @@ public class SourceIndexer extends AbstractIndexer implements ITypeRequestor, Su
 							if (SourceIndexer.this.document.shouldIndexResolvedDocument()) {
 								return false; // interrupt
 							}
-							if (node instanceof MethodReference || node instanceof org.eclipse.jdt.core.dom.LambdaExpression) {
+							if (node instanceof MethodReference || node instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.dom.LambdaExpression) {
 								SourceIndexer.this.document.requireIndexingResolvedDocument();
 								return false;
 							}

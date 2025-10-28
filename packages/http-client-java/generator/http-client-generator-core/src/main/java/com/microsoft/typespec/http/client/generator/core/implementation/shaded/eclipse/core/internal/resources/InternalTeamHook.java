@@ -18,19 +18,19 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.team.TeamHook;
 
 /**
- * The internal abstract superclass of all {@link TeamHook} implementations.  This superclass
+ * The internal abstract superclass of all {@link TeamHook} implementations. This superclass
  * provides access to internal non-API methods that are not available from the API
  * package. Plugin developers should not subclass this class.
  *
  * @see TeamHook
  */
 public class InternalTeamHook {
-	/**
-	 * Internal implementation of {@link TeamHook#setRuleFactory(IProject, IResourceRuleFactory)}.
-	 */
-	@SuppressWarnings("javadoc") // Suppress the "method in not visible" warning.
-	protected void setRuleFactory(IProject project, IResourceRuleFactory factory) {
-		Workspace workspace = ((Workspace) project.getWorkspace());
-		((Rules) workspace.getRuleFactory()).setRuleFactory(project, factory);
-	}
+    /**
+     * Internal implementation of {@link TeamHook#setRuleFactory(IProject, IResourceRuleFactory)}.
+     */
+    @SuppressWarnings("javadoc") // Suppress the "method in not visible" warning.
+    protected void setRuleFactory(IProject project, IResourceRuleFactory factory) {
+        Workspace workspace = ((Workspace) project.getWorkspace());
+        ((Rules) workspace.getRuleFactory()).setRuleFactory(project, factory);
+    }
 }

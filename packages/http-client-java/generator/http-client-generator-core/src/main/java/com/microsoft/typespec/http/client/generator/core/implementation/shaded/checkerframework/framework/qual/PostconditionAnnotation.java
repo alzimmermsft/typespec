@@ -12,11 +12,11 @@ import java.lang.annotation.Target;
  * type-specialized version of {@link EnsuresQualifier} or of {@link EnsuresQualifier.List}.
  *
  * <ul>
- *   <li>If E is a type-specialized version of {@link EnsuresQualifier}, its {@code value} element
- *       must be an array of {@code String}s, analogous to {@link EnsuresQualifier#expression()}.
- *   <li>If E is a type-specialized version of {@link EnsuresQualifier.List}, its {@code value}
- *       element must be an array of postcondition annotations, analogous to {@link
- *       EnsuresQualifier.List#value()}.
+ * <li>If E is a type-specialized version of {@link EnsuresQualifier}, its {@code value} element
+ * must be an array of {@code String}s, analogous to {@link EnsuresQualifier#expression()}.
+ * <li>If E is a type-specialized version of {@link EnsuresQualifier.List}, its {@code value}
+ * element must be an array of postcondition annotations, analogous to {@link
+ * EnsuresQualifier.List#value()}.
  * </ul>
  *
  * <p>The established postcondition P has type specified by the {@code qualifier} field of this
@@ -28,16 +28,19 @@ import java.lang.annotation.Target;
  * element in P.
  *
  * <p>For example, the following code declares a postcondition annotation for the {@link
- * com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.common.value.qual.MinLen} qualifier:
+ * com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.common.value.qual.MinLen}
+ * qualifier:
  *
- * <pre><code>
+ * <pre>
+ * <code>
  * {@literal @}PostconditionAnnotation(qualifier = MinLen.class)
  * {@literal @}Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
  *  public {@literal @}interface EnsuresMinLen {
  *    String[] value();
  *    {@literal @}QualifierArgument("value")
  *    int targetValue() default 0;
- * </code></pre>
+ * </code>
+ * </pre>
  *
  * The {@code value} element holds the expressions to which the qualifier applies and {@code
  * targetValue} holds the value for the {@code value} argument of {@link
@@ -46,24 +49,26 @@ import java.lang.annotation.Target;
  * <p>The following code then uses the annotation on a method that ensures {@code field} to be
  * {@code @MinLen(2)} upon return.
  *
- * <pre><code>
+ * <pre>
+ * <code>
  * {@literal @}EnsuresMinLen(value = "field", targetValue = 2")
  *  public void setField(String argument) {
  *    field = "(" + argument + ")";
  *  }
- * </code></pre>
+ * </code>
+ * </pre>
  *
  * @see EnsuresQualifier
  * @see QualifierArgument
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.ANNOTATION_TYPE})
+@Target({ ElementType.ANNOTATION_TYPE })
 public @interface PostconditionAnnotation {
-  /**
-   * The qualifier that will be established as a postcondition.
-   *
-   * <p>This element is analogous to {@link EnsuresQualifier#qualifier()}.
-   */
-  Class<? extends Annotation> qualifier();
+    /**
+     * The qualifier that will be established as a postcondition.
+     *
+     * <p>This element is analogous to {@link EnsuresQualifier#qualifier()}.
+     */
+    Class<? extends Annotation> qualifier();
 }

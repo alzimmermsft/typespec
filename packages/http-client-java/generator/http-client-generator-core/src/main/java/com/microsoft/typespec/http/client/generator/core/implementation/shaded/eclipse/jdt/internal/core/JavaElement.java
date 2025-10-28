@@ -209,11 +209,6 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	public ASTNode findNode(CompilationUnit ast) {
 		return null; // works only inside a compilation unit
 	}
-	/**
-	 * Generates the element infos for this element, its ancestors (if they are not opened) and its children (if it is an Openable).
-	 * Puts the newly created element info in the given map.
-	 */
-	protected abstract void generateInfos(IElementInfo info, Map<IJavaElement, IElementInfo> newElements, IProgressMonitor pm) throws JavaModelException;
 
 	/**
 	 * @see IJavaElement

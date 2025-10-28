@@ -38,12 +38,9 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Path;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.SubMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.URIUtil;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IClasspathEntry;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaProject;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaCore;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CharOperation;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.search.IJavaSearchScope;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.search.SearchDocument;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.search.SearchEngine;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.search.SearchParticipant;
@@ -54,9 +51,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.SimpleLookupTable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.SimpleSet;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.ClasspathEntry;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaModel;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaModelManager;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaProject;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.index.DiskIndex;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.index.EntryResult;
@@ -65,8 +60,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.index.IndexLocation;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.index.IndexQualifier;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.index.MetaIndex;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.search.BasicSearchEngine;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.search.PatternSearchJob;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.search.indexing.QualifierQuery.QueryCategory;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.search.processing.IJob;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.search.processing.JobManager;
@@ -191,37 +184,8 @@ public void addSource(IFile resource, IPath containerPath, SourceElementParser p
 	IndexLocation indexLocation = computeIndexLocation(containerPath);
 	scheduleDocumentIndexing(document, containerPath, indexLocation, participant);
 }
-/**
- * Removes unused indexes from disk.
- */
-public synchronized void cleanUpIndexes() {
-	SimpleSet knownPaths = new SimpleSet();
-	if(!DISABLE_META_INDEX) {
-		knownPaths.add(computeIndexLocation(new Path(INDEX_META_CONTAINER)));
-	}
-	IJavaSearchScope scope = BasicSearchEngine.createWorkspaceScope();
-	PatternSearchJob job = new PatternSearchJob(null, SearchEngine.getDefaultSearchParticipant(), scope, null);
-	Index[] selectedIndexes = job.getIndexes(null);
-	for (Index selectedIndex : selectedIndexes) {
-		IndexLocation IndexLocation = selectedIndex.getIndexLocation();
-		knownPaths.add(IndexLocation);
-	}
 
-	if (this.indexStates != null) {
-		Object[] keys = this.indexStates.keyTable;
-		IndexLocation[] locations = new IndexLocation[this.indexStates.elementSize];
-		int count = 0;
-		for (Object o : keys) {
-			IndexLocation key = (IndexLocation) o;
-			if (key != null && !knownPaths.includes(key))
-				locations[count++] = key;
-		}
-		if (count > 0)
-			removeIndexesState(locations);
-	}
-	deleteIndexFiles(knownPaths, null);
-}
-/**
+    /**
  * Compute the pre-built index location for a specified URL
  */
 public synchronized IndexLocation computeIndexLocation(IPath containerPath, final URL newIndexURL) {
@@ -613,45 +577,9 @@ public void indexResolvedDocument(SearchDocument searchDocument, SearchParticipa
 		monitor.exitWrite();
 	}
 }
-/**
- * Trigger addition of the entire content of a project
- * Note: the actual operation is performed in background
- */
-public void indexAll(IProject project) {
-	// New index is disabled, see bug 544898
-	// this.indexer.makeDirty(project);
-	if (JavaCore.getPlugin() == null) return;
 
-	try {
-		// Disable index manager to avoid synchronization lock contention when adding new index requests to the queue.
-		disable();
-
-		// Also request indexing of binaries on the classpath
-		// determine the new children
-		try {
-			JavaModel model = JavaModelManager.getJavaModelManager().getJavaModel();
-			JavaProject javaProject = (JavaProject) model.getJavaProject(project);
-			// only consider immediate libraries - each project will do the same
-			// NOTE: force to resolve CP variables before calling indexer - 19303, so that initializers
-			// will be run in the current thread.
-			IClasspathEntry[] entries = javaProject.getResolvedClasspath();
-			for (IClasspathEntry entry : entries) {
-				if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY)
-					indexLibrary(entry.getPath(), project, ((ClasspathEntry)entry).getLibraryIndexLocation());
-			}
-		} catch(JavaModelException e){ // cannot retrieve classpath info
-		}
-
-		// check if the same request is not already in the queue
-		IndexRequest request = new IndexAllProject(project, this);
-		requestIfNotWaiting(request);
-	} finally {
-		// Enable index manager after adding all new index requests to the queue.
-		enable();
-	}
-}
-public void indexLibrary(IPath path, IProject requestingProject, URL indexURL) {
-	this.indexLibrary(path, requestingProject, indexURL, false);
+    public void indexLibrary(IPath path, URL indexURL) {
+	this.indexLibrary(path, indexURL, false);
 }
 
 private IndexRequest getRequest(Object target, IPath jPath, IndexLocation indexFile, IndexManager manager, boolean updateIndex) {
@@ -663,7 +591,7 @@ private IndexRequest getRequest(Object target, IPath jPath, IndexLocation indexF
  * Trigger addition of a library to an index
  * Note: the actual operation is performed in background
  */
-public void indexLibrary(IPath path, IProject requestingProject, URL indexURL, final boolean updateIndex) {
+public void indexLibrary(IPath path, URL indexURL, final boolean updateIndex) {
 	// New index is disabled, see bug 544898
 	// this.indexer.makeWorkspacePathDirty(path);
 	// requestingProject is no longer used to cancel jobs but leave it here just in case
@@ -898,92 +826,8 @@ void removeFromMetaIndex(Index index, File indexFile, IPath containerPath) {
 		}
 	}
 }
-/**
- * Removes all indexes whose paths start with (or are equal to) the given path.
- */
-public void removeIndexPath(IPath path) {
-	List<String> affectedIndexes = new ArrayList<>();
 
-	synchronized (this) {
-		if (VERBOSE || DEBUG)
-			trace("removing index path " + path); //$NON-NLS-1$
-		// New index is disabled, see bug 544898
-		// this.indexer.makeWorkspacePathDirty(path);
-		Object[] keyTable = this.indexes.keyTable;
-		Object[] valueTable = this.indexes.valueTable;
-		IndexLocation[] locations = null;
-		int max = this.indexes.elementSize;
-		int count = 0;
-		for (int i = 0, l = keyTable.length; i < l; i++) {
-			IndexLocation indexLocation = (IndexLocation) keyTable[i];
-			if (indexLocation == null)
-				continue;
-			if (indexLocation.startsWith(path)) {
-				Index index = (Index) valueTable[i];
-				affectedIndexes.add(indexLocation.fileName());
-				if (!DISABLE_META_INDEX) {
-					this.metaIndexUpdates.remove(index);
-				}
-				index.monitor = null;
-				if (locations == null)
-					locations = new IndexLocation[max];
-				locations[count++] = indexLocation;
-				if (this.indexStates.get(indexLocation) == REUSE_STATE) {
-					indexLocation.close();
-				} else {
-					if (DEBUG)
-						trace("removing index file " + indexLocation); //$NON-NLS-1$
-					indexLocation.delete();
-				}
-			} else {
-				max--;
-			}
-		}
-		if (locations != null) {
-			for (int i = 0; i < count; i++)
-				this.indexes.removeKey(locations[i]);
-			removeIndexesState(locations);
-			if (this.participantsContainers != null) {
-				boolean update = false;
-				for (int i = 0; i < count; i++) {
-					if (this.participantsContainers.get(locations[i]) != null) {
-						update = true;
-						this.participantsContainers.removeKey(locations[i]);
-					}
-				}
-				if (update)
-					writeParticipantsIndexNamesFile();
-			}
-		}
-	}
-	affectedIndexes.forEach(in -> updateMetaIndex(in, Collections.emptyList()));
-}
-/**
- * Removes all indexes whose paths start with (or are equal to) the given path.
- */
-public void removeIndexFamily(IPath path) {
-	// New index is disabled, see bug 544898
-	// this.indexer.makeWorkspacePathDirty(path);
-	// only finds cached index files... shutdown removes all non-cached index files
-	List<IPath> toRemove = null;
-	synchronized (this) {
-		Object[] containerPaths = this.indexLocations.keyTable;
-		for (Object o : containerPaths) {
-			IPath containerPath = (IPath) o;
-			if (containerPath == null)
-				continue;
-			if (path.isPrefixOf(containerPath)) {
-				if (toRemove == null)
-					toRemove = new ArrayList<>();
-				toRemove.add(containerPath);
-			}
-		}
-	}
-	if (toRemove != null)
-		for (IPath p : toRemove)
-			removeIndex(p);
-}
-/**
+    /**
  * Remove the content of the given source folder from the index.
  */
 public void removeSourceFolderFromIndex(JavaProject javaProject, IPath sourceFolder, char[][] inclusionPatterns, char[][] exclusionPatterns) {
@@ -1288,25 +1132,8 @@ private void readParticipantsIndexNamesFile() {
 	this.participantsContainers = containers;
 	return;
 }
-private synchronized void removeIndexesState(IndexLocation[] locations) {
-	getIndexStates(); // ensure the states are initialized
-	int length = locations.length;
-	boolean changed = false;
-	for (int i=0; i<length; i++) {
-		if (locations[i] == null) continue;
-		if ((this.indexStates.removeKey(locations[i]) != null)) {
-			changed = true;
-			if (VERBOSE) {
-				trace("-> index state updated to: ? for: "+locations[i]); //$NON-NLS-1$
-			}
-		}
-	}
-	if (!changed) return;
 
-	writeSavedIndexNamesFile();
-	writeIndexMapFile();
-}
-private synchronized void updateIndexState(IndexLocation indexLocation, Integer indexState) {
+    private synchronized void updateIndexState(IndexLocation indexLocation, Integer indexState) {
 	if (indexLocation == null)
 		throw new IllegalArgumentException();
 

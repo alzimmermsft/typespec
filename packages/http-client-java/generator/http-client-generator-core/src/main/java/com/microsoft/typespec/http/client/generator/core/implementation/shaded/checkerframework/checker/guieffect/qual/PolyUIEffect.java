@@ -14,5 +14,6 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.FIELD})
-public @interface PolyUIEffect {}
+@Target({ ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.FIELD })
+public @interface PolyUIEffect {
+}

@@ -10,14 +10,13 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.runtime;
 
-import org.w3c.dom.Document;
-
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.TransformerFactory;
+import org.w3c.dom.Document;
 
 /**
  * XML processing which prohibits external entities.
@@ -25,88 +24,89 @@ import javax.xml.transform.TransformerFactory;
  * @see <a href="https://rules.sonarsource.com/java/RSPEC-2755/">RSPEC-2755</a>
  */
 public class XmlProcessorFactory {
-	private XmlProcessorFactory() {
-		// static Utility only
-	}
+    private XmlProcessorFactory() {
+        // static Utility only
+    }
 
-	// using these factories is synchronized with creating & configuring them
-	// potentially concurrently in another thread:
-	private static final DocumentBuilderFactory DOCUMENT_BUILDER_FACTORY_ERROR_ON_DOCTYPE = createDocumentBuilderFactoryWithErrorOnDOCTYPE();
-
-	/**
-	 * Creates TransformerFactory which throws TransformerException when detecting
-	 * external entities.
-	 *
-	 * @return javax.xml.transform.TransformerFactory
-	 */
-	public static TransformerFactory createTransformerFactoryWithErrorOnDOCTYPE() {
-		TransformerFactory factory = TransformerFactory.newInstance();
-		// prohibit the use of all protocols by external entities:
-		factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, ""); //$NON-NLS-1$
-		factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, ""); //$NON-NLS-1$
-		return factory;
-	}
-
-	/**
-	 * Creates DocumentBuilderFactory which throws SAXParseException when detecting
-	 * external entities. It's magnitudes faster to call
-	 * {@link #createDocumentBuilderWithErrorOnDOCTYPE()}.
-	 *
-	 * @return javax.xml.parsers.DocumentBuilderFactory
-	 */
-	public static synchronized DocumentBuilderFactory createDocumentBuilderFactoryWithErrorOnDOCTYPE() {
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		// completely disable DOCTYPE declaration:
-		try {
-			factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true); //$NON-NLS-1$
-		} catch (ParserConfigurationException e) {
-			throw new RuntimeException(e.getMessage(), e);
-		}
-		return factory;
-	}
+    // using these factories is synchronized with creating & configuring them
+    // potentially concurrently in another thread:
+    private static final DocumentBuilderFactory DOCUMENT_BUILDER_FACTORY_ERROR_ON_DOCTYPE
+        = createDocumentBuilderFactoryWithErrorOnDOCTYPE();
 
     /**
-	 * Creates DocumentBuilder which throws SAXParseException when detecting
-	 * external entities. The builder is not thread safe.
-	 *
-	 * @return javax.xml.parsers.DocumentBuilder
-	 */
-	public static synchronized DocumentBuilder createDocumentBuilderWithErrorOnDOCTYPE()
-			throws ParserConfigurationException {
-		return DOCUMENT_BUILDER_FACTORY_ERROR_ON_DOCTYPE.newDocumentBuilder();
-	}
+     * Creates TransformerFactory which throws TransformerException when detecting
+     * external entities.
+     *
+     * @return javax.xml.transform.TransformerFactory
+     */
+    public static TransformerFactory createTransformerFactoryWithErrorOnDOCTYPE() {
+        TransformerFactory factory = TransformerFactory.newInstance();
+        // prohibit the use of all protocols by external entities:
+        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, ""); //$NON-NLS-1$
+        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, ""); //$NON-NLS-1$
+        return factory;
+    }
 
     /**
-	 * Creates DocumentBuilderFactory which throws SAXParseException when detecting
-	 * external entities.
-	 *
-	 * @param awareness true if the parser produced by this code will provide
-	 *                  support for XML namespaces; false otherwise.
-	 * @return javax.xml.parsers.DocumentBuilderFactory
-	 */
-	public static synchronized SAXParserFactory createSAXFactoryWithErrorOnDOCTYPE(boolean awareness) {
-		SAXParserFactory f = SAXParserFactory.newInstance();
-		if (awareness) {
-			f.setNamespaceAware(true);
-		}
-		try {
-			// force org.xml.sax.SAXParseException for any DOCTYPE:
-			f.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true); //$NON-NLS-1$
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		return f;
-	}
+     * Creates DocumentBuilderFactory which throws SAXParseException when detecting
+     * external entities. It's magnitudes faster to call
+     * {@link #createDocumentBuilderWithErrorOnDOCTYPE()}.
+     *
+     * @return javax.xml.parsers.DocumentBuilderFactory
+     */
+    public static synchronized DocumentBuilderFactory createDocumentBuilderFactoryWithErrorOnDOCTYPE() {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        // completely disable DOCTYPE declaration:
+        try {
+            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true); //$NON-NLS-1$
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+        return factory;
+    }
 
     /**
-	 * Obtain a new instance of a DOM {@link Document} object to build a DOM tree
-	 * with.
-	 *
-	 * @return A new instance of a DOM Document object.
-	 * @see javax.xml.parsers.DocumentBuilder#newDocument()
-	 */
-	public static Document newDocumentWithErrorOnDOCTYPE() throws ParserConfigurationException {
-		return createDocumentBuilderWithErrorOnDOCTYPE().newDocument();
-	}
+     * Creates DocumentBuilder which throws SAXParseException when detecting
+     * external entities. The builder is not thread safe.
+     *
+     * @return javax.xml.parsers.DocumentBuilder
+     */
+    public static synchronized DocumentBuilder createDocumentBuilderWithErrorOnDOCTYPE()
+        throws ParserConfigurationException {
+        return DOCUMENT_BUILDER_FACTORY_ERROR_ON_DOCTYPE.newDocumentBuilder();
+    }
+
+    /**
+     * Creates DocumentBuilderFactory which throws SAXParseException when detecting
+     * external entities.
+     *
+     * @param awareness true if the parser produced by this code will provide
+     * support for XML namespaces; false otherwise.
+     * @return javax.xml.parsers.DocumentBuilderFactory
+     */
+    public static synchronized SAXParserFactory createSAXFactoryWithErrorOnDOCTYPE(boolean awareness) {
+        SAXParserFactory f = SAXParserFactory.newInstance();
+        if (awareness) {
+            f.setNamespaceAware(true);
+        }
+        try {
+            // force org.xml.sax.SAXParseException for any DOCTYPE:
+            f.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true); //$NON-NLS-1$
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return f;
+    }
+
+    /**
+     * Obtain a new instance of a DOM {@link Document} object to build a DOM tree
+     * with.
+     *
+     * @return A new instance of a DOM Document object.
+     * @see javax.xml.parsers.DocumentBuilder#newDocument()
+     */
+    public static Document newDocumentWithErrorOnDOCTYPE() throws ParserConfigurationException {
+        return createDocumentBuilderWithErrorOnDOCTYPE().newDocument();
+    }
 
 }

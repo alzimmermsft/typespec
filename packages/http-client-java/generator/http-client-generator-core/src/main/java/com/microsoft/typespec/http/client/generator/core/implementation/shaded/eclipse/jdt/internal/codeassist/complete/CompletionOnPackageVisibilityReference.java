@@ -39,17 +39,18 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class CompletionOnPackageVisibilityReference extends CompletionOnImportReference {
 
-	String pkgName;
-	public CompletionOnPackageVisibilityReference(char[][] ident, long[] pos) {
-		super(ident, pos, 0);
-		this.pkgName = new String(CharOperation.concatWith(ident, '.'));
-	}
+    String pkgName;
 
-	@Override
-	public StringBuilder print(int indent, StringBuilder output) {
-		printIndent(indent, output).append("<CompleteOnPackageVisibilityReference:"); //$NON-NLS-1$
-		output.append(this.pkgName);
-		return output.append('>');
-	}
+    public CompletionOnPackageVisibilityReference(char[][] ident, long[] pos) {
+        super(ident, pos, 0);
+        this.pkgName = new String(CharOperation.concatWith(ident, '.'));
+    }
+
+    @Override
+    public StringBuilder print(int indent, StringBuilder output) {
+        printIndent(indent, output).append("<CompleteOnPackageVisibilityReference:"); //$NON-NLS-1$
+        output.append(this.pkgName);
+        return output.append('>');
+    }
 
 }

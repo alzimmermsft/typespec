@@ -1,15 +1,15 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.interning.qual;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.DefaultFor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.LiteralKind;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.QualifierForLiterals;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.TypeKind;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Indicates that a variable has been interned, i.e., that the variable refers to the canonical
@@ -29,18 +29,18 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
 @SubtypeOf(UnknownInterned.class)
-@QualifierForLiterals({LiteralKind.PRIMITIVE, LiteralKind.STRING}) // everything but NULL
+@QualifierForLiterals({ LiteralKind.PRIMITIVE, LiteralKind.STRING }) // everything but NULL
 @DefaultFor(
     typeKinds = {
-      TypeKind.BOOLEAN,
-      TypeKind.BYTE,
-      TypeKind.CHAR,
-      TypeKind.DOUBLE,
-      TypeKind.FLOAT,
-      TypeKind.INT,
-      TypeKind.LONG,
-      TypeKind.SHORT
-    })
-public @interface Interned {}
+        TypeKind.BOOLEAN,
+        TypeKind.BYTE,
+        TypeKind.CHAR,
+        TypeKind.DOUBLE,
+        TypeKind.FLOAT,
+        TypeKind.INT,
+        TypeKind.LONG,
+        TypeKind.SHORT })
+public @interface Interned {
+}

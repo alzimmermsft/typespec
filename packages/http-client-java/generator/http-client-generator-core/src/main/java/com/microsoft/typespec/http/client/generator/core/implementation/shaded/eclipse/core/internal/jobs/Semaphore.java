@@ -17,74 +17,74 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import java.util.Objects;
 
 public class Semaphore {
-	protected long notifications;
-	protected Runnable runnable;
-	private static final int NANOS_IN_MS = 1_000_000;
+    protected long notifications;
+    protected Runnable runnable;
+    private static final int NANOS_IN_MS = 1_000_000;
 
-	public Semaphore(Runnable runnable) {
-		this.runnable = runnable;
-		notifications = 0;
-	}
+    public Semaphore(Runnable runnable) {
+        this.runnable = runnable;
+        notifications = 0;
+    }
 
-	/**
-	 * Attempts to acquire this semaphore.  Returns true if it was successfully acquired,
-	 * and false otherwise.
-	 */
-	public synchronized boolean acquire(long delay) throws InterruptedException {
-		if (Thread.interrupted()) {
-			throw new InterruptedException();
-		}
-		long start = System.nanoTime();
-		long timeLeft = delay;
-		while (true) {
-			if (notifications > 0) {
-				notifications--;
-				return true;
-			}
-			if (timeLeft <= 0) {
-				return false;
-			}
-			wait(timeLeft);
-			timeLeft = ((start - System.nanoTime()) / NANOS_IN_MS) + delay;
-		}
-	}
+    /**
+     * Attempts to acquire this semaphore. Returns true if it was successfully acquired,
+     * and false otherwise.
+     */
+    public synchronized boolean acquire(long delay) throws InterruptedException {
+        if (Thread.interrupted()) {
+            throw new InterruptedException();
+        }
+        long start = System.nanoTime();
+        long timeLeft = delay;
+        while (true) {
+            if (notifications > 0) {
+                notifications--;
+                return true;
+            }
+            if (timeLeft <= 0) {
+                return false;
+            }
+            wait(timeLeft);
+            timeLeft = ((start - System.nanoTime()) / NANOS_IN_MS) + delay;
+        }
+    }
 
-	/**
-	 * Attempt to acquire the semaphore without waiting.
-	 * Returns true if successfully acquired, false otherwise.
-	 */
-	public synchronized boolean attempt() {
-		if (notifications > 0) {
-			notifications--;
-			return true;
-		}
-		return false;
-	}
+    /**
+     * Attempt to acquire the semaphore without waiting.
+     * Returns true if successfully acquired, false otherwise.
+     */
+    public synchronized boolean attempt() {
+        if (notifications > 0) {
+            notifications--;
+            return true;
+        }
+        return false;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (!(obj instanceof Semaphore)) {
-			return false;
-		}
-		return (runnable == ((Semaphore) obj).runnable);
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof Semaphore)) {
+            return false;
+        }
+        return (runnable == ((Semaphore) obj).runnable);
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(runnable);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(runnable);
+    }
 
-	public synchronized void release() {
-		notifications++;
-		notifyAll();
-	}
+    public synchronized void release() {
+        notifications++;
+        notifyAll();
+    }
 
-	// for debug only
-	@Override
-	public String toString() {
-		return "Semaphore(" + runnable + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-	}
+    // for debug only
+    @Override
+    public String toString() {
+        return "Semaphore(" + runnable + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+    }
 }

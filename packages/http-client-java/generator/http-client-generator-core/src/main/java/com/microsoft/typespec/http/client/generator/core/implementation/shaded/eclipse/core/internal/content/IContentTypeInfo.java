@@ -19,14 +19,14 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * @since 3.1
  */
 public abstract interface IContentTypeInfo {
-	/**
-	 * Returns a reference to the corresponding content type.
-	 */
-	ContentType getContentType();
+    /**
+     * Returns a reference to the corresponding content type.
+     */
+    ContentType getContentType();
 
-	/**
-	 * Returns the default value for the given property, delegating to the
-	 * ancestor type if necessary.
-	 */
-	String getDefaultProperty(QualifiedName key);
+    /**
+     * Returns the default value for the given property, delegating to the
+     * ancestor type if necessary.
+     */
+    String getDefaultProperty(QualifiedName key);
 }

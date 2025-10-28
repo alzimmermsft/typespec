@@ -31,6 +31,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  * IEclipsePreferences root = ...;
  * root.accept(new Visitor());
  * </pre>
+ * 
  * <p>
  * Clients may implement this interface.
  * </p>
@@ -40,15 +41,15 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 public interface IPreferenceNodeVisitor {
 
-	/**
-	 * Visits the given preference node.
-	 *
-	 * @param node the node to visit
-	 * @return <code>true</code> if the node's children should be visited;
-	 *         <code>false</code> if they should be skipped
-	 * @throws BackingStoreException if this operation cannot be completed due to a
-	 *                               failure in the backing store, or inability to
-	 *                               communicate with it.
-	 */
-	public boolean visit(IEclipsePreferences node) throws BackingStoreException;
+    /**
+     * Visits the given preference node.
+     *
+     * @param node the node to visit
+     * @return <code>true</code> if the node's children should be visited;
+     * <code>false</code> if they should be skipped
+     * @throws BackingStoreException if this operation cannot be completed due to a
+     * failure in the backing store, or inability to
+     * communicate with it.
+     */
+    public boolean visit(IEclipsePreferences node) throws BackingStoreException;
 }

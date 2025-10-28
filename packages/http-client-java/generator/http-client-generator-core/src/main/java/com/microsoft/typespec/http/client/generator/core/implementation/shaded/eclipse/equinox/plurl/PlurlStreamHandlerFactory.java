@@ -21,19 +21,19 @@ import java.net.URLStreamHandlerFactory;
  */
 public interface PlurlStreamHandlerFactory extends URLStreamHandlerFactory, PlurlFactory {
 
-	/**
-	 * A factory is expected to return {@link URLStreamHandler} instances that also
-	 * implement {@link PlurlStreamHandler}. If the returned handler does not
-	 * implement {@link PlurlStreamHandler} then deep reflection is required and the
-	 * JVM may require the "--add-opens" option in order to open the "java.net"
-	 * package for reflection. For example:
-	 * 
-	 * <pre>
-	 * --add-opens java.base/java.net=ALL-UNNAMED
-	 * </pre>
-	 * 
-	 * @see URLStreamHandlerFactory#createURLStreamHandler(String)
-	 */
-	@Override
-	URLStreamHandler createURLStreamHandler(String protocol);
+    /**
+     * A factory is expected to return {@link URLStreamHandler} instances that also
+     * implement {@link PlurlStreamHandler}. If the returned handler does not
+     * implement {@link PlurlStreamHandler} then deep reflection is required and the
+     * JVM may require the "--add-opens" option in order to open the "java.net"
+     * package for reflection. For example:
+     * 
+     * <pre>
+     * --add-opens java.base/java.net=ALL-UNNAMED
+     * </pre>
+     * 
+     * @see URLStreamHandlerFactory#createURLStreamHandler(String)
+     */
+    @Override
+    URLStreamHandler createURLStreamHandler(String protocol);
 }

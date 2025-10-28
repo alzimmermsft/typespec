@@ -1,11 +1,11 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.units.qual;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.PolymorphicQualifier;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.PolymorphicQualifier;
 
 /**
  * A polymorphic qualifier for the units-of-measure type system implemented by the Units Checker.
@@ -17,7 +17,8 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  * <p>The following example shows how method {@code triplePolyUnit} can be used to process either
  * meters or seconds:
  *
- * <pre><code>
+ * <pre>
+ * <code>
  * {@literal @}PolyUnit int triplePolyUnit(@PolyUnit int amount) {
  *    return 3*amount;
  *  }
@@ -32,13 +33,15 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  *    // :: error: (assignment)
  *   {@literal @}s int sec3 = triplePolyUnit(m1);
  *  }
- * </code></pre>
+ * </code>
+ * </pre>
  *
  * @checker_framework.manual #units-checker Units Checker
  * @checker_framework.manual #qualifier-polymorphism Qualifier polymorphism
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
 @PolymorphicQualifier(UnknownUnits.class)
-public @interface PolyUnit {}
+public @interface PolyUnit {
+}

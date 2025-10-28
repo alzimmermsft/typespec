@@ -1,11 +1,11 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.signature.qual;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 
 /**
  * Represents a method descriptor (JVM representation of method signature) as defined in the <a
@@ -15,12 +15,14 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  * <p>Example:
  *
  * <pre>
- *  package edu.cs.washington;
- *  public class BinaryName {
- *    private class Inner {
- *      public void method(Object obj, int i) {}
- *    }
- *  }
+ * package edu.cs.washington;
+ * 
+ * public class BinaryName {
+ *     private class Inner {
+ *         public void method(Object obj, int i) {
+ *         }
+ *     }
+ * }
  * </pre>
  *
  * In this example method descriptor for method 'method': (Ljava/lang/Object;I)Z
@@ -29,6 +31,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
 @SubtypeOf(SignatureUnknown.class)
-public @interface MethodDescriptor {}
+public @interface MethodDescriptor {
+}

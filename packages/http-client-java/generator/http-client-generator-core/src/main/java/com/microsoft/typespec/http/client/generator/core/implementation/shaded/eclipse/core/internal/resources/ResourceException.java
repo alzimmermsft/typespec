@@ -13,10 +13,10 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.resources;
 
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResourceStatus;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.*;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 
 /**
  * A checked exception representing a failure.
@@ -29,81 +29,81 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * @see IStatus
  */
 public class ResourceException extends CoreException {
-	/**
-	 * All serializable objects should have a stable serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * All serializable objects should have a stable serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
-	public ResourceException(int code, IPath path, String message, Throwable exception) {
-		super(new ResourceStatus(code, path, message, provideStackTrace(message, exception)));
-	}
+    public ResourceException(int code, IPath path, String message, Throwable exception) {
+        super(new ResourceStatus(code, path, message, provideStackTrace(message, exception)));
+    }
 
-	private static Throwable provideStackTrace(String message, Throwable exception) {
-		return exception != null ? exception : new Exception(message);
-	}
+    private static Throwable provideStackTrace(String message, Throwable exception) {
+        return exception != null ? exception : new Exception(message);
+    }
 
-	/**
-	 * Constructs a new exception with the given status object.
-	 *
-	 * @param status the status object to be associated with this exception
-	 * @see IStatus
-	 */
-	public ResourceException(IStatus status) {
-		super(status);
-	}
+    /**
+     * Constructs a new exception with the given status object.
+     *
+     * @param status the status object to be associated with this exception
+     * @see IStatus
+     */
+    public ResourceException(IStatus status) {
+        super(status);
+    }
 
-	/**
-	 * Prints a stack trace out for the exception, and
-	 * any nested exception that it may have embedded in
-	 * its Status object.
-	 */
-	@Override
-	public void printStackTrace() {
-		printStackTrace(System.err);
-	}
+    /**
+     * Prints a stack trace out for the exception, and
+     * any nested exception that it may have embedded in
+     * its Status object.
+     */
+    @Override
+    public void printStackTrace() {
+        printStackTrace(System.err);
+    }
 
-	/**
-	 * Prints a stack trace out for the exception, and
-	 * any nested exception that it may have embedded in
-	 * its Status object.
-	 */
-	@Override
-	public void printStackTrace(PrintStream output) {
-		synchronized (output) {
-			IStatus status = getStatus();
-			if (status.getException() != null) {
-				String path = "()"; //$NON-NLS-1$
-				if (status instanceof IResourceStatus) {
-					path = "(" + ((IResourceStatus) status).getPath() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-				}
-				output.print(getClass().getName() + path + "[" + status.getCode() + "]: "); //$NON-NLS-1$ //$NON-NLS-2$
-				status.getException().printStackTrace(output);
-			} else {
-				super.printStackTrace(output);
-			}
-		}
-	}
+    /**
+     * Prints a stack trace out for the exception, and
+     * any nested exception that it may have embedded in
+     * its Status object.
+     */
+    @Override
+    public void printStackTrace(PrintStream output) {
+        synchronized (output) {
+            IStatus status = getStatus();
+            if (status.getException() != null) {
+                String path = "()"; //$NON-NLS-1$
+                if (status instanceof IResourceStatus) {
+                    path = "(" + ((IResourceStatus) status).getPath() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                }
+                output.print(getClass().getName() + path + "[" + status.getCode() + "]: "); //$NON-NLS-1$ //$NON-NLS-2$
+                status.getException().printStackTrace(output);
+            } else {
+                super.printStackTrace(output);
+            }
+        }
+    }
 
-	/**
-	 * Prints a stack trace out for the exception, and
-	 * any nested exception that it may have embedded in
-	 * its Status object.
-	 */
-	@Override
-	public void printStackTrace(PrintWriter output) {
-		synchronized (output) {
-			IStatus status = getStatus();
-			if (status.getException() != null) {
-				String path = "()"; //$NON-NLS-1$
-				if (status instanceof IResourceStatus) {
-					path = "(" + ((IResourceStatus) status).getPath() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-				}
-				output.print(getClass().getName() + path + "[" + status.getCode() + "]: "); //$NON-NLS-1$ //$NON-NLS-2$
-				status.getException().printStackTrace(output);
-			} else {
-				super.printStackTrace(output);
-			}
-		}
-	}
+    /**
+     * Prints a stack trace out for the exception, and
+     * any nested exception that it may have embedded in
+     * its Status object.
+     */
+    @Override
+    public void printStackTrace(PrintWriter output) {
+        synchronized (output) {
+            IStatus status = getStatus();
+            if (status.getException() != null) {
+                String path = "()"; //$NON-NLS-1$
+                if (status instanceof IResourceStatus) {
+                    path = "(" + ((IResourceStatus) status).getPath() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                }
+                output.print(getClass().getName() + path + "[" + status.getCode() + "]: "); //$NON-NLS-1$ //$NON-NLS-2$
+                status.getException().printStackTrace(output);
+            } else {
+                super.printStackTrace(output);
+            }
+        }
+    }
 
 }

@@ -24,9 +24,9 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public class ExtensionHandle extends BaseExtensionHandle {
 
-	static final ExtensionHandle[] EMPTY_ARRAY = new ExtensionHandle[0];
+    static final ExtensionHandle[] EMPTY_ARRAY = new ExtensionHandle[0];
 
-	public ExtensionHandle(IObjectManager objectManager, int id) {
-		super(objectManager, id);
-	}
+    public ExtensionHandle(IObjectManager objectManager, int id) {
+        super(objectManager, id);
+    }
 }

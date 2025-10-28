@@ -16,11 +16,13 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 /**
  * Represents a Java module descriptor. The module description could either come from source or binary.
  * A simple module looks like the following:
+ * 
  * <pre>
  * module my.module {
- * 		exports my.pack1;
- * 		exports my.pack2;
- * 		requires java.sql;
+ *     exports my.pack1;
+ *     exports my.pack2;
+ * 
+ *     requires java.sql;
  * }
  * </pre>
  *
@@ -29,62 +31,11 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IModuleDescription extends IMember, IAnnotatable {
 
-	/**
-	 * Answer the names of all modules directly required from this module.
-	 *
-	 * @return a non-null array of module names
-	 * @since 3.14
-	 */
-	String[] getRequiredModuleNames() throws JavaModelException;
-
-	/**
-	 * Get provided service names for this module.
-	 *
-	 * @return a non-null array of provided service names
-	 * @since 3.18
-	 */
-	String[] getProvidedServiceNames() throws JavaModelException;
-
-	/**
-	 * Get used service names for this module.
-	 *
-	 * @return a non-null array of used service names
-	 * @since 3.18
-	 */
-	String[] getUsedServiceNames() throws JavaModelException;
-
-	/**
-	 * Get names of exported packages.
-	 *
-	 * @param targetModule filter the result to include only packages exported to the given module, unless {@code null}.
-	 * @return a non-null array of exported package names
-	 * @since 3.18
-	 */
-	String[] getExportedPackageNames(IModuleDescription targetModule) throws JavaModelException;
-
-	/**
-	 * Get names of opened packages.
-	 *
-	 * @param targetModule filter the result to include only packages opened to the given module, unless {@code null}.
-	 * @return a non-null array of opened package names
-	 * @since 3.18
-	 */
-	String[] getOpenedPackageNames(IModuleDescription targetModule) throws JavaModelException;
-
-	/**
-	 *
-	 * @return true if automatic module, else false
-	 * @since 3.14
-	 */
-	default boolean isAutoModule() {
-		return false;
-	}
-
-	/**
-	 * @return true if this module is a system module, else false
-	 * @since 3.20
-	 */
-	default boolean isSystemModule() {
-		return false;
-	}
+    /**
+     * @return true if this module is a system module, else false
+     * @since 3.20
+     */
+    default boolean isSystemModule() {
+        return false;
+    }
 }

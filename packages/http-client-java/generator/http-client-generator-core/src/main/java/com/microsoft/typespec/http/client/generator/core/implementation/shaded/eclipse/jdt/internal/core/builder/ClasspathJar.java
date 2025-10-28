@@ -26,7 +26,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Map;
@@ -338,15 +337,7 @@ public String toString() {
 	return start + " with " + this.accessRuleSet; //$NON-NLS-1$
 }
 
-@Override
-public String debugPathString() {
-	long time = lastModified();
-	if (time == 0)
-		return this.zipFilename;
-	return this.zipFilename + '(' + (new Date(time)) + " : " + time + ')'; //$NON-NLS-1$
-}
-
-@Override
+    @Override
 public IModule getModule() {
 	if (this.knownPackageNames == null)
 		readKnownPackageNames();

@@ -13,32 +13,25 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.search.matching;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IContainer;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IFile;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IModulePathEntry;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.builder.ClasspathLocation;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.ResourceCompilationUnit;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IContainer;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IFile;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaElement;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaProject;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IType;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaCore;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IModulePathEntry;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaModelManager;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.builder.ClasspathLocation;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.ResourceCompilationUnit;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Util;
 
 public class ClasspathSourceDirectory extends ClasspathLocation implements IModulePathEntry {
 
 	final IContainer sourceFolder;
 	final Map<String, Map<String, IResource>> directoryCache = new ConcurrentHashMap<>();
-	private static final Map<String, IResource> missingPackageHolder = new HashMap<>();
-	final char[][] fullExclusionPatternChars;
+    final char[][] fullExclusionPatternChars;
 	final char[][] fulInclusionPatternChars;
 
 ClasspathSourceDirectory(IContainer sourceFolder, char[][] fullExclusionPatternChars, char[][] fulInclusionPatternChars) {
@@ -50,54 +43,6 @@ ClasspathSourceDirectory(IContainer sourceFolder, char[][] fullExclusionPatternC
 @Override
 public void cleanup() {
 	this.directoryCache.clear();
-}
-
-Map<String, IResource> directoryTable(String qualifiedPackageName) {
-	Map<String, IResource> dirTable = this.directoryCache.get(qualifiedPackageName);
-	if (dirTable == missingPackageHolder) return null; // package exists in another classpath directory or jar
-	if (dirTable != null) return dirTable;
-
-	try {
-		IResource container = this.sourceFolder.findMember(qualifiedPackageName); // this is a case-sensitive check
-		if (container instanceof IContainer) {
-			IResource[] members = ((IContainer) container).members();
-			dirTable = new HashMap<>();
-			for (IResource m : members) {
-				String name;
-				if (m.getType() == IResource.FILE) {
-					int index = Util.indexOfJavaLikeExtension(name = m.getName());
-					if (index >= 0) {
-						String fullPath = m.getFullPath().toString();
-						if (!com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.Util.isExcluded(fullPath.toCharArray(), this.fulInclusionPatternChars, this.fullExclusionPatternChars, false/*not a folder path*/)) {
-							dirTable.put(name.substring(0, index), m);
-						}
-					}
-				}
-			}
-			// look for secondary types, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=382778
-			IJavaProject project = JavaCore.create(container.getProject());
-			Map<String, Map<String, IType>> secondaryTypePaths = JavaModelManager.getJavaModelManager().secondaryTypes(project, false, null);
-			if (secondaryTypePaths.size() > 0) {
-				Map<String, IType> typesInPackage = secondaryTypePaths.get(qualifiedPackageName.replace('/', '.'));
-				if (typesInPackage != null && typesInPackage.size() > 0) {
-					for (String secondaryTypeName : typesInPackage.keySet()) {
-						IType secondaryType = typesInPackage.get(secondaryTypeName);
-						IJavaElement parent = secondaryType.getParent();
-						String fullPath = parent.getResource().getFullPath().toString();
-						if (!com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.Util.isExcluded(fullPath.toCharArray(), this.fulInclusionPatternChars, this.fullExclusionPatternChars, false/*not a folder path*/)) {
-							dirTable.put(secondaryTypeName, parent.getResource());
-						}
-					}
-				}
-			}
-			this.directoryCache.put(qualifiedPackageName, dirTable);
-			return dirTable;
-		}
-	} catch(CoreException ignored) {
-		// treat as if missing
-	}
-	this.directoryCache.put(qualifiedPackageName, missingPackageHolder);
-	return null;
 }
 
 @Override
@@ -161,8 +106,4 @@ public String toString() {
 	return "Source classpath directory " + this.sourceFolder.getFullPath().toString(); //$NON-NLS-1$
 }
 
-@Override
-public String debugPathString() {
-	return this.sourceFolder.getFullPath().toString();
-}
 }

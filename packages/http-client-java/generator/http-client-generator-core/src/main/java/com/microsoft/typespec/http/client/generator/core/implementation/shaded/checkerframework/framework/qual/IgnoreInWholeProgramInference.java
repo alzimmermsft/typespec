@@ -31,9 +31,10 @@ import java.lang.annotation.Target;
  * org.checkerframework.common.wholeprograminference.WholeProgramInferenceScenes#updateFromFieldAssignment
  *
  * @checker_framework.manual #whole-program-inference-ignores-some-code Whole-program inference
- *     ignores some code
+ * ignores some code
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.ANNOTATION_TYPE, ElementType.FIELD})
-public @interface IgnoreInWholeProgramInference {}
+@Target({ ElementType.ANNOTATION_TYPE, ElementType.FIELD })
+public @interface IgnoreInWholeProgramInference {
+}

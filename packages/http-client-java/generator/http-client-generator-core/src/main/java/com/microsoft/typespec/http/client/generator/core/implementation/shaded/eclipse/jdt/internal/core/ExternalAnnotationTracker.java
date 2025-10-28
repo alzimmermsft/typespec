@@ -18,7 +18,6 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResourceChangeEvent;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResourceChangeListener;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResourceDelta;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IWorkspace;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IPackageFragmentRoot;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
@@ -124,21 +123,7 @@ public class ExternalAnnotationTracker implements IResourceChangeListener {
 	private static ExternalAnnotationTracker singleton;
 	private ExternalAnnotationTracker() { }
 
-	/** Start listening. */
-	static void start(IWorkspace workspace) {
-		singleton = new ExternalAnnotationTracker();
-		workspace.addResourceChangeListener(singleton);
-	}
-
-	/** Stop listening & clean up. */
-	static void shutdown(IWorkspace workspace) {
-		if (singleton != null) {
-			workspace.removeResourceChangeListener(singleton);
-			singleton.tree.children = null;
-		}
-	}
-
-	/**
+    /**
 	 * Register a ClassFile, to which the annotation attachment 'annotationBase' applies.
 	 * This is done for the purpose to listen to changes in the corresponding external annotations
 	 * and to force reloading the class file when necessary.
@@ -186,21 +171,6 @@ public class ExternalAnnotationTracker implements IResourceChangeListener {
 		if (baseDepth == nextDepth)
 			return nextHeadNode;
 		return getAnnotationBase(nextHeadNode, annotationBase, baseDepth, nextDepth+1);
-	}
-
-	/**
-	 * Listen to resource change events concerning external annotations, that potentially affect a cached ClassFile.
-	 */
-	@Override
-	public void resourceChanged(IResourceChangeEvent event) {
-		IResourceDelta delta = event.getDelta();
-		if (delta != null && delta.getFullPath().isRoot() && this.tree.children != null) {
-			for (IResourceDelta child : delta.getAffectedChildren()) {
-				DirectoryNode directoryNode = this.tree.children.get(child.getFullPath());
-				if (directoryNode != null)
-					traverseForDirectories(directoryNode, child);
-			}
-		}
 	}
 
 	// co-traversal of directory nodes & delta nodes:

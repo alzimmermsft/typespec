@@ -24,34 +24,34 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * @since 3.25
  */
 public interface IParallelizable {
-	/**
-	 * Answers {@code true} if the current instance supports parallel index search
-	 *
-	 * @return Returns <code>true</code> if the implementation is safe to be used in a parallel search.
-	 */
-	boolean isParallelSearchSupported();
+    /**
+     * Answers {@code true} if the current instance supports parallel index search
+     *
+     * @return Returns <code>true</code> if the implementation is safe to be used in a parallel search.
+     */
+    boolean isParallelSearchSupported();
 
-	/**
-	 * Initialize all needed data before search is started
-	 *
-	 * @param monitor
-	 *            non null progress callback
-	 */
-	default void initBeforeSearch(IProgressMonitor monitor) throws JavaModelException {
-		// no op
-	}
+    /**
+     * Initialize all needed data before search is started
+     *
+     * @param monitor
+     * non null progress callback
+     */
+    default void initBeforeSearch(IProgressMonitor monitor) throws JavaModelException {
+        // no op
+    }
 
-	/**
-	 * Checks if the given object implements this interface and also returns <code>true</code> for
-	 * {@link #isParallelSearchSupported()}.
-	 *
-	 * @param o
-	 *            The object that needs to be checked. <code>null</code> value will result in returning
-	 *            <code>false</code>.
-	 * @return <code>true</code> if the given object can be used in parallel search.
-	 */
-	public static boolean isParallelSearchSupported(Object o) {
-		return (o instanceof IParallelizable) && ((IParallelizable) o).isParallelSearchSupported();
-	}
+    /**
+     * Checks if the given object implements this interface and also returns <code>true</code> for
+     * {@link #isParallelSearchSupported()}.
+     *
+     * @param o
+     * The object that needs to be checked. <code>null</code> value will result in returning
+     * <code>false</code>.
+     * @return <code>true</code> if the given object can be used in parallel search.
+     */
+    public static boolean isParallelSearchSupported(Object o) {
+        return (o instanceof IParallelizable) && ((IParallelizable) o).isParallelSearchSupported();
+    }
 
 }

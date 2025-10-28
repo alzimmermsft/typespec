@@ -1,13 +1,13 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.lock.qual;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.dataflow.qual.Pure;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.dataflow.qual.SideEffectFree;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.InheritedAnnotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.dataflow.qual.Pure;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.dataflow.qual.SideEffectFree;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.InheritedAnnotation;
 
 /**
  * The method neither acquires nor releases locks, nor do any of the methods that it calls. More
@@ -27,6 +27,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
 @InheritedAnnotation
-public @interface LockingFree {}
+public @interface LockingFree {
+}

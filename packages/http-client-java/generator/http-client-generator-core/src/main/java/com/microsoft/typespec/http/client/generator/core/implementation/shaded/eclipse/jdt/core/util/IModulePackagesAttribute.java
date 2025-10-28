@@ -22,24 +22,24 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IModulePackagesAttribute extends IClassFileAttribute {
 
-	/**
-	 * Answer back the number of packages exported or opened.
-	 *
-	 * @return the number of packages exported or opened
-	 */
-	int getPackagesCount();
+    /**
+     * Answer back the number of packages exported or opened.
+     *
+     * @return the number of packages exported or opened
+     */
+    int getPackagesCount();
 
-	/**
-	 * Answer back the array of package indices.
-	 *
-	 * @return the array of package indices.
-	 */
-	int[] getPackageIndices();
+    /**
+     * Answer back the array of package indices.
+     *
+     * @return the array of package indices.
+     */
+    int[] getPackageIndices();
 
-	/**
-	 * Answer back the names of packages. Answers an empty collection if none.
-	 *
-	 * @return the names of packages
-	 */
-	char[][] getPackageNames();
+    /**
+     * Answer back the names of packages. Answers an empty collection if none.
+     *
+     * @return the names of packages
+     */
+    char[][] getPackageNames();
 }

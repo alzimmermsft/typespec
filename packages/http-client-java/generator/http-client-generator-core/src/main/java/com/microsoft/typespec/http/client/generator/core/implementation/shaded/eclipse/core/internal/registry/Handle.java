@@ -24,36 +24,36 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * @since 3.1.
  */
 public abstract class Handle {
-	protected IObjectManager objectManager;
+    protected IObjectManager objectManager;
 
-	private final int objectId;
+    private final int objectId;
 
-	public int getId() {
-		return objectId;
-	}
+    public int getId() {
+        return objectId;
+    }
 
-	Handle(IObjectManager objectManager, int value) {
-		objectId = value;
-		this.objectManager = objectManager;
-	}
+    Handle(IObjectManager objectManager, int value) {
+        objectId = value;
+        this.objectManager = objectManager;
+    }
 
-	/**
-	 * Return the actual object corresponding to this handle.
-	 *
-	 * @throws InvalidRegistryObjectException when the handle is stale.
-	 */
-	abstract RegistryObject getObject();
+    /**
+     * Return the actual object corresponding to this handle.
+     *
+     * @throws InvalidRegistryObjectException when the handle is stale.
+     */
+    abstract RegistryObject getObject();
 
-	@Override
-	public boolean equals(Object object) {
-		if (object instanceof Handle) {
-			return objectId == ((Handle) object).objectId;
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof Handle) {
+            return objectId == ((Handle) object).objectId;
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return objectId;
-	}
+    @Override
+    public int hashCode() {
+        return objectId;
+    }
 }

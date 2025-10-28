@@ -23,41 +23,41 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * @since 3.8
  */
 public interface IConstantPoolEntry2 extends IConstantPoolEntry {
-	/**
-	 * Returns the descriptor index. This value is set only when decoding a MethodType entry.
-	 * The value is unspecified otherwise. The corresponding UTF8 value can be retrieved by using
-	 * {@link #getMethodDescriptor()}.
-	 *
-	 * @return the descriptor index. This value is set only when decoding a MethodType entry.
-	 * @see IConstantPoolConstant#CONSTANT_MethodType
-	 */
-	int getDescriptorIndex();
+    /**
+     * Returns the descriptor index. This value is set only when decoding a MethodType entry.
+     * The value is unspecified otherwise. The corresponding UTF8 value can be retrieved by using
+     * {@link #getMethodDescriptor()}.
+     *
+     * @return the descriptor index. This value is set only when decoding a MethodType entry.
+     * @see IConstantPoolConstant#CONSTANT_MethodType
+     */
+    int getDescriptorIndex();
 
-	/**
-	 * Returns the reference kind. This value is set only when decoding a MethodHandle entry.
-	 * The value is unspecified otherwise.
-	 *
-	 * @return the reference kind. This value is set only when decoding a MethodHandle entry.
-	 * @see IConstantPoolConstant#CONSTANT_MethodHandle
-	 */
-	int getReferenceKind();
+    /**
+     * Returns the reference kind. This value is set only when decoding a MethodHandle entry.
+     * The value is unspecified otherwise.
+     *
+     * @return the reference kind. This value is set only when decoding a MethodHandle entry.
+     * @see IConstantPoolConstant#CONSTANT_MethodHandle
+     */
+    int getReferenceKind();
 
-	/**
-	 * Returns the reference index. This value is set only when decoding a MethodHandle entry.
-	 * The value is unspecified otherwise.
-	 *
-	 * @return the reference kind. This value is set only when decoding a MethodHandle entry.
-	 * @see IConstantPoolConstant#CONSTANT_MethodHandle
-	 */
-	int getReferenceIndex();
+    /**
+     * Returns the reference index. This value is set only when decoding a MethodHandle entry.
+     * The value is unspecified otherwise.
+     *
+     * @return the reference kind. This value is set only when decoding a MethodHandle entry.
+     * @see IConstantPoolConstant#CONSTANT_MethodHandle
+     */
+    int getReferenceIndex();
 
-	/**
-	 * Returns the bootstrap method attribute index. This value is set only when decoding a InvokeDynamic entry.
-	 * The value is unspecified otherwise.
-	 *
-	 * @return the reference kind. This value is set only when decoding a MethodHandle entry.
-	 * @see IConstantPoolConstant#CONSTANT_InvokeDynamic
-	 * @see IConstantPoolConstant#CONSTANT_Dynamic
-	 */
-	int getBootstrapMethodAttributeIndex();
+    /**
+     * Returns the bootstrap method attribute index. This value is set only when decoding a InvokeDynamic entry.
+     * The value is unspecified otherwise.
+     *
+     * @return the reference kind. This value is set only when decoding a MethodHandle entry.
+     * @see IConstantPoolConstant#CONSTANT_InvokeDynamic
+     * @see IConstantPoolConstant#CONSTANT_Dynamic
+     */
+    int getBootstrapMethodAttributeIndex();
 }

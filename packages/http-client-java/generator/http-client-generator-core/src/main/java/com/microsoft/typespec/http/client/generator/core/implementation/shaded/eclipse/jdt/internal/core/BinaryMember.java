@@ -41,13 +41,6 @@ protected BinaryMember(JavaElement parent, String name) {
 protected BinaryMember(JavaElement parent, String name, int occurrenceCount) {
 	super(parent, name, occurrenceCount);
 }
-/*
- * @see ISourceManipulation
- */
-@Override
-public void copy(IJavaElement container, IJavaElement sibling, String rename, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, this));
-}
 protected IAnnotation[] getAnnotations(IBinaryAnnotation[] binaryAnnotations, long tagBits) {
 	IAnnotation[] standardAnnotations = getStandardAnnotations(tagBits);
 	if (binaryAnnotations == null)
@@ -165,20 +158,6 @@ public boolean isBinary() {
 @Override
 public boolean isStructureKnown() throws JavaModelException {
 	return ((IJavaElement)getOpenableParent()).isStructureKnown();
-}
-/*
- * @see ISourceManipulation
- */
-@Override
-public void move(IJavaElement container, IJavaElement sibling, String rename, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, this));
-}
-/*
- * @see ISourceManipulation
- */
-@Override
-public void rename(String newName, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, this));
 }
 /*
  * Sets the contents of this element.

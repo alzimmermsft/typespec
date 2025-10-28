@@ -318,19 +318,7 @@ public String[] getParameterNames() throws JavaModelException {
 		String methodDoc = null;
 		if (javadocContents == null) {
 			long timeOut = 50; // default value
-			try {
-				String option = getJavaProject().getOption(JavaCore.TIMEOUT_FOR_PARAMETER_NAME_FROM_ATTACHED_JAVADOC, true);
-				if (option != null) {
-					timeOut = Long.parseLong(option);
-				}
-			} catch(NumberFormatException e) {
-				// ignore
-			}
-			if (timeOut == 0) {
-				// don't try to fetch the values and don't cache either (https://bugs.eclipse.org/bugs/show_bug.cgi?id=329671)
-				return getRawParameterNames(paramCount);
-			}
-			final class ParametersNameCollector {
+            final class ParametersNameCollector {
 				String javadoc;
 				public void setJavadoc(String s) {
 					this.javadoc = s;

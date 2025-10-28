@@ -12,14 +12,16 @@ import java.lang.annotation.RetentionPolicy;
  *
  * <p>Here is an example:
  *
- * <pre><code>
+ * <pre>
+ * <code>
  * {@literal @}CFComment("interning: factory methods guarantee that all elements are interned")
  *  public class MyClass {
  *   {@literal @}CFComment({"nullness: non-null return type is more specific than in superclass",
  *                "signedness: comment related to Signedness type system"})
  *    public String myMethod() { ... }
  * }
- * </code></pre>
+ * </code>
+ * </pre>
  *
  * <p>As a matter of style, programmers should use this annotation on the most deeply nested element
  * to which the comment applies (e.g., local variable rather than method, and method rather than
@@ -30,12 +32,12 @@ import java.lang.annotation.RetentionPolicy;
 @Documented
 @Retention(RetentionPolicy.SOURCE)
 public @interface CFComment {
-  /**
-   * Comments about Checker Framework annotations. The text is not interpreted by the Checker
-   * Framework.
-   *
-   * <p>If you prefix each comment by the name of the type system, the comments are easier to
-   * understand and search for.
-   */
-  String[] value();
+    /**
+     * Comments about Checker Framework annotations. The text is not interpreted by the Checker
+     * Framework.
+     *
+     * <p>If you prefix each comment by the name of the type system, the comments are easier to
+     * understand and search for.
+     */
+    String[] value();
 }

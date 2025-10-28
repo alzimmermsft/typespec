@@ -38,11 +38,9 @@ public class JRTUtil {
 	public static final boolean PROPAGATE_IO_ERRORS = Boolean.getBoolean("com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.propagate_io_errors"); //$NON-NLS-1$
 
 	public static final String JAVA_BASE = "java.base"; //$NON-NLS-1$
-	public static final char[] JAVA_BASE_CHAR = JAVA_BASE.toCharArray();
-	public static final String MODULES_SUBDIR = "/modules"; //$NON-NLS-1$
+    public static final String MODULES_SUBDIR = "/modules"; //$NON-NLS-1$
 	static final String[] DEFAULT_MODULE = new String[]{JAVA_BASE};
-	static final String[] NO_MODULE = new String[0];
-	static final String MULTIPLE = "MU"; //$NON-NLS-1$
+    static final String MULTIPLE = "MU"; //$NON-NLS-1$
 	static final String DEFAULT_PACKAGE = ""; //$NON-NLS-1$
 	static String MODULE_TO_LOAD;
 	public static final String JRT_FS_JAR = "jrt-fs.jar"; //$NON-NLS-1$
@@ -64,11 +62,11 @@ public class JRTUtil {
 
 	public interface JrtFileVisitor<T> {
 
-		public default FileVisitResult visitPackage(T dir, T mod, BasicFileAttributes attrs) throws IOException {
+		default FileVisitResult visitPackage(T dir, T mod, BasicFileAttributes attrs) throws IOException {
 			return FileVisitResult.CONTINUE;
 		}
 
-		public default FileVisitResult visitFile(T file, T mod, BasicFileAttributes attrs) throws IOException {
+		default FileVisitResult visitFile(T file, T mod, BasicFileAttributes attrs) throws IOException {
 			return FileVisitResult.CONTINUE;
 		}
 
@@ -78,7 +76,7 @@ public class JRTUtil {
 		 * how the JRT needs to be processed, for e.g., clients can skip a particular module
 		 * by returning FileVisitResult.SKIP_SUBTREE
 		 */
-		public default FileVisitResult visitModule(T path, String name) throws IOException  {
+		default FileVisitResult visitModule(T path, String name) throws IOException  {
 			return FileVisitResult.CONTINUE;
 		}
 	}
@@ -248,7 +246,7 @@ public class JRTUtil {
 	}
 
 	public static byte[] getClassfileContent(JrtFileSystem system, String fileName, String module)
-			throws FileNotFoundException, IOException {
+			throws IOException {
 		return system.getClassfileContent(fileName, module);
 	}
 
@@ -270,7 +268,7 @@ public class JRTUtil {
 
 	public static ClassFileReader getClassfile(JrtFileSystem system, String fileName, String module,
 			Predicate<String> moduleNameFilter)
-			throws FileNotFoundException, IOException, ClassFormatException {
+			throws IOException, ClassFormatException {
 		return system.getClassfile(fileName, module, moduleNameFilter);
 	}
 

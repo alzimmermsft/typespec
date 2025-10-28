@@ -38,30 +38,30 @@ import java.io.Reader;
  * @since 3.0
  */
 public interface ITextContentDescriber extends IContentDescriber {
-	/**
-	 * Tries to fill a description for the given contents. Returns
-	 * an <code>int</code> indicating whether the given stream of
-	 * characters represents a valid sample for this describer's corresponding
-	 * content type. If no content description is provided, this method should
-	 * only perform content type validation.
-	 * <p>
-	 * The stream provided must be kept open, and any IOExceptions while
-	 * reading it should flow to the caller.
-	 * </p>
-	 *
-	 * @param contents the contents to be examined
-	 * @param description a description to be filled in, or <code>null</code> if
-	 * only content type validation is to be performed
-	 * @return one of the following:<ul>
-	 * <li><code>VALID</code></li>
-	 * <li><code>INVALID</code></li>
-	 * <li><code>INDETERMINATE</code></li>
-	 * </ul>
-	 * @throws IOException if an I/O error occurs
-	 * @see IContentDescription
-	 * @see #VALID
-	 * @see #INVALID
-	 * @see #INDETERMINATE
-	 */
-	int describe(Reader contents, IContentDescription description) throws IOException;
+    /**
+     * Tries to fill a description for the given contents. Returns
+     * an <code>int</code> indicating whether the given stream of
+     * characters represents a valid sample for this describer's corresponding
+     * content type. If no content description is provided, this method should
+     * only perform content type validation.
+     * <p>
+     * The stream provided must be kept open, and any IOExceptions while
+     * reading it should flow to the caller.
+     * </p>
+     *
+     * @param contents the contents to be examined
+     * @param description a description to be filled in, or <code>null</code> if
+     * only content type validation is to be performed
+     * @return one of the following:<ul>
+     * <li><code>VALID</code></li>
+     * <li><code>INVALID</code></li>
+     * <li><code>INDETERMINATE</code></li>
+     * </ul>
+     * @throws IOException if an I/O error occurs
+     * @see IContentDescription
+     * @see #VALID
+     * @see #INVALID
+     * @see #INDETERMINATE
+     */
+    int describe(Reader contents, IContentDescription description) throws IOException;
 }

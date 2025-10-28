@@ -37,15 +37,16 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class CompletionOnExportReference extends ExportsStatement implements CompletionNode {
 
-	public CompletionOnExportReference(ImportReference ref) {
-		super(ref, null);
-	}
-	@Override
-	public StringBuilder print(int indent, StringBuilder output) {
+    public CompletionOnExportReference(ImportReference ref) {
+        super(ref, null);
+    }
 
-		printIndent(indent, output).append("<CompleteOnExport:"); //$NON-NLS-1$
-		output.append(this.pkgName);
-		return output.append('>');
-	}
+    @Override
+    public StringBuilder print(int indent, StringBuilder output) {
+
+        printIndent(indent, output).append("<CompleteOnExport:"); //$NON-NLS-1$
+        output.append(this.pkgName);
+        return output.append('>');
+    }
 
 }

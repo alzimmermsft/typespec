@@ -49,11 +49,6 @@ private static String sourceFileName(AbstractClassFile classFile) {
 }
 
 @Override
-public void commitWorkingCopy(boolean force, IProgressMonitor monitor) throws JavaModelException {
-	throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.INVALID_ELEMENT_TYPES, this));
-}
-
-@Override
 public IBuffer getBuffer() throws JavaModelException {
 	if (isWorkingCopy())
 		return super.getBuffer();

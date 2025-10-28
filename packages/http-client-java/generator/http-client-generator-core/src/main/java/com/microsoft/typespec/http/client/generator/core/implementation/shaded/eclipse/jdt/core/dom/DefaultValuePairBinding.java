@@ -21,44 +21,46 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 class DefaultValuePairBinding extends MemberValuePairBinding {
 
-	private final com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.MethodBinding method;
+    private final com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.MethodBinding method;
 
-	DefaultValuePairBinding(com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.MethodBinding binding, BindingResolver resolver) {
-		super(null, resolver);
-		this.method = binding;
-		this.value = MemberValuePairBinding.buildDOMValue(binding.getDefaultValue(), resolver);
-		if (binding.returnType != null && binding.returnType.isArrayType()) {
-			// wrap into an array
-			if (this.value == null) {
-				this.value = new Object[0];
-			} else if (!this.value.getClass().isArray()) {
-				this.value = new Object[] { this.value };
-			}
-		}
-	}
+    DefaultValuePairBinding(
+        com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.MethodBinding binding,
+        BindingResolver resolver) {
+        super(null, resolver);
+        this.method = binding;
+        this.value = MemberValuePairBinding.buildDOMValue(binding.getDefaultValue(), resolver);
+        if (binding.returnType != null && binding.returnType.isArrayType()) {
+            // wrap into an array
+            if (this.value == null) {
+                this.value = new Object[0];
+            } else if (!this.value.getClass().isArray()) {
+                this.value = new Object[] { this.value };
+            }
+        }
+    }
 
-	@Override
-	public IMethodBinding getMethodBinding() {
-		return this.bindingResolver.getMethodBinding(this.method);
-	}
+    @Override
+    public IMethodBinding getMethodBinding() {
+        return this.bindingResolver.getMethodBinding(this.method);
+    }
 
-	@Override
-	public String getName() {
-		return new String(this.method.selector);
-	}
+    @Override
+    public String getName() {
+        return new String(this.method.selector);
+    }
 
-	@Override
-	public Object getValue() {
-		return this.value;
-	}
+    @Override
+    public Object getValue() {
+        return this.value;
+    }
 
-	@Override
-	public boolean isDefault() {
-		return true;
-	}
+    @Override
+    public boolean isDefault() {
+        return true;
+    }
 
-	@Override
-	public boolean isDeprecated() {
-		return this.method.isDeprecated();
-	}
+    @Override
+    public boolean isDeprecated() {
+        return this.method.isDeprecated();
+    }
 }

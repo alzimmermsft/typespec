@@ -13,8 +13,8 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.content;
 
-import java.io.IOException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
+import java.io.IOException;
 
 /**
  * A wrapper for IOExceptions, throw by LazyInputStream/Reader.
@@ -27,20 +27,20 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 /* package */class LowLevelIOException extends IOException {
 
-	/**
-	 * All serializable objects should have a stable serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * All serializable objects should have a stable serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
-	private final IOException actual;
+    private final IOException actual;
 
-	public LowLevelIOException(IOException actual) {
-		// ensure we don't wrap more than once
-		Assert.isLegal(!(actual instanceof LowLevelIOException));
-		this.actual = actual;
-	}
+    public LowLevelIOException(IOException actual) {
+        // ensure we don't wrap more than once
+        Assert.isLegal(!(actual instanceof LowLevelIOException));
+        this.actual = actual;
+    }
 
-	public IOException getActualException() {
-		return actual;
-	}
+    public IOException getActualException() {
+        return actual;
+    }
 }

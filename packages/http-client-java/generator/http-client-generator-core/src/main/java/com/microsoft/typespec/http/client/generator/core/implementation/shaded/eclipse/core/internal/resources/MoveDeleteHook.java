@@ -23,58 +23,58 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class MoveDeleteHook implements IMoveDeleteHook {
 
-	/**
-	 * @see IMoveDeleteHook#deleteFile(IResourceTree, IFile, int, IProgressMonitor)
-	 */
-	@Override
-	public boolean deleteFile(IResourceTree tree, IFile file, int updateFlags, IProgressMonitor monitor) {
-		// Let someone else do the work.
-		return false;
-	}
+    @Override
+    public boolean deleteFile(IResourceTree tree, IFile file, int updateFlags, IProgressMonitor monitor) {
+        // Let someone else do the work.
+        return false;
+    }
 
-	/**
-	 * @see IMoveDeleteHook#deleteFolder(IResourceTree, IFolder, int, IProgressMonitor)
-	 */
-	@Override
-	public boolean deleteFolder(IResourceTree tree, IFolder folder, int updateFlags, IProgressMonitor monitor) {
-		// Let someone else do the work.
-		return false;
-	}
+    /**
+     * @see IMoveDeleteHook#deleteFolder(IResourceTree, IFolder, int, IProgressMonitor)
+     */
+    @Override
+    public boolean deleteFolder(IResourceTree tree, IFolder folder, int updateFlags, IProgressMonitor monitor) {
+        // Let someone else do the work.
+        return false;
+    }
 
-	/**
-	 * @see IMoveDeleteHook#deleteProject(IResourceTree, IProject, int, IProgressMonitor)
-	 */
-	@Override
-	public boolean deleteProject(IResourceTree tree, IProject project, int updateFlags, IProgressMonitor monitor) {
-		// Let someone else do the work.
-		return false;
-	}
+    /**
+     * @see IMoveDeleteHook#deleteProject(IResourceTree, IProject, int, IProgressMonitor)
+     */
+    @Override
+    public boolean deleteProject(IResourceTree tree, IProject project, int updateFlags, IProgressMonitor monitor) {
+        // Let someone else do the work.
+        return false;
+    }
 
-	/**
-	 * @see IMoveDeleteHook#moveFile(IResourceTree, IFile, IFile, int, IProgressMonitor)
-	 */
-	@Override
-	public boolean moveFile(IResourceTree tree, IFile source, IFile destination, int updateFlags, IProgressMonitor monitor) {
-		// Let someone else do the work.
-		return false;
-	}
+    /**
+     * @see IMoveDeleteHook#moveFile(IResourceTree, IFile, IFile, int, IProgressMonitor)
+     */
+    @Override
+    public boolean moveFile(IResourceTree tree, IFile source, IFile destination, int updateFlags,
+        IProgressMonitor monitor) {
+        // Let someone else do the work.
+        return false;
+    }
 
-	/**
-	 * @see IMoveDeleteHook#moveFolder(IResourceTree, IFolder, IFolder, int, IProgressMonitor)
-	 */
-	@Override
-	public boolean moveFolder(final IResourceTree tree, IFolder source, IFolder destination, int updateFlags, IProgressMonitor monitor) {
-		// Let someone else do the work.
-		return false;
-	}
+    /**
+     * @see IMoveDeleteHook#moveFolder(IResourceTree, IFolder, IFolder, int, IProgressMonitor)
+     */
+    @Override
+    public boolean moveFolder(final IResourceTree tree, IFolder source, IFolder destination, int updateFlags,
+        IProgressMonitor monitor) {
+        // Let someone else do the work.
+        return false;
+    }
 
-	/**
-	 * @see IMoveDeleteHook#moveProject(IResourceTree, IProject, IProjectDescription, int, IProgressMonitor)
-	 */
-	@Override
-	public boolean moveProject(IResourceTree tree, IProject source, IProjectDescription description, int updateFlags, IProgressMonitor monitor) {
-		// Let someone else do the work.
-		return false;
-	}
+    /**
+     * @see IMoveDeleteHook#moveProject(IResourceTree, IProject, IProjectDescription, int, IProgressMonitor)
+     */
+    @Override
+    public boolean moveProject(IResourceTree tree, IProject source, IProjectDescription description, int updateFlags,
+        IProgressMonitor monitor) {
+        // Let someone else do the work.
+        return false;
+    }
 
 }

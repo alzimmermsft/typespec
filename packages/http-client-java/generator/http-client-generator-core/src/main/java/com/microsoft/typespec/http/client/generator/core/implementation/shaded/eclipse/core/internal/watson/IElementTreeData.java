@@ -17,9 +17,9 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * User data that can be attached to the element tree itself.
  */
 public interface IElementTreeData extends Cloneable {
-	/**
-	 * ElementTreeData must define a publicly accessible clone method.
-	 * This method can simply invoke Object's clone method.
-	 */
-	Object clone();
+    /**
+     * ElementTreeData must define a publicly accessible clone method.
+     * This method can simply invoke Object's clone method.
+     */
+    Object clone();
 }

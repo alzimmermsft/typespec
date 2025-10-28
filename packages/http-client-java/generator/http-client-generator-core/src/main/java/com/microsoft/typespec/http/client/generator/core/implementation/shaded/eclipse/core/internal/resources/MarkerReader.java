@@ -14,47 +14,50 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.resources;
 
-import java.io.DataInputStream;
-import java.io.IOException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.utils.Messages;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.util.NLS;
+import java.io.DataInputStream;
+import java.io.IOException;
 
 /**
  * This class is used to read markers from disk. Subclasses implement
  * version specific reading code.
  */
 public class MarkerReader {
-	protected Workspace workspace;
+    protected Workspace workspace;
 
-	public MarkerReader(Workspace workspace) {
-		super();
-		this.workspace = workspace;
-	}
+    public MarkerReader(Workspace workspace) {
+        super();
+        this.workspace = workspace;
+    }
 
-	/**
-	 * Returns the appropriate reader for the given version.
-	 */
-	protected MarkerReader getReader(int formatVersion) throws IOException {
-		switch (formatVersion) {
-			case 1 :
-				return new MarkerReader_1(workspace);
-			case 2 :
-				return new MarkerReader_2(workspace);
-			case 3 :
-				return new MarkerReader_3(workspace);
-			default :
-				throw new IOException(NLS.bind(Messages.resources_format, formatVersion));
-		}
-	}
+    /**
+     * Returns the appropriate reader for the given version.
+     */
+    protected MarkerReader getReader(int formatVersion) throws IOException {
+        switch (formatVersion) {
+            case 1:
+                return new MarkerReader_1(workspace);
 
-	public void read(DataInputStream input, boolean generateDeltas) throws IOException, CoreException {
-		int formatVersion = readVersionNumber(input);
-		MarkerReader reader = getReader(formatVersion);
-		reader.read(input, generateDeltas);
-	}
+            case 2:
+                return new MarkerReader_2(workspace);
 
-	protected static int readVersionNumber(DataInputStream input) throws IOException {
-		return input.readInt();
-	}
+            case 3:
+                return new MarkerReader_3(workspace);
+
+            default:
+                throw new IOException(NLS.bind(Messages.resources_format, formatVersion));
+        }
+    }
+
+    public void read(DataInputStream input, boolean generateDeltas) throws IOException, CoreException {
+        int formatVersion = readVersionNumber(input);
+        MarkerReader reader = getReader(formatVersion);
+        reader.read(input, generateDeltas);
+    }
+
+    protected static int readVersionNumber(DataInputStream input) throws IOException {
+        return input.readInt();
+    }
 }

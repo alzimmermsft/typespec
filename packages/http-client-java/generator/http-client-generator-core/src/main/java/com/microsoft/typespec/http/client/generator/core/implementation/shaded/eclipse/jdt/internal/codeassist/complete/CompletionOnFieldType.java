@@ -39,22 +39,22 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeReference;
 
 public class CompletionOnFieldType extends FieldDeclaration implements CompletionNode {
-	public boolean isLocalVariable;
+    public boolean isLocalVariable;
 
-public CompletionOnFieldType(TypeReference type, boolean isLocalVariable){
-	super();
-	this.sourceStart = type.sourceStart;
-	this.sourceEnd = type.sourceEnd;
-	this.type = type;
-	this.name = CharOperation.NO_CHAR;
-	this.isLocalVariable = isLocalVariable;
-	if (type instanceof CompletionOnSingleTypeReference) {
-	    ((CompletionOnSingleTypeReference) type).fieldTypeCompletionNode = this;
-	}
-}
+    public CompletionOnFieldType(TypeReference type, boolean isLocalVariable) {
+        super();
+        this.sourceStart = type.sourceStart;
+        this.sourceEnd = type.sourceEnd;
+        this.type = type;
+        this.name = CharOperation.NO_CHAR;
+        this.isLocalVariable = isLocalVariable;
+        if (type instanceof CompletionOnSingleTypeReference) {
+            ((CompletionOnSingleTypeReference) type).fieldTypeCompletionNode = this;
+        }
+    }
 
-@Override
-public StringBuilder printStatement(int tab, StringBuilder output) {
-	return this.type.print(tab, output).append(';');
-}
+    @Override
+    public StringBuilder printStatement(int tab, StringBuilder output) {
+        return this.type.print(tab, output).append(';');
+    }
 }

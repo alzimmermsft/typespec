@@ -20,135 +20,131 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 class RecoveredVariableBinding implements IVariableBinding {
 
-	private final VariableDeclaration variableDeclaration;
-	private final BindingResolver resolver;
+    private final VariableDeclaration variableDeclaration;
+    private final BindingResolver resolver;
 
-	RecoveredVariableBinding(BindingResolver resolver, VariableDeclaration variableDeclaration) {
-		this.resolver = resolver;
-		this.variableDeclaration = variableDeclaration;
-	}
-	@Override
-	public Object getConstantValue() {
-		return null;
-	}
+    RecoveredVariableBinding(BindingResolver resolver, VariableDeclaration variableDeclaration) {
+        this.resolver = resolver;
+        this.variableDeclaration = variableDeclaration;
+    }
 
-	@Override
-	public ITypeBinding getDeclaringClass() {
-		ASTNode parent = this.variableDeclaration.getParent();
-		while (parent != null && parent.getNodeType() != ASTNode.TYPE_DECLARATION) {
-			parent = parent.getParent();
-		}
-		if (parent != null) {
-			return ((TypeDeclaration) parent).resolveBinding();
-		}
-		return null;
-	}
+    @Override
+    public Object getConstantValue() {
+        return null;
+    }
 
-	@Override
-	public IMethodBinding getDeclaringMethod() {
-		ASTNode parent = this.variableDeclaration.getParent();
-		while (parent != null && parent.getNodeType() != ASTNode.METHOD_DECLARATION) {
-			parent = parent.getParent();
-		}
-		if (parent != null) {
-			return ((MethodDeclaration) parent).resolveBinding();
-		}
-		return null;
-	}
+    @Override
+    public ITypeBinding getDeclaringClass() {
+        ASTNode parent = this.variableDeclaration.getParent();
+        while (parent != null && parent.getNodeType() != ASTNode.TYPE_DECLARATION) {
+            parent = parent.getParent();
+        }
+        if (parent != null) {
+            return ((TypeDeclaration) parent).resolveBinding();
+        }
+        return null;
+    }
 
-	@Override
-	public String getName() {
-		return this.variableDeclaration.getName().getIdentifier();
-	}
+    @Override
+    public IMethodBinding getDeclaringMethod() {
+        ASTNode parent = this.variableDeclaration.getParent();
+        while (parent != null && parent.getNodeType() != ASTNode.METHOD_DECLARATION) {
+            parent = parent.getParent();
+        }
+        if (parent != null) {
+            return ((MethodDeclaration) parent).resolveBinding();
+        }
+        return null;
+    }
 
-	@Override
-	public ITypeBinding getType() {
-		return this.resolver.getTypeBinding(this.variableDeclaration);
-	}
+    @Override
+    public String getName() {
+        return this.variableDeclaration.getName().getIdentifier();
+    }
 
-	@Override
-	public IVariableBinding getVariableDeclaration() {
-		return this;
-	}
+    @Override
+    public ITypeBinding getType() {
+        return this.resolver.getTypeBinding(this.variableDeclaration);
+    }
 
-	@Override
-	public int getVariableId() {
-		return 0;
-	}
+    @Override
+    public IVariableBinding getVariableDeclaration() {
+        return this;
+    }
 
-	@Override
-	public boolean isEnumConstant() {
-		return false;
-	}
+    @Override
+    public int getVariableId() {
+        return 0;
+    }
 
-	@Override
-	public boolean isField() {
-		return this.variableDeclaration.getParent() instanceof FieldDeclaration;
-	}
+    @Override
+    public boolean isEnumConstant() {
+        return false;
+    }
 
-	@Override
-	public boolean isParameter() {
-		return this.variableDeclaration instanceof SingleVariableDeclaration;
-	}
+    @Override
+    public boolean isField() {
+        return this.variableDeclaration.getParent() instanceof FieldDeclaration;
+    }
 
-	@Override
-	public IAnnotationBinding[] getAnnotations() {
-		return AnnotationBinding.NoAnnotations;
-	}
+    @Override
+    public boolean isParameter() {
+        return this.variableDeclaration instanceof SingleVariableDeclaration;
+    }
 
-	@Override
-	public IJavaElement getJavaElement() {
-		return null;
-	}
+    @Override
+    public IJavaElement getJavaElement() {
+        return null;
+    }
 
-	@Override
-	public String getKey() {
-		StringBuilder buffer = new StringBuilder();
-		buffer.append("Recovered#"); //$NON-NLS-1$
-		if (this.variableDeclaration != null) {
-			buffer
-				.append("variableDeclaration") //$NON-NLS-1$
-				.append(this.variableDeclaration.getClass())
-				.append(this.variableDeclaration.getName().getIdentifier())
-				.append(this.variableDeclaration.getExtraDimensions());
-		}
-		return String.valueOf(buffer);
-	}
+    @Override
+    public String getKey() {
+        StringBuilder buffer = new StringBuilder();
+        buffer.append("Recovered#"); //$NON-NLS-1$
+        if (this.variableDeclaration != null) {
+            buffer.append("variableDeclaration") //$NON-NLS-1$
+                .append(this.variableDeclaration.getClass())
+                .append(this.variableDeclaration.getName().getIdentifier())
+                .append(this.variableDeclaration.getExtraDimensions());
+        }
+        return String.valueOf(buffer);
+    }
 
-	@Override
-	public int getKind() {
-		return IBinding.VARIABLE;
-	}
+    @Override
+    public int getKind() {
+        return IBinding.VARIABLE;
+    }
 
-	@Override
-	public int getModifiers() {
-		return 0;
-	}
+    @Override
+    public int getModifiers() {
+        return 0;
+    }
 
-	@Override
-	public boolean isDeprecated() {
-		return false;
-	}
+    @Override
+    public boolean isDeprecated() {
+        return false;
+    }
 
-	@Override
-	public boolean isEqualTo(IBinding binding) {
-		if (binding.isRecovered() && binding.getKind() == IBinding.VARIABLE) {
-			return getKey().equals(binding.getKey());
-		}
-		return false;
-	}
+    @Override
+    public boolean isEqualTo(IBinding binding) {
+        if (binding.isRecovered() && binding.getKind() == IBinding.VARIABLE) {
+            return getKey().equals(binding.getKey());
+        }
+        return false;
+    }
 
-	@Override
-	public boolean isRecovered() {
-		return true;
-	}
+    @Override
+    public boolean isRecovered() {
+        return true;
+    }
 
-	@Override
-	public boolean isSynthetic() {
-		return false;
-	}
-	@Override
-	public boolean isEffectivelyFinal() {
-		return false;
-	}
+    @Override
+    public boolean isSynthetic() {
+        return false;
+    }
+
+    @Override
+    public boolean isEffectivelyFinal() {
+        return false;
+    }
 }

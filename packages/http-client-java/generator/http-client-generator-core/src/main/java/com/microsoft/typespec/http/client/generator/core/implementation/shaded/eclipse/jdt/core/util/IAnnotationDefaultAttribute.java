@@ -23,10 +23,10 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IAnnotationDefaultAttribute extends IClassFileAttribute {
 
-	/**
-	 * Answer back the member value as described in the JVM specifications.
-	 *
-	 * @return the member value
-	 */
-	IAnnotationComponentValue getMemberValue();
+    /**
+     * Answer back the member value as described in the JVM specifications.
+     *
+     * @return the member value
+     */
+    IAnnotationComponentValue getMemberValue();
 }

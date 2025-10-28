@@ -15,7 +15,6 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.registry.RegistryProviderFactory;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.spi.IRegistryProvider;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.spi.RegistryStrategy;
 
 /**
  * Use this class to create or obtain an extension registry.
@@ -34,18 +33,18 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public final class RegistryFactory {
 
-	/**
-	 * Returns the default extension registry specified by the registry provider.
-	 * May return <code>null</code> if the provider has not been set or if the
-	 * registry has not been created.
-	 *
-	 * @return existing extension registry or <code>null</code>
-	 */
-	public static IExtensionRegistry getRegistry() {
-		IRegistryProvider defaultRegistryProvider = RegistryProviderFactory.getDefault();
-		if (defaultRegistryProvider == null) {
-			return null;
-		}
-		return defaultRegistryProvider.getRegistry();
-	}
+    /**
+     * Returns the default extension registry specified by the registry provider.
+     * May return <code>null</code> if the provider has not been set or if the
+     * registry has not been created.
+     *
+     * @return existing extension registry or <code>null</code>
+     */
+    public static IExtensionRegistry getRegistry() {
+        IRegistryProvider defaultRegistryProvider = RegistryProviderFactory.getDefault();
+        if (defaultRegistryProvider == null) {
+            return null;
+        }
+        return defaultRegistryProvider.getRegistry();
+    }
 }

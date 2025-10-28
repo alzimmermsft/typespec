@@ -64,32 +64,6 @@ protected void closing(Object info) throws JavaModelException {
 protected JavaElementInfo createElementInfo() {
 	return null; // not used for source ref elements
 }
-/**
- * @see ISourceManipulation
- */
-public void copy(IJavaElement container, IJavaElement sibling, String rename, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	if (container == null) {
-		throw new IllegalArgumentException(Messages.operation_nullContainer);
-	}
-	IJavaElement[] elements= new IJavaElement[] {this};
-	IJavaElement[] containers= new IJavaElement[] {container};
-	IJavaElement[] siblings= null;
-	if (sibling != null) {
-		siblings= new IJavaElement[] {sibling};
-	}
-	String[] renamings= null;
-	if (rename != null) {
-		renamings= new String[] {rename};
-	}
-	getJavaModel().copy(elements, containers, siblings, renamings, force, monitor);
-}
-/**
- * @see ISourceManipulation
- */
-public void delete(boolean force, IProgressMonitor monitor) throws JavaModelException {
-	IJavaElement[] elements = new IJavaElement[] {this};
-	getJavaModel().delete(elements, force, monitor);
-}
 @Override
 public boolean equals(Object o) {
 	if (!(o instanceof SourceRefElement other)) return false;
@@ -117,16 +91,6 @@ public ASTNode findNode(CompilationUnit ast) {
 	}
 }
 
-@Override
-protected void generateInfos(IElementInfo info, Map<IJavaElement, IElementInfo> newElements, IProgressMonitor pm) throws JavaModelException {
-	Openable openableParent = (Openable)getOpenableParent();
-	if (openableParent == null) return;
-
-	IElementInfo openableParentInfo = JavaModelManager.getJavaModelManager().getInfo(openableParent);
-	if (openableParentInfo == null) {
-		openableParent.generateInfos(openableParent.createElementInfo(), newElements, pm);
-	}
-}
 public IAnnotation getAnnotation(String name) {
 	return new Annotation(this, name);
 }
@@ -280,37 +244,6 @@ public boolean hasChildren() throws JavaModelException {
 public boolean isStructureKnown() throws JavaModelException {
 	// structure is always known inside an openable
 	return true;
-}
-/**
- * @see ISourceManipulation
- */
-public void move(IJavaElement container, IJavaElement sibling, String rename, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	if (container == null) {
-		throw new IllegalArgumentException(Messages.operation_nullContainer);
-	}
-	IJavaElement[] elements= new IJavaElement[] {this};
-	IJavaElement[] containers= new IJavaElement[] {container};
-	IJavaElement[] siblings= null;
-	if (sibling != null) {
-		siblings= new IJavaElement[] {sibling};
-	}
-	String[] renamings= null;
-	if (rename != null) {
-		renamings= new String[] {rename};
-	}
-	getJavaModel().move(elements, containers, siblings, renamings, force, monitor);
-}
-/**
- * @see ISourceManipulation
- */
-public void rename(String newName, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	if (newName == null) {
-		throw new IllegalArgumentException(Messages.element_nullName);
-	}
-	IJavaElement[] elements= new IJavaElement[] {this};
-	IJavaElement[] dests= new IJavaElement[] {getParent()};
-	String[] renamings= new String[] {newName};
-	getJavaModel().rename(elements, dests, renamings, force, monitor);
 }
 @Override
 protected void toStringName(StringBuilder buffer) {

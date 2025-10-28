@@ -16,18 +16,21 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 /**
  * An interface for objects which can visit an element of
  * an element tree and access that element's node info.
+ * 
  * @see ElementTreeIterator
  */
 public interface IElementContentVisitor {
-	/** Visits a node (element).
-	 * <p> Note that <code>elementContents</code> is equal to<code>tree.
-	 * getElement(elementPath)</code> but takes no time.
-	 * @param tree the element tree being visited
-	 * @param elementContents the object at the node being visited on this call
-	 * @param requestor callback object for requesting the path of the object being
-	 * visited.
-	 * @return true if this element's children should be visited, and false
-	 * otherwise.
-	 */
-	boolean visitElement(ElementTree tree, IPathRequestor requestor, Object elementContents);
+    /**
+     * Visits a node (element).
+     * <p> Note that <code>elementContents</code> is equal to<code>tree.
+     * getElement(elementPath)</code> but takes no time.
+     * 
+     * @param tree the element tree being visited
+     * @param elementContents the object at the node being visited on this call
+     * @param requestor callback object for requesting the path of the object being
+     * visited.
+     * @return true if this element's children should be visited, and false
+     * otherwise.
+     */
+    boolean visitElement(ElementTree tree, IPathRequestor requestor, Object elementContents);
 }

@@ -1,10 +1,10 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.units.qual;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 
 /**
  * MixedUnits is the result of multiplying or dividing units, where no more specific unit is known
@@ -14,6 +14,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({}) // forbids a programmer from writing it in a program
+@Target({ }) // forbids a programmer from writing it in a program
 @SubtypeOf(UnknownUnits.class)
-public @interface MixedUnits {}
+public @interface MixedUnits {
+}

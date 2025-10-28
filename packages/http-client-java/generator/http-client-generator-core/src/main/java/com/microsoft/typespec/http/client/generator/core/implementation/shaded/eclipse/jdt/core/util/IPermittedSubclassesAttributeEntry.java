@@ -21,19 +21,19 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IPermittedSubclassesAttributeEntry {
 
-	/**
-	 * Answer back the permitted subclass name as specified
-	 * in the JVM specifications.
-	 *
-	 * @return the permitted subclass name as specified
-	 * in the JVM specifications
-	 */
-	char[] getPermittedSubclassName();
+    /**
+     * Answer back the permitted subclass name as specified
+     * in the JVM specifications.
+     *
+     * @return the permitted subclass name as specified
+     * in the JVM specifications
+     */
+    char[] getPermittedSubclassName();
 
-	/**
-	 * Answer back the permitted subclass name index.
-	 *
-	 * @return the permitted class name index
-	 */
-	int gePermittedSubclassIndex();
+    /**
+     * Answer back the permitted subclass name index.
+     *
+     * @return the permitted class name index
+     */
+    int gePermittedSubclassIndex();
 }

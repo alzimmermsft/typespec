@@ -1,10 +1,5 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.DefaultFor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.DefaultQualifierInHierarchy;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.InvisibleQualifier;
@@ -12,6 +7,11 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.QualifierForLiterals;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.TypeUseLocation;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Used internally by the type system; should never be written by a programmer.
@@ -24,10 +24,11 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
 @InvisibleQualifier
-@SubtypeOf({})
+@SubtypeOf({ })
 @DefaultQualifierInHierarchy
 @DefaultFor(value = TypeUseLocation.LOWER_BOUND, types = Void.class)
 @QualifierForLiterals(LiteralKind.NULL)
-public @interface UnknownKeyFor {}
+public @interface UnknownKeyFor {
+}

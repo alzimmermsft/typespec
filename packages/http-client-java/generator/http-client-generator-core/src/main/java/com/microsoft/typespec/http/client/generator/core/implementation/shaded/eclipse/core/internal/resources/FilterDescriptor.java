@@ -20,63 +20,63 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IConfigurationElement;
 
 public class FilterDescriptor implements IFilterMatcherDescriptor {
-	private final String id;
-	private final String name;
-	private final String description;
-	private String argumentType;
-	private boolean isFirst = false;
-	private final IConfigurationElement element;
+    private final String id;
+    private final String name;
+    private final String description;
+    private String argumentType;
+    private boolean isFirst = false;
+    private final IConfigurationElement element;
 
-	public FilterDescriptor(IConfigurationElement element) {
-		this(element, true);
-	}
+    public FilterDescriptor(IConfigurationElement element) {
+        this(element, true);
+    }
 
-	public FilterDescriptor(IConfigurationElement element, boolean instantiateFactory) {
-		id = element.getAttribute("id"); //$NON-NLS-1$
-		name = element.getAttribute("name"); //$NON-NLS-1$
-		description = element.getAttribute("description"); //$NON-NLS-1$
-		argumentType = element.getAttribute("argumentType"); //$NON-NLS-1$
-		if (argumentType == null) {
-			argumentType = IFilterMatcherDescriptor.ARGUMENT_TYPE_NONE;
-		}
-		this.element = element;
-		String ordering = element.getAttribute("ordering"); //$NON-NLS-1$
-		if (ordering != null) {
-			isFirst = ordering.equals("first"); //$NON-NLS-1$
-		}
-	}
+    public FilterDescriptor(IConfigurationElement element, boolean instantiateFactory) {
+        id = element.getAttribute("id"); //$NON-NLS-1$
+        name = element.getAttribute("name"); //$NON-NLS-1$
+        description = element.getAttribute("description"); //$NON-NLS-1$
+        argumentType = element.getAttribute("argumentType"); //$NON-NLS-1$
+        if (argumentType == null) {
+            argumentType = IFilterMatcherDescriptor.ARGUMENT_TYPE_NONE;
+        }
+        this.element = element;
+        String ordering = element.getAttribute("ordering"); //$NON-NLS-1$
+        if (ordering != null) {
+            isFirst = ordering.equals("first"); //$NON-NLS-1$
+        }
+    }
 
-	@Override
-	public String getId() {
-		return id;
-	}
+    @Override
+    public String getId() {
+        return id;
+    }
 
-	@Override
-	public String getName() {
-		return name;
-	}
+    @Override
+    public String getName() {
+        return name;
+    }
 
-	@Override
-	public String getDescription() {
-		return description;
-	}
+    @Override
+    public String getDescription() {
+        return description;
+    }
 
-	@Override
-	public String getArgumentType() {
-		return argumentType;
-	}
+    @Override
+    public String getArgumentType() {
+        return argumentType;
+    }
 
-	public AbstractFileInfoMatcher createFilter() {
-		try {
-			return (AbstractFileInfoMatcher) element.createExecutableExtension("class"); //$NON-NLS-1$
-		} catch (CoreException e) {
-			Policy.log(e);
-			return null;
-		}
-	}
+    public AbstractFileInfoMatcher createFilter() {
+        try {
+            return (AbstractFileInfoMatcher) element.createExecutableExtension("class"); //$NON-NLS-1$
+        } catch (CoreException e) {
+            Policy.log(e);
+            return null;
+        }
+    }
 
-	@Override
-	public boolean isFirstOrdering() {
-		return isFirst;
-	}
+    @Override
+    public boolean isFirstOrdering() {
+        return isFirst;
+    }
 }

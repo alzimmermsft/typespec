@@ -1,11 +1,11 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.regex.qual;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.InvisibleQualifier;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.InvisibleQualifier;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 
 /**
  * Indicates a String that is not a syntactically valid regular expression. The String itself can be
@@ -19,14 +19,14 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({}) // empty target prevents programmers from writing this in a program
+@Target({ }) // empty target prevents programmers from writing this in a program
 @InvisibleQualifier
 @SubtypeOf(UnknownRegex.class)
 public @interface PartialRegex {
 
-  /**
-   * The String qualified by this annotation. Used to verify concatenation of partial regular
-   * expressions. Defaults to the empty String.
-   */
-  String value() default "";
+    /**
+     * The String qualified by this annotation. Used to verify concatenation of partial regular
+     * expressions. Defaults to the empty String.
+     */
+    String value() default "";
 }

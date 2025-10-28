@@ -21,45 +21,45 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IPackageVisibilityInfo {
 
-	/**
-	 * Answer back the exports/opens index.
-	 *
-	 * @return the exports/opens index
-	 */
-	int getIndex();
+    /**
+     * Answer back the exports/opens index.
+     *
+     * @return the exports/opens index
+     */
+    int getIndex();
 
-	/**
-	 * Answer back the exports/opens package.
-	 *
-	 * @return the exports/opens package
-	 */
-	char[] getPackageName();
+    /**
+     * Answer back the exports/opens package.
+     *
+     * @return the exports/opens package
+     */
+    char[] getPackageName();
 
-	/**
-	 * Answer back the exports/opens flags.
-	 *
-	 * @return the exports/opens flags
-	 */
-	int getFlags();
+    /**
+     * Answer back the exports/opens flags.
+     *
+     * @return the exports/opens flags
+     */
+    int getFlags();
 
-	/**
-	 * Answer back the number of targets, zero if none.
-	 *
-	 * @return the number of targets, zero if none.
-	 */
-	int getTargetsCount();
+    /**
+     * Answer back the number of targets, zero if none.
+     *
+     * @return the number of targets, zero if none.
+     */
+    int getTargetsCount();
 
-	/**
-	 * Answer back the array of target module indices.
-	 *
-	 * @return the array of target module indices.
-	 */
-	int[] getTargetModuleIndices();
+    /**
+     * Answer back the array of target module indices.
+     *
+     * @return the array of target module indices.
+     */
+    int[] getTargetModuleIndices();
 
-	/**
-	 * Answer back the array of target module names.
-	 *
-	 * @return the array of target module names.
-	 */
-	char[][] getTargetModuleNames();
+    /**
+     * Answer back the array of target module names.
+     *
+     * @return the array of target module names.
+     */
+    char[][] getTargetModuleNames();
 }

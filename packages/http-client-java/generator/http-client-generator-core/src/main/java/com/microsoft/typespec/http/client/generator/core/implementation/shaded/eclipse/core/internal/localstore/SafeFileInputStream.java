@@ -23,35 +23,35 @@ import java.io.*;
  * @see SafeFileOutputStream
  */
 public class SafeFileInputStream extends FilterInputStream {
-	protected static final String EXTENSION = ".bak"; //$NON-NLS-1$
-	private static final int DEFAUT_BUFFER_SIZE = 2048;
+    protected static final String EXTENSION = ".bak"; //$NON-NLS-1$
+    private static final int DEFAUT_BUFFER_SIZE = 2048;
 
-	public SafeFileInputStream(File file) throws IOException {
-		this(file.getAbsolutePath(), null);
-	}
+    public SafeFileInputStream(File file) throws IOException {
+        this(file.getAbsolutePath(), null);
+    }
 
-	/**
-	 * If targetPath is null, the file will be created in the default-temporary directory.
-	 */
-	public SafeFileInputStream(String targetPath, String tempPath) throws IOException {
-		super(getInputStream(targetPath, tempPath, DEFAUT_BUFFER_SIZE));
-	}
+    /**
+     * If targetPath is null, the file will be created in the default-temporary directory.
+     */
+    public SafeFileInputStream(String targetPath, String tempPath) throws IOException {
+        super(getInputStream(targetPath, tempPath, DEFAUT_BUFFER_SIZE));
+    }
 
-	/**
-	 * If targetPath is null, the file will be created in the default-temporary directory.
-	 */
-	public SafeFileInputStream(String targetPath, String tempPath, int bufferSize) throws IOException {
-		super(getInputStream(targetPath, tempPath, bufferSize));
-	}
+    /**
+     * If targetPath is null, the file will be created in the default-temporary directory.
+     */
+    public SafeFileInputStream(String targetPath, String tempPath, int bufferSize) throws IOException {
+        super(getInputStream(targetPath, tempPath, bufferSize));
+    }
 
-	private static InputStream getInputStream(String targetPath, String tempPath, int bufferSize) throws IOException {
-		File target = new File(targetPath);
-		if (!target.exists()) {
-			if (tempPath == null) {
-				tempPath = target.getAbsolutePath() + EXTENSION;
-			}
-			target = new File(tempPath);
-		}
-		return new BufferedInputStream(new FileInputStream(target), bufferSize);
-	}
+    private static InputStream getInputStream(String targetPath, String tempPath, int bufferSize) throws IOException {
+        File target = new File(targetPath);
+        if (!target.exists()) {
+            if (tempPath == null) {
+                tempPath = target.getAbsolutePath() + EXTENSION;
+            }
+            target = new File(tempPath);
+        }
+        return new BufferedInputStream(new FileInputStream(target), bufferSize);
+    }
 }

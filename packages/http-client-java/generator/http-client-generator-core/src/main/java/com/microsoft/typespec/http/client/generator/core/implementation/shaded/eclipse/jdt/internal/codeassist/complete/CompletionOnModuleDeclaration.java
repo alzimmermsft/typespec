@@ -19,8 +19,8 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class CompletionOnModuleDeclaration extends ModuleDeclaration implements CompletionNode {
 
-	public CompletionOnModuleDeclaration(CompilationResult compilationResult, char[][] tokens, long[] positions) {
-		super(compilationResult, tokens, positions);
-	}
+    public CompletionOnModuleDeclaration(CompilationResult compilationResult, char[][] tokens, long[] positions) {
+        super(compilationResult, tokens, positions);
+    }
 
 }

@@ -81,7 +81,7 @@ protected char getHandleMementoDelimiter() {
 }
 @Override
 public String getKey(boolean forceOpen) throws JavaModelException {
-	return getKey(this, forceOpen);
+	return getKey(this);
 }
 /*
  * @see IField

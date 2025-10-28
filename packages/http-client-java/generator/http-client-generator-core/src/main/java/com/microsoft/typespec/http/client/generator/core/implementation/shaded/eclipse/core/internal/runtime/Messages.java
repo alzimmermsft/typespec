@@ -17,17 +17,18 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 // Runtime plugin message catalog
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.runtime.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME
+        = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.runtime.messages"; //$NON-NLS-1$
 
-	// metadata
-	public static String meta_appNotInit;
+    // metadata
+    public static String meta_appNotInit;
 
-	static {
-		// load message values from bundle file
-		reloadMessages();
-	}
+    static {
+        // load message values from bundle file
+        reloadMessages();
+    }
 
-	public static void reloadMessages() {
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-	}
+    public static void reloadMessages() {
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
 }

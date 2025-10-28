@@ -15,12 +15,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.resources;
 
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeMap;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.utils.Messages;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IMarker;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
@@ -31,6 +25,12 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.PlatformObject;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.jobs.ISchedulingRule;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.util.NLS;
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * An abstract marker implementation.
@@ -46,368 +46,375 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class Marker extends PlatformObject implements IMarker {
 
-	/** Marker identifier. */
-	protected final long id;
+    /** Marker identifier. */
+    protected final long id;
 
-	/** Resource with which this marker is associated. */
-	protected final IResource resource;
+    /** Resource with which this marker is associated. */
+    protected final IResource resource;
 
-	/**
-	 * Constructs a new marker object.
-	 */
-	Marker(IResource resource, long id) {
-		Assert.isLegal(resource != null);
-		this.resource = resource;
-		this.id = id;
-	}
+    /**
+     * Constructs a new marker object.
+     */
+    Marker(IResource resource, long id) {
+        Assert.isLegal(resource != null);
+        this.resource = resource;
+        this.id = id;
+    }
 
-	/**
-	 * Checks the given marker info to ensure that it is not null.
-	 * Throws an exception if it is.
-	 */
-	private void checkInfo(MarkerInfo info) throws CoreException {
-		if (info == null) {
-			String message = NLS.bind(Messages.resources_markerNotFound, Long.toString(id));
-			throw new ResourceException(new ResourceStatus(IResourceStatus.MARKER_NOT_FOUND, resource.getFullPath(), message, new IllegalStateException()));
-		}
-	}
+    /**
+     * Checks the given marker info to ensure that it is not null.
+     * Throws an exception if it is.
+     */
+    private void checkInfo(MarkerInfo info) throws CoreException {
+        if (info == null) {
+            String message = NLS.bind(Messages.resources_markerNotFound, Long.toString(id));
+            throw new ResourceException(new ResourceStatus(IResourceStatus.MARKER_NOT_FOUND, resource.getFullPath(),
+                message, new IllegalStateException()));
+        }
+    }
 
-	/**
-	 * @see IMarker#delete()
-	 */
-	@Override
-	public void delete() throws CoreException {
-		final ISchedulingRule rule = getWorkspace().getRuleFactory().markerRule(resource);
-		try {
-			getWorkspace().prepareOperation(rule, null);
-			getWorkspace().beginOperation(true);
-			getWorkspace().getMarkerManager().removeMarker(getResource(), getId());
-		} finally {
-			getWorkspace().endOperation(rule, false);
-		}
-	}
+    /**
+     * @see IMarker#delete()
+     */
+    @Override
+    public void delete() throws CoreException {
+        final ISchedulingRule rule = getWorkspace().getRuleFactory().markerRule(resource);
+        try {
+            getWorkspace().prepareOperation(rule, null);
+            getWorkspace().beginOperation(true);
+            getWorkspace().getMarkerManager().removeMarker(getResource(), getId());
+        } finally {
+            getWorkspace().endOperation(rule, false);
+        }
+    }
 
-	/**
-	 * @see IMarker#equals(Object)
-	 */
-	@Override
-	public boolean equals(Object object) {
-		if (!(object instanceof IMarker other)) {
-			return false;
-		}
-		return (id == other.getId() && resource.equals(other.getResource()));
-	}
+    /**
+     * @see IMarker#equals(Object)
+     */
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof IMarker other)) {
+            return false;
+        }
+        return (id == other.getId() && resource.equals(other.getResource()));
+    }
 
-	/**
-	 * @see IMarker#exists()
-	 */
-	@Override
-	public boolean exists() {
-		return getInfo() != null;
-	}
+    /**
+     * @see IMarker#exists()
+     */
+    @Override
+    public boolean exists() {
+        return getInfo() != null;
+    }
 
-	/**
-	 * @see IMarker#getAttribute(String)
-	 */
-	@Override
-	public Object getAttribute(String attributeName) throws CoreException {
-		Assert.isNotNull(attributeName);
-		MarkerInfo info = getInfo();
-		checkInfo(info);
-		return info.getAttribute(attributeName);
-	}
+    /**
+     * @see IMarker#getAttribute(String)
+     */
+    @Override
+    public Object getAttribute(String attributeName) throws CoreException {
+        Assert.isNotNull(attributeName);
+        MarkerInfo info = getInfo();
+        checkInfo(info);
+        return info.getAttribute(attributeName);
+    }
 
-	/**
-	 * @see IMarker#getAttribute(String, int)
-	 */
-	@Override
-	public int getAttribute(String attributeName, int defaultValue) {
-		Assert.isNotNull(attributeName);
-		MarkerInfo info = getInfo();
-		if (info == null) {
-			return defaultValue;
-		}
-		Object value = info.getAttribute(attributeName);
-		if (value instanceof Integer) {
-			return ((Integer) value).intValue();
-		}
-		return defaultValue;
-	}
+    /**
+     * @see IMarker#getAttribute(String, int)
+     */
+    @Override
+    public int getAttribute(String attributeName, int defaultValue) {
+        Assert.isNotNull(attributeName);
+        MarkerInfo info = getInfo();
+        if (info == null) {
+            return defaultValue;
+        }
+        Object value = info.getAttribute(attributeName);
+        if (value instanceof Integer) {
+            return ((Integer) value).intValue();
+        }
+        return defaultValue;
+    }
 
-	/**
-	 * @see IMarker#getAttribute(String, String)
-	 */
-	@Override
-	public String getAttribute(String attributeName, String defaultValue) {
-		Assert.isNotNull(attributeName);
-		MarkerInfo info = getInfo();
-		if (info == null) {
-			return defaultValue;
-		}
-		Object value = info.getAttribute(attributeName);
-		if (value instanceof String) {
-			return (String) value;
-		}
-		return defaultValue;
-	}
+    /**
+     * @see IMarker#getAttribute(String, String)
+     */
+    @Override
+    public String getAttribute(String attributeName, String defaultValue) {
+        Assert.isNotNull(attributeName);
+        MarkerInfo info = getInfo();
+        if (info == null) {
+            return defaultValue;
+        }
+        Object value = info.getAttribute(attributeName);
+        if (value instanceof String) {
+            return (String) value;
+        }
+        return defaultValue;
+    }
 
-	/**
-	 * @see IMarker#getAttribute(String, boolean)
-	 */
-	@Override
-	public boolean getAttribute(String attributeName, boolean defaultValue) {
-		Assert.isNotNull(attributeName);
-		MarkerInfo info = getInfo();
-		if (info == null) {
-			return defaultValue;
-		}
-		Object value = info.getAttribute(attributeName);
-		if (value instanceof Boolean) {
-			return ((Boolean) value).booleanValue();
-		}
-		return defaultValue;
-	}
+    /**
+     * @see IMarker#getAttribute(String, boolean)
+     */
+    @Override
+    public boolean getAttribute(String attributeName, boolean defaultValue) {
+        Assert.isNotNull(attributeName);
+        MarkerInfo info = getInfo();
+        if (info == null) {
+            return defaultValue;
+        }
+        Object value = info.getAttribute(attributeName);
+        if (value instanceof Boolean) {
+            return ((Boolean) value).booleanValue();
+        }
+        return defaultValue;
+    }
 
-	/**
-	 * @see IMarker#getAttributes()
-	 */
-	@Override
-	public Map<String, Object> getAttributes() throws CoreException {
-		MarkerInfo info = getInfo();
-		checkInfo(info);
-		return info.getAttributes();
-	}
+    /**
+     * @see IMarker#getAttributes()
+     */
+    @Override
+    public Map<String, Object> getAttributes() throws CoreException {
+        MarkerInfo info = getInfo();
+        checkInfo(info);
+        return info.getAttributes();
+    }
 
-	/**
-	 * @see IMarker#getAttributes(String[])
-	 */
-	@Override
-	public Object[] getAttributes(String[] attributeNames) throws CoreException {
-		Assert.isNotNull(attributeNames);
-		MarkerInfo info = getInfo();
-		checkInfo(info);
-		return info.getAttributes(attributeNames);
-	}
+    /**
+     * @see IMarker#getAttributes(String[])
+     */
+    @Override
+    public Object[] getAttributes(String[] attributeNames) throws CoreException {
+        Assert.isNotNull(attributeNames);
+        MarkerInfo info = getInfo();
+        checkInfo(info);
+        return info.getAttributes(attributeNames);
+    }
 
-	/**
-	 * @see IMarker#getCreationTime()
-	 */
-	@Override
-	public long getCreationTime() throws CoreException {
-		MarkerInfo info = getInfo();
-		checkInfo(info);
-		return info.getCreationTime();
-	}
+    /**
+     * @see IMarker#getCreationTime()
+     */
+    @Override
+    public long getCreationTime() throws CoreException {
+        MarkerInfo info = getInfo();
+        checkInfo(info);
+        return info.getCreationTime();
+    }
 
-	/**
-	 * @see IMarker#getId()
-	 */
-	@Override
-	public long getId() {
-		return id;
-	}
+    /**
+     * @see IMarker#getId()
+     */
+    @Override
+    public long getId() {
+        return id;
+    }
 
-	protected MarkerInfo getInfo() {
-		return getWorkspace().getMarkerManager().findMarkerInfo(resource, id);
-	}
+    protected MarkerInfo getInfo() {
+        return getWorkspace().getMarkerManager().findMarkerInfo(resource, id);
+    }
 
-	/**
-	 * @see IMarker#getResource()
-	 */
-	@Override
-	public IResource getResource() {
-		return resource;
-	}
+    /**
+     * @see IMarker#getResource()
+     */
+    @Override
+    public IResource getResource() {
+        return resource;
+    }
 
-	/**
-	 * @see IMarker#getType()
-	 */
-	@Override
-	public String getType() throws CoreException {
-		MarkerInfo info = getInfo();
-		checkInfo(info);
-		return info.getType();
-	}
+    /**
+     * @see IMarker#getType()
+     */
+    @Override
+    public String getType() throws CoreException {
+        MarkerInfo info = getInfo();
+        checkInfo(info);
+        return info.getType();
+    }
 
-	/**
-	 * Returns the workspace which manages this marker.  Returns
-	 * <code>null</code> if this resource does not have an associated
-	 * resource.
-	 */
-	private Workspace getWorkspace() {
-		return resource == null ? null : (Workspace) resource.getWorkspace();
-	}
+    /**
+     * Returns the workspace which manages this marker. Returns
+     * <code>null</code> if this resource does not have an associated
+     * resource.
+     */
+    private Workspace getWorkspace() {
+        return resource == null ? null : (Workspace) resource.getWorkspace();
+    }
 
-	@Override
-	public int hashCode() {
-		return (int) id + resource.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return (int) id + resource.hashCode();
+    }
 
-	/**
-	 * @see IMarker#isSubtypeOf(String)
-	 */
-	@Override
-	public boolean isSubtypeOf(String type) throws CoreException {
-		return getWorkspace().getMarkerManager().isSubtype(getType(), type);
-	}
+    /**
+     * @see IMarker#isSubtypeOf(String)
+     */
+    @Override
+    public boolean isSubtypeOf(String type) throws CoreException {
+        return getWorkspace().getMarkerManager().isSubtype(getType(), type);
+    }
 
-	/**
-	 * @see IMarker#setAttribute(String, int)
-	 */
-	@Override
-	public void setAttribute(String attributeName, int value) throws CoreException {
-		setAttribute(attributeName, Integer.valueOf(value));
-	}
+    /**
+     * @see IMarker#setAttribute(String, int)
+     */
+    @Override
+    public void setAttribute(String attributeName, int value) throws CoreException {
+        setAttribute(attributeName, Integer.valueOf(value));
+    }
 
-	/**
-	 * @see IMarker#setAttribute(String, Object)
-	 */
-	@Override
-	public void setAttribute(String attributeName, Object value) throws CoreException {
-		Assert.isNotNull(attributeName);
-		Workspace workspace = getWorkspace();
-		MarkerManager manager = workspace.getMarkerManager();
-		try {
-			workspace.prepareOperation(null, null);
-			workspace.beginOperation(true);
-			MarkerInfo markerInfo = getInfo();
-			checkInfo(markerInfo);
+    /**
+     * @see IMarker#setAttribute(String, Object)
+     */
+    @Override
+    public void setAttribute(String attributeName, Object value) throws CoreException {
+        Assert.isNotNull(attributeName);
+        Workspace workspace = getWorkspace();
+        MarkerManager manager = workspace.getMarkerManager();
+        try {
+            workspace.prepareOperation(null, null);
+            workspace.beginOperation(true);
+            MarkerInfo markerInfo = getInfo();
+            checkInfo(markerInfo);
 
-			//only need to generate delta info if none already
-			boolean needDelta = !manager.hasDelta(resource.getFullPath(), id);
-			MarkerInfo oldInfo = needDelta ? (MarkerInfo) markerInfo.clone() : null;
-			boolean validate = manager.isPersistentType(markerInfo.getType());
-			markerInfo.setAttribute(attributeName, value, validate);
-			if (manager.isPersistent(markerInfo)) {
-				((Resource) resource).getResourceInfo(false, true).set(ICoreConstants.M_MARKERS_SNAP_DIRTY);
-			}
-			if (needDelta) {
-				MarkerDelta delta = new MarkerDelta(IResourceDelta.CHANGED, resource, oldInfo);
-				manager.changedMarkers(resource, new MarkerDelta[] {delta});
-			}
-		} finally {
-			workspace.endOperation(null, false);
-		}
-	}
+            // only need to generate delta info if none already
+            boolean needDelta = !manager.hasDelta(resource.getFullPath(), id);
+            MarkerInfo oldInfo = needDelta ? (MarkerInfo) markerInfo.clone() : null;
+            boolean validate = manager.isPersistentType(markerInfo.getType());
+            markerInfo.setAttribute(attributeName, value, validate);
+            if (manager.isPersistent(markerInfo)) {
+                ((Resource) resource).getResourceInfo(false, true).set(ICoreConstants.M_MARKERS_SNAP_DIRTY);
+            }
+            if (needDelta) {
+                MarkerDelta delta = new MarkerDelta(IResourceDelta.CHANGED, resource, oldInfo);
+                manager.changedMarkers(resource, new MarkerDelta[] { delta });
+            }
+        } finally {
+            workspace.endOperation(null, false);
+        }
+    }
 
-	/**
-	 * @see IMarker#setAttribute(String, boolean)
-	 */
-	@Override
-	public void setAttribute(String attributeName, boolean value) throws CoreException {
-		setAttribute(attributeName, value ? Boolean.TRUE : Boolean.FALSE);
-	}
+    /**
+     * @see IMarker#setAttribute(String, boolean)
+     */
+    @Override
+    public void setAttribute(String attributeName, boolean value) throws CoreException {
+        setAttribute(attributeName, value ? Boolean.TRUE : Boolean.FALSE);
+    }
 
-	/**
-	 * adds all Entries
-	 * @see IMarker#setAttributes(String[], Object[])
-	 */
-	@Override
-	public void setAttributes(String[] attributeNames, Object[] values) throws CoreException {
-		Assert.isNotNull(attributeNames);
-		Assert.isNotNull(values);
-		Workspace workspace = getWorkspace();
-		MarkerManager manager = workspace.getMarkerManager();
-		try {
-			workspace.prepareOperation(null, null);
-			workspace.beginOperation(true);
-			MarkerInfo markerInfo = getInfo();
-			checkInfo(markerInfo);
+    /**
+     * adds all Entries
+     * 
+     * @see IMarker#setAttributes(String[], Object[])
+     */
+    @Override
+    public void setAttributes(String[] attributeNames, Object[] values) throws CoreException {
+        Assert.isNotNull(attributeNames);
+        Assert.isNotNull(values);
+        Workspace workspace = getWorkspace();
+        MarkerManager manager = workspace.getMarkerManager();
+        try {
+            workspace.prepareOperation(null, null);
+            workspace.beginOperation(true);
+            MarkerInfo markerInfo = getInfo();
+            checkInfo(markerInfo);
 
-			//only need to generate delta info if none already
-			boolean needDelta = !manager.hasDelta(resource.getFullPath(), id);
-			MarkerInfo oldInfo = needDelta ? (MarkerInfo) markerInfo.clone() : null;
-			boolean validate = manager.isPersistentType(markerInfo.getType());
-			markerInfo.addAttributes(attributeNames, values, validate);
-			if (manager.isPersistent(markerInfo)) {
-				((Resource) resource).getResourceInfo(false, true).set(ICoreConstants.M_MARKERS_SNAP_DIRTY);
-			}
-			if (needDelta) {
-				MarkerDelta delta = new MarkerDelta(IResourceDelta.CHANGED, resource, oldInfo);
-				manager.changedMarkers(resource, new MarkerDelta[] {delta});
-			}
-		} finally {
-			workspace.endOperation(null, false);
-		}
-	}
+            // only need to generate delta info if none already
+            boolean needDelta = !manager.hasDelta(resource.getFullPath(), id);
+            MarkerInfo oldInfo = needDelta ? (MarkerInfo) markerInfo.clone() : null;
+            boolean validate = manager.isPersistentType(markerInfo.getType());
+            markerInfo.addAttributes(attributeNames, values, validate);
+            if (manager.isPersistent(markerInfo)) {
+                ((Resource) resource).getResourceInfo(false, true).set(ICoreConstants.M_MARKERS_SNAP_DIRTY);
+            }
+            if (needDelta) {
+                MarkerDelta delta = new MarkerDelta(IResourceDelta.CHANGED, resource, oldInfo);
+                manager.changedMarkers(resource, new MarkerDelta[] { delta });
+            }
+        } finally {
+            workspace.endOperation(null, false);
+        }
+    }
 
-	/**
-	 * clears current map and puts entries
-	 * @see IMarker#setAttributes(Map)
-	 */
-	@Override
-	public void setAttributes(Map<String, ? extends Object> values) throws CoreException {
-		Workspace workspace = getWorkspace();
-		MarkerManager manager = workspace.getMarkerManager();
-		try {
-			workspace.prepareOperation(null, null);
-			workspace.beginOperation(true);
-			MarkerInfo markerInfo = getInfo();
-			checkInfo(markerInfo);
+    /**
+     * clears current map and puts entries
+     * 
+     * @see IMarker#setAttributes(Map)
+     */
+    @Override
+    public void setAttributes(Map<String, ? extends Object> values) throws CoreException {
+        Workspace workspace = getWorkspace();
+        MarkerManager manager = workspace.getMarkerManager();
+        try {
+            workspace.prepareOperation(null, null);
+            workspace.beginOperation(true);
+            MarkerInfo markerInfo = getInfo();
+            checkInfo(markerInfo);
 
-			//only need to generate delta info if none already
-			boolean needDelta = !manager.hasDelta(resource.getFullPath(), id);
-			MarkerInfo oldInfo = needDelta ? (MarkerInfo) markerInfo.clone() : null;
-			boolean validate = manager.isPersistentType(markerInfo.getType());
-			markerInfo.setAttributes(values, validate);
-			if (manager.isPersistent(markerInfo)) {
-				((Resource) resource).getResourceInfo(false, true).set(ICoreConstants.M_MARKERS_SNAP_DIRTY);
-			}
-			if (needDelta) {
-				MarkerDelta delta = new MarkerDelta(IResourceDelta.CHANGED, resource, oldInfo);
-				manager.changedMarkers(resource, new MarkerDelta[] {delta});
-			}
-		} finally {
-			workspace.endOperation(null, false);
-		}
-	}
+            // only need to generate delta info if none already
+            boolean needDelta = !manager.hasDelta(resource.getFullPath(), id);
+            MarkerInfo oldInfo = needDelta ? (MarkerInfo) markerInfo.clone() : null;
+            boolean validate = manager.isPersistentType(markerInfo.getType());
+            markerInfo.setAttributes(values, validate);
+            if (manager.isPersistent(markerInfo)) {
+                ((Resource) resource).getResourceInfo(false, true).set(ICoreConstants.M_MARKERS_SNAP_DIRTY);
+            }
+            if (needDelta) {
+                MarkerDelta delta = new MarkerDelta(IResourceDelta.CHANGED, resource, oldInfo);
+                manager.changedMarkers(resource, new MarkerDelta[] { delta });
+            }
+        } finally {
+            workspace.endOperation(null, false);
+        }
+    }
 
-	/** For debugging only */
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder("Marker ["); //$NON-NLS-1$
-		sb.append("on: ").append(resource.getFullPath()); //$NON-NLS-1$
-		MarkerInfo info = getInfo();
-		if (info == null) {
-			sb.append(", not found]"); //$NON-NLS-1$
-			return sb.toString();
-		}
-		sb.append(", id: ").append(info.getId()); //$NON-NLS-1$
-		sb.append(", type: ").append(info.getType()); //$NON-NLS-1$
-		Map<String, Object> attributes = info.getAttributes();
-		if (attributes != null) {
-			TreeMap<String, Object> tm = new TreeMap<>(attributes);
-			Object severity = tm.remove(SEVERITY);
-			if (severity instanceof Integer s) {
-				switch (s.intValue()) {
-				case SEVERITY_ERROR:
-					sb.append(", severity: ERROR(").append(s).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
-					break;
-				case SEVERITY_WARNING:
-					sb.append(", severity: WARNING(").append(s).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
-					break;
-				case SEVERITY_INFO:
-					sb.append(", severity: INFO(").append(s).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
-					break;
+    /** For debugging only */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Marker ["); //$NON-NLS-1$
+        sb.append("on: ").append(resource.getFullPath()); //$NON-NLS-1$
+        MarkerInfo info = getInfo();
+        if (info == null) {
+            sb.append(", not found]"); //$NON-NLS-1$
+            return sb.toString();
+        }
+        sb.append(", id: ").append(info.getId()); //$NON-NLS-1$
+        sb.append(", type: ").append(info.getType()); //$NON-NLS-1$
+        Map<String, Object> attributes = info.getAttributes();
+        if (attributes != null) {
+            TreeMap<String, Object> tm = new TreeMap<>(attributes);
+            Object severity = tm.remove(SEVERITY);
+            if (severity instanceof Integer s) {
+                switch (s.intValue()) {
+                    case SEVERITY_ERROR:
+                        sb.append(", severity: ERROR(").append(s).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
+                        break;
 
-				default:
-					sb.append(", unknown severity: " + s); //$NON-NLS-1$
-					break;
-				}
-			}
+                    case SEVERITY_WARNING:
+                        sb.append(", severity: WARNING(").append(s).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
+                        break;
 
-			Set<Entry<String, Object>> set = tm.entrySet();
-			if (!set.isEmpty()) {
-				sb.append(", attributes: ["); //$NON-NLS-1$
-				for (Entry<String, Object> entry : set) {
-					sb.append(entry.getKey()).append(": ").append(entry.getValue()).append(", "); //$NON-NLS-1$ //$NON-NLS-2$
-				}
-				sb.setLength(sb.length() - 2);
-				sb.append(']');
-			}
-		}
-		sb.append(", created: ").append(DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(new Date(info.getCreationTime()))); //$NON-NLS-1$
-		sb.append(']');
-		return sb.toString();
-	}
+                    case SEVERITY_INFO:
+                        sb.append(", severity: INFO(").append(s).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
+                        break;
+
+                    default:
+                        sb.append(", unknown severity: " + s); //$NON-NLS-1$
+                        break;
+                }
+            }
+
+            Set<Entry<String, Object>> set = tm.entrySet();
+            if (!set.isEmpty()) {
+                sb.append(", attributes: ["); //$NON-NLS-1$
+                for (Entry<String, Object> entry : set) {
+                    sb.append(entry.getKey()).append(": ").append(entry.getValue()).append(", "); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+                sb.setLength(sb.length() - 2);
+                sb.append(']');
+            }
+        }
+        sb.append(", created: ") //$NON-NLS-1$
+            .append(DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                .format(new Date(info.getCreationTime())));
+        sb.append(']');
+        return sb.toString();
+    }
 }

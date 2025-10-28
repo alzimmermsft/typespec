@@ -17,28 +17,18 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IStatus;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.OperationCanceledException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.BufferChangedEvent;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.CompletionRequestor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IBuffer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IBufferChangedListener;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IBufferFactory;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaElement;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaModelStatusConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IOpenable;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ITypeRoot;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.WorkingCopyOwner;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.codeassist.ICompletionEngine;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.codeassist.ICompletionEngineProvider;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.codeassist.SelectionEngine;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IElementInfo;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Util;
 
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Map;
-
 
 /**
  * Abstract class for implementations of java elements which are IOpenable.
@@ -68,18 +58,8 @@ public void bufferChanged(BufferChangedEvent event) {
 		JavaModelManager.getJavaModelManager().getElementsOutOfSynchWithBuffers().add(this);
 	}
 }
-/**
- * Builds this element's structure and properties in the given
- * info object, based on this element's current contents (reuse buffer
- * contents if this element has an open buffer, or resource contents
- * if this element does not have an open buffer). Children
- * are placed in the given newElements table (note, this element
- * has already been placed in the newElements table). Returns true
- * if successful, or false if an error is encountered while determining
- * the structure of this element.
- */
-protected abstract boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map<IJavaElement, IElementInfo> newElements, IResource underlyingResource) throws JavaModelException;
-/*
+
+    /*
  * Returns whether this element can be removed from the Java model cache to make space.
  */
 public boolean canBeRemovedFromCache() {
@@ -113,68 +93,8 @@ protected void closeBuffer() {
 protected void closing(Object info) {
 	closeBuffer();
 }
-protected void codeComplete(
-		com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.ICompilationUnit cu,
-		com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.ICompilationUnit unitToSkip,
-		int position, CompletionRequestor requestor,
-		WorkingCopyOwner owner,
-		ITypeRoot typeRoot,
-		IProgressMonitor monitor) throws JavaModelException {
-	if (requestor == null) {
-		throw new IllegalArgumentException("Completion requestor cannot be null"); //$NON-NLS-1$
-	}
-	IBuffer buffer = getBuffer();
-	if (buffer == null) {
-		return;
-	}
-	if (position < -1 || position > buffer.getLength()) {
-		throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.INDEX_OUT_OF_BOUNDS));
-	}
-	JavaProject project = getJavaProject();
-	SearchableEnvironment environment = project.newSearchableNameEnvironment(owner, requestor.isTestCodeExcluded());
 
-	// set unit to skip
-	environment.unitToSkip = unitToSkip;
-
-	// code complete
-	ICompletionEngineProvider completionEngineProvider = CompletionEngineProviderDiscovery.getInstance();
-	ICompletionEngine completionEngine = completionEngineProvider.newCompletionEngine(environment, requestor, project.getOptions(true), project, owner, monitor);
-	completionEngine.complete(cu, position, 0, typeRoot);
-
-	if(performanceStats != null) {
-		performanceStats.endRun();
-	}
-	if (NameLookup.VERBOSE) {
-		environment.printTimeSpent();
-	}
-}
-protected IJavaElement[] codeSelect(com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.ICompilationUnit cu, int offset, int length, WorkingCopyOwner owner) throws JavaModelException {
-	JavaProject project = getJavaProject();
-	SearchableEnvironment environment = project.newSearchableNameEnvironment(owner);
-
-	SelectionRequestor requestor= new SelectionRequestor(environment.nameLookup, this);
-	IBuffer buffer = getBuffer();
-	if (buffer == null) {
-		return requestor.getElements();
-	}
-	int end= buffer.getLength();
-	if (offset < 0 || length < 0 || offset + length > end ) {
-		throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.INDEX_OUT_OF_BOUNDS));
-	}
-
-	// fix for 1FVXGDK
-	SelectionEngine engine = new SelectionEngine(environment, requestor, project.getOptions(true), owner);
-	engine.select(cu, offset, offset + length - 1);
-
-	if(performanceStats != null) {
-		performanceStats.endRun();
-	}
-	if (NameLookup.VERBOSE) {
-		environment.printTimeSpent();
-	}
-	return requestor.getElements();
-}
-/*
+    /*
  * Returns a new element info for this element.
  */
 @Override
@@ -217,50 +137,8 @@ public String findRecommendedLineSeparator() throws JavaModelException {
 	String source = buffer == null ? null : buffer.getContents();
 	return Util.getLineSeparator(source, getJavaProject());
 }
-@Override
-protected void generateInfos(IElementInfo info, Map<IJavaElement, IElementInfo> newElements, IProgressMonitor monitor) throws JavaModelException {
 
-	if (JavaModelCache.VERBOSE){
-		JavaModelManager.trace(Thread.currentThread() +" OPENING " + JavaModelCache.getCacheType(this) + " " + this.toStringWithAncestors()); //$NON-NLS-1$//$NON-NLS-2$
-	}
-
-	// open its ancestors if needed
-	openAncestors(newElements, monitor);
-
-	// validate existence
-	IResource underlResource = resource();
-	IStatus status = validateExistence(underlResource);
-	if (!status.isOK() && !ignoreErrorStatus(status))
-		throw newJavaModelException(status);
-
-	if (monitor != null && monitor.isCanceled())
-		throw new OperationCanceledException();
-
-	 // puts the info before building the structure so that questions to the handle behave as if the element existed
-	 // (case of compilation units becoming working copies)
-	newElements.put(this, info);
-
-	// build the structure of the openable (this will open the buffer if needed)
-	try {
-		OpenableElementInfo openableElementInfo = (OpenableElementInfo)info;
-		boolean isStructureKnown = buildStructure(openableElementInfo, monitor, newElements, underlResource);
-		openableElementInfo.setIsStructureKnown(isStructureKnown);
-	} catch (JavaModelException e) {
-		newElements.remove(this);
-		throw e;
-	}
-
-	// remove out of sync buffer for this element
-	JavaModelManager.getJavaModelManager().getElementsOutOfSynchWithBuffers().remove(this);
-
-	if (JavaModelCache.VERBOSE) {
-		JavaModelManager.trace(JavaModelManager.getJavaModelManager().cacheToString("-> ")); //$NON-NLS-1$
-	}
-}
-protected boolean ignoreErrorStatus(IStatus status) {
-	return false;
-}
-/**
+    /**
  * Note: a buffer with no unsaved changes can be closed by the Java Model
  * since it has a finite number of buffers allowed open at one time. If this
  * is the first time a request is being made for the buffer, an attempt is
@@ -473,21 +351,6 @@ protected boolean resourceExists(IResource underlyingResource) {
 }
 
 /**
- * @see IOpenable
- */
-@Override
-public void save(IProgressMonitor pm, boolean force) throws JavaModelException {
-	if (isReadOnly()) {
-		throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, this));
-	}
-	IBuffer buf = getBuffer();
-	if (buf != null) { // some Openables (like a JavaProject) don't have a buffer
-		buf.save(pm, force);
-		makeConsistent(pm); // update the element info of this element
-	}
-}
-
-/**
  * Find enclosing package fragment root if any
  */
 public PackageFragmentRoot getPackageFragmentRoot() {
@@ -498,15 +361,5 @@ public PackageFragmentRoot getPackageFragmentRoot() {
  * Validates the existence of this openable. Returns a non ok status if it doesn't exist.
  */
 abstract protected IStatus validateExistence(IResource underlyingResource);
-
-/*
- * Opens the ancestors of this openable that are not yet opened, validating their existence.
- */
-protected void openAncestors(Map<IJavaElement, IElementInfo> newElements, IProgressMonitor monitor) throws JavaModelException {
-	Openable openableParent = (Openable)getOpenableParent();
-	if (openableParent != null && !openableParent.isOpen()) {
-		openableParent.generateInfos(openableParent.createElementInfo(), newElements, monitor);
-	}
-}
 
 }

@@ -1,14 +1,14 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.signedness.qual;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.DefaultFor;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.TypeKind;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.UpperBoundFor;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.DefaultFor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.TypeKind;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.UpperBoundFor;
 
 /**
  * The value is to be interpreted as unsigned. That is, if the most significant bit in the bitwise
@@ -19,12 +19,9 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
-@SubtypeOf({UnknownSignedness.class})
-@DefaultFor(
-    typeKinds = {TypeKind.CHAR},
-    types = { Character.class})
-@UpperBoundFor(
-    typeKinds = {TypeKind.CHAR},
-    types = { Character.class})
-public @interface Unsigned {}
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
+@SubtypeOf({ UnknownSignedness.class })
+@DefaultFor(typeKinds = { TypeKind.CHAR }, types = { Character.class })
+@UpperBoundFor(typeKinds = { TypeKind.CHAR }, types = { Character.class })
+public @interface Unsigned {
+}

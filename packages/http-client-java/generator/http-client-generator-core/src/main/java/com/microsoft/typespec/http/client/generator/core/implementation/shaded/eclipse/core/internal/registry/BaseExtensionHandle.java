@@ -26,85 +26,85 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class BaseExtensionHandle extends Handle implements IExtension {
 
-	public BaseExtensionHandle(IObjectManager objectManager, int id) {
-		super(objectManager, id);
-	}
+    public BaseExtensionHandle(IObjectManager objectManager, int id) {
+        super(objectManager, id);
+    }
 
-	protected Extension getExtension() {
-		return (Extension) objectManager.getObject(getId(), RegistryObjectManager.EXTENSION);
-	}
+    protected Extension getExtension() {
+        return (Extension) objectManager.getObject(getId(), RegistryObjectManager.EXTENSION);
+    }
 
-	protected boolean shouldPersist() {
-		return getExtension().shouldPersist();
-	}
+    protected boolean shouldPersist() {
+        return getExtension().shouldPersist();
+    }
 
-	// Method left for backward compatiblity only
-	@Override
-	public String getNamespace() {
-		return getContributor().getName();
-	}
+    // Method left for backward compatiblity only
+    @Override
+    public String getNamespace() {
+        return getContributor().getName();
+    }
 
-	@Override
-	public String getNamespaceIdentifier() {
-		return getExtension().getNamespaceIdentifier();
-	}
+    @Override
+    public String getNamespaceIdentifier() {
+        return getExtension().getNamespaceIdentifier();
+    }
 
-	@Override
-	public IContributor getContributor() {
-		return getExtension().getContributor();
-	}
+    @Override
+    public IContributor getContributor() {
+        return getExtension().getContributor();
+    }
 
-	String getContributorId() {
-		return getExtension().getContributorId();
-	}
+    String getContributorId() {
+        return getExtension().getContributorId();
+    }
 
-	@Override
-	public String getExtensionPointUniqueIdentifier() {
-		return getExtension().getExtensionPointIdentifier();
-	}
+    @Override
+    public String getExtensionPointUniqueIdentifier() {
+        return getExtension().getExtensionPointIdentifier();
+    }
 
-	@Override
-	public String getLabel() {
-		return getExtension().getLabel();
-	}
+    @Override
+    public String getLabel() {
+        return getExtension().getLabel();
+    }
 
-	public String getLabelAsIs() {
-		return getExtension().getLabelAsIs();
-	}
+    public String getLabelAsIs() {
+        return getExtension().getLabelAsIs();
+    }
 
-	@Override
-	public String getLabel(String locale) {
-		return getExtension().getLabel(locale);
-	}
+    @Override
+    public String getLabel(String locale) {
+        return getExtension().getLabel(locale);
+    }
 
-	@Override
-	public String getSimpleIdentifier() {
-		return getExtension().getSimpleIdentifier();
-	}
+    @Override
+    public String getSimpleIdentifier() {
+        return getExtension().getSimpleIdentifier();
+    }
 
-	@Override
-	public String getUniqueIdentifier() {
-		return getExtension().getUniqueIdentifier();
-	}
+    @Override
+    public String getUniqueIdentifier() {
+        return getExtension().getUniqueIdentifier();
+    }
 
-	@Override
-	public IConfigurationElement[] getConfigurationElements() {
-		return (IConfigurationElement[]) objectManager.getHandles(getExtension().getRawChildren(),
-				RegistryObjectManager.CONFIGURATION_ELEMENT);
-	}
+    @Override
+    public IConfigurationElement[] getConfigurationElements() {
+        return (IConfigurationElement[]) objectManager.getHandles(getExtension().getRawChildren(),
+            RegistryObjectManager.CONFIGURATION_ELEMENT);
+    }
 
-	@Override
-	RegistryObject getObject() {
-		return getExtension();
-	}
+    @Override
+    RegistryObject getObject() {
+        return getExtension();
+    }
 
-	@Override
-	public boolean isValid() {
-		try {
-			getExtension();
-		} catch (InvalidRegistryObjectException e) {
-			return false;
-		}
-		return true;
-	}
+    @Override
+    public boolean isValid() {
+        try {
+            getExtension();
+        } catch (InvalidRegistryObjectException e) {
+            return false;
+        }
+        return true;
+    }
 }

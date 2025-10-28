@@ -23,14 +23,12 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IStatus;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Status;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaModelStatus;
 
 /**
  * Abstract base implementation of all classpath container initializer.
  * Classpath variable containers are used in conjunction with the
- * "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.classpathContainerInitializer" extension point.
+ * "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.classpathContainerInitializer"
+ * extension point.
  * <p>
  * Clients should subclass this class to implement a specific classpath
  * container initializer. The subclass must have a public 0-argument
@@ -50,33 +48,22 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public abstract class ClasspathContainerInitializer {
 
-	/**
-	 * Status code indicating that an attribute is not supported.
-	 *
-	 * @see #getAccessRulesStatus(IPath, IJavaProject)
-	 * @see #getAttributeStatus(IPath, IJavaProject, String)
-	 * @see #getSourceAttachmentStatus(IPath, IJavaProject)
-	 *
-	 * @since 3.3
-	 */
-	public static final int ATTRIBUTE_NOT_SUPPORTED = 1;
+    /**
+     * Status code indicating that an attribute is not modifiable.
+     *
+     * @see #getAccessRulesStatus(IPath, IJavaProject)
+     * @see #getAttributeStatus(IPath, IJavaProject, String)
+     * @see #getSourceAttachmentStatus(IPath, IJavaProject)
+     *
+     * @since 3.3
+     */
+    public static final int ATTRIBUTE_READ_ONLY = 2;
 
-	/**
-	 * Status code indicating that an attribute is not modifiable.
-	 *
-	 * @see #getAccessRulesStatus(IPath, IJavaProject)
-	 * @see #getAttributeStatus(IPath, IJavaProject, String)
-	 * @see #getSourceAttachmentStatus(IPath, IJavaProject)
-	 *
-	 * @since 3.3
-	 */
-	public static final int ATTRIBUTE_READ_ONLY = 2;
-
-   /**
+    /**
      * Creates a new classpath container initializer.
      */
     public ClasspathContainerInitializer() {
-    	// a classpath container initializer must have a public 0-argument constructor
+        // a classpath container initializer must have a public 0-argument constructor
     }
 
     /**
@@ -103,100 +90,51 @@ public abstract class ClasspathContainerInitializer {
      * it will not see the new assigned classpath until the operation has completed. Note that once the Java
      * change notification occurs (at the end of the operation), the model has been updated, and the project
      * classpath can be queried normally.
-	 * <p>
-	 * This method is called by the Java model to give the party that defined
-	 * this particular kind of classpath container the chance to install
-	 * classpath container objects that will be used to convert classpath
-	 * container entries into simpler classpath entries. The method is typically
-	 * called exactly once for a given Java project and classpath container
-	 * entry. This method must not be called by other clients.
-	 * <p>
-	 * There are a wide variety of conditions under which this method may be
-	 * invoked. To ensure that the implementation does not interfere with
-	 * correct functioning of the Java model, the implementation should use
-	 * only the following Java model APIs:
-	 * <ul>
-	 * <li>{@link JavaCore#setClasspathContainer(IPath, IJavaProject[], IClasspathContainer[], IProgressMonitor)}</li>
-	 * <li>{@link JavaCore#getClasspathContainer(IPath, IJavaProject)}</li>
-	 * <li>{@link JavaCore#create(com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IWorkspaceRoot)}</li>
-	 * <li>{@link JavaCore#create(com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IProject)}</li>
-	 * <li>{@link IJavaModel#getJavaProjects()}</li>
-	 * <li>Java element operations marked as "handle-only"</li>
-	 * </ul>
-	 * The effects of using other Java model APIs are unspecified.
-	 *
-     * @param containerPath a two-segment path (ID/hint) identifying the container that needs
-     * 	to be resolved
-     * @param project the Java project in which context the container is to be resolved.
-     *    This allows generic containers to be bound with project specific values.
-     * @throws CoreException if an exception occurs during the initialization
+     * <p>
+     * This method is called by the Java model to give the party that defined
+     * this particular kind of classpath container the chance to install
+     * classpath container objects that will be used to convert classpath
+     * container entries into simpler classpath entries. The method is typically
+     * called exactly once for a given Java project and classpath container
+     * entry. This method must not be called by other clients.
+     * <p>
+     * There are a wide variety of conditions under which this method may be
+     * invoked. To ensure that the implementation does not interfere with
+     * correct functioning of the Java model, the implementation should use
+     * only the following Java model APIs:
+     * <ul>
+     * <li>{@link JavaCore#setClasspathContainer(IPath, IJavaProject[], IClasspathContainer[], IProgressMonitor)}</li>
+     * <li>{@link JavaCore#getClasspathContainer(IPath, IJavaProject)}</li>
+     * <li>{@link JavaCore#create(com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IWorkspaceRoot)}</li>
+     * <li>{@link JavaCore#create(com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IProject)}</li>
+     * <li>{@link IJavaModel#getJavaProjects()}</li>
+     * <li>Java element operations marked as "handle-only"</li>
+     * </ul>
+     * The effects of using other Java model APIs are unspecified.
      *
-     * @see JavaCore#getClasspathContainer(IPath, IJavaProject)
-     * @see JavaCore#setClasspathContainer(IPath, IJavaProject[], IClasspathContainer[], IProgressMonitor)
-     * @see IClasspathContainer
+     * @param containerPath a two-segment path (ID/hint) identifying the container that needs
+     * to be resolved
+     * @param project the Java project in which context the container is to be resolved.
+     * This allows generic containers to be bound with project specific values.
+     * @throws CoreException if an exception occurs during the initialization
      */
     public abstract void initialize(IPath containerPath, IJavaProject project) throws CoreException;
 
     /**
-     * Returns <code>true</code> if this container initializer can be requested to perform updates
-     * on its own container values. If so, then an update request will be performed using
-     * {@link #requestClasspathContainerUpdate(IPath, IJavaProject, IClasspathContainer)}.
+     * Returns a readable description for a container path. A readable description for a container path can be
+     * used for improving the display of references to container, without actually needing to resolve them.
+     * A good implementation should answer a description consistent with the description of the associated
+     * target container (see {@link IClasspathContainer#getDescription()}).
      *
-     * @param containerPath the path of the container which requires to be updated
-     * @param project the project for which the container is to be updated
-     * @return returns <code>true</code> if the container can be updated
+     * @param containerPath the path of the container which requires a readable description
+     * @param project the project from which the container is referenced
+     * @return a string description of the container
      * @since 2.1
      */
-    public boolean canUpdateClasspathContainer(IPath containerPath, IJavaProject project) {
-
-		// By default, classpath container initializers do not accept updating containers
-    	return false;
-    }
-
-	/**
-	 * Request a registered container definition to be updated according to a container suggestion. The container suggestion
-	 * only acts as a place-holder to pass along the information to update the matching container definition(s) held by the
-	 * container initializer. In particular, it is not expected to store the container suggestion as is, but rather adjust
-	 * the actual container definition based on suggested changes.
-	 * <p>
-	 * IMPORTANT: In reaction to receiving an update request, a container initializer will update the corresponding
-	 * container definition (after reconciling changes) at its earliest convenience, using
-	 * {@link JavaCore#setClasspathContainer(IPath, IJavaProject[], IClasspathContainer[], IProgressMonitor)}.
-	 * Until it does so, the update will not be reflected in the Java Model.
-	 * </p>
-	 * <p>
-	 * In order to anticipate whether the container initializer allows to update its containers, the predicate
-	 * {@link #canUpdateClasspathContainer(IPath, IJavaProject)} should be used.
-	 * </p>
-	 * @param containerPath the path of the container which requires to be updated
-     * @param project the project for which the container is to be updated
-	 * @param containerSuggestion a suggestion to update the corresponding container definition
-	 * @throws CoreException when <code>JavaCore#setClasspathContainer</code> would throw any.
-	 * @see JavaCore#setClasspathContainer(IPath, IJavaProject[], IClasspathContainer[], IProgressMonitor)
-	 * @see ClasspathContainerInitializer#canUpdateClasspathContainer(IPath, IJavaProject)
-	 * @since 2.1
-	 */
-
-    public void requestClasspathContainerUpdate(IPath containerPath, IJavaProject project, IClasspathContainer containerSuggestion) throws CoreException {
-
-		// By default, classpath container initializers do not accept updating containers
-    }
-
-	/**
-	 * Returns a readable description for a container path. A readable description for a container path can be
-	 * used for improving the display of references to container, without actually needing to resolve them.
-	 * A good implementation should answer a description consistent with the description of the associated
-	 * target container (see {@link IClasspathContainer#getDescription()}).
-	 *
-	 * @param containerPath the path of the container which requires a readable description
-	 * @param project the project from which the container is referenced
-	 * @return a string description of the container
-	 * @since 2.1
-	 */
     public String getDescription(IPath containerPath, IJavaProject project) {
 
-    	// By default, a container path is the only available description
-    	return containerPath.makeRelative().toString();
+        // By default, a container path is the only available description
+        return containerPath.makeRelative().toString();
     }
 
     /**
@@ -210,170 +148,39 @@ public abstract class ClasspathContainerInitializer {
      * and return <code>null</code>.
      * </p>
      *
- 	 * @param containerPath the path of the container which failed to initialize
-	 * @param project the project from which the container is referenced
-	 * @return the default failure container, or <code>null</code> if wishing to run the initializer again
+     * @param containerPath the path of the container which failed to initialize
+     * @param project the project from which the container is referenced
+     * @return the default failure container, or <code>null</code> if wishing to run the initializer again
      * @since 3.3
      */
     public IClasspathContainer getFailureContainer(final IPath containerPath, IJavaProject project) {
-    	final String description = getDescription(containerPath, project);
-    	return
-    		new IClasspathContainer() {
-				@Override
-				public IClasspathEntry[] getClasspathEntries() {
-					return new IClasspathEntry[0];
-				}
-				@Override
-				public String getDescription() {
-					return description;
-				}
-				@Override
-				public int getKind() {
-					return 0;
-				}
-				@Override
-				public IPath getPath() {
-					return containerPath;
-				}
-				@Override
-				public String toString() {
-					return getDescription();
-				}
-			};
-	}
+        final String description = getDescription(containerPath, project);
+        return new IClasspathContainer() {
+            @Override
+            public IClasspathEntry[] getClasspathEntries() {
+                return new IClasspathEntry[0];
+            }
 
-	/**
-	 * Returns an object which identifies a container for comparison purpose. This allows
-	 * to eliminate redundant containers when accumulating classpath entries (e.g.
-	 * runtime classpath computation). When requesting a container comparison ID, one
-	 * should ensure using its corresponding container initializer. Indeed, a random container
-	 * initializer cannot be held responsible for determining comparison IDs for arbitrary
-	 * containers.
-	 *
-	 * @param containerPath the path of the container which is being checked
-	 * @param project the project for which the container is to being checked
-	 * @return returns an Object identifying the container for comparison
-	 * @since 3.0
-	 */
-	public Object getComparisonID(IPath containerPath, IJavaProject project) {
+            @Override
+            public String getDescription() {
+                return description;
+            }
 
-		// By default, containers are identical if they have the same containerPath first segment,
-		// but this may be refined by other container initializer implementations.
-		if (containerPath == null) {
-			return null;
-		} else {
-			return containerPath.segment(0);
-		}
-	}
+            @Override
+            public int getKind() {
+                return 0;
+            }
 
-	/**
-	 * Returns the access rules attribute status according to this initializer.
-	 * <p>
-	 * The returned {@link IStatus status} can have one of the following severities:
-	 * <ul>
-	 * <li>{@link IStatus#OK OK}: means that the attribute is supported
-	 * 	<strong>and</strong> is modifiable</li>
-	 * <li>{@link IStatus#ERROR ERROR}: means that either the attribute
-	 * 	is not supported or is not modifiable.<br>
-	 * 	In this case, the {@link IStatus#getCode() code}will have
-	 * 	respectively the {@link #ATTRIBUTE_NOT_SUPPORTED} value
-	 * 	or the {@link #ATTRIBUTE_READ_ONLY} value.</li>
-	 * </ul>
-	 * <p>
-	 * The status message can contain more information.
-	 * </p><p>
-	 * If the subclass does not override this method, then the default behavior is
-	 * to return {@link IStatus#OK OK} if and only if the classpath container can
-	 * be updated (see {@link #canUpdateClasspathContainer(IPath, IJavaProject)}).
-	 * </p>
-	 *
-	 * @param containerPath the path of the container which requires to be
-	 * 	updated
-	 * @param project the project for which the container is to be updated
-	 * @return returns the access rules attribute status
-	 *
-	 * @since 3.3
-	 */
-	public IStatus getAccessRulesStatus(IPath containerPath, IJavaProject project) {
+            @Override
+            public IPath getPath() {
+                return containerPath;
+            }
 
-		if (canUpdateClasspathContainer(containerPath, project)) {
-			return Status.OK_STATUS;
-		}
-		return new JavaModelStatus(ATTRIBUTE_READ_ONLY);
-	}
+            @Override
+            public String toString() {
+                return getDescription();
+            }
+        };
+    }
 
-	/**
-	 * Returns the extra attribute status according to this initializer.
-	 * <p>
-	 * The returned {@link IStatus status} can have one of the following severities:
-	 * <ul>
-	 * <li>{@link IStatus#OK OK}: means that the attribute is supported
-	 * 	<strong>and</strong> is modifiable</li>
-	 * <li>{@link IStatus#ERROR ERROR}: means that either the attribute
-	 * 	is not supported or is not modifiable.<br>
-	 * 	In this case, the {@link IStatus#getCode() code}will have
-	 * 	respectively the {@link #ATTRIBUTE_NOT_SUPPORTED} value
-	 * 	or the {@link #ATTRIBUTE_READ_ONLY} value.</li>
-	 * </ul>
-	 * <p>
-	 * The status message can contain more information.
-	 * </p><p>
-	 * If the subclass does not override this method, then the default behavior is
-	 * to return {@link IStatus#OK OK} if and only if the classpath container can
-	 * be updated (see {@link #canUpdateClasspathContainer(IPath, IJavaProject)}).
-	 * </p>
-	 *
-	 * @param containerPath the path of the container which requires to be
-	 * 	updated
-	 * @param project the project for which the container is to be updated
-	 * @param attributeKey the key of the extra attribute
-	 * @return returns the extra attribute status
-	 * @see IClasspathAttribute
-	 *
-	 * @since 3.3
-	 */
-	public IStatus getAttributeStatus(IPath containerPath, IJavaProject project, String attributeKey) {
-
-		if (canUpdateClasspathContainer(containerPath, project)) {
-			return Status.OK_STATUS;
-		}
-		return new JavaModelStatus(ATTRIBUTE_READ_ONLY);
-	}
-
-	/**
-	 * Returns the source attachment attribute status according to this initializer.
-	 * <p>
-	 * The returned {@link IStatus status} can have one of the following severities:
-	 * <ul>
-	 * <li>{@link IStatus#OK OK}: means that the attribute is supported
-	 * 	<strong>and</strong> is modifiable</li>
-	 * <li>{@link IStatus#ERROR ERROR}: means that either the attribute
-	 * 	is not supported or is not modifiable.<br>
-	 * 	In this case, the {@link IStatus#getCode() code}will have
-	 * 	respectively the {@link #ATTRIBUTE_NOT_SUPPORTED} value
-	 * 	or the {@link #ATTRIBUTE_READ_ONLY} value.</li>
-	 * </ul>
-	 * <p>
-	 * The status message can contain more information.
-	 * </p><p>
-	 * If the subclass does not override this method, then the default behavior is
-	 * to return {@link IStatus#OK OK} if and only if the classpath container can
-	 * be updated (see {@link #canUpdateClasspathContainer(IPath, IJavaProject)}).
-	 * </p>
-	 *
-	 * @param containerPath the path of the container which requires to be
-	 * 	updated
-	 * @param project the project for which the container is to be updated
-	 * @return returns the source attachment attribute status
-	 *
-	 * @since 3.3
-	 */
-	public IStatus getSourceAttachmentStatus(IPath containerPath, IJavaProject project) {
-
-		if (canUpdateClasspathContainer(containerPath, project)) {
-			return Status.OK_STATUS;
-		}
-		return new JavaModelStatus(ATTRIBUTE_READ_ONLY);
-	}
 }
-

@@ -32,51 +32,51 @@ import java.util.Map;
  */
 public interface IPreferenceFilter {
 
-	/**
-	 * Return an array of scopes that this preference filter is applicable for. The
-	 * list of scopes must not be <code>null</code>.
-	 * <p>
-	 * For example:
-	 * <code>new String[] {InstanceScope.SCOPE, ConfigurationScope.SCOPE};</code>
-	 * </p>
-	 *
-	 * @return the array of scopes
-	 */
-	public String[] getScopes();
+    /**
+     * Return an array of scopes that this preference filter is applicable for. The
+     * list of scopes must not be <code>null</code>.
+     * <p>
+     * For example:
+     * <code>new String[] {InstanceScope.SCOPE, ConfigurationScope.SCOPE};</code>
+     * </p>
+     *
+     * @return the array of scopes
+     */
+    public String[] getScopes();
 
-	/**
-	 * Return a mapping which defines the nodes and keys that this filter applies
-	 * to.
-	 * <p>
-	 * If the map is <code>null</code> then this filter is applicable for all nodes
-	 * within the scope. The map can also be <code>null</code> if the given scope is
-	 * not known to this filter.
-	 * </p>
-	 * <p>
-	 * The keys in the table are Strings and describe the node path. The values are
-	 * an optional array of {@link PreferenceFilterEntry} objects describing the
-	 * list of applicable keys in that node. If the value is null then the whole
-	 * node is considered applicable.
-	 * </p>
-	 * <p>
-	 * key: <code>String</code> (node)<br>
-	 * value: <code>PreferenceFilterEntry[]</code> or <code>null</code> (preference
-	 * keys)<br>
-	 * </p>
-	 * <p>
-	 * For example:
-	 * </p>
-	 *
-	 * <pre>
-	 * "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources" -&gt; null
-	 * "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.ui" -&gt; new PreferenceFilterEntry[] {
-	 * 		new PreferenceFilterEntry("DEFAULT_PERSPECTIVE_LOCATION"),
-	 * 		new PreferenceFilterEntry("SHOW_INTRO_ON_STARTUP")}
-	 * </pre>
-	 *
-	 * @return the mapping table
-	 * @see PreferenceFilterEntry
-	 */
-	public Map<String, PreferenceFilterEntry[]> getMapping(String scope);
+    /**
+     * Return a mapping which defines the nodes and keys that this filter applies
+     * to.
+     * <p>
+     * If the map is <code>null</code> then this filter is applicable for all nodes
+     * within the scope. The map can also be <code>null</code> if the given scope is
+     * not known to this filter.
+     * </p>
+     * <p>
+     * The keys in the table are Strings and describe the node path. The values are
+     * an optional array of {@link PreferenceFilterEntry} objects describing the
+     * list of applicable keys in that node. If the value is null then the whole
+     * node is considered applicable.
+     * </p>
+     * <p>
+     * key: <code>String</code> (node)<br>
+     * value: <code>PreferenceFilterEntry[]</code> or <code>null</code> (preference
+     * keys)<br>
+     * </p>
+     * <p>
+     * For example:
+     * </p>
+     *
+     * <pre>
+     * "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources" -&gt; null
+     * "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.ui" -&gt; new PreferenceFilterEntry[] {
+     * 		new PreferenceFilterEntry("DEFAULT_PERSPECTIVE_LOCATION"),
+     * 		new PreferenceFilterEntry("SHOW_INTRO_ON_STARTUP")}
+     * </pre>
+     *
+     * @return the mapping table
+     * @see PreferenceFilterEntry
+     */
+    public Map<String, PreferenceFilterEntry[]> getMapping(String scope);
 
 }

@@ -14,7 +14,6 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Map;
 import java.util.jar.Manifest;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IContainer;
@@ -22,19 +21,15 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IStatus;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Path;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Status;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.*;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CharOperation;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.AutomaticModuleNaming;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.DeduplicationUtil;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.MementoTokenizer;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Messages;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Util;
 
 /**
@@ -67,112 +62,7 @@ protected PackageFragmentRoot(IResource resource, JavaProject project) {
 	this.resource = resource;
 }
 
-/**
- * @see IPackageFragmentRoot
- */
-@Override
-public void attachSource(IPath sourcePath, IPath rootPath, IProgressMonitor monitor) throws JavaModelException {
-	try {
-		verifyAttachSource(sourcePath);
-		if (monitor != null) {
-			monitor.beginTask(Messages.element_attachingSource, 2);
-		}
-		SourceMapper oldMapper= getSourceMapper();
-		boolean rootNeedsToBeClosed= false;
-
-		if (sourcePath == null) {
-			//source being detached
-			rootNeedsToBeClosed= true;
-			setSourceMapper(null);
-		/* Disable deltas (see 1GDTUSD)
-			// fire a delta to notify the UI about the source detachement.
-			JavaModelManager manager = (JavaModelManager) JavaModelManager.getJavaModelManager();
-			JavaModel model = (JavaModel) getJavaModel();
-			JavaElementDelta attachedSourceDelta = new JavaElementDelta(model);
-			attachedSourceDelta .sourceDetached(this); // this would be a PackageFragmentRoot
-			manager.registerResourceDelta(attachedSourceDelta );
-			manager.fire(); // maybe you want to fire the change later. Let us know about it.
-		*/
-		} else {
-		/*
-			// fire a delta to notify the UI about the source attachment.
-			JavaModelManager manager = (JavaModelManager) JavaModelManager.getJavaModelManager();
-			JavaModel model = (JavaModel) getJavaModel();
-			JavaElementDelta attachedSourceDelta = new JavaElementDelta(model);
-			attachedSourceDelta .sourceAttached(this); // this would be a PackageFragmentRoot
-			manager.registerResourceDelta(attachedSourceDelta );
-			manager.fire(); // maybe you want to fire the change later. Let us know about it.
-		 */
-
-			//check if different from the current attachment
-			IPath storedSourcePath= getSourceAttachmentPath();
-			IPath storedRootPath= getSourceAttachmentRootPath();
-			if (monitor != null) {
-				monitor.worked(1);
-			}
-			if (storedSourcePath != null) {
-				if (!(storedSourcePath.equals(sourcePath) && (rootPath != null && rootPath.equals(storedRootPath)) || storedRootPath == null)) {
-					rootNeedsToBeClosed= true;
-				}
-			}
-			// check if source path is valid
-			Object target = JavaModel.getTarget(sourcePath, false);
-			if (target == null) {
-				throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.INVALID_PATH, sourcePath));
-			}
-			SourceMapper mapper = createSourceMapper(sourcePath, rootPath);
-			if (rootPath == null && mapper.rootPath != null) {
-				// as a side effect of calling the SourceMapper constructor, the root path was computed
-				rootPath = new Path(mapper.rootPath);
-			}
-			setSourceMapper(mapper);
-		}
-		if (sourcePath == null) {
-			Util.setSourceAttachmentProperty(getPath(), null); //remove the property
-		} else {
-			//set the property to the path of the mapped source
-			Util.setSourceAttachmentProperty(
-				getPath(),
-				sourcePath.toString()
-				+ (rootPath == null ? "" : (ATTACHMENT_PROPERTY_DELIMITER + rootPath.toString()))); //$NON-NLS-1$
-		}
-		if (rootNeedsToBeClosed) {
-			if (oldMapper != null) {
-				oldMapper.close();
-			}
-			BufferManager manager= BufferManager.getDefaultBufferManager();
-			Enumeration openBuffers= manager.getOpenBuffers();
-			while (openBuffers.hasMoreElements()) {
-				IBuffer buffer= (IBuffer) openBuffers.nextElement();
-				IOpenable possibleMember= buffer.getOwner();
-				if (isAncestorOf((IJavaElement) possibleMember)) {
-					buffer.close();
-				}
-			}
-			if (monitor != null) {
-				monitor.worked(1);
-			}
-		}
-	} catch (JavaModelException e) {
-		Util.setSourceAttachmentProperty(getPath(), null); // loose info - will be recomputed
-		throw e;
-	} finally {
-		if (monitor != null) {
-			monitor.done();
-		}
-	}
-}
-
-/**
- * @see Openable
- */
-@Override
-protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map newElements, IResource underlyingResource) throws JavaModelException {
-	((PackageFragmentRootInfo) info).setRootKind(determineKind(underlyingResource));
-	return computeChildren(info, underlyingResource);
-}
-
-SourceMapper createSourceMapper(IPath sourcePath, IPath rootPath) throws JavaModelException {
+    SourceMapper createSourceMapper(IPath sourcePath, IPath rootPath) throws JavaModelException {
 	IClasspathEntry entry = ((JavaProject) getParent()).getClasspathEntryFor(getPath());
 	String encoding = (entry== null) ? null : ((ClasspathEntry) entry).getSourceAttachmentEncoding();
 	SourceMapper mapper = new SourceMapper(
@@ -182,17 +72,6 @@ SourceMapper createSourceMapper(IPath sourcePath, IPath rootPath) throws JavaMod
 		encoding);
 
 	return mapper;
-}
-
-@Override
-public void delete(
-	int updateResourceFlags,
-	int updateModelFlags,
-	IProgressMonitor monitor)
-	throws JavaModelException {
-
-	DeletePackageFragmentRootOperation op = new DeletePackageFragmentRootOperation(this, updateResourceFlags, updateModelFlags);
-	op.runOperation(monitor);
 }
 
 /**
@@ -255,59 +134,45 @@ protected void computeFolderChildren(IContainer folder, boolean isIncluded, Stri
 			// folder.getProject() is different than getJavaProject().getProject()
 			// use the other java project's options to verify the name
 			IJavaProject otherJavaProject = JavaCore.create(folder.getProject());
-			String sourceLevel = otherJavaProject.getOption(JavaCore.COMPILER_SOURCE, true);
-			String complianceLevel = otherJavaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
+			String sourceLevel = "1.8";
+			String complianceLevel = "1.8";
 			JavaProject javaProject = getJavaProject();
-			for (int i = 0; i < length; i++) {
-				IResource member = members[i];
-				String memberName = member.getName();
+            for (IResource member : members) {
+                String memberName = member.getName();
 
-				switch(member.getType()) {
+                switch (member.getType()) {
 
-			    	case IResource.FOLDER:
-			    		// recurse into sub folders even even parent not included as a sub folder could be included
-			    		// (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=65637)
-			    		if (Util.isValidFolderNameForPackage(memberName, sourceLevel, complianceLevel)) {
-			    			// eliminate binary output only if nested inside direct subfolders
-			    			if (javaProject.contains(member)) {
-			    				String[] newNames = Util.arrayConcat(pkgName, DeduplicationUtil.intern(memberName));
-			    				boolean isMemberIncluded = !Util.isExcluded(member, inclusionPatterns, exclusionPatterns);
-			    				computeFolderChildren((IFolder) member, isMemberIncluded, newNames, vChildren, inclusionPatterns, exclusionPatterns);
-			    			}
-			    		}
-			    		break;
-			    	case IResource.FILE:
-			    		// inclusion filter may only include files, in which case we still want to include the immediate parent package (lazily)
-			    		if (!hasIncluded
-			    				&& Util.isValidCompilationUnitName(memberName, sourceLevel, complianceLevel)
-								&& !Util.isExcluded(member, inclusionPatterns, exclusionPatterns)) {
-			    			hasIncluded = true;
-			    			IPackageFragment pkg = getPackageFragment(pkgName);
-			    			vChildren.add(pkg);
-			    		}
-			    		break;
-				}
-			}
+                    case IResource.FOLDER:
+                        // recurse into sub folders even even parent not included as a sub folder could be included
+                        // (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=65637)
+                        if (Util.isValidFolderNameForPackage(memberName, sourceLevel, complianceLevel)) {
+                            // eliminate binary output only if nested inside direct subfolders
+                            if (javaProject.contains(member)) {
+                                String[] newNames = Util.arrayConcat(pkgName, DeduplicationUtil.intern(memberName));
+                                boolean isMemberIncluded = !Util.isExcluded(member, inclusionPatterns,
+                                    exclusionPatterns);
+                                computeFolderChildren((IFolder) member, isMemberIncluded, newNames, vChildren,
+                                    inclusionPatterns, exclusionPatterns);
+                            }
+                        }
+                        break;
+                    case IResource.FILE:
+                        // inclusion filter may only include files, in which case we still want to include the immediate parent package (lazily)
+                        if (!hasIncluded && Util.isValidCompilationUnitName(memberName, sourceLevel, complianceLevel)
+                            && !Util.isExcluded(member, inclusionPatterns, exclusionPatterns)) {
+                            hasIncluded = true;
+                            IPackageFragment pkg = getPackageFragment(pkgName);
+                            vChildren.add(pkg);
+                        }
+                        break;
+                }
+            }
 		}
 	} catch(IllegalArgumentException e){
 		throw new JavaModelException(e, IJavaModelStatusConstants.ELEMENT_DOES_NOT_EXIST); // could be thrown by ElementTree when path is not found
 	} catch (CoreException e) {
 		throw new JavaModelException(e);
 	}
-}
-
-@Override
-public void copy(
-	IPath destination,
-	int updateResourceFlags,
-	int updateModelFlags,
-	IClasspathEntry sibling,
-	IProgressMonitor monitor)
-	throws JavaModelException {
-
-	CopyPackageFragmentRootOperation op =
-		new CopyPackageFragmentRootOperation(this, destination, updateResourceFlags, updateModelFlags, sibling);
-	op.runOperation(monitor);
 }
 
 /**
@@ -318,32 +183,7 @@ protected PackageFragmentRootInfo createElementInfo() {
 	return new PackageFragmentRootInfo();
 }
 
-/**
- * @see IPackageFragmentRoot
- */
-@Override
-public IPackageFragment createPackageFragment(String pkgName, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	CreatePackageFragmentOperation op = new CreatePackageFragmentOperation(this, pkgName, force);
-	op.runOperation(monitor);
-	return getPackageFragment(op.pkgName);
-}
-
-/**
- * Returns the root's kind - K_SOURCE or K_BINARY, defaults
- * to K_SOURCE if it is not on the classpath.
- *
- * @exception JavaModelException if the project and root do
- * 		not exist.
- */
-protected int determineKind(IResource underlyingResource) throws JavaModelException {
-	IClasspathEntry entry = getJavaProject().getClasspathEntryFor(underlyingResource.getFullPath());
-	if (entry != null) {
-		return entry.getContentKind();
-	}
-	return IPackageFragmentRoot.K_SOURCE;
-}
-
-/**
+    /**
  * Compares two objects for equality;
  * for <code>PackageFragmentRoot</code>s, equality is having the
  * same parent, same resources, and occurrence count.
@@ -553,14 +393,6 @@ int internalKind() throws JavaModelException {
 }
 
 /**
- * Returns an array of non-java resources contained in the receiver.
- */
-@Override
-public Object[] getNonJavaResources() throws JavaModelException {
-	return ((PackageFragmentRootInfo) getElementInfo()).getNonJavaResources(getJavaProject(), resource(), this);
-}
-
-/**
  * @see IPackageFragmentRoot
  */
 @Override
@@ -690,17 +522,7 @@ public IPath getSourceAttachmentPath() throws JavaModelException {
 	return null;
 }
 
-/**
- * For use by <code>AttachSourceOperation</code> only.
- * Sets the source mapper associated with this root.
- */
-public void setSourceMapper(SourceMapper mapper) throws JavaModelException {
-	((PackageFragmentRootInfo) getElementInfo()).setSourceMapper(mapper);
-}
-
-
-
-/**
+    /**
  * @see IPackageFragmentRoot
  */
 @Override
@@ -822,20 +644,6 @@ protected IStatus validateOnClasspath() {
 	return new JavaModelStatus(IJavaModelStatusConstants.ELEMENT_NOT_ON_CLASSPATH, this);
 }
 
-@Override
-public void move(
-	IPath destination,
-	int updateResourceFlags,
-	int updateModelFlags,
-	IClasspathEntry sibling,
-	IProgressMonitor monitor)
-	throws JavaModelException {
-
-	MovePackageFragmentRootOperation op =
-		new MovePackageFragmentRootOperation(this, destination, updateResourceFlags, updateModelFlags, sibling);
-	op.runOperation(monitor);
-}
-
 /**
  * for debugging only
  */
@@ -870,25 +678,7 @@ protected IStatus validateExistence(IResource underlyingResource) {
 	return JavaModelStatus.VERIFIED_OK;
 }
 
-/**
- * Possible failures: <ul>
- *  <li>ELEMENT_NOT_PRESENT - the root supplied to the operation
- *      does not exist
- *  <li>INVALID_ELEMENT_TYPES - the root is not of kind K_BINARY
- *   <li>RELATIVE_PATH - the path supplied to this operation must be
- *      an absolute path
- *  </ul>
- */
-protected void verifyAttachSource(IPath sourcePath) throws JavaModelException {
-	if (!exists()) {
-		throw newNotPresentException();
-	} else if (getKind() != K_BINARY) {
-		throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.INVALID_ELEMENT_TYPES, this));
-	} else if (sourcePath != null && !sourcePath.isAbsolute()) {
-		throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.RELATIVE_PATH, sourcePath));
-	}
-}
-/**
+    /**
  * Returns the relative path within an archive for the given class file name. In certain
  * kind of archives, such as a JMOD file, class files are stored in a nested folder, as opposed
  * to directly under the root. It is the responsibility of such package fragment roots to
@@ -912,7 +702,7 @@ private IModuleDescription getSourceModuleDescription() {
 		IJavaElement[] pkgs = getChildren();
 		for (IJavaElement pkg : pkgs) {
 			// only look in the default package
-			if (pkg.getElementName().length() == 0) {
+			if (pkg.getElementName().isEmpty()) {
 				OpenableElementInfo info = null;
 				if (getKind() == IPackageFragmentRoot.K_SOURCE) {
 					ICompilationUnit unit = ((PackageFragment) pkg)
@@ -987,14 +777,7 @@ public Manifest getManifest() {
 }
 
 protected boolean isComplianceJava9OrHigher() {
-	IJavaProject javaProject = getJavaProject();
-	return isComplianceJava9OrHigher(javaProject);
+    return false;
 }
 
-private static boolean isComplianceJava9OrHigher(IJavaProject javaProject) {
-	if (javaProject == null) {
-		return false;
-	}
-	return CompilerOptions.versionToJdkLevel(javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true)) >= ClassFileConstants.JDK9;
-}
 }

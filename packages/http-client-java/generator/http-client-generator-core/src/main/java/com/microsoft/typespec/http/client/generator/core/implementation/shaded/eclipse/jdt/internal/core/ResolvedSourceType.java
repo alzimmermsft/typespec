@@ -13,8 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
-
 /**
  * Handle representing a source type that is resolved.
  * The uniqueKey contains the genericTypeSignature of the resolved type. Use BindingKey to decode it.
@@ -35,12 +33,7 @@ public class ResolvedSourceType extends SourceType {
 		this.uniqueKey = uniqueKey;
 	}
 
-	@Override
-	public String getFullyQualifiedParameterizedName() throws JavaModelException {
-		return getFullyQualifiedParameterizedName(getFullyQualifiedName('.'), this.uniqueKey);
-	}
-
-	@Override
+    @Override
 	public String getKey() {
 		return this.uniqueKey;
 	}

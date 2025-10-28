@@ -25,19 +25,21 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public class DOMException extends RuntimeException {
 
-	private static final long serialVersionUID = 2536853590795032028L; // backward compatible
-/**
- * Creates a new exception with no detail message.
- */
-public DOMException() {
-	// just create a new DOMException with no detail message
-}
-/**
- * Creates a new exception with the given detail message.
- *
- * @param message the detail message
- */
-public DOMException(String message) {
-	super(message);
-}
+    private static final long serialVersionUID = 2536853590795032028L; // backward compatible
+
+    /**
+     * Creates a new exception with no detail message.
+     */
+    public DOMException() {
+        // just create a new DOMException with no detail message
+    }
+
+    /**
+     * Creates a new exception with the given detail message.
+     *
+     * @param message the detail message
+     */
+    public DOMException(String message) {
+        super(message);
+    }
 }

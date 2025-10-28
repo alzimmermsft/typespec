@@ -20,7 +20,8 @@ import java.lang.annotation.Target;
  * &#64;MustCall("close")
  * class Socket {
  *   &#64;MustCallAlias OutputStream getOutputStream(&#64;MustCallAlias Socket this) { ... }
- * }</pre>
+ * }
+ * </pre>
  *
  * Calling {@code close()} on the returned {@code OutputStream} will close the underlying socket,
  * but the Socket may also be closed directly, which has the same effect.
@@ -32,18 +33,18 @@ import java.lang.annotation.Target;
  * <p>For a constructor:
  *
  * <ul>
- *   <li>The constructor must always write p into exactly one field {@code f} of the new object.
- *   <li>Field {@code f} must be annotated {@code @}{@link Owning}.
+ * <li>The constructor must always write p into exactly one field {@code f} of the new object.
+ * <li>Field {@code f} must be annotated {@code @}{@link Owning}.
  * </ul>
  *
  * For a method:
  *
  * <ul>
- *   <li>All return sites must be calls to other methods or constructors with {@code @MustCallAlias}
- *       return types, and this method's {@code @MustCallAlias} parameter must be passed in the
- *       {@code MustCallAlias} position to that method or constructor (i.e., the calls must pass
- *       {@code @MustCallAlias} parameter through a chain of {@code @MustCallAlias}-annotated
- *       parameters and returns).
+ * <li>All return sites must be calls to other methods or constructors with {@code @MustCallAlias}
+ * return types, and this method's {@code @MustCallAlias} parameter must be passed in the
+ * {@code MustCallAlias} position to that method or constructor (i.e., the calls must pass
+ * {@code @MustCallAlias} parameter through a chain of {@code @MustCallAlias}-annotated
+ * parameters and returns).
  * </ul>
  *
  * When the -AnoResourceAliases command-line argument is passed to the checker, this annotation is
@@ -56,5 +57,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 // In Java 11, this can be:
 // @Target({ElementType.PARAMETER, ElementType.CONSTRUCTOR, ElementType.METHOD})
-@Target({ElementType.PARAMETER, ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.TYPE_USE})
-public @interface MustCallAlias {}
+@Target({ ElementType.PARAMETER, ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.TYPE_USE })
+public @interface MustCallAlias {
+}

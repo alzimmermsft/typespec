@@ -19,44 +19,41 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * @since org.eclipse.equinox.preferences 1.0
  */
 public interface IPreferencesConstants {
-	/**
-	 * Backward compatibilty: name of the original runtime plugin
-	 */
-	public static final String RUNTIME_NAME = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime"; //$NON-NLS-1$
+    /**
+     * Backward compatibilty: name of the original runtime plugin
+     */
+    String RUNTIME_NAME
+        = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime"; //$NON-NLS-1$
 
-	/**
-	 * Name of this plugin
-	 */
-	public static final String PREFERS_NAME = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.equinox.preferences"; //$NON-NLS-1$
+    /**
+     * Name of this plugin
+     */
+    String PREFERS_NAME
+        = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.equinox.preferences"; //$NON-NLS-1$
 
-	/**
-	 * Command line options
-	 */
-	public static final String PLUGIN_CUSTOMIZATION = "-plugincustomization"; //$NON-NLS-1$
+    /**
+     * This is the base filename used to construct the name of the preference file
+     * and the name of the preference translation file.
+     */
+    String PREFERENCES_DEFAULT_OVERRIDE_BASE_NAME = "preferences"; //$NON-NLS-1$
 
-	/**
-	 * This is the base filename used to construct the name of the preference file
-	 * and the name of the preference translation file.
-	 */
-	public static final String PREFERENCES_DEFAULT_OVERRIDE_BASE_NAME = "preferences"; //$NON-NLS-1$
+    /**
+     * The name of the file (value <code>"preferences.ini"</code>) in a plug-in's
+     * (read-only) directory that, when present, contains values that override the
+     * normal default values for this plug-in's preferences.
+     * <p>
+     * The format of the file is as per <code>java.io.Properties</code> where the
+     * keys are property names and values are strings.
+     * </p>
+     */
+    String PREFERENCES_DEFAULT_OVERRIDE_FILE_NAME = PREFERENCES_DEFAULT_OVERRIDE_BASE_NAME + ".ini"; //$NON-NLS-1$
 
-	/**
-	 * The name of the file (value <code>"preferences.ini"</code>) in a plug-in's
-	 * (read-only) directory that, when present, contains values that override the
-	 * normal default values for this plug-in's preferences.
-	 * <p>
-	 * The format of the file is as per <code>java.io.Properties</code> where the
-	 * keys are property names and values are strings.
-	 * </p>
-	 */
-	public static final String PREFERENCES_DEFAULT_OVERRIDE_FILE_NAME = PREFERENCES_DEFAULT_OVERRIDE_BASE_NAME + ".ini"; //$NON-NLS-1$
-
-	/**
-	 * The simple identifier constant (value "<code>preferences</code>") of the
-	 * extension point of the Core Runtime plug-in where plug-ins declare extensions
-	 * to the preference facility. A plug-in may define any number of preference
-	 * extensions.
-	 */
-	public static final String PT_PREFERENCES = "preferences"; //$NON-NLS-1$
+    /**
+     * The simple identifier constant (value "<code>preferences</code>") of the
+     * extension point of the Core Runtime plug-in where plug-ins declare extensions
+     * to the preference facility. A plug-in may define any number of preference
+     * extensions.
+     */
+    String PT_PREFERENCES = "preferences"; //$NON-NLS-1$
 
 }

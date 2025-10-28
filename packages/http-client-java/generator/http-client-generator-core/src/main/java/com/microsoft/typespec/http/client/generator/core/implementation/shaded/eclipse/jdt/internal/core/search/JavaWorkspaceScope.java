@@ -161,57 +161,6 @@ public IPackageFragmentRoot packageFragmentRoot(String resourcePathString, int j
 	return rootInfo.getPackageFragmentRoot(null/*no resource hint*/);
 }
 
-@Override
-public void processDelta(IJavaElementDelta delta, int eventType) {
-	if (this.enclosingPaths == null) return;
-	IJavaElement element = delta.getElement();
-	switch (element.getElementType()) {
-		case IJavaElement.JAVA_MODEL:
-			IJavaElementDelta[] children = delta.getAffectedChildren();
-			for (IJavaElementDelta child : children) {
-				processDelta(child, eventType);
-			}
-			break;
-		case IJavaElement.JAVA_PROJECT:
-			int kind = delta.getKind();
-			switch (kind) {
-				case IJavaElementDelta.ADDED:
-				case IJavaElementDelta.REMOVED:
-					this.enclosingPaths = null;
-					break;
-				case IJavaElementDelta.CHANGED:
-					int flags = delta.getFlags();
-					if ((flags & IJavaElementDelta.F_CLOSED) != 0
-							|| (flags & IJavaElementDelta.F_OPENED) != 0) {
-						this.enclosingPaths = null;
-					} else {
-						children = delta.getAffectedChildren();
-						for (IJavaElementDelta child : children) {
-							processDelta(child, eventType);
-						}
-					}
-					break;
-			}
-			break;
-		case IJavaElement.PACKAGE_FRAGMENT_ROOT:
-			kind = delta.getKind();
-			switch (kind) {
-				case IJavaElementDelta.ADDED:
-				case IJavaElementDelta.REMOVED:
-					this.enclosingPaths = null;
-					break;
-				case IJavaElementDelta.CHANGED:
-					int flags = delta.getFlags();
-					if ((flags & IJavaElementDelta.F_ADDED_TO_CLASSPATH) > 0
-						|| (flags & IJavaElementDelta.F_REMOVED_FROM_CLASSPATH) > 0) {
-						this.enclosingPaths = null;
-					}
-					break;
-			}
-			break;
-	}
-}
-
 
 @Override
 public String toString() {

@@ -21,21 +21,22 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 
 public class CompletionOnMarkerAnnotationName extends MarkerAnnotation implements CompletionNode {
-	public CompletionOnMarkerAnnotationName(TypeReference type, int sourceStart){
-		super(type, sourceStart);
-	}
+    public CompletionOnMarkerAnnotationName(TypeReference type, int sourceStart) {
+        super(type, sourceStart);
+    }
 
-	@Override
-	public TypeBinding resolveType(BlockScope scope) {
-		if(this.type instanceof QualifiedTypeReference) {
-			QualifiedTypeReference qualifiedTypeReference = (QualifiedTypeReference) this.type;
-			Binding binding = scope.parent.getTypeOrPackage(qualifiedTypeReference.tokens); // step up from the ClassScope
-			if (!binding.isValidBinding()) {
-				scope.problemReporter().invalidType(this, (TypeBinding) binding);
-				throw new CompletionNodeFound();
-			}
-			throw new CompletionNodeFound(this, binding, scope);
-		}
-		throw new CompletionNodeFound(this, null, scope);
-	}
+    @Override
+    public TypeBinding resolveType(BlockScope scope) {
+        if (this.type instanceof QualifiedTypeReference) {
+            QualifiedTypeReference qualifiedTypeReference = (QualifiedTypeReference) this.type;
+            Binding binding = scope.parent.getTypeOrPackage(qualifiedTypeReference.tokens); // step up from the
+                                                                                            // ClassScope
+            if (!binding.isValidBinding()) {
+                scope.problemReporter().invalidType(this, (TypeBinding) binding);
+                throw new CompletionNodeFound();
+            }
+            throw new CompletionNodeFound(this, binding, scope);
+        }
+        throw new CompletionNodeFound(this, null, scope);
+    }
 }

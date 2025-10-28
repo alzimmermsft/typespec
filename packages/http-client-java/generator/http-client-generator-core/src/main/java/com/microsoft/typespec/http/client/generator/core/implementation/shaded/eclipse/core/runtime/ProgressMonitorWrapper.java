@@ -28,147 +28,147 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public abstract class ProgressMonitorWrapper implements IProgressMonitor, IProgressMonitorWithBlocking {
 
-	/** The wrapped progress monitor. */
-	private final IProgressMonitor progressMonitor;
+    /** The wrapped progress monitor. */
+    private final IProgressMonitor progressMonitor;
 
-	/**
-	 * Creates a new wrapper around the given monitor.
-	 *
-	 * @param monitor the progress monitor to forward to
-	 */
-	protected ProgressMonitorWrapper(IProgressMonitor monitor) {
-		Assert.isNotNull(monitor);
-		progressMonitor = monitor;
-	}
+    /**
+     * Creates a new wrapper around the given monitor.
+     *
+     * @param monitor the progress monitor to forward to
+     */
+    protected ProgressMonitorWrapper(IProgressMonitor monitor) {
+        Assert.isNotNull(monitor);
+        progressMonitor = monitor;
+    }
 
-	/**
-	 * This implementation of a <code>IProgressMonitor</code> method forwards to the
-	 * wrapped progress monitor. Clients may override this method to do additional
-	 * processing.
-	 *
-	 * @see IProgressMonitor#beginTask(String, int)
-	 */
-	@Override
-	public void beginTask(String name, int totalWork) {
-		progressMonitor.beginTask(name, totalWork);
-	}
+    /**
+     * This implementation of a <code>IProgressMonitor</code> method forwards to the
+     * wrapped progress monitor. Clients may override this method to do additional
+     * processing.
+     *
+     * @see IProgressMonitor#beginTask(String, int)
+     */
+    @Override
+    public void beginTask(String name, int totalWork) {
+        progressMonitor.beginTask(name, totalWork);
+    }
 
-	/**
-	 * This implementation of a <code>IProgressMonitorWithBlocking</code> method
-	 * forwards to the wrapped progress monitor. Clients may override this method to
-	 * do additional processing.
-	 *
-	 * @see IProgressMonitorWithBlocking#clearBlocked()
-	 * @since 3.0
-	 */
-	@Override
-	public void clearBlocked() {
-		progressMonitor.clearBlocked();
-	}
+    /**
+     * This implementation of a <code>IProgressMonitorWithBlocking</code> method
+     * forwards to the wrapped progress monitor. Clients may override this method to
+     * do additional processing.
+     *
+     * @see IProgressMonitorWithBlocking#clearBlocked()
+     * @since 3.0
+     */
+    @Override
+    public void clearBlocked() {
+        progressMonitor.clearBlocked();
+    }
 
-	/**
-	 * This implementation of a <code>IProgressMonitor</code> method forwards to the
-	 * wrapped progress monitor. Clients may override this method to do additional
-	 * processing.
-	 *
-	 * @see IProgressMonitor#done()
-	 */
-	@Override
-	public void done() {
-		progressMonitor.done();
-	}
+    /**
+     * This implementation of a <code>IProgressMonitor</code> method forwards to the
+     * wrapped progress monitor. Clients may override this method to do additional
+     * processing.
+     *
+     * @see IProgressMonitor#done()
+     */
+    @Override
+    public void done() {
+        progressMonitor.done();
+    }
 
-	/**
-	 * Returns the wrapped progress monitor.
-	 *
-	 * @return the wrapped progress monitor
-	 */
-	public IProgressMonitor getWrappedProgressMonitor() {
-		return progressMonitor;
-	}
+    /**
+     * Returns the wrapped progress monitor.
+     *
+     * @return the wrapped progress monitor
+     */
+    public IProgressMonitor getWrappedProgressMonitor() {
+        return progressMonitor;
+    }
 
-	/**
-	 * This implementation of a <code>IProgressMonitor</code> method forwards to the
-	 * wrapped progress monitor. Clients may override this method to do additional
-	 * processing.
-	 *
-	 * @see IProgressMonitor#internalWorked(double)
-	 */
-	@Override
-	public void internalWorked(double work) {
-		progressMonitor.internalWorked(work);
-	}
+    /**
+     * This implementation of a <code>IProgressMonitor</code> method forwards to the
+     * wrapped progress monitor. Clients may override this method to do additional
+     * processing.
+     *
+     * @see IProgressMonitor#internalWorked(double)
+     */
+    @Override
+    public void internalWorked(double work) {
+        progressMonitor.internalWorked(work);
+    }
 
-	/**
-	 * This implementation of a <code>IProgressMonitor</code> method forwards to the
-	 * wrapped progress monitor. Clients may override this method to do additional
-	 * processing.
-	 *
-	 * @see IProgressMonitor#isCanceled()
-	 */
-	@Override
-	public boolean isCanceled() {
-		return progressMonitor.isCanceled();
-	}
+    /**
+     * This implementation of a <code>IProgressMonitor</code> method forwards to the
+     * wrapped progress monitor. Clients may override this method to do additional
+     * processing.
+     *
+     * @see IProgressMonitor#isCanceled()
+     */
+    @Override
+    public boolean isCanceled() {
+        return progressMonitor.isCanceled();
+    }
 
-	/**
-	 * This implementation of a <code>IProgressMonitorWithBlocking</code> method
-	 * forwards to the wrapped progress monitor. Clients may override this method to
-	 * do additional processing.
-	 *
-	 * @see IProgressMonitorWithBlocking#setBlocked(IStatus)
-	 * @since 3.0
-	 */
-	@Override
-	public void setBlocked(IStatus reason) {
-		progressMonitor.setBlocked(reason);
-	}
+    /**
+     * This implementation of a <code>IProgressMonitorWithBlocking</code> method
+     * forwards to the wrapped progress monitor. Clients may override this method to
+     * do additional processing.
+     *
+     * @see IProgressMonitorWithBlocking#setBlocked(IStatus)
+     * @since 3.0
+     */
+    @Override
+    public void setBlocked(IStatus reason) {
+        progressMonitor.setBlocked(reason);
+    }
 
-	/**
-	 * This implementation of a <code>IProgressMonitor</code> method forwards to the
-	 * wrapped progress monitor. Clients may override this method to do additional
-	 * processing.
-	 *
-	 * @see IProgressMonitor#setCanceled(boolean)
-	 */
-	@Override
-	public void setCanceled(boolean b) {
-		progressMonitor.setCanceled(b);
-	}
+    /**
+     * This implementation of a <code>IProgressMonitor</code> method forwards to the
+     * wrapped progress monitor. Clients may override this method to do additional
+     * processing.
+     *
+     * @see IProgressMonitor#setCanceled(boolean)
+     */
+    @Override
+    public void setCanceled(boolean b) {
+        progressMonitor.setCanceled(b);
+    }
 
-	/**
-	 * This implementation of a <code>IProgressMonitor</code> method forwards to the
-	 * wrapped progress monitor. Clients may override this method to do additional
-	 * processing.
-	 *
-	 * @see IProgressMonitor#setTaskName(String)
-	 */
-	@Override
-	public void setTaskName(String name) {
-		progressMonitor.setTaskName(name);
-	}
+    /**
+     * This implementation of a <code>IProgressMonitor</code> method forwards to the
+     * wrapped progress monitor. Clients may override this method to do additional
+     * processing.
+     *
+     * @see IProgressMonitor#setTaskName(String)
+     */
+    @Override
+    public void setTaskName(String name) {
+        progressMonitor.setTaskName(name);
+    }
 
-	/**
-	 * This implementation of a <code>IProgressMonitor</code> method forwards to the
-	 * wrapped progress monitor. Clients may override this method to do additional
-	 * processing.
-	 *
-	 * @see IProgressMonitor#subTask(String)
-	 */
-	@Override
-	public void subTask(String name) {
-		progressMonitor.subTask(name);
-	}
+    /**
+     * This implementation of a <code>IProgressMonitor</code> method forwards to the
+     * wrapped progress monitor. Clients may override this method to do additional
+     * processing.
+     *
+     * @see IProgressMonitor#subTask(String)
+     */
+    @Override
+    public void subTask(String name) {
+        progressMonitor.subTask(name);
+    }
 
-	/**
-	 * This implementation of a <code>IProgressMonitor</code> method forwards to the
-	 * wrapped progress monitor. Clients may override this method to do additional
-	 * processing.
-	 *
-	 * @see IProgressMonitor#worked(int)
-	 */
-	@Override
-	public void worked(int work) {
-		progressMonitor.worked(work);
-	}
+    /**
+     * This implementation of a <code>IProgressMonitor</code> method forwards to the
+     * wrapped progress monitor. Clients may override this method to do additional
+     * processing.
+     *
+     * @see IProgressMonitor#worked(int)
+     */
+    @Override
+    public void worked(int work) {
+        progressMonitor.worked(work);
+    }
 }

@@ -40,28 +40,28 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class CompletionOnClassLiteralAccess extends ClassLiteralAccess implements CompletionNode {
 
-	public char[] completionIdentifier;
-	public int classStart;
+    public char[] completionIdentifier;
+    public int classStart;
 
-	public CompletionOnClassLiteralAccess(long pos, TypeReference t) {
+    public CompletionOnClassLiteralAccess(long pos, TypeReference t) {
 
-		super((int)pos, t);
-		this.classStart = (int) (pos >>> 32);
-	}
+        super((int) pos, t);
+        this.classStart = (int) (pos >>> 32);
+    }
 
-	@Override
-	public StringBuilder printExpression(int indent, StringBuilder output) {
+    @Override
+    public StringBuilder printExpression(int indent, StringBuilder output) {
 
-		output.append("<CompleteOnClassLiteralAccess:"); //$NON-NLS-1$
-		return this.type.print(0, output).append('.').append(this.completionIdentifier).append('>');
-	}
+        output.append("<CompleteOnClassLiteralAccess:"); //$NON-NLS-1$
+        return this.type.print(0, output).append('.').append(this.completionIdentifier).append('>');
+    }
 
-	@Override
-	public TypeBinding resolveType(BlockScope scope) {
+    @Override
+    public TypeBinding resolveType(BlockScope scope) {
 
-		if (super.resolveType(scope) == null)
-			throw new CompletionNodeFound();
-		else
-			throw new CompletionNodeFound(this, this.targetType, scope);
-	}
+        if (super.resolveType(scope) == null)
+            throw new CompletionNodeFound();
+        else
+            throw new CompletionNodeFound(this, this.targetType, scope);
+    }
 }

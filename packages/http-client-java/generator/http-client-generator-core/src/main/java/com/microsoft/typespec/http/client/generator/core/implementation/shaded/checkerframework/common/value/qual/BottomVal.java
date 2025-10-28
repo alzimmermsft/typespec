@@ -1,14 +1,14 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.common.value.qual;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.InvisibleQualifier;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.TargetLocations;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.TypeUseLocation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.InvisibleQualifier;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.TargetLocations;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.TypeUseLocation;
 
 /**
  * The bottom type in the Constant Value type system. Programmers should rarely write this type.
@@ -18,21 +18,21 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
-@TargetLocations({TypeUseLocation.EXPLICIT_LOWER_BOUND, TypeUseLocation.EXPLICIT_UPPER_BOUND})
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
+@TargetLocations({ TypeUseLocation.EXPLICIT_LOWER_BOUND, TypeUseLocation.EXPLICIT_UPPER_BOUND })
 @SubtypeOf({
-  ArrayLen.class,
-  BoolVal.class,
-  DoubleVal.class,
-  IntVal.class,
-  StringVal.class,
-  MatchesRegex.class,
-  DoesNotMatchRegex.class,
-  ArrayLenRange.class,
-  IntRange.class,
-  IntRangeFromPositive.class,
-  IntRangeFromGTENegativeOne.class,
-  IntRangeFromNonNegative.class
-})
+    ArrayLen.class,
+    BoolVal.class,
+    DoubleVal.class,
+    IntVal.class,
+    StringVal.class,
+    MatchesRegex.class,
+    DoesNotMatchRegex.class,
+    ArrayLenRange.class,
+    IntRange.class,
+    IntRangeFromPositive.class,
+    IntRangeFromGTENegativeOne.class,
+    IntRangeFromNonNegative.class })
 @InvisibleQualifier
-public @interface BottomVal {}
+public @interface BottomVal {
+}

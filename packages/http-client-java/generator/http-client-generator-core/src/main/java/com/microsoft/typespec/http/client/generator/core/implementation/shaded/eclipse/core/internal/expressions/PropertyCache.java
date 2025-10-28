@@ -17,22 +17,22 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 /* package */ class PropertyCache {
 
-	private final LRUCache fCache;
+    private final LRUCache fCache;
 
-	public PropertyCache(final int cacheSize) {
-		fCache= new LRUCache(100);
-		fCache.setSpaceLimit(cacheSize);
-	}
+    public PropertyCache(final int cacheSize) {
+        fCache = new LRUCache(100);
+        fCache.setSpaceLimit(cacheSize);
+    }
 
-	public Property get(Property key) {
-		return (Property)fCache.get(key);
-	}
+    public Property get(Property key) {
+        return (Property) fCache.get(key);
+    }
 
-	public void put(Property method) {
-		fCache.put(method, method);
-	}
+    public void put(Property method) {
+        fCache.put(method, method);
+    }
 
-	public void remove(Property method) {
-		fCache.removeKey(method);
-	}
+    public void remove(Property method) {
+        fCache.removeKey(method);
+    }
 }

@@ -23,20 +23,20 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public class MetaDataKeeper {
 
-	private static DataArea metaArea = null;
+    private static DataArea metaArea = null;
 
-	/**
-	 * Returns the object which defines the location and organization of the
-	 * platform's meta area.
-	 *
-	 * @return non null
-	 */
-	public static synchronized DataArea getMetaArea() {
-		if (metaArea != null) {
-			return metaArea;
-		}
+    /**
+     * Returns the object which defines the location and organization of the
+     * platform's meta area.
+     *
+     * @return non null
+     */
+    public static synchronized DataArea getMetaArea() {
+        if (metaArea != null) {
+            return metaArea;
+        }
 
-		metaArea = new DataArea();
-		return metaArea;
-	}
+        metaArea = new DataArea();
+        return metaArea;
+    }
 }

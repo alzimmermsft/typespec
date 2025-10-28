@@ -1,13 +1,13 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.mustcall.qual;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.DefaultFor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.DefaultQualifierInHierarchy;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.TypeUseLocation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * An expression of type {@code @MustCall({"m1", "m2"})} may be obligated to call {@code m1()}
@@ -19,20 +19,22 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  *
  * <p>The subtyping relationship is:
  *
- * <pre>{@code @MustCall({"m1"}) <: @MustCall({"m1", "m2"})}</pre>
+ * <pre>
+ * {@code @MustCall({"m1"}) <: @MustCall({"m1", "m2"})}
+ * </pre>
  *
  * @checker_framework.manual #must-call-checker Must Call Checker
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
-@SubtypeOf({MustCallUnknown.class})
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
+@SubtypeOf({ MustCallUnknown.class })
 @DefaultQualifierInHierarchy
-@DefaultFor({TypeUseLocation.EXCEPTION_PARAMETER, TypeUseLocation.UPPER_BOUND})
+@DefaultFor({ TypeUseLocation.EXCEPTION_PARAMETER, TypeUseLocation.UPPER_BOUND })
 public @interface MustCall {
-  /**
-   * Methods that might need to be called on the expression whose type is annotated.
-   *
-   * @return methods that might need to be called
-   */
-  public String[] value() default {};
+    /**
+     * Methods that might need to be called on the expression whose type is annotated.
+     *
+     * @return methods that might need to be called
+     */
+    public String[] value() default { };
 }

@@ -23,28 +23,28 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IExceptionAttribute extends IClassFileAttribute {
 
-	/**
-	 * Answer back the number of exceptions of the exception attribute.
-	 *
-	 * @return the number of exceptions of the exception attribute
-	 */
-	int getExceptionsNumber();
+    /**
+     * Answer back the number of exceptions of the exception attribute.
+     *
+     * @return the number of exceptions of the exception attribute
+     */
+    int getExceptionsNumber();
 
-	/**
-	 * Answer back the exception names of the exception attribute. Answers an
-	 * empty collection if none.
-	 *
-	 * @return the exception names of the exception attribute. Answers an
-	 * empty collection if none
-	 */
-	char[][] getExceptionNames();
+    /**
+     * Answer back the exception names of the exception attribute. Answers an
+     * empty collection if none.
+     *
+     * @return the exception names of the exception attribute. Answers an
+     * empty collection if none
+     */
+    char[][] getExceptionNames();
 
-	/**
-	 * Answer back the exception indexes of the exception attribute. Answers an
-	 * empty collection if none.
-	 *
-	 * @return the exception indexes of the exception attribute. Answers an
-	 * empty collection if none
-	 */
-	int[] getExceptionIndexes();
+    /**
+     * Answer back the exception indexes of the exception attribute. Answers an
+     * empty collection if none.
+     *
+     * @return the exception indexes of the exception attribute. Answers an
+     * empty collection if none
+     */
+    int[] getExceptionIndexes();
 }

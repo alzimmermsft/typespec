@@ -17,17 +17,14 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.preferences;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
-import java.nio.file.Path;
-import java.util.*;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.runtime.RuntimeLog;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.*;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.preferences.*;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.util.NLS;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.prefs.BackingStoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.prefs.Preferences;
+import java.io.*;
+import java.util.*;
 
 /**
  * Represents a node in the Eclipse preference node hierarchy. This class is
@@ -44,1081 +41,906 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 public class EclipsePreferences implements IEclipsePreferences, IScope {
 
-	public static final String DEFAULT_PREFERENCES_DIRNAME = ".settings"; //$NON-NLS-1$
-	public static final String PREFS_FILE_EXTENSION = "prefs"; //$NON-NLS-1$
-	protected static final String[] EMPTY_STRING_ARRAY = new String[0];
-	private static final String FALSE = "false"; //$NON-NLS-1$
-	private static final String TRUE = "true"; //$NON-NLS-1$
-	protected static final String VERSION_KEY = "eclipse.preferences.version"; //$NON-NLS-1$
-	protected static final String VERSION_VALUE = "1"; //$NON-NLS-1$
-	protected static final String PATH_SEPARATOR = String.valueOf(IPath.SEPARATOR);
-	protected static final String DOUBLE_SLASH = "//"; //$NON-NLS-1$
-	protected static final String EMPTY_STRING = ""; //$NON-NLS-1$
-	private static final String BACKUP_FILE_EXTENSION = ".bak"; //$NON-NLS-1$
+    public static final String DEFAULT_PREFERENCES_DIRNAME = ".settings"; //$NON-NLS-1$
+    public static final String PREFS_FILE_EXTENSION = "prefs"; //$NON-NLS-1$
+    protected static final String[] EMPTY_STRING_ARRAY = new String[0];
+    private static final String FALSE = "false"; //$NON-NLS-1$
+    private static final String TRUE = "true"; //$NON-NLS-1$
+    protected static final String VERSION_KEY = "eclipse.preferences.version"; //$NON-NLS-1$
+    protected static final String VERSION_VALUE = "1"; //$NON-NLS-1$
+    protected static final String PATH_SEPARATOR = String.valueOf(IPath.SEPARATOR);
+    protected static final String DOUBLE_SLASH = "//"; //$NON-NLS-1$
+    protected static final String EMPTY_STRING = ""; //$NON-NLS-1$
+    private static final String BACKUP_FILE_EXTENSION = ".bak"; //$NON-NLS-1$
 
-	/** not synchronized, but each thread would create the same result **/
-	private String cachedPath;
-	/** synchronized by childAndPropertyLock */
-	private ImmutableMap properties = ImmutableMap.EMPTY;
-	/** synchronized by childAndPropertyLock */
-	private Map<String, Object> children;
-	/**
-	 * Protects write access to properties and children.
-	 */
-	private final Object childAndPropertyLock = new Object();
-	protected volatile boolean dirty;
-	protected volatile boolean loading;
-	protected final String name;
-	// the parent of an EclipsePreference node is always an EclipsePreference node.
-	// (or null)
-	protected final EclipsePreferences parent;
-	protected volatile boolean removed;
-	private final ListenerList<INodeChangeListener> nodeChangeListeners = new ListenerList<>();
-	private final ListenerList<IPreferenceChangeListener> preferenceChangeListeners = new ListenerList<>();
-	private final ScopeDescriptor descriptor;
+    /** not synchronized, but each thread would create the same result **/
+    private String cachedPath;
+    /** synchronized by childAndPropertyLock */
+    private ImmutableMap properties = ImmutableMap.EMPTY;
+    /** synchronized by childAndPropertyLock */
+    private Map<String, Object> children;
+    /**
+     * Protects write access to properties and children.
+     */
+    private final Object childAndPropertyLock = new Object();
+    protected volatile boolean dirty;
+    protected volatile boolean loading;
+    protected final String name;
+    // the parent of an EclipsePreference node is always an EclipsePreference node.
+    // (or null)
+    protected final EclipsePreferences parent;
+    protected volatile boolean removed;
+    private final ListenerList<INodeChangeListener> nodeChangeListeners = new ListenerList<>();
+    private final ListenerList<IPreferenceChangeListener> preferenceChangeListeners = new ListenerList<>();
+    private final ScopeDescriptor descriptor;
 
     public EclipsePreferences() {
-		this(null, null);
-	}
+        this(null, null);
+    }
 
-	protected EclipsePreferences(EclipsePreferences parent, String name) {
-		this(parent, name, null);
-	}
+    protected EclipsePreferences(EclipsePreferences parent, String name) {
+        this(parent, name, null);
+    }
 
-	EclipsePreferences(EclipsePreferences parent, String name, ScopeDescriptor descriptor) {
-		this.parent = parent;
-		this.name = name;
-		this.cachedPath = null; // make sure the cached path is cleared after setting the parent
-		this.descriptor = descriptor;
-	}
+    EclipsePreferences(EclipsePreferences parent, String name, ScopeDescriptor descriptor) {
+        this.parent = parent;
+        this.name = name;
+        this.cachedPath = null; // make sure the cached path is cleared after setting the parent
+        this.descriptor = descriptor;
+    }
 
-	@Override
-	public String absolutePath() {
-		if (cachedPath == null) {
-			if (parent == null) {
-				cachedPath = PATH_SEPARATOR;
-			} else {
-				String parentPath = parent.absolutePath();
-				// if the parent is the root then we don't have to add a separator
-				// between the parent path and our path
-				if (parentPath.length() == 1) {
-					cachedPath = parentPath + name();
-				} else {
-					cachedPath = parentPath + PATH_SEPARATOR + name();
-				}
-			}
-		}
-		return cachedPath;
-	}
+    @Override
+    public String absolutePath() {
+        if (cachedPath == null) {
+            if (parent == null) {
+                cachedPath = PATH_SEPARATOR;
+            } else {
+                String parentPath = parent.absolutePath();
+                // if the parent is the root then we don't have to add a separator
+                // between the parent path and our path
+                if (parentPath.length() == 1) {
+                    cachedPath = parentPath + name();
+                } else {
+                    cachedPath = parentPath + PATH_SEPARATOR + name();
+                }
+            }
+        }
+        return cachedPath;
+    }
 
-	@Override
-	public void accept(IPreferenceNodeVisitor visitor) throws BackingStoreException {
-		if (!visitor.visit(this)) {
-			return;
-		}
-		for (IEclipsePreferences p : getChildren(true)) {
-			p.accept(visitor);
-		}
-	}
+    @Override
+    public void accept(IPreferenceNodeVisitor visitor) throws BackingStoreException {
+        if (!visitor.visit(this)) {
+            return;
+        }
+        for (IEclipsePreferences p : getChildren(true)) {
+            p.accept(visitor);
+        }
+    }
 
-	protected IEclipsePreferences addChild(String childName, IEclipsePreferences child) {
-		synchronized (childAndPropertyLock) {
-			if (children == null) {
-				children = new HashMap<>();
-			}
-			children.put(childName, child == null ? childName : child);
-			return child;
-		}
-	}
+    protected IEclipsePreferences addChild(String childName, IEclipsePreferences child) {
+        synchronized (childAndPropertyLock) {
+            if (children == null) {
+                children = new HashMap<>();
+            }
+            children.put(childName, child == null ? childName : child);
+            return child;
+        }
+    }
 
-	@Override
-	public void addNodeChangeListener(INodeChangeListener listener) {
-		checkRemoved();
-		nodeChangeListeners.add(listener);
-	}
+    @Override
+    public void addNodeChangeListener(INodeChangeListener listener) {
+        checkRemoved();
+        nodeChangeListeners.add(listener);
+    }
 
-	@Override
-	public void addPreferenceChangeListener(IPreferenceChangeListener listener) {
-		checkRemoved();
-		preferenceChangeListeners.add(listener);
-	}
+    @Override
+    public void addPreferenceChangeListener(IPreferenceChangeListener listener) {
+        checkRemoved();
+        preferenceChangeListeners.add(listener);
+    }
 
-	private IEclipsePreferences calculateRoot() {
-		IEclipsePreferences result = this;
-		while (result.parent() != null) {
-			result = (IEclipsePreferences) result.parent();
-		}
-		return result;
-	}
+    private IEclipsePreferences calculateRoot() {
+        IEclipsePreferences result = this;
+        while (result.parent() != null) {
+            result = (IEclipsePreferences) result.parent();
+        }
+        return result;
+    }
 
-	/*
-	 * Convenience method for throwing an exception when methods are called on a
-	 * removed node.
-	 */
-	protected void checkRemoved() {
-		if (removed) {
-			throw new IllegalStateException(NLS.bind(PrefsMessages.preferences_removedNode, name));
-		}
-	}
+    /*
+     * Convenience method for throwing an exception when methods are called on a
+     * removed node.
+     */
+    protected void checkRemoved() {
+        if (removed) {
+            throw new IllegalStateException(NLS.bind(PrefsMessages.preferences_removedNode, name));
+        }
+    }
 
-	@Override
-	public String[] childrenNames() throws BackingStoreException {
-		// illegal state if this node has been removed
-		checkRemoved();
-		String[] internal = internalChildNames();
-		// if we are != 0 then we have already been initialized
-		if (internal.length != 0) {
-			return internal;
-		}
-		// we only want to query the descriptor for the child names if
-		// this node is the scope root
-		if (descriptor != null && getSegmentCount(absolutePath()) == 1) {
-			return descriptor.childrenNames(absolutePath());
-		}
-		return internal;
-	}
+    @Override
+    public String[] childrenNames() throws BackingStoreException {
+        // illegal state if this node has been removed
+        checkRemoved();
+        String[] internal = internalChildNames();
+        // if we are != 0 then we have already been initialized
+        if (internal.length != 0) {
+            return internal;
+        }
+        // we only want to query the descriptor for the child names if
+        // this node is the scope root
+        if (descriptor != null && getSegmentCount(absolutePath()) == 1) {
+            return descriptor.childrenNames(absolutePath());
+        }
+        return internal;
+    }
 
-	protected String[] internalChildNames() {
-		synchronized (childAndPropertyLock) {
-			if (children == null || children.isEmpty()) {
-				return EMPTY_STRING_ARRAY;
-			}
-			return children.keySet().toArray(String[]::new);
-		}
-	}
+    protected String[] internalChildNames() {
+        synchronized (childAndPropertyLock) {
+            if (children == null || children.isEmpty()) {
+                return EMPTY_STRING_ARRAY;
+            }
+            return children.keySet().toArray(String[]::new);
+        }
+    }
 
-	@Override
-	public void clear() {
-		// illegal state if this node has been removed
-		checkRemoved();
-		// call each one separately (instead of Properties.clear) so
-		// clients get change notification
-		String[] keys;
-		synchronized (childAndPropertyLock) {
-			keys = properties.keys();
-		}
-		// don't synchronize remove call because it calls listeners
-		for (String key : keys) {
-			remove(key);
-		}
-		makeDirty();
-	}
+    @Override
+    public void clear() {
+        // illegal state if this node has been removed
+        checkRemoved();
+        // call each one separately (instead of Properties.clear) so
+        // clients get change notification
+        String[] keys;
+        synchronized (childAndPropertyLock) {
+            keys = properties.keys();
+        }
+        // don't synchronize remove call because it calls listeners
+        for (String key : keys) {
+            remove(key);
+        }
+        makeDirty();
+    }
 
-	protected List<String> computeChildren(IPath root) {
-		if (root == null) {
-			return List.of();
-		}
-		IPath dir = root.append(DEFAULT_PREFERENCES_DIRNAME);
-		List<String> result = new ArrayList<>();
-		String extension = '.' + PREFS_FILE_EXTENSION;
-		File[] totalFiles = dir.toFile().listFiles();
-		if (totalFiles != null) {
-			for (File totalFile : totalFiles) {
-				String filename = totalFile.getName();
-				if (filename.endsWith(extension) && totalFile.isFile()) {
-					String shortName = filename.substring(0, filename.length() - extension.length());
-					result.add(shortName);
-				}
-			}
-		}
-		return result;
-	}
+    protected List<String> computeChildren(IPath root) {
+        if (root == null) {
+            return List.of();
+        }
+        IPath dir = root.append(DEFAULT_PREFERENCES_DIRNAME);
+        List<String> result = new ArrayList<>();
+        String extension = '.' + PREFS_FILE_EXTENSION;
+        File[] totalFiles = dir.toFile().listFiles();
+        if (totalFiles != null) {
+            for (File totalFile : totalFiles) {
+                String filename = totalFile.getName();
+                if (filename.endsWith(extension) && totalFile.isFile()) {
+                    String shortName = filename.substring(0, filename.length() - extension.length());
+                    result.add(shortName);
+                }
+            }
+        }
+        return result;
+    }
 
-	protected IPath computeLocation(IPath root, String qualifier) {
-		return root == null ? null
-				: root.append(DEFAULT_PREFERENCES_DIRNAME).append(qualifier).addFileExtension(PREFS_FILE_EXTENSION);
-	}
+    protected IPath computeLocation(IPath root, String qualifier) {
+        return root == null
+            ? null
+            : root.append(DEFAULT_PREFERENCES_DIRNAME).append(qualifier).addFileExtension(PREFS_FILE_EXTENSION);
+    }
 
-	/*
-	 * Version 1 (current version) path/key=value
-	 */
-	protected static void convertFromProperties(EclipsePreferences node, Properties table, boolean notify) {
-		String version = table.getProperty(VERSION_KEY);
-		if (version == null || !VERSION_VALUE.equals(version)) {
-			// ignore for now
-		}
-		table.remove(VERSION_KEY);
-		for (Object propName : table.keySet()) {
-			String fullKey = (String) propName;
-			String value = table.getProperty(fullKey);
-			if (value != null) {
-				String[] splitPath = decodePath(fullKey);
-				String path = splitPath[0];
-				path = makeRelative(path);
-				String key = splitPath[1];
-				// use internal methods to avoid notifying listeners
-				EclipsePreferences childNode = (EclipsePreferences) node.internalNode(path, false, null);
-				String oldValue = childNode.internalPut(key, value);
-				// notify listeners if applicable
-				if (notify && !value.equals(oldValue)) {
-					childNode.firePreferenceEvent(key, oldValue, value);
-				}
-			}
-		}
-	}
+    /*
+     * Version 1 (current version) path/key=value
+     */
+    protected static void convertFromProperties(EclipsePreferences node, Properties table, boolean notify) {
+        String version = table.getProperty(VERSION_KEY);
+        if (version == null || !VERSION_VALUE.equals(version)) {
+            // ignore for now
+        }
+        table.remove(VERSION_KEY);
+        for (Object propName : table.keySet()) {
+            String fullKey = (String) propName;
+            String value = table.getProperty(fullKey);
+            if (value != null) {
+                String[] splitPath = decodePath(fullKey);
+                String path = splitPath[0];
+                path = makeRelative(path);
+                String key = splitPath[1];
+                // use internal methods to avoid notifying listeners
+                EclipsePreferences childNode = (EclipsePreferences) node.internalNode(path, false, null);
+                String oldValue = childNode.internalPut(key, value);
+                // notify listeners if applicable
+                if (notify && !value.equals(oldValue)) {
+                    childNode.firePreferenceEvent(key, oldValue, value);
+                }
+            }
+        }
+    }
 
-	private static final Object WRITE_LOCK = new Object();
+    /*
+     * Helper method to convert this node to a Properties file suitable for
+     * persistence.
+     */
+    protected Properties convertToProperties(Properties result, String prefix) throws BackingStoreException {
+        // add the key/value pairs from this node
+        boolean addSeparator = prefix.length() != 0;
+        // thread safety: copy reference in case of concurrent change
+        ImmutableMap temp;
+        synchronized (childAndPropertyLock) {
+            temp = properties;
+        }
+        for (String key : temp.keys()) {
+            String value = temp.get(key);
+            if (value != null) {
+                result.put(encodePath(prefix, key), value);
+            }
+        }
+        // recursively add the child information
+        for (IEclipsePreferences childNode : getChildren(true)) {
+            EclipsePreferences child = (EclipsePreferences) childNode;
+            String fullPath = addSeparator ? prefix + PATH_SEPARATOR + child.name() : child.name();
+            child.convertToProperties(result, fullPath);
+        }
+        return result;
+    }
 
-	/*
-	 * Helper method to persist a Properties object to the filesystem. We use this
-	 * helper so we can remove the date/timestamp that Properties#store always puts
-	 * in the file.
-	 */
-	private void write(Properties props, IPath location) throws BackingStoreException {
-		Path preferenceFile = location.toFile().toPath();
-		Path parentFile = preferenceFile.getParent();
-		if (parentFile == null) {
-			return;
-		}
-		try {
-			Files.createDirectories(parentFile);
-			String fileContent = removeTimestampFromTable(props);
-			synchronized (WRITE_LOCK) {
-				if (Files.exists(preferenceFile)) {
-					// Write new file content to a temporary file first to not loose the old content
-					// in case of a failure. If everything goes OK, it is moved to the right place.
-					Path tmp = preferenceFile.resolveSibling(preferenceFile.getFileName() + BACKUP_FILE_EXTENSION);
-					Files.writeString(tmp, fileContent, StandardCharsets.UTF_8);
-					try {
-						Files.move(tmp, preferenceFile, StandardCopyOption.REPLACE_EXISTING);
-					} catch (NoSuchFileException e) {
-						// workaround for JDK-8325302 throws Exception if file is deleted in parallel.
-						// retry:
-						Files.move(tmp, preferenceFile, StandardCopyOption.REPLACE_EXISTING);
-					}
-				} else {
-					Files.writeString(preferenceFile, fileContent, StandardCharsets.UTF_8);
-				}
-			}
-		} catch (IOException e) {
-			String message = NLS.bind(PrefsMessages.preferences_saveException, location);
-			log(Status.error(message, e));
-			throw new BackingStoreException(message, e);
-		}
-	}
+    @Override
+    public IEclipsePreferences create(IEclipsePreferences nodeParent, String nodeName) {
+        return create((EclipsePreferences) nodeParent, nodeName, null);
+    }
 
-	protected static String removeTimestampFromTable(Properties properties) throws IOException {
-		// store the properties in a string and then skip the first line
-		// (date/timestamp)
-		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		properties.store(output, null);
-		String string = output.toString(StandardCharsets.UTF_8);
-		String separator = System.lineSeparator();
-		return string.substring(string.indexOf(separator) + separator.length());
-	}
+    protected boolean isLoading() {
+        return loading;
+    }
 
-	/*
-	 * Helper method to convert this node to a Properties file suitable for
-	 * persistence.
-	 */
-	protected Properties convertToProperties(Properties result, String prefix) throws BackingStoreException {
-		// add the key/value pairs from this node
-		boolean addSeparator = prefix.length() != 0;
-		// thread safety: copy reference in case of concurrent change
-		ImmutableMap temp;
-		synchronized (childAndPropertyLock) {
-			temp = properties;
-		}
-		for (String key : temp.keys()) {
-			String value = temp.get(key);
-			if (value != null) {
-				result.put(encodePath(prefix, key), value);
-			}
-		}
-		// recursively add the child information
-		for (IEclipsePreferences childNode : getChildren(true)) {
-			EclipsePreferences child = (EclipsePreferences) childNode;
-			String fullPath = addSeparator ? prefix + PATH_SEPARATOR + child.name() : child.name();
-			child.convertToProperties(result, fullPath);
-		}
-		return result;
-	}
+    protected void setLoading(boolean isLoading) {
+        loading = isLoading;
+    }
 
-	@Override
-	public IEclipsePreferences create(IEclipsePreferences nodeParent, String nodeName) {
-		return create((EclipsePreferences) nodeParent, nodeName, null);
-	}
+    public IEclipsePreferences create(EclipsePreferences nodeParent, String nodeName, Object context) {
+        EclipsePreferences result = internalCreate(nodeParent, nodeName, context);
+        nodeParent.addChild(nodeName, result);
+        IEclipsePreferences loadLevel = result.getLoadLevel();
 
-	protected boolean isLoading() {
-		return loading;
-	}
+        // if this node or a parent node is not the load level then return
+        // if the result node is not a load level, then a child must be
+        if (loadLevel == null || result != loadLevel || isAlreadyLoaded(result) || result.isLoading()) {
+            return result;
+        }
+        try {
+            result.setLoading(true);
+            result.load();
+            result.loaded();
+            result.flush();
+        } catch (BackingStoreException e) {
+            IPath location = result.getLocation();
+            String message = NLS.bind(PrefsMessages.preferences_loadException,
+                location == null ? EMPTY_STRING : location.toString());
+            IStatus status = Status.error(message, e);
+            RuntimeLog.log(status);
+        } finally {
+            result.setLoading(false);
+        }
+        return result;
+    }
 
-	protected void setLoading(boolean isLoading) {
-		loading = isLoading;
-	}
+    @Override
+    public void flush() throws BackingStoreException {
+        IEclipsePreferences toFlush = null;
+        synchronized (childAndPropertyLock) {
+            toFlush = internalFlush();
+        }
+        // if we aren't at the right level, then flush the appropriate node
+        if (toFlush != null) {
+            toFlush.flush();
+        }
+    }
 
-	public IEclipsePreferences create(EclipsePreferences nodeParent, String nodeName, Object context) {
-		EclipsePreferences result = internalCreate(nodeParent, nodeName, context);
-		nodeParent.addChild(nodeName, result);
-		IEclipsePreferences loadLevel = result.getLoadLevel();
+    /*
+     * Do the real flushing in a non-synchronized internal method so sub-classes
+     * (mainly ProjectPreferences and ProfilePreferences) don't cause deadlocks.
+     *
+     * If this node is not responsible for persistence (a load level), then this
+     * method returns the node that should be flushed. Returns null if this method
+     * performed the flush.
+     */
+    protected IEclipsePreferences internalFlush() throws BackingStoreException {
+        // illegal state if this node has been removed
+        checkRemoved();
 
-		// if this node or a parent node is not the load level then return
-		// if the result node is not a load level, then a child must be
-		if (loadLevel == null || result != loadLevel || isAlreadyLoaded(result) || result.isLoading()) {
-			return result;
-		}
-		try {
-			result.setLoading(true);
-			result.load();
-			result.loaded();
-			result.flush();
-		} catch (BackingStoreException e) {
-			IPath location = result.getLocation();
-			String message = NLS.bind(PrefsMessages.preferences_loadException,
-					location == null ? EMPTY_STRING : location.toString());
-			IStatus status = Status.error(message, e);
-			RuntimeLog.log(status);
-		} finally {
-			result.setLoading(false);
-		}
-		return result;
-	}
+        IEclipsePreferences loadLevel = getLoadLevel();
 
-	@Override
-	public void flush() throws BackingStoreException {
-		IEclipsePreferences toFlush = null;
-		synchronized (childAndPropertyLock) {
-			toFlush = internalFlush();
-		}
-		// if we aren't at the right level, then flush the appropriate node
-		if (toFlush != null) {
-			toFlush.flush();
-		}
-	}
+        // if this node or a parent is not the load level, then flush the children
+        if (loadLevel == null) {
+            for (String childrenName : childrenNames()) {
+                node(childrenName).flush();
+            }
+            return null;
+        }
+        // a parent is the load level for this node
+        if (this != loadLevel) {
+            return loadLevel;
+        }
+        // this node is a load level
+        // any work to do?
+        return null;
+    }
 
-	/*
-	 * Do the real flushing in a non-synchronized internal method so sub-classes
-	 * (mainly ProjectPreferences and ProfilePreferences) don't cause deadlocks.
-	 *
-	 * If this node is not responsible for persistence (a load level), then this
-	 * method returns the node that should be flushed. Returns null if this method
-	 * performed the flush.
-	 */
-	protected IEclipsePreferences internalFlush() throws BackingStoreException {
-		// illegal state if this node has been removed
-		checkRemoved();
+    @Override
+    public String get(String key, String defaultValue) {
+        String value = internalGet(key);
+        return value == null ? defaultValue : value;
+    }
 
-		IEclipsePreferences loadLevel = getLoadLevel();
+    @Override
+    public boolean getBoolean(String key, boolean defaultValue) {
+        String value = internalGet(key);
+        return value == null ? defaultValue : TRUE.equalsIgnoreCase(value);
+    }
 
-		// if this node or a parent is not the load level, then flush the children
-		if (loadLevel == null) {
-			for (String childrenName : childrenNames()) {
-				node(childrenName).flush();
-			}
-			return null;
-		}
-		// a parent is the load level for this node
-		if (this != loadLevel) {
-			return loadLevel;
-		}
-		// this node is a load level
-		// any work to do?
-		if (!dirty) {
-			return null;
-		}
-		// remove dirty bit before saving, to ensure that concurrent
-		// changes during save mark the store as dirty
-		dirty = false;
-		try {
-			save();
-		} catch (BackingStoreException e) {
-			// mark it dirty again because the save failed
-			dirty = true;
-			throw e;
-		}
-		return null;
-	}
+    /*
+     * Return a boolean value indicating whether or not a child with the given name
+     * is known to this node.
+     */
+    protected boolean childExists(String childName) {
+        synchronized (childAndPropertyLock) {
+            if (children == null) {
+                return false;
+            }
+            return children.containsKey(childName);
+        }
+    }
 
-	@Override
-	public String get(String key, String defaultValue) {
-		String value = internalGet(key);
-		return value == null ? defaultValue : value;
-	}
+    /**
+     * Thread safe way to obtain a child for a given key. Returns the child that
+     * matches the given key, or null if there is no matching child.
+     */
+    protected IEclipsePreferences getChild(String key, Object context, boolean create) {
+        synchronized (childAndPropertyLock) {
+            if (children == null) {
+                return null;
+            }
+            Object value = children.get(key);
+            if (value == null) {
+                return null;
+            } else if (value instanceof IEclipsePreferences eclipsePreferences) {
+                return eclipsePreferences;
+            }
+            // if we aren't supposed to create this node, then
+            // just return null
+            if (!create) {
+                return null;
+            }
+            return addChild(key, create(this, key, context));
+        }
+    }
 
-	@Override
-	public boolean getBoolean(String key, boolean defaultValue) {
-		String value = internalGet(key);
-		return value == null ? defaultValue : TRUE.equalsIgnoreCase(value);
-	}
+    /**
+     * Thread safe way to obtain all children of this node. Never returns null.
+     */
+    private List<IEclipsePreferences> getChildren(boolean create) {
+        List<IEclipsePreferences> result = new ArrayList<>();
+        for (String n : internalChildNames()) {
+            IEclipsePreferences child = getChild(n, null, create);
+            if (child != null) {
+                result.add(child);
+            }
+        }
+        return result;
+    }
 
-	@Override
-	public byte[] getByteArray(String key, byte[] defaultValue) {
-		String value = internalGet(key);
-		return value == null ? defaultValue : Base64.decode(value.getBytes());
-	}
+    @Override
+    public int getInt(String key, int defaultValue) {
+        String value = internalGet(key);
+        int result = defaultValue;
+        if (value != null) {
+            try {
+                result = Integer.parseInt(value);
+            } catch (NumberFormatException e) {
+                // use default
+            }
+        }
+        return result;
+    }
 
-	/*
-	 * Return a boolean value indicating whether or not a child with the given name
-	 * is known to this node.
-	 */
-	protected boolean childExists(String childName) {
-		synchronized (childAndPropertyLock) {
-			if (children == null) {
-				return false;
-			}
-			return children.containsKey(childName);
-		}
-	}
+    protected IEclipsePreferences getLoadLevel() {
+        return descriptor == null ? null : descriptor.getLoadLevel(this);
+    }
 
-	/**
-	 * Thread safe way to obtain a child for a given key. Returns the child that
-	 * matches the given key, or null if there is no matching child.
-	 */
-	protected IEclipsePreferences getChild(String key, Object context, boolean create) {
-		synchronized (childAndPropertyLock) {
-			if (children == null) {
-				return null;
-			}
-			Object value = children.get(key);
-			if (value == null) {
-				return null;
-			} else if (value instanceof IEclipsePreferences eclipsePreferences) {
-				return eclipsePreferences;
-			}
-			// if we aren't supposed to create this node, then
-			// just return null
-			if (!create) {
-				return null;
-			}
-			return addChild(key, create(this, key, context));
-		}
-	}
+    /*
+     * Subclasses to over-ride
+     */
+    protected IPath getLocation() {
+        return null;
+    }
 
-	/**
-	 * Thread safe way to obtain all children of this node. Never returns null.
-	 */
-	private List<IEclipsePreferences> getChildren(boolean create) {
-		List<IEclipsePreferences> result = new ArrayList<>();
-		for (String n : internalChildNames()) {
-			IEclipsePreferences child = getChild(n, null, create);
-			if (child != null) {
-				result.add(child);
-			}
-		}
-		return result;
-	}
+    @Override
+    public long getLong(String key, long defaultValue) {
+        String value = internalGet(key);
+        long result = defaultValue;
+        if (value != null) {
+            try {
+                result = Long.parseLong(value);
+            } catch (NumberFormatException e) {
+                // use default
+            }
+        }
+        return result;
+    }
 
-	@Override
-	public double getDouble(String key, double defaultValue) {
-		String value = internalGet(key);
-		double result = defaultValue;
-		if (value != null) {
-			try {
-				result = Double.parseDouble(value);
-			} catch (NumberFormatException e) {
-				// use default
-			}
-		}
-		return result;
-	}
+    protected EclipsePreferences internalCreate(EclipsePreferences nodeParent, String nodeName, Object context) {
+        EclipsePreferences result = new EclipsePreferences(nodeParent, nodeName, descriptor);
+        return result;
+    }
 
-	@Override
-	public float getFloat(String key, float defaultValue) {
-		String value = internalGet(key);
-		float result = defaultValue;
-		if (value != null) {
-			try {
-				result = Float.parseFloat(value);
-			} catch (NumberFormatException e) {
-				// use default
-			}
-		}
-		return result;
-	}
+    /**
+     * Returns the existing value at the given key, or null if no such value exists.
+     */
+    protected String internalGet(String key) {
+        // throw NPE if key is null
+        if (key == null) {
+            throw new NullPointerException();
+        }
+        // illegal state if this node has been removed
+        checkRemoved();
+        String result;
+        synchronized (childAndPropertyLock) {
+            result = properties.get(key);
+        }
+        return result;
+    }
 
-	@Override
-	public int getInt(String key, int defaultValue) {
-		String value = internalGet(key);
-		int result = defaultValue;
-		if (value != null) {
-			try {
-				result = Integer.parseInt(value);
-			} catch (NumberFormatException e) {
-				// use default
-			}
-		}
-		return result;
-	}
+    /**
+     * Implements the node(String) method, and optionally notifies listeners.
+     */
+    protected IEclipsePreferences internalNode(String path, boolean notify, Object context) {
 
-	protected IEclipsePreferences getLoadLevel() {
-		return descriptor == null ? null : descriptor.getLoadLevel(this);
-	}
+        // illegal state if this node has been removed
+        checkRemoved();
 
-	/*
-	 * Subclasses to over-ride
-	 */
-	protected IPath getLocation() {
-		return null;
-	}
+        // short circuit this node
+        if (path.isEmpty()) {
+            return this;
+        }
+        // if we have an absolute path use the root relative to
+        // this node instead of the global root
+        // in case we have a different hierarchy. (e.g. export)
+        if (path.charAt(0) == IPath.SEPARATOR) {
+            return (IEclipsePreferences) calculateRoot().node(path.substring(1));
+        }
+        int index = path.indexOf(IPath.SEPARATOR);
+        String key = index == -1 ? path : path.substring(0, index);
+        boolean added = false;
+        IEclipsePreferences child = getChild(key, context, true);
+        if (child == null) {
+            child = create(this, key, context);
+            added = true;
+        }
+        // notify listeners if a child was added
+        if (added && notify) {
+            fireNodeEvent(new NodeChangeEvent(this, child), true);
+        }
+        return (IEclipsePreferences) child.node(index == -1 ? EMPTY_STRING : path.substring(index + 1));
+    }
 
-	@Override
-	public long getLong(String key, long defaultValue) {
-		String value = internalGet(key);
-		long result = defaultValue;
-		if (value != null) {
-			try {
-				result = Long.parseLong(value);
-			} catch (NumberFormatException e) {
-				// use default
-			}
-		}
-		return result;
-	}
-
-	protected EclipsePreferences internalCreate(EclipsePreferences nodeParent, String nodeName, Object context) {
-		EclipsePreferences result = new EclipsePreferences(nodeParent, nodeName, descriptor);
-		return result;
-	}
-
-	/**
-	 * Returns the existing value at the given key, or null if no such value exists.
-	 */
-	protected String internalGet(String key) {
-		// throw NPE if key is null
-		if (key == null) {
-			throw new NullPointerException();
-		}
-		// illegal state if this node has been removed
-		checkRemoved();
-		String result;
-		synchronized (childAndPropertyLock) {
-			result = properties.get(key);
-		}
-		return result;
-	}
-
-	/**
-	 * Implements the node(String) method, and optionally notifies listeners.
-	 */
-	protected IEclipsePreferences internalNode(String path, boolean notify, Object context) {
-
-		// illegal state if this node has been removed
-		checkRemoved();
-
-		// short circuit this node
-		if (path.isEmpty()) {
-			return this;
-		}
-		// if we have an absolute path use the root relative to
-		// this node instead of the global root
-		// in case we have a different hierarchy. (e.g. export)
-		if (path.charAt(0) == IPath.SEPARATOR) {
-			return (IEclipsePreferences) calculateRoot().node(path.substring(1));
-		}
-		int index = path.indexOf(IPath.SEPARATOR);
-		String key = index == -1 ? path : path.substring(0, index);
-		boolean added = false;
-		IEclipsePreferences child = getChild(key, context, true);
-		if (child == null) {
-			child = create(this, key, context);
-			added = true;
-		}
-		// notify listeners if a child was added
-		if (added && notify) {
-			fireNodeEvent(new NodeChangeEvent(this, child), true);
-		}
-		return (IEclipsePreferences) child.node(index == -1 ? EMPTY_STRING : path.substring(index + 1));
-	}
-
-	/**
-	 * Stores the given (key,value) pair, performing lazy initialization of the
-	 * properties field if necessary. Returns the old value for the given key, or
-	 * null if no value existed.
-	 */
-	protected String internalPut(String key, String newValue) {
-		synchronized (childAndPropertyLock) {
-			// illegal state if this node has been removed
-			checkRemoved();
-			String oldValue = properties.get(key);
-			if (oldValue != null && oldValue.equals(newValue)) {
+    /**
+     * Stores the given (key,value) pair, performing lazy initialization of the
+     * properties field if necessary. Returns the old value for the given key, or
+     * null if no value existed.
+     */
+    protected String internalPut(String key, String newValue) {
+        synchronized (childAndPropertyLock) {
+            // illegal state if this node has been removed
+            checkRemoved();
+            String oldValue = properties.get(key);
+            if (oldValue != null && oldValue.equals(newValue)) {
                 return oldValue;
             }
-			properties = properties.put(key.intern(), newValue.intern());
-			return oldValue;
-		}
-	}
+            properties = properties.put(key.intern(), newValue.intern());
+            return oldValue;
+        }
+    }
 
-	/*
-	 * Subclasses to over-ride.
-	 */
-	protected boolean isAlreadyLoaded(IEclipsePreferences node) {
-		return descriptor == null || descriptor.isAlreadyLoaded(node.absolutePath());
-	}
+    /*
+     * Subclasses to over-ride.
+     */
+    protected boolean isAlreadyLoaded(IEclipsePreferences node) {
+        return descriptor == null || descriptor.isAlreadyLoaded(node.absolutePath());
+    }
 
-	@Override
-	public String[] keys() {
-		// illegal state if this node has been removed
-		synchronized (childAndPropertyLock) {
-			checkRemoved();
-			return properties.keys();
-		}
-	}
+    @Override
+    public String[] keys() {
+        // illegal state if this node has been removed
+        synchronized (childAndPropertyLock) {
+            checkRemoved();
+            return properties.keys();
+        }
+    }
 
-	/**
-	 * Loads the preference node. This method returns silently if the node does not
-	 * exist in the backing store (for example non-existent project).
-	 *
-	 * @throws BackingStoreException if the node exists in the backing store but it
-	 *                               could not be loaded
-	 */
-	protected void load() throws BackingStoreException {
-		if (descriptor == null) {
-			load(getLocation());
-		} else {
-			// load the properties then set them without sending out change events
-			Properties props = descriptor.load(absolutePath());
-			if (props == null || props.isEmpty()) {
-				return;
-			}
-			convertFromProperties(this, props, false);
-		}
-	}
+    /**
+     * Loads the preference node. This method returns silently if the node does not
+     * exist in the backing store (for example non-existent project).
+     *
+     * @throws BackingStoreException if the node exists in the backing store but it
+     * could not be loaded
+     */
+    protected void load() throws BackingStoreException {
+        if (descriptor == null) {
+            load(getLocation());
+        } else {
+            // load the properties then set them without sending out change events
+            Properties props = descriptor.load(absolutePath());
+            if (props == null || props.isEmpty()) {
+                return;
+            }
+            convertFromProperties(this, props, false);
+        }
+    }
 
-	protected static Properties loadProperties(IPath location) throws BackingStoreException {
-		Properties result = new Properties();
-		try (InputStream input = getSaveInputStream(location)) {
-			result.load(input);
-		} catch (FileNotFoundException e) {
-			// file doesn't exist but that's ok.
-		} catch (IOException | IllegalArgumentException e) {
-			String message = NLS.bind(PrefsMessages.preferences_loadException, location);
-			log(new Status(IStatus.INFO, PrefsMessages.OWNER_NAME, IStatus.INFO, message, e));
-			throw new BackingStoreException(message, e);
-		}
-		return result;
-	}
+    protected static Properties loadProperties(IPath location) throws BackingStoreException {
+        Properties result = new Properties();
+        try (InputStream input = getSaveInputStream(location)) {
+            result.load(input);
+        } catch (FileNotFoundException e) {
+            // file doesn't exist but that's ok.
+        } catch (IOException | IllegalArgumentException e) {
+            String message = NLS.bind(PrefsMessages.preferences_loadException, location);
+            log(new Status(IStatus.INFO, PrefsMessages.OWNER_NAME, IStatus.INFO, message, e));
+            throw new BackingStoreException(message, e);
+        }
+        return result;
+    }
 
-	private static InputStream getSaveInputStream(IPath location) throws IOException {
-		File target = location.toFile().getAbsoluteFile();
-		if (!target.exists()) {
-			target = new File(target + BACKUP_FILE_EXTENSION);
-		}
-		return new FileInputStream(target);
-	}
+    private static InputStream getSaveInputStream(IPath location) throws IOException {
+        File target = location.toFile().getAbsoluteFile();
+        if (!target.exists()) {
+            target = new File(target + BACKUP_FILE_EXTENSION);
+        }
+        return new FileInputStream(target);
+    }
 
-	protected void load(IPath location) throws BackingStoreException {
-		if (location == null) {
-			return;
-		}
-		Properties fromDisk = loadProperties(location);
-		convertFromProperties(this, fromDisk, false);
-	}
+    protected void load(IPath location) throws BackingStoreException {
+        if (location == null) {
+            return;
+        }
+        Properties fromDisk = loadProperties(location);
+        convertFromProperties(this, fromDisk, false);
+    }
 
-	protected void loaded() {
-		if (descriptor == null) {
-			// do nothing
-		} else {
-			descriptor.loaded(absolutePath());
-		}
-	}
+    protected void loaded() {
+        if (descriptor == null) {
+            // do nothing
+        } else {
+            descriptor.loaded(absolutePath());
+        }
+    }
 
-	public static void log(IStatus status) {
-		RuntimeLog.log(status);
-	}
+    public static void log(IStatus status) {
+        RuntimeLog.log(status);
+    }
 
-	protected void makeDirty() {
-		EclipsePreferences node = this;
-		while (node != null && !node.removed) {
-			node.dirty = true;
-			node = (EclipsePreferences) node.parent();
-		}
-	}
+    protected void makeDirty() {
+        EclipsePreferences node = this;
+        while (node != null && !node.removed) {
+            node.dirty = true;
+            node = (EclipsePreferences) node.parent();
+        }
+    }
 
-	public boolean isDirty() {
-		return dirty;
-	}
+    public boolean isDirty() {
+        return dirty;
+    }
 
-	@Override
-	public String name() {
-		return name;
-	}
+    @Override
+    public String name() {
+        return name;
+    }
 
-	@Override
-	public Preferences node(String pathName) {
-		return internalNode(pathName, true, null);
-	}
+    @Override
+    public Preferences node(String pathName) {
+        return internalNode(pathName, true, null);
+    }
 
-	protected void fireNodeEvent(final NodeChangeEvent event, final boolean added) {
-		for (final INodeChangeListener listener : nodeChangeListeners) {
-			SafeRunner.run(() -> {
-				if (added) {
-					listener.added(event);
-				} else {
-					listener.removed(event);
-				}
-			});
-		}
-	}
+    protected void fireNodeEvent(final NodeChangeEvent event, final boolean added) {
+        for (final INodeChangeListener listener : nodeChangeListeners) {
+            SafeRunner.run(() -> {
+                if (added) {
+                    listener.added(event);
+                } else {
+                    listener.removed(event);
+                }
+            });
+        }
+    }
 
-	@Override
-	public boolean nodeExists(String path) throws BackingStoreException {
-		// short circuit for checking this node
-		if (path.isEmpty()) {
-			return !removed;
-		}
-		// illegal state if this node has been removed.
-		// do this AFTER checking for the empty string.
-		checkRemoved();
+    @Override
+    public boolean nodeExists(String path) throws BackingStoreException {
+        // short circuit for checking this node
+        if (path.isEmpty()) {
+            return !removed;
+        }
+        // illegal state if this node has been removed.
+        // do this AFTER checking for the empty string.
+        checkRemoved();
 
-		// use the root relative to this node instead of the global root
-		// in case we have a different hierarchy. (e.g. export)
-		if (path.charAt(0) == IPath.SEPARATOR) {
-			return calculateRoot().nodeExists(path.substring(1));
-		}
-		int index = path.indexOf(IPath.SEPARATOR);
-		boolean noSlash = index == -1;
+        // use the root relative to this node instead of the global root
+        // in case we have a different hierarchy. (e.g. export)
+        if (path.charAt(0) == IPath.SEPARATOR) {
+            return calculateRoot().nodeExists(path.substring(1));
+        }
+        int index = path.indexOf(IPath.SEPARATOR);
+        boolean noSlash = index == -1;
 
-		// if we are looking for a simple child then just look in the table and return
-		if (noSlash) {
-			return childExists(path);
-		}
-		// otherwise load the parent of the child and then recursively ask
-		String childName = path.substring(0, index);
-		if (!childExists(childName)) {
-			return false;
-		}
-		IEclipsePreferences child = getChild(childName, null, true);
-		if (child == null) {
-			return false;
-		}
-		return child.nodeExists(path.substring(index + 1));
-	}
+        // if we are looking for a simple child then just look in the table and return
+        if (noSlash) {
+            return childExists(path);
+        }
+        // otherwise load the parent of the child and then recursively ask
+        String childName = path.substring(0, index);
+        if (!childExists(childName)) {
+            return false;
+        }
+        IEclipsePreferences child = getChild(childName, null, true);
+        if (child == null) {
+            return false;
+        }
+        return child.nodeExists(path.substring(index + 1));
+    }
 
-	@Override
-	public Preferences parent() {
-		// illegal state if this node has been removed
-		checkRemoved();
-		return parent;
-	}
+    @Override
+    public Preferences parent() {
+        // illegal state if this node has been removed
+        checkRemoved();
+        return parent;
+    }
 
-	/*
-	 * Convenience method for notifying preference change listeners.
-	 */
-	protected void firePreferenceEvent(String key, Object oldValue, Object newValue) {
-		final PreferenceChangeEvent event = new PreferenceChangeEvent(this, key, oldValue, newValue);
-		for (final IPreferenceChangeListener listener : preferenceChangeListeners) {
-			SafeRunner.run(() -> listener.preferenceChange(event));
-		}
-	}
+    /*
+     * Convenience method for notifying preference change listeners.
+     */
+    protected void firePreferenceEvent(String key, Object oldValue, Object newValue) {
+        final PreferenceChangeEvent event = new PreferenceChangeEvent(this, key, oldValue, newValue);
+        for (final IPreferenceChangeListener listener : preferenceChangeListeners) {
+            SafeRunner.run(() -> listener.preferenceChange(event));
+        }
+    }
 
-	@Override
-	public void put(String key, String newValue) {
-		if (key == null || newValue == null) {
-			throw new NullPointerException();
-		}
-		String oldValue = internalPut(key, newValue);
-		if (!newValue.equals(oldValue)) {
-			makeDirty();
-			firePreferenceEvent(key, oldValue, newValue);
-		}
-	}
+    @Override
+    public void put(String key, String newValue) {
+        if (key == null || newValue == null) {
+            throw new NullPointerException();
+        }
+        String oldValue = internalPut(key, newValue);
+        if (!newValue.equals(oldValue)) {
+            makeDirty();
+            firePreferenceEvent(key, oldValue, newValue);
+        }
+    }
 
-	@Override
-	public void putBoolean(String key, boolean value) {
-		put(key, value ? TRUE : FALSE);
-	}
+    @Override
+    public void putBoolean(String key, boolean value) {
+        put(key, value ? TRUE : FALSE);
+    }
 
-	@Override
-	public void putByteArray(String key, byte[] value) {
-		put(key, new String(Base64.encode(value)));
-	}
+    @Override
+    public void putInt(String key, int value) {
+        put(key, Integer.toString(value));
+    }
 
-	@Override
-	public void putDouble(String key, double value) {
-		put(key, Double.toString(value));
-	}
+    @Override
+    public void putLong(String key, long value) {
+        put(key, Long.toString(value));
+    }
 
-	@Override
-	public void putFloat(String key, float value) {
-		put(key, Float.toString(value));
-	}
+    @Override
+    public void remove(String key) {
+        String oldValue;
+        synchronized (childAndPropertyLock) {
+            // illegal state if this node has been removed
+            checkRemoved();
+            oldValue = properties.get(key);
+            if (oldValue == null) {
+                return;
+            }
+            properties = properties.removeKey(key);
+        }
+        makeDirty();
+        firePreferenceEvent(key, oldValue, null);
+    }
 
-	@Override
-	public void putInt(String key, int value) {
-		put(key, Integer.toString(value));
-	}
+    @Override
+    public void removeNode() throws BackingStoreException {
+        // illegal state if this node has been removed
+        checkRemoved();
+        // clear all the property values. do it "the long way" so
+        // everyone gets notification
+        String[] keys = keys();
+        for (String key : keys) {
+            remove(key);
+        }
+        // don't remove the global root or the scope root from the
+        // parent but remove all its children
+        if (parent != null && !(parent instanceof RootPreferences)) {
+            // remove the node from the parent's collection and notify listeners
+            removed = true;
+            parent.removeNode(this);
+        }
+        for (IEclipsePreferences childNode : getChildren(false)) {
+            try {
+                childNode.removeNode();
+            } catch (IllegalStateException e) {
+                // ignore since we only get this exception if we have already
+                // been removed. no work to do.
+            }
+        }
+    }
 
-	@Override
-	public void putLong(String key, long value) {
-		put(key, Long.toString(value));
-	}
+    /*
+     * Remove the child from the collection and notify the listeners if something
+     * was actually removed.
+     */
+    protected void removeNode(IEclipsePreferences child) {
+        if (removeNode(child.name()) != null) {
+            fireNodeEvent(new NodeChangeEvent(this, child), false);
+            if (descriptor != null) {
+                descriptor.removed(child.absolutePath());
+            }
+        }
+    }
 
-	@Override
-	public void remove(String key) {
-		String oldValue;
-		synchronized (childAndPropertyLock) {
-			// illegal state if this node has been removed
-			checkRemoved();
-			oldValue = properties.get(key);
-			if (oldValue == null) {
-				return;
-			}
-			properties = properties.removeKey(key);
-		}
-		makeDirty();
-		firePreferenceEvent(key, oldValue, null);
-	}
+    /*
+     * Remove non-initialized node from the collection.
+     */
+    protected Object removeNode(String key) {
+        synchronized (childAndPropertyLock) {
+            if (children != null) {
+                Object result = children.remove(key);
+                if (result != null) {
+                    makeDirty();
+                }
+                if (children.isEmpty()) {
+                    children = null;
+                }
+                return result;
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public void removeNode() throws BackingStoreException {
-		// illegal state if this node has been removed
-		checkRemoved();
-		// clear all the property values. do it "the long way" so
-		// everyone gets notification
-		String[] keys = keys();
-		for (String key : keys) {
-			remove(key);
-		}
-		// don't remove the global root or the scope root from the
-		// parent but remove all its children
-		if (parent != null && !(parent instanceof RootPreferences)) {
-			// remove the node from the parent's collection and notify listeners
-			removed = true;
-			parent.removeNode(this);
-		}
-		for (IEclipsePreferences childNode : getChildren(false)) {
-			try {
-				childNode.removeNode();
-			} catch (IllegalStateException e) {
-				// ignore since we only get this exception if we have already
-				// been removed. no work to do.
-			}
-		}
-	}
+    @Override
+    public void removeNodeChangeListener(INodeChangeListener listener) {
+        checkRemoved();
+        nodeChangeListeners.remove(listener);
+    }
 
-	/*
-	 * Remove the child from the collection and notify the listeners if something
-	 * was actually removed.
-	 */
-	protected void removeNode(IEclipsePreferences child) {
-		if (removeNode(child.name()) != null) {
-			fireNodeEvent(new NodeChangeEvent(this, child), false);
-			if (descriptor != null) {
-				descriptor.removed(child.absolutePath());
-			}
-		}
-	}
+    @Override
+    public void removePreferenceChangeListener(IPreferenceChangeListener listener) {
+        checkRemoved();
+        preferenceChangeListeners.remove(listener);
+    }
 
-	/*
-	 * Remove non-initialized node from the collection.
-	 */
-	protected Object removeNode(String key) {
-		synchronized (childAndPropertyLock) {
-			if (children != null) {
-				Object result = children.remove(key);
-				if (result != null) {
-					makeDirty();
-				}
-				if (children.isEmpty()) {
-					children = null;
-				}
-				return result;
-			}
-		}
-		return null;
-	}
+    /*
+     * Encode the given path and key combo to a form which is suitable for
+     * persisting or using when searching. If the key contains a slash character
+     * then we must use a double-slash to indicate the end of the path/the beginning
+     * of the key.
+     */
+    public static String encodePath(String path, String key) {
+        int pathLength = path == null ? 0 : path.length();
+        if (key.indexOf(IPath.SEPARATOR) == -1) {
+            if (pathLength == 0) {
+                return key;
+            }
+            return path + IPath.SEPARATOR + key;
+        }
+        if (pathLength == 0) {
+            return DOUBLE_SLASH + key;
+        }
+        return path + DOUBLE_SLASH + key;
+    }
 
-	@Override
-	public void removeNodeChangeListener(INodeChangeListener listener) {
-		checkRemoved();
-		nodeChangeListeners.remove(listener);
-	}
+    /*
+     * Return the segment from the given path or null. "segment" parameter is
+     * 0-based.
+     */
+    public static String getSegment(String path, int segment) {
+        int start = path.indexOf(IPath.SEPARATOR) == 0 ? 1 : 0;
+        int end = path.indexOf(IPath.SEPARATOR, start);
+        if (end == path.length() - 1) {
+            end = -1;
+        }
+        for (int i = 0; i < segment; i++) {
+            if (end == -1) {
+                return null;
+            }
+            start = end + 1;
+            end = path.indexOf(IPath.SEPARATOR, start);
+        }
+        if (end == -1) {
+            end = path.length();
+        }
+        return path.substring(start, end);
+    }
 
-	@Override
-	public void removePreferenceChangeListener(IPreferenceChangeListener listener) {
-		checkRemoved();
-		preferenceChangeListeners.remove(listener);
-	}
+    public static int getSegmentCount(String path) {
+        StringTokenizer tokenizer = new StringTokenizer(path, String.valueOf(IPath.SEPARATOR));
+        return tokenizer.countTokens();
+    }
 
-	/**
-	 * Saves the preference node. This method returns silently if the node does not
-	 * exist in the backing store (for example non-existent project)
-	 *
-	 * @throws BackingStoreException if the node exists in the backing store but it
-	 *                               could not be saved
-	 */
-	protected void save() throws BackingStoreException {
-		if (descriptor == null) {
-			save(getLocation());
-		} else {
-			descriptor.save(absolutePath(), convertToProperties(new Properties(), "")); //$NON-NLS-1$
-		}
-	}
+    /*
+     * Return a relative path
+     */
+    public static String makeRelative(String path) {
+        if (path == null) {
+            return EMPTY_STRING;
+        }
+        if (path.length() > 0 && path.charAt(0) == IPath.SEPARATOR) {
+            return path.substring(1);
+        }
+        return path;
+    }
 
-	protected void save(IPath location) throws BackingStoreException {
-		if (location == null) {
-			return;
-		}
-		Properties table = convertToProperties(new SortedProperties(), EMPTY_STRING);
-		if (table.isEmpty()) {
-			// nothing to save. delete existing file if one exists.
-			if (location.toFile().exists() && !location.toFile().delete()) {
-				String message = NLS.bind(PrefsMessages.preferences_failedDelete, location);
-				log(Status.warning(message));
-			}
-			return;
-		}
-		table.put(VERSION_KEY, VERSION_VALUE);
-		write(table, location);
-	}
+    /*
+     * Return a 2 element String array. element 0 - the path element 1 - the key The
+     * path may be null. The key is never null.
+     */
+    public static String[] decodePath(String fullPath) {
+        String key;
+        String path = null;
 
-	/*
-	 * Encode the given path and key combo to a form which is suitable for
-	 * persisting or using when searching. If the key contains a slash character
-	 * then we must use a double-slash to indicate the end of the path/the beginning
-	 * of the key.
-	 */
-	public static String encodePath(String path, String key) {
-		int pathLength = path == null ? 0 : path.length();
-		if (key.indexOf(IPath.SEPARATOR) == -1) {
-			if (pathLength == 0) {
-				return key;
-			}
-			return path + IPath.SEPARATOR + key;
-		}
-		if (pathLength == 0) {
-			return DOUBLE_SLASH + key;
-		}
-		return path + DOUBLE_SLASH + key;
-	}
+        // check to see if we have an indicator which tells us where the path ends
+        int index = fullPath.indexOf(DOUBLE_SLASH);
+        if (index == -1) {
+            // we don't have a double-slash telling us where the path ends
+            // so the path is up to the last slash character
+            int lastIndex = fullPath.lastIndexOf(IPath.SEPARATOR);
+            if (lastIndex == -1) {
+                key = fullPath;
+            } else {
+                path = fullPath.substring(0, lastIndex);
+                key = fullPath.substring(lastIndex + 1);
+            }
+        } else {
+            // the child path is up to the double-slash and the key
+            // is the string after it
+            path = fullPath.substring(0, index);
+            key = fullPath.substring(index + 2);
+        }
+        // adjust if we have an absolute path
+        if (path != null) {
+            if (path.isEmpty()) {
+                path = null;
+            } else if (path.charAt(0) == IPath.SEPARATOR) {
+                path = path.substring(1);
+            }
+        }
+        return new String[] { path, key };
+    }
 
-	/*
-	 * Return the segment from the given path or null. "segment" parameter is
-	 * 0-based.
-	 */
-	public static String getSegment(String path, int segment) {
-		int start = path.indexOf(IPath.SEPARATOR) == 0 ? 1 : 0;
-		int end = path.indexOf(IPath.SEPARATOR, start);
-		if (end == path.length() - 1) {
-			end = -1;
-		}
-		for (int i = 0; i < segment; i++) {
-			if (end == -1) {
-				return null;
-			}
-			start = end + 1;
-			end = path.indexOf(IPath.SEPARATOR, start);
-		}
-		if (end == -1) {
-			end = path.length();
-		}
-		return path.substring(start, end);
-	}
+    @Override
+    public String toString() {
+        return absolutePath();
+    }
 
-	public static int getSegmentCount(String path) {
-		StringTokenizer tokenizer = new StringTokenizer(path, String.valueOf(IPath.SEPARATOR));
-		return tokenizer.countTokens();
-	}
-
-	/*
-	 * Return a relative path
-	 */
-	public static String makeRelative(String path) {
-		if (path == null) {
-			return EMPTY_STRING;
-		}
-		if (path.length() > 0 && path.charAt(0) == IPath.SEPARATOR) {
-			return path.substring(1);
-		}
-		return path;
-	}
-
-	/*
-	 * Return a 2 element String array. element 0 - the path element 1 - the key The
-	 * path may be null. The key is never null.
-	 */
-	public static String[] decodePath(String fullPath) {
-		String key;
-		String path = null;
-
-		// check to see if we have an indicator which tells us where the path ends
-		int index = fullPath.indexOf(DOUBLE_SLASH);
-		if (index == -1) {
-			// we don't have a double-slash telling us where the path ends
-			// so the path is up to the last slash character
-			int lastIndex = fullPath.lastIndexOf(IPath.SEPARATOR);
-			if (lastIndex == -1) {
-				key = fullPath;
-			} else {
-				path = fullPath.substring(0, lastIndex);
-				key = fullPath.substring(lastIndex + 1);
-			}
-		} else {
-			// the child path is up to the double-slash and the key
-			// is the string after it
-			path = fullPath.substring(0, index);
-			key = fullPath.substring(index + 2);
-		}
-		// adjust if we have an absolute path
-		if (path != null) {
-			if (path.isEmpty()) {
-				path = null;
-			} else if (path.charAt(0) == IPath.SEPARATOR) {
-				path = path.substring(1);
-			}
-		}
-		return new String[] { path, key };
-	}
-
-	@Override
-	public void sync() throws BackingStoreException {
-		// illegal state if this node has been removed
-		checkRemoved();
-		IEclipsePreferences node = getLoadLevel();
-		if (node == null) {
-			return;
-		}
-		if (node instanceof EclipsePreferences eclipsePreferences) {
-			eclipsePreferences.load();
-			node.flush();
-		}
-	}
-
-	public String toDeepDebugString() {
-		final StringBuilder buffer = new StringBuilder();
-		try {
-			accept(node -> {
-				buffer.append(node).append('\n');
-				for (String key : node.keys()) {
-					buffer.append(node.absolutePath()).append(PATH_SEPARATOR);
-					buffer.append(key).append('=').append(node.get(key, "*default*")).append('\n'); //$NON-NLS-1$
-				}
-				return true;
-			});
-		} catch (BackingStoreException e) {
-			System.out.println("Exception while calling #toDeepDebugString()"); //$NON-NLS-1$
-			e.printStackTrace();
-		}
-		return buffer.toString();
-	}
-
-	@Override
-	public String toString() {
-		return absolutePath();
-	}
-
-	protected IEclipsePreferences getOrCreate(String scope) {
-		IEclipsePreferences child;
-		synchronized (childAndPropertyLock) {
-			if (children == null) {
-				child = null;
-			} else {
-				Object value = children.get(scope);
-				if (value == null) {
-					child = null;
-				} else if (value instanceof IEclipsePreferences eclipsePreferences) {
-					child = eclipsePreferences;
-				} else {
-					// lazy initialization
-					child = PreferencesService.getDefault().createNode(scope);
-					addChild(scope, child);
-				}
-			}
-			if (child == null) {
-				child = new EclipsePreferences(this, scope);
-				addChild(scope, child);
-			}
-		}
-		return child;
-	}
+    protected IEclipsePreferences getOrCreate(String scope) {
+        IEclipsePreferences child;
+        synchronized (childAndPropertyLock) {
+            if (children == null) {
+                child = null;
+            } else {
+                Object value = children.get(scope);
+                if (value == null) {
+                    child = null;
+                } else if (value instanceof IEclipsePreferences eclipsePreferences) {
+                    child = eclipsePreferences;
+                } else {
+                    // lazy initialization
+                    child = PreferencesService.getDefault().createNode(scope);
+                    addChild(scope, child);
+                }
+            }
+            if (child == null) {
+                child = new EclipsePreferences(this, scope);
+                addChild(scope, child);
+            }
+        }
+        return child;
+    }
 }

@@ -25,10 +25,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IStatus;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IClasspathAttribute;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IClasspathEntry;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaModelStatusConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IModuleDescription;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IModule;
@@ -40,9 +38,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 /**
  * A package fragment root that corresponds to a module in a JRT file system.
- *
- * @see org.eclipse.jdt.core.IPackageFragmentRoot
- * @see org.eclipse.jdt.internal.core.JarPackageFragmentRootInfo
  */
 public class JrtPackageFragmentRoot extends JarPackageFragmentRoot implements IModulePathEntry {
 
@@ -53,8 +48,6 @@ public class JrtPackageFragmentRoot extends JarPackageFragmentRoot implements IM
 	record JrtModuleKey(File image, String moduleName, String classNameSubFolder) {/** nothing */}
 	/**
 	 * static cache for org.eclipse.jdt.internal.core.JarPackageFragmentRootInfo.rawPackageInfo across JarPackageFragmentRoot instances per java project
-	 *
-	 * @see org.eclipse.jdt.internal.core.JarPackageFragmentRootInfo#rawPackageInfo
 	 **/
 	private static final Map<JrtModuleKey, Map<List<String>, PackageContent>> childrenCache = new ConcurrentHashMap<>();
 
@@ -192,12 +185,5 @@ public class JrtPackageFragmentRoot extends JarPackageFragmentRoot implements IM
 			return new char[][] { requestedModuleName.toCharArray() };
 		}
 		return null;
-	}
-	@Override
-	protected boolean ignoreErrorStatus(IStatus status) {
-		if (status.getCode() == IJavaModelStatusConstants.ELEMENT_NOT_ON_CLASSPATH
-				&& workingOnOldClasspath.get() == Boolean.TRUE)
-			return true;
-		return false;
 	}
 }

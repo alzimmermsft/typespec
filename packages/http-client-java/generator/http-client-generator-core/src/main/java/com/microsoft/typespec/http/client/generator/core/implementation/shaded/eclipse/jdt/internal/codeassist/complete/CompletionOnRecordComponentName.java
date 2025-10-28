@@ -20,31 +20,31 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class CompletionOnRecordComponentName extends RecordComponent implements CompletionNode {
 
-	public CompletionOnRecordComponentName(char[] name, long posNom, TypeReference tr, int modifiers) {
-		super(CharOperation.concat(name, FAKENAMESUFFIX), posNom, tr, modifiers);
-		this.realName = name;
-	}
+    public CompletionOnRecordComponentName(char[] name, long posNom, TypeReference tr, int modifiers) {
+        super(CharOperation.concat(name, FAKENAMESUFFIX), posNom, tr, modifiers);
+        this.realName = name;
+    }
 
-	private static final char[] FAKENAMESUFFIX = " ".toCharArray(); //$NON-NLS-1$
-	public char[] realName;
+    private static final char[] FAKENAMESUFFIX = " ".toCharArray(); //$NON-NLS-1$
+    public char[] realName;
 
-	@Override
-	public StringBuilder printStatement(int tab, StringBuilder output) {
+    @Override
+    public StringBuilder printStatement(int tab, StringBuilder output) {
 
-		printIndent(tab, output).append("<CompletionOnRecordComponentName:"); //$NON-NLS-1$
-		if (this.type != null)
-			this.type.print(0, output).append(' ');
-		output.append(this.realName);
-		if (this.initialization != null) {
-			output.append(" = "); //$NON-NLS-1$
-			this.initialization.printExpression(0, output);
-		}
-		return output.append(">;"); //$NON-NLS-1$
-	}
+        printIndent(tab, output).append("<CompletionOnRecordComponentName:"); //$NON-NLS-1$
+        if (this.type != null)
+            this.type.print(0, output).append(' ');
+        output.append(this.realName);
+        if (this.initialization != null) {
+            output.append(" = "); //$NON-NLS-1$
+            this.initialization.printExpression(0, output);
+        }
+        return output.append(">;"); //$NON-NLS-1$
+    }
 
-	@Override
-	public void resolve(BlockScope scope) {
-		super.resolve(scope);
-		throw new CompletionNodeFound(this, scope);
-	}
+    @Override
+    public void resolve(BlockScope scope) {
+        super.resolve(scope);
+        throw new CompletionNodeFound(this, scope);
+    }
 }

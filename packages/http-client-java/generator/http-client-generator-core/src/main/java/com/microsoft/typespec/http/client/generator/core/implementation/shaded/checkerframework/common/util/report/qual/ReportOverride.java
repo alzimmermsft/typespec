@@ -10,4 +10,5 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface ReportOverride {}
+public @interface ReportOverride {
+}

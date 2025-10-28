@@ -26,76 +26,76 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * @since org.eclipse.equinox.registry 3.3
  */
 public final class RegistryTimestamp {
-	/**
-	 * Current aggregated timestamp
-	 */
-	private long aggregateTimestamp;
+    /**
+     * Current aggregated timestamp
+     */
+    private long aggregateTimestamp;
 
-	private boolean modified;
+    private boolean modified;
 
-	/**
-	 * Public constructor.
-	 */
-	public RegistryTimestamp() {
-		reset();
-	}
+    /**
+     * Public constructor.
+     */
+    public RegistryTimestamp() {
+        reset();
+    }
 
-	/**
-	 * Returns value of the aggregated timestamp.
-	 *
-	 * @return value of the aggregated timestamp
-	 */
-	public long getContentsTimestamp() {
-		return aggregateTimestamp;
-	}
+    /**
+     * Returns value of the aggregated timestamp.
+     *
+     * @return value of the aggregated timestamp
+     */
+    public long getContentsTimestamp() {
+        return aggregateTimestamp;
+    }
 
-	/**
-	 * Set value of the aggregated timestamp.
-	 *
-	 * @param timestamp the aggregated timestamp of the current registry contents
-	 */
-	public void set(long timestamp) {
-		aggregateTimestamp = timestamp;
-		modified = false;
-	}
+    /**
+     * Set value of the aggregated timestamp.
+     *
+     * @param timestamp the aggregated timestamp of the current registry contents
+     */
+    public void set(long timestamp) {
+        aggregateTimestamp = timestamp;
+        modified = false;
+    }
 
-	/**
-	 * Sets aggregated timestamp to the value corresponding to an empty registry.
-	 */
-	public void reset() {
-		aggregateTimestamp = 0;
-		modified = false;
-	}
+    /**
+     * Sets aggregated timestamp to the value corresponding to an empty registry.
+     */
+    public void reset() {
+        aggregateTimestamp = 0;
+        modified = false;
+    }
 
-	/**
-	 * Determines if the aggregate timestamp was modified using add() or remove()
-	 * methods.
-	 *
-	 * @return true: the timestamp was modified after the last set/reset
-	 */
-	public boolean isModifed() {
-		return modified;
-	}
+    /**
+     * Determines if the aggregate timestamp was modified using add() or remove()
+     * methods.
+     *
+     * @return true: the timestamp was modified after the last set/reset
+     */
+    public boolean isModifed() {
+        return modified;
+    }
 
-	/**
-	 * Add individual contribution timestamp to the aggregated timestamp.
-	 *
-	 * @param timestamp the time stamp of the contribution being added to the
-	 *                  registry
-	 */
-	public void add(long timestamp) {
-		aggregateTimestamp ^= timestamp;
-		modified = true;
-	}
+    /**
+     * Add individual contribution timestamp to the aggregated timestamp.
+     *
+     * @param timestamp the time stamp of the contribution being added to the
+     * registry
+     */
+    public void add(long timestamp) {
+        aggregateTimestamp ^= timestamp;
+        modified = true;
+    }
 
-	/**
-	 * Remove individual contribution timestamp from the aggregated timestamp.
-	 *
-	 * @param timestamp the time stamp of the contribution being removed from the
-	 *                  registry
-	 */
-	public void remove(long timestamp) {
-		aggregateTimestamp ^= timestamp;
-		modified = true;
-	}
+    /**
+     * Remove individual contribution timestamp from the aggregated timestamp.
+     *
+     * @param timestamp the time stamp of the contribution being removed from the
+     * registry
+     */
+    public void remove(long timestamp) {
+        aggregateTimestamp ^= timestamp;
+        modified = true;
+    }
 }

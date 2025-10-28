@@ -19,119 +19,118 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public class ConfigurationElementMulti extends ConfigurationElement {
 
-	/**
-	 * Translated values for the locale
-	 */
-	private DirectMap translatedProperties = new DirectMap(10, 0.5f);
+    /**
+     * Translated values for the locale
+     */
+    private DirectMap translatedProperties = new DirectMap(10, 0.5f);
 
-	protected ConfigurationElementMulti(ExtensionRegistry registry, boolean persist) {
-		super(registry, persist);
-	}
+    protected ConfigurationElementMulti(ExtensionRegistry registry, boolean persist) {
+        super(registry, persist);
+    }
 
-	protected ConfigurationElementMulti(int self, String contributorId, String name, String[] propertiesAndValue,
-			int[] children, int extraDataOffset, int parent, byte parentType, ExtensionRegistry registry,
-			boolean persist) {
-		super(self, contributorId, name, propertiesAndValue, children, extraDataOffset, parent, parentType, registry,
-				persist);
-	}
+    protected ConfigurationElementMulti(int self, String contributorId, String name, String[] propertiesAndValue,
+        int[] children, int extraDataOffset, int parent, byte parentType, ExtensionRegistry registry, boolean persist) {
+        super(self, contributorId, name, propertiesAndValue, children, extraDataOffset, parent, parentType, registry,
+            persist);
+    }
 
-	@Override
-	String getAttribute(String attrName, String locale) {
-		if (propertiesAndValue.length <= 1) {
-			return null;
-		}
-		// round down to an even size
-		int size = propertiesAndValue.length - (propertiesAndValue.length % 2);
-		int index = -1;
-		for (int i = 0, j = 0; i < size; i += 2, j++) {
-			if (!(propertiesAndValue[i].equals(attrName))) {
-				continue;
-			}
-			index = j;
-			break;
-		}
-		if (index == -1) {
-			return null;
-		}
+    @Override
+    String getAttribute(String attrName, String locale) {
+        if (propertiesAndValue.length <= 1) {
+            return null;
+        }
+        // round down to an even size
+        int size = propertiesAndValue.length - (propertiesAndValue.length % 2);
+        int index = -1;
+        for (int i = 0, j = 0; i < size; i += 2, j++) {
+            if (!(propertiesAndValue[i].equals(attrName))) {
+                continue;
+            }
+            index = j;
+            break;
+        }
+        if (index == -1) {
+            return null;
+        }
 
-		String result = getTranslatedAtIndex(index, locale);
-		if (result != null) {
-			return result;
-		}
-		return propertiesAndValue[index * 2 + 1]; // return non-translated value
-	}
+        String result = getTranslatedAtIndex(index, locale);
+        if (result != null) {
+            return result;
+        }
+        return propertiesAndValue[index * 2 + 1]; // return non-translated value
+    }
 
-	@Override
-	String getValue(String locale) {
-		if (propertiesAndValue.length == 0 || propertiesAndValue.length % 2 == 0) {
-			return null;
-		}
-		int index = propertiesAndValue.length - 1;
-		return getTranslatedAtIndex(index, locale);
-	}
+    @Override
+    String getValue(String locale) {
+        if (propertiesAndValue.length == 0 || propertiesAndValue.length % 2 == 0) {
+            return null;
+        }
+        int index = propertiesAndValue.length - 1;
+        return getTranslatedAtIndex(index, locale);
+    }
 
-	synchronized private String getTranslatedAtIndex(int index, String locale) {
-		String[] translated = null;
-		if (!translatedProperties.containsKey(locale)) {
-			String[] propertiesNonTranslated = getNonTranslated();
-			translated = registry.translate(propertiesNonTranslated, getContributor(), locale);
-			translatedProperties.put(locale, translated);
-			registry.getObjectManager().markDirty();
-		} else {
-			translated = translatedProperties.get(locale);
-		}
+    synchronized private String getTranslatedAtIndex(int index, String locale) {
+        String[] translated = null;
+        if (!translatedProperties.containsKey(locale)) {
+            String[] propertiesNonTranslated = getNonTranslated();
+            translated = registry.translate(propertiesNonTranslated, getContributor(), locale);
+            translatedProperties.put(locale, translated);
+            registry.getObjectManager().markDirty();
+        } else {
+            translated = translatedProperties.get(locale);
+        }
 
-		if (translated != null) {
-			return translated[index];
-		}
-		return null;
-	}
+        if (translated != null) {
+            return translated[index];
+        }
+        return null;
+    }
 
-	private String[] getNonTranslated() {
-		int size = propertiesAndValue.length / 2;
-		boolean hasValue = ((propertiesAndValue.length % 2) == 1);
-		if (hasValue) {
-			size++;
-		}
-		String[] propertiesNonTranslated = new String[size];
-		int pos = 0;
-		for (int i = 1; i < propertiesAndValue.length; i += 2) {
-			propertiesNonTranslated[pos] = propertiesAndValue[i];
-			pos++;
-		}
-		if (hasValue) {
-			propertiesNonTranslated[pos] = propertiesAndValue[propertiesAndValue.length - 1];
-		}
-		return propertiesNonTranslated;
-	}
+    private String[] getNonTranslated() {
+        int size = propertiesAndValue.length / 2;
+        boolean hasValue = ((propertiesAndValue.length % 2) == 1);
+        if (hasValue) {
+            size++;
+        }
+        String[] propertiesNonTranslated = new String[size];
+        int pos = 0;
+        for (int i = 1; i < propertiesAndValue.length; i += 2) {
+            propertiesNonTranslated[pos] = propertiesAndValue[i];
+            pos++;
+        }
+        if (hasValue) {
+            propertiesNonTranslated[pos] = propertiesAndValue[propertiesAndValue.length - 1];
+        }
+        return propertiesNonTranslated;
+    }
 
-	synchronized int getNumCachedLocales() {
-		return translatedProperties.getSzie();
-	}
+    synchronized int getNumCachedLocales() {
+        return translatedProperties.getSzie();
+    }
 
-	synchronized String[] getCachedLocales() {
-		return translatedProperties.getKeys();
-	}
+    synchronized String[] getCachedLocales() {
+        return translatedProperties.getKeys();
+    }
 
-	synchronized String[][] getCachedTranslations() {
-		return translatedProperties.getValues();
-	}
+    synchronized String[][] getCachedTranslations() {
+        return translatedProperties.getValues();
+    }
 
-	synchronized void setTranslatedProperties(DirectMap translated) {
-		translatedProperties = translated;
-	}
+    synchronized void setTranslatedProperties(DirectMap translated) {
+        translatedProperties = translated;
+    }
 
-	///////////////////////////////////////////////////////////////////////////////////
-	// "Default" locale
+    ///////////////////////////////////////////////////////////////////////////////////
+    // "Default" locale
 
-	@Override
-	public String getAttribute(String attrName) {
-		return getAttribute(attrName, getLocale());
-	}
+    @Override
+    public String getAttribute(String attrName) {
+        return getAttribute(attrName, getLocale());
+    }
 
-	@Override
-	public String getValue() {
-		return getValue(getLocale());
-	}
+    @Override
+    public String getValue() {
+        return getValue(getLocale());
+    }
 
 }

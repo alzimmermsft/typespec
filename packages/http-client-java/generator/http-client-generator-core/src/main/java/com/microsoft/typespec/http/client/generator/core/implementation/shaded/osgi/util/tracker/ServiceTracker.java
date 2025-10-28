@@ -414,7 +414,6 @@ public class ServiceTracker<S, T> implements ServiceTrackerCustomizer<S, T> {
      * {@code ServiceTracker}.
      * @return The service object to be tracked for the service added to this
      * {@code ServiceTracker}.
-     * @see ServiceTrackerCustomizer#addingService(ServiceReference)
      */
     @Override
     public T addingService(ServiceReference<S> reference) {

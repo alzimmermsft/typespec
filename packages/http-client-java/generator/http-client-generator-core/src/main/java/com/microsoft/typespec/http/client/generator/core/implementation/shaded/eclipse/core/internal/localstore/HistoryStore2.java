@@ -14,12 +14,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.localstore;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.filesystem.EFS;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.filesystem.IFileInfo;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.filesystem.IFileStore;
@@ -44,333 +38,342 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IStatus;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Status;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 public class HistoryStore2 implements IHistoryStore {
 
-	class HistoryCopyVisitor extends Bucket.Visitor {
-		private final List<HistoryEntry> changes = new ArrayList<>();
-		private final IPath destination;
-		private final IPath source;
+    class HistoryCopyVisitor extends Bucket.Visitor {
+        private final List<HistoryEntry> changes = new ArrayList<>();
+        private final IPath destination;
+        private final IPath source;
 
-		public HistoryCopyVisitor(IPath source, IPath destination) {
-			this.source = source;
-			this.destination = destination;
-		}
+        public HistoryCopyVisitor(IPath source, IPath destination) {
+            this.source = source;
+            this.destination = destination;
+        }
 
-		@Override
-		public void afterSaving(Bucket bucket) throws CoreException {
-			saveChanges();
-			changes.clear();
-		}
+        @Override
+        public void afterSaving(Bucket bucket) throws CoreException {
+            saveChanges();
+            changes.clear();
+        }
 
-		private void saveChanges() throws CoreException {
-			if (changes.isEmpty()) {
-				return;
-			}
-			// make effective all changes collected
-			Iterator<HistoryEntry> i = changes.iterator();
-			HistoryEntry entry = i.next();
-			tree.loadBucketFor(entry.getPath());
-			HistoryBucket bucket = (HistoryBucket) tree.getCurrent();
-			bucket.addBlobs(entry);
-			while (i.hasNext()) {
-				bucket.addBlobs(i.next());
-			}
-			bucket.save();
-		}
+        private void saveChanges() throws CoreException {
+            if (changes.isEmpty()) {
+                return;
+            }
+            // make effective all changes collected
+            Iterator<HistoryEntry> i = changes.iterator();
+            HistoryEntry entry = i.next();
+            tree.loadBucketFor(entry.getPath());
+            HistoryBucket bucket = (HistoryBucket) tree.getCurrent();
+            bucket.addBlobs(entry);
+            while (i.hasNext()) {
+                bucket.addBlobs(i.next());
+            }
+            bucket.save();
+        }
 
-		@Override
-		public int visit(Entry sourceEntry) {
-			IPath destinationPath = destination.append(sourceEntry.getPath().removeFirstSegments(source.segmentCount()));
-			HistoryEntry destinationEntry = new HistoryEntry(destinationPath, (HistoryEntry) sourceEntry);
-			// we may be copying to the same source bucket, collect to make change effective later
-			// since we cannot make changes to it while iterating
-			changes.add(destinationEntry);
-			return CONTINUE;
-		}
-	}
+        @Override
+        public int visit(Entry sourceEntry) {
+            IPath destinationPath
+                = destination.append(sourceEntry.getPath().removeFirstSegments(source.segmentCount()));
+            HistoryEntry destinationEntry = new HistoryEntry(destinationPath, (HistoryEntry) sourceEntry);
+            // we may be copying to the same source bucket, collect to make change effective later
+            // since we cannot make changes to it while iterating
+            changes.add(destinationEntry);
+            return CONTINUE;
+        }
+    }
 
-	private final BlobStore blobStore;
-	private Set<UniversalUniqueIdentifier> blobsToRemove = new HashSet<>();
-	final BucketTree tree;
-	private final Workspace workspace;
+    private final BlobStore blobStore;
+    private Set<UniversalUniqueIdentifier> blobsToRemove = new HashSet<>();
+    final BucketTree tree;
+    private final Workspace workspace;
 
-	public HistoryStore2(Workspace workspace, IFileStore store, int limit) {
-		this.workspace = workspace;
-		try {
-			store.mkdir(EFS.NONE, null);
-		} catch (CoreException e) {
-			//ignore the failure here because there is no way to surface it.
-			//any attempt to write to the store will throw an appropriate exception
-		}
-		this.blobStore = new BlobStore(store, limit);
-		this.tree = new BucketTree(workspace, new HistoryBucket());
-	}
-
-	/**
-	 * @see IHistoryStore#addState(IPath, IFileStore, IFileInfo, boolean)
-	 */
-	@Override
-	public synchronized IFileState addState(IPath key, IFileStore localFile, IFileInfo info, boolean moveContents) {
-		long lastModified = info.getLastModified();
-		if (!isValid(localFile, info)) {
-			return null;
-		}
-		UniversalUniqueIdentifier uuid = null;
-		try {
-			uuid = blobStore.addBlob(localFile, moveContents);
-			tree.loadBucketFor(key);
-			HistoryBucket currentBucket = (HistoryBucket) tree.getCurrent();
-			currentBucket.addBlob(key, uuid, lastModified);
-			//			currentBucket.save();
-		} catch (CoreException e) {
-			log(e);
-		}
-		return new FileState(this, key, lastModified, uuid);
-	}
+    public HistoryStore2(Workspace workspace, IFileStore store, int limit) {
+        this.workspace = workspace;
+        try {
+            store.mkdir(EFS.NONE, null);
+        } catch (CoreException e) {
+            // ignore the failure here because there is no way to surface it.
+            // any attempt to write to the store will throw an appropriate exception
+        }
+        this.blobStore = new BlobStore(store, limit);
+        this.tree = new BucketTree(workspace, new HistoryBucket());
+    }
 
     /**
-	 * Applies the clean-up policy to an entry.
-	 */
-	protected void applyPolicy(HistoryEntry fileEntry, int maxStates, long minTimeStamp) {
-		for (int i = 0; i < fileEntry.getOccurrences(); i++) {
-			if (i < maxStates && fileEntry.getTimestamp(i) >= minTimeStamp) {
-				continue;
-			}
-			// "delete" the current uuid
-			blobsToRemove.add(fileEntry.getUUID(i));
-			fileEntry.deleteOccurrence(i);
-		}
-	}
+     * @see IHistoryStore#addState(IPath, IFileStore, IFileInfo, boolean)
+     */
+    @Override
+    public synchronized IFileState addState(IPath key, IFileStore localFile, IFileInfo info, boolean moveContents) {
+        long lastModified = info.getLastModified();
+        if (!isValid(localFile, info)) {
+            return null;
+        }
+        UniversalUniqueIdentifier uuid = null;
+        try {
+            uuid = blobStore.addBlob(localFile, moveContents);
+            tree.loadBucketFor(key);
+            HistoryBucket currentBucket = (HistoryBucket) tree.getCurrent();
+            currentBucket.addBlob(key, uuid, lastModified);
+            // currentBucket.save();
+        } catch (CoreException e) {
+            log(e);
+        }
+        return new FileState(this, key, lastModified, uuid);
+    }
 
-	/**
-	 * Applies the clean-up policy to a subtree.
-	 */
-	private void applyPolicy(IPath root) throws CoreException {
-		IWorkspaceDescription description = workspace.internalGetDescription();
-		final long minimumTimestamp = System.currentTimeMillis() - description.getFileStateLongevity();
-		final int maxStates = description.getMaxFileStates();
-		// apply policy to the given tree
-		tree.accept(new Bucket.Visitor() {
-			@Override
-			public int visit(Entry entry) {
-				applyPolicy((HistoryEntry) entry, maxStates, minimumTimestamp);
-				return CONTINUE;
-			}
-		}, root, BucketTree.DEPTH_INFINITE);
-		tree.getCurrent().save();
-	}
+    /**
+     * Applies the clean-up policy to an entry.
+     */
+    protected void applyPolicy(HistoryEntry fileEntry, int maxStates, long minTimeStamp) {
+        for (int i = 0; i < fileEntry.getOccurrences(); i++) {
+            if (i < maxStates && fileEntry.getTimestamp(i) >= minTimeStamp) {
+                continue;
+            }
+            // "delete" the current uuid
+            blobsToRemove.add(fileEntry.getUUID(i));
+            fileEntry.deleteOccurrence(i);
+        }
+    }
 
-	@Override
-	public synchronized void clean(final IProgressMonitor monitor) {
-		try {
-			monitor.beginTask(Messages.resources_pruningHistory, IProgressMonitor.UNKNOWN);
-			IWorkspaceDescription description = workspace.internalGetDescription();
-			final long minimumTimestamp = System.currentTimeMillis() - description.getFileStateLongevity();
-			final int maxStates = description.getMaxFileStates();
-			final int[] entryCount = new int[1];
-			if (description.isApplyFileStatePolicy()) {
-				tree.accept(new Bucket.Visitor() {
-					@Override
-					public int visit(Entry fileEntry) {
-						if (monitor.isCanceled()) {
-							return STOP;
-						}
-						entryCount[0] += fileEntry.getOccurrences();
-						applyPolicy((HistoryEntry) fileEntry, maxStates, minimumTimestamp);
-						// remove unreferenced blobs, when blobsToRemove size is greater than 100
-						removeUnreferencedBlobs(100);
-						return monitor.isCanceled() ? STOP : CONTINUE;
-					}
-				}, IPath.ROOT, BucketTree.DEPTH_INFINITE);
-			}
-			// remove all remaining unreferenced blobs
-			removeUnreferencedBlobs(0);
-		} catch (Exception e) {
-			String message = Messages.history_problemsCleaning;
-			ResourceStatus status = new ResourceStatus(IResourceStatus.FAILED_DELETE_LOCAL, null, message, e);
-			Policy.log(status);
-		} finally {
-			monitor.done();
-		}
-	}
+    /**
+     * Applies the clean-up policy to a subtree.
+     */
+    private void applyPolicy(IPath root) throws CoreException {
+        IWorkspaceDescription description = workspace.internalGetDescription();
+        final long minimumTimestamp = System.currentTimeMillis() - description.getFileStateLongevity();
+        final int maxStates = description.getMaxFileStates();
+        // apply policy to the given tree
+        tree.accept(new Bucket.Visitor() {
+            @Override
+            public int visit(Entry entry) {
+                applyPolicy((HistoryEntry) entry, maxStates, minimumTimestamp);
+                return CONTINUE;
+            }
+        }, root, BucketTree.DEPTH_INFINITE);
+        tree.getCurrent().save();
+    }
 
-	/*
-	 * Remove blobs from the blobStore. When the size of blobsToRemove exceeds the limit,
-	 * remove the given blobs from blobStore. If the limit is zero or negative, remove blobs
-	 * regardless of the limit.
-	 */
-	void removeUnreferencedBlobs(int limit) {
-		if (limit <= 0 || limit <= blobsToRemove.size()) {
-			// remove unreferenced blobs
-			blobStore.deleteBlobs(blobsToRemove);
-			blobsToRemove = new HashSet<>();
-		}
-	}
+    @Override
+    public synchronized void clean(final IProgressMonitor monitor) {
+        try {
+            monitor.beginTask(Messages.resources_pruningHistory, IProgressMonitor.UNKNOWN);
+            IWorkspaceDescription description = workspace.internalGetDescription();
+            final long minimumTimestamp = System.currentTimeMillis() - description.getFileStateLongevity();
+            final int maxStates = description.getMaxFileStates();
+            final int[] entryCount = new int[1];
+            if (description.isApplyFileStatePolicy()) {
+                tree.accept(new Bucket.Visitor() {
+                    @Override
+                    public int visit(Entry fileEntry) {
+                        if (monitor.isCanceled()) {
+                            return STOP;
+                        }
+                        entryCount[0] += fileEntry.getOccurrences();
+                        applyPolicy((HistoryEntry) fileEntry, maxStates, minimumTimestamp);
+                        // remove unreferenced blobs, when blobsToRemove size is greater than 100
+                        removeUnreferencedBlobs(100);
+                        return monitor.isCanceled() ? STOP : CONTINUE;
+                    }
+                }, IPath.ROOT, BucketTree.DEPTH_INFINITE);
+            }
+            // remove all remaining unreferenced blobs
+            removeUnreferencedBlobs(0);
+        } catch (Exception e) {
+            String message = Messages.history_problemsCleaning;
+            ResourceStatus status = new ResourceStatus(IResourceStatus.FAILED_DELETE_LOCAL, null, message, e);
+            Policy.log(status);
+        } finally {
+            monitor.done();
+        }
+    }
 
-	@Override
-	public void closeHistoryStore(IResource resource) {
-		try {
-			tree.getCurrent().save();
-			tree.getCurrent().flush();
-		} catch (CoreException e) {
-			log(e);
-		}
-	}
+    /*
+     * Remove blobs from the blobStore. When the size of blobsToRemove exceeds the limit,
+     * remove the given blobs from blobStore. If the limit is zero or negative, remove blobs
+     * regardless of the limit.
+     */
+    void removeUnreferencedBlobs(int limit) {
+        if (limit <= 0 || limit <= blobsToRemove.size()) {
+            // remove unreferenced blobs
+            blobStore.deleteBlobs(blobsToRemove);
+            blobsToRemove = new HashSet<>();
+        }
+    }
 
-	@Override
-	public synchronized void copyHistory(IResource sourceResource, IResource destinationResource, boolean moving) {
-		// return early if either of the paths are null or if the source and
-		// destination are the same.
-		if (sourceResource == null || destinationResource == null) {
-			String message = Messages.history_copyToNull;
-			ResourceStatus status = new ResourceStatus(IResourceStatus.INTERNAL_ERROR, null, message, null);
-			Policy.log(status);
-			return;
-		}
-		if (sourceResource.equals(destinationResource)) {
-			String message = Messages.history_copyToSelf;
-			ResourceStatus status = new ResourceStatus(IResourceStatus.INTERNAL_ERROR, sourceResource.getFullPath(), message, null);
-			Policy.log(status);
-			return;
-		}
+    @Override
+    public void closeHistoryStore(IResource resource) {
+        try {
+            tree.getCurrent().save();
+            tree.getCurrent().flush();
+        } catch (CoreException e) {
+            log(e);
+        }
+    }
 
-		final IPath source = sourceResource.getFullPath();
-		final IPath destination = destinationResource.getFullPath();
-		Assert.isLegal(source.segmentCount() > 0);
-		Assert.isLegal(destination.segmentCount() > 0);
-		Assert.isLegal(source.segmentCount() > 1 || destination.segmentCount() == 1);
+    @Override
+    public synchronized void copyHistory(IResource sourceResource, IResource destinationResource, boolean moving) {
+        // return early if either of the paths are null or if the source and
+        // destination are the same.
+        if (sourceResource == null || destinationResource == null) {
+            String message = Messages.history_copyToNull;
+            ResourceStatus status = new ResourceStatus(IResourceStatus.INTERNAL_ERROR, null, message, null);
+            Policy.log(status);
+            return;
+        }
+        if (sourceResource.equals(destinationResource)) {
+            String message = Messages.history_copyToSelf;
+            ResourceStatus status
+                = new ResourceStatus(IResourceStatus.INTERNAL_ERROR, sourceResource.getFullPath(), message, null);
+            Policy.log(status);
+            return;
+        }
 
-		try {
-			// special case: we are moving a project
-			if (moving && sourceResource.getType() == IResource.PROJECT) {
-				// flush the tree to avoid confusion if another project is created with the same name
-				final Bucket bucket = tree.getCurrent();
-				bucket.save();
-				bucket.flush();
-				return;
-			}
-			// copy history by visiting the source tree
-			HistoryCopyVisitor copyVisitor = new HistoryCopyVisitor(source, destination);
-			tree.accept(copyVisitor, source, BucketTree.DEPTH_INFINITE);
-			// apply clean-up policy to the destination tree
-			applyPolicy(destinationResource.getFullPath());
-		} catch (CoreException e) {
-			log(e);
-		}
-	}
+        final IPath source = sourceResource.getFullPath();
+        final IPath destination = destinationResource.getFullPath();
+        Assert.isLegal(source.segmentCount() > 0);
+        Assert.isLegal(destination.segmentCount() > 0);
+        Assert.isLegal(source.segmentCount() > 1 || destination.segmentCount() == 1);
 
-	@Override
-	public boolean exists(IFileState target) {
-		return blobStore.fileFor(((FileState) target).getUUID()).fetchInfo().exists();
-	}
+        try {
+            // special case: we are moving a project
+            if (moving && sourceResource.getType() == IResource.PROJECT) {
+                // flush the tree to avoid confusion if another project is created with the same name
+                final Bucket bucket = tree.getCurrent();
+                bucket.save();
+                bucket.flush();
+                return;
+            }
+            // copy history by visiting the source tree
+            HistoryCopyVisitor copyVisitor = new HistoryCopyVisitor(source, destination);
+            tree.accept(copyVisitor, source, BucketTree.DEPTH_INFINITE);
+            // apply clean-up policy to the destination tree
+            applyPolicy(destinationResource.getFullPath());
+        } catch (CoreException e) {
+            log(e);
+        }
+    }
 
-	@Override
-	public InputStream getContents(IFileState target) throws CoreException {
-		if (!target.exists()) {
-			String message = Messages.history_notValid;
-			throw new ResourceException(IResourceStatus.FAILED_READ_LOCAL, target.getFullPath(), message, null);
-		}
-		return blobStore.getBlob(((FileState) target).getUUID());
-	}
+    @Override
+    public boolean exists(IFileState target) {
+        return blobStore.fileFor(((FileState) target).getUUID()).fetchInfo().exists();
+    }
 
-	@Override
-	public synchronized IFileState[] getStates(IPath filePath, IProgressMonitor monitor) {
-		try {
-			tree.loadBucketFor(filePath);
-			HistoryBucket currentBucket = (HistoryBucket) tree.getCurrent();
-			HistoryEntry fileEntry = currentBucket.getEntry(filePath);
-			if (fileEntry == null || fileEntry.isEmpty()) {
-				return new IFileState[0];
-			}
-			IFileState[] states = new IFileState[fileEntry.getOccurrences()];
-			for (int i = 0; i < states.length; i++) {
-				states[i] = new FileState(this, fileEntry.getPath(), fileEntry.getTimestamp(i), fileEntry.getUUID(i));
-			}
-			return states;
-		} catch (CoreException ce) {
-			log(ce);
-			return new IFileState[0];
-		}
-	}
+    @Override
+    public InputStream getContents(IFileState target) throws CoreException {
+        if (!target.exists()) {
+            String message = Messages.history_notValid;
+            throw new ResourceException(IResourceStatus.FAILED_READ_LOCAL, target.getFullPath(), message, null);
+        }
+        return blobStore.getBlob(((FileState) target).getUUID());
+    }
 
-	public BucketTree getTree() {
-		return tree;
-	}
+    @Override
+    public synchronized IFileState[] getStates(IPath filePath, IProgressMonitor monitor) {
+        try {
+            tree.loadBucketFor(filePath);
+            HistoryBucket currentBucket = (HistoryBucket) tree.getCurrent();
+            HistoryEntry fileEntry = currentBucket.getEntry(filePath);
+            if (fileEntry == null || fileEntry.isEmpty()) {
+                return new IFileState[0];
+            }
+            IFileState[] states = new IFileState[fileEntry.getOccurrences()];
+            for (int i = 0; i < states.length; i++) {
+                states[i] = new FileState(this, fileEntry.getPath(), fileEntry.getTimestamp(i), fileEntry.getUUID(i));
+            }
+            return states;
+        } catch (CoreException ce) {
+            log(ce);
+            return new IFileState[0];
+        }
+    }
 
-	/**
-	 * Return a boolean value indicating whether or not the given file
-	 * should be added to the history store based on the current history
-	 * store policies.
-	 *
-	 * @param localFile the file to check
-	 * @return <code>true</code> if this file should be added to the history
-	 * 	store and <code>false</code> otherwise
-	 */
-	private boolean isValid(IFileStore localFile, IFileInfo info) {
-		WorkspaceDescription description = workspace.internalGetDescription();
-		if (!description.isApplyFileStatePolicy()) {
-			return true;
-		}
-		long length = info.getLength();
+    public BucketTree getTree() {
+        return tree;
+    }
+
+    /**
+     * Return a boolean value indicating whether or not the given file
+     * should be added to the history store based on the current history
+     * store policies.
+     *
+     * @param localFile the file to check
+     * @return <code>true</code> if this file should be added to the history
+     * store and <code>false</code> otherwise
+     */
+    private boolean isValid(IFileStore localFile, IFileInfo info) {
+        WorkspaceDescription description = workspace.internalGetDescription();
+        if (!description.isApplyFileStatePolicy()) {
+            return true;
+        }
+        long length = info.getLength();
         return length <= description.getMaxFileStateSize();
-	}
+    }
 
-	/**
-	 * Logs a CoreException
-	 */
-	private void log(CoreException e) {
-		//create a new status to wrap the exception if there is no exception in the status
-		IStatus status = e.getStatus();
-		if (status.getException() == null) {
-			status = new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, IResourceStatus.FAILED_WRITE_METADATA, "Internal error in history store", e); //$NON-NLS-1$
-		}
-		Policy.log(status);
-	}
+    /**
+     * Logs a CoreException
+     */
+    private void log(CoreException e) {
+        // create a new status to wrap the exception if there is no exception in the status
+        IStatus status = e.getStatus();
+        if (status.getException() == null) {
+            status = new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, IResourceStatus.FAILED_WRITE_METADATA,
+                "Internal error in history store", e); //$NON-NLS-1$
+        }
+        Policy.log(status);
+    }
 
-	@Override
-	public synchronized void remove(IPath root, IProgressMonitor monitor) {
-		try {
-			final Set<UniversalUniqueIdentifier> tmpBlobsToRemove = blobsToRemove;
-			tree.accept(new Bucket.Visitor() {
-				@Override
-				public int visit(Entry fileEntry) {
-					for (int i = 0; i < fileEntry.getOccurrences(); i++) {
-						// remember we need to delete the files later
-						tmpBlobsToRemove.add(((HistoryEntry) fileEntry).getUUID(i));
-					}
-					fileEntry.delete();
-					return CONTINUE;
-				}
-			}, root, BucketTree.DEPTH_INFINITE);
-		} catch (CoreException ce) {
-			log(ce);
-		}
-	}
+    @Override
+    public synchronized void remove(IPath root, IProgressMonitor monitor) {
+        try {
+            final Set<UniversalUniqueIdentifier> tmpBlobsToRemove = blobsToRemove;
+            tree.accept(new Bucket.Visitor() {
+                @Override
+                public int visit(Entry fileEntry) {
+                    for (int i = 0; i < fileEntry.getOccurrences(); i++) {
+                        // remember we need to delete the files later
+                        tmpBlobsToRemove.add(((HistoryEntry) fileEntry).getUUID(i));
+                    }
+                    fileEntry.delete();
+                    return CONTINUE;
+                }
+            }, root, BucketTree.DEPTH_INFINITE);
+        } catch (CoreException ce) {
+            log(ce);
+        }
+    }
 
-	/**
-	 * @see IHistoryStore#removeGarbage()
-	 */
-	@Override
-	public synchronized void removeGarbage() {
-		try {
-			final Set<UniversalUniqueIdentifier> tmpBlobsToRemove = blobsToRemove;
-			tree.accept(new Bucket.Visitor() {
-				@Override
-				public int visit(Entry fileEntry) {
-					for (int i = 0; i < fileEntry.getOccurrences(); i++) {
-						// remember we need to delete the files later
-						tmpBlobsToRemove.remove(((HistoryEntry) fileEntry).getUUID(i));
-					}
-					return CONTINUE;
-				}
-			}, IPath.ROOT, BucketTree.DEPTH_INFINITE);
-			blobStore.deleteBlobs(blobsToRemove);
-			blobsToRemove = new HashSet<>();
-		} catch (Exception e) {
-			String message = Messages.history_problemsCleaning;
-			ResourceStatus status = new ResourceStatus(IResourceStatus.FAILED_DELETE_LOCAL, null, message, e);
-			Policy.log(status);
-		}
-	}
+    /**
+     * @see IHistoryStore#removeGarbage()
+     */
+    @Override
+    public synchronized void removeGarbage() {
+        try {
+            final Set<UniversalUniqueIdentifier> tmpBlobsToRemove = blobsToRemove;
+            tree.accept(new Bucket.Visitor() {
+                @Override
+                public int visit(Entry fileEntry) {
+                    for (int i = 0; i < fileEntry.getOccurrences(); i++) {
+                        // remember we need to delete the files later
+                        tmpBlobsToRemove.remove(((HistoryEntry) fileEntry).getUUID(i));
+                    }
+                    return CONTINUE;
+                }
+            }, IPath.ROOT, BucketTree.DEPTH_INFINITE);
+            blobStore.deleteBlobs(blobsToRemove);
+            blobsToRemove = new HashSet<>();
+        } catch (Exception e) {
+            String message = Messages.history_problemsCleaning;
+            ResourceStatus status = new ResourceStatus(IResourceStatus.FAILED_DELETE_LOCAL, null, message, e);
+            Policy.log(status);
+        }
+    }
 }

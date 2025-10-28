@@ -13,5 +13,6 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
-public @interface UIEffect {}
+@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD })
+public @interface UIEffect {
+}

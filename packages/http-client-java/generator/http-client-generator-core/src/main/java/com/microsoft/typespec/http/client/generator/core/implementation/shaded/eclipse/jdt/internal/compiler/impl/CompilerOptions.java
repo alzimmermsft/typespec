@@ -686,195 +686,104 @@ public class CompilerOptions {
 	 */
 	public static String optionKeyFromIrritant(int irritant) {
 		// keep in sync with warningTokens and warningTokenToIrritant
-		switch (irritant) {
-			case MethodWithConstructorName :
-				return OPTION_ReportMethodWithConstructorName;
-			case OverriddenPackageDefaultMethod  :
-				return OPTION_ReportOverridingPackageDefaultMethod;
-			case UsingDeprecatedAPI :
-			case (InvalidJavadoc | UsingDeprecatedAPI) :
-				return OPTION_ReportDeprecation;
-			case UsingTerminallyDeprecatedAPI :
-			case (InvalidJavadoc | UsingTerminallyDeprecatedAPI) :
-				return OPTION_ReportTerminalDeprecation;
-			case MaskedCatchBlock  :
-				return OPTION_ReportHiddenCatchBlock;
-			case UnusedLocalVariable :
-				return OPTION_ReportUnusedLocal;
-			case UnusedLambdaParameter:
-				return OPTION_ReportUnusedLambdaParameter;
-			case UnusedArgument :
-				return OPTION_ReportUnusedParameter;
-			case UnusedExceptionParameter :
-				return OPTION_ReportUnusedExceptionParameter;
-			case NoImplicitStringConversion :
-				return OPTION_ReportNoImplicitStringConversion;
-			case AccessEmulation :
-				return OPTION_ReportSyntheticAccessEmulation;
-			case NonExternalizedString :
-				return OPTION_ReportNonExternalizedStringLiteral;
-			case AssertUsedAsAnIdentifier :
-				return OPTION_ReportAssertIdentifier;
-			case UnusedImport :
-				return OPTION_ReportUnusedImport;
-			case NonStaticAccessToStatic :
-				return OPTION_ReportNonStaticAccessToStatic;
-			case Task :
-				return OPTION_TaskTags;
-			case NoEffectAssignment :
-				return OPTION_ReportNoEffectAssignment;
-			case IncompatibleNonInheritedInterfaceMethod :
-				return OPTION_ReportIncompatibleNonInheritedInterfaceMethod;
-			case UnusedPrivateMember :
-				return OPTION_ReportUnusedPrivateMember;
-			case LocalVariableHiding :
-				return OPTION_ReportLocalVariableHiding;
-			case FieldHiding :
-				return OPTION_ReportFieldHiding;
-			case AccidentalBooleanAssign :
-				return OPTION_ReportPossibleAccidentalBooleanAssignment;
-			case EmptyStatement :
-				return OPTION_ReportEmptyStatement;
-			case MissingJavadocComments  :
-				return OPTION_ReportMissingJavadocComments;
-			case MissingJavadocTags :
-				return OPTION_ReportMissingJavadocTags;
-			case UnqualifiedFieldAccess :
-				return OPTION_ReportUnqualifiedFieldAccess;
-			case UnusedDeclaredThrownException :
-				return OPTION_ReportUnusedDeclaredThrownException;
-			case FinallyBlockNotCompleting :
-				return OPTION_ReportFinallyBlockNotCompletingNormally;
-			case InvalidJavadoc :
-				return OPTION_ReportInvalidJavadoc;
-			case UnnecessaryTypeCheck :
-				return OPTION_ReportUnnecessaryTypeCheck;
-			case UndocumentedEmptyBlock :
-				return OPTION_ReportUndocumentedEmptyBlock;
-			case IndirectStaticAccess :
-				return OPTION_ReportIndirectStaticAccess;
-			case UnnecessaryElse  :
-				return OPTION_ReportUnnecessaryElse;
-			case UncheckedTypeOperation :
-				return OPTION_ReportUncheckedTypeOperation;
-			case FinalParameterBound :
-				return OPTION_ReportFinalParameterBound;
-			case MissingSerialVersion :
-				return OPTION_ReportMissingSerialVersion ;
-			case EnumUsedAsAnIdentifier :
-				return OPTION_ReportEnumIdentifier;
-			case ForbiddenReference :
-				return OPTION_ReportForbiddenReference;
-			case VarargsArgumentNeedCast :
-				return OPTION_ReportVarargsArgumentNeedCast;
-			case NullReference :
-				return OPTION_ReportNullReference;
-			case PotentialNullReference :
-				return OPTION_ReportPotentialNullReference;
-			case RedundantNullCheck :
-				return OPTION_ReportRedundantNullCheck;
-			case AutoBoxing :
-				return OPTION_ReportAutoboxing;
-			case AnnotationSuperInterface :
-				return OPTION_ReportAnnotationSuperInterface;
-			case TypeHiding :
-				return OPTION_ReportTypeParameterHiding;
-			case MissingOverrideAnnotation :
-				return OPTION_ReportMissingOverrideAnnotation;
-			case MissingEnumConstantCase :
-				return OPTION_ReportIncompleteEnumSwitch;
-			case MissingDefaultCase :
-				return OPTION_ReportMissingDefaultCase;
-			case MissingDeprecatedAnnotation :
-				return OPTION_ReportMissingDeprecatedAnnotation;
-			case DiscouragedReference :
-				return OPTION_ReportDiscouragedReference;
-			case UnhandledWarningToken :
-				return OPTION_ReportUnhandledWarningToken;
-			case RawTypeReference :
-				return OPTION_ReportRawTypeReference;
-			case UnusedLabel :
-				return OPTION_ReportUnusedLabel;
-			case ParameterAssignment :
-				return OPTION_ReportParameterAssignment;
-			case FallthroughCase :
-				return OPTION_ReportFallthroughCase;
-			case OverridingMethodWithoutSuperInvocation :
-				return OPTION_ReportOverridingMethodWithoutSuperInvocation;
-			case MissingJavadocTagDescription :
-				return OPTION_ReportMissingJavadocTagDescription;
-			case UnusedTypeArguments :
-				return OPTION_ReportUnusedTypeArgumentsForMethodInvocation;
-			case UnusedTypeParameter:
-				return OPTION_ReportUnusedTypeParameter;
-			case UnusedWarningToken :
-				return OPTION_ReportUnusedWarningToken;
-			case RedundantSuperinterface :
-				return OPTION_ReportRedundantSuperinterface;
-			case ComparingIdentical :
-				return OPTION_ReportComparingIdentical;
-			case MissingSynchronizedModifierInInheritedMethod :
-				return OPTION_ReportMissingSynchronizedOnInheritedMethod;
-			case ShouldImplementHashcode :
-				return OPTION_ReportMissingHashCodeMethod;
-			case DeadCode :
-				return OPTION_ReportDeadCode;
-			case UnusedObjectAllocation:
-				return OPTION_ReportUnusedObjectAllocation;
-			case MethodCanBeStatic :
-				return OPTION_ReportMethodCanBeStatic;
-			case MethodCanBePotentiallyStatic :
-				return OPTION_ReportMethodCanBePotentiallyStatic;
-			case MissingNonNullByDefaultAnnotation :
-				return OPTION_ReportMissingNonNullByDefaultAnnotation;
-			case RedundantSpecificationOfTypeArguments :
-				return OPTION_ReportRedundantSpecificationOfTypeArguments;
+        return switch (irritant) {
+            case MethodWithConstructorName -> OPTION_ReportMethodWithConstructorName;
+            case OverriddenPackageDefaultMethod -> OPTION_ReportOverridingPackageDefaultMethod;
+            case UsingDeprecatedAPI, (InvalidJavadoc | UsingDeprecatedAPI) -> OPTION_ReportDeprecation;
+            case UsingTerminallyDeprecatedAPI, (InvalidJavadoc | UsingTerminallyDeprecatedAPI) ->
+                OPTION_ReportTerminalDeprecation;
+            case MaskedCatchBlock -> OPTION_ReportHiddenCatchBlock;
+            case UnusedLocalVariable -> OPTION_ReportUnusedLocal;
+            case UnusedLambdaParameter -> OPTION_ReportUnusedLambdaParameter;
+            case UnusedArgument -> OPTION_ReportUnusedParameter;
+            case UnusedExceptionParameter -> OPTION_ReportUnusedExceptionParameter;
+            case NoImplicitStringConversion -> OPTION_ReportNoImplicitStringConversion;
+            case AccessEmulation -> OPTION_ReportSyntheticAccessEmulation;
+            case NonExternalizedString -> OPTION_ReportNonExternalizedStringLiteral;
+            case AssertUsedAsAnIdentifier -> OPTION_ReportAssertIdentifier;
+            case UnusedImport -> OPTION_ReportUnusedImport;
+            case NonStaticAccessToStatic -> OPTION_ReportNonStaticAccessToStatic;
+            case Task -> OPTION_TaskTags;
+            case NoEffectAssignment -> OPTION_ReportNoEffectAssignment;
+            case IncompatibleNonInheritedInterfaceMethod -> OPTION_ReportIncompatibleNonInheritedInterfaceMethod;
+            case UnusedPrivateMember -> OPTION_ReportUnusedPrivateMember;
+            case LocalVariableHiding -> OPTION_ReportLocalVariableHiding;
+            case FieldHiding -> OPTION_ReportFieldHiding;
+            case AccidentalBooleanAssign -> OPTION_ReportPossibleAccidentalBooleanAssignment;
+            case EmptyStatement -> OPTION_ReportEmptyStatement;
+            case MissingJavadocComments -> OPTION_ReportMissingJavadocComments;
+            case MissingJavadocTags -> OPTION_ReportMissingJavadocTags;
+            case UnqualifiedFieldAccess -> OPTION_ReportUnqualifiedFieldAccess;
+            case UnusedDeclaredThrownException -> OPTION_ReportUnusedDeclaredThrownException;
+            case FinallyBlockNotCompleting -> OPTION_ReportFinallyBlockNotCompletingNormally;
+            case InvalidJavadoc -> OPTION_ReportInvalidJavadoc;
+            case UnnecessaryTypeCheck -> OPTION_ReportUnnecessaryTypeCheck;
+            case UndocumentedEmptyBlock -> OPTION_ReportUndocumentedEmptyBlock;
+            case IndirectStaticAccess -> OPTION_ReportIndirectStaticAccess;
+            case UnnecessaryElse -> OPTION_ReportUnnecessaryElse;
+            case UncheckedTypeOperation -> OPTION_ReportUncheckedTypeOperation;
+            case FinalParameterBound -> OPTION_ReportFinalParameterBound;
+            case MissingSerialVersion -> OPTION_ReportMissingSerialVersion;
+            case EnumUsedAsAnIdentifier -> OPTION_ReportEnumIdentifier;
+            case ForbiddenReference -> OPTION_ReportForbiddenReference;
+            case VarargsArgumentNeedCast -> OPTION_ReportVarargsArgumentNeedCast;
+            case NullReference -> OPTION_ReportNullReference;
+            case PotentialNullReference -> OPTION_ReportPotentialNullReference;
+            case RedundantNullCheck -> OPTION_ReportRedundantNullCheck;
+            case AutoBoxing -> OPTION_ReportAutoboxing;
+            case AnnotationSuperInterface -> OPTION_ReportAnnotationSuperInterface;
+            case TypeHiding -> OPTION_ReportTypeParameterHiding;
+            case MissingOverrideAnnotation -> OPTION_ReportMissingOverrideAnnotation;
+            case MissingEnumConstantCase -> OPTION_ReportIncompleteEnumSwitch;
+            case MissingDefaultCase -> OPTION_ReportMissingDefaultCase;
+            case MissingDeprecatedAnnotation -> OPTION_ReportMissingDeprecatedAnnotation;
+            case DiscouragedReference -> OPTION_ReportDiscouragedReference;
+            case UnhandledWarningToken -> OPTION_ReportUnhandledWarningToken;
+            case RawTypeReference -> OPTION_ReportRawTypeReference;
+            case UnusedLabel -> OPTION_ReportUnusedLabel;
+            case ParameterAssignment -> OPTION_ReportParameterAssignment;
+            case FallthroughCase -> OPTION_ReportFallthroughCase;
+            case OverridingMethodWithoutSuperInvocation -> OPTION_ReportOverridingMethodWithoutSuperInvocation;
+            case MissingJavadocTagDescription -> OPTION_ReportMissingJavadocTagDescription;
+            case UnusedTypeArguments -> OPTION_ReportUnusedTypeArgumentsForMethodInvocation;
+            case UnusedTypeParameter -> OPTION_ReportUnusedTypeParameter;
+            case UnusedWarningToken -> OPTION_ReportUnusedWarningToken;
+            case RedundantSuperinterface -> OPTION_ReportRedundantSuperinterface;
+            case ComparingIdentical -> OPTION_ReportComparingIdentical;
+            case MissingSynchronizedModifierInInheritedMethod -> OPTION_ReportMissingSynchronizedOnInheritedMethod;
+            case ShouldImplementHashcode -> OPTION_ReportMissingHashCodeMethod;
+            case DeadCode -> OPTION_ReportDeadCode;
+            case UnusedObjectAllocation -> OPTION_ReportUnusedObjectAllocation;
+            case MethodCanBeStatic -> OPTION_ReportMethodCanBeStatic;
+            case MethodCanBePotentiallyStatic -> OPTION_ReportMethodCanBePotentiallyStatic;
+            case MissingNonNullByDefaultAnnotation -> OPTION_ReportMissingNonNullByDefaultAnnotation;
+            case RedundantSpecificationOfTypeArguments -> OPTION_ReportRedundantSpecificationOfTypeArguments;
 
-			// resource leak analysis:
-			case UnclosedCloseable :
-				return OPTION_ReportUnclosedCloseable;
-			case PotentiallyUnclosedCloseable :
-				return OPTION_ReportPotentiallyUnclosedCloseable;
-			case ExplicitlyClosedAutoCloseable :
-				return OPTION_ReportExplicitlyClosedAutoCloseable;
-			case InsufficientResourceManagement:
-				return OPTION_ReportInsufficientResourceManagement;
-			case IncompatibleOwningContract:
-				return OPTION_ReportIncompatibleOwningContract;
+            // resource leak analysis:
+            case UnclosedCloseable -> OPTION_ReportUnclosedCloseable;
+            case PotentiallyUnclosedCloseable -> OPTION_ReportPotentiallyUnclosedCloseable;
+            case ExplicitlyClosedAutoCloseable -> OPTION_ReportExplicitlyClosedAutoCloseable;
+            case InsufficientResourceManagement -> OPTION_ReportInsufficientResourceManagement;
+            case IncompatibleOwningContract -> OPTION_ReportIncompatibleOwningContract;
 
-			// null analysis:
-			case NullSpecViolation :
-				return OPTION_ReportNullSpecViolation;
-			case NullAnnotationInferenceConflict :
-				return OPTION_ReportNullAnnotationInferenceConflict;
-			case NullUncheckedConversion :
-				return OPTION_ReportNullUncheckedConversion;
-			case RedundantNullAnnotation :
-				return OPTION_ReportRedundantNullAnnotation;
-			case NonnullParameterAnnotationDropped:
-				return OPTION_ReportNonnullParameterAnnotationDropped;
-			case PessimisticNullAnalysisForFreeTypeVariables:
-				return OPTION_PessimisticNullAnalysisForFreeTypeVariables;
-			case NonNullTypeVariableFromLegacyInvocation:
-				return OPTION_ReportNonNullTypeVariableFromLegacyInvocation;
-			case AnnotatedTypeArgumentToUnannotated:
-				return OPTION_ReportAnnotatedTypeArgumentToUnannotated;
-
-			case UnlikelyCollectionMethodArgumentType:
-				return OPTION_ReportUnlikelyCollectionMethodArgumentType;
-			case UnlikelyEqualsArgumentType:
-				return OPTION_ReportUnlikelyEqualsArgumentType;
-			case APILeak:
-				return OPTION_ReportAPILeak;
-			case UnstableAutoModuleName:
-				return OPTION_ReportUnstableAutoModuleName;
-			case PreviewFeatureUsed:
-				return OPTION_ReportPreviewFeatures;
-			case SuppressWarningsNotAnalysed:
-				return OPTION_ReportSuppressWarningNotFullyAnalysed;
-		}
-		return null;
-	}
+            // null analysis:
+            case NullSpecViolation -> OPTION_ReportNullSpecViolation;
+            case NullAnnotationInferenceConflict -> OPTION_ReportNullAnnotationInferenceConflict;
+            case NullUncheckedConversion -> OPTION_ReportNullUncheckedConversion;
+            case RedundantNullAnnotation -> OPTION_ReportRedundantNullAnnotation;
+            case NonnullParameterAnnotationDropped -> OPTION_ReportNonnullParameterAnnotationDropped;
+            case PessimisticNullAnalysisForFreeTypeVariables -> OPTION_PessimisticNullAnalysisForFreeTypeVariables;
+            case NonNullTypeVariableFromLegacyInvocation -> OPTION_ReportNonNullTypeVariableFromLegacyInvocation;
+            case AnnotatedTypeArgumentToUnannotated -> OPTION_ReportAnnotatedTypeArgumentToUnannotated;
+            case UnlikelyCollectionMethodArgumentType -> OPTION_ReportUnlikelyCollectionMethodArgumentType;
+            case UnlikelyEqualsArgumentType -> OPTION_ReportUnlikelyEqualsArgumentType;
+            case APILeak -> OPTION_ReportAPILeak;
+            case UnstableAutoModuleName -> OPTION_ReportUnstableAutoModuleName;
+            case PreviewFeatureUsed -> OPTION_ReportPreviewFeatures;
+            case SuppressWarningsNotAnalysed -> OPTION_ReportSuppressWarningNotFullyAnalysed;
+            default -> null;
+        };
+    }
 
 	public static String versionFromJdkLevel(long jdkLevel) {
 		int major = (int)(jdkLevel>>16);
@@ -930,7 +839,7 @@ public class CompilerOptions {
 	}
 
 	public static long releaseToJDKLevel(String release) {
-		if (release != null && release.length() > 0) {
+		if (release != null && !release.isEmpty()) {
 			return releaseToJDKLevel(Integer.parseInt(release));
 		}
 		return 0;
@@ -939,8 +848,7 @@ public class CompilerOptions {
 	public static long releaseToJDKLevel(int release) {
 		int major = release + ClassFileConstants.MAJOR_VERSION_0;
 		if (major <= ClassFileConstants.MAJOR_LATEST_VERSION) {
-			long jdkLevel = ((long) major << 16) + ClassFileConstants.MINOR_VERSION_0;
-			return jdkLevel;
+            return ((long) major << 16) + ClassFileConstants.MINOR_VERSION_0;
 		}
 		return 0;
 	}
@@ -950,28 +858,19 @@ public class CompilerOptions {
 	public static long versionToJdkLevel(String versionID, boolean supportUnreleased) {
 		String version = versionID;
 		// verification is optimized for all versions with same length and same "1." prefix
-		if (version != null && version.length() > 0) {
+		if (version != null && !version.isEmpty()) {
 			if (version.length() >= 3 && version.charAt(0) == '1' && version.charAt(1) == '.') {
-				switch (version.charAt(2)) {
-					case '1':
-						return ClassFileConstants.JDK1_1;
-					case '2':
-						return ClassFileConstants.JDK1_2;
-					case '3':
-						return ClassFileConstants.JDK1_3;
-					case '4':
-						return ClassFileConstants.JDK1_4;
-					case '5':
-						return ClassFileConstants.JDK1_5;
-					case '6':
-						return ClassFileConstants.JDK1_6;
-					case '7':
-						return ClassFileConstants.JDK1_7;
-					case '8':
-						return ClassFileConstants.JDK1_8;
-					default:
-						return 0; // unknown
-				}
+                return switch (version.charAt(2)) {
+                    case '1' -> ClassFileConstants.JDK1_1;
+                    case '2' -> ClassFileConstants.JDK1_2;
+                    case '3' -> ClassFileConstants.JDK1_3;
+                    case '4' -> ClassFileConstants.JDK1_4;
+                    case '5' -> ClassFileConstants.JDK1_5;
+                    case '6' -> ClassFileConstants.JDK1_6;
+                    case '7' -> ClassFileConstants.JDK1_7;
+                    case '8' -> ClassFileConstants.JDK1_8;
+                    default -> 0; // unknown
+                };
 			} else {
 				try {
 					int index = version.indexOf('.');
@@ -1004,243 +903,9 @@ public class CompilerOptions {
 		return 0; // unknown
 	}
 
-	/**
-	 * Return all warning option names for use as keys in compiler options maps.
-	 * @return all warning option names
-	 */
-	public static String[] warningOptionNames() {
-		String[] result = {
-			OPTION_ReportAnnotationSuperInterface,
-			OPTION_ReportAutoboxing,
-			OPTION_ReportComparingIdentical,
-			OPTION_ReportDeadCode,
-			OPTION_ReportDeadCodeInTrivialIfStatement,
-			OPTION_ReportDeprecation,
-			OPTION_ReportDeprecationInDeprecatedCode,
-			OPTION_ReportDeprecationWhenOverridingDeprecatedMethod,
-			OPTION_ReportDiscouragedReference,
-			OPTION_ReportEmptyStatement,
-			OPTION_ReportFallthroughCase,
-			OPTION_ReportFieldHiding,
-			OPTION_ReportFinallyBlockNotCompletingNormally,
-			OPTION_ReportFinalParameterBound,
-			OPTION_ReportForbiddenReference,
-			OPTION_ReportHiddenCatchBlock,
-			OPTION_ReportIncompatibleNonInheritedInterfaceMethod,
-			OPTION_ReportMissingDefaultCase,
-			OPTION_ReportIncompleteEnumSwitch,
-			OPTION_ReportMissingEnumCaseDespiteDefault,
-			OPTION_ReportIndirectStaticAccess,
-			OPTION_ReportInvalidJavadoc,
-			OPTION_ReportInvalidJavadocTags,
-			OPTION_ReportInvalidJavadocTagsDeprecatedRef,
-			OPTION_ReportInvalidJavadocTagsNotVisibleRef,
-			OPTION_ReportInvalidJavadocTagsVisibility,
-			OPTION_ReportLocalVariableHiding,
-			OPTION_ReportMethodCanBePotentiallyStatic,
-			OPTION_ReportMethodCanBeStatic,
-			OPTION_ReportMethodWithConstructorName,
-			OPTION_ReportMissingDeprecatedAnnotation,
-			OPTION_ReportMissingHashCodeMethod,
-			OPTION_ReportMissingJavadocComments,
-			OPTION_ReportMissingJavadocCommentsOverriding,
-			OPTION_ReportMissingJavadocCommentsVisibility,
-			OPTION_ReportMissingJavadocTagDescription,
-			OPTION_ReportMissingJavadocTags,
-			OPTION_ReportMissingJavadocTagsMethodTypeParameters,
-			OPTION_ReportMissingJavadocTagsOverriding,
-			OPTION_ReportMissingJavadocTagsVisibility,
-			OPTION_ReportMissingOverrideAnnotation,
-			OPTION_ReportMissingOverrideAnnotationForInterfaceMethodImplementation,
-			OPTION_ReportMissingSerialVersion,
-			OPTION_ReportMissingSynchronizedOnInheritedMethod,
-			OPTION_ReportNoEffectAssignment,
-			OPTION_ReportNoImplicitStringConversion,
-			OPTION_ReportNonExternalizedStringLiteral,
-			OPTION_ReportNonStaticAccessToStatic,
-			OPTION_ReportNullReference,
-			OPTION_ReportOverridingMethodWithoutSuperInvocation,
-			OPTION_ReportOverridingPackageDefaultMethod,
-			OPTION_ReportParameterAssignment,
-			OPTION_ReportPossibleAccidentalBooleanAssignment,
-			OPTION_ReportPotentialNullReference,
-			OPTION_ReportRawTypeReference,
-			OPTION_ReportRedundantNullCheck,
-			OPTION_ReportRedundantSuperinterface,
-			OPTION_ReportRedundantSpecificationOfTypeArguments,
-			OPTION_ReportSpecialParameterHidingField,
-			OPTION_ReportSyntheticAccessEmulation,
-			OPTION_ReportTasks,
-			OPTION_ReportTypeParameterHiding,
-			OPTION_ReportUnavoidableGenericTypeProblems,
-			OPTION_ReportUncheckedTypeOperation,
-			OPTION_ReportUndocumentedEmptyBlock,
-			OPTION_ReportUnhandledWarningToken,
-			OPTION_ReportUnnecessaryElse,
-			OPTION_ReportUnnecessaryTypeCheck,
-			OPTION_ReportUnqualifiedFieldAccess,
-			OPTION_ReportUnusedDeclaredThrownException,
-			OPTION_ReportUnusedDeclaredThrownExceptionExemptExceptionAndThrowable,
-			OPTION_ReportUnusedDeclaredThrownExceptionIncludeDocCommentReference,
-			OPTION_ReportUnusedDeclaredThrownExceptionWhenOverriding,
-			OPTION_ReportUnusedImport,
-			OPTION_ReportUnusedLabel,
-			OPTION_ReportUnusedLocal,
-			OPTION_ReportUnusedObjectAllocation,
-			OPTION_ReportUnusedParameter,
-			OPTION_ReportUnusedExceptionParameter,
-			OPTION_ReportUnusedParameterIncludeDocCommentReference,
-			OPTION_ReportUnusedParameterWhenImplementingAbstract,
-			OPTION_ReportUnusedParameterWhenOverridingConcrete,
-			OPTION_ReportUnusedPrivateMember,
-			OPTION_ReportUnusedTypeArgumentsForMethodInvocation,
-			OPTION_ReportUnusedWarningToken,
-			OPTION_ReportVarargsArgumentNeedCast,
-
-			// resource leak analysis:
-			OPTION_ReportUnclosedCloseable,
-			OPTION_ReportPotentiallyUnclosedCloseable,
-			OPTION_ReportExplicitlyClosedAutoCloseable,
-			OPTION_ReportInsufficientResourceManagement,
-			OPTION_ReportIncompatibleOwningContract,
-			OPTION_AnnotationBasedResourceAnalysis,
-			OPTION_OwningAnnotationName,
-			OPTION_NotOwningAnnotationName,
-
-			// null analysis:
-			OPTION_AnnotationBasedNullAnalysis,
-			OPTION_NonNullAnnotationName,
-			OPTION_NullableAnnotationName,
-			OPTION_NonNullByDefaultAnnotationName,
-			OPTION_ReportMissingNonNullByDefaultAnnotation,
-			OPTION_ReportNullSpecViolation,
-			OPTION_ReportNullAnnotationInferenceConflict,
-			OPTION_ReportNullUncheckedConversion,
-			OPTION_ReportRedundantNullAnnotation,
-			OPTION_SyntacticNullAnalysisForFields,
-			OPTION_ReportUnusedTypeParameter,
-			OPTION_InheritNullAnnotations,
-			OPTION_ReportNonnullParameterAnnotationDropped,
-			OPTION_ReportAnnotatedTypeArgumentToUnannotated,
-
-			OPTION_ReportUnlikelyCollectionMethodArgumentType,
-			OPTION_ReportUnlikelyEqualsArgumentType,
-			OPTION_ReportAPILeak,
-			OPTION_ReportPreviewFeatures,
-			OPTION_ReportSuppressWarningNotFullyAnalysed
-		};
-		return result;
-	}
-
-	/**
-	 * For suppressable warnings
-	 */
-	public static String warningTokenFromIrritant(int irritant) {
-		// keep in sync with warningTokens and warningTokenToIrritant
-		switch (irritant) {
-			case (InvalidJavadoc | UsingDeprecatedAPI) :
-			case UsingDeprecatedAPI :
-				return "deprecation"; //$NON-NLS-1$
-			case (InvalidJavadoc | UsingTerminallyDeprecatedAPI) :
-			case UsingTerminallyDeprecatedAPI :
-				return "removal"; //$NON-NLS-1$
-			case FinallyBlockNotCompleting :
-				return "finally"; //$NON-NLS-1$
-			case FieldHiding :
-			case LocalVariableHiding :
-			case MaskedCatchBlock :
-				return "hiding"; //$NON-NLS-1$
-			case NonExternalizedString :
-				return "nls"; //$NON-NLS-1$
-			case UnnecessaryTypeCheck :
-				return "cast"; //$NON-NLS-1$
-			case IndirectStaticAccess :
-			case NonStaticAccessToStatic :
-				return "static-access"; //$NON-NLS-1$
-			case AccessEmulation :
-				return "synthetic-access"; //$NON-NLS-1$
-			case UnqualifiedFieldAccess :
-				return "unqualified-field-access"; //$NON-NLS-1$
-			case UncheckedTypeOperation :
-				return "unchecked"; //$NON-NLS-1$
-			case MissingSerialVersion :
-				return "serial"; //$NON-NLS-1$
-			case AutoBoxing :
-				return "boxing"; //$NON-NLS-1$
-			case TypeHiding :
-				return "hiding"; //$NON-NLS-1$
-			case MissingEnumConstantCase :
-			case MissingDefaultCase :
-				return "incomplete-switch"; //$NON-NLS-1$
-			case MissingDeprecatedAnnotation :
-				return "dep-ann"; //$NON-NLS-1$
-			case RawTypeReference :
-				return "rawtypes"; //$NON-NLS-1$
-			case DeadCode :
-			case RedundantSuperinterface :
-			case RedundantSpecificationOfTypeArguments :
-			case UnusedDeclaredThrownException :
-			case UnusedExceptionParameter :
-			case UnusedImport :
-			case UnusedLabel :
-			case UnusedLocalVariable :
-			case UnusedLambdaParameter :
-			case UnusedObjectAllocation :
-			case UnusedArgument : 		// OPTION_ReportUnusedParameter
-			case UnusedPrivateMember :
-			case UnusedTypeArguments : 	// OPTION_ReportUnusedTypeArgumentsForMethodInvocation
-			case UnusedTypeParameter:
-				return "unused"; //$NON-NLS-1$
-			case DiscouragedReference :
-			case ForbiddenReference :
-				return "restriction"; //$NON-NLS-1$
-			case NullReference :
-			case PotentialNullReference :
-			case RedundantNullCheck :
-			case NullSpecViolation :
-			case NullAnnotationInferenceConflict :
-			case NullUncheckedConversion :
-			case RedundantNullAnnotation :
-			case MissingNonNullByDefaultAnnotation:
-			case NonnullParameterAnnotationDropped:
-			case PessimisticNullAnalysisForFreeTypeVariables:
-			case NonNullTypeVariableFromLegacyInvocation:
-			case AnnotatedTypeArgumentToUnannotated:
-				return "null"; //$NON-NLS-1$
-			case FallthroughCase :
-				return "fallthrough"; //$NON-NLS-1$
-			case OverridingMethodWithoutSuperInvocation :
-				return "super"; //$NON-NLS-1$
-			case MethodCanBeStatic :
-			case MethodCanBePotentiallyStatic :
-				return "static-method"; //$NON-NLS-1$
-			case PotentiallyUnclosedCloseable:
-			case UnclosedCloseable:
-			case ExplicitlyClosedAutoCloseable:
-			case InsufficientResourceManagement:
-				return "resource"; //$NON-NLS-1$
-			case InvalidJavadoc :
-			case MissingJavadocComments :
-			case MissingJavadocTags:
-				return "javadoc"; //$NON-NLS-1$
-			case MissingSynchronizedModifierInInheritedMethod:
-				return "sync-override";	 //$NON-NLS-1$
-			case UnlikelyEqualsArgumentType:
-			case UnlikelyCollectionMethodArgumentType:
-				return "unlikely-arg-type"; //$NON-NLS-1$
-			case APILeak:
-				return "exports"; //$NON-NLS-1$
-			case UnstableAutoModuleName:
-				return "module"; //$NON-NLS-1$
-			case PreviewFeatureUsed:
-				return "preview"; //$NON-NLS-1$
-		}
-		return null;
-	}
-
-	public static IrritantSet warningTokenToIrritants(String warningToken) {
+    public static IrritantSet warningTokenToIrritants(String warningToken) {
 		// keep in sync with warningTokens and warningTokenFromIrritant
-		if (warningToken == null || warningToken.length() == 0) return null;
+		if (warningToken == null || warningToken.isEmpty()) return null;
 		switch (warningToken.charAt(0)) {
 			case 'a' :
 				if ("all".equals(warningToken)) //$NON-NLS-1$
@@ -1298,40 +963,82 @@ public class CompilerOptions {
 				}
 				break;
 			case 'r' :
-				if ("rawtypes".equals(warningToken)) //$NON-NLS-1$
-					return IrritantSet.RAW;
-				if ("resource".equals(warningToken)) //$NON-NLS-1$
-					return IrritantSet.RESOURCE;
-				if ("restriction".equals(warningToken)) //$NON-NLS-1$
-					return IrritantSet.RESTRICTION;
-				if ("removal".equals(warningToken)) //$NON-NLS-1$
-					return IrritantSet.TERMINAL_DEPRECATION;
-				break;
+                switch (warningToken) {
+                    case "rawtypes" -> {
+                        //$NON-NLS-1$
+                        return IrritantSet.RAW;
+                        //$NON-NLS-1$
+                    }
+                    case "resource" -> {
+                        //$NON-NLS-1$
+                        return IrritantSet.RESOURCE;
+                        //$NON-NLS-1$
+                    }
+                    case "restriction" -> {
+                        //$NON-NLS-1$
+                        return IrritantSet.RESTRICTION;
+                        //$NON-NLS-1$
+                    }
+                    case "removal" -> {
+                        //$NON-NLS-1$
+                        return IrritantSet.TERMINAL_DEPRECATION;
+                    }
+                }
+                break;
 			case 's' :
-				if ("serial".equals(warningToken)) //$NON-NLS-1$
-					return IrritantSet.SERIAL;
-				if ("static-access".equals(warningToken)) //$NON-NLS-1$
-					return IrritantSet.STATIC_ACCESS;
-				if ("static-method".equals(warningToken)) //$NON-NLS-1$
-					return IrritantSet.STATIC_METHOD;
-				if ("synthetic-access".equals(warningToken)) //$NON-NLS-1$
-					return IrritantSet.SYNTHETIC_ACCESS;
-				if ("super".equals(warningToken)) { //$NON-NLS-1$
-					return IrritantSet.SUPER;
-				}
-				if ("sync-override".equals(warningToken)) //$NON-NLS-1$
-					return IrritantSet.SYNCHRONIZED;
-				break;
+                switch (warningToken) {
+                    case "serial" -> {
+                        //$NON-NLS-1$
+                        return IrritantSet.SERIAL;
+                        //$NON-NLS-1$
+                    }
+                    case "static-access" -> {
+                        //$NON-NLS-1$
+                        return IrritantSet.STATIC_ACCESS;
+                        //$NON-NLS-1$
+                    }
+                    case "static-method" -> {
+                        //$NON-NLS-1$
+                        return IrritantSet.STATIC_METHOD;
+                        //$NON-NLS-1$
+                    }
+                    case "synthetic-access" -> {
+                        //$NON-NLS-1$
+                        return IrritantSet.SYNTHETIC_ACCESS;
+                        //$NON-NLS-1$
+                    }
+                    case "super" -> {
+                        return IrritantSet.SUPER;  //$NON-NLS-1$
+                    }
+                    case "sync-override" -> {
+                        //$NON-NLS-1$
+                        return IrritantSet.SYNCHRONIZED;
+                    }
+                }
+                break;
 			case 'u' :
-				if ("unused".equals(warningToken)) //$NON-NLS-1$
-					return IrritantSet.UNUSED;
-				if ("unchecked".equals(warningToken)) //$NON-NLS-1$
-					return IrritantSet.UNCHECKED;
-				if ("unqualified-field-access".equals(warningToken)) //$NON-NLS-1$
-					return IrritantSet.UNQUALIFIED_FIELD_ACCESS;
-				if ("unlikely-arg-type".equals(warningToken)) //$NON-NLS-1$
-					return IrritantSet.UNLIKELY_ARGUMENT_TYPE;
-				break;
+                switch (warningToken) {
+                    case "unused" -> {
+                        //$NON-NLS-1$
+                        return IrritantSet.UNUSED;
+                        //$NON-NLS-1$
+                    }
+                    case "unchecked" -> {
+                        //$NON-NLS-1$
+                        return IrritantSet.UNCHECKED;
+                        //$NON-NLS-1$
+                    }
+                    case "unqualified-field-access" -> {
+                        //$NON-NLS-1$
+                        return IrritantSet.UNQUALIFIED_FIELD_ACCESS;
+                        //$NON-NLS-1$
+                    }
+                    case "unlikely-arg-type" -> {
+                        //$NON-NLS-1$
+                        return IrritantSet.UNLIKELY_ARGUMENT_TYPE;
+                    }
+                }
+                break;
 		}
 		return null;
 	}
@@ -1531,16 +1238,12 @@ public class CompilerOptions {
 		return IGNORE;
 	}
 	public String getVisibilityString(int level) {
-		switch (level & ExtraCompilerModifiers.AccVisibilityMASK) {
-			case ClassFileConstants.AccPublic:
-				return PUBLIC;
-			case ClassFileConstants.AccProtected:
-				return PROTECTED;
-			case ClassFileConstants.AccPrivate:
-				return PRIVATE;
-			default:
-				return DEFAULT;
-		}
+        return switch (level & ExtraCompilerModifiers.AccVisibilityMASK) {
+            case ClassFileConstants.AccPublic -> PUBLIC;
+            case ClassFileConstants.AccProtected -> PROTECTED;
+            case ClassFileConstants.AccPrivate -> PRIVATE;
+            default -> DEFAULT;
+        };
 	}
 
 	public boolean isAnyEnabled(IrritantSet irritants) {
@@ -1790,11 +1493,10 @@ public class CompilerOptions {
 		}
 		if ((optionValue = optionsMap.get(OPTION_Encoding)) != null) {
 			this.defaultEncoding = null;
-			String stringValue = optionValue;
-			if (stringValue.length() > 0){
+            if (!optionValue.isEmpty()){
 				try {
-					new InputStreamReader(new ByteArrayInputStream(new byte[0]), stringValue);
-					this.defaultEncoding = stringValue;
+					new InputStreamReader(new ByteArrayInputStream(new byte[0]), optionValue);
+					this.defaultEncoding = optionValue;
 				} catch(UnsupportedEncodingException e){
 					// ignore unsupported encoding
 				}
@@ -1843,28 +1545,25 @@ public class CompilerOptions {
 			}
 		}
 		if ((optionValue = optionsMap.get(OPTION_MaxProblemPerUnit)) != null) {
-			String stringValue = optionValue;
-			try {
-				int val = Integer.parseInt(stringValue);
+            try {
+				int val = Integer.parseInt(optionValue);
 				if (val >= 0) this.maxProblemsPerUnit = val;
 			} catch(NumberFormatException e){
 				// ignore ill-formatted limit
 			}
 		}
 		if ((optionValue = optionsMap.get(OPTION_TaskTags)) != null) {
-			String stringValue = optionValue;
-			if (stringValue.length() == 0) {
+            if (optionValue.isEmpty()) {
 				this.taskTags = null;
 			} else {
-				this.taskTags = CharOperation.splitAndTrimOn(',', stringValue.toCharArray());
+				this.taskTags = CharOperation.splitAndTrimOn(',', optionValue.toCharArray());
 			}
 		}
 		if ((optionValue = optionsMap.get(OPTION_TaskPriorities)) != null) {
-			String stringValue = optionValue;
-			if (stringValue.length() == 0) {
+            if (optionValue.isEmpty()) {
 				this.taskPriorities = null;
 			} else {
-				this.taskPriorities = CharOperation.splitAndTrimOn(',', stringValue.toCharArray());
+				this.taskPriorities = CharOperation.splitAndTrimOn(',', optionValue.toCharArray());
 			}
 		}
 		if ((optionValue = optionsMap.get(OPTION_TaskCaseSensitive)) != null) {
@@ -2003,13 +1702,9 @@ public class CompilerOptions {
 		if ((optionValue = optionsMap.get(OPTION_ReportExplicitlyClosedAutoCloseable)) != null) updateSeverity(ExplicitlyClosedAutoCloseable, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportInsufficientResourceManagement)) != null) updateSeverity(InsufficientResourceManagement, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportIncompatibleOwningContract)) != null) updateSeverity(IncompatibleOwningContract, optionValue);
-		if (getSeverity(UnclosedCloseable) == ProblemSeverities.Ignore
-				&& getSeverity(PotentiallyUnclosedCloseable) == ProblemSeverities.Ignore
-				&& getSeverity(ExplicitlyClosedAutoCloseable) == ProblemSeverities.Ignore) {
-			this.analyseResourceLeaks = false;
-		} else {
-			this.analyseResourceLeaks = true;
-		}
+        this.analyseResourceLeaks = getSeverity(UnclosedCloseable) != ProblemSeverities.Ignore
+            || getSeverity(PotentiallyUnclosedCloseable) != ProblemSeverities.Ignore
+            || getSeverity(ExplicitlyClosedAutoCloseable) != ProblemSeverities.Ignore;
 		if ((optionValue = optionsMap.get(OPTION_AnnotationBasedResourceAnalysis)) != null) {
 			this.storeAnnotations |= this.isAnnotationBasedResourceAnalysisEnabled = ENABLED.equals(optionValue);
 		}
@@ -2074,11 +1769,8 @@ public class CompilerOptions {
 			if ((optionValue = optionsMap.get(OPTION_ReportNonnullParameterAnnotationDropped)) != null) updateSeverity(NonnullParameterAnnotationDropped, optionValue);
 			if ((optionValue = optionsMap.get(OPTION_ReportAnnotatedTypeArgumentToUnannotated)) != null) updateSeverity(AnnotatedTypeArgumentToUnannotated, optionValue);
 			if ((optionValue = optionsMap.get(OPTION_PessimisticNullAnalysisForFreeTypeVariables)) != null) updateSeverity(PessimisticNullAnalysisForFreeTypeVariables, optionValue);
-			if (getSeverity(PessimisticNullAnalysisForFreeTypeVariables) == ProblemSeverities.Ignore) {
-				this.pessimisticNullAnalysisForFreeTypeVariablesEnabled = false;
-			} else {
-				this.pessimisticNullAnalysisForFreeTypeVariablesEnabled = true;
-			}
+            this.pessimisticNullAnalysisForFreeTypeVariablesEnabled =
+                getSeverity(PessimisticNullAnalysisForFreeTypeVariables) != ProblemSeverities.Ignore;
 			if ((optionValue = optionsMap.get(OPTION_ReportNonNullTypeVariableFromLegacyInvocation)) != null) updateSeverity(NonNullTypeVariableFromLegacyInvocation, optionValue);
 		}
 
@@ -2094,15 +1786,12 @@ public class CompilerOptions {
 			updateSeverity(InvalidJavadoc, optionValue);
 		}
 		if ( (optionValue = optionsMap.get(OPTION_ReportInvalidJavadocTagsVisibility)) != null) {
-			if (PUBLIC.equals(optionValue)) {
-				this.reportInvalidJavadocTagsVisibility = ClassFileConstants.AccPublic;
-			} else if (PROTECTED.equals(optionValue)) {
-				this.reportInvalidJavadocTagsVisibility = ClassFileConstants.AccProtected;
-			} else if (DEFAULT.equals(optionValue)) {
-				this.reportInvalidJavadocTagsVisibility = ClassFileConstants.AccDefault;
-			} else if (PRIVATE.equals(optionValue)) {
-				this.reportInvalidJavadocTagsVisibility = ClassFileConstants.AccPrivate;
-			}
+            switch (optionValue) {
+                case PUBLIC -> this.reportInvalidJavadocTagsVisibility = ClassFileConstants.AccPublic;
+                case PROTECTED -> this.reportInvalidJavadocTagsVisibility = ClassFileConstants.AccProtected;
+                case DEFAULT -> this.reportInvalidJavadocTagsVisibility = ClassFileConstants.AccDefault;
+                case PRIVATE -> this.reportInvalidJavadocTagsVisibility = ClassFileConstants.AccPrivate;
+            }
 		}
 		if ((optionValue = optionsMap.get(OPTION_ReportInvalidJavadocTags)) != null) {
 			if (ENABLED.equals(optionValue)) {
@@ -2129,15 +1818,12 @@ public class CompilerOptions {
 			updateSeverity(MissingJavadocTags, optionValue);
 		}
 		if ((optionValue = optionsMap.get(OPTION_ReportMissingJavadocTagsVisibility)) != null) {
-			if (PUBLIC.equals(optionValue)) {
-				this.reportMissingJavadocTagsVisibility = ClassFileConstants.AccPublic;
-			} else if (PROTECTED.equals(optionValue)) {
-				this.reportMissingJavadocTagsVisibility = ClassFileConstants.AccProtected;
-			} else if (DEFAULT.equals(optionValue)) {
-				this.reportMissingJavadocTagsVisibility = ClassFileConstants.AccDefault;
-			} else if (PRIVATE.equals(optionValue)) {
-				this.reportMissingJavadocTagsVisibility = ClassFileConstants.AccPrivate;
-			}
+            switch (optionValue) {
+                case PUBLIC -> this.reportMissingJavadocTagsVisibility = ClassFileConstants.AccPublic;
+                case PROTECTED -> this.reportMissingJavadocTagsVisibility = ClassFileConstants.AccProtected;
+                case DEFAULT -> this.reportMissingJavadocTagsVisibility = ClassFileConstants.AccDefault;
+                case PRIVATE -> this.reportMissingJavadocTagsVisibility = ClassFileConstants.AccPrivate;
+            }
 		}
 		if ((optionValue = optionsMap.get(OPTION_ReportMissingJavadocTagsOverriding)) != null) {
 			if (ENABLED.equals(optionValue)) {
@@ -2160,15 +1846,12 @@ public class CompilerOptions {
 			this.reportMissingJavadocTagDescription = optionValue;
 		}
 		if ((optionValue = optionsMap.get(OPTION_ReportMissingJavadocCommentsVisibility)) != null) {
-			if (PUBLIC.equals(optionValue)) {
-				this.reportMissingJavadocCommentsVisibility = ClassFileConstants.AccPublic;
-			} else if (PROTECTED.equals(optionValue)) {
-				this.reportMissingJavadocCommentsVisibility = ClassFileConstants.AccProtected;
-			} else if (DEFAULT.equals(optionValue)) {
-				this.reportMissingJavadocCommentsVisibility = ClassFileConstants.AccDefault;
-			} else if (PRIVATE.equals(optionValue)) {
-				this.reportMissingJavadocCommentsVisibility = ClassFileConstants.AccPrivate;
-			}
+            switch (optionValue) {
+                case PUBLIC -> this.reportMissingJavadocCommentsVisibility = ClassFileConstants.AccPublic;
+                case PROTECTED -> this.reportMissingJavadocCommentsVisibility = ClassFileConstants.AccProtected;
+                case DEFAULT -> this.reportMissingJavadocCommentsVisibility = ClassFileConstants.AccDefault;
+                case PRIVATE -> this.reportMissingJavadocCommentsVisibility = ClassFileConstants.AccPrivate;
+            }
 		}
 		if ((optionValue = optionsMap.get(OPTION_ReportMissingJavadocCommentsOverriding)) != null) {
 			if (ENABLED.equals(optionValue)) {

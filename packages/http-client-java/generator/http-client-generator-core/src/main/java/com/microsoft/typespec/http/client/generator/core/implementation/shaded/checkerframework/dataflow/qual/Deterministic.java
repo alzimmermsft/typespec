@@ -22,11 +22,13 @@ import java.lang.annotation.Target;
  * non-{@code @}{@link SideEffectFree} method call intervenes). For example, the following code
  * never suffers a null pointer exception, so the Nullness Checker need not issue a warning:
  *
- * <pre>{@code
+ * <pre>
+ * {@code
  * if (x.myDeterministicMethod() != null) {
  *   x.myDeterministicMethod().hashCode();
  * }
- * }</pre>
+ * }
+ * </pre>
  *
  * <p>Note that {@code @Deterministic} guarantees that the result is identical according to {@code
  * ==}, <b>not</b> just equal according to {@code equals()}. This means that writing
@@ -40,16 +42,18 @@ import java.lang.annotation.Target;
  * of the following Java constructs:
  *
  * <ol>
- *   <li>Assignment to any expression, except for local variables and method parameters.<br>
- *       (Note that storing into an array element, such a {@code a[i] = x}, is not an assignment to
- *       a variable and is therefore forbidden.)
- *   <li>A method invocation of a method that is not {@link Deterministic}.
- *   <li>Construction of a new object.
- *   <li>Catching any exceptions. This restriction prevents a method from obtaining a reference to a
- *       newly-created exception object and using these objects (or some property thereof) to change
- *       the method's return value. For instance, the following method must be forbidden.
- *       <!-- "<code>" instead of "{@code ...}" because of at-sign at beginning of line -->
- *       <pre><code>@Deterministic
+ * <li>Assignment to any expression, except for local variables and method parameters.<br>
+ * (Note that storing into an array element, such a {@code a[i] = x}, is not an assignment to
+ * a variable and is therefore forbidden.)
+ * <li>A method invocation of a method that is not {@link Deterministic}.
+ * <li>Construction of a new object.
+ * <li>Catching any exceptions. This restriction prevents a method from obtaining a reference to a
+ * newly-created exception object and using these objects (or some property thereof) to change
+ * the method's return value. For instance, the following method must be forbidden.
+ * <!-- "<code>" instead of "{@code ...}" because of at-sign at beginning of line -->
+ * 
+ * <pre>
+ * <code>@Deterministic
  * int f() {
  *   try {
  *     int b = 0;
@@ -59,7 +63,9 @@ import java.lang.annotation.Target;
  *   }
  *   return 0;
  * }
- * </code></pre>
+ * </code>
+ * </pre>
+ * 
  * </ol>
  *
  * When a constructor is annotated as {@code Deterministic} (or {@code @Pure}), that means that all
@@ -82,11 +88,12 @@ import java.lang.annotation.Target;
  * {@code @InheritedAnnotation}.
  *
  * @checker_framework.manual #type-refinement-purity Side effects, determinism, purity, and
- *     flow-sensitive analysis
+ * flow-sensitive analysis
  */
 // @InheritedAnnotation cannot be written here, because "dataflow" project cannot depend on
 // "framework" project.
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
-public @interface Deterministic {}
+@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
+public @interface Deterministic {
+}

@@ -30,6 +30,7 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  *     if (x != null)
  *         [do IFoo things with x]
  * </pre>
+ * 
  * <p>
  * This interface can be used without OSGi running.
  * </p>
@@ -44,18 +45,18 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * @see Adapters
  */
 public interface IAdaptable {
-	/**
-	 * Returns an object which is an instance of the given class associated with
-	 * this object. Returns <code>null</code> if no such object can be found.
-	 * <p>
-	 * Clients may implement this method but should generally call
-	 * {@link Adapters#adapt(Object, Class, boolean)} rather than invoking it
-	 * directly.
-	 *
-	 * @param adapter the adapter class to look up
-	 * @param <T>     the class type
-	 * @return a object of the given class, or <code>null</code> if this object does
-	 *         not have an adapter for the given class
-	 */
-	public <T> T getAdapter(Class<T> adapter);
+    /**
+     * Returns an object which is an instance of the given class associated with
+     * this object. Returns <code>null</code> if no such object can be found.
+     * <p>
+     * Clients may implement this method but should generally call
+     * {@link Adapters#adapt(Object, Class, boolean)} rather than invoking it
+     * directly.
+     *
+     * @param adapter the adapter class to look up
+     * @param <T> the class type
+     * @return a object of the given class, or <code>null</code> if this object does
+     * not have an adapter for the given class
+     */
+    public <T> T getAdapter(Class<T> adapter);
 }

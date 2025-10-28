@@ -14,7 +14,7 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.search.matching;
 
 import java.io.IOException;
-import java.util.regex.Pattern;
+
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CharOperation;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.search.IJavaSearchConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.search.SearchPattern;
@@ -28,11 +28,8 @@ public char[] simpleName;
 public char[] pkg;
 public char[][] enclosingTypeNames;
 public char[][] moduleNames = null;
-/* package */ Pattern[] modulePatterns = null;
-public boolean moduleGraph = false;
-/* package */ char[][] moduleGraphElements = null;
 
-// set to CLASS_SUFFIX for only matching classes
+    // set to CLASS_SUFFIX for only matching classes
 // set to INTERFACE_SUFFIX for only matching interfaces
 // set to ENUM_SUFFIX for only matching enums
 // set to ANNOTATION_TYPE_SUFFIX for only matching annotation types

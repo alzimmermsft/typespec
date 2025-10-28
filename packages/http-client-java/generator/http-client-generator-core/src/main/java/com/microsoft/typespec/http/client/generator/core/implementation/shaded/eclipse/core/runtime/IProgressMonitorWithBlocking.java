@@ -37,6 +37,6 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 @Deprecated
 public interface IProgressMonitorWithBlocking extends IProgressMonitor {
-	// content moved to IProgressMonitor
+    // content moved to IProgressMonitor
 
 }

@@ -1,10 +1,10 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.mustcall.qual;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 
 /**
  * The top qualifier in the Must Call type hierarchy. It represents a type that might have an
@@ -18,6 +18,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  * @checker_framework.manual #must-call-checker Must Call Checker
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
-@SubtypeOf({})
-public @interface MustCallUnknown {}
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
+@SubtypeOf({ })
+public @interface MustCallUnknown {
+}

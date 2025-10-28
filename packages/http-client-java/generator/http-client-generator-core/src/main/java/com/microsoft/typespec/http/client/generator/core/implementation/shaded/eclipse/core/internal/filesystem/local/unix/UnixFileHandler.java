@@ -21,18 +21,18 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * Native handler that delegates to UnixFileNatives
  */
 public class UnixFileHandler extends NativeHandler {
-	@Override
-	public int getSupportedAttributes() {
-		return UnixFileNatives.getSupportedAttributes();
-	}
+    @Override
+    public int getSupportedAttributes() {
+        return UnixFileNatives.getSupportedAttributes();
+    }
 
-	@Override
-	public FileInfo fetchFileInfo(String fileName) {
-		return UnixFileNatives.fetchFileInfo(fileName);
-	}
+    @Override
+    public FileInfo fetchFileInfo(String fileName) {
+        return UnixFileNatives.fetchFileInfo(fileName);
+    }
 
-	@Override
-	public boolean putFileInfo(String fileName, IFileInfo info, int options) {
-		return UnixFileNatives.putFileInfo(fileName, info, options);
-	}
+    @Override
+    public boolean putFileInfo(String fileName, IFileInfo info, int options) {
+        return UnixFileNatives.putFileInfo(fileName, info, options);
+    }
 }

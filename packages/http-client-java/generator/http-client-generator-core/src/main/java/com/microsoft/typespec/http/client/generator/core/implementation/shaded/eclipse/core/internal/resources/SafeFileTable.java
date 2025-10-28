@@ -15,85 +15,85 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.resources;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.utils.Messages;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResourceStatus;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.Set;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.utils.Messages;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResourceStatus;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 
 /**
  * Represents a table of keys and paths used by a plugin to maintain its
  * configuration files' names.
  */
 public class SafeFileTable {
-	protected IPath location;
-	protected Properties table;
-	private final Workspace workspace;
+    protected IPath location;
+    protected Properties table;
+    private final Workspace workspace;
 
-	public SafeFileTable(String pluginId, Workspace workspace) throws CoreException {
-		this.workspace = workspace;
-		location = getWorkspace().getMetaArea().getSafeTableLocationFor(pluginId);
-		restore();
-	}
+    public SafeFileTable(String pluginId, Workspace workspace) throws CoreException {
+        this.workspace = workspace;
+        location = getWorkspace().getMetaArea().getSafeTableLocationFor(pluginId);
+        restore();
+    }
 
-	public IPath[] getFiles() {
-		Set<Object> set = table.keySet();
-		String[] keys = set.toArray(new String[set.size()]);
-		IPath[] files = new IPath[keys.length];
-		for (int i = 0; i < keys.length; i++) {
-			files[i] = IPath.fromOSString(keys[i]);
-		}
-		return files;
-	}
+    public IPath[] getFiles() {
+        Set<Object> set = table.keySet();
+        String[] keys = set.toArray(new String[set.size()]);
+        IPath[] files = new IPath[keys.length];
+        for (int i = 0; i < keys.length; i++) {
+            files[i] = IPath.fromOSString(keys[i]);
+        }
+        return files;
+    }
 
-	protected Workspace getWorkspace() {
-		return workspace;
-	}
+    protected Workspace getWorkspace() {
+        return workspace;
+    }
 
-	public IPath lookup(IPath file) {
-		String result = table.getProperty(file.toOSString());
-		return result == null ? null : IPath.fromOSString(result);
-	}
+    public IPath lookup(IPath file) {
+        String result = table.getProperty(file.toOSString());
+        return result == null ? null : IPath.fromOSString(result);
+    }
 
-	public void map(IPath file, IPath aLocation) {
-		if (aLocation == null) {
-			table.remove(file);
-		} else {
-			table.setProperty(file.toOSString(), aLocation.toOSString());
-		}
-	}
+    public void map(IPath file, IPath aLocation) {
+        if (aLocation == null) {
+            table.remove(file);
+        } else {
+            table.setProperty(file.toOSString(), aLocation.toOSString());
+        }
+    }
 
-	public void restore() throws CoreException {
-		java.io.File target = location.toFile();
-		table = new Properties();
-		if (!target.exists()) {
-			return;
-		}
-		try (FileInputStream input = new FileInputStream(target)) {
-			table.load(input);
-		} catch (IOException e) {
-			String message = Messages.resources_exSafeRead;
-			throw new ResourceException(IResourceStatus.INTERNAL_ERROR, null, message, e);
-		}
-	}
+    public void restore() throws CoreException {
+        java.io.File target = location.toFile();
+        table = new Properties();
+        if (!target.exists()) {
+            return;
+        }
+        try (FileInputStream input = new FileInputStream(target)) {
+            table.load(input);
+        } catch (IOException e) {
+            String message = Messages.resources_exSafeRead;
+            throw new ResourceException(IResourceStatus.INTERNAL_ERROR, null, message, e);
+        }
+    }
 
-	public void save() throws CoreException {
-		java.io.File target = location.toFile();
-		try (FileOutputStream output = new FileOutputStream(target)) {
-			table.store(output, "safe table"); //$NON-NLS-1$
-		} catch (IOException e) {
-			String message = Messages.resources_exSafeSave;
-			throw new ResourceException(IResourceStatus.INTERNAL_ERROR, null, message, e);
-		}
-	}
+    public void save() throws CoreException {
+        java.io.File target = location.toFile();
+        try (FileOutputStream output = new FileOutputStream(target)) {
+            table.store(output, "safe table"); //$NON-NLS-1$
+        } catch (IOException e) {
+            String message = Messages.resources_exSafeSave;
+            throw new ResourceException(IResourceStatus.INTERNAL_ERROR, null, message, e);
+        }
+    }
 
-	public void setLocation(IPath location) {
-		if (location != null) {
-			this.location = location;
-		}
-	}
+    public void setLocation(IPath location) {
+        if (location != null) {
+            this.location = location;
+        }
+    }
 }

@@ -123,11 +123,6 @@ public class LocalVariable extends SourceRefElement implements ILocalVariable {
 	}
 
 	@Override
-	protected void generateInfos(IElementInfo info, Map<IJavaElement, IElementInfo> newElements, IProgressMonitor pm) {
-		// a local variable has no info
-	}
-
-	@Override
 	public IAnnotation getAnnotation(String annotationName) {
 		for (IAnnotation annotation : this.annotations) {
 			if (annotation.getElementName().equals(annotationName))

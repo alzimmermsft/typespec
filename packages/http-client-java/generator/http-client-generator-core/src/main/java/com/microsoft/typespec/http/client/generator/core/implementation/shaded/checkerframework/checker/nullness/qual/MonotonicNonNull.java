@@ -1,12 +1,12 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.MonotonicQualifier;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.MonotonicQualifier;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 
 /**
  * Indicates that once the field (or variable) becomes non-null, it never becomes null again. There
@@ -18,8 +18,8 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  * <p>A monotonically non-null field has these two properties:
  *
  * <ol>
- *   <li>The field may be assigned only non-null values.
- *   <li>The field may be re-assigned as often as desired.
+ * <li>The field may be assigned only non-null values.
+ * <li>The field may be re-assigned as often as desired.
  * </ol>
  *
  * <p>When the field is first read within a method, the field cannot be assumed to be non-null.
@@ -29,7 +29,8 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  *
  * <p>{@code @MonotonicNonNull} gives stronger guarantees than {@link Nullable}. After a check that
  * a {@link Nullable} field holds a non-null value, only accesses until the next non-{@link
- * com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.dataflow.qual.SideEffectFree} method is called can be assumed to be
+ * com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.dataflow.qual.SideEffectFree}
+ * method is called can be assumed to be
  * non-null.
  *
  * <p>To indicate that a {@code @MonotonicNonNull} or {@code @Nullable} field is non-null whenever a
@@ -48,4 +49,5 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @Target(ElementType.TYPE_USE)
 @SubtypeOf(Nullable.class)
 @MonotonicQualifier(NonNull.class)
-public @interface MonotonicNonNull {}
+public @interface MonotonicNonNull {
+}

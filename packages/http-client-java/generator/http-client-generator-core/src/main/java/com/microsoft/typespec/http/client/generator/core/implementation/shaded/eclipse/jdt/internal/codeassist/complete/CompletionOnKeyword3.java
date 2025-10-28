@@ -18,35 +18,42 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 
 public class CompletionOnKeyword3 extends SingleNameReference implements CompletionOnKeyword {
-	private final char[][] possibleKeywords;
-	private final boolean tryOrCatch;
-	public CompletionOnKeyword3(char[] token, long pos, char[] possibleKeyword) {
-		this(token, pos, new char[][]{possibleKeyword}, false);
-	}
-	public CompletionOnKeyword3(char[] token, long pos, char[][] possibleKeywords, boolean afterTryOrCatch) {
-		super(token, pos);
-		this.token = token;
-		this.possibleKeywords = possibleKeywords;
-		this.tryOrCatch = afterTryOrCatch;
-	}
-	@Override
-	public char[] getToken() {
-		return this.token;
-	}
-	@Override
-	public char[][] getPossibleKeywords() {
-		return this.possibleKeywords;
-	}
-	public boolean afterTryOrCatch() {
-		return this.tryOrCatch;
-	}
-	@Override
-	public StringBuilder printExpression(int indent, StringBuilder output) {
+    private final char[][] possibleKeywords;
+    private final boolean tryOrCatch;
 
-		return output.append("<CompleteOnKeyword:").append(this.token).append('>'); //$NON-NLS-1$
-	}
-	@Override
-	public TypeBinding resolveType(BlockScope scope) {
-		throw new CompletionNodeFound(this, scope);
-	}
+    public CompletionOnKeyword3(char[] token, long pos, char[] possibleKeyword) {
+        this(token, pos, new char[][] { possibleKeyword }, false);
+    }
+
+    public CompletionOnKeyword3(char[] token, long pos, char[][] possibleKeywords, boolean afterTryOrCatch) {
+        super(token, pos);
+        this.token = token;
+        this.possibleKeywords = possibleKeywords;
+        this.tryOrCatch = afterTryOrCatch;
+    }
+
+    @Override
+    public char[] getToken() {
+        return this.token;
+    }
+
+    @Override
+    public char[][] getPossibleKeywords() {
+        return this.possibleKeywords;
+    }
+
+    public boolean afterTryOrCatch() {
+        return this.tryOrCatch;
+    }
+
+    @Override
+    public StringBuilder printExpression(int indent, StringBuilder output) {
+
+        return output.append("<CompleteOnKeyword:").append(this.token).append('>'); //$NON-NLS-1$
+    }
+
+    @Override
+    public TypeBinding resolveType(BlockScope scope) {
+        throw new CompletionNodeFound(this, scope);
+    }
 }

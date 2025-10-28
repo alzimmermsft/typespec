@@ -35,90 +35,103 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 
 public class CompletionOnQualifiedTypeReference extends QualifiedTypeReference implements CompletionNode {
-	public static final int K_TYPE = 0;
-	public static final int K_CLASS = 1;
-	public static final int K_INTERFACE = 2;
-	public static final int K_EXCEPTION = 3;
+    public static final int K_TYPE = 0;
+    public static final int K_CLASS = 1;
+    public static final int K_INTERFACE = 2;
+    public static final int K_EXCEPTION = 3;
 
-	private int kind = K_TYPE;
-	public char[] completionIdentifier;
+    private int kind = K_TYPE;
+    public char[] completionIdentifier;
 
-	public boolean isConstructorType;
+    public boolean isConstructorType;
 
-public CompletionOnQualifiedTypeReference(char[][] previousIdentifiers, char[] completionIdentifier, long[] positions) {
-	this(previousIdentifiers, completionIdentifier, positions, K_TYPE);
-}
-public CompletionOnQualifiedTypeReference(char[][] previousIdentifiers, char[] completionIdentifier, long[] positions, int kind) {
-	super(previousIdentifiers, positions);
-	this.completionIdentifier = completionIdentifier;
-	this.kind = kind;
-}
-@Override
-public void aboutToResolve(Scope scope) {
-	getTypeBinding(scope);
-}
-/*
- * No expansion of the completion reference into an array one
- */
-@Override
-public TypeReference augmentTypeWithAdditionalDimensions(int additionalDimensions, Annotation[][] additionalAnnotations, boolean isVarargs) {
-	return this;
-}
-@Override
-protected TypeBinding getTypeBinding(Scope scope) {
-	// it can be a package, type or member type
-	Binding binding = scope.parent.getTypeOrPackage(this.tokens); // step up from the ClassScope
-	if (!binding.isValidBinding()) {
-		scope.problemReporter().invalidType(this, (TypeBinding) binding);
+    public CompletionOnQualifiedTypeReference(char[][] previousIdentifiers, char[] completionIdentifier,
+        long[] positions) {
+        this(previousIdentifiers, completionIdentifier, positions, K_TYPE);
+    }
 
-		if (binding.problemId() == ProblemReasons.NotFound) {
-			throw new CompletionNodeFound(this, binding, scope);
-		}
+    public CompletionOnQualifiedTypeReference(char[][] previousIdentifiers, char[] completionIdentifier,
+        long[] positions, int kind) {
+        super(previousIdentifiers, positions);
+        this.completionIdentifier = completionIdentifier;
+        this.kind = kind;
+    }
 
-		throw new CompletionNodeFound();
-	}
+    @Override
+    public void aboutToResolve(Scope scope) {
+        getTypeBinding(scope);
+    }
 
-	throw new CompletionNodeFound(this, binding, scope);
-}
-public boolean isClass(){
-	return this.kind == K_CLASS;
-}
+    /*
+     * No expansion of the completion reference into an array one
+     */
+    @Override
+    public TypeReference augmentTypeWithAdditionalDimensions(int additionalDimensions,
+        Annotation[][] additionalAnnotations, boolean isVarargs) {
+        return this;
+    }
 
-public boolean isInterface(){
-	return this.kind == K_INTERFACE;
-}
+    @Override
+    protected TypeBinding getTypeBinding(Scope scope) {
+        // it can be a package, type or member type
+        Binding binding = scope.parent.getTypeOrPackage(this.tokens); // step up from the ClassScope
+        if (!binding.isValidBinding()) {
+            scope.problemReporter().invalidType(this, (TypeBinding) binding);
 
-public boolean isException(){
-	return this.kind == K_EXCEPTION;
-}
+            if (binding.problemId() == ProblemReasons.NotFound) {
+                throw new CompletionNodeFound(this, binding, scope);
+            }
 
-public boolean isSuperType(){
-	return this.kind == K_CLASS || this.kind == K_INTERFACE;
-}
-public void setKind(int kind) {
-	this.kind = kind;
-}
-@Override
-public StringBuilder printExpression(int indent, StringBuilder output) {
-	switch (this.kind) {
-		case K_CLASS :
-			output.append("<CompleteOnClass:");//$NON-NLS-1$
-			break;
-		case K_INTERFACE :
-			output.append("<CompleteOnInterface:");//$NON-NLS-1$
-			break;
-		case K_EXCEPTION :
-			output.append("<CompleteOnException:");//$NON-NLS-1$
-			break;
-		default :
-			output.append("<CompleteOnType:");//$NON-NLS-1$
-			break;
-	}
-	for (char[] token : this.tokens) {
-		output.append(token);
-		output.append('.');
-	}
-	output.append(this.completionIdentifier).append('>');
-	return output;
-}
+            throw new CompletionNodeFound();
+        }
+
+        throw new CompletionNodeFound(this, binding, scope);
+    }
+
+    public boolean isClass() {
+        return this.kind == K_CLASS;
+    }
+
+    public boolean isInterface() {
+        return this.kind == K_INTERFACE;
+    }
+
+    public boolean isException() {
+        return this.kind == K_EXCEPTION;
+    }
+
+    public boolean isSuperType() {
+        return this.kind == K_CLASS || this.kind == K_INTERFACE;
+    }
+
+    public void setKind(int kind) {
+        this.kind = kind;
+    }
+
+    @Override
+    public StringBuilder printExpression(int indent, StringBuilder output) {
+        switch (this.kind) {
+            case K_CLASS:
+                output.append("<CompleteOnClass:");//$NON-NLS-1$
+                break;
+
+            case K_INTERFACE:
+                output.append("<CompleteOnInterface:");//$NON-NLS-1$
+                break;
+
+            case K_EXCEPTION:
+                output.append("<CompleteOnException:");//$NON-NLS-1$
+                break;
+
+            default:
+                output.append("<CompleteOnType:");//$NON-NLS-1$
+                break;
+        }
+        for (char[] token : this.tokens) {
+            output.append(token);
+            output.append('.');
+        }
+        output.append(this.completionIdentifier).append('>');
+        return output;
+    }
 }

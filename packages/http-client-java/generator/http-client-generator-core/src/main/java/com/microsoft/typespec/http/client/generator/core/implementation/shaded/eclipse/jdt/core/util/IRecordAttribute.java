@@ -20,21 +20,21 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IRecordAttribute extends IClassFileAttribute {
 
-	/**
-	 * Answer back the number of components as specified in
-	 * the JVM specifications.
-	 *
-	 * @return the number of components as specified in
-	 * the JVM specifications
-	 */
-	int getNumberOfComponents();
+    /**
+     * Answer back the number of components as specified in
+     * the JVM specifications.
+     *
+     * @return the number of components as specified in
+     * the JVM specifications
+     */
+    int getNumberOfComponents();
 
-	/**
-	 * Answer back the array of record component infos as specified in
-	 * the JVM specifications, or an empty array if none.
-	 *
-	 * @return the array of record component infos as specified in
-	 * the JVM specifications, or an empty array if none
-	 */
-	IComponentInfo[] getComponentInfos();
+    /**
+     * Answer back the array of record component infos as specified in
+     * the JVM specifications, or an empty array if none.
+     *
+     * @return the array of record component infos as specified in
+     * the JVM specifications, or an empty array if none
+     */
+    IComponentInfo[] getComponentInfos();
 }

@@ -22,32 +22,33 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 /**
  * The abstract base class for all file info matchers. Instances
- * of this class are provided using the <code>com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.filterMatchers</code>
+ * of this class are provided using the
+ * <code>com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.filterMatchers</code>
  * extension point.
  *
  * @since 3.6
  */
 public abstract class AbstractFileInfoMatcher {
 
-	/**
-	 * Tests the given {@link FileInfo}
-	 *
-	 * @param parent the parent container
-	 * @param fileInfo the {@link FileInfo} object to test
-	 * @return <code>true</code> if the given {@link FileInfo} matches,
-	 * and <code>false</code> otherwise.
-	 * @throws CoreException the implementor should throw a CoreException if,
-	 * 		in the case that the parent or fileInfo doesn't exist in the workspace
-	 * 		or in the file system, the return value can't be determined.
-	 */
-	public abstract boolean matches(IContainer parent, IFileInfo fileInfo) throws CoreException;
+    /**
+     * Tests the given {@link FileInfo}
+     *
+     * @param parent the parent container
+     * @param fileInfo the {@link FileInfo} object to test
+     * @return <code>true</code> if the given {@link FileInfo} matches,
+     * and <code>false</code> otherwise.
+     * @throws CoreException the implementor should throw a CoreException if,
+     * in the case that the parent or fileInfo doesn't exist in the workspace
+     * or in the file system, the return value can't be determined.
+     */
+    public abstract boolean matches(IContainer parent, IFileInfo fileInfo) throws CoreException;
 
-	/**
-	 * Sets initialization data for this matcher.
-	 *
-	 * @param project   project this matcher works on
-	 * @param arguments matcher specific initialization argument
-	 * @throws CoreException if initialization failed
-	 */
-	public abstract void initialize(IProject project, Object arguments) throws CoreException;
+    /**
+     * Sets initialization data for this matcher.
+     *
+     * @param project project this matcher works on
+     * @param arguments matcher specific initialization argument
+     * @throws CoreException if initialization failed
+     */
+    public abstract void initialize(IProject project, Object arguments) throws CoreException;
 }

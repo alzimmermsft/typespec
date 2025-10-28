@@ -15,13 +15,14 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 /**
  * Product providers define products (units of branding) which have been installed in
- * the current system.  Typically, a configuration agent (i.e., plug-in installer) will
+ * the current system. Typically, a configuration agent (i.e., plug-in installer) will
  * define a product provider so that it can report to the system the products it has installed.
  * <p>
  * Products are normally defined and installed in the system using extensions to the
- * <code>com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.products</code> extension point.  In cases where
+ * <code>com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.products</code>
+ * extension point. In cases where
  * the notion of product is defined by alternate means (e.g., primary feature), an <code>IProductProvider</code>
- * can be installed in this extension point using an executable extension.  The provider
+ * can be installed in this extension point using an executable extension. The provider
  * then acts as a proxy for the product extensions that represent the products installed.
  * </p>
  *
@@ -29,17 +30,17 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * @since 3.0
  */
 public interface IProductProvider {
-	/**
-	 * Returns the human-readable name of this product provider.
-	 *
-	 * @return the name of this product provider
-	 */
-	public String getName();
+    /**
+     * Returns the human-readable name of this product provider.
+     *
+     * @return the name of this product provider
+     */
+    public String getName();
 
-	/**
-	 * Returns the products provided by this provider.
-	 *
-	 * @return the products provided by this provider
-	 */
-	public IProduct[] getProducts();
+    /**
+     * Returns the products provided by this provider.
+     *
+     * @return the products provided by this provider
+     */
+    public IProduct[] getProducts();
 }

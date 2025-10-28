@@ -37,12 +37,6 @@ public boolean includesClasspaths() {
 	return true;
 }
 
-/* (non-Javadoc)
- * Process the given delta and refresh its internal state if needed.
- * Returns whether the internal state was refreshed.
- */
-public abstract void processDelta(IJavaElementDelta delta, int eventType);
-
 /**
  * @see IJavaSearchScope#setIncludesBinaries(boolean)
  * @deprecated

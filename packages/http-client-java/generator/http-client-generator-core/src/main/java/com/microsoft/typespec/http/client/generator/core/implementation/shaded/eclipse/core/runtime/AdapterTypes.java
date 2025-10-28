@@ -13,8 +13,8 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime;
 
-import java.lang.annotation.*;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.component.annotations.ComponentPropertyType;
+import java.lang.annotation.*;
 
 /**
  * Annotation that can be used for components to specify the provided adapter
@@ -42,17 +42,17 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface AdapterTypes {
-	/**
-	 * See {@link IAdapterFactory#SERVICE_PROPERTY_ADAPTABLE_CLASS}
-	 *
-	 * @return the types that this class adapts from
-	 */
-	Class<?>[] adaptableClass();
+    /**
+     * See {@link IAdapterFactory#SERVICE_PROPERTY_ADAPTABLE_CLASS}
+     *
+     * @return the types that this class adapts from
+     */
+    Class<?>[] adaptableClass();
 
-	/**
-	 * See {@link IAdapterFactory#SERVICE_PROPERTY_ADAPTER_NAMES}
-	 *
-	 * @return the types that this class adapts to
-	 */
-	Class<?>[] adapterNames();
+    /**
+     * See {@link IAdapterFactory#SERVICE_PROPERTY_ADAPTER_NAMES}
+     *
+     * @return the types that this class adapts to
+     */
+    Class<?>[] adapterNames();
 }

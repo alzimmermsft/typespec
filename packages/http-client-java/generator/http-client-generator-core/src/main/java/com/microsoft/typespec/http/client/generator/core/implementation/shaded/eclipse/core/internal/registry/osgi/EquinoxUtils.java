@@ -30,63 +30,64 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 public class EquinoxUtils {
 
-	/**
-	 * Get the command line arguments from the EnvironmentInfo service
-	 */
-	public static String[] getCommandLine(BundleContext context, ServiceReference<?> ref) {
-		if (ref == null) {
-			return null;
-		}
-		try {
-			EnvironmentInfo environmentInfo = (EnvironmentInfo) context.getService(ref);
-			return environmentInfo == null ? null : environmentInfo.getNonFrameworkArgs();
-		} finally {
-			context.ungetService(ref);
-		}
-	}
+    /**
+     * Get the command line arguments from the EnvironmentInfo service
+     */
+    public static String[] getCommandLine(BundleContext context, ServiceReference<?> ref) {
+        if (ref == null) {
+            return null;
+        }
+        try {
+            EnvironmentInfo environmentInfo = (EnvironmentInfo) context.getService(ref);
+            return environmentInfo == null ? null : environmentInfo.getNonFrameworkArgs();
+        } finally {
+            context.ungetService(ref);
+        }
+    }
 
-	/**
-	 * Get the time stamp from the PlatformAdmin service.
-	 */
-	public static long getContainerTimestamp(BundleContext context, ServiceReference<?> ref) {
-		if (ref == null) {
-			return -1;
-		}
-		try {
-			return -1;
-		} finally {
-			context.ungetService(ref);
-		}
-	}
+    /**
+     * Get the time stamp from the PlatformAdmin service.
+     */
+    public static long getContainerTimestamp(BundleContext context, ServiceReference<?> ref) {
+        if (ref == null) {
+            return -1;
+        }
+        try {
+            return -1;
+        } finally {
+            context.ungetService(ref);
+        }
+    }
 
-	public static ServiceRegistration<?> registerCommandProvider(BundleContext context) {
-		// try to register the registry command provider
-		try {
-			// refer to the CommandProvider by name here so that even if VM
-			// decides to pre-fetch all referred classes the expection will occur
-			// inside the exception holder
-			return context.registerService("com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.framework.console.CommandProvider", //$NON-NLS-1$
-					new RegistryCommandProvider(), null);
-		} catch (NoClassDefFoundError noClass) {
-			// expected if CommandProvider is not available
-		}
-		return null;
-	}
+    public static ServiceRegistration<?> registerCommandProvider(BundleContext context) {
+        // try to register the registry command provider
+        try {
+            // refer to the CommandProvider by name here so that even if VM
+            // decides to pre-fetch all referred classes the expection will occur
+            // inside the exception holder
+            return context.registerService(
+                "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.framework.console.CommandProvider", //$NON-NLS-1$
+                new RegistryCommandProvider(), null);
+        } catch (NoClassDefFoundError noClass) {
+            // expected if CommandProvider is not available
+        }
+        return null;
+    }
 
-	/**
-	 * Returns true if OSGi in not available
-	 */
-	public static boolean isActive(String bundleId) {
-		// the try-catch block should take care
-		try {
-			Bundle bundle = OSGIUtils.getDefault().getBundle(bundleId);
-			if (bundle == null) {
-				return false; // should never happen
-			}
-			return (bundle.getState() == Bundle.ACTIVE);
-		} catch (NoClassDefFoundError noClass) {
-			// expected if OSGi is not available; behave as if contributor is active
-			return true;
-		}
-	}
+    /**
+     * Returns true if OSGi in not available
+     */
+    public static boolean isActive(String bundleId) {
+        // the try-catch block should take care
+        try {
+            Bundle bundle = OSGIUtils.getDefault().getBundle(bundleId);
+            if (bundle == null) {
+                return false; // should never happen
+            }
+            return (bundle.getState() == Bundle.ACTIVE);
+        } catch (NoClassDefFoundError noClass) {
+            // expected if OSGi is not available; behave as if contributor is active
+            return true;
+        }
+    }
 }

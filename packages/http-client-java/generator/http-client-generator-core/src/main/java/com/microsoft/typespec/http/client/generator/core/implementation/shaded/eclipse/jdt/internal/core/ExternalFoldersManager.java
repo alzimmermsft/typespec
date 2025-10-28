@@ -17,12 +17,26 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IFolder;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IProject;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IProjectDescription;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResourceStatus;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IWorkspaceRoot;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.ResourcesPlugin;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IClasspathEntry;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaCore;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.DeltaProcessor.RootInfo;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Util;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -31,29 +45,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IFolder;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IProject;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IProjectDescription;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResourceStatus;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IWorkspace;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IWorkspaceRoot;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.ResourcesPlugin;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.WorkspaceJob;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IStatus;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.MultiStatus;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Platform;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Status;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.jobs.Job;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IClasspathEntry;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaCore;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.DeltaProcessor.RootInfo;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Messages;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Util;
 
 public class ExternalFoldersManager {
 	private static final boolean WINDOWS = System.getProperty("os.name").toLowerCase().contains("windows");  //$NON-NLS-1$//$NON-NLS-2$
@@ -64,9 +55,8 @@ public class ExternalFoldersManager {
 	private final AtomicInteger counter = new AtomicInteger(0);
 	/* Singleton instance */
 	private static final ExternalFoldersManager INSTANCE= new ExternalFoldersManager();
-	private RefreshJob refreshJob;
 
-	private ExternalFoldersManager() {
+    private ExternalFoldersManager() {
 		// Prevent instantiation
 		// https://bugs.eclipse.org/bugs/show_bug.cgi?id=377806
     }
@@ -250,37 +240,7 @@ public class ExternalFoldersManager {
 		return result;
 	}
 
-	public void createPendingFolders(IProgressMonitor monitor) throws JavaModelException{
-		synchronized (this) {
-			if (this.pendingFolders == null || this.pendingFolders.isEmpty()) return;
-		}
-
-		IProject externalFoldersProject = null;
-		try {
-			externalFoldersProject = createExternalFoldersProject(monitor);
-		}
-		catch(CoreException e) {
-			throw new JavaModelException(e);
-		}
-		// https://bugs.eclipse.org/bugs/show_bug.cgi?id=368152
-		// To avoid race condition (from addFolder and removeFolder, load the map elements into an array and clear the map immediately.
-		// The createLinkFolder being in the synchronized block can cause a deadlock and hence keep it out of the synchronized block.
-		Object[] arrayOfFolders = null;
-		synchronized (this) {
-			arrayOfFolders = this.pendingFolders.toArray();
-			this.pendingFolders.clear();
-		}
-
-		for (Object arrayOfFolder : arrayOfFolders) {
-			try {
-				createLinkFolder((IPath) arrayOfFolder, false, externalFoldersProject, monitor);
-			} catch (CoreException e) {
-				Util.log(e, "Error while creating a link for external folder :" + arrayOfFolder); //$NON-NLS-1$
-			}
-		}
-	}
-
-	public void cleanUp(IProgressMonitor monitor) throws CoreException {
+    public void cleanUp(IProgressMonitor monitor) throws CoreException {
 		List<Entry<IPath, IFolder>> toDelete = getFoldersToCleanUp(monitor);
 		if (toDelete == null)
 			return;
@@ -427,130 +387,6 @@ public class ExternalFoldersManager {
 			}
 		}
 		return this.folders;
-	}
-
-	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=313153
-	// Use the same RefreshJob if the job is still available
-	private synchronized void runRefreshJob(Collection<IPath> paths) {
-		if (paths == null || paths.isEmpty()) {
-			return;
-		}
-		if (this.refreshJob == null) {
-			this.refreshJob = new RefreshJob();
-		}
-		this.refreshJob.addFoldersToRefresh(paths);
-	}
-
-	/*
-	 * Refreshes the external folders referenced on the classpath of the given source project
-	 */
-	public void refreshReferences(final IProject[] sourceProjects, IProgressMonitor monitor) {
-		IProject externalProject = getExternalFoldersProject();
-		try {
-			Set<IPath> externalFolders = null;
-			for (IProject sourceProject : sourceProjects) {
-				if (sourceProject.equals(externalProject))
-					continue;
-				if (!JavaProject.hasJavaNature(sourceProject))
-					continue;
-
-				Set<IPath> foldersInProject = getExternalFolders(((JavaProject) JavaCore.create(sourceProject)).getResolvedClasspath());
-
-				if (foldersInProject == null || foldersInProject.size() == 0)
-					continue;
-				if (externalFolders == null)
-					externalFolders = new LinkedHashSet<>();
-
-				externalFolders.addAll(foldersInProject);
-			}
-			runRefreshJob(externalFolders);
-
-		} catch (CoreException e) {
-			Util.log(e, "Exception while refreshing external project"); //$NON-NLS-1$
-		}
-	}
-
-	public void refreshReferences(IProject source, IProgressMonitor monitor) {
-		IProject externalProject = getExternalFoldersProject();
-		if (source.equals(externalProject))
-			return;
-		if (!JavaProject.hasJavaNature(source))
-			return;
-		try {
-			Set<IPath> externalFolders = getExternalFolders(((JavaProject) JavaCore.create(source)).getResolvedClasspath());
-			runRefreshJob(externalFolders);
-		} catch (CoreException e) {
-			Util.log(e, "Exception while refreshing external project"); //$NON-NLS-1$
-		}
-	}
-
-	public IFolder removeFolder(IPath externalFolderPath) {
-		return getFolders().remove(externalFolderPath);
-	}
-
-	static class RefreshJob extends Job {
-
-		final LinkedHashSet<IPath> externalFolders;
-
-		RefreshJob(){
-			super(Messages.refreshing_external_folders);
-			// bug 476059: don't interrupt autobuild by using rule and system flag.
-			setSystem(true);
-			IWorkspace workspace = ResourcesPlugin.getWorkspace();
-			setRule(workspace.getRuleFactory().refreshRule(workspace.getRoot()));
-			this.externalFolders = new LinkedHashSet<>();
-		}
-
-		@Override
-		public boolean belongsTo(Object family) {
-			return family == ResourcesPlugin.FAMILY_MANUAL_REFRESH;
-		}
-
-		/*
-		 * Add the collection of paths to be refreshed to the already
-		 * existing set of paths and schedules the job
-		 */
-		public void addFoldersToRefresh(Collection<IPath> paths) {
-			boolean shouldSchedule;
-			synchronized (this.externalFolders) {
-				this.externalFolders.addAll(paths);
-				shouldSchedule = !this.externalFolders.isEmpty();
-			}
-			if (shouldSchedule) {
-				schedule();
-			}
-		}
-
-		@Override
-		protected IStatus run(IProgressMonitor pm) {
-			MultiStatus errors = new MultiStatus(JavaCore.PLUGIN_ID, IStatus.OK,
-					"Exception while refreshing external folders", null); //$NON-NLS-1$
-			while (true) {
-				IPath externalPath;
-				synchronized (this.externalFolders) {
-					if (this.externalFolders.isEmpty()) {
-						return errors.isOK()? Status.OK_STATUS : errors;
-					}
-					// keep the path in the list to avoid re-adding it while we are working
-					externalPath = this.externalFolders.iterator().next();
-				}
-
-				try {
-					IFolder folder = getExternalFoldersManager().getFolder(externalPath);
-					// https://bugs.eclipse.org/bugs/show_bug.cgi?id=321358
-					if (folder != null) {
-						folder.refreshLocal(IResource.DEPTH_INFINITE, pm);
-					}
-				} catch (CoreException e) {
-					errors.merge(e.getStatus());
-				} finally {
-					// we should always remove the path to avoid endless loop trying to refresh it
-					synchronized (this.externalFolders) {
-						this.externalFolders.remove(externalPath);
-					}
-				}
-			}
-		}
 	}
 
 }

@@ -40,378 +40,359 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 class VariableBinding implements IVariableBinding {
 
-	private static final int VALID_MODIFIERS = Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE |
-		Modifier.STATIC | Modifier.FINAL | Modifier.TRANSIENT | Modifier.VOLATILE;
+    private static final int VALID_MODIFIERS = Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE | Modifier.STATIC
+        | Modifier.FINAL | Modifier.TRANSIENT | Modifier.VOLATILE;
 
-	private final com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.VariableBinding binding;
-	private ITypeBinding declaringClass;
-	private String key;
-	private String name;
-	private final BindingResolver resolver;
-	private ITypeBinding type;
-	private IAnnotationBinding[] annotations;
+    private final com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.VariableBinding binding;
+    private ITypeBinding declaringClass;
+    private String key;
+    private String name;
+    private final BindingResolver resolver;
+    private ITypeBinding type;
+    private IAnnotationBinding[] annotations;
 
-	VariableBinding(BindingResolver resolver, com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.VariableBinding binding) {
-		this.resolver = resolver;
-		this.binding = binding;
-	}
+    VariableBinding(BindingResolver resolver,
+        com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.VariableBinding binding) {
+        this.resolver = resolver;
+        this.binding = binding;
+    }
 
-	@Override
-	public IAnnotationBinding[] getAnnotations() {
-		if (this.annotations != null) {
-			return this.annotations;
-		}
-		com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.AnnotationBinding[] internalAnnotations = this.binding.getAnnotations();
-		int length = internalAnnotations == null ? 0 : internalAnnotations.length;
-		if (length != 0) {
-			IAnnotationBinding[] tempAnnotations = new IAnnotationBinding[length];
-			int convertedAnnotationCount = 0;
-			for (int i = 0; i < length; i++) {
-				com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.AnnotationBinding internalAnnotation = internalAnnotations[i];
-				final IAnnotationBinding annotationInstance = this.resolver.getAnnotationInstance(internalAnnotation);
-				if (annotationInstance == null) {
-					continue;
-				}
-				tempAnnotations[convertedAnnotationCount++] = annotationInstance;
-			}
-			if (convertedAnnotationCount != length) {
-				if (convertedAnnotationCount == 0) {
-					return this.annotations = AnnotationBinding.NoAnnotations;
-				}
-				System.arraycopy(tempAnnotations, 0, (tempAnnotations = new IAnnotationBinding[convertedAnnotationCount]), 0, convertedAnnotationCount);
-			}
-			return this.annotations = tempAnnotations;
-		}
-		return this.annotations = AnnotationBinding.NoAnnotations;
-	}
+    @Override
+    public Object getConstantValue() {
+        Constant c = this.binding.constant();
+        if (c == null || c == Constant.NotAConstant)
+            return null;
+        switch (c.typeID()) {
+            case TypeIds.T_boolean:
+                return Boolean.valueOf(c.booleanValue());
 
-	@Override
-	public Object getConstantValue() {
-		Constant c = this.binding.constant();
-		if (c == null || c == Constant.NotAConstant) return null;
-		switch (c.typeID()) {
-			case TypeIds.T_boolean:
-				return Boolean.valueOf(c.booleanValue());
-			case TypeIds.T_byte:
-				return Byte.valueOf(c.byteValue());
-			case TypeIds.T_char:
-				return Character.valueOf(c.charValue());
-			case TypeIds.T_double:
-				return Double.valueOf(c.doubleValue());
-			case TypeIds.T_float:
-				return Float.valueOf(c.floatValue());
-			case TypeIds.T_int:
-				return Integer.valueOf(c.intValue());
-			case TypeIds.T_long:
-				return Long.valueOf(c.longValue());
-			case TypeIds.T_short:
-				return Short.valueOf(c.shortValue());
-			case TypeIds.T_JavaLangString:
-				return c.stringValue();
-		}
-		return null;
-	}
+            case TypeIds.T_byte:
+                return Byte.valueOf(c.byteValue());
 
-	@Override
-	public ITypeBinding getDeclaringClass() {
-		if (isField()) {
-			if (this.declaringClass == null) {
-				FieldBinding fieldBinding = (FieldBinding) this.binding;
-				this.declaringClass = this.resolver.getTypeBinding(fieldBinding.declaringClass);
-			}
-			return this.declaringClass;
-		} else {
-			return null;
-		}
-	}
+            case TypeIds.T_char:
+                return Character.valueOf(c.charValue());
 
-	@Override
-	public IMethodBinding getDeclaringMethod() {
-		if (!isField()) {
-			ASTNode node = this.resolver.findDeclaringNode(this);
-			while (true) {
-				if (node == null) {
-					if (this.binding instanceof LocalVariableBinding) {
-						LocalVariableBinding localVariableBinding = (LocalVariableBinding) this.binding;
-						com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.MethodBinding enclosingMethod = localVariableBinding.getEnclosingMethod();
-						if (enclosingMethod != null)
-							return this.resolver.getMethodBinding(enclosingMethod);
-					}
-					return null;
-				}
-				switch(node.getNodeType()) {
-					case ASTNode.INITIALIZER :
-						return null;
-					case ASTNode.METHOD_DECLARATION :
-						MethodDeclaration methodDeclaration = (MethodDeclaration) node;
-						return methodDeclaration.resolveBinding();
-					case ASTNode.LAMBDA_EXPRESSION :
-						LambdaExpression lambdaExpression = (LambdaExpression) node;
-						return lambdaExpression.resolveMethodBinding();
-					default:
-						node = node.getParent();
-				}
-			}
-		}
-		return null;
-	}
+            case TypeIds.T_double:
+                return Double.valueOf(c.doubleValue());
 
-	@Override
-	public IJavaElement getJavaElement() {
-		JavaElement element = getUnresolvedJavaElement();
-		if (element == null)
-			return null;
-		return element.resolved(this.binding);
-	}
+            case TypeIds.T_float:
+                return Float.valueOf(c.floatValue());
 
-	@Override
-	public String getKey() {
-		if (this.key == null) {
-			this.key = new String(this.binding.computeUniqueKey());
-		}
-		return this.key;
-	}
+            case TypeIds.T_int:
+                return Integer.valueOf(c.intValue());
 
-	@Override
-	public int getKind() {
-		return IBinding.VARIABLE;
-	}
+            case TypeIds.T_long:
+                return Long.valueOf(c.longValue());
 
-	@Override
-	public int getModifiers() {
-		if (isField()) {
-			return ((FieldBinding) this.binding).getAccessFlags() & VALID_MODIFIERS;
-		}
-		if (this.binding.isFinal()) {
-			return IModifierConstants.ACC_FINAL;
-		}
-		return Modifier.NONE;
-	}
+            case TypeIds.T_short:
+                return Short.valueOf(c.shortValue());
 
-	@Override
-	public String getName() {
-		if (this.name == null) {
-			this.name = new String(this.binding.name);
-		}
-		return this.name;
-	}
+            case TypeIds.T_JavaLangString:
+                return c.stringValue();
+        }
+        return null;
+    }
 
-	@Override
-	public ITypeBinding getType() {
-		if (this.type == null) {
-			this.type = this.resolver.getTypeBinding(this.binding.type);
-		}
-		return this.type;
-	}
+    @Override
+    public ITypeBinding getDeclaringClass() {
+        if (isField()) {
+            if (this.declaringClass == null) {
+                FieldBinding fieldBinding = (FieldBinding) this.binding;
+                this.declaringClass = this.resolver.getTypeBinding(fieldBinding.declaringClass);
+            }
+            return this.declaringClass;
+        } else {
+            return null;
+        }
+    }
 
-	private JavaElement getUnresolvedJavaElement() {
-		if (JavaCore.getPlugin() == null) {
-			return null;
-		}
-		if (isField()) {
-			if (this.resolver instanceof DefaultBindingResolver) {
-				DefaultBindingResolver defaultBindingResolver = (DefaultBindingResolver) this.resolver;
-				if (!defaultBindingResolver.fromJavaProject) return null;
-				return Util.getUnresolvedJavaElement(
-						(FieldBinding) this.binding,
-						defaultBindingResolver.workingCopyOwner,
-						defaultBindingResolver.getBindingsToNodesMap());
-			}
-			return null;
-		}else if (isRecordComponent()) {
-			if (this.resolver instanceof DefaultBindingResolver) {
-				DefaultBindingResolver defaultBindingResolver = (DefaultBindingResolver) this.resolver;
-				if (!defaultBindingResolver.fromJavaProject) return null;
-				return Util.getUnresolvedJavaElement(
-						(RecordComponentBinding) this.binding,
-						defaultBindingResolver.workingCopyOwner,
-						defaultBindingResolver.getBindingsToNodesMap());
-			}
-			return null;
-		}
-		// local variable
-		if (!(this.resolver instanceof DefaultBindingResolver)) return null;
-		DefaultBindingResolver defaultBindingResolver = (DefaultBindingResolver) this.resolver;
-		if (!defaultBindingResolver.fromJavaProject) return null;
-		VariableDeclaration localVar = (VariableDeclaration) defaultBindingResolver.bindingsToAstNodes.get(this);
-		if (localVar == null) return null;
-		SimpleName localName = localVar.getName();
-		int nameStart = localName.getStartPosition();
-		int nameLength = localName.getLength();
-		int sourceStart = localVar.getStartPosition();
-		int sourceLength = localVar.getLength();
-		int modifiers = 0;
-		if (localVar instanceof SingleVariableDeclaration singleVariableDeclaration) {
-			modifiers = singleVariableDeclaration.getModifiers();
-		} else if (localVar instanceof VariableDeclarationFragment fragment) {
-			final ASTNode parent = fragment.getParent();
-			if (!(parent instanceof LambdaExpression)) {
-				sourceStart = parent.getStartPosition();
-				sourceLength = parent.getLength();
-			}
-			switch (parent.getNodeType()) {
-				case ASTNode.VARIABLE_DECLARATION_EXPRESSION :
-					VariableDeclarationExpression expression = (VariableDeclarationExpression) parent;
-					modifiers = expression.getModifiers();
-					break;
-				case ASTNode.VARIABLE_DECLARATION_STATEMENT :
-					VariableDeclarationStatement statement = (VariableDeclarationStatement) parent;
-					modifiers = statement.getModifiers();
-					break;
-				case ASTNode.FIELD_DECLARATION :
-					FieldDeclaration fieldDeclaration = (FieldDeclaration) parent;
-					modifiers = fieldDeclaration.getModifiers();
-					break;
-			}
-		}
-		int sourceEnd = sourceStart+sourceLength-1;
-		TypeBinding signableType = this.binding.type;
-		if (signableType.isAnonymousType()) {
-			signableType = signableType.superInterfaces() != null && signableType.superInterfaces().length == 1 ?
-					signableType.superInterfaces()[0] :
-					signableType.superclass();
-		}
-		char[] typeSig = Signature.createTypeSignature(signableType.signableName(), true).toCharArray();
-		JavaElement parent = null;
-		IMethodBinding declaringMethod = getDeclaringMethod();
-		if (this.binding instanceof RecordComponentBinding) {
-			return null; // TODO : SEE Bug 562736/ BUG 562637
-		}
-		final LocalVariableBinding localVariableBinding = (LocalVariableBinding) this.binding;
-		if (declaringMethod == null) {
-			ReferenceContext referenceContext = localVariableBinding.declaringScope.referenceContext();
-			if (referenceContext instanceof TypeDeclaration){
-				// Local variable is declared inside an initializer
-				TypeDeclaration typeDeclaration = (TypeDeclaration) referenceContext;
-				JavaElement typeHandle = null;
-				typeHandle = Util.getUnresolvedJavaElement(
-					typeDeclaration.binding,
-					defaultBindingResolver.workingCopyOwner,
-					defaultBindingResolver.getBindingsToNodesMap());
-				parent = Util.getUnresolvedJavaElement(sourceStart, sourceEnd, typeHandle);
-			} else {
-				return null;
-			}
-		} else {
-			parent = (JavaElement) declaringMethod.getJavaElement();
-		}
-		if (parent == null) return null;
-		return new LocalVariable(
-				parent,
-				localName.getIdentifier(),
-				sourceStart,
-				sourceEnd,
-				nameStart,
-				nameStart+nameLength-1,
-				new String(typeSig),
-				localVariableBinding.declaration.annotations,
-				modifiers,
-				(localVariableBinding.tagBits & TagBits.IsArgument) != 0);
-	}
+    @Override
+    public IMethodBinding getDeclaringMethod() {
+        if (!isField()) {
+            ASTNode node = this.resolver.findDeclaringNode(this);
+            while (true) {
+                if (node == null) {
+                    if (this.binding instanceof LocalVariableBinding) {
+                        LocalVariableBinding localVariableBinding = (LocalVariableBinding) this.binding;
+                        com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.MethodBinding enclosingMethod
+                            = localVariableBinding.getEnclosingMethod();
+                        if (enclosingMethod != null)
+                            return this.resolver.getMethodBinding(enclosingMethod);
+                    }
+                    return null;
+                }
+                switch (node.getNodeType()) {
+                    case ASTNode.INITIALIZER:
+                        return null;
 
-	@Override
-	public IVariableBinding getVariableDeclaration() {
-		if (isField()) {
-			FieldBinding fieldBinding = (FieldBinding) this.binding;
-			return this.resolver.getVariableBinding(fieldBinding.original());
-		}
-		return this;
-	}
+                    case ASTNode.METHOD_DECLARATION:
+                        MethodDeclaration methodDeclaration = (MethodDeclaration) node;
+                        return methodDeclaration.resolveBinding();
 
-	@Override
-	public int getVariableId() {
-		return this.binding.id;
-	}
+                    case ASTNode.LAMBDA_EXPRESSION:
+                        LambdaExpression lambdaExpression = (LambdaExpression) node;
+                        return lambdaExpression.resolveMethodBinding();
 
-	@Override
-	public boolean isParameter() {
-		return (this.binding.tagBits & TagBits.IsArgument) != 0;
-	}
+                    default:
+                        node = node.getParent();
+                }
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public boolean isDeprecated() {
-		if (isField()) {
-			return this.binding.isDeprecated();
-		}
-		return false;
-	}
+    @Override
+    public IJavaElement getJavaElement() {
+        JavaElement element = getUnresolvedJavaElement();
+        if (element == null)
+            return null;
+        return element.resolved(this.binding);
+    }
 
-	@Override
-	public boolean isEnumConstant() {
-		return (this.binding.modifiers & ClassFileConstants.AccEnum) != 0;
-	}
+    @Override
+    public String getKey() {
+        if (this.key == null) {
+            this.key = new String(this.binding.computeUniqueKey());
+        }
+        return this.key;
+    }
 
-	@Override
-	public boolean isEqualTo(IBinding other) {
-		if (other == this) {
-			// identical binding - equal (key or no key)
-			return true;
-		}
-		if (other == null) {
-			// other binding missing
-			return false;
-		}
-		if (!(other instanceof VariableBinding)) {
-			return false;
-		}
-		com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.VariableBinding otherBinding = ((VariableBinding) other).binding;
-		if (this.binding instanceof FieldBinding) {
-			if (otherBinding instanceof FieldBinding) {
-				return BindingComparator.isEqual((FieldBinding) this.binding, (FieldBinding) otherBinding);
-			} else {
-				return false;
-			}
-		} else {
-			if (BindingComparator.isEqual(this.binding, otherBinding)) {
-				IMethodBinding declaringMethod = getDeclaringMethod();
-				IMethodBinding otherDeclaringMethod = ((VariableBinding) other).getDeclaringMethod();
-				if (declaringMethod == null) {
-					if (otherDeclaringMethod != null) {
-						return false;
-					}
-					return true;
-				}
-				return declaringMethod.isEqualTo(otherDeclaringMethod);
-			}
-			return false;
-		}
-	}
+    @Override
+    public int getKind() {
+        return IBinding.VARIABLE;
+    }
 
-	@Override
-	public boolean isField() {
-		return this.binding instanceof FieldBinding;
-	}
+    @Override
+    public int getModifiers() {
+        if (isField()) {
+            return ((FieldBinding) this.binding).getAccessFlags() & VALID_MODIFIERS;
+        }
+        if (this.binding.isFinal()) {
+            return IModifierConstants.ACC_FINAL;
+        }
+        return Modifier.NONE;
+    }
 
-	@Override
-	public boolean isSynthetic() {
-		if (isField()) {
-			return ((FieldBinding) this.binding).isSynthetic();
-		}
-		return false;
-	}
+    @Override
+    public String getName() {
+        if (this.name == null) {
+            this.name = new String(this.binding.name);
+        }
+        return this.name;
+    }
 
-	@Override
-	public boolean isRecovered() {
-		return false;
-	}
+    @Override
+    public ITypeBinding getType() {
+        if (this.type == null) {
+            this.type = this.resolver.getTypeBinding(this.binding.type);
+        }
+        return this.type;
+    }
 
-	@Override
-	public boolean isEffectivelyFinal() {
-		return (!this.binding.isFinal() && this.binding.isEffectivelyFinal());
-	}
+    private JavaElement getUnresolvedJavaElement() {
+        if (JavaCore.getPlugin() == null) {
+            return null;
+        }
+        if (isField()) {
+            if (this.resolver instanceof DefaultBindingResolver) {
+                DefaultBindingResolver defaultBindingResolver = (DefaultBindingResolver) this.resolver;
+                if (!defaultBindingResolver.fromJavaProject)
+                    return null;
+                return Util.getUnresolvedJavaElement((FieldBinding) this.binding,
+                    defaultBindingResolver.workingCopyOwner, defaultBindingResolver.getBindingsToNodesMap());
+            }
+            return null;
+        } else if (isRecordComponent()) {
+            if (this.resolver instanceof DefaultBindingResolver) {
+                DefaultBindingResolver defaultBindingResolver = (DefaultBindingResolver) this.resolver;
+                if (!defaultBindingResolver.fromJavaProject)
+                    return null;
+                return Util.getUnresolvedJavaElement((RecordComponentBinding) this.binding,
+                    defaultBindingResolver.workingCopyOwner, defaultBindingResolver.getBindingsToNodesMap());
+            }
+            return null;
+        }
+        // local variable
+        if (!(this.resolver instanceof DefaultBindingResolver))
+            return null;
+        DefaultBindingResolver defaultBindingResolver = (DefaultBindingResolver) this.resolver;
+        if (!defaultBindingResolver.fromJavaProject)
+            return null;
+        VariableDeclaration localVar = (VariableDeclaration) defaultBindingResolver.bindingsToAstNodes.get(this);
+        if (localVar == null)
+            return null;
+        SimpleName localName = localVar.getName();
+        int nameStart = localName.getStartPosition();
+        int nameLength = localName.getLength();
+        int sourceStart = localVar.getStartPosition();
+        int sourceLength = localVar.getLength();
+        int modifiers = 0;
+        if (localVar instanceof SingleVariableDeclaration singleVariableDeclaration) {
+            modifiers = singleVariableDeclaration.getModifiers();
+        } else if (localVar instanceof VariableDeclarationFragment fragment) {
+            final ASTNode parent = fragment.getParent();
+            if (!(parent instanceof LambdaExpression)) {
+                sourceStart = parent.getStartPosition();
+                sourceLength = parent.getLength();
+            }
+            switch (parent.getNodeType()) {
+                case ASTNode.VARIABLE_DECLARATION_EXPRESSION:
+                    VariableDeclarationExpression expression = (VariableDeclarationExpression) parent;
+                    modifiers = expression.getModifiers();
+                    break;
 
-	@Override
-	public boolean isRecordComponent() {
-		return this.binding instanceof RecordComponentBinding;
-	}
+                case ASTNode.VARIABLE_DECLARATION_STATEMENT:
+                    VariableDeclarationStatement statement = (VariableDeclarationStatement) parent;
+                    modifiers = statement.getModifiers();
+                    break;
 
-	/*
-	 * For debugging purpose only.
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return this.binding.toString();
-	}
+                case ASTNode.FIELD_DECLARATION:
+                    FieldDeclaration fieldDeclaration = (FieldDeclaration) parent;
+                    modifiers = fieldDeclaration.getModifiers();
+                    break;
+            }
+        }
+        int sourceEnd = sourceStart + sourceLength - 1;
+        TypeBinding signableType = this.binding.type;
+        if (signableType.isAnonymousType()) {
+            signableType = signableType.superInterfaces() != null && signableType.superInterfaces().length == 1
+                ? signableType.superInterfaces()[0]
+                : signableType.superclass();
+        }
+        char[] typeSig = Signature.createTypeSignature(signableType.signableName(), true).toCharArray();
+        JavaElement parent = null;
+        IMethodBinding declaringMethod = getDeclaringMethod();
+        if (this.binding instanceof RecordComponentBinding) {
+            return null; // TODO : SEE Bug 562736/ BUG 562637
+        }
+        final LocalVariableBinding localVariableBinding = (LocalVariableBinding) this.binding;
+        if (declaringMethod == null) {
+            ReferenceContext referenceContext = localVariableBinding.declaringScope.referenceContext();
+            if (referenceContext instanceof TypeDeclaration) {
+                // Local variable is declared inside an initializer
+                TypeDeclaration typeDeclaration = (TypeDeclaration) referenceContext;
+                JavaElement typeHandle = null;
+                typeHandle = Util.getUnresolvedJavaElement(typeDeclaration.binding,
+                    defaultBindingResolver.workingCopyOwner, defaultBindingResolver.getBindingsToNodesMap());
+                parent = Util.getUnresolvedJavaElement(sourceStart, sourceEnd, typeHandle);
+            } else {
+                return null;
+            }
+        } else {
+            parent = (JavaElement) declaringMethod.getJavaElement();
+        }
+        if (parent == null)
+            return null;
+        return new LocalVariable(parent, localName.getIdentifier(), sourceStart, sourceEnd, nameStart,
+            nameStart + nameLength - 1, new String(typeSig), localVariableBinding.declaration.annotations, modifiers,
+            (localVariableBinding.tagBits & TagBits.IsArgument) != 0);
+    }
+
+    @Override
+    public IVariableBinding getVariableDeclaration() {
+        if (isField()) {
+            FieldBinding fieldBinding = (FieldBinding) this.binding;
+            return this.resolver.getVariableBinding(fieldBinding.original());
+        }
+        return this;
+    }
+
+    @Override
+    public int getVariableId() {
+        return this.binding.id;
+    }
+
+    @Override
+    public boolean isParameter() {
+        return (this.binding.tagBits & TagBits.IsArgument) != 0;
+    }
+
+    @Override
+    public boolean isDeprecated() {
+        if (isField()) {
+            return this.binding.isDeprecated();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isEnumConstant() {
+        return (this.binding.modifiers & ClassFileConstants.AccEnum) != 0;
+    }
+
+    @Override
+    public boolean isEqualTo(IBinding other) {
+        if (other == this) {
+            // identical binding - equal (key or no key)
+            return true;
+        }
+        if (other == null) {
+            // other binding missing
+            return false;
+        }
+        if (!(other instanceof VariableBinding)) {
+            return false;
+        }
+        com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.VariableBinding otherBinding
+            = ((VariableBinding) other).binding;
+        if (this.binding instanceof FieldBinding) {
+            if (otherBinding instanceof FieldBinding) {
+                return BindingComparator.isEqual((FieldBinding) this.binding, (FieldBinding) otherBinding);
+            } else {
+                return false;
+            }
+        } else {
+            if (BindingComparator.isEqual(this.binding, otherBinding)) {
+                IMethodBinding declaringMethod = getDeclaringMethod();
+                IMethodBinding otherDeclaringMethod = ((VariableBinding) other).getDeclaringMethod();
+                if (declaringMethod == null) {
+                    if (otherDeclaringMethod != null) {
+                        return false;
+                    }
+                    return true;
+                }
+                return declaringMethod.isEqualTo(otherDeclaringMethod);
+            }
+            return false;
+        }
+    }
+
+    @Override
+    public boolean isField() {
+        return this.binding instanceof FieldBinding;
+    }
+
+    @Override
+    public boolean isSynthetic() {
+        if (isField()) {
+            return ((FieldBinding) this.binding).isSynthetic();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isRecovered() {
+        return false;
+    }
+
+    @Override
+    public boolean isEffectivelyFinal() {
+        return (!this.binding.isFinal() && this.binding.isEffectivelyFinal());
+    }
+
+    @Override
+    public boolean isRecordComponent() {
+        return this.binding instanceof RecordComponentBinding;
+    }
+
+    /*
+     * For debugging purpose only.
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return this.binding.toString();
+    }
 
 }

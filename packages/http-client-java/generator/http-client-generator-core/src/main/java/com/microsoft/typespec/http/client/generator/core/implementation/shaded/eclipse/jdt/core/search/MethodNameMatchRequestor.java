@@ -32,13 +32,15 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * int waitingPolicy,
  * IProgressMonitor progressMonitor)} method.
  * <p>
- * While {@link MethodNameRequestor} only reports method names information (e.g. package, enclosing types, method name, modifiers, etc.),
+ * While {@link MethodNameRequestor} only reports method names information (e.g. package, enclosing types, method name,
+ * modifiers, etc.),
  * this class reports {@link MethodNameMatch} objects instead, which store this information and can return
  * an {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IMethod} handle.
  * </p>
  * <p>
  * This class may be subclassed by clients.
  * </p>
+ * 
  * @see MethodNameMatch
  * @see MethodNameRequestor
  *
@@ -46,12 +48,12 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public abstract class MethodNameMatchRequestor {
 
-	/**
-	 * Accepts a method name match ({@link MethodNameMatch}) which contains a method
-	 * information as package name, enclosing types names, method name, modifiers, etc.
-	 *
-	 * @param match the match which contains all method information
-	 */
-	public abstract void acceptMethodNameMatch(MethodNameMatch match);
+    /**
+     * Accepts a method name match ({@link MethodNameMatch}) which contains a method
+     * information as package name, enclosing types names, method name, modifiers, etc.
+     *
+     * @param match the match which contains all method information
+     */
+    public abstract void acceptMethodNameMatch(MethodNameMatch match);
 
 }

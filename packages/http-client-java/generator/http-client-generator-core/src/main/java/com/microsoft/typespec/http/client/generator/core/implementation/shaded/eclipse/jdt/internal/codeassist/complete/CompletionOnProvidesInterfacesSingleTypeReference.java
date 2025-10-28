@@ -15,7 +15,7 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.codeassist.complete;
 
 public class CompletionOnProvidesInterfacesSingleTypeReference extends CompletionOnSingleTypeReference {
-	public CompletionOnProvidesInterfacesSingleTypeReference(char[] source, long pos) {
-		super(source, pos);
-	}
+    public CompletionOnProvidesInterfacesSingleTypeReference(char[] source, long pos) {
+        super(source, pos);
+    }
 }

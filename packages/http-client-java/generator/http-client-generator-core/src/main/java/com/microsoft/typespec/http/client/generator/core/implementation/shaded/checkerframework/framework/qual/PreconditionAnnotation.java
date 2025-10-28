@@ -24,16 +24,19 @@ import java.lang.annotation.Target;
  * corresponding element in P.
  *
  * <p>For example, the following code declares a precondition annotation for the {@link
- * com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.common.value.qual.MinLen} qualifier:
+ * com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.common.value.qual.MinLen}
+ * qualifier:
  *
- * <pre><code>
+ * <pre>
+ * <code>
  * {@literal @}PreconditionAnnotation(qualifier = MinLen.class)
  * {@literal @}Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
  * public {@literal @}interface RequiresMinLen {
  *   String[] value();
  *   {@literal @}QualifierArgument("value")
  *   int targetValue() default 0;
- * </code></pre>
+ * </code>
+ * </pre>
  *
  * The {@code value} element holds the expressions to which the qualifier applies and {@code
  * targetValue} holds the value for the {@code value} argument of {@link
@@ -42,20 +45,22 @@ import java.lang.annotation.Target;
  * <p>The following code then uses the annotation on a method that requires {@code field} to be
  * {@code @MinLen(2)} upon entry.
  *
- * <pre><code>
+ * <pre>
+ * <code>
  * {@literal @}RequiresMinLen(value = "field", targetValue = 2")
  * public char getThirdCharacter() {
  *   return field.charAt(2);
  * }
- * </code></pre>
+ * </code>
+ * </pre>
  *
  * @see RequiresQualifier
  * @see QualifierArgument
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.ANNOTATION_TYPE})
+@Target({ ElementType.ANNOTATION_TYPE })
 public @interface PreconditionAnnotation {
-  /** The qualifier that must be established as a precondition. */
-  Class<? extends Annotation> qualifier();
+    /** The qualifier that must be established as a precondition. */
+    Class<? extends Annotation> qualifier();
 }

@@ -19,13 +19,13 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * @since 3.1
  */
 public interface ILazySource {
-	/**
-	 * @return a boolean indicating whether this stream is character or byte-based
-	 */
-	boolean isText();
+    /**
+     * @return a boolean indicating whether this stream is character or byte-based
+     */
+    boolean isText();
 
-	/**
-	 * Rewinds the stream.
-	 */
-	void rewind();
+    /**
+     * Rewinds the stream.
+     */
+    void rewind();
 }

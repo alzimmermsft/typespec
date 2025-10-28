@@ -21,17 +21,17 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class OrExpression extends CompositeExpression {
 
-	@Override
-	public EvaluationResult evaluate(IEvaluationContext context) throws CoreException {
-		return evaluateOr(context);
-	}
+    @Override
+    public EvaluationResult evaluate(IEvaluationContext context) throws CoreException {
+        return evaluateOr(context);
+    }
 
-	@Override
-	public boolean equals(final Object object) {
-		if (!(object instanceof final OrExpression that)) {
-			return false;
-		}
+    @Override
+    public boolean equals(final Object object) {
+        if (!(object instanceof final OrExpression that)) {
+            return false;
+        }
 
-		return equals(this.fExpressions, that.fExpressions);
-	}
+        return equals(this.fExpressions, that.fExpressions);
+    }
 }

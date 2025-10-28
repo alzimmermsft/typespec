@@ -15,20 +15,22 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 
 /**
  * A <code>LogFilter</code> is used to pre-filter log requests before sending events to a <code>LogListener</code>.
+ * 
  * @ThreadSafe
- * @see ExtendedLogReaderService#addLogListener(com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.log.LogListener, LogFilter)
+ * @see ExtendedLogReaderService#addLogListener(com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.log.LogListener,
+ * LogFilter)
  * @since 3.7
  */
 public interface LogFilter {
 
-	/**
-	 * @param bundle     The logging bundle
-	 * @param loggerName The name of the <code>Logger</code>
-	 * @param logLevel   The log level or severity
-	 * @see LogEntry
-	 * @see Logger
-	 * @see ExtendedLogReaderService#addLogListener(com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.log.LogListener,
-	 *      LogFilter)
-	 */
-	boolean isLoggable(Bundle bundle, String loggerName, int logLevel);
+    /**
+     * @param bundle The logging bundle
+     * @param loggerName The name of the <code>Logger</code>
+     * @param logLevel The log level or severity
+     * @see LogEntry
+     * @see Logger
+     * @see ExtendedLogReaderService#addLogListener(com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.log.LogListener,
+     * LogFilter)
+     */
+    boolean isLoggable(Bundle bundle, String loggerName, int logLevel);
 }

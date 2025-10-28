@@ -1,11 +1,11 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.i18nformatter.qual;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 
 /**
  * This annotation indicates that when a string of the annotated type is passed as the first
@@ -17,9 +17,11 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  *
  * <p>Example:
  *
- * <pre> static void method(@I18nFormatFor("#2") String format, Object... arg2) {...}
+ * <pre>
+ *  static void method(@I18nFormatFor("#2") String format, Object... arg2) {...}
  *
- * method("{0, number}", 2);</pre>
+ * method("{0, number}", 2);
+ * </pre>
  *
  * This ensures that the second parameter ("#2") can be passed as the remaining arguments of {@link
  * java.text.MessageFormat#format(String, Object...)}, when the first argument is {@code "format"}.
@@ -28,16 +30,16 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
 @SubtypeOf(I18nUnknownFormat.class)
 public @interface I18nFormatFor {
-  /**
-   * Indicates which formal parameter is the arguments to the format method. The value should be
-   * {@code #} followed by the 1-based index of the formal parameter that is the arguments to the
-   * format method, e.g., {@code "#2"}.
-   *
-   * @return {@code #} followed by the 1-based index of the formal parameter that is the arguments
-   *     to the format method
-   */
-  String value();
+    /**
+     * Indicates which formal parameter is the arguments to the format method. The value should be
+     * {@code #} followed by the 1-based index of the formal parameter that is the arguments to the
+     * format method, e.g., {@code "#2"}.
+     *
+     * @return {@code #} followed by the 1-based index of the formal parameter that is the arguments
+     * to the format method
+     */
+    String value();
 }

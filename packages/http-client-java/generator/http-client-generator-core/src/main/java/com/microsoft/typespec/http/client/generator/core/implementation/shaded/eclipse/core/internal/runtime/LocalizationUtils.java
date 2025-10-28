@@ -22,27 +22,28 @@ import java.lang.reflect.Field;
  * @since org.eclipse.equinox.common 3.3
  */
 public class LocalizationUtils {
-	/**
-	 * This method can be used in the absence of NLS class. The method tries to use
-	 * the NLS-based translation routine. If it falls, the method returns the
-	 * original non-translated key.
-	 *
-	 * @param key case-sensitive name of the filed in the translation file
-	 *            representing the string to be translated
-	 * @return The localized message or the non-translated key
-	 */
-	static public String safeLocalize(String key) {
-		try {
-			Class<?> messageClass = Class.forName("com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.runtime.CommonMessages"); //$NON-NLS-1$
+    /**
+     * This method can be used in the absence of NLS class. The method tries to use
+     * the NLS-based translation routine. If it falls, the method returns the
+     * original non-translated key.
+     *
+     * @param key case-sensitive name of the filed in the translation file
+     * representing the string to be translated
+     * @return The localized message or the non-translated key
+     */
+    static public String safeLocalize(String key) {
+        try {
+            Class<?> messageClass = Class.forName(
+                "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.runtime.CommonMessages"); //$NON-NLS-1$
             Field field = messageClass.getDeclaredField(key);
             Object value = field.get(null);
-			if (value instanceof String) {
-				return (String) value;
-			}
-		} catch (ClassNotFoundException | NoClassDefFoundError | SecurityException | NoSuchFieldException
-				| IllegalArgumentException | IllegalAccessException e) {
-			// eat exception and fall through
-		}
-		return key;
-	}
+            if (value instanceof String) {
+                return (String) value;
+            }
+        } catch (ClassNotFoundException | NoClassDefFoundError | SecurityException | NoSuchFieldException
+            | IllegalArgumentException | IllegalAccessException e) {
+            // eat exception and fall through
+        }
+        return key;
+    }
 }

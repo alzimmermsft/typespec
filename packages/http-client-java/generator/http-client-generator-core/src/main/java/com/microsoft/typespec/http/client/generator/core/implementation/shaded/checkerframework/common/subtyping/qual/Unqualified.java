@@ -1,11 +1,11 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.common.subtyping.qual;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.InvisibleQualifier;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.InvisibleQualifier;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 
 /**
  * A special annotation intended solely for representing an unqualified type in the qualifier
@@ -21,7 +21,8 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @Documented
 @Retention(RetentionPolicy.SOURCE) // don't store in class file
-@Target({}) // empty target prevents programmers from writing this in a program.
+@Target({ }) // empty target prevents programmers from writing this in a program.
 @InvisibleQualifier
-@SubtypeOf({})
-public @interface Unqualified {}
+@SubtypeOf({ })
+public @interface Unqualified {
+}

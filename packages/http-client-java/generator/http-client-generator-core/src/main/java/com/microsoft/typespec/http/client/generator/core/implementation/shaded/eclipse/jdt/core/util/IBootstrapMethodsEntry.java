@@ -22,6 +22,7 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IBootstrapMethodsEntry {
 
-	int getBootstrapMethodReference();
-	int[] getBootstrapArguments();
+    int getBootstrapMethodReference();
+
+    int[] getBootstrapArguments();
 }

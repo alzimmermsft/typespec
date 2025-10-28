@@ -17,23 +17,24 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeReference;
 
 public class AssistNodeParentAnnotationArrayInitializer extends ASTNode {
-	public final TypeReference type;
-	public final char[] name;
-	public AssistNodeParentAnnotationArrayInitializer(TypeReference type, char[] name) {
-		this.type = type;
-		this.name = name;
-	}
+    public final TypeReference type;
+    public final char[] name;
 
-	@Override
-	public StringBuilder print(int indent, StringBuilder output) {
-		output.append("<AssistNodeParentAnnotationArrayInitializer:"); //$NON-NLS-1$
-		output.append('@');
-		this.type.printExpression(0, output);
-		output.append('(');
-		output.append(this.name);
-		output.append(')');
-		output.append('>');
+    public AssistNodeParentAnnotationArrayInitializer(TypeReference type, char[] name) {
+        this.type = type;
+        this.name = name;
+    }
 
-		return output;
-	}
+    @Override
+    public StringBuilder print(int indent, StringBuilder output) {
+        output.append("<AssistNodeParentAnnotationArrayInitializer:"); //$NON-NLS-1$
+        output.append('@');
+        this.type.printExpression(0, output);
+        output.append('(');
+        output.append(this.name);
+        output.append(')');
+        output.append('>');
+
+        return output;
+    }
 }

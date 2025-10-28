@@ -27,10 +27,10 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public interface ICountable {
 
-	/**
-	 * Returns the number of elements.
-	 *
-	 * @return the number of elements
-	 */
-	int count();
+    /**
+     * Returns the number of elements.
+     *
+     * @return the number of elements
+     */
+    int count();
 }

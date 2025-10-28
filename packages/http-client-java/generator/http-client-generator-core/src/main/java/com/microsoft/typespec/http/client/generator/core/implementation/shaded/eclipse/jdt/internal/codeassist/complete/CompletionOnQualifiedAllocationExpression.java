@@ -48,64 +48,68 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 
 public class CompletionOnQualifiedAllocationExpression extends QualifiedAllocationExpression implements CompletionNode {
-@Override
-public TypeBinding resolveType(BlockScope scope) {
-	this.argumentTypes = Binding.NO_PARAMETERS;
-	boolean hasMissingType = false;
-	if (this.arguments != null) {
-		int argsLength = this.arguments.length;
-		int length = this.arguments.length;
-		this.argumentTypes = new TypeBinding[length];
-		for (int a = argsLength; --a >= 0;) {
-			try {
-				this.argumentTypes[a] = this.arguments[a].resolveType(scope);
-			} catch (CompletionNodeFound cnf) {
-				// ignore nested completion node
-				hasMissingType = true;
-			}
-		}
-	}
-	final boolean isDiamond = this.type != null && (this.type.bits & ASTNode.IsDiamond) != 0;
-	if (this.enclosingInstance != null) {
-		TypeBinding enclosingType = this.enclosingInstance.resolveType(scope);
-		if (enclosingType == null) {
-			// try to propose something even if enclosing type cannot be resolved.
-			// Eg.: new Test<>().new Test<>(#cursor#
-			if (this.enclosingInstance instanceof AllocationExpression) {
-				TypeReference enclosingInstanceType = ((AllocationExpression) this.enclosingInstance).type;
-				if (enclosingInstanceType != null) {
-					enclosingType = enclosingInstanceType.resolvedType;
-				}
-			}
-		}
-		if (enclosingType == null || !(enclosingType instanceof ReferenceBinding)) {
-			throw new CompletionNodeFound();
-		}
-		this.resolvedType = ((SingleTypeReference) this.type).resolveTypeEnclosing(scope, (ReferenceBinding) enclosingType);
-	} else {
-	 	this.resolvedType = this.type.resolveType(scope, true /* check bounds*/);
-	}
+    @Override
+    public TypeBinding resolveType(BlockScope scope) {
+        this.argumentTypes = Binding.NO_PARAMETERS;
+        boolean hasMissingType = false;
+        if (this.arguments != null) {
+            int argsLength = this.arguments.length;
+            int length = this.arguments.length;
+            this.argumentTypes = new TypeBinding[length];
+            for (int a = argsLength; --a >= 0;) {
+                try {
+                    this.argumentTypes[a] = this.arguments[a].resolveType(scope);
+                } catch (CompletionNodeFound cnf) {
+                    // ignore nested completion node
+                    hasMissingType = true;
+                }
+            }
+        }
+        final boolean isDiamond = this.type != null && (this.type.bits & ASTNode.IsDiamond) != 0;
+        if (this.enclosingInstance != null) {
+            TypeBinding enclosingType = this.enclosingInstance.resolveType(scope);
+            if (enclosingType == null) {
+                // try to propose something even if enclosing type cannot be resolved.
+                // Eg.: new Test<>().new Test<>(#cursor#
+                if (this.enclosingInstance instanceof AllocationExpression) {
+                    TypeReference enclosingInstanceType = ((AllocationExpression) this.enclosingInstance).type;
+                    if (enclosingInstanceType != null) {
+                        enclosingType = enclosingInstanceType.resolvedType;
+                    }
+                }
+            }
+            if (enclosingType == null || !(enclosingType instanceof ReferenceBinding)) {
+                throw new CompletionNodeFound();
+            }
+            this.resolvedType
+                = ((SingleTypeReference) this.type).resolveTypeEnclosing(scope, (ReferenceBinding) enclosingType);
+        } else {
+            this.resolvedType = this.type.resolveType(scope, true /* check bounds */);
+        }
 
-	if (isDiamond && (this.resolvedType instanceof ParameterizedTypeBinding) && !hasMissingType) {
-		TypeBinding [] inferredTypes = inferElidedTypes(scope);
-		if (inferredTypes != null) {
-			this.resolvedType = this.type.resolvedType = scope.environment().createParameterizedType(((ParameterizedTypeBinding) this.resolvedType).genericType(), inferredTypes, this.resolvedType.enclosingType());
-		} else {
-			// inference failed. Resolved type will be of the form Test<>
-			this.bits |= ASTNode.IsDiamond;
-		}
- 	}
-	if (!(this.resolvedType instanceof ReferenceBinding))
-		throw new CompletionNodeFound(); // no need to continue if its an array or base type
+        if (isDiamond && (this.resolvedType instanceof ParameterizedTypeBinding) && !hasMissingType) {
+            TypeBinding[] inferredTypes = inferElidedTypes(scope);
+            if (inferredTypes != null) {
+                this.resolvedType = this.type.resolvedType = scope.environment()
+                    .createParameterizedType(((ParameterizedTypeBinding) this.resolvedType).genericType(),
+                        inferredTypes, this.resolvedType.enclosingType());
+            } else {
+                // inference failed. Resolved type will be of the form Test<>
+                this.bits |= ASTNode.IsDiamond;
+            }
+        }
+        if (!(this.resolvedType instanceof ReferenceBinding))
+            throw new CompletionNodeFound(); // no need to continue if its an array or base type
 
-	throw new CompletionNodeFound(this, this.resolvedType, scope);
-}
-@Override
-public StringBuilder printExpression(int indent, StringBuilder output) {
-	if (this.enclosingInstance == null)
-		output.append("<CompleteOnAllocationExpression:" );  //$NON-NLS-1$
-	else
-		output.append("<CompleteOnQualifiedAllocationExpression:");  //$NON-NLS-1$
-	return super.printExpression(indent, output).append('>');
-}
+        throw new CompletionNodeFound(this, this.resolvedType, scope);
+    }
+
+    @Override
+    public StringBuilder printExpression(int indent, StringBuilder output) {
+        if (this.enclosingInstance == null)
+            output.append("<CompleteOnAllocationExpression:");  //$NON-NLS-1$
+        else
+            output.append("<CompleteOnQualifiedAllocationExpression:");  //$NON-NLS-1$
+        return super.printExpression(indent, output).append('>');
+    }
 }

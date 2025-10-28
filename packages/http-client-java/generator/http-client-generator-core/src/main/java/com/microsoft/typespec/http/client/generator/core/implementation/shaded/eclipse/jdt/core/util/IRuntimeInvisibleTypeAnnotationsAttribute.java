@@ -25,17 +25,17 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IRuntimeInvisibleTypeAnnotationsAttribute extends IClassFileAttribute {
 
-	/**
-	 * Answer back the number of extended annotations as described in the JVM specifications.
-	 *
-	 * @return the number of extended annotations
-	 */
-	int getExtendedAnnotationsNumber();
+    /**
+     * Answer back the number of extended annotations as described in the JVM specifications.
+     *
+     * @return the number of extended annotations
+     */
+    int getExtendedAnnotationsNumber();
 
-	/**
-	 * Answer back the extended annotations. Answers an empty collection if none.
-	 *
-	 * @return the extended annotations
-	 */
-	IExtendedAnnotation[] getExtendedAnnotations();
+    /**
+     * Answer back the extended annotations. Answers an empty collection if none.
+     *
+     * @return the extended annotations
+     */
+    IExtendedAnnotation[] getExtendedAnnotations();
 }

@@ -221,27 +221,8 @@ protected void addSubtype(IType type, IType subtype) {
 	}
 	subtypes.add(subtype);
 }
-/**
- * @see ITypeHierarchy
- */
-@Override
-public synchronized void addTypeHierarchyChangedListener(ITypeHierarchyChangedListener listener) {
-	ArrayList<ITypeHierarchyChangedListener> listeners = this.changeListeners;
-	if (listeners == null) {
-		this.changeListeners = listeners = new ArrayList<>();
-	}
 
-	// register with JavaCore to get Java element delta on first listener added
-	if (listeners.size() == 0) {
-		JavaCore.addElementChangedListener(this);
-	}
-
-	// add listener only if it is not already present
-	if (listeners.indexOf(listener) == -1) {
-		listeners.add(listener);
-	}
-}
-private static Integer bytesToFlags(byte[] bytes){
+    private static Integer bytesToFlags(byte[] bytes){
 	if(bytes != null && bytes.length > 0) {
 		return Integer.valueOf(new String(bytes));
 	} else {
@@ -430,31 +411,8 @@ private void getAllSubtypesForType0(IType type, Set<IType> subs) {
 		}
 	}
 }
-/**
- * @see ITypeHierarchy
- */
-@Override
-public IType[] getAllSuperclasses(IType type) {
-	IType superclass = getSuperclass(type);
-	Set<IType> supers = new LinkedHashSet<>();
-	while (superclass != null) {
-		supers.add(superclass);
-		superclass = getSuperclass(superclass);
-	}
-	return supers.toArray(IType[]::new);
-}
-/**
- * @see ITypeHierarchy
- */
-@Override
-public IType[] getAllSuperInterfaces(IType type) {
-	Set<IType> supers = getAllSuperInterfaces0(type, new LinkedHashSet<>());
-	if (supers.isEmpty()) {
-		return NO_TYPE;
-	}
-	return supers.toArray(IType[]::new);
-}
-private Set<IType> getAllSuperInterfaces0(IType type, Set<IType> supers) {
+
+    private Set<IType> getAllSuperInterfaces0(IType type, Set<IType> supers) {
 	IType[] superinterfaces = this.typeToSuperInterfaces.get(type);
 	if (superinterfaces == null) // type is not part of the hierarchy
 		return supers;
@@ -612,21 +570,8 @@ public IType[] getRootInterfaces() {
 	}
 	return result;
 }
-/**
- * @see ITypeHierarchy
- */
-@Override
-public IType[] getSubclasses(IType type) {
-	if (isInterface(type)) {
-		return NO_TYPE;
-	}
-	Set<IType> vector = this.typeToSubtypes.get(type);
-	if (vector == null)
-		return NO_TYPE;
-	else
-		return vector.toArray(IType[]::new);
-}
-/**
+
+    /**
  * @see ITypeHierarchy
  */
 @Override
@@ -1285,23 +1230,7 @@ public synchronized void refresh(IProgressMonitor monitor) throws JavaModelExcep
 	}
 }
 
-/**
- * @see ITypeHierarchy
- */
-@Override
-public synchronized void removeTypeHierarchyChangedListener(ITypeHierarchyChangedListener listener) {
-	ArrayList<ITypeHierarchyChangedListener> listeners = this.changeListeners;
-	if (listeners == null) {
-		return;
-	}
-	listeners.remove(listener);
-
-	// deregister from JavaCore on last listener removed
-	if (listeners.isEmpty()) {
-		JavaCore.removeElementChangedListener(this);
-	}
-}
-/**
+    /**
  * @see ITypeHierarchy
  */
 @Override

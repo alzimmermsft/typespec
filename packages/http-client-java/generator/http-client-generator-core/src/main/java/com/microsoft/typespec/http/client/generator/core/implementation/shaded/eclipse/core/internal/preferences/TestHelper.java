@@ -13,17 +13,17 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.preferences;
 
-import java.util.Properties;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.prefs.BackingStoreException;
+import java.util.Properties;
 
 public class TestHelper {
 
-	public static Properties convertToProperties(EclipsePreferences node, String prefix) throws BackingStoreException {
-		return node.convertToProperties(new Properties(), prefix);
-	}
+    public static Properties convertToProperties(EclipsePreferences node, String prefix) throws BackingStoreException {
+        return node.convertToProperties(new Properties(), prefix);
+    }
 
-	public static IPath getInstanceBaseLocation() {
-		return new InstancePreferences().getBaseLocation();
-	}
+    public static IPath getInstanceBaseLocation() {
+        return new InstancePreferences().getBaseLocation();
+    }
 }

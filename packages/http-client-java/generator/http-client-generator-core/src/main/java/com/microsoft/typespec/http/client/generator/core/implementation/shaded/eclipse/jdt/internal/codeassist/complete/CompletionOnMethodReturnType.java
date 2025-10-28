@@ -18,21 +18,21 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeReference;
 
 public class CompletionOnMethodReturnType extends MethodDeclaration implements CompletionNode {
-	public CompletionOnMethodReturnType(TypeReference returnType, CompilationResult compilationResult){
-		super(compilationResult);
-		this.returnType = returnType;
-		this.sourceStart = returnType.sourceStart;
-		this.sourceEnd = returnType.sourceEnd;
-	}
+    public CompletionOnMethodReturnType(TypeReference returnType, CompilationResult compilationResult) {
+        super(compilationResult);
+        this.returnType = returnType;
+        this.sourceStart = returnType.sourceStart;
+        this.sourceEnd = returnType.sourceEnd;
+    }
 
-	@Override
-	public void resolveStatements() {
-			throw new CompletionNodeFound(this, this.scope);
-	}
+    @Override
+    public void resolveStatements() {
+        throw new CompletionNodeFound(this, this.scope);
+    }
 
-	@Override
-	public StringBuilder print(int tab, StringBuilder output) {
-		return this.returnType.print(tab, output);
-	}
+    @Override
+    public StringBuilder print(int tab, StringBuilder output) {
+        return this.returnType.print(tab, output);
+    }
 
 }

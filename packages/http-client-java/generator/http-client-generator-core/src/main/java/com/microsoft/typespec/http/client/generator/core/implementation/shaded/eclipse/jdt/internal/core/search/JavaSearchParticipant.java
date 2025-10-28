@@ -13,23 +13,18 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.search;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.OperationCanceledException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Path;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.search.IJavaSearchScope;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.search.IParallelizable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.search.SearchDocument;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.search.SearchParticipant;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.search.SearchPattern;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.search.SearchRequestor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.index.IndexLocation;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.search.indexing.BinaryIndexer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.search.indexing.ManifestIndexer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.search.indexing.SourceIndexer;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.search.matching.MatchLocator;
 
 /**
  * A search participant describes a particular extension to a generic search mechanism, allowing thus to
@@ -126,24 +121,7 @@ public class JavaSearchParticipant extends SearchParticipant implements IParalle
 		}
 	}
 
-	@Override
-	public void locateMatches(SearchDocument[] indexMatches, SearchPattern pattern,
-			IJavaSearchScope scope, SearchRequestor requestor, IProgressMonitor monitor) throws CoreException {
-
-		MatchLocator matchLocator =
-			new MatchLocator(
-				pattern,
-				requestor,
-				scope,
-				monitor
-		);
-
-		/* eliminating false matches and locating them */
-		if (monitor != null && monitor.isCanceled()) throw new OperationCanceledException();
-		matchLocator.locateMatches(indexMatches);
-	}
-
-	@Override
+    @Override
 	public IPath[] selectIndexes(SearchPattern pattern, IJavaSearchScope scope) {
 		IndexSelector selector = getIndexSelector(pattern, scope);
 		IndexLocation[] urls = selector.getIndexLocations();

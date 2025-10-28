@@ -13,8 +13,8 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.preferences;
 
-import java.util.Objects;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.preferences.PreferencesService;
+import java.util.Objects;
 
 /**
  * Abstract super-class for scope context object contributed by the Platform.
@@ -23,32 +23,32 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public abstract class AbstractScope implements IScopeContext {
 
-	/*
-	 * Default path hierarchy for nodes is /<scope>/<qualifier>.
-	 *
-	 * @see
-	 * org.eclipse.core.runtime.preferences.IScopeContext#getNode(java.lang.String)
-	 */
-	@Override
-	public IEclipsePreferences getNode(String qualifier) {
-		if (qualifier == null) {
-			throw new IllegalArgumentException();
-		}
-		return (IEclipsePreferences) PreferencesService.getDefault().getRootNode().node(getName()).node(qualifier);
-	}
+    /*
+     * Default path hierarchy for nodes is /<scope>/<qualifier>.
+     *
+     * @see
+     * org.eclipse.core.runtime.preferences.IScopeContext#getNode(java.lang.String)
+     */
+    @Override
+    public IEclipsePreferences getNode(String qualifier) {
+        if (qualifier == null) {
+            throw new IllegalArgumentException();
+        }
+        return (IEclipsePreferences) PreferencesService.getDefault().getRootNode().node(getName()).node(qualifier);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		return obj instanceof IScopeContext other //
-				&& getName().equals(other.getName()) //
-				&& Objects.equals(getLocation(), other.getLocation());
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        return obj instanceof IScopeContext other //
+            && getName().equals(other.getName()) //
+            && Objects.equals(getLocation(), other.getLocation());
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(getName(), getLocation());
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getLocation());
+    }
 }

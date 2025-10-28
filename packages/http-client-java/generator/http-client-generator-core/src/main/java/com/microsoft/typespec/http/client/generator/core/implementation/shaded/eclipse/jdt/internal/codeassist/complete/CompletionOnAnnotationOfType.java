@@ -19,21 +19,21 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
 
 public class CompletionOnAnnotationOfType extends TypeDeclaration implements CompletionNode {
-	public ASTNode potentialAnnotatedNode;
-	// During recovery a parameter can be parsed as a FieldDeclaration instead of Argument.
-	// 'isParameter' is set to true in this case.
-	public boolean isParameter;
+    public ASTNode potentialAnnotatedNode;
+    // During recovery a parameter can be parsed as a FieldDeclaration instead of Argument.
+    // 'isParameter' is set to true in this case.
+    public boolean isParameter;
 
-	public CompletionOnAnnotationOfType(char[] typeName, CompilationResult compilationResult, Annotation annotation){
-		super(compilationResult);
-		this.sourceEnd = annotation.sourceEnd;
-		this.sourceStart = annotation.sourceEnd;
-		this.name = typeName;
-		this.annotations = new Annotation[]{annotation};
-	}
+    public CompletionOnAnnotationOfType(char[] typeName, CompilationResult compilationResult, Annotation annotation) {
+        super(compilationResult);
+        this.sourceEnd = annotation.sourceEnd;
+        this.sourceStart = annotation.sourceEnd;
+        this.name = typeName;
+        this.annotations = new Annotation[] { annotation };
+    }
 
-	@Override
-	public StringBuilder print(int indent, StringBuilder output) {
-		return this.annotations[0].print(indent, output);
-	}
+    @Override
+    public StringBuilder print(int indent, StringBuilder output) {
+        return this.annotations[0].print(indent, output);
+    }
 }

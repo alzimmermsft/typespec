@@ -15,8 +15,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.resources;
 
-import java.util.LinkedList;
-import java.util.Queue;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.utils.Messages;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.utils.Policy;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.utils.WrappedRuntimeException;
@@ -24,7 +22,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.watson.IElementContentVisitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.watson.IPathRequestor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IProject;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.ResourcesPlugin;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
@@ -34,9 +31,10 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Platform;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Status;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.content.IContentTypeManager;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.content.IContentTypeManager.ContentTypeChangeEvent;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.jobs.Job;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Bundle;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Detects changes to content types/project preferences and
@@ -45,219 +43,191 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 
 public class CharsetDeltaJob extends Job implements IContentTypeManager.IContentTypeChangeListener {
 
-	// this is copied in the runtime tests - if changed here, has to be changed there too
-	public final static String FAMILY_CHARSET_DELTA = ResourcesPlugin.PI_RESOURCES + "charsetJobFamily"; //$NON-NLS-1$
+    // this is copied in the runtime tests - if changed here, has to be changed there too
+    public final static String FAMILY_CHARSET_DELTA = ResourcesPlugin.PI_RESOURCES + "charsetJobFamily"; //$NON-NLS-1$
 
-	interface ICharsetListenerFilter {
+    interface ICharsetListenerFilter {
 
-		/**
-		 * Returns the path for the node in the tree we are interested in. Returns <code>null</code>
-		 * if the visitor no longer wants to visit anything.
-		 */
-		IPath getRoot();
+        /**
+         * Returns the path for the node in the tree we are interested in. Returns <code>null</code>
+         * if the visitor no longer wants to visit anything.
+         */
+        IPath getRoot();
 
-		IProject getProject();
+        IProject getProject();
 
-		/**
-		 * Returns whether the corresponding resource is affected by this change.
-		 */
-		boolean isAffected(ResourceInfo info, IPathRequestor requestor);
-	}
+        /**
+         * Returns whether the corresponding resource is affected by this change.
+         */
+        boolean isAffected(ResourceInfo info, IPathRequestor requestor);
+    }
 
-	private final ThreadLocal<Boolean> disabled = new ThreadLocal<>();
+    private final ThreadLocal<Boolean> disabled = new ThreadLocal<>();
 
-	private final Bundle systemBundle = Platform.getBundle("com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi"); //$NON-NLS-1$
-	private final Queue<ICharsetListenerFilter> work = new LinkedList<>();
+    private final Bundle systemBundle
+        = Platform.getBundle("com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi"); //$NON-NLS-1$
+    private final Queue<ICharsetListenerFilter> work = new LinkedList<>();
 
-	Workspace workspace;
+    Workspace workspace;
 
-	private static final int CHARSET_DELTA_DELAY = 500;
+    private static final int CHARSET_DELTA_DELAY = 500;
 
-	public CharsetDeltaJob(Workspace workspace) {
-		super(Messages.resources_charsetBroadcasting);
-		this.workspace = workspace;
-		setRule(workspace.getRoot()); // make sure workspace.prepareOperation() does not block
-	}
+    public CharsetDeltaJob(Workspace workspace) {
+        super(Messages.resources_charsetBroadcasting);
+        this.workspace = workspace;
+        setRule(workspace.getRoot()); // make sure workspace.prepareOperation() does not block
+    }
 
-	private void addToQueue(ICharsetListenerFilter filter) {
-		synchronized (work) {
-			work.add(filter);
-		}
-		schedule(CHARSET_DELTA_DELAY);
-	}
+    private void addToQueue(ICharsetListenerFilter filter) {
+        synchronized (work) {
+            work.add(filter);
+        }
+        schedule(CHARSET_DELTA_DELAY);
+    }
 
-	@Override
-	public boolean belongsTo(Object family) {
-		return FAMILY_CHARSET_DELTA.equals(family);
-	}
+    @Override
+    public boolean belongsTo(Object family) {
+        return FAMILY_CHARSET_DELTA.equals(family);
+    }
 
-	public void charsetPreferencesChanged(final IProject project) {
-		// avoid reacting to changes made by ourselves
-		if (isDisabled()) {
-			return;
-		}
-		ResourceInfo projectInfo = ((Project) project).getResourceInfo(false, false);
-		//nothing to do if project has already been deleted
-		if (projectInfo == null) {
-			return;
-		}
-		final long projectId = projectInfo.getNodeId();
-		// ensure all resources under the affected project are
-		// reported as having encoding changes
-		ICharsetListenerFilter filter = new ICharsetListenerFilter() {
-			@Override
-			public IPath getRoot() {
-				//make sure it is still the same project - it could have been deleted and recreated
-				ResourceInfo currentInfo = ((Project) project).getResourceInfo(false, false);
-				if (currentInfo == null) {
-					return null;
-				}
-				long currentId = currentInfo.getNodeId();
-				if (currentId != projectId) {
-					return null;
-				}
-				// visit the project subtree
-				return project.getFullPath();
-			}
+    public void charsetPreferencesChanged(final IProject project) {
+        // avoid reacting to changes made by ourselves
+        if (isDisabled()) {
+            return;
+        }
+        ResourceInfo projectInfo = ((Project) project).getResourceInfo(false, false);
+        // nothing to do if project has already been deleted
+        if (projectInfo == null) {
+            return;
+        }
+        final long projectId = projectInfo.getNodeId();
+        // ensure all resources under the affected project are
+        // reported as having encoding changes
+        ICharsetListenerFilter filter = new ICharsetListenerFilter() {
+            @Override
+            public IPath getRoot() {
+                // make sure it is still the same project - it could have been deleted and recreated
+                ResourceInfo currentInfo = ((Project) project).getResourceInfo(false, false);
+                if (currentInfo == null) {
+                    return null;
+                }
+                long currentId = currentInfo.getNodeId();
+                if (currentId != projectId) {
+                    return null;
+                }
+                // visit the project subtree
+                return project.getFullPath();
+            }
 
-			@Override
-			public boolean isAffected(ResourceInfo info, IPathRequestor requestor) {
-				// for now, mark all resources in the project as potential encoding resource changes
-				return true;
-			}
+            @Override
+            public boolean isAffected(ResourceInfo info, IPathRequestor requestor) {
+                // for now, mark all resources in the project as potential encoding resource changes
+                return true;
+            }
 
-			@Override
-			public IProject getProject() {
-				return project;
-			}
+            @Override
+            public IProject getProject() {
+                return project;
+            }
 
-		};
-		addToQueue(filter);
-	}
+        };
+        addToQueue(filter);
+    }
 
-	@Override
-	public void contentTypeChanged(final ContentTypeChangeEvent event) {
-		// check all files that may be affected by this change (taking
-		// only the current content type state into account
-		// dispatch a job to generate the deltas
-		ICharsetListenerFilter filter = new ICharsetListenerFilter() {
+    private boolean isDisabled() {
+        return disabled.get() != null;
+    }
 
-			@Override
-			public IPath getRoot() {
-				// visit all resources in the workspace
-				return IPath.ROOT;
-			}
+    private void processNextEvent(final ICharsetListenerFilter filter, IProgressMonitor monitor) throws CoreException {
+        IElementContentVisitor visitor = (tree, requestor, elementContents) -> {
+            ResourceInfo info = (ResourceInfo) elementContents;
+            if (!filter.isAffected(info, requestor)) {
+                return true;
+            }
+            info = workspace.getResourceInfo(requestor.requestPath(), false, true);
+            if (info == null) {
+                return false;
+            }
+            info.incrementCharsetGenerationCount();
+            return true;
+        };
+        try {
+            IPath root = filter.getRoot();
+            if (root != null) {
+                new ElementTreeIterator(workspace.getElementTree(), root).iterate(visitor);
+            }
+            IProject project = filter.getProject();
+            if (project != null) {
+                ValidateProjectEncoding.updateMissingEncodingMarker(project);
+            }
+        } catch (WrappedRuntimeException e) {
+            throw (CoreException) e.getTargetException();
+        }
+        if (monitor.isCanceled()) {
+            throw new OperationCanceledException();
+        }
+    }
 
-			@Override
-			public boolean isAffected(ResourceInfo info, IPathRequestor requestor) {
-				if (info.getType() != IResource.FILE) {
-					return false;
-				}
-				return event.getContentType().isAssociatedWith(requestor.requestName());
-			}
+    private ICharsetListenerFilter removeFromQueue() {
+        synchronized (work) {
+            return work.poll();
+        }
+    }
 
-			@Override
-			public IProject getProject() {
-				return null;
-			}
-		};
-		addToQueue(filter);
-	}
+    @Override
+    public IStatus run(IProgressMonitor monitor) {
+        monitor = Policy.monitorFor(monitor);
+        try {
+            String message = Messages.resources_charsetBroadcasting;
+            monitor.beginTask(message, Policy.totalWork);
+            try {
+                workspace.prepareOperation(null, monitor);
+                workspace.beginOperation(true);
+                ICharsetListenerFilter next;
+                // if the system is shutting down, don't broadcast
+                while (systemBundle.getState() != Bundle.STOPPING && (next = removeFromQueue()) != null) {
+                    processNextEvent(next, monitor);
+                }
+            } catch (OperationCanceledException e) {
+                workspace.getWorkManager().operationCanceled();
+                return Status.CANCEL_STATUS;
+            } finally {
+                workspace.endOperation(null, true);
+            }
+            monitor.worked(Policy.opWork);
+        } catch (CoreException sig) {
+            return sig.getStatus();
+        } finally {
+            monitor.done();
+        }
+        return Status.OK_STATUS;
+    }
 
-	private boolean isDisabled() {
-		return disabled.get() != null;
-	}
+    /**
+     * Turns off reaction to changes in the preference file.
+     */
+    public void setDisabled(boolean disabled) {
+        // using a thread local because this can be called by multiple threads concurrently
+        if (disabled) {
+            this.disabled.set(Boolean.TRUE);
+        } else {
+            this.disabled.remove();
+        }
+    }
 
-	private void processNextEvent(final ICharsetListenerFilter filter, IProgressMonitor monitor) throws CoreException {
-		IElementContentVisitor visitor = (tree, requestor, elementContents) -> {
-			ResourceInfo info = (ResourceInfo) elementContents;
-			if (!filter.isAffected(info, requestor)) {
-				return true;
-			}
-			info = workspace.getResourceInfo(requestor.requestPath(), false, true);
-			if (info == null) {
-				return false;
-			}
-			info.incrementCharsetGenerationCount();
-			return true;
-		};
-		try {
-			IPath root = filter.getRoot();
-			if (root != null) {
-				new ElementTreeIterator(workspace.getElementTree(), root).iterate(visitor);
-			}
-			IProject project = filter.getProject();
-			if (project != null) {
-				ValidateProjectEncoding.updateMissingEncodingMarker(project);
-			}
-		} catch (WrappedRuntimeException e) {
-			throw (CoreException) e.getTargetException();
-		}
-		if (monitor.isCanceled()) {
-			throw new OperationCanceledException();
-		}
-	}
+    public void shutdown() {
+        try {
+            // try to prevent execution of this job to avoid "already shutdown.":
+            cancel();
+            wakeUp();
+            // if job is already running wait for it to finish:
+            join(3000, null);
+        } catch (InterruptedException e) {
+            // ignore
+        }
+    }
 
-	private ICharsetListenerFilter removeFromQueue() {
-		synchronized (work) {
-			return work.poll();
-		}
-	}
-
-	@Override
-	public IStatus run(IProgressMonitor monitor) {
-		monitor = Policy.monitorFor(monitor);
-		try {
-			String message = Messages.resources_charsetBroadcasting;
-			monitor.beginTask(message, Policy.totalWork);
-			try {
-				workspace.prepareOperation(null, monitor);
-				workspace.beginOperation(true);
-				ICharsetListenerFilter next;
-				//if the system is shutting down, don't broadcast
-				while (systemBundle.getState() != Bundle.STOPPING && (next = removeFromQueue()) != null) {
-					processNextEvent(next, monitor);
-				}
-			} catch (OperationCanceledException e) {
-				workspace.getWorkManager().operationCanceled();
-				return Status.CANCEL_STATUS;
-			} finally {
-				workspace.endOperation(null, true);
-			}
-			monitor.worked(Policy.opWork);
-		} catch (CoreException sig) {
-			return sig.getStatus();
-		} finally {
-			monitor.done();
-		}
-		return Status.OK_STATUS;
-	}
-
-	/**
-	 * Turns off reaction to changes in the preference file.
-	 */
-	public void setDisabled(boolean disabled) {
-		// using a thread local because this can be called by multiple threads concurrently
-		if (disabled) {
-			this.disabled.set(Boolean.TRUE);
-		} else {
-			this.disabled.remove();
-		}
-	}
-
-	public void shutdown() {
-		try {
-			// try to prevent execution of this job to avoid "already shutdown.":
-			cancel();
-			wakeUp();
-			// if job is already running wait for it to finish:
-			join(3000, null);
-		} catch (InterruptedException e) {
-			// ignore
-		}
-	}
-
-	public void startup() {
-		Platform.getContentTypeManager().addContentTypeChangeListener(this);
-	}
+    public void startup() {
+        Platform.getContentTypeManager().addContentTypeChangeListener(this);
+    }
 }

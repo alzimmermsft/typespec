@@ -17,11 +17,12 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * A search pattern defines how search results are found. Use <code>SearchEngine.createSearchPattern</code>
  * to create a search pattern.
  *
- * @see SearchEngine#createSearchPattern(com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaElement, int)
+ * @see SearchEngine#createSearchPattern(com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaElement,
+ * int)
  * @see SearchEngine#createSearchPattern(String, int, int, boolean)
  * @deprecated Since 3.0, the class
  * {@link SearchPattern} replaces this interface.
  */
 public interface ISearchPattern {
-	// used as a marker interface: contains no methods
+    // used as a marker interface: contains no methods
 }

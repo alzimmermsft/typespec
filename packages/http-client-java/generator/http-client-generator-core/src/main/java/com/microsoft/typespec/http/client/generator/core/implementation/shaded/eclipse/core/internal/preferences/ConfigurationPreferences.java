@@ -14,40 +14,40 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.preferences;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.preferences.ConfigurationScope;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.preferences.ConfigurationScope;
 
 /**
  * @since 3.0
  */
 public class ConfigurationPreferences extends SingletonEclipsePreferences {
 
-	// cache which nodes have been loaded from disk
-	private static final Set<String> LOADED_NODES = ConcurrentHashMap.newKeySet();
-	private static final AtomicBoolean INITIALIZED = new AtomicBoolean();
-	private static final IPath BASE_LOCATION = ConfigurationScope.INSTANCE.getLocation();
+    // cache which nodes have been loaded from disk
+    private static final Set<String> LOADED_NODES = ConcurrentHashMap.newKeySet();
+    private static final AtomicBoolean INITIALIZED = new AtomicBoolean();
+    private static final IPath BASE_LOCATION = ConfigurationScope.INSTANCE.getLocation();
 
-	/**
-	 * Default constructor. Should only be called by #createExecutableExtension.
-	 */
-	public ConfigurationPreferences() {
-		this(null, null);
-	}
+    /**
+     * Default constructor. Should only be called by #createExecutableExtension.
+     */
+    public ConfigurationPreferences() {
+        this(null, null);
+    }
 
-	private ConfigurationPreferences(EclipsePreferences parent, String name) {
-		super(parent, name, LOADED_NODES, INITIALIZED);
-	}
+    private ConfigurationPreferences(EclipsePreferences parent, String name) {
+        super(parent, name, LOADED_NODES, INITIALIZED);
+    }
 
-	@Override
-	IPath getBaseLocation() {
-		return BASE_LOCATION;
-	}
+    @Override
+    IPath getBaseLocation() {
+        return BASE_LOCATION;
+    }
 
-	@Override
-	protected EclipsePreferences internalCreate(EclipsePreferences nodeParent, String nodeName, Object context) {
-		return new ConfigurationPreferences(nodeParent, nodeName);
-	}
+    @Override
+    protected EclipsePreferences internalCreate(EclipsePreferences nodeParent, String nodeName, Object context) {
+        return new ConfigurationPreferences(nodeParent, nodeName);
+    }
 }

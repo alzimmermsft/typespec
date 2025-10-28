@@ -18,38 +18,43 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 
 public class CompletionOnJavadocTypeParamReference extends JavadocSingleTypeReference implements CompletionOnJavadoc {
-	public int completionFlags = JAVADOC;
-	public char[][] missingParams;
+    public int completionFlags = JAVADOC;
+    public char[][] missingParams;
 
-	public CompletionOnJavadocTypeParamReference(char[] name, long pos, int start, int end) {
-		super(name, pos, start, end);
-	}
+    public CompletionOnJavadocTypeParamReference(char[] name, long pos, int start, int end) {
+        super(name, pos, start, end);
+    }
 
-	public CompletionOnJavadocTypeParamReference(JavadocSingleTypeReference typeRef) {
-		super(typeRef.token, (((long)typeRef.sourceStart)<<32)+typeRef.sourceEnd, typeRef.tagSourceStart, typeRef.tagSourceStart);
-	}
+    public CompletionOnJavadocTypeParamReference(JavadocSingleTypeReference typeRef) {
+        super(typeRef.token, (((long) typeRef.sourceStart) << 32) + typeRef.sourceEnd, typeRef.tagSourceStart,
+            typeRef.tagSourceStart);
+    }
 
-	@Override
-	public void addCompletionFlags(int flags) {
-		this.completionFlags |= flags;
-	}
+    @Override
+    public void addCompletionFlags(int flags) {
+        this.completionFlags |= flags;
+    }
 
-	@Override
-	public int getCompletionFlags() {
-		return this.completionFlags;
-	}
+    @Override
+    public int getCompletionFlags() {
+        return this.completionFlags;
+    }
 
-	@Override
-	public StringBuilder printExpression(int indent, StringBuilder output) {
-		output.append("<CompletionOnJavadocTypeParamReference:"); //$NON-NLS-1$
-		if (this.token != null) super.printExpression(indent, output);
-		return output.append('>');
-	}
+    @Override
+    public StringBuilder printExpression(int indent, StringBuilder output) {
+        output.append("<CompletionOnJavadocTypeParamReference:"); //$NON-NLS-1$
+        if (this.token != null)
+            super.printExpression(indent, output);
+        return output.append('>');
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jdt.internal.compiler.ast.SingleNameReference#reportError(com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.BlockScope)
-	 */
-	public TypeBinding reportError(BlockScope scope) {
-		return null;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jdt.internal.compiler.ast.SingleNameReference#reportError(com.microsoft.typespec.http.client.
+     * generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.BlockScope)
+     */
+    public TypeBinding reportError(BlockScope scope) {
+        return null;
+    }
 }

@@ -41,35 +41,35 @@ import java.io.OutputStream;
  * @see SafeChunkyInputStream
  */
 public class SafeChunkyOutputStream extends FilterOutputStream {
-	protected String filePath;
-	protected boolean isOpen;
+    protected String filePath;
+    protected boolean isOpen;
 
-	public SafeChunkyOutputStream(File target) throws IOException {
-		this(target.getAbsolutePath());
-	}
+    public SafeChunkyOutputStream(File target) throws IOException {
+        this(target.getAbsolutePath());
+    }
 
-	public SafeChunkyOutputStream(String filePath) throws IOException {
-		super(new BufferedOutputStream(new FileOutputStream(filePath, true)));
-		this.filePath = filePath;
-		isOpen = true;
-		beginChunk();
-	}
+    public SafeChunkyOutputStream(String filePath) throws IOException {
+        super(new BufferedOutputStream(new FileOutputStream(filePath, true)));
+        this.filePath = filePath;
+        isOpen = true;
+        beginChunk();
+    }
 
-	protected void beginChunk() throws IOException {
-		write(ILocalStoreConstants.BEGIN_CHUNK);
-	}
+    protected void beginChunk() throws IOException {
+        write(ILocalStoreConstants.BEGIN_CHUNK);
+    }
 
-	protected void endChunk() throws IOException {
-		write(ILocalStoreConstants.END_CHUNK);
-	}
+    protected void endChunk() throws IOException {
+        write(ILocalStoreConstants.END_CHUNK);
+    }
 
-	protected void open() throws IOException {
-		out = new BufferedOutputStream(new FileOutputStream(filePath, true));
-		isOpen = true;
-		beginChunk();
-	}
+    protected void open() throws IOException {
+        out = new BufferedOutputStream(new FileOutputStream(filePath, true));
+        isOpen = true;
+        beginChunk();
+    }
 
-	public void succeed() throws IOException {
+    public void succeed() throws IOException {
 		try (this) {
 			endChunk();
 		} finally {
@@ -77,32 +77,32 @@ public class SafeChunkyOutputStream extends FilterOutputStream {
 		}
 	}
 
-	/**
-	 * Overrides super implementation to allow multiple calls on Java 9+.
-	 * See https://bugs.eclipse.org/bugs/show_bug.cgi?id=530330
-	 *
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void close() throws IOException {
-		try (OutputStream ostream = out) {
-			flush();
-		}
-	}
+    /**
+     * Overrides super implementation to allow multiple calls on Java 9+.
+     * See https://bugs.eclipse.org/bugs/show_bug.cgi?id=530330
+     *
+     * {@inheritDoc}
+     */
+    @Override
+    public void close() throws IOException {
+        try (OutputStream ostream = out) {
+            flush();
+        }
+    }
 
-	@Override
-	public void write(int b) throws IOException {
-		if (!isOpen) {
-			open();
-		}
-		super.write(b);
-	}
+    @Override
+    public void write(int b) throws IOException {
+        if (!isOpen) {
+            open();
+        }
+        super.write(b);
+    }
 
-	@Override
-	public void write(byte b[], int off, int len) throws IOException {
-		if (!isOpen) {
-			open();
-		}
-		out.write(b, off, len);
-	}
+    @Override
+    public void write(byte b[], int off, int len) throws IOException {
+        if (!isOpen) {
+            open();
+        }
+        out.write(b, off, len);
+    }
 }

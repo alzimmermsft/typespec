@@ -1,10 +1,5 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.lock.qual;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.DefaultFor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.DefaultQualifierInHierarchy;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.JavaExpression;
@@ -12,6 +7,11 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.TypeKind;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.TypeUseLocation;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.UpperBoundFor;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Indicates that a thread may dereference the value referred to by the annotated variable only if
@@ -36,43 +36,41 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
 @SubtypeOf(GuardedByUnknown.class)
 @DefaultQualifierInHierarchy
 // These are required because the default for local variables is @GuardedByUnknown, but if the local
 // variable is one of these type kinds, the default should be @GuardedByUnknown.
 @DefaultFor(
-    value = {TypeUseLocation.EXCEPTION_PARAMETER, TypeUseLocation.UPPER_BOUND},
+    value = { TypeUseLocation.EXCEPTION_PARAMETER, TypeUseLocation.UPPER_BOUND },
     typeKinds = {
-      TypeKind.BOOLEAN,
-      TypeKind.BYTE,
-      TypeKind.CHAR,
-      TypeKind.DOUBLE,
-      TypeKind.FLOAT,
-      TypeKind.INT,
-      TypeKind.LONG,
-      TypeKind.SHORT
-    },
-    types = {String.class, Void.class})
+        TypeKind.BOOLEAN,
+        TypeKind.BYTE,
+        TypeKind.CHAR,
+        TypeKind.DOUBLE,
+        TypeKind.FLOAT,
+        TypeKind.INT,
+        TypeKind.LONG,
+        TypeKind.SHORT },
+    types = { String.class, Void.class })
 @UpperBoundFor(
     typeKinds = {
-      TypeKind.BOOLEAN,
-      TypeKind.BYTE,
-      TypeKind.CHAR,
-      TypeKind.DOUBLE,
-      TypeKind.FLOAT,
-      TypeKind.INT,
-      TypeKind.LONG,
-      TypeKind.SHORT
-    },
+        TypeKind.BOOLEAN,
+        TypeKind.BYTE,
+        TypeKind.CHAR,
+        TypeKind.DOUBLE,
+        TypeKind.FLOAT,
+        TypeKind.INT,
+        TypeKind.LONG,
+        TypeKind.SHORT },
     types = String.class)
 public @interface GuardedBy {
-  /**
-   * The Java value expressions that need to be held.
-   *
-   * @see <a href="https://checkerframework.org/manual/#java-expressions-as-arguments">Syntax of
-   *     Java expressions</a>
-   */
-  @JavaExpression
-  String[] value() default {};
+    /**
+     * The Java value expressions that need to be held.
+     *
+     * @see <a href="https://checkerframework.org/manual/#java-expressions-as-arguments">Syntax of
+     * Java expressions</a>
+     */
+    @JavaExpression
+    String[] value() default { };
 }

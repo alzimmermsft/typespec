@@ -13,5 +13,6 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface UIType {}
+@Target({ ElementType.TYPE })
+public @interface UIType {
+}

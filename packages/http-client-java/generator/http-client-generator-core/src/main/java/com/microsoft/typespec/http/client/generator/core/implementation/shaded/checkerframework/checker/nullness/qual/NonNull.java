@@ -1,10 +1,5 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.DefaultFor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.DefaultQualifierInHierarchy;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.LiteralKind;
@@ -13,6 +8,11 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.TypeKind;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.TypeUseLocation;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.UpperBoundFor;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * If an expression's type is qualified by {@code @NonNull}, then the expression never evaluates to
@@ -36,21 +36,21 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
 @SubtypeOf(MonotonicNonNull.class)
 @DefaultQualifierInHierarchy
 @QualifierForLiterals(LiteralKind.STRING)
 @DefaultFor(TypeUseLocation.EXCEPTION_PARAMETER)
 @UpperBoundFor(
     typeKinds = {
-      TypeKind.PACKAGE,
-      TypeKind.INT,
-      TypeKind.BOOLEAN,
-      TypeKind.CHAR,
-      TypeKind.DOUBLE,
-      TypeKind.FLOAT,
-      TypeKind.LONG,
-      TypeKind.SHORT,
-      TypeKind.BYTE
-    })
-public @interface NonNull {}
+        TypeKind.PACKAGE,
+        TypeKind.INT,
+        TypeKind.BOOLEAN,
+        TypeKind.CHAR,
+        TypeKind.DOUBLE,
+        TypeKind.FLOAT,
+        TypeKind.LONG,
+        TypeKind.SHORT,
+        TypeKind.BYTE })
+public @interface NonNull {
+}

@@ -41,7 +41,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Bundle;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.prefs.BackingStoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.prefs.Preferences;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,340 +52,351 @@ import java.util.Map;
  * @since 3.0
  */
 public class CharsetManager {
-	/**
-	 * This job implementation is used to allow the resource change listener
-	 * to schedule operations that need to modify the workspace.
-	 */
-	private class CharsetManagerJob extends Job {
-		private static final int CHARSET_UPDATE_DELAY = 500;
-		private final List<Map.Entry<IProject, Boolean>> asyncChanges = new ArrayList<>();
+    /**
+     * This job implementation is used to allow the resource change listener
+     * to schedule operations that need to modify the workspace.
+     */
+    private class CharsetManagerJob extends Job {
+        private static final int CHARSET_UPDATE_DELAY = 500;
+        private final List<Map.Entry<IProject, Boolean>> asyncChanges = new ArrayList<>();
 
-		public CharsetManagerJob() {
-			super(Messages.resources_charsetUpdating);
-			setSystem(true);
-			setPriority(Job.INTERACTIVE);
-			setRule(workspace.getRoot());
-		}
+        public CharsetManagerJob() {
+            super(Messages.resources_charsetUpdating);
+            setSystem(true);
+            setPriority(Job.INTERACTIVE);
+            setRule(workspace.getRoot());
+        }
 
-		@Override
-		public boolean belongsTo(Object family) {
-			return CharsetManager.class == family;
-		}
+        @Override
+        public boolean belongsTo(Object family) {
+            return CharsetManager.class == family;
+        }
 
-		public void addChanges(Map<IProject, Boolean> newChanges) {
-			if (newChanges.isEmpty()) {
-				return;
-			}
-			synchronized (asyncChanges) {
-				asyncChanges.addAll(newChanges.entrySet());
-				asyncChanges.notify();
-			}
-			schedule(CHARSET_UPDATE_DELAY);
-		}
+        public void addChanges(Map<IProject, Boolean> newChanges) {
+            if (newChanges.isEmpty()) {
+                return;
+            }
+            synchronized (asyncChanges) {
+                asyncChanges.addAll(newChanges.entrySet());
+                asyncChanges.notify();
+            }
+            schedule(CHARSET_UPDATE_DELAY);
+        }
 
-		public Map.Entry<IProject, Boolean> getNextChange() {
-			synchronized (asyncChanges) {
-				return asyncChanges.isEmpty() ? null : asyncChanges.remove(asyncChanges.size() - 1);
-			}
-		}
+        public Map.Entry<IProject, Boolean> getNextChange() {
+            synchronized (asyncChanges) {
+                return asyncChanges.isEmpty() ? null : asyncChanges.remove(asyncChanges.size() - 1);
+            }
+        }
 
-		@Override
-		protected IStatus run(IProgressMonitor monitor) {
-			MultiStatus result = new MultiStatus(ResourcesPlugin.PI_RESOURCES, IResourceStatus.FAILED_SETTING_CHARSET, Messages.resources_updatingEncoding, null);
-			monitor = Policy.monitorFor(monitor);
-			try {
-				monitor.beginTask(Messages.resources_charsetUpdating, Policy.totalWork);
-				final ISchedulingRule rule = workspace.getRuleFactory().modifyRule(workspace.getRoot());
-				try {
-					workspace.prepareOperation(rule, monitor);
-					workspace.beginOperation(true);
-					Map.Entry<IProject, Boolean> next;
-					while (!monitor.isCanceled() && ((next = getNextChange()) != null)) {
-						//just exit if the system is shutting down or has been shut down
-						//it is too late to change the workspace at this point anyway
-						if (systemBundle.getState() != Bundle.ACTIVE) {
-							return Status.OK_STATUS;
-						}
-						IProject project = next.getKey();
-						try {
-							if (project.isAccessible()) {
-								boolean shouldDisableCharsetDeltaJob = next.getValue().booleanValue();
-								// flush preferences for non-derived resources
-								flushPreferences(getPreferences(project, false, false, true), shouldDisableCharsetDeltaJob);
-								// flush preferences for derived resources
-								flushPreferences(getPreferences(project, false, true, true), shouldDisableCharsetDeltaJob);
-							}
-						} catch (BackingStoreException e) {
-							// we got an error saving
-							String detailMessage = Messages.resources_savingEncoding;
-							result.add(new ResourceStatus(IResourceStatus.FAILED_SETTING_CHARSET, project.getFullPath(), detailMessage, e));
-						}
-					}
-					monitor.worked(Policy.opWork);
-				} catch (OperationCanceledException e) {
-					workspace.getWorkManager().operationCanceled();
-					throw e;
-				} finally {
-					workspace.endOperation(rule, true);
-				}
-			} catch (CoreException ce) {
-				return ce.getStatus();
-			} finally {
-				monitor.done();
-			}
-			return result;
-		}
+        @Override
+        protected IStatus run(IProgressMonitor monitor) {
+            MultiStatus result = new MultiStatus(ResourcesPlugin.PI_RESOURCES, IResourceStatus.FAILED_SETTING_CHARSET,
+                Messages.resources_updatingEncoding, null);
+            monitor = Policy.monitorFor(monitor);
+            try {
+                monitor.beginTask(Messages.resources_charsetUpdating, Policy.totalWork);
+                final ISchedulingRule rule = workspace.getRuleFactory().modifyRule(workspace.getRoot());
+                try {
+                    workspace.prepareOperation(rule, monitor);
+                    workspace.beginOperation(true);
+                    Map.Entry<IProject, Boolean> next;
+                    while (!monitor.isCanceled() && ((next = getNextChange()) != null)) {
+                        // just exit if the system is shutting down or has been shut down
+                        // it is too late to change the workspace at this point anyway
+                        if (systemBundle.getState() != Bundle.ACTIVE) {
+                            return Status.OK_STATUS;
+                        }
+                        IProject project = next.getKey();
+                        try {
+                            if (project.isAccessible()) {
+                                boolean shouldDisableCharsetDeltaJob = next.getValue().booleanValue();
+                                // flush preferences for non-derived resources
+                                flushPreferences(getPreferences(project, false, false, true),
+                                    shouldDisableCharsetDeltaJob);
+                                // flush preferences for derived resources
+                                flushPreferences(getPreferences(project, false, true, true),
+                                    shouldDisableCharsetDeltaJob);
+                            }
+                        } catch (BackingStoreException e) {
+                            // we got an error saving
+                            String detailMessage = Messages.resources_savingEncoding;
+                            result.add(new ResourceStatus(IResourceStatus.FAILED_SETTING_CHARSET, project.getFullPath(),
+                                detailMessage, e));
+                        }
+                    }
+                    monitor.worked(Policy.opWork);
+                } catch (OperationCanceledException e) {
+                    workspace.getWorkManager().operationCanceled();
+                    throw e;
+                } finally {
+                    workspace.endOperation(rule, true);
+                }
+            } catch (CoreException ce) {
+                return ce.getStatus();
+            } finally {
+                monitor.done();
+            }
+            return result;
+        }
 
-		@Override
-		public boolean shouldRun() {
-			synchronized (asyncChanges) {
-				return !asyncChanges.isEmpty();
-			}
-		}
+        @Override
+        public boolean shouldRun() {
+            synchronized (asyncChanges) {
+                return !asyncChanges.isEmpty();
+            }
+        }
 
     }
 
     private static final String PROJECT_KEY = "<project>"; //$NON-NLS-1$
-	private CharsetDeltaJob charsetListener;
-	CharsetManagerJob job;
-    protected final Bundle systemBundle = Platform.getBundle("com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi"); //$NON-NLS-1$
-	Workspace workspace;
+    private CharsetDeltaJob charsetListener;
+    CharsetManagerJob job;
+    protected final Bundle systemBundle
+        = Platform.getBundle("com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi"); //$NON-NLS-1$
+    Workspace workspace;
 
-	public CharsetManager(Workspace workspace) {
-		this.workspace = workspace;
-	}
+    public CharsetManager(Workspace workspace) {
+        this.workspace = workspace;
+    }
 
-	void flushPreferences(Preferences projectPrefs, boolean shouldDisableCharsetDeltaJob) throws BackingStoreException {
-		if (projectPrefs != null) {
-			try {
-				if (shouldDisableCharsetDeltaJob) {
-					charsetListener.setDisabled(true);
-				}
-				projectPrefs.flush();
-			} finally {
-				if (shouldDisableCharsetDeltaJob) {
-					charsetListener.setDisabled(false);
-				}
-			}
-		}
-	}
+    void flushPreferences(Preferences projectPrefs, boolean shouldDisableCharsetDeltaJob) throws BackingStoreException {
+        if (projectPrefs != null) {
+            try {
+                if (shouldDisableCharsetDeltaJob) {
+                    charsetListener.setDisabled(true);
+                }
+                projectPrefs.flush();
+            } finally {
+                if (shouldDisableCharsetDeltaJob) {
+                    charsetListener.setDisabled(false);
+                }
+            }
+        }
+    }
 
-	/**
-	 * Returns the charset explicitly set by the user for the given resource,
-	 * or <code>null</code>. If no setting exists for the given resource and
-	 * <code>recurse</code> is <code>true</code>, every parent up to the
-	 * workspace root will be checked until a charset setting can be found.
-	 *
-	 * @param resourcePath the path for the resource
-	 * @param recurse whether the parent should be queried
-	 * @return the charset setting for the given resource or <code>null</code>.
-	 */
-	public String getCharsetFor(IPath resourcePath, boolean recurse) {
-		Assert.isLegal(resourcePath.segmentCount() >= 1);
-		IProject project = workspace.getRoot().getProject(resourcePath.segment(0));
+    /**
+     * Returns the charset explicitly set by the user for the given resource,
+     * or <code>null</code>. If no setting exists for the given resource and
+     * <code>recurse</code> is <code>true</code>, every parent up to the
+     * workspace root will be checked until a charset setting can be found.
+     *
+     * @param resourcePath the path for the resource
+     * @param recurse whether the parent should be queried
+     * @return the charset setting for the given resource or <code>null</code>.
+     */
+    public String getCharsetFor(IPath resourcePath, boolean recurse) {
+        Assert.isLegal(resourcePath.segmentCount() >= 1);
+        IProject project = workspace.getRoot().getProject(resourcePath.segment(0));
 
-		Preferences prefs = getPreferences(project, false, false);
-		Preferences derivedPrefs = getPreferences(project, false, true);
+        Preferences prefs = getPreferences(project, false, false);
+        Preferences derivedPrefs = getPreferences(project, false, true);
 
-		if (prefs == null && derivedPrefs == null) {
-			// no preferences found - for performance reasons, short-circuit
-			// lookup by falling back to workspace's default setting
-			return recurse ? ResourcesPlugin.getEncoding() : null;
-		}
+        if (prefs == null && derivedPrefs == null) {
+            // no preferences found - for performance reasons, short-circuit
+            // lookup by falling back to workspace's default setting
+            return recurse ? ResourcesPlugin.getEncoding() : null;
+        }
 
-		return internalGetCharsetFor(prefs, derivedPrefs, resourcePath, recurse);
-	}
+        return internalGetCharsetFor(prefs, derivedPrefs, resourcePath, recurse);
+    }
 
-	static String getKeyFor(IPath resourcePath) {
-		return resourcePath.segmentCount() > 1 ? resourcePath.removeFirstSegments(1).toString() : PROJECT_KEY;
-	}
+    static String getKeyFor(IPath resourcePath) {
+        return resourcePath.segmentCount() > 1 ? resourcePath.removeFirstSegments(1).toString() : PROJECT_KEY;
+    }
 
-	Preferences getPreferences(IProject project, boolean create, boolean isDerived) {
-		return getPreferences(project, create, isDerived, isDerivedEncodingStoredSeparately(project));
-	}
+    Preferences getPreferences(IProject project, boolean create, boolean isDerived) {
+        return getPreferences(project, create, isDerived, isDerivedEncodingStoredSeparately(project));
+    }
 
-	Preferences getPreferences(IProject project, boolean create, boolean isDerived, boolean isDerivedEncodingStoredSeparately) {
-		boolean localIsDerived = isDerivedEncodingStoredSeparately && isDerived;
-		String qualifier = localIsDerived ? ProjectPreferences.PREFS_DERIVED_QUALIFIER : ProjectPreferences.PREFS_REGULAR_QUALIFIER;
-		if (create) {
-			// create all nodes down to the one we are interested in
-			return new ProjectScope(project).getNode(qualifier).node(ResourcesPlugin.PREF_ENCODING);
-		}
-		// be careful looking up for our node so not to create any nodes as side effect
-		Preferences node = Platform.getPreferencesService().getRootNode().node(ProjectScope.SCOPE);
-		try {
-			//TODO once bug 90500 is fixed, should be as simple as this:
-			//			String path = project.getName() + IPath.SEPARATOR + ResourcesPlugin.PI_RESOURCES + IPath.SEPARATOR + ENCODING_PREF_NODE;
-			//			return node.nodeExists(path) ? node.node(path) : null;
-			// for now, take the long way
-			if (!node.nodeExists(project.getName())) {
-				return null;
-			}
-			node = node.node(project.getName());
-			if (!node.nodeExists(qualifier)) {
-				return null;
-			}
-			node = node.node(qualifier);
-			if (!node.nodeExists(ResourcesPlugin.PREF_ENCODING)) {
-				return null;
-			}
-			return node.node(ResourcesPlugin.PREF_ENCODING);
-		} catch (BackingStoreException e) {
-			// nodeExists failed
-			String message = Messages.resources_readingEncoding;
-			Policy.log(new ResourceStatus(IResourceStatus.FAILED_GETTING_CHARSET, project.getFullPath(), message, e));
-		}
-		return null;
-	}
+    Preferences getPreferences(IProject project, boolean create, boolean isDerived,
+        boolean isDerivedEncodingStoredSeparately) {
+        boolean localIsDerived = isDerivedEncodingStoredSeparately && isDerived;
+        String qualifier
+            = localIsDerived ? ProjectPreferences.PREFS_DERIVED_QUALIFIER : ProjectPreferences.PREFS_REGULAR_QUALIFIER;
+        if (create) {
+            // create all nodes down to the one we are interested in
+            return new ProjectScope(project).getNode(qualifier).node(ResourcesPlugin.PREF_ENCODING);
+        }
+        // be careful looking up for our node so not to create any nodes as side effect
+        Preferences node = Platform.getPreferencesService().getRootNode().node(ProjectScope.SCOPE);
+        try {
+            // TODO once bug 90500 is fixed, should be as simple as this:
+            // String path = project.getName() + IPath.SEPARATOR + ResourcesPlugin.PI_RESOURCES + IPath.SEPARATOR +
+            // ENCODING_PREF_NODE;
+            // return node.nodeExists(path) ? node.node(path) : null;
+            // for now, take the long way
+            if (!node.nodeExists(project.getName())) {
+                return null;
+            }
+            node = node.node(project.getName());
+            if (!node.nodeExists(qualifier)) {
+                return null;
+            }
+            node = node.node(qualifier);
+            if (!node.nodeExists(ResourcesPlugin.PREF_ENCODING)) {
+                return null;
+            }
+            return node.node(ResourcesPlugin.PREF_ENCODING);
+        } catch (BackingStoreException e) {
+            // nodeExists failed
+            String message = Messages.resources_readingEncoding;
+            Policy.log(new ResourceStatus(IResourceStatus.FAILED_GETTING_CHARSET, project.getFullPath(), message, e));
+        }
+        return null;
+    }
 
-	private String internalGetCharsetFor(Preferences prefs, Preferences derivedPrefs, IPath resourcePath, boolean recurse) {
-		String charset = getCharsetFromPreferences(prefs, derivedPrefs, resourcePath);
-		if (!recurse) {
-			return charset;
-		}
+    private String internalGetCharsetFor(Preferences prefs, Preferences derivedPrefs, IPath resourcePath,
+        boolean recurse) {
+        String charset = getCharsetFromPreferences(prefs, derivedPrefs, resourcePath);
+        if (!recurse) {
+            return charset;
+        }
 
-		while (charset == null && resourcePath.segmentCount() > 1) {
-			resourcePath = resourcePath.removeLastSegments(1);
-			charset = getCharsetFromPreferences(prefs, derivedPrefs, resourcePath);
-		}
+        while (charset == null && resourcePath.segmentCount() > 1) {
+            resourcePath = resourcePath.removeLastSegments(1);
+            charset = getCharsetFromPreferences(prefs, derivedPrefs, resourcePath);
+        }
 
-		// ensure we default to the workspace encoding if none is found
-		return charset == null ? ResourcesPlugin.getEncoding() : charset;
-	}
+        // ensure we default to the workspace encoding if none is found
+        return charset == null ? ResourcesPlugin.getEncoding() : charset;
+    }
 
-	private String getCharsetFromPreferences(Preferences prefs, Preferences derivedPrefs, IPath resourcePath) {
-		String charset = null;
-		String key = getKeyFor(resourcePath);
+    private String getCharsetFromPreferences(Preferences prefs, Preferences derivedPrefs, IPath resourcePath) {
+        String charset = null;
+        String key = getKeyFor(resourcePath);
 
-		// try to find the encoding in regular and then derived preferences
-		if (prefs != null) {
-			charset = prefs.get(key, null);
-		}
-		// derivedPrefs may be not null, only if #isDerivedEncodingStoredSeparately returns true
-		// so the explicit check against #isDerivedEncodingStoredSeparately is not required
-		if (charset == null && derivedPrefs != null) {
-			charset = derivedPrefs.get(key, null);
-		}
-		return charset;
-	}
+        // try to find the encoding in regular and then derived preferences
+        if (prefs != null) {
+            charset = prefs.get(key, null);
+        }
+        // derivedPrefs may be not null, only if #isDerivedEncodingStoredSeparately returns true
+        // so the explicit check against #isDerivedEncodingStoredSeparately is not required
+        if (charset == null && derivedPrefs != null) {
+            charset = derivedPrefs.get(key, null);
+        }
+        return charset;
+    }
 
-	private boolean isDerivedEncodingStoredSeparately(IProject project) {
-		// be careful looking up for our node so not to create any nodes as side effect
-		Preferences node = Platform.getPreferencesService().getRootNode().node(ProjectScope.SCOPE);
-		try {
-			//TODO once bug 90500 is fixed, should be as simple as this:
-			//			String path = project.getName() + IPath.SEPARATOR + ResourcesPlugin.PI_RESOURCES;
-			//			return node.nodeExists(path) ? node.node(path).getBoolean(ResourcesPlugin.PREF_SEPARATE_DERIVED_ENCODINGS, false) : false;
-			// for now, take the long way
-			if (!node.nodeExists(project.getName())) {
-				return ResourcesPlugin.DEFAULT_PREF_SEPARATE_DERIVED_ENCODINGS;
-			}
-			node = node.node(project.getName());
-			if (!node.nodeExists(ResourcesPlugin.PI_RESOURCES)) {
-				return ResourcesPlugin.DEFAULT_PREF_SEPARATE_DERIVED_ENCODINGS;
-			}
-			node = node.node(ResourcesPlugin.PI_RESOURCES);
-			return node.getBoolean(ResourcesPlugin.PREF_SEPARATE_DERIVED_ENCODINGS, ResourcesPlugin.DEFAULT_PREF_SEPARATE_DERIVED_ENCODINGS);
-		} catch (BackingStoreException e) {
-			// nodeExists failed
-			String message = Messages.resources_readingEncoding;
-			Policy.log(new ResourceStatus(IResourceStatus.FAILED_GETTING_CHARSET, project.getFullPath(), message, e));
-			return ResourcesPlugin.DEFAULT_PREF_SEPARATE_DERIVED_ENCODINGS;
-		}
-	}
+    private boolean isDerivedEncodingStoredSeparately(IProject project) {
+        // be careful looking up for our node so not to create any nodes as side effect
+        Preferences node = Platform.getPreferencesService().getRootNode().node(ProjectScope.SCOPE);
+        try {
+            // TODO once bug 90500 is fixed, should be as simple as this:
+            // String path = project.getName() + IPath.SEPARATOR + ResourcesPlugin.PI_RESOURCES;
+            // return node.nodeExists(path) ?
+            // node.node(path).getBoolean(ResourcesPlugin.PREF_SEPARATE_DERIVED_ENCODINGS, false) : false;
+            // for now, take the long way
+            if (!node.nodeExists(project.getName())) {
+                return ResourcesPlugin.DEFAULT_PREF_SEPARATE_DERIVED_ENCODINGS;
+            }
+            node = node.node(project.getName());
+            if (!node.nodeExists(ResourcesPlugin.PI_RESOURCES)) {
+                return ResourcesPlugin.DEFAULT_PREF_SEPARATE_DERIVED_ENCODINGS;
+            }
+            node = node.node(ResourcesPlugin.PI_RESOURCES);
+            return node.getBoolean(ResourcesPlugin.PREF_SEPARATE_DERIVED_ENCODINGS,
+                ResourcesPlugin.DEFAULT_PREF_SEPARATE_DERIVED_ENCODINGS);
+        } catch (BackingStoreException e) {
+            // nodeExists failed
+            String message = Messages.resources_readingEncoding;
+            Policy.log(new ResourceStatus(IResourceStatus.FAILED_GETTING_CHARSET, project.getFullPath(), message, e));
+            return ResourcesPlugin.DEFAULT_PREF_SEPARATE_DERIVED_ENCODINGS;
+        }
+    }
 
-	protected void mergeEncodingPreferences(IProject project) {
-		Preferences projectRegularPrefs = null;
-		Preferences projectDerivedPrefs = getPreferences(project, false, true, true);
-		if (projectDerivedPrefs == null) {
-			return;
-		}
-		try {
-			boolean prefsChanged = false;
-			String[] affectedResources;
-			affectedResources = projectDerivedPrefs.keys();
-			for (String path : affectedResources) {
-				String value = projectDerivedPrefs.get(path, null);
-				projectDerivedPrefs.remove(path);
-				// lazy creation of non-derived preferences
-				if (projectRegularPrefs == null) {
-					projectRegularPrefs = getPreferences(project, true, false, false);
-				}
-				projectRegularPrefs.put(path, value);
-				prefsChanged = true;
-			}
-			if (prefsChanged) {
-				Map<IProject, Boolean> projectsToSave = new HashMap<>();
-				// this is internal change so do not notify charset delta job
-				projectsToSave.put(project, Boolean.TRUE);
-				job.addChanges(projectsToSave);
-			}
-		} catch (BackingStoreException e) {
-			// problems with the project scope... we will miss the changes (but will log)
-			String message = Messages.resources_readingEncoding;
-			Policy.log(new ResourceStatus(IResourceStatus.FAILED_GETTING_CHARSET, project.getFullPath(), message, e));
-		}
-	}
+    protected void mergeEncodingPreferences(IProject project) {
+        Preferences projectRegularPrefs = null;
+        Preferences projectDerivedPrefs = getPreferences(project, false, true, true);
+        if (projectDerivedPrefs == null) {
+            return;
+        }
+        try {
+            boolean prefsChanged = false;
+            String[] affectedResources;
+            affectedResources = projectDerivedPrefs.keys();
+            for (String path : affectedResources) {
+                String value = projectDerivedPrefs.get(path, null);
+                projectDerivedPrefs.remove(path);
+                // lazy creation of non-derived preferences
+                if (projectRegularPrefs == null) {
+                    projectRegularPrefs = getPreferences(project, true, false, false);
+                }
+                projectRegularPrefs.put(path, value);
+                prefsChanged = true;
+            }
+            if (prefsChanged) {
+                Map<IProject, Boolean> projectsToSave = new HashMap<>();
+                // this is internal change so do not notify charset delta job
+                projectsToSave.put(project, Boolean.TRUE);
+                job.addChanges(projectsToSave);
+            }
+        } catch (BackingStoreException e) {
+            // problems with the project scope... we will miss the changes (but will log)
+            String message = Messages.resources_readingEncoding;
+            Policy.log(new ResourceStatus(IResourceStatus.FAILED_GETTING_CHARSET, project.getFullPath(), message, e));
+        }
+    }
 
-	public void projectPreferencesChanged(IProject project) {
-		charsetListener.charsetPreferencesChanged(project);
-	}
+    public void projectPreferencesChanged(IProject project) {
+        charsetListener.charsetPreferencesChanged(project);
+    }
 
-	public void setCharsetFor(IPath resourcePath, String newCharset) throws CoreException {
-		if (IPath.ROOT.equals(resourcePath)) {
-			setCharsetForRoot(newCharset);
-		} else if (workspace.getRoot().findMember(resourcePath) instanceof Resource resource) {
-			setCharsetForResource(resourcePath, newCharset, resource);
-		}
-	}
+    public void setCharsetFor(IPath resourcePath, String newCharset) throws CoreException {
+        if (IPath.ROOT.equals(resourcePath)) {
+            setCharsetForRoot(newCharset);
+        } else if (workspace.getRoot().findMember(resourcePath)instanceof Resource resource) {
+            setCharsetForResource(resourcePath, newCharset, resource);
+        }
+    }
 
-	private void setCharsetForRoot(String newCharset) throws ResourceException {
-		IEclipsePreferences resourcesPreferences = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
-		if (newCharset != null) {
-			resourcesPreferences.put(ResourcesPlugin.PREF_ENCODING, newCharset);
-		} else {
-			resourcesPreferences.remove(ResourcesPlugin.PREF_ENCODING);
-		}
+    private void setCharsetForRoot(String newCharset) throws ResourceException {
+        IEclipsePreferences resourcesPreferences = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
+        if (newCharset != null) {
+            resourcesPreferences.put(ResourcesPlugin.PREF_ENCODING, newCharset);
+        } else {
+            resourcesPreferences.remove(ResourcesPlugin.PREF_ENCODING);
+        }
 
-		try {
-			resourcesPreferences.flush();
-		} catch (BackingStoreException e) {
-			setCharsetForHasFailed(IPath.ROOT, e);
-		}
-	}
+        try {
+            resourcesPreferences.flush();
+        } catch (BackingStoreException e) {
+            setCharsetForHasFailed(IPath.ROOT, e);
+        }
+    }
 
-	private void setCharsetForResource(IPath resourcePath, String newCharset, IResource resource)
-			throws ResourceException {
-		try {
-			setResourceEncodingSettings(resourcePath, newCharset, resource);
-			if (resource instanceof Project project) {
-				ValidateProjectEncoding.scheduleProjectValidation(workspace, project);
-			}
-		} catch (BackingStoreException e) {
-			setCharsetForHasFailed(resourcePath, e);
-		}
-	}
+    private void setCharsetForResource(IPath resourcePath, String newCharset, IResource resource)
+        throws ResourceException {
+        try {
+            setResourceEncodingSettings(resourcePath, newCharset, resource);
+            if (resource instanceof Project project) {
+                ValidateProjectEncoding.scheduleProjectValidation(workspace, project);
+            }
+        } catch (BackingStoreException e) {
+            setCharsetForHasFailed(resourcePath, e);
+        }
+    }
 
-	private void setResourceEncodingSettings(IPath resourcePath, String newCharset, IResource resource)
-			throws BackingStoreException {
-		// disable the listener so we don't react to changes made by ourselves
-		Preferences encodingSettings = getPreferences(resource.getProject(), true,
-				resource.isDerived(IResource.CHECK_ANCESTORS));
+    private void setResourceEncodingSettings(IPath resourcePath, String newCharset, IResource resource)
+        throws BackingStoreException {
+        // disable the listener so we don't react to changes made by ourselves
+        Preferences encodingSettings
+            = getPreferences(resource.getProject(), true, resource.isDerived(IResource.CHECK_ANCESTORS));
 
-		if (newCharset == null || newCharset.isBlank()) {
-			encodingSettings.remove(getKeyFor(resourcePath));
-		} else {
-			encodingSettings.put(getKeyFor(resourcePath), newCharset);
-		}
-		flushPreferences(encodingSettings, true);
-	}
+        if (newCharset == null || newCharset.isBlank()) {
+            encodingSettings.remove(getKeyFor(resourcePath));
+        } else {
+            encodingSettings.put(getKeyFor(resourcePath), newCharset);
+        }
+        flushPreferences(encodingSettings, true);
+    }
 
-	private void setCharsetForHasFailed(IPath resourcePath, BackingStoreException e) throws ResourceException {
-		String message = Messages.resources_savingEncoding;
-		throw new ResourceException(IResourceStatus.FAILED_SETTING_CHARSET, resourcePath, message, e);
-	}
+    private void setCharsetForHasFailed(IPath resourcePath, BackingStoreException e) throws ResourceException {
+        String message = Messages.resources_savingEncoding;
+        throw new ResourceException(IResourceStatus.FAILED_SETTING_CHARSET, resourcePath, message, e);
+    }
 
-	protected void splitEncodingPreferences(IProject project) {
+    protected void splitEncodingPreferences(IProject project) {
         Preferences projectRegularPrefs = getPreferences(project, false, false, false);
         Preferences projectDerivedPrefs = null;
         if (projectRegularPrefs == null) {

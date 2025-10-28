@@ -11,13 +11,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *
- *******************************************************************************/package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.codeassist.complete;
+ *******************************************************************************/
+package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.codeassist.complete;
 
 public class CompletionOnUsesQualifiedTypeReference extends CompletionOnQualifiedTypeReference {
 
-	public CompletionOnUsesQualifiedTypeReference(char[][] previousIdentifiers, char[] completionIdentifier,
-			long[] positions) {
-		super(previousIdentifiers, completionIdentifier, positions);
-	}
+    public CompletionOnUsesQualifiedTypeReference(char[][] previousIdentifiers, char[] completionIdentifier,
+        long[] positions) {
+        super(previousIdentifiers, completionIdentifier, positions);
+    }
 
 }

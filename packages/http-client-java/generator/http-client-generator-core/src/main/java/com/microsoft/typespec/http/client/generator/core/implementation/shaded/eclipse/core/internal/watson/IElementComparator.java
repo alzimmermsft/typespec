@@ -21,8 +21,8 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * are created.
  */
 public interface IElementComparator extends IComparator {
-	/**
-	 * The kinds of changes
-	 */
-	int K_NO_CHANGE = 0;
+    /**
+     * The kinds of changes
+     */
+    int K_NO_CHANGE = 0;
 }

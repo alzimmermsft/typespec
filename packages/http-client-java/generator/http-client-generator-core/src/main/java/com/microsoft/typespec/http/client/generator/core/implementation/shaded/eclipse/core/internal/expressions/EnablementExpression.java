@@ -13,46 +13,44 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.expressions;
 
-import org.w3c.dom.Element;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.expressions.CompositeExpression;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.expressions.EvaluationResult;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.expressions.IEvaluationContext;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IConfigurationElement;
+import org.w3c.dom.Element;
 
 public class EnablementExpression extends CompositeExpression {
 
-	/**
-	 * Creates a {@link EnablementExpression}.
-	 *
-	 * @param configElement the configuration element
-	 */
-	public EnablementExpression(IConfigurationElement configElement) {
-		// config element not used yet.
-	}
+    /**
+     * Creates a {@link EnablementExpression}.
+     *
+     * @param configElement the configuration element
+     */
+    public EnablementExpression(IConfigurationElement configElement) {
+        // config element not used yet.
+    }
 
-	/**
-	 * Creates a {@link EnablementExpression}.
-	 *
-	 * @param element the XML element
-	 */
-	public EnablementExpression(Element element) {
-		// element not used yet.
-	}
+    /**
+     * Creates a {@link EnablementExpression}.
+     *
+     * @param element the XML element
+     */
+    public EnablementExpression(Element element) {
+        // element not used yet.
+    }
 
-	@Override
-	public boolean equals(final Object object) {
-		if (!(object instanceof final EnablementExpression that)) {
-			return false;
-		}
+    @Override
+    public boolean equals(final Object object) {
+        if (!(object instanceof final EnablementExpression that)) {
+            return false;
+        }
 
-		return equals(this.fExpressions, that.fExpressions);
-	}
+        return equals(this.fExpressions, that.fExpressions);
+    }
 
-	@Override
-	public EvaluationResult evaluate(IEvaluationContext context) throws CoreException {
+    @Override
+    public EvaluationResult evaluate(IEvaluationContext context) throws CoreException {
         return evaluateAnd(context);
-	}
+    }
 }

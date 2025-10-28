@@ -1,10 +1,10 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.common.value.qual;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 
 /**
  * An expression with this type is exactly the same as an {@link IntRange} annotation whose {@code
@@ -28,6 +28,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @Documented
 @Retention(RetentionPolicy.SOURCE)
-@Target({})
+@Target({ })
 @SubtypeOf(UnknownVal.class)
-public @interface IntRangeFromGTENegativeOne {}
+public @interface IntRangeFromGTENegativeOne {
+}

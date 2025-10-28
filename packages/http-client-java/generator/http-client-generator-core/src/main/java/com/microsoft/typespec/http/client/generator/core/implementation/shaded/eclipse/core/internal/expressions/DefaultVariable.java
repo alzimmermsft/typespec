@@ -14,7 +14,6 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.expressions;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.expressions.IEvaluationContext;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 
@@ -26,70 +25,70 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public final class DefaultVariable implements IEvaluationContext {
 
-	private final Object fDefaultVariable;
-	private final IEvaluationContext fParent;
-	private final IEvaluationContext fManagedPool;
+    private final Object fDefaultVariable;
+    private final IEvaluationContext fParent;
+    private final IEvaluationContext fManagedPool;
 
-	/**
-	 * Constructs a new variable pool for a single default variable.
-	 *
-	 * @param parent the parent context for the default variable. Must not
-	 *  be <code>null</code>.
-	 * @param defaultVariable the default variable
-	 */
-	public DefaultVariable(IEvaluationContext parent, Object defaultVariable) {
-		Assert.isNotNull(parent);
-		Assert.isNotNull(defaultVariable);
-		fParent= parent;
-		while (parent instanceof DefaultVariable) {
-			parent= parent.getParent();
-		}
-		fManagedPool= parent;
-		fDefaultVariable= defaultVariable;
-	}
+    /**
+     * Constructs a new variable pool for a single default variable.
+     *
+     * @param parent the parent context for the default variable. Must not
+     * be <code>null</code>.
+     * @param defaultVariable the default variable
+     */
+    public DefaultVariable(IEvaluationContext parent, Object defaultVariable) {
+        Assert.isNotNull(parent);
+        Assert.isNotNull(defaultVariable);
+        fParent = parent;
+        while (parent instanceof DefaultVariable) {
+            parent = parent.getParent();
+        }
+        fManagedPool = parent;
+        fDefaultVariable = defaultVariable;
+    }
 
-	@Override
-	public IEvaluationContext getParent() {
-		return fParent;
-	}
+    @Override
+    public IEvaluationContext getParent() {
+        return fParent;
+    }
 
-	@Override
-	public IEvaluationContext getRoot() {
-		return fParent.getRoot();
-	}
+    @Override
+    public IEvaluationContext getRoot() {
+        return fParent.getRoot();
+    }
 
-	@Override
-	public Object getDefaultVariable() {
-		return fDefaultVariable;
-	}
+    @Override
+    public Object getDefaultVariable() {
+        return fDefaultVariable;
+    }
 
-	@Override
-	public void setAllowPluginActivation(boolean value) {
-		fParent.setAllowPluginActivation(value);
-	}
+    @Override
+    public void setAllowPluginActivation(boolean value) {
+        fParent.setAllowPluginActivation(value);
+    }
 
-	@Override
-	public boolean getAllowPluginActivation() {
-		return fParent.getAllowPluginActivation();
-	}
+    @Override
+    public boolean getAllowPluginActivation() {
+        return fParent.getAllowPluginActivation();
+    }
 
-	@Override
-	public void addVariable(String name, Object value) {
-		fManagedPool.addVariable(name, value);
-	}
+    @Override
+    public void addVariable(String name, Object value) {
+        fManagedPool.addVariable(name, value);
+    }
 
-	@Override
-	public Object removeVariable(String name) {
-		return fManagedPool.removeVariable(name);
-	}
+    @Override
+    public Object removeVariable(String name) {
+        return fManagedPool.removeVariable(name);
+    }
 
-	@Override
-	public Object getVariable(String name) {
-		return fManagedPool.getVariable(name);
-	}
+    @Override
+    public Object getVariable(String name) {
+        return fManagedPool.getVariable(name);
+    }
 
-	@Override
-	public Object resolveVariable(String name, Object[] args) throws CoreException {
-		return fManagedPool.resolveVariable(name, args);
-	}
+    @Override
+    public Object resolveVariable(String name, Object[] args) throws CoreException {
+        return fManagedPool.resolveVariable(name, args);
+    }
 }

@@ -16,8 +16,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.resources;
 
-import java.util.HashMap;
-import java.util.Map;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.utils.Messages;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.utils.Policy;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
@@ -31,100 +29,104 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Platform;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Status;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.util.NLS;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Repository for all variable providers available through the extension points.
+ * 
  * @since 3.6
  */
 public class ProjectVariableProviderManager {
 
-	public static class Descriptor {
-		private final PathVariableResolver provider;
-		private final String name;
-		private final String value;
+    public static class Descriptor {
+        private final PathVariableResolver provider;
+        private final String name;
+        private final String value;
 
-		public Descriptor(IExtension extension, IConfigurationElement element) throws RuntimeException, CoreException {
-			name = element.getAttribute("variable"); //$NON-NLS-1$
-			value = element.getAttribute("value"); //$NON-NLS-1$
-			PathVariableResolver p = null;
-			try {
-				String classAttribute = "class"; //$NON-NLS-1$
-				if (element.getAttribute(classAttribute) != null) {
-					p = (PathVariableResolver) element.createExecutableExtension(classAttribute);
-				}
-			} catch (CoreException e) {
-				Policy.log(e);
-			}
-			provider = p;
-			if (name == null) {
-				fail(NLS.bind(Messages.mapping_invalidDef, extension.getUniqueIdentifier()));
-			}
-		}
+        public Descriptor(IExtension extension, IConfigurationElement element) throws RuntimeException, CoreException {
+            name = element.getAttribute("variable"); //$NON-NLS-1$
+            value = element.getAttribute("value"); //$NON-NLS-1$
+            PathVariableResolver p = null;
+            try {
+                String classAttribute = "class"; //$NON-NLS-1$
+                if (element.getAttribute(classAttribute) != null) {
+                    p = (PathVariableResolver) element.createExecutableExtension(classAttribute);
+                }
+            } catch (CoreException e) {
+                Policy.log(e);
+            }
+            provider = p;
+            if (name == null) {
+                fail(NLS.bind(Messages.mapping_invalidDef, extension.getUniqueIdentifier()));
+            }
+        }
 
-		protected void fail(String reason) throws CoreException {
-			throw new ResourceException(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, 1, reason, null));
-		}
+        protected void fail(String reason) throws CoreException {
+            throw new ResourceException(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, 1, reason, null));
+        }
 
-		public String getName() {
-			return name;
-		}
+        public String getName() {
+            return name;
+        }
 
-		public String getValue(String variable, IResource resource) {
-			if (value != null) {
-				return value;
-			}
-			return provider.getValue(variable, resource);
-		}
+        public String getValue(String variable, IResource resource) {
+            if (value != null) {
+                return value;
+            }
+            return provider.getValue(variable, resource);
+        }
 
-		public String[] getVariableNames(String variable, IResource resource) {
-			if (provider != null) {
-				return provider.getVariableNames(variable, resource);
-			}
-			if (name.equals(variable)) {
-				return new String[] {variable};
-			}
-			return null;
-		}
-	}
+        public String[] getVariableNames(String variable, IResource resource) {
+            if (provider != null) {
+                return provider.getVariableNames(variable, resource);
+            }
+            if (name.equals(variable)) {
+                return new String[] { variable };
+            }
+            return null;
+        }
+    }
 
-	private static final Map<String, Descriptor> descriptors = getDescriptorMap();
-	private static final Descriptor[] descriptorsArray = descriptors.values().toArray(Descriptor[]::new);
-	private static final ProjectVariableProviderManager instance = new ProjectVariableProviderManager();
+    private static final Map<String, Descriptor> descriptors = getDescriptorMap();
+    private static final Descriptor[] descriptorsArray = descriptors.values().toArray(Descriptor[]::new);
+    private static final ProjectVariableProviderManager instance = new ProjectVariableProviderManager();
 
-	public static ProjectVariableProviderManager getDefault() {
-		return instance;
-	}
+    public static ProjectVariableProviderManager getDefault() {
+        return instance;
+    }
 
-	public Descriptor[] getDescriptors() {
-		return descriptorsArray;
-	}
+    public Descriptor[] getDescriptors() {
+        return descriptorsArray;
+    }
 
-	private static Map<String, Descriptor> getDescriptorMap() {
-		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(ResourcesPlugin.PI_RESOURCES, ResourcesPlugin.PT_VARIABLE_PROVIDERS);
-		IExtension[] extensions = point.getExtensions();
-		Map<String, Descriptor> d = new HashMap<>(extensions.length * 2 + 1);
-		for (IExtension extension : extensions) {
-			IConfigurationElement[] elements = extension.getConfigurationElements();
-			for (IConfigurationElement element : elements) {
-				String elementName = element.getName();
-				if (elementName.equalsIgnoreCase("variableResolver")) { //$NON-NLS-1$
-					Descriptor desc = null;
-					try {
-						desc = new Descriptor(extension, element);
-					} catch (CoreException e) {
-						Policy.log(e);
-					}
-					if (desc != null) {
-						d.put(desc.getName(), desc);
-					}
-				}
-			}
-		}
-		return Map.copyOf(d);
-	}
+    private static Map<String, Descriptor> getDescriptorMap() {
+        IExtensionPoint point = Platform.getExtensionRegistry()
+            .getExtensionPoint(ResourcesPlugin.PI_RESOURCES, ResourcesPlugin.PT_VARIABLE_PROVIDERS);
+        IExtension[] extensions = point.getExtensions();
+        Map<String, Descriptor> d = new HashMap<>(extensions.length * 2 + 1);
+        for (IExtension extension : extensions) {
+            IConfigurationElement[] elements = extension.getConfigurationElements();
+            for (IConfigurationElement element : elements) {
+                String elementName = element.getName();
+                if (elementName.equalsIgnoreCase("variableResolver")) { //$NON-NLS-1$
+                    Descriptor desc = null;
+                    try {
+                        desc = new Descriptor(extension, element);
+                    } catch (CoreException e) {
+                        Policy.log(e);
+                    }
+                    if (desc != null) {
+                        d.put(desc.getName(), desc);
+                    }
+                }
+            }
+        }
+        return Map.copyOf(d);
+    }
 
-	public Descriptor findDescriptor(String name) {
-		Descriptor result = descriptors.get(name);
-		return result;
-	}
+    public Descriptor findDescriptor(String name) {
+        Descriptor result = descriptors.get(name);
+        return result;
+    }
 }

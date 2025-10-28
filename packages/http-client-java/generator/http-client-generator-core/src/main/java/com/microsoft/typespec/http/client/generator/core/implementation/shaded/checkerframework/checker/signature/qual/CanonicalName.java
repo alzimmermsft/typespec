@@ -1,11 +1,11 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.signature.qual;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 
 /**
  * Canonical names have the same syntactic form as {@link FullyQualifiedName fully-qualified name}s.
@@ -19,11 +19,13 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  *
  * The difference between a fully qualified name and a canonical name can be seen in code such as:
  *
- * <pre>{@code
+ * <pre>
+ * {@code
  * package p;
  * class O1 { class I {} }
  * class O2 extends O1 {}
- * }</pre>
+ * }
+ * </pre>
  *
  * Both {@code p.O1.I} and {@code p.O2.I} are fully qualified names that denote the member class
  * {@code I}, but only {@code p.O1.I} is its canonical name.
@@ -40,10 +42,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
-@SubtypeOf({
-  FullyQualifiedName.class,
-  CanonicalNameOrEmpty.class,
-  CanonicalNameOrPrimitiveType.class
-})
-public @interface CanonicalName {}
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
+@SubtypeOf({ FullyQualifiedName.class, CanonicalNameOrEmpty.class, CanonicalNameOrPrimitiveType.class })
+public @interface CanonicalName {
+}

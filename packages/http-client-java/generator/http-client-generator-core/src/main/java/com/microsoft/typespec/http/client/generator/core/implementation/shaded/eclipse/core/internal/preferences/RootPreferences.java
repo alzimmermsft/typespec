@@ -23,73 +23,52 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 public class RootPreferences extends EclipsePreferences {
 
-	public RootPreferences() {
-		super(null, ""); //$NON-NLS-1$
-	}
+    public RootPreferences() {
+        super(null, ""); //$NON-NLS-1$
+    }
 
-	@Override
-	public void flush() throws BackingStoreException {
-		// flush all children
-		BackingStoreException exception = null;
-		String[] names = childrenNames();
-		for (String n : names) {
-			try {
-				node(n).flush();
-			} catch (BackingStoreException e) {
-				// store the first exception we get and still try and flush
-				// the rest of the children.
-				if (exception == null) {
-					exception = e;
-				}
-			}
-		}
-		if (exception != null) {
-			throw exception;
-		}
-	}
+    @Override
+    public void flush() throws BackingStoreException {
+        // flush all children
+        BackingStoreException exception = null;
+        String[] names = childrenNames();
+        for (String n : names) {
+            try {
+                node(n).flush();
+            } catch (BackingStoreException e) {
+                // store the first exception we get and still try and flush
+                // the rest of the children.
+                if (exception == null) {
+                    exception = e;
+                }
+            }
+        }
+        if (exception != null) {
+            throw exception;
+        }
+    }
 
-	@Override
-	public Preferences node(String path) {
-		return getNode(path, true); // create if not found
-	}
+    @Override
+    public Preferences node(String path) {
+        return getNode(path, true); // create if not found
+    }
 
-	public Preferences getNode(String path, boolean create) {
-		if (path.length() == 0 || (path.length() == 1 && path.charAt(0) == IPath.SEPARATOR)) {
-			return this;
-		}
-		int startIndex = path.charAt(0) == IPath.SEPARATOR ? 1 : 0;
-		int endIndex = path.indexOf(IPath.SEPARATOR, startIndex + 1);
-		String scope = path.substring(startIndex, endIndex == -1 ? path.length() : endIndex);
-		IEclipsePreferences child;
-		if (create) {
-			child = getOrCreate(scope);
-		} else {
-			child = getChild(scope, null, false);
-			if (child == null) {
-				return null;
-			}
-		}
-		return child.node(endIndex == -1 ? "" : path.substring(endIndex + 1)); //$NON-NLS-1$
-	}
-
-	@Override
-	public void sync() throws BackingStoreException {
-		// sync all children
-		BackingStoreException exception = null;
-		String[] names = childrenNames();
-		for (String n : names) {
-			try {
-				node(n).sync();
-			} catch (BackingStoreException e) {
-				// store the first exception we get and still try and sync
-				// the rest of the children.
-				if (exception == null) {
-					exception = e;
-				}
-			}
-		}
-		if (exception != null) {
-			throw exception;
-		}
-	}
+    public Preferences getNode(String path, boolean create) {
+        if (path.isEmpty() || (path.length() == 1 && path.charAt(0) == IPath.SEPARATOR)) {
+            return this;
+        }
+        int startIndex = path.charAt(0) == IPath.SEPARATOR ? 1 : 0;
+        int endIndex = path.indexOf(IPath.SEPARATOR, startIndex + 1);
+        String scope = path.substring(startIndex, endIndex == -1 ? path.length() : endIndex);
+        IEclipsePreferences child;
+        if (create) {
+            child = getOrCreate(scope);
+        } else {
+            child = getChild(scope, null, false);
+            if (child == null) {
+                return null;
+            }
+        }
+        return child.node(endIndex == -1 ? "" : path.substring(endIndex + 1)); //$NON-NLS-1$
+    }
 }

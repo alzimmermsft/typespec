@@ -13,9 +13,9 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.content;
 
-import java.io.*;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.QualifiedName;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.preferences.IScopeContext;
+import java.io.*;
 
 /**
  * An object that performs content type matching queries.
@@ -27,117 +27,118 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * @since 3.1
  */
 public interface IContentTypeMatcher {
-	/**
-	 * Returns the preferred content type for the given contents and file name.
-	 * <p>
-	 * Returns <code>null</code> if no associated content types are
-	 * found.
-	 * </p>
-	 * <p>
-	 * If a file name is not provided, the entire content type registry will be
-	 * queried. For performance reasons, it is highly recommended
-	 * to provide a file name if available.
-	 * </p>
-	 * <p>
-	 * Any IOExceptions that may occur while reading the given input stream
-	 * will flow to the caller. The input stream will not be closed by this
-	 * operation.
-	 * </p>
-	 *
-	 * @param contents an input stream
-	 * @param fileName the file name associated to the contents, or <code>null</code>
-	 * @return the preferred content type associated to the given file name, or <code>null</code>
-	 * @throws IOException if an error occurs while reading the contents
-	 */
-	IContentType findContentTypeFor(InputStream contents, String fileName) throws IOException;
+    /**
+     * Returns the preferred content type for the given contents and file name.
+     * <p>
+     * Returns <code>null</code> if no associated content types are
+     * found.
+     * </p>
+     * <p>
+     * If a file name is not provided, the entire content type registry will be
+     * queried. For performance reasons, it is highly recommended
+     * to provide a file name if available.
+     * </p>
+     * <p>
+     * Any IOExceptions that may occur while reading the given input stream
+     * will flow to the caller. The input stream will not be closed by this
+     * operation.
+     * </p>
+     *
+     * @param contents an input stream
+     * @param fileName the file name associated to the contents, or <code>null</code>
+     * @return the preferred content type associated to the given file name, or <code>null</code>
+     * @throws IOException if an error occurs while reading the contents
+     */
+    IContentType findContentTypeFor(InputStream contents, String fileName) throws IOException;
 
-	/**
-	 * Returns the preferred content type for the given file name. If multiple content types
-	 * are associated with the given file name, the one considered the most appropriated will
-	 * be returned. If there are no content types associated, <code>null</code> is returned.
-	 *
-	 * @param fileName the name of the file
-	 * @return the preferred content type associated to the given file name, or <code>null</code>
-	 */
-	IContentType findContentTypeFor(String fileName);
+    /**
+     * Returns the preferred content type for the given file name. If multiple content types
+     * are associated with the given file name, the one considered the most appropriated will
+     * be returned. If there are no content types associated, <code>null</code> is returned.
+     *
+     * @param fileName the name of the file
+     * @return the preferred content type associated to the given file name, or <code>null</code>
+     */
+    IContentType findContentTypeFor(String fileName);
 
-	/**
-	 * Returns the content types associated to the given contents and file name.
-	 * <p>
-	 * Returns an empty array if no associated content types are found.
-	 * </p>
-	 * <p>
-	 * If a file name is not provided, the entire content type registry will be
-	 * queried. For performance reasons, it is highly recommended
-	 * to provide a file name if available.
-	 * </p>
-	 * <p>
-	 * Any IOExceptions that may occur while reading the given input stream
-	 * will flow to the caller.  The input stream will not be closed by this
-	 * operation.
-	 * </p>
-	 *
-	 * @param contents an input stream
-	 * @param fileName the file name associated to the contents, or <code>null</code>
-	 * @return all content types associated to the given contents and file name
-	 * @throws IOException if an error occurs while reading the contents
-	 */
-	IContentType[] findContentTypesFor(InputStream contents, String fileName) throws IOException;
+    /**
+     * Returns the content types associated to the given contents and file name.
+     * <p>
+     * Returns an empty array if no associated content types are found.
+     * </p>
+     * <p>
+     * If a file name is not provided, the entire content type registry will be
+     * queried. For performance reasons, it is highly recommended
+     * to provide a file name if available.
+     * </p>
+     * <p>
+     * Any IOExceptions that may occur while reading the given input stream
+     * will flow to the caller. The input stream will not be closed by this
+     * operation.
+     * </p>
+     *
+     * @param contents an input stream
+     * @param fileName the file name associated to the contents, or <code>null</code>
+     * @return all content types associated to the given contents and file name
+     * @throws IOException if an error occurs while reading the contents
+     */
+    IContentType[] findContentTypesFor(InputStream contents, String fileName) throws IOException;
 
-	/**
-	 * Returns all content types known by the platform that are associated to the given file name.
-	 * <p>
-	 * Returns an empty array if there are no content types associated.
-	 * </p>
-	 *
-	 * @param fileName the name of the file
-	 * @return all content types associated to the given file spec
-	 */
-	IContentType[] findContentTypesFor(String fileName);
+    /**
+     * Returns all content types known by the platform that are associated to the given file name.
+     * <p>
+     * Returns an empty array if there are no content types associated.
+     * </p>
+     *
+     * @param fileName the name of the file
+     * @return all content types associated to the given file spec
+     */
+    IContentType[] findContentTypesFor(String fileName);
 
-	/**
-	 * Tries to obtain a description for the given contents and file name.
-	 * <p>
-	 * Any IOExceptions that may occur while reading the given input stream
-	 * will flow to the caller.  The input stream will not be closed by this
-	 * operation.
-	 * </p>
-	 * <p>
-	 * If a file name is not provided, the entire content type registry will be
-	 * queried. For performance reasons, it is highly recommended
-	 * to provide a file name if available.
-	 * </p>
-	 *
-	 * @param contents the contents to be interpreted
-	 * @param fileName the file name associated to the contents, or <code>null</code>
-	 * @param options an array of keys for all properties that should be
-	 * described, or <code>IContentDescription.ALL</code>,  for all of them
-	 * @return a content description if one could be obtained, or <code>null</code>
-	 * @throws IOException if an error occurs while reading the contents
-	 * @see IContentDescription
-	 */
-	IContentDescription getDescriptionFor(InputStream contents, String fileName, QualifiedName[] options) throws IOException;
+    /**
+     * Tries to obtain a description for the given contents and file name.
+     * <p>
+     * Any IOExceptions that may occur while reading the given input stream
+     * will flow to the caller. The input stream will not be closed by this
+     * operation.
+     * </p>
+     * <p>
+     * If a file name is not provided, the entire content type registry will be
+     * queried. For performance reasons, it is highly recommended
+     * to provide a file name if available.
+     * </p>
+     *
+     * @param contents the contents to be interpreted
+     * @param fileName the file name associated to the contents, or <code>null</code>
+     * @param options an array of keys for all properties that should be
+     * described, or <code>IContentDescription.ALL</code>, for all of them
+     * @return a content description if one could be obtained, or <code>null</code>
+     * @throws IOException if an error occurs while reading the contents
+     * @see IContentDescription
+     */
+    IContentDescription getDescriptionFor(InputStream contents, String fileName, QualifiedName[] options)
+        throws IOException;
 
-	/**
-	 * Tries to obtain a description for the given contents and file name.
-	 * <p>
-	 * Any IOExceptions that may occur while reading the given input stream
-	 * will flow to the caller.  The reader will not be closed by this
-	 * operation.
-	 * </p>
-	 * <p>
-	 * If a file name is not provided, the entire content type registry will be
-	 * queried. For performance reasons, it is highly recommended
-	 * to provide a file name if available.
-	 * </p>
-	 *
-	 * @param contents the contents to be interpreted
-	 * @param fileName the file name associated to the contents, or <code>null</code>
-	 * @param options an array of keys for all properties that should be
-	 * described, or <code>IContentDescription.ALL</code>,  for all of them
-	 * @return a content description if one could be obtained, or <code>null</code>
-	 * @throws IOException if an error occurs while reading the contents
-	 * @see IContentDescription
-	 */
-	IContentDescription getDescriptionFor(Reader contents, String fileName, QualifiedName[] options) throws IOException;
+    /**
+     * Tries to obtain a description for the given contents and file name.
+     * <p>
+     * Any IOExceptions that may occur while reading the given input stream
+     * will flow to the caller. The reader will not be closed by this
+     * operation.
+     * </p>
+     * <p>
+     * If a file name is not provided, the entire content type registry will be
+     * queried. For performance reasons, it is highly recommended
+     * to provide a file name if available.
+     * </p>
+     *
+     * @param contents the contents to be interpreted
+     * @param fileName the file name associated to the contents, or <code>null</code>
+     * @param options an array of keys for all properties that should be
+     * described, or <code>IContentDescription.ALL</code>, for all of them
+     * @return a content description if one could be obtained, or <code>null</code>
+     * @throws IOException if an error occurs while reading the contents
+     * @see IContentDescription
+     */
+    IContentDescription getDescriptionFor(Reader contents, String fileName, QualifiedName[] options) throws IOException;
 }

@@ -13,10 +13,10 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.preferences;
 
-import java.net.URL;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.preferences.PreferencesOSGiUtils;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.service.datalocation.Location;
+import java.net.URL;
 
 /**
  * Object representing the configuration scope in the Eclipse preferences
@@ -43,47 +43,47 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public final class ConfigurationScope extends AbstractScope {
 
-	/**
-	 * String constant (value of <code>"configuration"</code>) used for the scope
-	 * name for the configuration preference scope.
-	 */
-	public static final String SCOPE = "configuration"; //$NON-NLS-1$
+    /**
+     * String constant (value of <code>"configuration"</code>) used for the scope
+     * name for the configuration preference scope.
+     */
+    public static final String SCOPE = "configuration"; //$NON-NLS-1$
 
-	/**
-	 * Singleton instance of a Configuration Scope object. Typical usage is:
-	 * <code>ConfigurationScope.INSTANCE.getNode(...);</code>
-	 *
-	 * @since 3.4
-	 */
-	public static final IScopeContext INSTANCE = new ConfigurationScope();
+    /**
+     * Singleton instance of a Configuration Scope object. Typical usage is:
+     * <code>ConfigurationScope.INSTANCE.getNode(...);</code>
+     *
+     * @since 3.4
+     */
+    public static final IScopeContext INSTANCE = new ConfigurationScope();
 
-	/**
-	 * Create and return a new configuration scope instance.
-	 *
-	 * @deprecated use <code>ConfigurationScope.INSTANCE</code> instead
-	 */
-	@Deprecated
-	public ConfigurationScope() {
-		super();
-	}
+    /**
+     * Create and return a new configuration scope instance.
+     *
+     * @deprecated use <code>ConfigurationScope.INSTANCE</code> instead
+     */
+    @Deprecated
+    public ConfigurationScope() {
+        super();
+    }
 
-	@Override
-	public String getName() {
-		return SCOPE;
-	}
+    @Override
+    public String getName() {
+        return SCOPE;
+    }
 
-	@Override
-	public IPath getLocation() {
-		Location location = PreferencesOSGiUtils.getDefault().getConfigurationLocation();
-		if (!location.isReadOnly()) {
-			URL url = location.getURL();
-			if (url != null) {
-				IPath result = IPath.fromOSString(url.getFile());
-				if (!result.isEmpty()) {
-					return result;
-				}
-			}
-		}
-		return null;
-	}
+    @Override
+    public IPath getLocation() {
+        Location location = PreferencesOSGiUtils.getDefault().getConfigurationLocation();
+        if (!location.isReadOnly()) {
+            URL url = location.getURL();
+            if (url != null) {
+                IPath result = IPath.fromOSString(url.getFile());
+                if (!result.isEmpty()) {
+                    return result;
+                }
+            }
+        }
+        return null;
+    }
 }

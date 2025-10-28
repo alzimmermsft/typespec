@@ -13,49 +13,49 @@
  **********************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.jobs;
 
-import java.util.Date;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.util.NLS;
+import java.util.Date;
 
 /**
  * Job plugin message catalog
  */
 public class JobMessages extends NLS {
-	private static final String BUNDLE_NAME = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.jobs.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME
+        = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.jobs.messages"; //$NON-NLS-1$
 
-	public static String JobManager_suspended_problem;
+    public static String JobManager_suspended_problem;
 
-	// Job Manager and Locks
-	public static String jobs_blocked0;
-	public static String jobs_blocked1;
-	public static String jobs_unblocked;
-	public static String jobs_internalError;
-	public static String jobs_waitFamSub;
-	public static String jobs_waitFamSubOne;
-	public static String jobs_returnNoStatus;
-	// metadata
-	public static String meta_pluginProblems;
+    // Job Manager and Locks
+    public static String jobs_blocked0;
+    public static String jobs_blocked1;
+    public static String jobs_unblocked;
+    public static String jobs_internalError;
+    public static String jobs_waitFamSub;
+    public static String jobs_waitFamSubOne;
+    public static String jobs_returnNoStatus;
+    // metadata
+    public static String meta_pluginProblems;
 
+    static {
+        // load message values from bundle file
+        reloadMessages();
+    }
 
-	static {
-		// load message values from bundle file
-		reloadMessages();
-	}
+    public static void reloadMessages() {
+        NLS.initializeMessages(BUNDLE_NAME, JobMessages.class);
+    }
 
-	public static void reloadMessages() {
-		NLS.initializeMessages(BUNDLE_NAME, JobMessages.class);
-	}
-
-	/**
-	 * Print a debug message to the console.
-	 * Pre-pend the message with the current date and the name of the current thread.
-	 */
-	public static void message(String message) {
-		StringBuilder buffer = new StringBuilder();
-		buffer.append(new Date(System.currentTimeMillis()));
-		buffer.append(" - ["); //$NON-NLS-1$
-		buffer.append(Thread.currentThread().getName());
-		buffer.append("] "); //$NON-NLS-1$
-		buffer.append(message);
-		System.out.println(buffer.toString());
-	}
+    /**
+     * Print a debug message to the console.
+     * Pre-pend the message with the current date and the name of the current thread.
+     */
+    public static void message(String message) {
+        StringBuilder buffer = new StringBuilder();
+        buffer.append(new Date(System.currentTimeMillis()));
+        buffer.append(" - ["); //$NON-NLS-1$
+        buffer.append(Thread.currentThread().getName());
+        buffer.append("] "); //$NON-NLS-1$
+        buffer.append(message);
+        System.out.println(buffer.toString());
+    }
 }

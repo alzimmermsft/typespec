@@ -29,21 +29,21 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public interface IExtensionChangeHandler {
 
-	/**
-	 * This method is called whenever an extension conforming to the extension point
-	 * filter is being added to the registry. This method does not automatically
-	 * register objects to the tracker.
-	 *
-	 * @param tracker   a tracker to which the handler has been registered
-	 * @param extension the extension being added
-	 */
-	public void addExtension(IExtensionTracker tracker, IExtension extension);
+    /**
+     * This method is called whenever an extension conforming to the extension point
+     * filter is being added to the registry. This method does not automatically
+     * register objects to the tracker.
+     *
+     * @param tracker a tracker to which the handler has been registered
+     * @param extension the extension being added
+     */
+    public void addExtension(IExtensionTracker tracker, IExtension extension);
 
-	/**
-	 * This method is called after the removal of an extension.
-	 *
-	 * @param extension the extension being removed
-	 * @param objects   the objects that were associated with the removed extension
-	 */
-	public void removeExtension(IExtension extension, Object[] objects);
+    /**
+     * This method is called after the removal of an extension.
+     *
+     * @param extension the extension being removed
+     * @param objects the objects that were associated with the removed extension
+     */
+    public void removeExtension(IExtension extension, Object[] objects);
 }

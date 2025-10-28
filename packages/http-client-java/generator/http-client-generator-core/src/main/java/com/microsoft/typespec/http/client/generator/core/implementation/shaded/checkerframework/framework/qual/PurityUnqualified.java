@@ -14,8 +14,9 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.SOURCE) // do not store in .class file
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
-@SubtypeOf({})
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
+@SubtypeOf({ })
 @DefaultQualifierInHierarchy
 @InvisibleQualifier
-public @interface PurityUnqualified {}
+public @interface PurityUnqualified {
+}

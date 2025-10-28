@@ -13,14 +13,14 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.expressions;
 
-import java.util.Iterator;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IAdaptable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IAdapterManager;
+import java.util.Iterator;
 
 /**
  * Objects that are adaptable to <code>IIterable</code> can be used
  * as the default variable in an iterate expression.
+ * 
  * @param <T> the type of elements from this iterator
  *
  * @see IAdaptable
@@ -30,10 +30,10 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public interface IIterable<T> {
 
-	/**
-	 * Returns an iterator to iterate over the elements.
-	 *
-	 * @return an iterator
-	 */
-	Iterator<T> iterator();
+    /**
+     * Returns an iterator to iterate over the elements.
+     *
+     * @return an iterator
+     */
+    Iterator<T> iterator();
 }

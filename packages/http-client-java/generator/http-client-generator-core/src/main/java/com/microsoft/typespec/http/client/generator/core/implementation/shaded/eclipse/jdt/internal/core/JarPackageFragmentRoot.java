@@ -13,6 +13,22 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IClasspathAttribute;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IClasspathEntry;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaElement;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IModuleDescription;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IPackageFragmentRoot;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.impl.CompilerOptions;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeConstants;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JarPackageFragmentRootInfo.PackageContent;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaModelManager.PerProjectInfo;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.DeduplicationUtil;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Util;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -29,24 +45,6 @@ import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IClasspathAttribute;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IClasspathEntry;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaElement;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IModuleDescription;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IPackageFragmentRoot;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaCore;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CharOperation;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.impl.CompilerOptions;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeConstants;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JarPackageFragmentRootInfo.PackageContent;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaModelManager.PerProjectInfo;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.DeduplicationUtil;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Util;
 
 /**
  * A package fragment root that corresponds to a .jar or .zip.
@@ -54,9 +52,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * <p>NOTE: The only visible entries from a .jar or .zip package fragment root
  * are .class files.
  * <p>NOTE: A jar package fragment root may or may not have an associated resource.
- *
- * @see org.eclipse.jdt.core.IPackageFragmentRoot
- * @see org.eclipse.jdt.internal.core.JarPackageFragmentRootInfo
  */
 public class JarPackageFragmentRoot extends PackageFragmentRoot {
 
@@ -115,39 +110,19 @@ public class JarPackageFragmentRoot extends PackageFragmentRoot {
 	protected boolean computeChildren(OpenableElementInfo info, IResource underlyingResource) throws JavaModelException {
 		Map<List<String>, PackageContent> rawPackageInfo= new HashMap<>();
 		Map<String, String> overridden = new HashMap<>();
-		IJavaElement[] children = NO_ELEMENTS;
+		IJavaElement[] children;
 		try {
 			// always create the default package
 			rawPackageInfo.put(new ArrayList<>(), new PackageContent());
 
 			Object file = JavaModel.getTarget(this, true);
 			long classLevel = Util.getJdkLevel(file);
-			String projectCompliance = this.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
-			long projectLevel = CompilerOptions.versionToJdkLevel(projectCompliance);
-			ZipFile jar = null;
+            ZipFile jar = null;
 			try {
 				jar = getJar();
 				String version = "META-INF/versions/";  //$NON-NLS-1$
-				List<String> versions = new ArrayList<>();
-				if (projectLevel >= ClassFileConstants.JDK9 && jar.getEntry(version) != null) {
-					int earliestJavaVersion = ClassFileConstants.MAJOR_VERSION_9;
-					long latestJDK = CompilerOptions.versionToJdkLevel(projectCompliance);
-					int latestJavaVer = (int) (latestJDK >> 16);
 
-					for(int i = latestJavaVer; i >= earliestJavaVersion; i--) {
-						String s = "" + + (i - 44); //$NON-NLS-1$
-						String versionPath = version + s;
-						if (jar.getEntry(versionPath) != null) {
-							versions.add(s);
-						}
-					}
-				}
-
-				String[] supportedVersions = versions.toArray(new String[versions.size()]);
-				if (supportedVersions.length > 0) {
-					this.multiVersion = true;
-				}
-				int length = version.length();
+                int length = version.length();
 				for (Enumeration<? extends ZipEntry> e= jar.entries(); e.hasMoreElements();) {
 					ZipEntry member= e.nextElement();
 					String name = Util.getEntryName(jar.getName(), member);
@@ -157,13 +132,7 @@ public class JarPackageFragmentRoot extends PackageFragmentRoot {
 					if (this.multiVersion && name.length() > (length + 2) && name.startsWith(version)) {
 						int end = name.indexOf('/', length);
 						if (end >= name.length()) continue;
-						String versionPath = name.substring(0, end);
-						String ver = name.substring(length, end);
-						if(versions.contains(ver) && org.eclipse.jdt.internal.compiler.util.Util.isClassFileName(name)) {
-							name = name.substring(end + 1);
-							overridden.put(name, versionPath);
-						}
-					}
+                    }
 					initRawPackageInfo(rawPackageInfo, getClassNameSubFolder(), name, member.isDirectory(), CompilerOptions.versionFromJdkLevel(classLevel));
 				}
 			}  finally {
@@ -217,14 +186,8 @@ public class JarPackageFragmentRoot extends PackageFragmentRoot {
 	protected JarPackageFragmentRootInfo createElementInfo() {
 		return new JarPackageFragmentRootInfo();
 	}
-	/**
-	 * A Jar is always K_BINARY.
-	 */
-	@Override
-	protected int determineKind(IResource underlyingResource) {
-		return IPackageFragmentRoot.K_BINARY;
-	}
-	/**
+
+    /**
 	 * Returns true if this handle represents the same jar
 	 * as the given handle. Two jars are equal if they share
 	 * the same zip file.
@@ -268,23 +231,6 @@ public class JarPackageFragmentRoot extends PackageFragmentRoot {
 	@Override
 	int internalKind() throws JavaModelException {
 		return IPackageFragmentRoot.K_BINARY;
-	}
-	/**
-	 * Returns an array of non-java resources contained in the receiver.
-	 */
-	@Override
-	public Object[] getNonJavaResources() throws JavaModelException {
-		// We want to show non java resources of the default package at the root (see PR #1G58NB8)
-		Object[] defaultPkgResources =  ((JarPackageFragment) getPackageFragment(CharOperation.NO_STRINGS)).storedNonJavaResources();
-		int length = defaultPkgResources.length;
-		if (length == 0)
-			return defaultPkgResources;
-		Object[] nonJavaResources = new Object[length];
-		for (int i = 0; i < length; i++) {
-			JarEntryResource nonJavaResource = (JarEntryResource) defaultPkgResources[i];
-			nonJavaResources[i] = nonJavaResource.clone(this);
-		}
-		return nonJavaResources;
 	}
 	@Override
 	public PackageFragment getPackageFragment(String[] pkgName) {

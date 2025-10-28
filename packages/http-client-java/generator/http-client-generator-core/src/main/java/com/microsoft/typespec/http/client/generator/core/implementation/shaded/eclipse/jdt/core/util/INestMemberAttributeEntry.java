@@ -13,23 +13,24 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 /**
  * Description of a nest host attribute as described in the JVM
  * specifications.
+ * 
  * @since 3.16
  */
 public interface INestMemberAttributeEntry {
 
-	/**
-	 * Answer back the nest member name as specified
-	 * in the JVM specifications.
-	 *
-	 * @return the nest member name as specified
-	 * in the JVM specifications
-	 */
-	char[] getNestMemberName();
+    /**
+     * Answer back the nest member name as specified
+     * in the JVM specifications.
+     *
+     * @return the nest member name as specified
+     * in the JVM specifications
+     */
+    char[] getNestMemberName();
 
-	/**
-	 * Answer back the nest member name index.
-	 *
-	 * @return the nest memeber name index
-	 */
-	int getNestMemberIndex();
+    /**
+     * Answer back the nest member name index.
+     *
+     * @return the nest memeber name index
+     */
+    int getNestMemberIndex();
 }

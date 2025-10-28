@@ -27,96 +27,96 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public final class QualifiedName {
 
-	/** Qualifier part (potentially <code>null</code>). */
-	/* package */
-	String qualifier = null;
+    /** Qualifier part (potentially <code>null</code>). */
+    /* package */
+    String qualifier = null;
 
-	/** Local name part. */
-	/* package */
-	String localName = null;
+    /** Local name part. */
+    /* package */
+    String localName = null;
 
-	/**
-	 * Creates and returns a new qualified name with the given qualifier and local
-	 * name. The local name must not be the empty string. The qualifier may be
-	 * <code>null</code>.
-	 * <p>
-	 * Clients may instantiate.
-	 * </p>
-	 *
-	 * @param qualifier the qualifier string, or <code>null</code>
-	 * @param localName the local name string
-	 */
-	public QualifiedName(String qualifier, String localName) {
-		Assert.isLegal(localName != null && localName.length() != 0);
-		this.qualifier = qualifier;
-		this.localName = localName;
-	}
+    /**
+     * Creates and returns a new qualified name with the given qualifier and local
+     * name. The local name must not be the empty string. The qualifier may be
+     * <code>null</code>.
+     * <p>
+     * Clients may instantiate.
+     * </p>
+     *
+     * @param qualifier the qualifier string, or <code>null</code>
+     * @param localName the local name string
+     */
+    public QualifiedName(String qualifier, String localName) {
+        Assert.isLegal(localName != null && localName.length() != 0);
+        this.qualifier = qualifier;
+        this.localName = localName;
+    }
 
-	/**
-	 * Returns whether this qualified name is equivalent to the given object.
-	 * <p>
-	 * Qualified names are equal if and only if they have the same qualified parts
-	 * and local parts. Qualified names are not equal to objects other than
-	 * qualified names.
-	 * </p>
-	 *
-	 * @param obj the object to compare to
-	 * @return <code>true</code> if these are equivalent qualified names, and
-	 *         <code>false</code> otherwise
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == this) {
-			return true;
-		}
-		if (!(obj instanceof QualifiedName qName)) {
-			return false;
-		}
-		/* There may or may not be a qualifier */
-		if (qualifier == null && qName.getQualifier() != null) {
-			return false;
-		}
-		if (qualifier != null && !qualifier.equals(qName.getQualifier())) {
-			return false;
-		}
-		return localName.equals(qName.getLocalName());
-	}
+    /**
+     * Returns whether this qualified name is equivalent to the given object.
+     * <p>
+     * Qualified names are equal if and only if they have the same qualified parts
+     * and local parts. Qualified names are not equal to objects other than
+     * qualified names.
+     * </p>
+     *
+     * @param obj the object to compare to
+     * @return <code>true</code> if these are equivalent qualified names, and
+     * <code>false</code> otherwise
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof QualifiedName qName)) {
+            return false;
+        }
+        /* There may or may not be a qualifier */
+        if (qualifier == null && qName.getQualifier() != null) {
+            return false;
+        }
+        if (qualifier != null && !qualifier.equals(qName.getQualifier())) {
+            return false;
+        }
+        return localName.equals(qName.getLocalName());
+    }
 
-	/**
-	 * Returns the local part of this name.
-	 *
-	 * @return the local name string
-	 */
-	public String getLocalName() {
-		return localName;
-	}
+    /**
+     * Returns the local part of this name.
+     *
+     * @return the local name string
+     */
+    public String getLocalName() {
+        return localName;
+    }
 
-	/**
-	 * Returns the qualifier part for this qualified name, or <code>null</code> if
-	 * none.
-	 *
-	 * @return the qualifier string, or <code>null</code>
-	 */
-	public String getQualifier() {
-		return qualifier;
-	}
+    /**
+     * Returns the qualifier part for this qualified name, or <code>null</code> if
+     * none.
+     *
+     * @return the qualifier string, or <code>null</code>
+     */
+    public String getQualifier() {
+        return qualifier;
+    }
 
-	/*
-	 * (Intentionally omitted from javadoc) Implements the method
-	 * <code>Object.hashCode</code>.
-	 *
-	 * Returns the hash code for this qualified name.
-	 */
-	@Override
-	public int hashCode() {
-		return (qualifier == null ? 0 : qualifier.hashCode()) + localName.hashCode();
-	}
+    /*
+     * (Intentionally omitted from javadoc) Implements the method
+     * <code>Object.hashCode</code>.
+     *
+     * Returns the hash code for this qualified name.
+     */
+    @Override
+    public int hashCode() {
+        return (qualifier == null ? 0 : qualifier.hashCode()) + localName.hashCode();
+    }
 
-	/**
-	 * Converts this qualified name into a string, suitable for debug purposes only.
-	 */
-	@Override
-	public String toString() {
-		return (getQualifier() == null ? "" : getQualifier() + ':') + getLocalName(); //$NON-NLS-1$
-	}
+    /**
+     * Converts this qualified name into a string, suitable for debug purposes only.
+     */
+    @Override
+    public String toString() {
+        return (getQualifier() == null ? "" : getQualifier() + ':') + getLocalName(); //$NON-NLS-1$
+    }
 }

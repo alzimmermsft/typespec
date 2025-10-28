@@ -20,20 +20,20 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class ThirdLevelConfigurationElementHandle extends ConfigurationElementHandle {
 
-	public ThirdLevelConfigurationElementHandle(IObjectManager objectManager, int id) {
-		super(objectManager, id);
-	}
+    public ThirdLevelConfigurationElementHandle(IObjectManager objectManager, int id) {
+        super(objectManager, id);
+    }
 
-	@Override
-	protected ConfigurationElement getConfigurationElement() {
-		return (ConfigurationElement) objectManager.getObject(getId(),
-				RegistryObjectManager.THIRDLEVEL_CONFIGURATION_ELEMENT);
-	}
+    @Override
+    protected ConfigurationElement getConfigurationElement() {
+        return (ConfigurationElement) objectManager.getObject(getId(),
+            RegistryObjectManager.THIRDLEVEL_CONFIGURATION_ELEMENT);
+    }
 
-	@Override
-	public IConfigurationElement[] getChildren() {
-		return (IConfigurationElement[]) objectManager.getHandles(getConfigurationElement().getRawChildren(),
-				RegistryObjectManager.THIRDLEVEL_CONFIGURATION_ELEMENT);
-	}
+    @Override
+    public IConfigurationElement[] getChildren() {
+        return (IConfigurationElement[]) objectManager.getHandles(getConfigurationElement().getRawChildren(),
+            RegistryObjectManager.THIRDLEVEL_CONFIGURATION_ELEMENT);
+    }
 
 }

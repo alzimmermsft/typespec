@@ -71,41 +71,42 @@ static Object[] computeFolderNonJavaResources(IPackageFragmentRoot root, IContai
 			// folder.getProject() is different than root.getJavaProject().getProject()
 			// use the other java project's options to verify the name
 			IJavaProject otherJavaProject = JavaCore.create(folder.getProject());
-			String sourceLevel = otherJavaProject.getOption(JavaCore.COMPILER_SOURCE, true);
-			String complianceLevel = otherJavaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
+			String sourceLevel = "1.8";
+			String complianceLevel = "1.8";
 			JavaProject javaProject = (JavaProject) root.getJavaProject();
 			IClasspathEntry[] classpath = javaProject.getResolvedClasspath();
-			nextResource: for (int i = 0; i < length; i++) {
-				IResource member = members[i];
-				switch (member.getType()) {
-					case IResource.FILE :
-						String fileName = member.getName();
+            for (IResource member : members) {
+                switch (member.getType()) {
+                    case IResource.FILE:
+                        String fileName = member.getName();
 
-						// ignore .java files that are not excluded
-						if (Util.isValidCompilationUnitName(fileName, sourceLevel, complianceLevel) && !Util.isExcluded(member, inclusionPatterns, exclusionPatterns))
-							continue nextResource;
-						// ignore .class files
-						if (Util.isValidClassFileName(fileName, sourceLevel, complianceLevel))
-							continue nextResource;
-						// ignore .zip or .jar file on classpath
-						if (isClasspathEntry(member.getFullPath(), classpath))
-							continue nextResource;
-						break;
+                        // ignore .java files that are not excluded
+                        if (Util.isValidCompilationUnitName(fileName, sourceLevel, complianceLevel) && !Util.isExcluded(
+                            member, inclusionPatterns, exclusionPatterns))
+                            continue;
+                        // ignore .class files
+                        if (Util.isValidClassFileName(fileName, sourceLevel, complianceLevel))
+                            continue;
+                        // ignore .zip or .jar file on classpath
+                        if (isClasspathEntry(member.getFullPath(), classpath))
+                            continue;
+                        break;
 
-					case IResource.FOLDER :
-						// ignore valid packages or excluded folders that correspond to a nested pkg fragment root
-						if (Util.isValidFolderNameForPackage(member.getName(), sourceLevel, complianceLevel)
-								&& (!Util.isExcluded(member, inclusionPatterns, exclusionPatterns)
-										|| isClasspathEntry(member.getFullPath(), classpath)))
-							continue nextResource;
-						break;
-				}
-				if (nonJavaResources.length == nonJavaResourcesCounter) {
-					// resize
-					System.arraycopy(nonJavaResources, 0, (nonJavaResources = new IResource[nonJavaResourcesCounter * 2]), 0, nonJavaResourcesCounter);
-				}
-				nonJavaResources[nonJavaResourcesCounter++] = member;
-			}
+                    case IResource.FOLDER:
+                        // ignore valid packages or excluded folders that correspond to a nested pkg fragment root
+                        if (Util.isValidFolderNameForPackage(member.getName(), sourceLevel, complianceLevel) && (
+                            !Util.isExcluded(member, inclusionPatterns, exclusionPatterns) || isClasspathEntry(
+                                member.getFullPath(), classpath)))
+                            continue;
+                        break;
+                }
+                if (nonJavaResources.length == nonJavaResourcesCounter) {
+                    // resize
+                    System.arraycopy(nonJavaResources, 0,
+                        (nonJavaResources = new IResource[nonJavaResourcesCounter * 2]), 0, nonJavaResourcesCounter);
+                }
+                nonJavaResources[nonJavaResourcesCounter++] = member;
+            }
 		}
 		if (ExternalFoldersManager.isInternalPathForExternalFolder(folder.getFullPath())) {
 			IJarEntryResource[] jarEntryResources = new IJarEntryResource[nonJavaResourcesCounter];
@@ -121,40 +122,8 @@ static Object[] computeFolderNonJavaResources(IPackageFragmentRoot root, IContai
 		throw new JavaModelException(e);
 	}
 }
-/**
- * Compute the non-package resources of this package fragment root.
- */
-private Object[] computeNonJavaResources(IResource underlyingResource, PackageFragmentRoot handle) {
-	Object[] resources = NO_NON_JAVA_RESOURCES;
-	try {
-		// the underlying resource may be a folder or a project (in the case that the project folder
-		// is actually the package fragment root)
-		if (underlyingResource.getType() == IResource.FOLDER || underlyingResource.getType() == IResource.PROJECT) {
-			resources =
-				computeFolderNonJavaResources(
-					handle,
-					(IContainer) underlyingResource,
-					handle.fullInclusionPatternChars(),
-					handle.fullExclusionPatternChars());
-		}
-	} catch (JavaModelException e) {
-		// ignore
-	}
-	return resources;
-}
-/**
- * Returns an array of non-java resources contained in the receiver.
- */
-synchronized Object[] getNonJavaResources(IJavaProject project, IResource underlyingResource, PackageFragmentRoot handle) {
-	Object[] resources = this.nonJavaResources;
-	if (resources == null) {
-		resources = computeNonJavaResources(underlyingResource, handle);
-		this.nonJavaResources = resources;
-	}
-	return resources;
-}
 
-/**
+    /**
  * Returns the kind of this root.
  */
 public int getRootKind() {
@@ -182,13 +151,8 @@ private static boolean isClasspathEntry(IPath path, IClasspathEntry[] resolvedCl
 	}
 	return false;
 }
-/**
- * Sets the kind of this root.
- */
-protected void setRootKind(int newRootKind) {
-	this.rootKind = newRootKind;
-}
-/**
+
+    /**
  * Sets the SourceMapper for this root.
  */
 protected void setSourceMapper(SourceMapper mapper) {

@@ -13,13 +13,10 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.Flags;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IInitializer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaElement;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaModelStatusConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IMember;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ISourceManipulation;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ISourceRange;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IType;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
@@ -66,13 +63,6 @@ protected char getHandleMementoDelimiter() {
 public String readableName() {
 
 	return ((JavaElement)getDeclaringType()).readableName();
-}
-/**
- * @see ISourceManipulation
- */
-@Override
-public void rename(String newName, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.INVALID_ELEMENT_TYPES, this));
 }
 /**
  * @see IMember

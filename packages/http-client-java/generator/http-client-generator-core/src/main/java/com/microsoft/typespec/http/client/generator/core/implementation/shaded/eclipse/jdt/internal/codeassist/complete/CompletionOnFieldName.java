@@ -18,31 +18,32 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.MethodScope;
 
 public class CompletionOnFieldName extends FieldDeclaration implements CompletionNode {
-	private static final char[] FAKENAMESUFFIX = " ".toCharArray(); //$NON-NLS-1$
-	public char[] realName;
-	public CompletionOnFieldName(char[] name, int sourceStart, int sourceEnd) {
-		super(CharOperation.concat(name, FAKENAMESUFFIX), sourceStart, sourceEnd);
-		this.realName = name;
-	}
+    private static final char[] FAKENAMESUFFIX = " ".toCharArray(); //$NON-NLS-1$
+    public char[] realName;
 
-	@Override
-	public StringBuilder printStatement(int tab, StringBuilder output) {
+    public CompletionOnFieldName(char[] name, int sourceStart, int sourceEnd) {
+        super(CharOperation.concat(name, FAKENAMESUFFIX), sourceStart, sourceEnd);
+        this.realName = name;
+    }
 
-		printIndent(tab, output).append("<CompleteOnFieldName:"); //$NON-NLS-1$
-		if (this.type != null) this.type.print(0, output).append(' ');
-		output.append(this.realName);
-		if (this.initialization != null) {
-			output.append(" = "); //$NON-NLS-1$
-			this.initialization.printExpression(0, output);
-		}
-		return output.append(">;"); //$NON-NLS-1$
-	}
+    @Override
+    public StringBuilder printStatement(int tab, StringBuilder output) {
 
-	@Override
-	public void resolve(MethodScope initializationScope) {
-		super.resolve(initializationScope);
+        printIndent(tab, output).append("<CompleteOnFieldName:"); //$NON-NLS-1$
+        if (this.type != null)
+            this.type.print(0, output).append(' ');
+        output.append(this.realName);
+        if (this.initialization != null) {
+            output.append(" = "); //$NON-NLS-1$
+            this.initialization.printExpression(0, output);
+        }
+        return output.append(">;"); //$NON-NLS-1$
+    }
 
-		throw new CompletionNodeFound(this, initializationScope);
-	}
+    @Override
+    public void resolve(MethodScope initializationScope) {
+        super.resolve(initializationScope);
+
+        throw new CompletionNodeFound(this, initializationScope);
+    }
 }
-

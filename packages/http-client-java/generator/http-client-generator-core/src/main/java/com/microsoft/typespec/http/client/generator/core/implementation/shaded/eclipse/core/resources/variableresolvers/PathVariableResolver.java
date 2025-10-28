@@ -20,36 +20,37 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * An interface that variable providers should implement in order
  * to extends the default path variable list used to resolve relative
  * locations of linked resources.
+ * 
  * @since 3.6
  */
 public abstract class PathVariableResolver {
 
-	/**
-	 * This method can return a list of possible variables resolved by
-	 * this resolver.
-	 * <p>
-	 * This default implementation always returns <code>null</code>. Subclasses
-	 * should override to provide custom extensions.
-	 * </p>
-	 *
-	 * @param variable
-	 *            The current variable name.
-	 * @param resource
-	 *            The resource that the variable is being resolved for.
-	 * @return the list of supported variables
-	 */
-	public String[] getVariableNames(String variable, IResource resource) {
-		return null;
-	}
+    /**
+     * This method can return a list of possible variables resolved by
+     * this resolver.
+     * <p>
+     * This default implementation always returns <code>null</code>. Subclasses
+     * should override to provide custom extensions.
+     * </p>
+     *
+     * @param variable
+     * The current variable name.
+     * @param resource
+     * The resource that the variable is being resolved for.
+     * @return the list of supported variables
+     */
+    public String[] getVariableNames(String variable, IResource resource) {
+        return null;
+    }
 
-	/**
-	 * Returns a variable value
-	 *
-	 * @param variable
-	 *            The current variable name.
-	 * @param resource
-	 *            The resource that the variable is being resolved for.
-	 * @return the variable value.
-	 */
-	public abstract String getValue(String variable, IResource resource);
+    /**
+     * Returns a variable value
+     *
+     * @param variable
+     * The current variable name.
+     * @param resource
+     * The resource that the variable is being resolved for.
+     * @return the variable value.
+     */
+    public abstract String getValue(String variable, IResource resource);
 }

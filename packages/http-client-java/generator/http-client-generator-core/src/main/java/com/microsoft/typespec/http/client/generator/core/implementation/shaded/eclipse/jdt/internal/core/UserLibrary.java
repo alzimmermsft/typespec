@@ -124,12 +124,12 @@ public class UserLibrary {
 
 			// write extra attributes if necessary
 			if (hasExtraAttributes) {
-				cpEntry.encodeExtraAttributes(xmlWriter, true, true);
+				cpEntry.encodeExtraAttributes(xmlWriter);
 			}
 
 			// write extra attributes and restriction if necessary
 			if (hasRestrictions) {
-				cpEntry.encodeAccessRules(xmlWriter, true, true);
+				cpEntry.encodeAccessRules(xmlWriter);
 			}
 
 			// write archive end tag if necessary

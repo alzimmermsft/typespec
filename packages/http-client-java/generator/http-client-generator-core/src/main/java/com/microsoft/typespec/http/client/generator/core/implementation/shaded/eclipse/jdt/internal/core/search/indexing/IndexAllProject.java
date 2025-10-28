@@ -23,7 +23,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IFile;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IProject;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResourceProxy;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResourceProxyVisitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IWorkspaceRoot;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
@@ -84,7 +83,7 @@ public class IndexAllProject extends IndexRequest {
 					if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY && entry.getPath().equals(projectPath)) {
 						// the project is also a library folder (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=89815)
 						// ensure a job exists to index it as a binary folder
-						this.manager.indexLibrary(projectPath, this.project, ((ClasspathEntry)entry).getLibraryIndexLocation());
+						this.manager.indexLibrary(projectPath, ((ClasspathEntry)entry).getLibraryIndexLocation());
 						return true;
 					}
 				}
@@ -141,68 +140,60 @@ public class IndexAllProject extends IndexRequest {
 					final char[][] inclusionPatterns = ((ClasspathEntry) entry).fullInclusionPatternChars();
 					final char[][] exclusionPatterns = ((ClasspathEntry) entry).fullExclusionPatternChars();
 					if (max == 0) {
-						sourceFolder.accept(
-							new IResourceProxyVisitor() {
-								@Override
-								public boolean visit(IResourceProxy proxy) {
-									if (IndexAllProject.this.isCancelled) return false;
-									switch(proxy.getType()) {
-										case IResource.FILE :
-											if (Util.isJavaLikeFileName(proxy.getName())) {
-												IFile file = (IFile) proxy.requestResource();
-												if (exclusionPatterns != null || inclusionPatterns != null)
-													if (Util.isExcluded(file, inclusionPatterns, exclusionPatterns))
-														return false;
-												indexedFileNames.put(Util.relativePath(file.getFullPath(), 1/*remove project segment*/), file);
-											}
-											return false;
-										case IResource.FOLDER :
-											if (exclusionPatterns != null && inclusionPatterns == null) {
-												// if there are inclusion patterns then we must walk the children
-												if (Util.isExcluded(proxy.requestFullPath(), inclusionPatterns, exclusionPatterns, true))
-												    return false;
-											}
-											if (hasOutputs && outputs.contains(proxy.requestFullPath()))
-												return false;
-									}
-									return true;
-								}
-							},
+						sourceFolder.accept((IResourceProxyVisitor) proxy -> {
+                            if (IndexAllProject.this.isCancelled) return false;
+                            switch(proxy.getType()) {
+                                case IResource.FILE :
+                                    if (Util.isJavaLikeFileName(proxy.getName())) {
+                                        IFile file = (IFile) proxy.requestResource();
+                                        if (exclusionPatterns != null || inclusionPatterns != null)
+                                            if (Util.isExcluded(file, inclusionPatterns, exclusionPatterns))
+                                                return false;
+                                        indexedFileNames.put(Util.relativePath(file.getFullPath(), 1/*remove project segment*/), file);
+                                    }
+                                    return false;
+                                case IResource.FOLDER :
+                                    if (exclusionPatterns != null && inclusionPatterns == null) {
+                                        // if there are inclusion patterns then we must walk the children
+                                        if (Util.isExcluded(proxy.requestFullPath(), inclusionPatterns, exclusionPatterns, true))
+                                            return false;
+                                    }
+                                    if (hasOutputs && outputs.contains(proxy.requestFullPath()))
+                                        return false;
+                            }
+                            return true;
+                        },
 							IResource.NONE
 						);
 					} else {
-						sourceFolder.accept(
-							new IResourceProxyVisitor() {
-								@Override
-								public boolean visit(IResourceProxy proxy) throws CoreException {
-									if (IndexAllProject.this.isCancelled) return false;
-									switch(proxy.getType()) {
-										case IResource.FILE :
-											if (Util.isJavaLikeFileName(proxy.getName())) {
-												IFile file = (IFile) proxy.requestResource();
-												URI location = file.getLocationURI();
-												if (location == null) return false;
-												if (exclusionPatterns != null || inclusionPatterns != null)
-													if (Util.isExcluded(file, inclusionPatterns, exclusionPatterns))
-														return false;
-												String relativePathString = Util.relativePath(file.getFullPath(), 1/*remove project segment*/);
-												indexedFileNames.put(relativePathString,
-													indexedFileNames.get(relativePathString) == null
-															|| indexLastModified < EFS.getStore(location).fetchInfo().getLastModified()
-														? (Object) file
-														: (Object) OK);
-											}
-											return false;
-										case IResource.FOLDER :
-											if (exclusionPatterns != null || inclusionPatterns != null)
-												if (Util.isExcluded(proxy.requestResource(), inclusionPatterns, exclusionPatterns))
-													return false;
-											if (hasOutputs && outputs.contains(proxy.requestFullPath()))
-												return false;
-									}
-									return true;
-								}
-							},
+						sourceFolder.accept((IResourceProxyVisitor) proxy -> {
+                            if (IndexAllProject.this.isCancelled) return false;
+                            switch(proxy.getType()) {
+                                case IResource.FILE :
+                                    if (Util.isJavaLikeFileName(proxy.getName())) {
+                                        IFile file = (IFile) proxy.requestResource();
+                                        URI location = file.getLocationURI();
+                                        if (location == null) return false;
+                                        if (exclusionPatterns != null || inclusionPatterns != null)
+                                            if (Util.isExcluded(file, inclusionPatterns, exclusionPatterns))
+                                                return false;
+                                        String relativePathString = Util.relativePath(file.getFullPath(), 1/*remove project segment*/);
+                                        indexedFileNames.put(relativePathString,
+                                            indexedFileNames.get(relativePathString) == null
+                                                    || indexLastModified < EFS.getStore(location).fetchInfo().getLastModified()
+                                                ? (Object) file
+                                                : (Object) OK);
+                                    }
+                                    return false;
+                                case IResource.FOLDER :
+                                    if (exclusionPatterns != null || inclusionPatterns != null)
+                                        if (Util.isExcluded(proxy.requestResource(), inclusionPatterns, exclusionPatterns))
+                                            return false;
+                                    if (hasOutputs && outputs.contains(proxy.requestFullPath()))
+                                        return false;
+                            }
+                            return true;
+                        },
 							IResource.NONE
 						);
 					}

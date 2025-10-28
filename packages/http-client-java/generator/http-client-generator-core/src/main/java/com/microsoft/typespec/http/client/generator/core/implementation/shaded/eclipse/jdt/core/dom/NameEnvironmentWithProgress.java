@@ -29,72 +29,79 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 /**
  * Batch name environment that can be canceled using a monitor.
+ * 
  * @since 3.6
  */
 class NameEnvironmentWithProgress extends FileSystem implements INameEnvironmentWithProgress {
-	IProgressMonitor monitor;
+    IProgressMonitor monitor;
 
-	public NameEnvironmentWithProgress(Classpath[] paths, String[] initialFileNames, IProgressMonitor monitor) {
-		super(paths, initialFileNames, false);
-		setMonitor(monitor);
-	}
-	private void checkCanceled() {
-		if (this.monitor != null && this.monitor.isCanceled()) {
-			if (NameLookup.VERBOSE) {
-				trace(Thread.currentThread() + " CANCELLING LOOKUP "); //$NON-NLS-1$
-			}
-			throw new AbortCompilation(true/*silent*/, new OperationCanceledException());
-		}
-	}
-	@Override
-	public NameEnvironmentAnswer findType(char[] typeName, char[][] packageName, char[] moduleName) {
-		return findType(typeName, packageName, true, moduleName);
-	}
-	@Override
-	public NameEnvironmentAnswer findType(char[] typeName, char[][] packageName, boolean searchWithSecondaryTypes, char[] moduleName) {
-		checkCanceled();
-		NameEnvironmentAnswer answer = super.findType(typeName, packageName, moduleName);
-		if (answer == null && searchWithSecondaryTypes) {
-			NameEnvironmentAnswer suggestedAnswer = null;
-			String qualifiedPackageName = new String(CharOperation.concatWith(packageName, '/'));
-			String qualifiedTypeName = new String(CharOperation.concatWith(packageName, typeName, '/'));
-			String qualifiedBinaryFileName = qualifiedTypeName + SUFFIX_STRING_class;
-			for (Classpath classpath : this.classpaths) {
-				if (!(classpath instanceof ClasspathDirectory)) continue;
-				ClasspathDirectory classpathDirectory = (ClasspathDirectory) classpath;
-				LookupStrategy strategy = LookupStrategy.get(moduleName);
-				if (!strategy.matchesWithName(classpathDirectory,
-						loc -> loc.getModule() != null,
-						loc -> loc.servesModule(moduleName))) {
-					continue;
-				}
-				answer = classpathDirectory.findSecondaryInClass(typeName, qualifiedPackageName, qualifiedBinaryFileName);
-				if (answer != null) {
-					if (!answer.ignoreIfBetter()) {
-						if (answer.isBetter(suggestedAnswer))
-							return answer;
-					} else if (answer.isBetter(suggestedAnswer))
-						// remember suggestion and keep looking
-						suggestedAnswer = answer;
-				}
-			}
-		}
-		return answer;
-	}
+    public NameEnvironmentWithProgress(Classpath[] paths, String[] initialFileNames, IProgressMonitor monitor) {
+        super(paths, initialFileNames, false);
+        setMonitor(monitor);
+    }
 
-	@Override
-	public NameEnvironmentAnswer findType(char[][] compoundName) {
-		checkCanceled();
-		return super.findType(compoundName);
-	}
-	@Override
-	public boolean isPackage(char[][] compoundName, char[] packageName) {
-		checkCanceled();
-		return super.isPackage(compoundName, packageName);
-	}
+    private void checkCanceled() {
+        if (this.monitor != null && this.monitor.isCanceled()) {
+            if (NameLookup.VERBOSE) {
+                trace(Thread.currentThread() + " CANCELLING LOOKUP "); //$NON-NLS-1$
+            }
+            throw new AbortCompilation(true/* silent */, new OperationCanceledException());
+        }
+    }
 
-	@Override
-	public void setMonitor(IProgressMonitor monitor) {
-		this.monitor = monitor;
-	}
+    @Override
+    public NameEnvironmentAnswer findType(char[] typeName, char[][] packageName, char[] moduleName) {
+        return findType(typeName, packageName, true, moduleName);
+    }
+
+    @Override
+    public NameEnvironmentAnswer findType(char[] typeName, char[][] packageName, boolean searchWithSecondaryTypes,
+        char[] moduleName) {
+        checkCanceled();
+        NameEnvironmentAnswer answer = super.findType(typeName, packageName, moduleName);
+        if (answer == null && searchWithSecondaryTypes) {
+            NameEnvironmentAnswer suggestedAnswer = null;
+            String qualifiedPackageName = new String(CharOperation.concatWith(packageName, '/'));
+            String qualifiedTypeName = new String(CharOperation.concatWith(packageName, typeName, '/'));
+            String qualifiedBinaryFileName = qualifiedTypeName + SUFFIX_STRING_class;
+            for (Classpath classpath : this.classpaths) {
+                if (!(classpath instanceof ClasspathDirectory))
+                    continue;
+                ClasspathDirectory classpathDirectory = (ClasspathDirectory) classpath;
+                LookupStrategy strategy = LookupStrategy.get(moduleName);
+                if (!strategy.matchesWithName(classpathDirectory, loc -> loc.getModule() != null,
+                    loc -> loc.servesModule(moduleName))) {
+                    continue;
+                }
+                answer
+                    = classpathDirectory.findSecondaryInClass(typeName, qualifiedPackageName, qualifiedBinaryFileName);
+                if (answer != null) {
+                    if (!answer.ignoreIfBetter()) {
+                        if (answer.isBetter(suggestedAnswer))
+                            return answer;
+                    } else if (answer.isBetter(suggestedAnswer))
+                        // remember suggestion and keep looking
+                        suggestedAnswer = answer;
+                }
+            }
+        }
+        return answer;
+    }
+
+    @Override
+    public NameEnvironmentAnswer findType(char[][] compoundName) {
+        checkCanceled();
+        return super.findType(compoundName);
+    }
+
+    @Override
+    public boolean isPackage(char[][] compoundName, char[] packageName) {
+        checkCanceled();
+        return super.isPackage(compoundName, packageName);
+    }
+
+    @Override
+    public void setMonitor(IProgressMonitor monitor) {
+        this.monitor = monitor;
+    }
 }

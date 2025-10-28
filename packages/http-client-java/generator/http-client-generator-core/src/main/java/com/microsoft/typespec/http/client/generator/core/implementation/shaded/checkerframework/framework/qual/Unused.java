@@ -20,16 +20,19 @@ import java.lang.annotation.Target;
  *
  * <p>You can declare this behavior in the following way:
  *
- * <pre>{@code
+ * <pre>
+ * {@code
  * class Table {
  *   private @Unused(when=LocalToThread.class) final Lock lock;
  *   ...
  * }
- * }</pre>
+ * }
+ * </pre>
  *
  * The checker for {@code @LocalToThread} would issue an error for the following code:
  *
- * <pre>  @LocalToThread Table table = ...;
+ * <pre>
+ *   &#64;LocalToThread Table table = ...;
  *   ... table.lock ...;
  * </pre>
  *
@@ -37,11 +40,11 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD})
+@Target({ ElementType.FIELD })
 public @interface Unused {
-  /**
-   * The field that is annotated with @Unused may not be accessed via a receiver that is annotated
-   * with the "when" annotation.
-   */
-  Class<? extends Annotation> when();
+    /**
+     * The field that is annotated with @Unused may not be accessed via a receiver that is annotated
+     * with the "when" annotation.
+     */
+    Class<? extends Annotation> when();
 }

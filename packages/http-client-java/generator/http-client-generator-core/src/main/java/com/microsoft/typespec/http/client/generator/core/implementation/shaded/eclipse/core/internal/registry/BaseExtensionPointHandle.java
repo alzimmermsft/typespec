@@ -13,9 +13,9 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.registry;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.*;
 
 /**
  * This is the copy of the ExtensionPointHandle minus the
@@ -28,115 +28,115 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class BaseExtensionPointHandle extends Handle implements IExtensionPoint {
 
-	public BaseExtensionPointHandle(IObjectManager objectManager, int id) {
-		super(objectManager, id);
-	}
+    public BaseExtensionPointHandle(IObjectManager objectManager, int id) {
+        super(objectManager, id);
+    }
 
-	@Override
-	public IExtension[] getExtensions() {
-		return (IExtension[]) objectManager.getHandles(getExtensionPoint().getRawChildren(),
-				RegistryObjectManager.EXTENSION);
-	}
+    @Override
+    public IExtension[] getExtensions() {
+        return (IExtension[]) objectManager.getHandles(getExtensionPoint().getRawChildren(),
+            RegistryObjectManager.EXTENSION);
+    }
 
-	// This method is left for backward compatibility only
-	@Override
-	public String getNamespace() {
-		return getContributor().getName();
-	}
+    // This method is left for backward compatibility only
+    @Override
+    public String getNamespace() {
+        return getContributor().getName();
+    }
 
-	@Override
-	public String getNamespaceIdentifier() {
-		return getExtensionPoint().getNamespace();
-	}
+    @Override
+    public String getNamespaceIdentifier() {
+        return getExtensionPoint().getNamespace();
+    }
 
-	@Override
-	public IContributor getContributor() {
-		return getExtensionPoint().getContributor();
-	}
+    @Override
+    public IContributor getContributor() {
+        return getExtensionPoint().getContributor();
+    }
 
-	protected boolean shouldPersist() {
-		return getExtensionPoint().shouldPersist();
-	}
+    protected boolean shouldPersist() {
+        return getExtensionPoint().shouldPersist();
+    }
 
-	@Override
-	public IExtension getExtension(String extensionId) {
-		if (extensionId == null) {
-			return null;
-		}
-		for (int element : getExtensionPoint().getRawChildren()) {
-			// Here we directly get the object because it avoids the creation of garbage and
-			// because we'll need the object anyway to compare the value
-			if (extensionId.equals(((Extension) objectManager.getObject(element, RegistryObjectManager.EXTENSION))
-					.getUniqueIdentifier())) {
-				return (ExtensionHandle) objectManager.getHandle(element, RegistryObjectManager.EXTENSION);
-			}
-		}
-		return null;
-	}
+    @Override
+    public IExtension getExtension(String extensionId) {
+        if (extensionId == null) {
+            return null;
+        }
+        for (int element : getExtensionPoint().getRawChildren()) {
+            // Here we directly get the object because it avoids the creation of garbage and
+            // because we'll need the object anyway to compare the value
+            if (extensionId.equals(((Extension) objectManager.getObject(element, RegistryObjectManager.EXTENSION))
+                .getUniqueIdentifier())) {
+                return (ExtensionHandle) objectManager.getHandle(element, RegistryObjectManager.EXTENSION);
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public IConfigurationElement[] getConfigurationElements() {
-		// get the actual extension objects since we'll need to get the configuration
-		// elements information.
-		Extension[] tmpExtensions = (Extension[]) objectManager.getObjects(getExtensionPoint().getRawChildren(),
-				RegistryObjectManager.EXTENSION);
-		if (tmpExtensions.length == 0) {
-			return ConfigurationElementHandle.EMPTY_ARRAY;
-		}
+    @Override
+    public IConfigurationElement[] getConfigurationElements() {
+        // get the actual extension objects since we'll need to get the configuration
+        // elements information.
+        Extension[] tmpExtensions = (Extension[]) objectManager.getObjects(getExtensionPoint().getRawChildren(),
+            RegistryObjectManager.EXTENSION);
+        if (tmpExtensions.length == 0) {
+            return ConfigurationElementHandle.EMPTY_ARRAY;
+        }
 
-		ArrayList<Handle> result = new ArrayList<>();
-		for (Extension tmpExtension : tmpExtensions) {
-			result.addAll(Arrays.asList(objectManager.getHandles(tmpExtension.getRawChildren(),
-					RegistryObjectManager.CONFIGURATION_ELEMENT)));
-		}
-		return result.toArray(new IConfigurationElement[result.size()]);
-	}
+        ArrayList<Handle> result = new ArrayList<>();
+        for (Extension tmpExtension : tmpExtensions) {
+            result.addAll(Arrays.asList(
+                objectManager.getHandles(tmpExtension.getRawChildren(), RegistryObjectManager.CONFIGURATION_ELEMENT)));
+        }
+        return result.toArray(new IConfigurationElement[result.size()]);
+    }
 
-	public String getLabelAsIs() {
-		return getExtensionPoint().getLabelAsIs();
-	}
+    public String getLabelAsIs() {
+        return getExtensionPoint().getLabelAsIs();
+    }
 
-	@Override
-	public String getLabel() {
-		return getExtensionPoint().getLabel();
-	}
+    @Override
+    public String getLabel() {
+        return getExtensionPoint().getLabel();
+    }
 
-	@Override
-	public String getLabel(String locale) {
-		return getExtensionPoint().getLabel(locale);
-	}
+    @Override
+    public String getLabel(String locale) {
+        return getExtensionPoint().getLabel(locale);
+    }
 
-	@Override
-	public String getSchemaReference() {
-		return getExtensionPoint().getSchemaReference();
-	}
+    @Override
+    public String getSchemaReference() {
+        return getExtensionPoint().getSchemaReference();
+    }
 
-	@Override
-	public String getSimpleIdentifier() {
-		return getExtensionPoint().getSimpleIdentifier();
-	}
+    @Override
+    public String getSimpleIdentifier() {
+        return getExtensionPoint().getSimpleIdentifier();
+    }
 
-	@Override
-	public String getUniqueIdentifier() {
-		return getExtensionPoint().getUniqueIdentifier();
-	}
+    @Override
+    public String getUniqueIdentifier() {
+        return getExtensionPoint().getUniqueIdentifier();
+    }
 
-	@Override
-	RegistryObject getObject() {
-		return getExtensionPoint();
-	}
+    @Override
+    RegistryObject getObject() {
+        return getExtensionPoint();
+    }
 
-	protected ExtensionPoint getExtensionPoint() {
-		return (ExtensionPoint) objectManager.getObject(getId(), RegistryObjectManager.EXTENSION_POINT);
-	}
+    protected ExtensionPoint getExtensionPoint() {
+        return (ExtensionPoint) objectManager.getObject(getId(), RegistryObjectManager.EXTENSION_POINT);
+    }
 
-	@Override
-	public boolean isValid() {
-		try {
-			getExtensionPoint();
-		} catch (InvalidRegistryObjectException e) {
-			return false;
-		}
-		return true;
-	}
+    @Override
+    public boolean isValid() {
+        try {
+            getExtensionPoint();
+        } catch (InvalidRegistryObjectException e) {
+            return false;
+        }
+        return true;
+    }
 }

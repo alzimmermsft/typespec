@@ -16,14 +16,13 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
+
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.OperationCanceledException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.*;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CharOperation;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.search.SearchEngine;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.codeassist.CompletionEngine;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IBinaryAnnotation;
@@ -31,7 +30,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IElementInfo;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.Binding;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.ExtraCompilerModifiers;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.SuffixConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaModelManager.PerProjectInfo;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.hierarchy.TypeHierarchy;
@@ -70,102 +68,7 @@ protected void closing(Object info) throws JavaModelException {
 	cfi.removeBinaryChildren();
 }
 
-@Override
-@Deprecated
-public void codeComplete(char[] snippet,int insertion,int position,char[][] localVariableTypeNames,char[][] localVariableNames,int[] localVariableModifiers,boolean isStatic,
-    ICompletionRequestor requestor) throws JavaModelException {
-	codeComplete(snippet, insertion, position, localVariableTypeNames, localVariableNames, localVariableModifiers, isStatic, requestor, DefaultWorkingCopyOwner.PRIMARY);
-}
-
-@Override
-@Deprecated
-public void codeComplete(char[] snippet,int insertion,int position,char[][] localVariableTypeNames,char[][] localVariableNames,int[] localVariableModifiers,boolean isStatic,
-    ICompletionRequestor requestor, WorkingCopyOwner owner) throws JavaModelException {
-	if (requestor == null) {
-		throw new IllegalArgumentException("Completion requestor cannot be null"); //$NON-NLS-1$
-	}
-	codeComplete(snippet, insertion, position, localVariableTypeNames, localVariableNames, localVariableModifiers, isStatic, new org.eclipse.jdt.internal.codeassist.CompletionRequestorWrapper(requestor), owner);
-}
-
-@Override
-public void codeComplete(char[] snippet,int insertion,int position,char[][] localVariableTypeNames,char[][] localVariableNames,int[] localVariableModifiers,boolean isStatic,CompletionRequestor requestor) throws JavaModelException {
-	codeComplete(snippet, insertion, position, localVariableTypeNames, localVariableNames, localVariableModifiers, isStatic, requestor, DefaultWorkingCopyOwner.PRIMARY);
-}
-
-@Override
-public void codeComplete(char[] snippet,int insertion,int position,char[][] localVariableTypeNames,char[][] localVariableNames,int[] localVariableModifiers,boolean isStatic,CompletionRequestor requestor, IProgressMonitor monitor) throws JavaModelException {
-	codeComplete(snippet, insertion, position, localVariableTypeNames, localVariableNames, localVariableModifiers, isStatic, requestor, DefaultWorkingCopyOwner.PRIMARY, monitor);
-}
-
-@Override
-public void codeComplete(char[] snippet,int insertion,int position,char[][] localVariableTypeNames,char[][] localVariableNames,int[] localVariableModifiers,boolean isStatic,CompletionRequestor requestor, WorkingCopyOwner owner) throws JavaModelException {
-	codeComplete(snippet, insertion, position, localVariableTypeNames, localVariableNames, localVariableModifiers, isStatic, requestor, owner, null);
-}
-
-@Override
-public void codeComplete(
-		char[] snippet,
-		int insertion,
-		int position,
-		char[][] localVariableTypeNames,
-		char[][] localVariableNames,
-		int[] localVariableModifiers,
-		boolean isStatic,
-		CompletionRequestor requestor,
-		WorkingCopyOwner owner,
-		IProgressMonitor monitor) throws JavaModelException {
-	if (requestor == null) {
-		throw new IllegalArgumentException("Completion requestor cannot be null"); //$NON-NLS-1$
-	}
-	JavaProject project = getJavaProject();
-	SearchableEnvironment environment = project.newSearchableNameEnvironment(owner, requestor.isTestCodeExcluded());
-	CompletionEngine engine = new CompletionEngine(environment, requestor, project.getOptions(true), project, owner, monitor);
-
-	String source = getClassFile().getSource();
-	if (source != null && insertion > -1 && insertion < source.length()) {
-		// code complete
-
-		char[] prefix = CharOperation.concat(source.substring(0, insertion).toCharArray(), new char[]{'{'});
-		char[] suffix =  CharOperation.concat(new char[]{'}'}, source.substring(insertion).toCharArray());
-		char[] fakeSource = CharOperation.concat(prefix, snippet, suffix);
-
-		BasicCompilationUnit cu =
-			new BasicCompilationUnit(
-				fakeSource,
-				null,
-				getElementName(),
-				project); // use project to retrieve corresponding .java IFile
-
-		engine.complete(cu, prefix.length + position, prefix.length, null/*extended context isn't computed*/);
-	} else {
-		engine.complete(this, snippet, position, localVariableTypeNames, localVariableNames, localVariableModifiers, isStatic);
-	}
-	if (NameLookup.VERBOSE) {
-		JavaModelManager.trace(Thread.currentThread() + " TIME SPENT in NameLoopkup#seekTypesInSourcePackage: " + environment.nameLookup.timeSpentInSeekTypesInSourcePackage + "ms");  //$NON-NLS-1$ //$NON-NLS-2$
-		JavaModelManager.trace(Thread.currentThread() + " TIME SPENT in NameLoopkup#seekTypesInBinaryPackage: " + environment.nameLookup.timeSpentInSeekTypesInBinaryPackage + "ms");  //$NON-NLS-1$ //$NON-NLS-2$
-	}
-}
-
-@Override
-public IField createField(String contents, IJavaElement sibling, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, this));
-}
-
-@Override
-public IInitializer createInitializer(String contents, IJavaElement sibling, IProgressMonitor monitor) throws JavaModelException {
-	throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, this));
-}
-
-@Override
-public IMethod createMethod(String contents, IJavaElement sibling, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, this));
-}
-
-@Override
-public IType createType(String contents, IJavaElement sibling, boolean force, IProgressMonitor monitor) throws JavaModelException {
-	throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, this));
-}
-@Override
+    @Override
 public boolean equals(Object o) {
 	if (o == this) {
 		return true;
@@ -197,40 +100,8 @@ public IJavaElement[] getChildren() throws JavaModelException {
 	ClassFileInfo cfi = getClassFileInfo();
 	return cfi.binaryChildren;
 }
-@Override
-public IJavaElement[] getChildrenForCategory(String category) throws JavaModelException {
-	IJavaElement[] children = getChildren();
-	int length = children.length;
-	if (length == 0) return children;
-	SourceMapper mapper= getSourceMapper();
-	if (mapper != null) {
-		// ensure the class file's buffer is open so that categories are computed
-		getClassFile().getBuffer();
 
-		HashMap categories = mapper.categories;
-		IJavaElement[] result = new IJavaElement[length];
-		int index = 0;
-		if (categories != null) {
-			for (int i = 0; i < length; i++) {
-				IJavaElement child = children[i];
-				String[] cats = (String[]) categories.get(child);
-				if (cats != null) {
-					for (String cat : cats) {
-						if (cat.equals(category)) {
-							result[index++] = child;
-							break;
-						}
-					}
-				}
-			}
-		}
-		if (index < length)
-			System.arraycopy(result, 0, result = new IJavaElement[index], 0, index);
-		return result;
-	}
-	return NO_ELEMENTS;
-}
-protected ClassFileInfo getClassFileInfo() throws JavaModelException {
+    protected ClassFileInfo getClassFileInfo() throws JavaModelException {
 	return (ClassFileInfo) this.getParent().getElementInfo();
 }
 @Override
@@ -339,22 +210,8 @@ private IField[] getFieldsOrComponents(boolean component) throws JavaModelExcept
 	fields.toArray(array);
 	return array;
 }
-@Override
-public IField getRecordComponent(String compName) {
-	try {
-		if (isRecord())
-			return new BinaryField(this, compName) {
-				@Override
-				public boolean isRecordComponent() throws JavaModelException {
-					return true;
-				}
-			};
-	} catch (JavaModelException e) {
-		//
-	}
-	return null;
-}
-@Override
+
+    @Override
 public int getFlags() throws JavaModelException {
 	IBinaryType info = getElementInfo();
 	return info.getModifiers() & ~ClassFileConstants.AccSuper;
@@ -375,12 +232,7 @@ public String getFullyQualifiedName(char enclosingTypeSeparator) {
 	}
 }
 
-@Override
-public String getFullyQualifiedParameterizedName() throws JavaModelException {
-	return getFullyQualifiedName('.', true/*show parameters*/);
-}
-
-/*
+    /*
  * @see JavaElement
  */
 @Override
@@ -483,7 +335,7 @@ public IInitializer[] getInitializers() {
 }
 @Override
 public String getKey(boolean forceOpen) throws JavaModelException {
-	return getKey(this, forceOpen);
+	return getKey(this);
 }
 
 @Override
@@ -601,23 +453,8 @@ public String[] getSuperInterfaceNames() throws JavaModelException {
 	}
 	return strings;
 }
-@Override
-public String[] getPermittedSubtypeNames() throws JavaModelException {
-	IBinaryType info = getElementInfo();
-	char[][] names= info.getPermittedSubtypesNames();
-	int length;
-	if (names == null || (length = names.length) == 0) {
-		return CharOperation.NO_STRINGS;
-	}
-	names= ClassFile.translatedNames(names);
-	String[] strings= new String[length];
-	for (int i= 0; i < length; i++) {
-		strings[i]= new String(names[i]);
-	}
-	return strings;
-}
 
-/**
+    /**
  * @see IType#getSuperInterfaceTypeSignatures()
  * @since 3.0
  */
@@ -830,56 +667,7 @@ public ITypeHierarchy loadTypeHierachy(InputStream input, WorkingCopyOwner owner
 	return TypeHierarchy.load(this, input, owner);
 }
 
-@Override
-public ITypeHierarchy newSupertypeHierarchy(IProgressMonitor monitor) throws JavaModelException {
-	return this.newSupertypeHierarchy(DefaultWorkingCopyOwner.PRIMARY, monitor);
-}
-
-@Override
-public ITypeHierarchy newSupertypeHierarchy(
-	ICompilationUnit[] workingCopies,
-	IProgressMonitor monitor)
-	throws JavaModelException {
-
-	CreateTypeHierarchyOperation op= new CreateTypeHierarchyOperation(this, workingCopies, SearchEngine.createWorkspaceScope(), false);
-	op.runOperation(monitor);
-	return op.getResult();
-}
-
-@Deprecated
-@Override
-public ITypeHierarchy newSupertypeHierarchy(IWorkingCopy[] workingCopies,
-	IProgressMonitor monitor)
-	throws JavaModelException {
-
-	ICompilationUnit[] copies;
-	if (workingCopies == null) {
-		copies = null;
-	} else {
-		int length = workingCopies.length;
-		System.arraycopy(workingCopies, 0, copies = new ICompilationUnit[length], 0, length);
-	}
-	return newSupertypeHierarchy(copies, monitor);
-}
-
-@Override
-public ITypeHierarchy newSupertypeHierarchy(
-	WorkingCopyOwner owner,
-	IProgressMonitor monitor)
-	throws JavaModelException {
-
-	ICompilationUnit[] workingCopies = JavaModelManager.getJavaModelManager().getWorkingCopies(owner, true/*add primary working copies*/);
-	CreateTypeHierarchyOperation op= new CreateTypeHierarchyOperation(this, workingCopies, SearchEngine.createWorkspaceScope(), false);
-	op.runOperation(monitor);
-	return op.getResult();
-}
-
-@Override
-public ITypeHierarchy newTypeHierarchy(IJavaProject project, IProgressMonitor monitor) throws JavaModelException {
-	return newTypeHierarchy(project, DefaultWorkingCopyOwner.PRIMARY, monitor);
-}
-
-@Override
+    @Override
 public ITypeHierarchy newTypeHierarchy(IJavaProject project, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaModelException {
 	if (project == null) {
 		throw new IllegalArgumentException(Messages.hierarchy_nullProject);
@@ -908,50 +696,8 @@ public ITypeHierarchy newTypeHierarchy(IJavaProject project, WorkingCopyOwner ow
 	op.runOperation(monitor);
 	return op.getResult();
 }
-/**
- * @param monitor the given progress monitor
- * @exception JavaModelException if this element does not exist or if an
- *		exception occurs while accessing its corresponding resource.
- * @return a type hierarchy for this type containing
- *
- * @see IType#newTypeHierarchy(IProgressMonitor monitor)
- * @deprecated
- */
-@Override
-public ITypeHierarchy newTypeHierarchy(IProgressMonitor monitor) throws JavaModelException {
-	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=228845, consider any
-	// changes that may exist on primary working copies.
-	return newTypeHierarchy(DefaultWorkingCopyOwner.PRIMARY, monitor);
-}
 
-@Override
-public ITypeHierarchy newTypeHierarchy(
-	ICompilationUnit[] workingCopies,
-	IProgressMonitor monitor)
-	throws JavaModelException {
-
-	CreateTypeHierarchyOperation op= new CreateTypeHierarchyOperation(this, workingCopies, SearchEngine.createWorkspaceScope(), true);
-	op.runOperation(monitor);
-	return op.getResult();
-}
-
-@Deprecated
-@Override
-public ITypeHierarchy newTypeHierarchy(IWorkingCopy[] workingCopies,
-	IProgressMonitor monitor)
-	throws JavaModelException {
-
-	ICompilationUnit[] copies;
-	if (workingCopies == null) {
-		copies = null;
-	} else {
-		int length = workingCopies.length;
-		System.arraycopy(workingCopies, 0, copies = new ICompilationUnit[length], 0, length);
-	}
-	return newTypeHierarchy(copies, monitor);
-}
-
-@Override
+    @Override
 public ITypeHierarchy newTypeHierarchy(
 	WorkingCopyOwner owner,
 	IProgressMonitor monitor)
@@ -1137,14 +883,10 @@ private static boolean isComplianceJava11OrHigher(IJavaProject javaProject) {
 	if (javaProject == null) {
 		return false;
 	}
-	return CompilerOptions.versionToJdkLevel(javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true)) >= ClassFileConstants.JDK11;
+	return CompilerOptions.versionToJdkLevel("1.8") >= ClassFileConstants.JDK11;
 }
 @Override
 public IBinaryType getElementInfo() throws JavaModelException {
 	return (IBinaryType) super.getElementInfo();
-}
-@Override
-public boolean isImplicitlyDeclared() throws JavaModelException {
-	return (this.getFlags() & ExtraCompilerModifiers.AccImplicitlyDeclared) != 0;
 }
 }

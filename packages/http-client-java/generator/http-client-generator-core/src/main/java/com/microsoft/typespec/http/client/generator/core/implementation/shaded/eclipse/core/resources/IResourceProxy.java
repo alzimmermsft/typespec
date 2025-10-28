@@ -38,102 +38,104 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * @noextend This interface is not intended to be extended by clients.
  */
 public interface IResourceProxy {
-	/**
-	 * Returns the modification stamp of the resource being visited.
-	 *
-	 * @return the modification stamp, or <code>NULL_STAMP</code> if the
-	 * resource either does not exist or exists as a closed project
-	 * @see IResource#getModificationStamp()
-	 */
-	long getModificationStamp();
-
-	/**
-	 * Returns whether the resource being visited is accessible.
-	 *
-	 * @return <code>true</code> if the resource is accessible, and
-	 * <code>false</code> otherwise
-	 * @see IResource#isAccessible()
-	 */
-	boolean isAccessible();
-
-	/**
-	 * Returns whether the resource being visited is derived.
-	 *
-	 * @return <code>true</code> if the resource is marked as derived, and
-	 * <code>false</code> otherwise
-	 * @see IResource#isDerived()
-	 */
-	boolean isDerived();
-
-	/**
-	 * Returns whether the resource being visited is a linked resource.
-	 *
-	 * @return <code>true</code> if the resource is linked, and
-	 * <code>false</code> otherwise
-	 * @see IResource#isLinked()
-	 */
-	boolean isLinked();
-
-	/**
-	 * Returns whether the resource being visited is a phantom resource.
-	 *
-	 * @return <code>true</code> if the resource is a phantom resource, and
-	 * <code>false</code> otherwise
-	 * @see IResource#isPhantom()
-	 */
-	boolean isPhantom();
-
-	/**
-	 * Returns whether the resource being visited is a hidden resource.
-	 *
-	 * @return <code>true</code> if the resource is a hidden resource, and
-	 * <code>false</code> otherwise
-	 * @see IResource#isHidden()
-	 *
-	 * @since 3.4
-	 */
-	boolean isHidden();
+    /**
+     * Returns the modification stamp of the resource being visited.
+     *
+     * @return the modification stamp, or <code>NULL_STAMP</code> if the
+     * resource either does not exist or exists as a closed project
+     * @see IResource#getModificationStamp()
+     */
+    long getModificationStamp();
 
     /**
-	 * Returns the simple name of the resource being visited.
-	 *
-	 * @return the name of the resource
-	 * @see IResource#getName()
-	 */
-	String getName();
+     * Returns whether the resource being visited is accessible.
+     *
+     * @return <code>true</code> if the resource is accessible, and
+     * <code>false</code> otherwise
+     * @see IResource#isAccessible()
+     */
+    boolean isAccessible();
 
     /**
-	 * Returns the type of the resource being visited.
-	 *
-	 * @return the resource type
-	 * @see IResource#getType()
-	 */
-	int getType();
+     * Returns whether the resource being visited is derived.
+     *
+     * @return <code>true</code> if the resource is marked as derived, and
+     * <code>false</code> otherwise
+     * @see IResource#isDerived()
+     */
+    boolean isDerived();
 
-	/**
-	 * Returns the full workspace path of the resource being visited.
-	 * <p>
-	 * Note that this is not a &quot;free&quot; proxy operation.  This method
-	 * will generally cause a path object to be created.  For an optimal
-	 * visitor, only call this method when absolutely necessary.  Note that the
-	 * simple resource name can be obtained from the proxy with no cost.
-	 * </p>
-	 * @return the full path of the resource
-	 * @see IResource#getFullPath()
-	 */
-	IPath requestFullPath();
+    /**
+     * Returns whether the resource being visited is a linked resource.
+     *
+     * @return <code>true</code> if the resource is linked, and
+     * <code>false</code> otherwise
+     * @see IResource#isLinked()
+     */
+    boolean isLinked();
 
-	/**
-	 * Returns the handle of the resource being visited.
-	 * <p>
-	 * Note that this is not a &quot;free&quot; proxy operation.  This method will
-	 * generally cause both a path object and a resource object to be created.
-	 * For an optimal visitor, only call this method when absolutely necessary.
-	 * Note that the simple resource name can be obtained from the proxy with no
-	 * cost, and the full path of the resource can be obtained through the proxy
-	 * with smaller cost.
-	 * </p>
-	 * @return the resource handle
-	 */
-	IResource requestResource();
+    /**
+     * Returns whether the resource being visited is a phantom resource.
+     *
+     * @return <code>true</code> if the resource is a phantom resource, and
+     * <code>false</code> otherwise
+     * @see IResource#isPhantom()
+     */
+    boolean isPhantom();
+
+    /**
+     * Returns whether the resource being visited is a hidden resource.
+     *
+     * @return <code>true</code> if the resource is a hidden resource, and
+     * <code>false</code> otherwise
+     * @see IResource#isHidden()
+     *
+     * @since 3.4
+     */
+    boolean isHidden();
+
+    /**
+     * Returns the simple name of the resource being visited.
+     *
+     * @return the name of the resource
+     * @see IResource#getName()
+     */
+    String getName();
+
+    /**
+     * Returns the type of the resource being visited.
+     *
+     * @return the resource type
+     * @see IResource#getType()
+     */
+    int getType();
+
+    /**
+     * Returns the full workspace path of the resource being visited.
+     * <p>
+     * Note that this is not a &quot;free&quot; proxy operation. This method
+     * will generally cause a path object to be created. For an optimal
+     * visitor, only call this method when absolutely necessary. Note that the
+     * simple resource name can be obtained from the proxy with no cost.
+     * </p>
+     * 
+     * @return the full path of the resource
+     * @see IResource#getFullPath()
+     */
+    IPath requestFullPath();
+
+    /**
+     * Returns the handle of the resource being visited.
+     * <p>
+     * Note that this is not a &quot;free&quot; proxy operation. This method will
+     * generally cause both a path object and a resource object to be created.
+     * For an optimal visitor, only call this method when absolutely necessary.
+     * Note that the simple resource name can be obtained from the proxy with no
+     * cost, and the full path of the resource can be obtained through the proxy
+     * with smaller cost.
+     * </p>
+     * 
+     * @return the resource handle
+     */
+    IResource requestResource();
 }

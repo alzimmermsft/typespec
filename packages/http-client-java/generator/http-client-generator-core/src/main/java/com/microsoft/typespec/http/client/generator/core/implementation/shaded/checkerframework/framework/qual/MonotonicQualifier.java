@@ -17,9 +17,11 @@ import java.lang.annotation.Target;
  * type-system at hand, and is often called {@code MonoT} if the target is {@code T}. The subtyping
  * hierarchy has to be defined as follows:
  *
- * <pre>{@code
+ * <pre>
+ * {@code
  * T <: MonoT <: S
- * }</pre>
+ * }
+ * </pre>
  *
  * where {@code <:} indicates the subtyping relation.
  *
@@ -37,7 +39,7 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.ANNOTATION_TYPE})
+@Target({ ElementType.ANNOTATION_TYPE })
 public @interface MonotonicQualifier {
-  Class<? extends Annotation> value();
+    Class<? extends Annotation> value();
 }

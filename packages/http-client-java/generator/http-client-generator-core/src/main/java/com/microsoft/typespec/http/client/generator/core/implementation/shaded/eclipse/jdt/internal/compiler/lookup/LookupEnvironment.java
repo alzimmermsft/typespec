@@ -938,7 +938,7 @@ public TypeBinding convertToRawType(TypeBinding type, boolean forceRawEnclosingT
 		}
 	}
 	if (TypeBinding.notEquals(originalType, convertedType)) {
-		return dimension > 0 ? (TypeBinding)createArrayType(convertedType, dimension) : convertedType;
+		return dimension > 0 ? createArrayType(convertedType, dimension) : convertedType;
 	}
 	return type;
 }
@@ -1020,7 +1020,7 @@ public TypeBinding convertUnresolvedBinaryToRawType(TypeBinding type) {
 		}
 	}
 	if (TypeBinding.notEquals(originalType, convertedType)) {
-		return dimension > 0 ? (TypeBinding)createArrayType(convertedType, dimension) : convertedType;
+		return dimension > 0 ? createArrayType(convertedType, dimension) : convertedType;
 	}
 	return type;
 }
@@ -1058,13 +1058,10 @@ public ArrayBinding createArrayType(TypeBinding leafComponentType, int dimension
 
 public TypeBinding createIntersectionType18(ReferenceBinding[] intersectingTypes) {
 	if (!intersectingTypes[0].isClass()) {
-		Arrays.sort(intersectingTypes, new Comparator<TypeBinding>() {
-			@Override
-			public int compare(TypeBinding o1, TypeBinding o2) {
-				//
-				return o1.isClass() ? -1 : (o2.isClass() ? 1 : CharOperation.compareTo(o1.readableName(), o2.readableName()));
-			}
-		});
+		Arrays.sort(intersectingTypes, (Comparator<TypeBinding>) (o1, o2) -> {
+            //
+            return o1.isClass() ? -1 : (o2.isClass() ? 1 : CharOperation.compareTo(o1.readableName(), o2.readableName()));
+        });
 	}
 	return this.typeSystem.getIntersectionType18(intersectingTypes);
 }
@@ -1197,15 +1194,17 @@ public ParameterizedGenericMethodBinding createParameterizedGenericMethod(Method
 	boolean needToGrow = false;
 	int index = 0;
 	if (cachedInfo != null){
-		nextCachedMethod :
-			// iterate existing parameterized for reusing one with same type arguments if any
-			for (int max = cachedInfo.length; index < max; index++){
-				ParameterizedGenericMethodBinding cachedMethod = cachedInfo[index];
-				if (cachedMethod == null) break nextCachedMethod;
-				if (!cachedMethod.isRaw) continue nextCachedMethod;
-				if (cachedMethod.declaringClass != (rawType == null ? genericMethod.declaringClass : rawType)) continue nextCachedMethod; //$IDENTITY-COMPARISON$
-				return cachedMethod;
-		}
+        // iterate existing parameterized for reusing one with same type arguments if any
+        for (int max = cachedInfo.length; index < max; index++) {
+            ParameterizedGenericMethodBinding cachedMethod = cachedInfo[index];
+            if (cachedMethod == null)
+                break;
+            if (!cachedMethod.isRaw)
+                continue;
+            if (cachedMethod.declaringClass != (rawType == null ? genericMethod.declaringClass : rawType))
+                continue; //$IDENTITY-COMPARISON$
+            return cachedMethod;
+        }
 		needToGrow = true;
 	} else {
 		cachedInfo = new ParameterizedGenericMethodBinding[5];
@@ -1242,13 +1241,13 @@ public ParameterizedGenericMethodBinding createParameterizedGenericMethod(Method
 			// iterate existing parameterized for reusing one with same type arguments if any
 			for (int max = cachedInfo.length; index < max; index++){
 				ParameterizedGenericMethodBinding cachedMethod = cachedInfo[index];
-				if (cachedMethod == null) break nextCachedMethod;
-				if (cachedMethod.isRaw) continue nextCachedMethod;
-				if (cachedMethod.targetType != targetType) continue nextCachedMethod; //$IDENTITY-COMPARISON$
-				if (cachedMethod.inferredWithUncheckedConversion != inferredWithUncheckedConversion) continue nextCachedMethod;
+				if (cachedMethod == null) break;
+				if (cachedMethod.isRaw) continue;
+				if (cachedMethod.targetType != targetType) continue; //$IDENTITY-COMPARISON$
+				if (cachedMethod.inferredWithUncheckedConversion != inferredWithUncheckedConversion) continue;
 				TypeBinding[] cachedArguments = cachedMethod.typeArguments;
 				int cachedArgLength = cachedArguments == null ? 0 : cachedArguments.length;
-				if (argLength != cachedArgLength) continue nextCachedMethod;
+				if (argLength != cachedArgLength) continue;
 				for (int j = 0; j < cachedArgLength; j++){
 					if (typeArguments[j] != cachedArguments[j]) continue nextCachedMethod; //$IDENTITY-COMPARISON$
 				}
@@ -1305,17 +1304,16 @@ public PolymorphicMethodBinding createPolymorphicMethod(MethodBinding originalPo
 	boolean needToGrow = false;
 	int index = 0;
 	if (cachedInfo != null) {
-		nextCachedMethod :
-			// iterate existing polymorphic method for reusing one with same type arguments if any
-			for (int max = cachedInfo.length; index < max; index++) {
-				PolymorphicMethodBinding cachedMethod = cachedInfo[index];
-				if (cachedMethod == null) {
-					break nextCachedMethod;
-				}
-				if (cachedMethod.matches(parametersTypeBinding, originalPolymorphicMethod.returnType)) {
-					return cachedMethod;
-				}
-		}
+        // iterate existing polymorphic method for reusing one with same type arguments if any
+        for (int max = cachedInfo.length; index < max; index++) {
+            PolymorphicMethodBinding cachedMethod = cachedInfo[index];
+            if (cachedMethod == null) {
+                break;
+            }
+            if (cachedMethod.matches(parametersTypeBinding, originalPolymorphicMethod.returnType)) {
+                return cachedMethod;
+            }
+        }
 		needToGrow = true;
 	} else {
 		cachedInfo = new PolymorphicMethodBinding[5];
@@ -1347,17 +1345,16 @@ public MethodBinding updatePolymorphicMethodReturnType(PolymorphicMethodBinding 
 	int index = 0;
 	TypeBinding[] parameters = binding.parameters;
 	if (cachedInfo != null) {
-		nextCachedMethod :
-			// iterate existing polymorphic method for reusing one with same type arguments if any
-			for (int max = cachedInfo.length; index < max; index++) {
-				PolymorphicMethodBinding cachedMethod = cachedInfo[index];
-				if (cachedMethod == null) {
-					break nextCachedMethod;
-				}
-				if (cachedMethod.matches(parameters, typeBinding)) {
-					return cachedMethod;
-				}
-		}
+        // iterate existing polymorphic method for reusing one with same type arguments if any
+        for (int max = cachedInfo.length; index < max; index++) {
+            PolymorphicMethodBinding cachedMethod = cachedInfo[index];
+            if (cachedMethod == null) {
+                break;
+            }
+            if (cachedMethod.matches(parameters, typeBinding)) {
+                return cachedMethod;
+            }
+        }
 		needToGrow = true;
 	} else {
 		cachedInfo = new PolymorphicMethodBinding[5];
@@ -1635,27 +1632,7 @@ public char[][] getNotOwningAnnotationName() {
 	return this.globalOptions.notOwningAnnotationName;
 }
 
-public AnnotationBinding getOwningAnnotation() {
-	if (this.owningAnnotation != null)
-		return this.owningAnnotation;
-	if (this.root != this) {
-		return this.owningAnnotation = this.root.getOwningAnnotation();
-	}
-	ReferenceBinding owning = getResolvedType(this.globalOptions.owningAnnotationName, this.UnNamedModule, null, true);
-	return this.owningAnnotation = this.typeSystem.getAnnotationType(owning, true);
-}
-
-public AnnotationBinding getNotOwningAnnotation() {
-	if (this.notOwningAnnotation != null)
-		return this.notOwningAnnotation;
-	if (this.root != this) {
-		return this.notOwningAnnotation = this.root.getNotOwningAnnotation();
-	}
-	ReferenceBinding notOwning = getResolvedType(this.globalOptions.notOwningAnnotationName, this.UnNamedModule, null, true);
-	return this.notOwningAnnotation = this.typeSystem.getAnnotationType(notOwning, true);
-}
-
-int getAnalysisAnnotationBit(char[][] qualifiedTypeName) {
+    int getAnalysisAnnotationBit(char[][] qualifiedTypeName) {
 	if (this.allAnalysisAnnotations == null) {
 		this.allAnalysisAnnotations = new HashMap<>();
 		this.allAnalysisAnnotations.put(CharOperation.toString(this.globalOptions.nonNullAnnotationName), TypeIds.BitNonNullAnnotation);
@@ -2131,22 +2108,7 @@ private int countNonStaticNestingLevels(TypeBinding binding) {
 	return depth;
 }
 
-boolean qualifiedNameMatchesSignature(char[][] name, char[] signature) {
-	int s = 1; // skip 'L'
-	for (int i = 0; i < name.length; i++) {
-		char[] n = name[i];
-		for (char c : n)
-			if (c != signature[s++])
-				return false;
-		if (signature[s] == ';' && i == name.length-1)
-			return true;
-		if (signature[s++] != '/')
-			return false;
-	}
-	return false;
-}
-
-public TypeBinding getTypeFromTypeSignature(SignatureWrapper wrapper, TypeVariableBinding[] staticVariables, ReferenceBinding enclosingType,
+    public TypeBinding getTypeFromTypeSignature(SignatureWrapper wrapper, TypeVariableBinding[] staticVariables, ReferenceBinding enclosingType,
 		char[][][] missingTypeNames, ITypeAnnotationWalker walker)
 {
 	// TypeVariableSignature = 'T' Identifier ';'
@@ -2481,9 +2443,9 @@ public Binding getInaccessibleBinding(char[][] compoundName, ModuleBinding clien
 					return null;
 				if (j < length) {
 					// does the package even contain a type of the next name segment?
-					TypeBinding type = inaccessiblePackage.getType(compoundName[j], inaccessiblePackage.enclosingModule);
+					ReferenceBinding type = inaccessiblePackage.getType(compoundName[j], inaccessiblePackage.enclosingModule);
 					if (type instanceof ReferenceBinding && type.isValidBinding())
-						return new ProblemReferenceBinding(compoundName, (ReferenceBinding) type, ProblemReasons.NotAccessible);
+						return new ProblemReferenceBinding(compoundName, type, ProblemReasons.NotAccessible);
 				}
 				return new ProblemPackageBinding(candidateName, ProblemReasons.NotAccessible, this);
 			}

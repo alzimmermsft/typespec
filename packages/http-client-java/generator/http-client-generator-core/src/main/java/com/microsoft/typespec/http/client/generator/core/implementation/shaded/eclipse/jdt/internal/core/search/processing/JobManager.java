@@ -261,10 +261,6 @@ public abstract class JobManager {
 	 * 		IJobConstants.WaitUntilReadyToSearch
 	 */
 	public boolean performConcurrentJob(IJob searchJob, int waitingPolicy, IProgressMonitor monitor) {
-		if (VERBOSE) {
-			trace("STARTING  concurrent job - " + searchJob); //$NON-NLS-1$
-		}
-
 		searchJob.ensureReadyToRun();
 
 		boolean status = IJob.FAILED;
@@ -409,10 +405,6 @@ public abstract class JobManager {
 		job.ensureReadyToRun();
 		// append the job to the list of ones to process later on
 		this.awaitingJobs.add(job);
-		if (VERBOSE) {
-			trace("REQUEST   background job - " + job); //$NON-NLS-1$
-			trace("AWAITING JOBS count: " + awaitingJobsCount()); //$NON-NLS-1$
-		}
 		notifyAll(); // wake up the background thread if it is waiting
 	}
 	/**

@@ -23,19 +23,19 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IConstantValueAttribute extends IClassFileAttribute {
 
-	/**
-	 * Answer back the constant value index.
-	 *
-	 * @return the constant value index
-	 */
-	int getConstantValueIndex();
+    /**
+     * Answer back the constant value index.
+     *
+     * @return the constant value index
+     */
+    int getConstantValueIndex();
 
-	/**
-	 * Answer back the constant pool entry that represents the constant
-	 * value of this attribute.
-	 *
-	 * @return the constant pool entry that represents the constant
-	 * value of this attribute
-	 */
-	IConstantPoolEntry getConstantValue();
+    /**
+     * Answer back the constant pool entry that represents the constant
+     * value of this attribute.
+     *
+     * @return the constant pool entry that represents the constant
+     * value of this attribute
+     */
+    IConstantPoolEntry getConstantValue();
 }

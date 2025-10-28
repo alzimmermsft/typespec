@@ -45,15 +45,7 @@ public class AssistSourceType extends ResolvedSourceType {
 		return this.infoCache.get(this);
 	}
 
-	@Override
-	public String getFullyQualifiedParameterizedName() throws JavaModelException {
-		if (isResolved()) {
-			return getFullyQualifiedParameterizedName(getFullyQualifiedName('.'), this.getKey());
-		}
-		return getFullyQualifiedName('.', true/*show parameters*/);
-	}
-
-	@Override
+    @Override
 	public String getKey() {
 		if (this.uniqueKey == null) {
 			Binding binding = this.bindingCache.get(this);
@@ -63,7 +55,7 @@ public class AssistSourceType extends ResolvedSourceType {
 			} else {
 				this.isResolved = false;
 				try {
-					this.uniqueKey = getKey(this, false/*don't open*/);
+					this.uniqueKey = getKey(this /*don't open*/);
 				} catch (JavaModelException e) {
 					// happen only if force open is true
 					return null;

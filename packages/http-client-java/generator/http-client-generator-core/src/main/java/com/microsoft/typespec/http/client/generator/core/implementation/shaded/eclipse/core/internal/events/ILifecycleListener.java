@@ -20,5 +20,5 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * lifecycle events.
  */
 public interface ILifecycleListener {
-	void handleEvent(LifecycleEvent event) throws CoreException;
+    void handleEvent(LifecycleEvent event) throws CoreException;
 }

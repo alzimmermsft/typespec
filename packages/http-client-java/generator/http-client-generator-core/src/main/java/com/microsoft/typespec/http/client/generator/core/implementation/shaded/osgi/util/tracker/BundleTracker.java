@@ -53,10 +53,8 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 @ConsumerType
 public class BundleTracker<T> implements BundleTrackerCustomizer<T> {
-	/* set this to true to compile in debug messages */
-	static final boolean				DEBUG	= false;
 
-	/**
+    /**
 	 * The Bundle Context used by this {@code BundleTracker}.
 	 */
 	protected final BundleContext		context;
@@ -112,53 +110,6 @@ public class BundleTracker<T> implements BundleTrackerCustomizer<T> {
 		this.context = context;
 		this.mask = stateMask;
 		this.customizer = (customizer == null) ? this : customizer;
-	}
-
-	/**
-	 * Open this {@code BundleTracker} and begin tracking bundles.
-	 * 
-	 * <p>
-	 * Bundle which match the state criteria specified when this
-	 * {@code BundleTracker} was created are now tracked by this
-	 * {@code BundleTracker}.
-	 * 
-	 * @throws IllegalStateException If the {@code BundleContext} with
-	 *         which this {@code BundleTracker} was created is no longer valid.
-	 * @throws SecurityException If the caller and this class do not
-	 *         have the appropriate
-	 *         {@code AdminPermission[context bundle,LISTENER]}, and the Java
-	 *         Runtime Environment supports permissions.
-	 */
-	public void open() {
-		final Tracked t;
-		synchronized (this) {
-			if (tracked != null) {
-				return;
-			}
-			if (DEBUG) {
-				System.out.println("BundleTracker.open"); //$NON-NLS-1$
-			}
-			t = new Tracked();
-			synchronized (t) {
-				context.addBundleListener(t);
-				Bundle[] bundles = context.getBundles();
-				if (bundles != null) {
-					int length = bundles.length;
-					for (int i = 0; i < length; i++) {
-						int state = bundles[i].getState();
-						if ((state & mask) == 0) {
-							/* null out bundles whose states are not interesting */
-							bundles[i] = null;
-						}
-					}
-					/* set tracked with the initial bundles */
-					t.setInitial(bundles);
-				}
-			}
-			tracked = t;
-		}
-		/* Call tracked outside of synchronized region */
-		t.trackInitial(); /* process the initial references */
 	}
 
 	/**

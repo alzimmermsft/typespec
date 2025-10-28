@@ -10,11 +10,13 @@ import java.lang.annotation.Target;
  * This annotation is used internally to annotate {@link java.util.ResourceBundle#getString}
  * indicating the checker to check if the given key exist in the translation file and annotate the
  * result string with the correct format annotation according to the corresponding key's value. This
- * is done in {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.i18nformatter.I18nFormatterTransfer}
+ * is done in
+ * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.i18nformatter.I18nFormatterTransfer}
  *
  * @checker_framework.manual #i18n-formatter-checker Internationalization Format String Checker
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface I18nMakeFormat {}
+public @interface I18nMakeFormat {
+}

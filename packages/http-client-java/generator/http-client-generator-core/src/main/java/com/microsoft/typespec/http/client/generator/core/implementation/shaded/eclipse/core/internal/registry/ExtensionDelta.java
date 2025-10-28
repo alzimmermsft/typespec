@@ -16,63 +16,64 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.*;
 
 public class ExtensionDelta implements IExtensionDelta {
-	private int kind;
-	private int extension;
-	private int extensionPoint;
-	private RegistryDelta containingDelta;
+    private int kind;
+    private int extension;
+    private int extensionPoint;
+    private RegistryDelta containingDelta;
 
-	void setContainingDelta(RegistryDelta containingDelta) {
-		this.containingDelta = containingDelta;
-	}
+    void setContainingDelta(RegistryDelta containingDelta) {
+        this.containingDelta = containingDelta;
+    }
 
-	int getExtensionId() {
-		return extension;
-	}
+    int getExtensionId() {
+        return extension;
+    }
 
-	int getExtensionPointId() {
-		return extensionPoint;
-	}
+    int getExtensionPointId() {
+        return extensionPoint;
+    }
 
-	@Override
-	public IExtensionPoint getExtensionPoint() {
-		return new ExtensionPointHandle(containingDelta.getObjectManager(), extensionPoint);
-	}
+    @Override
+    public IExtensionPoint getExtensionPoint() {
+        return new ExtensionPointHandle(containingDelta.getObjectManager(), extensionPoint);
+    }
 
-	public void setExtensionPoint(int extensionPoint) {
-		this.extensionPoint = extensionPoint;
-	}
+    public void setExtensionPoint(int extensionPoint) {
+        this.extensionPoint = extensionPoint;
+    }
 
-	@Override
-	public int getKind() {
-		return kind;
-	}
+    @Override
+    public int getKind() {
+        return kind;
+    }
 
-	@Override
-	public IExtension getExtension() {
-		return new ExtensionHandle(containingDelta.getObjectManager(), extension);
-	}
+    @Override
+    public IExtension getExtension() {
+        return new ExtensionHandle(containingDelta.getObjectManager(), extension);
+    }
 
-	public void setExtension(int extension) {
-		this.extension = extension;
-	}
+    public void setExtension(int extension) {
+        this.extension = extension;
+    }
 
-	public void setKind(int kind) {
-		this.kind = kind;
-	}
+    public void setKind(int kind) {
+        this.kind = kind;
+    }
 
-	@Override
-	public String toString() {
-		return "\n\t\t" + getExtensionPoint().getUniqueIdentifier() + " - " + getExtension().getNamespaceIdentifier() //$NON-NLS-1$ //$NON-NLS-2$
-				+ '.' + getExtension().getSimpleIdentifier() + " (" + getKindString(this.getKind()) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-	}
+    @Override
+    public String toString() {
+        return "\n\t\t" + getExtensionPoint().getUniqueIdentifier() + " - " + getExtension().getNamespaceIdentifier() //$NON-NLS-1$ //$NON-NLS-2$
+            + '.' + getExtension().getSimpleIdentifier() + " (" + getKindString(this.getKind()) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+    }
 
-	public static String getKindString(int kind) {
-		switch (kind) {
-		case ADDED:
-			return "ADDED"; //$NON-NLS-1$
-		case REMOVED:
-			return "REMOVED"; //$NON-NLS-1$
-		}
-		return "UNKNOWN"; //$NON-NLS-1$
-	}
+    public static String getKindString(int kind) {
+        switch (kind) {
+            case ADDED:
+                return "ADDED"; //$NON-NLS-1$
+
+            case REMOVED:
+                return "REMOVED"; //$NON-NLS-1$
+        }
+        return "UNKNOWN"; //$NON-NLS-1$
+    }
 }

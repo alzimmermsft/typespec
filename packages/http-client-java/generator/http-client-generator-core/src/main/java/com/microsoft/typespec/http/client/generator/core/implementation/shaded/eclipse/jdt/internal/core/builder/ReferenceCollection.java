@@ -135,23 +135,12 @@ private boolean doIncludes(char[][][] qualifiedNames, char[][] simpleNames, char
 	}
 }
 
-public boolean insideRoot(char[] rootName) {
-	boolean result = sortedArrayContains(this.rootReferences, rootName, SortedCharArrays.CHAR_ARR_COMPARATOR);
-	if (REFERENCE_COLLECTION_DEBUG) {
-		if (result != debugIncludes(rootName)) {
-			String message = "Mismatch: " + String.valueOf(rootName) + (result ? " should not " : " should ") + " be included in "  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-					+ Arrays.asList(CharOperation.toStrings(this.rootReferences));
-			throw new IllegalStateException(message);
-		}
-	}
-	return result;
-}
-
-private static <T> boolean sortedArrayContains(T[] array, T element, Comparator<? super T> comparator) {
+    private static <T> boolean sortedArrayContains(T[] array, T element, Comparator<? super T> comparator) {
 	int l = array.length;
 	if (l < SortedCharArrays.BINARY_SEARCH_THRESHOLD) {
-		for (int i = 0; i < l; i++)
-			if (element == array[i]) return true;
+        for (T t : array)
+            if (element == t)
+                return true;
 		return false;
 	}
 	return Arrays.binarySearch(array, element, comparator) >= 0;
@@ -284,41 +273,7 @@ static {
 		InternedSimpleNames[i] = new NameSet(37);
 }
 
-//TODO: remove once ReferenceCollection.internQualifiedNames(StringSet) is adapted to use java.util.Set, so that git history is preserved
-public static char[][][] internQualifiedNames(Set<String> qualifiedStrings) {
-	if (qualifiedStrings == null) return EmptyQualifiedNames;
-	int length = qualifiedStrings.size();
-	if (length == 0) return EmptyQualifiedNames;
-
-	char[][][] result = new char[length][][];
-	for (String qualifiedString : qualifiedStrings)
-		if (qualifiedString != null)
-			result[--length] = CharOperation.splitOn('/', qualifiedString.toCharArray());
-	return internQualifiedNames(result, false);
-}
-
-//TODO: remove once PDE API Tools has been adapted to also use java.util.Set, so that git history is preserved
-public static char[][][] internQualifiedNames(StringSet qualifiedStrings) {
-	if (qualifiedStrings == null) return EmptyQualifiedNames;
-	int length = qualifiedStrings.elementSize;
-	if (length == 0) return EmptyQualifiedNames;
-
-	char[][][] result = new char[length][][];
-	String[] strings = qualifiedStrings.values;
-	for (String string : strings)
-		if (string != null)
-			result[--length] = CharOperation.splitOn('/', string.toCharArray());
-	return internQualifiedNames(result, false);
-}
-
-/**
- * <strong>Note</strong>: this method may change order of the result data, the new array is always sorted.
- */
-public static char[][][] internQualifiedNames(char[][][] qualifiedNames) {
-	return internQualifiedNames(qualifiedNames, false);
-}
-
-/**
+    /**
  * Use a flyweight cache for the char arrays to avoid duplicated arrays with the same contents.
  * After calling this method, identity comparison on the array contents of the resulting array
  * will work for arrays with equal content.
@@ -343,41 +298,42 @@ static char[][][] internQualifiedNames(char[][][] qualifiedNames, boolean keepWe
 	boolean isSorted = true;
 	int index = 0;
 
-	next : for (int i = 0; i < length; i++) {
-		char[][] qualifiedName = qualifiedNames[i];
-		int qLength = qualifiedName.length;
-		for (char[][] wellKnownName : WellKnownQualifiedNames) {
-			if (qLength > wellKnownName.length)
-				break; // all remaining well known names are shorter
-			if (CharOperation.equals(qualifiedName, wellKnownName)) {
-				if (keepWellKnown) {
-					// This code is duplicated to encourage the JIT to inline more stuff
-					if (doSort && isSorted) {
-						if (prev != null && SortedCharArrays.compareCharCharArray(prev, qualifiedName) > 0) {
-							isSorted = false;
-						}
-						prev = qualifiedName;
-					}
-					keepers[index++] = wellKnownName;
-				}
-				continue next;
-			}
-		}
+	next :
+    for (char[][] name : qualifiedNames) {
+        char[][] qualifiedName = name;
+        int qLength = qualifiedName.length;
+        for (char[][] wellKnownName : WellKnownQualifiedNames) {
+            if (qLength > wellKnownName.length)
+                break; // all remaining well known names are shorter
+            if (CharOperation.equals(qualifiedName, wellKnownName)) {
+                if (keepWellKnown) {
+                    // This code is duplicated to encourage the JIT to inline more stuff
+                    if (doSort && isSorted) {
+                        if (prev != null && SortedCharArrays.compareCharCharArray(prev, qualifiedName) > 0) {
+                            isSorted = false;
+                        }
+                        prev = qualifiedName;
+                    }
+                    keepers[index++] = wellKnownName;
+                }
+                continue next;
+            }
+        }
 
-		// InternedQualifiedNames[0] is for the rest (> 7 & 1)
-		// InternedQualifiedNames[1] is for size 2...
-		// InternedQualifiedNames[6] is for size 7
-		QualifiedNameSet internedNames = InternedQualifiedNames[qLength <= MaxQualifiedNames ? qLength - 1 : 0];
-		qualifiedName = internSimpleNames(qualifiedName, false, false);
-		// This code is duplicated to encourage the JIT to inline more stuff
-		if (doSort && isSorted) {
-			if (prev != null && SortedCharArrays.compareCharCharArray(prev, qualifiedName) > 0) {
-				isSorted = false;
-			}
-			prev = qualifiedName;
-		}
-		keepers[index++] = internedNames.add(qualifiedName);
-	}
+        // InternedQualifiedNames[0] is for the rest (> 7 & 1)
+        // InternedQualifiedNames[1] is for size 2...
+        // InternedQualifiedNames[6] is for size 7
+        QualifiedNameSet internedNames = InternedQualifiedNames[qLength <= MaxQualifiedNames ? qLength - 1 : 0];
+        qualifiedName = internSimpleNames(qualifiedName, false, false);
+        // This code is duplicated to encourage the JIT to inline more stuff
+        if (doSort && isSorted) {
+            if (prev != null && SortedCharArrays.compareCharCharArray(prev, qualifiedName) > 0) {
+                isSorted = false;
+            }
+            prev = qualifiedName;
+        }
+        keepers[index++] = internedNames.add(qualifiedName);
+    }
 	if (length > index) {
 		if (index == 0) return EmptyQualifiedNames;
 		System.arraycopy(keepers, 0, keepers = new char[index][][], 0, index);
@@ -408,20 +364,7 @@ public static char[][] internSimpleNames(Set<String> simpleStrings, boolean remo
 	return internSimpleNames(result, removeWellKnown);
 }
 
-//TODO: adjust to use java.util.Set once PDE API Tools have been adapted to use the set version, so that git history is preserved
-public static char[][] internSimpleNames(StringSet simpleStrings, boolean removeWellKnown) {
-	if (simpleStrings == null) return EmptySimpleNames;
-	int length = simpleStrings.elementSize;
-	if (length == 0) return EmptySimpleNames;
-
-	char[][] result = new char[length][];
-	String[] strings = simpleStrings.values;
-	for (String string : strings)
-		if (string != null)
-			result[--length] = string.toCharArray();
-	return internSimpleNames(result, removeWellKnown);
-}
-/**
+    /**
  * Use a flyweight cache for the char arrays to avoid duplicated arrays with the same contents.
  * After calling this method, identity comparison on the array contents of the resulting array
  * will work for arrays with equal content.
@@ -444,40 +387,40 @@ static char[][] internSimpleNames(char[][] simpleNames, boolean removeWellKnown,
 	char[] prev = null;
 	boolean isSorted = true;
 	int index = 0;
-	next : for (int i = 0; i < length; i++) {
-		char[] name = simpleNames[i];
-		int sLength = name.length;
-		for (char[] wellKnownName : WellKnownSimpleNames) {
-			if (sLength > wellKnownName.length)
-				break; // all remaining well known names are shorter
-			if (CharOperation.equals(name, wellKnownName)) {
-				if (!removeWellKnown) {
-					keepers[index++] = wellKnownName;
-					// This code is duplicated to encourage the JIT to inline more stuff
-					if (doSort && isSorted) {
-						if (prev != null && SortedCharArrays.compareCharArray(prev, name) > 0) {
-							isSorted = false;
-						}
-						prev = name;
-					}
-				}
-				continue next;
-			}
-		}
+	next :
+    for (char[] name : simpleNames) {
+        int sLength = name.length;
+        for (char[] wellKnownName : WellKnownSimpleNames) {
+            if (sLength > wellKnownName.length)
+                break; // all remaining well known names are shorter
+            if (CharOperation.equals(name, wellKnownName)) {
+                if (!removeWellKnown) {
+                    keepers[index++] = wellKnownName;
+                    // This code is duplicated to encourage the JIT to inline more stuff
+                    if (doSort && isSorted) {
+                        if (prev != null && SortedCharArrays.compareCharArray(prev, name) > 0) {
+                            isSorted = false;
+                        }
+                        prev = name;
+                    }
+                }
+                continue next;
+            }
+        }
 
-		// InternedSimpleNames[0] is for the rest (> 29)
-		// InternedSimpleNames[1] is for size 1...
-		// InternedSimpleNames[29] is for size 29
-		NameSet internedNames = InternedSimpleNames[sLength < MaxSimpleNames ? sLength : 0];
-		keepers[index++] = internedNames.add(name);
-		// This code is duplicated to encourage the JIT to inline more stuff
-		if (doSort && isSorted) {
-			if (prev != null && SortedCharArrays.compareCharArray(prev, name) > 0) {
-				isSorted = false;
-			}
-			prev = name;
-		}
-	}
+        // InternedSimpleNames[0] is for the rest (> 29)
+        // InternedSimpleNames[1] is for size 1...
+        // InternedSimpleNames[29] is for size 29
+        NameSet internedNames = InternedSimpleNames[sLength < MaxSimpleNames ? sLength : 0];
+        keepers[index++] = internedNames.add(name);
+        // This code is duplicated to encourage the JIT to inline more stuff
+        if (doSort && isSorted) {
+            if (prev != null && SortedCharArrays.compareCharArray(prev, name) > 0) {
+                isSorted = false;
+            }
+            prev = name;
+        }
+    }
 	if (length > index) {
 		if (index == 0) return EmptySimpleNames;
 		System.arraycopy(keepers, 0, keepers = new char[index][], 0, index);
@@ -552,29 +495,27 @@ private boolean debugIncludes(char[][][] qualifiedNames, char[][] simpleNames, c
 	int sLength = simpleNames.length;
 	int qLength = qualifiedNames.length;
 	if (sLength <= qLength) {
-		for (int i = 0; i < sLength; i++) {
-			if (debugIncludes(simpleNames[i])) {
-				for (int j = 0; j < qLength; j++) {
-					char[][] qualifiedName = qualifiedNames[j];
-					if (qualifiedName.length == 1 ? debugIncludes(qualifiedName[0]) : debugIncludes(qualifiedName)) {
-						return true;
-					}
-				}
-				return false;
-			}
-		}
+        for (char[] simpleName : simpleNames) {
+            if (debugIncludes(simpleName)) {
+                for (char[][] qualifiedName : qualifiedNames) {
+                    if (qualifiedName.length == 1 ? debugIncludes(qualifiedName[0]) : debugIncludes(qualifiedName)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
 	} else {
-		for (int i = 0; i < qLength; i++) {
-			char[][] qualifiedName = qualifiedNames[i];
-			if (qualifiedName.length == 1 ? debugIncludes(qualifiedName[0]) : debugIncludes(qualifiedName)) {
-				for (int j = 0; j < sLength; j++) {
-					if (debugIncludes(simpleNames[j])) {
-						return true;
-					}
-				}
-				return false;
-			}
-		}
+        for (char[][] qualifiedName : qualifiedNames) {
+            if (qualifiedName.length == 1 ? debugIncludes(qualifiedName[0]) : debugIncludes(qualifiedName)) {
+                for (char[] simpleName : simpleNames) {
+                    if (debugIncludes(simpleName)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
 	}
 	return false;
 }

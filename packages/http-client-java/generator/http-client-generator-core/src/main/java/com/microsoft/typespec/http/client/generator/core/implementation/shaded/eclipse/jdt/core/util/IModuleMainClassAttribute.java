@@ -22,17 +22,17 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IModuleMainClassAttribute extends IClassFileAttribute {
 
-	/**
-	 * Answer back the main class index.
-	 *
-	 * @return the main class index
-	 */
-	int getMainClassIndex();
+    /**
+     * Answer back the main class index.
+     *
+     * @return the main class index
+     */
+    int getMainClassIndex();
 
-	/**
-	 * Answer back the name of main class.
-	 *
-	 * @return the name of main class
-	 */
-	char[] getMainClassName();
+    /**
+     * Answer back the name of main class.
+     *
+     * @return the name of main class
+     */
+    char[] getMainClassName();
 }

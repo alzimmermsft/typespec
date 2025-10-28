@@ -50,382 +50,384 @@ import java.lang.ref.*;
  */
 public class ReferenceMap {
 
-	/**
-	 * IEntry implementation that acts as a hard reference. The value of a hard
-	 * reference entry is never garbage collected until it is explicitly removed
-	 * from the map.
-	 */
-	private static class HardRef implements IEntry {
+    /**
+     * IEntry implementation that acts as a hard reference. The value of a hard
+     * reference entry is never garbage collected until it is explicitly removed
+     * from the map.
+     */
+    private static class HardRef implements IEntry {
 
-		private final int key;
-		private IEntry next;
-		/**
-		 * Reference value. Note this can never be null.
-		 */
-		private final Object value;
+        private final int key;
+        private IEntry next;
+        /**
+         * Reference value. Note this can never be null.
+         */
+        private final Object value;
 
-		public HardRef(int key, Object value, IEntry next) {
-			this.key = key;
-			this.value = value;
-			this.next = next;
-		}
+        public HardRef(int key, Object value, IEntry next) {
+            this.key = key;
+            this.value = value;
+            this.next = next;
+        }
 
-		@Override
-		public int getKey() {
-			return key;
-		}
+        @Override
+        public int getKey() {
+            return key;
+        }
 
-		@Override
-		public IEntry getNext() {
-			return next;
-		}
+        @Override
+        public IEntry getNext() {
+            return next;
+        }
 
-		@Override
-		public Object getValue() {
-			return value;
-		}
+        @Override
+        public Object getValue() {
+            return value;
+        }
 
-		@Override
-		public void setNext(IEntry next) {
-			this.next = next;
-		}
+        @Override
+        public void setNext(IEntry next) {
+            this.next = next;
+        }
 
-		@Override
-		public String toString() {
-			return "HardRef(" + key + ',' + value + ')'; //$NON-NLS-1$
-		}
-	}
+        @Override
+        public String toString() {
+            return "HardRef(" + key + ',' + value + ')'; //$NON-NLS-1$
+        }
+    }
 
-	/**
-	 * The common interface for all elements in the map. Both hard and soft map
-	 * values conform to this interface.
-	 */
-	private static interface IEntry {
-		/**
-		 * Returns the integer key for this entry.
-		 *
-		 * @return The integer key
-		 */
-		public int getKey();
+    /**
+     * The common interface for all elements in the map. Both hard and soft map
+     * values conform to this interface.
+     */
+    private static interface IEntry {
+        /**
+         * Returns the integer key for this entry.
+         *
+         * @return The integer key
+         */
+        public int getKey();
 
-		/**
-		 * Returns the next entry in the linked list of entries with the same hash
-		 * value, or <code>null</code> if there is no next entry.
-		 *
-		 * @return The next entry, or <code>null</code>.
-		 */
-		public IEntry getNext();
+        /**
+         * Returns the next entry in the linked list of entries with the same hash
+         * value, or <code>null</code> if there is no next entry.
+         *
+         * @return The next entry, or <code>null</code>.
+         */
+        public IEntry getNext();
 
-		/**
-		 * Returns the value of this entry.
-		 *
-		 * @return The entry value.
-		 */
-		public Object getValue();
+        /**
+         * Returns the value of this entry.
+         *
+         * @return The entry value.
+         */
+        public Object getValue();
 
-		/**
-		 * Sets the next entry in the linked list of map entries with the same hash
-		 * value.
-		 *
-		 * @param next The next entry, or <code>null</code>.
-		 */
-		public void setNext(IEntry next);
-	}
+        /**
+         * Sets the next entry in the linked list of map entries with the same hash
+         * value.
+         *
+         * @param next The next entry, or <code>null</code>.
+         */
+        public void setNext(IEntry next);
+    }
 
-	/**
-	 * Augments a normal soft reference with additional information required to
-	 * implement the IEntry interface.
-	 */
-	private static class SoftRef extends SoftReference<Object> implements IEntry {
-		private final int key;
-		/**
-		 * For chained collisions
-		 */
-		private IEntry next;
+    /**
+     * Augments a normal soft reference with additional information required to
+     * implement the IEntry interface.
+     */
+    private static class SoftRef extends SoftReference<Object> implements IEntry {
+        private final int key;
+        /**
+         * For chained collisions
+         */
+        private IEntry next;
 
-		public SoftRef(int key, Object value, IEntry next, ReferenceQueue<Object> q) {
-			super(value, q);
-			this.key = key;
-			this.next = next;
-		}
+        public SoftRef(int key, Object value, IEntry next, ReferenceQueue<Object> q) {
+            super(value, q);
+            this.key = key;
+            this.next = next;
+        }
 
-		@Override
-		public int getKey() {
-			return key;
-		}
+        @Override
+        public int getKey() {
+            return key;
+        }
 
-		@Override
-		public IEntry getNext() {
-			return next;
-		}
+        @Override
+        public IEntry getNext() {
+            return next;
+        }
 
-		@Override
-		public Object getValue() {
-			return super.get();
-		}
+        @Override
+        public Object getValue() {
+            return super.get();
+        }
 
-		@Override
-		public void setNext(IEntry next) {
-			this.next = next;
-		}
-	}
+        @Override
+        public void setNext(IEntry next) {
+            this.next = next;
+        }
+    }
 
-	/**
-	 * Constant indicating that hard references should be used.
-	 */
-	final public static int HARD = 0;
+    /**
+     * Constant indicating that hard references should be used.
+     */
+    final public static int HARD = 0;
 
-	/**
-	 * Constant indiciating that soft references should be used.
-	 */
-	final public static int SOFT = 1;
+    /**
+     * Constant indiciating that soft references should be used.
+     */
+    final public static int SOFT = 1;
 
-	/**
-	 * The threshold variable is calculated by multiplying table.length and
-	 * loadFactor. Note: I originally marked this field as final, but then this
-	 * class didn't compile under JDK1.2.2.
-	 *
-	 * @serial
-	 */
-	private final float loadFactor;
+    /**
+     * The threshold variable is calculated by multiplying table.length and
+     * loadFactor. Note: I originally marked this field as final, but then this
+     * class didn't compile under JDK1.2.2.
+     *
+     * @serial
+     */
+    private final float loadFactor;
 
-	/**
-	 * ReferenceQueue used to eliminate stale mappings.
-	 */
-	private transient ReferenceQueue<Object> queue = new ReferenceQueue<>();
+    /**
+     * ReferenceQueue used to eliminate stale mappings.
+     */
+    private transient ReferenceQueue<Object> queue = new ReferenceQueue<>();
 
-	/**
-	 * Number of mappings in this map.
-	 */
-	private transient int size;
+    /**
+     * Number of mappings in this map.
+     */
+    private transient int size;
 
-	/**
-	 * The hash table. Its length is always a power of two.
-	 */
-	private transient IEntry[] table;
+    /**
+     * The hash table. Its length is always a power of two.
+     */
+    private transient IEntry[] table;
 
-	/**
-	 * When size reaches threshold, the map is resized.
-	 *
-	 * @see #resize()
-	 */
-	private transient int threshold;
+    /**
+     * When size reaches threshold, the map is resized.
+     *
+     * @see #resize()
+     */
+    private transient int threshold;
 
-	/**
-	 * The reference type for values. Must be HARD or SOFT Note: I originally marked
-	 * this field as final, but then this class didn't compile under JDK1.2.2.
-	 *
-	 * @serial
-	 */
-	int valueType;
+    /**
+     * The reference type for values. Must be HARD or SOFT Note: I originally marked
+     * this field as final, but then this class didn't compile under JDK1.2.2.
+     *
+     * @serial
+     */
+    int valueType;
 
-	/**
-	 * Constructs a new <Code>ReferenceMap</Code> with the specified reference type,
-	 * load factor and initial capacity.
-	 *
-	 * @param referenceType the type of reference to use for values; must be
-	 *                      {@link #HARD} or {@link #SOFT}
-	 * @param capacity      the initial capacity for the map
-	 * @param loadFactor    the load factor for the map
-	 */
-	public ReferenceMap(int referenceType, int capacity, float loadFactor) {
-		super();
-		if (referenceType != HARD && referenceType != SOFT) {
-			throw new IllegalArgumentException(" must be HARD or SOFT."); //$NON-NLS-1$
-		}
-		if (capacity <= 0) {
-			throw new IllegalArgumentException("capacity must be positive"); //$NON-NLS-1$
-		}
-		if ((loadFactor <= 0.0f) || (loadFactor >= 1.0f)) {
-			throw new IllegalArgumentException("Load factor must be greater than 0 and less than 1."); //$NON-NLS-1$
-		}
+    /**
+     * Constructs a new <Code>ReferenceMap</Code> with the specified reference type,
+     * load factor and initial capacity.
+     *
+     * @param referenceType the type of reference to use for values; must be
+     * {@link #HARD} or {@link #SOFT}
+     * @param capacity the initial capacity for the map
+     * @param loadFactor the load factor for the map
+     */
+    public ReferenceMap(int referenceType, int capacity, float loadFactor) {
+        super();
+        if (referenceType != HARD && referenceType != SOFT) {
+            throw new IllegalArgumentException(" must be HARD or SOFT."); //$NON-NLS-1$
+        }
+        if (capacity <= 0) {
+            throw new IllegalArgumentException("capacity must be positive"); //$NON-NLS-1$
+        }
+        if ((loadFactor <= 0.0f) || (loadFactor >= 1.0f)) {
+            throw new IllegalArgumentException("Load factor must be greater than 0 and less than 1."); //$NON-NLS-1$
+        }
 
-		this.valueType = referenceType;
+        this.valueType = referenceType;
 
-		int initialSize = 1;
-		while (initialSize < capacity) {
-			initialSize *= 2;
-		}
+        int initialSize = 1;
+        while (initialSize < capacity) {
+            initialSize *= 2;
+        }
 
-		this.table = new IEntry[initialSize];
-		this.loadFactor = loadFactor;
-		this.threshold = (int) (initialSize * loadFactor);
-	}
+        this.table = new IEntry[initialSize];
+        this.loadFactor = loadFactor;
+        this.threshold = (int) (initialSize * loadFactor);
+    }
 
-	/**
-	 * @param key     The key to remove
-	 * @param cleanup true if doing map maintenance; false if it is a real request
-	 *                to remove
-	 * @return The removed map value
-	 */
-	private Object doRemove(int key, boolean cleanup) {
-		int index = indexFor(key);
-		IEntry previous = null;
-		IEntry entry = table[index];
-		while (entry != null) {
-			if (key == entry.getKey()) {
-				// See bug 205117 - in case an item with the same key value was added
-				// items with NULL value always removed;
-				// items with non-NULL values are removed only on user request
-				if (!cleanup || (entry.getValue() == null)) {
-					if (previous == null) {
-						table[index] = entry.getNext();
-					} else {
-						previous.setNext(entry.getNext());
-					}
-					this.size--;
-					return entry.getValue();
-				}
-			}
-			previous = entry;
-			entry = entry.getNext();
-		}
-		return null;
-	}
+    /**
+     * @param key The key to remove
+     * @param cleanup true if doing map maintenance; false if it is a real request
+     * to remove
+     * @return The removed map value
+     */
+    private Object doRemove(int key, boolean cleanup) {
+        int index = indexFor(key);
+        IEntry previous = null;
+        IEntry entry = table[index];
+        while (entry != null) {
+            if (key == entry.getKey()) {
+                // See bug 205117 - in case an item with the same key value was added
+                // items with NULL value always removed;
+                // items with non-NULL values are removed only on user request
+                if (!cleanup || (entry.getValue() == null)) {
+                    if (previous == null) {
+                        table[index] = entry.getNext();
+                    } else {
+                        previous.setNext(entry.getNext());
+                    }
+                    this.size--;
+                    return entry.getValue();
+                }
+            }
+            previous = entry;
+            entry = entry.getNext();
+        }
+        return null;
+    }
 
-	/**
-	 * Returns the value associated with the given key, if any.
-	 *
-	 * @return the value associated with the given key, or <Code>null</Code> if the
-	 *         key maps to no value
-	 */
-	public Object get(int key) {
-		for (IEntry entry = table[indexFor(key)]; entry != null; entry = entry.getNext()) {
-			if (entry.getKey() == key) {
-				Object value = entry.getValue();
-				if (value == null) {
-					purge();
-				}
-				return value;
-			}
-		}
-		return null;
-	}
+    /**
+     * Returns the value associated with the given key, if any.
+     *
+     * @return the value associated with the given key, or <Code>null</Code> if the
+     * key maps to no value
+     */
+    public Object get(int key) {
+        for (IEntry entry = table[indexFor(key)]; entry != null; entry = entry.getNext()) {
+            if (entry.getKey() == key) {
+                Object value = entry.getValue();
+                if (value == null) {
+                    purge();
+                }
+                return value;
+            }
+        }
+        return null;
+    }
 
-	/**
-	 * Converts the given hash code into an index into the hash table.
-	 */
-	private int indexFor(int hash) {
-		// mix the bits to avoid bucket collisions...
-		hash += ~(hash << 15);
-		hash ^= (hash >>> 10);
-		hash += (hash << 3);
-		hash ^= (hash >>> 6);
-		hash += ~(hash << 11);
-		hash ^= (hash >>> 16);
-		return hash & (table.length - 1);
-	}
+    /**
+     * Converts the given hash code into an index into the hash table.
+     */
+    private int indexFor(int hash) {
+        // mix the bits to avoid bucket collisions...
+        hash += ~(hash << 15);
+        hash ^= (hash >>> 10);
+        hash += (hash << 3);
+        hash ^= (hash >>> 6);
+        hash += ~(hash << 11);
+        hash ^= (hash >>> 16);
+        return hash & (table.length - 1);
+    }
 
-	/**
-	 * Constructs a new table entry for the given data
-	 *
-	 * @param key   The entry key
-	 * @param value The entry value
-	 * @param next  The next value in the entry's collision chain
-	 * @return The new table entry
-	 */
-	private IEntry newEntry(int key, Object value, IEntry next) {
-		switch (valueType) {
-		case HARD:
-			return new HardRef(key, value, next);
-		case SOFT:
-			return new SoftRef(key, value, next, queue);
-		default:
-			throw new Error();
-		}
-	}
+    /**
+     * Constructs a new table entry for the given data
+     *
+     * @param key The entry key
+     * @param value The entry value
+     * @param next The next value in the entry's collision chain
+     * @return The new table entry
+     */
+    private IEntry newEntry(int key, Object value, IEntry next) {
+        switch (valueType) {
+            case HARD:
+                return new HardRef(key, value, next);
 
-	/**
-	 * Purges stale mappings from this map.
-	 * <P>
-	 *
-	 * Ordinarily, stale mappings are only removed during a write operation;
-	 * typically a write operation will occur often enough that you'll never need to
-	 * manually invoke this method.
-	 * <P>
-	 *
-	 * Note that this method is not synchronized! Special care must be taken if, for
-	 * instance, you want stale mappings to be removed on a periodic basis by some
-	 * background thread.
-	 */
-	private void purge() {
-		Reference<?> ref = queue.poll();
-		while (ref != null) {
-			doRemove(((IEntry) ref).getKey(), true);
-			ref.clear();
-			ref = queue.poll();
-		}
-	}
+            case SOFT:
+                return new SoftRef(key, value, next, queue);
 
-	/**
-	 * Associates the given key with the given value.
-	 * <P>
-	 * Neither the key nor the value may be null.
-	 *
-	 * @param key   the key of the mapping
-	 * @param value the value of the mapping
-	 * @throws NullPointerException if either the key or value is null
-	 */
-	public void put(int key, Object value) {
-		if (value == null) {
-			throw new NullPointerException("null values not allowed"); //$NON-NLS-1$
-		}
+            default:
+                throw new Error();
+        }
+    }
 
-		if (size + 1 > threshold) {
-			resize();
-		}
+    /**
+     * Purges stale mappings from this map.
+     * <P>
+     *
+     * Ordinarily, stale mappings are only removed during a write operation;
+     * typically a write operation will occur often enough that you'll never need to
+     * manually invoke this method.
+     * <P>
+     *
+     * Note that this method is not synchronized! Special care must be taken if, for
+     * instance, you want stale mappings to be removed on a periodic basis by some
+     * background thread.
+     */
+    private void purge() {
+        Reference<?> ref = queue.poll();
+        while (ref != null) {
+            doRemove(((IEntry) ref).getKey(), true);
+            ref.clear();
+            ref = queue.poll();
+        }
+    }
 
-		int index = indexFor(key);
-		IEntry previous = null;
-		IEntry entry = table[index];
-		while (entry != null) {
-			if (key == entry.getKey()) {
-				if (previous == null) {
-					table[index] = newEntry(key, value, entry.getNext());
-				} else {
-					previous.setNext(newEntry(key, value, entry.getNext()));
-				}
-				return;
-			}
-			previous = entry;
-			entry = entry.getNext();
-		}
-		this.size++;
-		table[index] = newEntry(key, value, table[index]);
-	}
+    /**
+     * Associates the given key with the given value.
+     * <P>
+     * Neither the key nor the value may be null.
+     *
+     * @param key the key of the mapping
+     * @param value the value of the mapping
+     * @throws NullPointerException if either the key or value is null
+     */
+    public void put(int key, Object value) {
+        if (value == null) {
+            throw new NullPointerException("null values not allowed"); //$NON-NLS-1$
+        }
 
-	/**
-	 * Removes the key and its associated value from this map.
-	 *
-	 * @param key the key to remove
-	 * @return the value associated with that key, or null if the key was not in the
-	 *         map
-	 */
-	public Object remove(int key) {
-		purge();
-		return doRemove(key, false);
-	}
+        if (size + 1 > threshold) {
+            resize();
+        }
 
-	/**
-	 * Resizes this hash table by doubling its capacity. This is an expensive
-	 * operation, as entries must be copied from the old smaller table to the new
-	 * bigger table.
-	 */
-	private void resize() {
-		IEntry[] old = table;
-		table = new IEntry[old.length * 2];
+        int index = indexFor(key);
+        IEntry previous = null;
+        IEntry entry = table[index];
+        while (entry != null) {
+            if (key == entry.getKey()) {
+                if (previous == null) {
+                    table[index] = newEntry(key, value, entry.getNext());
+                } else {
+                    previous.setNext(newEntry(key, value, entry.getNext()));
+                }
+                return;
+            }
+            previous = entry;
+            entry = entry.getNext();
+        }
+        this.size++;
+        table[index] = newEntry(key, value, table[index]);
+    }
 
-		for (int i = 0; i < old.length; i++) {
-			IEntry next = old[i];
-			while (next != null) {
-				IEntry entry = next;
-				next = next.getNext();
-				int index = indexFor(entry.getKey());
-				entry.setNext(table[index]);
-				table[index] = entry;
-			}
-			old[i] = null;
-		}
-		threshold = (int) (table.length * loadFactor);
-	}
+    /**
+     * Removes the key and its associated value from this map.
+     *
+     * @param key the key to remove
+     * @return the value associated with that key, or null if the key was not in the
+     * map
+     */
+    public Object remove(int key) {
+        purge();
+        return doRemove(key, false);
+    }
+
+    /**
+     * Resizes this hash table by doubling its capacity. This is an expensive
+     * operation, as entries must be copied from the old smaller table to the new
+     * bigger table.
+     */
+    private void resize() {
+        IEntry[] old = table;
+        table = new IEntry[old.length * 2];
+
+        for (int i = 0; i < old.length; i++) {
+            IEntry next = old[i];
+            while (next != null) {
+                IEntry entry = next;
+                next = next.getNext();
+                int index = indexFor(entry.getKey());
+                entry.setNext(table[index]);
+                table[index] = entry;
+            }
+            old[i] = null;
+        }
+        threshold = (int) (table.length * loadFactor);
+    }
 }

@@ -20,9 +20,9 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * This delegate provides the interface for native file attribute support.
  */
 public abstract class NativeHandler {
-	public abstract int getSupportedAttributes();
+    public abstract int getSupportedAttributes();
 
-	public abstract FileInfo fetchFileInfo(String fileName);
+    public abstract FileInfo fetchFileInfo(String fileName);
 
-	public abstract boolean putFileInfo(String fileName, IFileInfo info, int options);
+    public abstract boolean putFileInfo(String fileName, IFileInfo info, int options);
 }

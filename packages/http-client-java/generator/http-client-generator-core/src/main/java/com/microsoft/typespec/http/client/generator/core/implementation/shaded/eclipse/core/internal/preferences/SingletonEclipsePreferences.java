@@ -14,96 +14,96 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.preferences;
 
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.preferences.IEclipsePreferences;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class SingletonEclipsePreferences extends EclipsePreferences {
-	// cached values
-	private final String qualifier;
-	private final int segmentCount;
-	private IPath location;
-	private IEclipsePreferences loadLevel;
-	private final Set<String> loadedNodes;
-	private final AtomicBoolean initialized;
+    // cached values
+    private final String qualifier;
+    private final int segmentCount;
+    private IPath location;
+    private IEclipsePreferences loadLevel;
+    private final Set<String> loadedNodes;
+    private final AtomicBoolean initialized;
 
-	SingletonEclipsePreferences(EclipsePreferences parent, String name, Set<String> loadedNodes,
-			AtomicBoolean initialized) {
-		super(parent, name);
-		this.loadedNodes = loadedNodes;
-		this.initialized = initialized;
+    SingletonEclipsePreferences(EclipsePreferences parent, String name, Set<String> loadedNodes,
+        AtomicBoolean initialized) {
+        super(parent, name);
+        this.loadedNodes = loadedNodes;
+        this.initialized = initialized;
 
-		initializeChildren();
+        initializeChildren();
 
-		// cache the segment count
-		String path = absolutePath();
-		segmentCount = getSegmentCount(path);
-		// cache the qualifier
-		qualifier = segmentCount < 2 ? null : getSegment(path, 1);
-	}
+        // cache the segment count
+        String path = absolutePath();
+        segmentCount = getSegmentCount(path);
+        // cache the qualifier
+        qualifier = segmentCount < 2 ? null : getSegment(path, 1);
+    }
 
-	abstract IPath getBaseLocation();
+    abstract IPath getBaseLocation();
 
-	@Override
-	protected boolean isAlreadyLoaded(IEclipsePreferences node) {
-		return loadedNodes.contains(node.name());
-	}
+    @Override
+    protected boolean isAlreadyLoaded(IEclipsePreferences node) {
+        return loadedNodes.contains(node.name());
+    }
 
-	@Override
-	protected void loaded() {
-		loadedNodes.add(name());
-	}
+    @Override
+    protected void loaded() {
+        loadedNodes.add(name());
+    }
 
-	@Override
-	protected IPath getLocation() {
-		if (location == null && qualifier != null) {
-			location = computeLocation(getBaseLocation(), qualifier);
-		}
-		return location;
-	}
+    @Override
+    protected IPath getLocation() {
+        if (location == null && qualifier != null) {
+            location = computeLocation(getBaseLocation(), qualifier);
+        }
+        return location;
+    }
 
-	/*
-	 * Return the node at which these preferences are loaded/saved.
-	 */
-	@Override
-	protected IEclipsePreferences getLoadLevel() {
-		if (loadLevel == null) {
-			if (qualifier == null) {
-				return null;
-			}
-			// Make it relative to this node rather than navigating to it from the root.
-			// Walk backwards up the tree starting at this node.
-			// This is important to avoid a chicken/egg thing on startup.
-			IEclipsePreferences node = this;
-			for (int i = 2; i < segmentCount; i++) {
-				node = (IEclipsePreferences) node.parent();
-			}
-			loadLevel = node;
-		}
-		return loadLevel;
-	}
+    /*
+     * Return the node at which these preferences are loaded/saved.
+     */
+    @Override
+    protected IEclipsePreferences getLoadLevel() {
+        if (loadLevel == null) {
+            if (qualifier == null) {
+                return null;
+            }
+            // Make it relative to this node rather than navigating to it from the root.
+            // Walk backwards up the tree starting at this node.
+            // This is important to avoid a chicken/egg thing on startup.
+            IEclipsePreferences node = this;
+            for (int i = 2; i < segmentCount; i++) {
+                node = (IEclipsePreferences) node.parent();
+            }
+            loadLevel = node;
+        }
+        return loadLevel;
+    }
 
-	/*
-	 * Initialize the children for the root of this node. Store the names as keys in
-	 * the children table so we can lazily load them later.
-	 */
-	protected void initializeChildren() {
-		if (initialized.get() || parent == null) {
-			return;
-		}
-		try {
-			synchronized (this) {
-				IPath baseLocation = getBaseLocation();
-				if (baseLocation != null) {
-					for (String n : computeChildren(baseLocation)) {
-						addChild(n, null);
-					}
-				}
-			}
-		} finally {
-			initialized.set(true);
-		}
-	}
+    /*
+     * Initialize the children for the root of this node. Store the names as keys in
+     * the children table so we can lazily load them later.
+     */
+    protected void initializeChildren() {
+        if (initialized.get() || parent == null) {
+            return;
+        }
+        try {
+            synchronized (this) {
+                IPath baseLocation = getBaseLocation();
+                if (baseLocation != null) {
+                    for (String n : computeChildren(baseLocation)) {
+                        addChild(n, null);
+                    }
+                }
+            }
+        } finally {
+            initialized.set(true);
+        }
+    }
 
 }

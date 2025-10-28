@@ -1,13 +1,13 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.lock.qual;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.TargetLocations;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.TypeUseLocation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.TargetLocations;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.TypeUseLocation;
 
 /**
  * If a variable {@code x} has type {@code @GuardSatisfied}, then all lock expressions for {@code
@@ -32,14 +32,14 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE_USE)
-@TargetLocations({TypeUseLocation.RECEIVER, TypeUseLocation.PARAMETER, TypeUseLocation.RETURN})
+@TargetLocations({ TypeUseLocation.RECEIVER, TypeUseLocation.PARAMETER, TypeUseLocation.RETURN })
 @SubtypeOf(GuardedByUnknown.class) // TODO: Should @GuardSatisfied be in its own hierarchy?
 public @interface GuardSatisfied {
-  /**
-   * The index on the GuardSatisfied polymorphic qualifier, if any. Defaults to -1 so that, if the
-   * user writes 0, that is different than writing no index. Writing no index is the usual case.
-   *
-   * @return the index on the GuardSatisfied polymorphic qualifier, or -1 if none
-   */
-  int value() default -1;
+    /**
+     * The index on the GuardSatisfied polymorphic qualifier, if any. Defaults to -1 so that, if the
+     * user writes 0, that is different than writing no index. Writing no index is the usual case.
+     *
+     * @return the index on the GuardSatisfied polymorphic qualifier, or -1 if none
+     */
+    int value() default -1;
 }

@@ -19,5 +19,5 @@ import java.net.ContentHandlerFactory;
  * A {@link ContentHandlerFactory} that also implements {@link PlurlFactory}
  */
 public interface PlurlContentHandlerFactory extends ContentHandlerFactory, PlurlFactory {
-	// a marker interface for a ContentHandlerFactory that implements PlurlFactory
+    // a marker interface for a ContentHandlerFactory that implements PlurlFactory
 }

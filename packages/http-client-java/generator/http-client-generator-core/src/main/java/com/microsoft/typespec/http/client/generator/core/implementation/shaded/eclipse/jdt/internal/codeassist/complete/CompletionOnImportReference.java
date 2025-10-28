@@ -38,17 +38,19 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class CompletionOnImportReference extends ImportReference implements CompletionNode {
 
-public CompletionOnImportReference(char[][] tokens , long[] positions, int modifiers) {
-	super(tokens, positions, false, modifiers);
-}
-@Override
-public StringBuilder print(int indent, StringBuilder output, boolean withOnDemand) {
+    public CompletionOnImportReference(char[][] tokens, long[] positions, int modifiers) {
+        super(tokens, positions, false, modifiers);
+    }
 
-	printIndent(indent, output).append("<CompleteOnImport:"); //$NON-NLS-1$
-	for (int i = 0; i < this.tokens.length; i++) {
-		if (i > 0) output.append('.');
-		output.append(this.tokens[i]);
-	}
-	return output.append('>');
-}
+    @Override
+    public StringBuilder print(int indent, StringBuilder output, boolean withOnDemand) {
+
+        printIndent(indent, output).append("<CompleteOnImport:"); //$NON-NLS-1$
+        for (int i = 0; i < this.tokens.length; i++) {
+            if (i > 0)
+                output.append('.');
+            output.append(this.tokens[i]);
+        }
+        return output.append('>');
+    }
 }

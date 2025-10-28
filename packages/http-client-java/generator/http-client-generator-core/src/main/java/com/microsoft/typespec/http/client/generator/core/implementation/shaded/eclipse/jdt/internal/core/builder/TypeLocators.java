@@ -14,18 +14,12 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.builder;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.stream.Stream;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IContainer;
+
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaProject;
 
 /**
@@ -35,9 +29,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class TypeLocators {
 
-	private String[] knownPackageNames; // of the form "p1/p2"
-
-	// holds data when no release is used
+    // holds data when no release is used
 	private final Map<String, String> defaultMap;
 
 	// holds data when a release version is used:
@@ -48,14 +40,7 @@ public class TypeLocators {
 		this.defaultMap = new LinkedHashMap<>(7);
 	}
 
-	TypeLocators(TypeLocators copy) {
-		this.defaultMap = new LinkedHashMap<>(copy.defaultMap);
-		if (copy.releaseMap != null) {
-			this.releaseMap = new LinkedHashMap<>(copy.releaseMap);
-		}
-	}
-
-	void write(CompressedWriter out, Map<String, Integer> internedTypeLocators) throws IOException {
+    void write(CompressedWriter out, Map<String, Integer> internedTypeLocators) throws IOException {
 		if (this.defaultMap.isEmpty()) {
 			out.writeInt(0);
 		} else {
@@ -114,36 +99,8 @@ public class TypeLocators {
 		}
 	}
 
-	void removeLocator(String qualifiedTypeNameToRemove) {
-		this.knownPackageNames = null;
-		this.defaultMap.remove(qualifiedTypeNameToRemove);
-		if (this.releaseMap != null) {
-			this.releaseMap.remove(qualifiedTypeNameToRemove);
-		}
-	}
-
-	void removeLocator(String typeLocatorToRemove, int release) {
-		this.knownPackageNames = null;
-		if (release > JavaProject.NO_RELEASE) {
-			if (this.releaseMap != null) {
-				for (Iterator<Entry<String, Map<Integer, String>>> iterator = this.releaseMap.entrySet()
-						.iterator(); iterator.hasNext();) {
-					Entry<String, Map<Integer, String>> entry = iterator.next();
-					Map<Integer, String> map = entry.getValue();
-					map.values().removeIf(v -> typeLocatorToRemove.equals(v));
-					if (map.isEmpty()) {
-						iterator.remove();
-					}
-				}
-			}
-		} else {
-			this.defaultMap.values().removeIf(v -> typeLocatorToRemove.equals(v));
-		}
-	}
-
-	void recordLocatorForType(String qualifiedTypeName, String typeLocator, int release) {
-		this.knownPackageNames = null;
-		int start = typeLocator.indexOf(qualifiedTypeName, 0);
+    void recordLocatorForType(String qualifiedTypeName, String typeLocator, int release) {
+        int start = typeLocator.indexOf(qualifiedTypeName, 0);
 		if (start > 0) {
 			// in the common case, the qualifiedTypeName is a substring of the typeLocator so share the char[] by using
 			// String.substring()
@@ -159,70 +116,7 @@ public class TypeLocators {
 		}
 	}
 
-	boolean isKnownPackage(String qualifiedPackageName) {
-		if (this.knownPackageNames == null) {
-			int total = this.defaultMap.size();
-			if (this.releaseMap != null) {
-				total += this.releaseMap.size();
-			}
-			if (total == 0) {
-				this.knownPackageNames = new String[0];
-				return false;
-			}
-			LinkedHashSet<String> names = new LinkedHashSet<>(total);
-			addPackages(names, this.defaultMap.keySet());
-			if (this.releaseMap != null) {
-				addPackages(names, this.releaseMap.keySet());
-			}
-			this.knownPackageNames = names.toArray(new String[names.size()]);
-			Arrays.sort(this.knownPackageNames);
-		}
-		int result = Arrays.binarySearch(this.knownPackageNames, qualifiedPackageName);
-		return result >= 0;
-	}
-
-	protected void addPackages(LinkedHashSet<String> names, Set<String> keySet) {
-		for (String packageName : keySet) {
-			int last = packageName.lastIndexOf('/');
-			packageName = last == -1 ? null : packageName.substring(0, last);
-			while (packageName != null && !names.contains(packageName)) {
-				names.add(packageName);
-				last = packageName.lastIndexOf('/');
-				packageName = last == -1 ? null : packageName.substring(0, last);
-			}
-		}
-	}
-
-	boolean isKnownType(String qualifiedTypeName) {
-		if (this.defaultMap.containsKey(qualifiedTypeName)) {
-			return true;
-		}
-		if (this.releaseMap != null && this.releaseMap.containsKey(qualifiedTypeName)) {
-			return true;
-		}
-		return false;
-	}
-
-	boolean isSourceFolderEmpty(IContainer sourceFolder) {
-		String sourceFolderName = sourceFolder.getProjectRelativePath().addTrailingSeparator().toString();
-		for (String value : this.defaultMap.values()) {
-			if (value.startsWith(sourceFolderName)) {
-				return false;
-			}
-		}
-		if (this.releaseMap != null) {
-			for (Map<Integer, String> map : this.releaseMap.values()) {
-				for (String value : map.values()) {
-					if (value.startsWith(sourceFolderName)) {
-						return false;
-					}
-				}
-			}
-		}
-		return true;
-	}
-
-	boolean isDuplicateLocator(String qualifiedTypeName, String typeLocator, int release) {
+    boolean isDuplicateLocator(String qualifiedTypeName, String typeLocator, int release) {
 		String string;
 		if (release > JavaProject.NO_RELEASE) {
 			if (this.releaseMap == null) {
@@ -239,34 +133,7 @@ public class TypeLocators {
 		return string != null && !string.equals(typeLocator);
 	}
 
-	/**
-	 * This method is used in PDE API tools only!
-	 *
-	 * @param typeName
-	 *                     the type to get all known path for
-	 * @return a stream of all known path for the given type name
-	 */
-	public Stream<String> getPathForName(String typeName) {
-		return Stream.concat(getDefaultPathForName(typeName).stream(), getReleasePathForNames(typeName)).distinct();
-	}
-
-	private Optional<String> getDefaultPathForName(String typeName) {
-		return Optional.ofNullable(this.defaultMap.get(typeName));
-	}
-
-	private Stream<String> getReleasePathForNames(String typeName) {
-		if (this.releaseMap == null) {
-			return Stream.empty();
-		} else {
-			Map<Integer, String> map = this.releaseMap.get(typeName);
-			if (map == null) {
-				return Stream.empty();
-			}
-			return map.values().stream();
-		}
-	}
-
-	/**
+    /**
 	 * Only implemented for StateTest! one usually won't use {@link TypeLocators} in a way where equals/hashCode really
 	 * matters
 	 */

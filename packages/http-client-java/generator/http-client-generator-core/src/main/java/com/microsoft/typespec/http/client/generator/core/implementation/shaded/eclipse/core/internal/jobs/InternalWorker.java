@@ -21,58 +21,58 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * progress monitors while a thread is performing a blocking wait in ThreadJob.
  */
 public class InternalWorker extends Thread {
-	private final JobManager manager;
-	/**
-	 * @GuardedBy("manager.monitorStack")
-	 */
-	private boolean canceled;
+    private final JobManager manager;
+    /**
+     * @GuardedBy("manager.monitorStack")
+     */
+    private boolean canceled;
 
-	InternalWorker(JobManager manager) {
-		super("Worker-JM"); //$NON-NLS-1$
-		this.manager = manager;
-	}
+    InternalWorker(JobManager manager) {
+        super("Worker-JM"); //$NON-NLS-1$
+        this.manager = manager;
+    }
 
-	/**
-	* Will loop until there are progress monitors to check. While there are monitors
-	* registered, it will check cancelation every 250ms, and if it is canceled it will
-	* interrupt the ThreadJob that is performing a blocking wait.
-	*/
-	@Override
-	public void run() {
-		int timeout = 0;
-		synchronized (manager.monitorStack) {
-			while (!canceled) {
-				if (manager.monitorStack.isEmpty()) {
-					timeout = 0;
-				} else {
-					timeout = 250;
-				}
-				for (Object[] o : manager.monitorStack) {
-					IProgressMonitor monitor = (IProgressMonitor) o[1];
-					if (monitor.isCanceled()) {
-						Job job = (Job) o[0];
-						Thread t = job.getThread();
-						if (t != null) {
-							t.interrupt();
-						}
-					}
-				}
-				try {
-					manager.monitorStack.wait(timeout);
-				} catch (InterruptedException e) {
-					// loop
-				}
-			}
-		}
-	}
+    /**
+     * Will loop until there are progress monitors to check. While there are monitors
+     * registered, it will check cancelation every 250ms, and if it is canceled it will
+     * interrupt the ThreadJob that is performing a blocking wait.
+     */
+    @Override
+    public void run() {
+        int timeout = 0;
+        synchronized (manager.monitorStack) {
+            while (!canceled) {
+                if (manager.monitorStack.isEmpty()) {
+                    timeout = 0;
+                } else {
+                    timeout = 250;
+                }
+                for (Object[] o : manager.monitorStack) {
+                    IProgressMonitor monitor = (IProgressMonitor) o[1];
+                    if (monitor.isCanceled()) {
+                        Job job = (Job) o[0];
+                        Thread t = job.getThread();
+                        if (t != null) {
+                            t.interrupt();
+                        }
+                    }
+                }
+                try {
+                    manager.monitorStack.wait(timeout);
+                } catch (InterruptedException e) {
+                    // loop
+                }
+            }
+        }
+    }
 
-	/**
-	* Terminate this thread. Once terminated, it cannot be restarted.
-	*/
-	void cancel() {
-		synchronized (manager.monitorStack) {
-			canceled = true;
-			manager.monitorStack.notifyAll();
-		}
-	}
+    /**
+     * Terminate this thread. Once terminated, it cannot be restarted.
+     */
+    void cancel() {
+        synchronized (manager.monitorStack) {
+            canceled = true;
+            manager.monitorStack.notifyAll();
+        }
+    }
 }

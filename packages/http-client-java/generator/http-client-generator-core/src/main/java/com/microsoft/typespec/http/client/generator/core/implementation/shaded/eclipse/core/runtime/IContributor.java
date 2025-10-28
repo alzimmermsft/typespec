@@ -40,10 +40,11 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IContributor {
 
-	/**
-	 * Provides name of the contributor (e.g., "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime").
-	 *
-	 * @return name of the registry contributor
-	 */
-	public String getName();
+    /**
+     * Provides name of the contributor (e.g.,
+     * "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime").
+     *
+     * @return name of the registry contributor
+     */
+    public String getName();
 }

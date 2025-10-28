@@ -19,31 +19,31 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeParameter;
 
 public class CompletionOnMethodTypeParameter extends MethodDeclaration implements CompletionNode {
-	public CompletionOnMethodTypeParameter(TypeParameter[] typeParameters, CompilationResult compilationResult){
-		super(compilationResult);
-		this.selector = CharOperation.NO_CHAR;
-		this.typeParameters = typeParameters;
-		this.sourceStart = typeParameters[0].sourceStart;
-		this.sourceEnd = typeParameters[typeParameters.length - 1].sourceEnd;
-	}
+    public CompletionOnMethodTypeParameter(TypeParameter[] typeParameters, CompilationResult compilationResult) {
+        super(compilationResult);
+        this.selector = CharOperation.NO_CHAR;
+        this.typeParameters = typeParameters;
+        this.sourceStart = typeParameters[0].sourceStart;
+        this.sourceEnd = typeParameters[typeParameters.length - 1].sourceEnd;
+    }
 
-	@Override
-	public void resolveStatements() {
-			throw new CompletionNodeFound(this, this.scope);
-	}
+    @Override
+    public void resolveStatements() {
+        throw new CompletionNodeFound(this, this.scope);
+    }
 
-	@Override
-	public StringBuilder print(int tab, StringBuilder output) {
-		printIndent(tab, output);
-		output.append('<');
-		int max = this.typeParameters.length - 1;
-		for (int j = 0; j < max; j++) {
-			this.typeParameters[j].print(0, output);
-			output.append(", ");//$NON-NLS-1$
-		}
-		this.typeParameters[max].print(0, output);
-		output.append('>');
-		return output;
-	}
+    @Override
+    public StringBuilder print(int tab, StringBuilder output) {
+        printIndent(tab, output);
+        output.append('<');
+        int max = this.typeParameters.length - 1;
+        for (int j = 0; j < max; j++) {
+            this.typeParameters[j].print(0, output);
+            output.append(", ");//$NON-NLS-1$
+        }
+        this.typeParameters[max].print(0, output);
+        output.append('>');
+        return output;
+    }
 
 }

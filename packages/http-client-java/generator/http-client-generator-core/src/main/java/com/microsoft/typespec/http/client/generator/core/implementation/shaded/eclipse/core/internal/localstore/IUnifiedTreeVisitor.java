@@ -16,8 +16,8 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 
 public interface IUnifiedTreeVisitor {
-	/**
-	 * Returns true to visit the members of this node and false otherwise.
-	 */
-	boolean visit(UnifiedTreeNode node) throws CoreException;
+    /**
+     * Returns true to visit the members of this node and false otherwise.
+     */
+    boolean visit(UnifiedTreeNode node) throws CoreException;
 }

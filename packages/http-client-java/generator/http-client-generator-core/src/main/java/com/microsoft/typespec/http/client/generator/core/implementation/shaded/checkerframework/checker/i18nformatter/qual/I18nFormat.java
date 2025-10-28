@@ -1,11 +1,11 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.i18nformatter.qual;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.framework.qual.SubtypeOf;
 
 /**
  * This annotation, attached to a String type, indicates that the String may be passed to {@link
@@ -14,7 +14,8 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  * <p>The annotation's value represents the valid arguments that may be passed to the format method.
  * For example:
  *
- * <pre>{@literal @}I18nFormat({GENERAL, NUMBER}) String f;
+ * <pre>
+ * {@literal @}I18nFormat({GENERAL, NUMBER}) String f;
  *
  * f = "{0}{1, number}"; // valid
  * f = "{0} {1} {2}"; // error, the format string is stronger (more restrictive) than the specifiers.
@@ -30,13 +31,13 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
 @SubtypeOf(I18nUnknownFormat.class)
 public @interface I18nFormat {
-  /**
-   * An array of {@link I18nConversionCategory}, indicating the types of legal remaining arguments
-   * when a value of the annotated type is used as the first argument to {@link
-   * java.text.MessageFormat#format(String, Object...) Message.format}.
-   */
-  I18nConversionCategory[] value();
+    /**
+     * An array of {@link I18nConversionCategory}, indicating the types of legal remaining arguments
+     * when a value of the annotated type is used as the first argument to {@link
+     * java.text.MessageFormat#format(String, Object...) Message.format}.
+     */
+    I18nConversionCategory[] value();
 }

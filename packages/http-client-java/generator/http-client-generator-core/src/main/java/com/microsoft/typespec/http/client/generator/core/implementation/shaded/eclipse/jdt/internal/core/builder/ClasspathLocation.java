@@ -18,9 +18,7 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -124,18 +122,14 @@ public abstract class ClasspathLocation {
 					return false;
 				if (moduleUpdates.size() != otherModuleUpdates.size())
 					return false;
-				if (!moduleUpdates.containsAll(otherModuleUpdates))
-					return false;
+                return moduleUpdates.containsAll(otherModuleUpdates);
 			} else {
-				if (otherModuleUpdates != null)
-					return false;
+                return otherModuleUpdates == null;
 			}
 		} else {
-			if (other.updates != null)
-				return false;
+            return other.updates == null;
 		}
-		return true;
-	}
+    }
 	static ClasspathLocation forSourceFolder(IContainer sourceFolder, IContainer outputFolder,
 			char[][] inclusionPatterns, char[][] exclusionPatterns, boolean ignoreOptionalProblems, IPath externalAnnotationPath, int release) {
 		return new ClasspathMultiDirectory(sourceFolder, outputFolder, inclusionPatterns, exclusionPatterns, ignoreOptionalProblems, externalAnnotationPath, release);
@@ -200,20 +194,14 @@ public static ClasspathLocation forLibrary(ZipFile zipFile, AccessRuleSet access
 
 public abstract IPath getProjectRelativePath();
 
-public boolean isOutputFolder() {
-	return false;
-}
-
-public void cleanup() {
+    public void cleanup() {
 	// free anything which is not required when the state is saved
 }
 public void reset() {
 	// reset any internal caches before another compile loop starts
 }
 
-public abstract String debugPathString();
-
-public char[][] singletonModuleNameIf(boolean condition) {
+    public char[][] singletonModuleNameIf(boolean condition) {
 	if (!condition)
 		return null;
 	if (this.module != null)
@@ -271,20 +259,5 @@ public void connectAllLocationsForEEA(Collection<ClasspathLocation> allLocations
 	this.allLocationsForEEA = allLocations; // shared within the project, may be updated after setting
 	if (add)
 		allLocations.add(this);
-}
-/** NOTE: this method is intended for TESTS only */
-public boolean externalAnnotationsEquals(ClasspathLocation other) {
-	String path1 = this.externalAnnotationPath;
-	String path2 = other.externalAnnotationPath;
-	if (!Objects.equals(path1, path2)) {
-		if (path1 == null)
-			return path2.isEmpty();
-		if (path2 == null)
-			return path1.isEmpty();
-		return false;
-	}
-	if (this.allLocationsForEEA == null)
-		return other.allLocationsForEEA == null;
-	return Objects.deepEquals(new HashSet<>(this.allLocationsForEEA), new HashSet<>(other.allLocationsForEEA));
 }
 }

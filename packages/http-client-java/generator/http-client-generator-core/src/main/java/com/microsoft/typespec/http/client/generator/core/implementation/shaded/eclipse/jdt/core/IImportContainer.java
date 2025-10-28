@@ -21,13 +21,13 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IImportContainer extends IJavaElement, IParent, ISourceReference {
-/**
- * Returns the first import declaration in this import container with the given name.
- * This is a handle-only method. The import declaration may or may not exist.
- *
- * @param name the given name
- *
- * @return the first import declaration in this import container with the given name
- */
-IImportDeclaration getImport(String name);
+    /**
+     * Returns the first import declaration in this import container with the given name.
+     * This is a handle-only method. The import declaration may or may not exist.
+     *
+     * @param name the given name
+     *
+     * @return the first import declaration in this import container with the given name
+     */
+    IImportDeclaration getImport(String name);
 }

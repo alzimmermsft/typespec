@@ -13,36 +13,36 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.preferences;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.preferences.UserScope;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.preferences.UserScope;
 
 public class UserPreferences extends SingletonEclipsePreferences {
 
-	// cache which nodes have been loaded from disk
-	private static final Set<String> LOADED_NODES = ConcurrentHashMap.newKeySet();
-	private static final AtomicBoolean INITIALIZED = new AtomicBoolean();
+    // cache which nodes have been loaded from disk
+    private static final Set<String> LOADED_NODES = ConcurrentHashMap.newKeySet();
+    private static final AtomicBoolean INITIALIZED = new AtomicBoolean();
 
-	/**
-	 * Default constructor. Should only be called by #createExecutableExtension.
-	 */
-	public UserPreferences() {
-		this(null, null);
-	}
+    /**
+     * Default constructor. Should only be called by #createExecutableExtension.
+     */
+    public UserPreferences() {
+        this(null, null);
+    }
 
-	private UserPreferences(EclipsePreferences parent, String name) {
-		super(parent, name, LOADED_NODES, INITIALIZED);
-	}
+    private UserPreferences(EclipsePreferences parent, String name) {
+        super(parent, name, LOADED_NODES, INITIALIZED);
+    }
 
-	@Override
-	IPath getBaseLocation() {
-		return UserScope.INSTANCE.getLocation();
-	}
+    @Override
+    IPath getBaseLocation() {
+        return UserScope.INSTANCE.getLocation();
+    }
 
-	@Override
-	protected EclipsePreferences internalCreate(EclipsePreferences nodeParent, String nodeName, Object context) {
-		return new UserPreferences(nodeParent, nodeName);
-	}
+    @Override
+    protected EclipsePreferences internalCreate(EclipsePreferences nodeParent, String nodeName, Object context) {
+        return new UserPreferences(nodeParent, nodeName);
+    }
 }

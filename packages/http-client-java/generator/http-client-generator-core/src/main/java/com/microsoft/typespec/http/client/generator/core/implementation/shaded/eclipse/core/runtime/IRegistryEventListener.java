@@ -33,48 +33,48 @@ import java.util.EventListener;
  */
 public interface IRegistryEventListener extends EventListener {
 
-	/**
-	 * Notifies this listener that extensions were added to the registry.
-	 * <p>
-	 * The extensions supplied as the argument are valid only for the duration of
-	 * the invocation of this method.
-	 * </p>
-	 *
-	 * @param extensions extensions added to the registry
-	 */
-	public void added(IExtension[] extensions);
+    /**
+     * Notifies this listener that extensions were added to the registry.
+     * <p>
+     * The extensions supplied as the argument are valid only for the duration of
+     * the invocation of this method.
+     * </p>
+     *
+     * @param extensions extensions added to the registry
+     */
+    public void added(IExtension[] extensions);
 
-	/**
-	 * Notifies this listener that extensions were removed from the registry.
-	 * <p>
-	 * The extensions supplied as the argument are valid only for the duration of
-	 * the invocation of this method.
-	 * </p>
-	 *
-	 * @param extensions extensions removed from the registry
-	 */
-	public void removed(IExtension[] extensions);
+    /**
+     * Notifies this listener that extensions were removed from the registry.
+     * <p>
+     * The extensions supplied as the argument are valid only for the duration of
+     * the invocation of this method.
+     * </p>
+     *
+     * @param extensions extensions removed from the registry
+     */
+    public void removed(IExtension[] extensions);
 
-	/**
-	 * Notifies this listener that extension points were added to the registry.
-	 * <p>
-	 * The extension points supplied as the argument are valid only for the duration
-	 * of the invocation of this method.
-	 * </p>
-	 *
-	 * @param extensionPoints extension points added to the registry
-	 */
-	public void added(IExtensionPoint[] extensionPoints);
+    /**
+     * Notifies this listener that extension points were added to the registry.
+     * <p>
+     * The extension points supplied as the argument are valid only for the duration
+     * of the invocation of this method.
+     * </p>
+     *
+     * @param extensionPoints extension points added to the registry
+     */
+    public void added(IExtensionPoint[] extensionPoints);
 
-	/**
-	 * Notifies this listener that extension points were removed from the registry.
-	 * <p>
-	 * The extension points supplied as the argument are valid only for the duration
-	 * of the invocation of this method.
-	 * </p>
-	 *
-	 * @param extensionPoints extension points removed from the registry
-	 */
-	public void removed(IExtensionPoint[] extensionPoints);
+    /**
+     * Notifies this listener that extension points were removed from the registry.
+     * <p>
+     * The extension points supplied as the argument are valid only for the duration
+     * of the invocation of this method.
+     * </p>
+     *
+     * @param extensionPoints extension points removed from the registry
+     */
+    public void removed(IExtensionPoint[] extensionPoints);
 
 }

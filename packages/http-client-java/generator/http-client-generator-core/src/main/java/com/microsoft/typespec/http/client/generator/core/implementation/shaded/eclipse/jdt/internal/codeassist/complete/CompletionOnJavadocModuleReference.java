@@ -17,78 +17,84 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.JavadocModuleReference;
 
 public class CompletionOnJavadocModuleReference extends JavadocModuleReference implements CompletionOnJavadoc {
-	public int completionFlags = JAVADOC;
-	public char[] completionIdentifier;
+    public int completionFlags = JAVADOC;
+    public char[] completionIdentifier;
 
-	public CompletionOnJavadocModuleReference(char[][] sources, char[] identifier, long[] pos, int tagStart, int tagEnd) {
-		super(sources, pos, tagStart, tagEnd);
-		this.completionIdentifier = identifier;
-	}
+    public CompletionOnJavadocModuleReference(char[][] sources, char[] identifier, long[] pos, int tagStart,
+        int tagEnd) {
+        super(sources, pos, tagStart, tagEnd);
+        this.completionIdentifier = identifier;
+    }
 
-	public CompletionOnJavadocModuleReference(JavadocModuleReference typeRef) {
-		super(typeRef.moduleReference, typeRef.tagSourceStart, typeRef.tagSourceStart);
-		this.completionIdentifier = CharOperation.NO_CHAR;
-	}
+    public CompletionOnJavadocModuleReference(JavadocModuleReference typeRef) {
+        super(typeRef.moduleReference, typeRef.tagSourceStart, typeRef.tagSourceStart);
+        this.completionIdentifier = CharOperation.NO_CHAR;
+    }
 
-	@Override
-	public void addCompletionFlags(int flags) {
-		this.completionFlags |= flags;
-	}
+    @Override
+    public void addCompletionFlags(int flags) {
+        this.completionFlags |= flags;
+    }
 
-	public boolean completeAnException() {
-		return (this.completionFlags & EXCEPTION) != 0;
-	}
+    public boolean completeAnException() {
+        return (this.completionFlags & EXCEPTION) != 0;
+    }
 
-	public boolean completeInText() {
-		return (this.completionFlags & TEXT) != 0;
-	}
+    public boolean completeInText() {
+        return (this.completionFlags & TEXT) != 0;
+    }
 
-	public boolean completeBaseTypes() {
-		return (this.completionFlags & BASE_TYPES) != 0;
-	}
+    public boolean completeBaseTypes() {
+        return (this.completionFlags & BASE_TYPES) != 0;
+    }
 
-	public boolean completeFormalReference() {
-		return (this.completionFlags & FORMAL_REFERENCE) != 0;
-	}
+    public boolean completeFormalReference() {
+        return (this.completionFlags & FORMAL_REFERENCE) != 0;
+    }
 
-	@Override
-	public int getCompletionFlags() {
-		return this.completionFlags;
-	}
+    @Override
+    public int getCompletionFlags() {
+        return this.completionFlags;
+    }
 
-	@Override
-	public StringBuilder printExpression(int indent, StringBuilder output) {
-		output.append("<CompletionOnJavadocModuleReference:"); //$NON-NLS-1$
-		super.printExpression(indent, output);
-		indent++;
-		if (this.completionFlags > 0) {
-			output.append('\n');
-			for (int i=0; i<indent; i++) output.append('\t');
-			output.append("infos:"); //$NON-NLS-1$
-			char separator = 0;
-			if (completeAnException()) {
-				output.append("exception"); //$NON-NLS-1$
-				separator = ',';
-			}
-			if (completeInText()) {
-				if (separator != 0) output.append(separator);
-				output.append("text"); //$NON-NLS-1$
-				separator = ',';
-			}
-			if (completeBaseTypes()) {
-				if (separator != 0) output.append(separator);
-				output.append("base types"); //$NON-NLS-1$
-				separator = ',';
-			}
-			if (completeFormalReference()) {
-				if (separator != 0) output.append(separator);
-				output.append("formal reference"); //$NON-NLS-1$
-				separator = ',';
-			}
-			output.append('\n');
-		}
-		indent--;
-		for (int i=0; i<indent; i++) output.append('\t');
-		return output.append('>');
-	}
+    @Override
+    public StringBuilder printExpression(int indent, StringBuilder output) {
+        output.append("<CompletionOnJavadocModuleReference:"); //$NON-NLS-1$
+        super.printExpression(indent, output);
+        indent++;
+        if (this.completionFlags > 0) {
+            output.append('\n');
+            for (int i = 0; i < indent; i++)
+                output.append('\t');
+            output.append("infos:"); //$NON-NLS-1$
+            char separator = 0;
+            if (completeAnException()) {
+                output.append("exception"); //$NON-NLS-1$
+                separator = ',';
+            }
+            if (completeInText()) {
+                if (separator != 0)
+                    output.append(separator);
+                output.append("text"); //$NON-NLS-1$
+                separator = ',';
+            }
+            if (completeBaseTypes()) {
+                if (separator != 0)
+                    output.append(separator);
+                output.append("base types"); //$NON-NLS-1$
+                separator = ',';
+            }
+            if (completeFormalReference()) {
+                if (separator != 0)
+                    output.append(separator);
+                output.append("formal reference"); //$NON-NLS-1$
+                separator = ',';
+            }
+            output.append('\n');
+        }
+        indent--;
+        for (int i = 0; i < indent; i++)
+            output.append('\t');
+        return output.append('>');
+    }
 }

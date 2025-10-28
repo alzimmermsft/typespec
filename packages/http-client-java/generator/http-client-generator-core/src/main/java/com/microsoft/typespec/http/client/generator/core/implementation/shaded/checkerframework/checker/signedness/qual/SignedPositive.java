@@ -19,7 +19,8 @@ import java.lang.annotation.Target;
  * that programmers do not see this annotation in error messages.
  *
  * <p>{@code @SignedPositive} corresponds to {@code @}{@link
- * com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.index.qual.NonNegative NonNegative} in the Index Checker's type
+ * com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.index.qual.NonNegative
+ * NonNegative} in the Index Checker's type
  * system.
  *
  * @see SignednessGlb
@@ -27,5 +28,6 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_USE, ElementType.TYPE_PARAMETER})
-public @interface SignedPositive {}
+@Target({ ElementType.TYPE_USE, ElementType.TYPE_PARAMETER })
+public @interface SignedPositive {
+}

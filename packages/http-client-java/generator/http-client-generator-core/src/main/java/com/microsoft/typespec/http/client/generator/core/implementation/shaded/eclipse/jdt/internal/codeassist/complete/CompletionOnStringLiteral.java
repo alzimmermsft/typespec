@@ -37,27 +37,29 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 
 public class CompletionOnStringLiteral extends StringLiteral implements CompletionNode {
-	public int contentStart;
-	public int contentEnd;
-	public CompletionOnStringLiteral(char[] token, int s, int e, int cs, int ce, int lineNumber) {
-		super(token, s, e, lineNumber);
-		this.contentStart = cs;
-		this.contentEnd = ce;
-	}
+    public int contentStart;
+    public int contentEnd;
 
-	@Override
-	public TypeBinding resolveType(ClassScope scope) {
-		throw new CompletionNodeFound(this, null, scope);
-	}
-	@Override
-	public TypeBinding resolveType(BlockScope scope) {
-		throw new CompletionNodeFound(this, null, scope);
-	}
+    public CompletionOnStringLiteral(char[] token, int s, int e, int cs, int ce, int lineNumber) {
+        super(token, s, e, lineNumber);
+        this.contentStart = cs;
+        this.contentEnd = ce;
+    }
 
-	@Override
-	public StringBuilder printExpression(int indent, StringBuilder output) {
-		output.append("<CompletionOnString:"); //$NON-NLS-1$
-		output = super.printExpression(indent, output);
-		return output.append('>');
-	}
+    @Override
+    public TypeBinding resolveType(ClassScope scope) {
+        throw new CompletionNodeFound(this, null, scope);
+    }
+
+    @Override
+    public TypeBinding resolveType(BlockScope scope) {
+        throw new CompletionNodeFound(this, null, scope);
+    }
+
+    @Override
+    public StringBuilder printExpression(int indent, StringBuilder output) {
+        output.append("<CompletionOnString:"); //$NON-NLS-1$
+        output = super.printExpression(indent, output);
+        return output.append('>');
+    }
 }

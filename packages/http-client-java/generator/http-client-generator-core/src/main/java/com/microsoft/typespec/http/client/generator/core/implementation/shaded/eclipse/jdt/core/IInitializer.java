@@ -19,5 +19,5 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IInitializer extends IMember {
-	// interface used as a marker: defines no member
+    // interface used as a marker: defines no member
 }

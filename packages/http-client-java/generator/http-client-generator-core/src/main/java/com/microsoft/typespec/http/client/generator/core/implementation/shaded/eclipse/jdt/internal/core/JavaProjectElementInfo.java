@@ -15,21 +15,17 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import java.util.HashMap;
 import java.util.Map;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IContainer;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
+
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IClasspathEntry;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ICompilationUnit;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaElement;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaProject;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IPackageFragmentRoot;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaCore;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.DeltaProcessor.RootInfo;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.HashSetOfArray;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.HashtableOfArrayToObject;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Util;
 
 /**
  * Info for IJavaProject.
@@ -100,113 +96,7 @@ class JavaProjectElementInfo extends OpenableElementInfo {
 		this.nonJavaResources = null;
 	}
 
-	/**
-	 * Compute the non-java resources contained in this java project.
-	 */
-	private Object[] computeNonJavaResources(JavaProject project) {
-
-		// determine if src == project and/or if bin == project
-		IPath projectPath = project.getProject().getFullPath();
-		boolean srcIsProject = false;
-		boolean binIsProject = false;
-		char[][] inclusionPatterns = null;
-		char[][] exclusionPatterns = null;
-		IPath projectOutput = null;
-		boolean isClasspathResolved = true;
-		try {
-			IClasspathEntry entry = project.getClasspathEntryFor(projectPath);
-			if (entry != null) {
-				srcIsProject = true;
-				inclusionPatterns = ((ClasspathEntry)entry).fullInclusionPatternChars();
-				exclusionPatterns = ((ClasspathEntry)entry).fullExclusionPatternChars();
-			}
-			projectOutput = project.getOutputLocation();
-			binIsProject = projectPath.equals(projectOutput);
-		} catch (JavaModelException e) {
-			isClasspathResolved = false;
-		}
-
-		Object[] resources = new IResource[5];
-		int resourcesCounter = 0;
-		try {
-			IResource[] members = ((IContainer) project.getResource()).members();
-			int length = members.length;
-			if (length > 0) {
-				String sourceLevel = project.getOption(JavaCore.COMPILER_SOURCE, true);
-				String complianceLevel = project.getOption(JavaCore.COMPILER_COMPLIANCE, true);
-				IClasspathEntry[] classpath = project.getResolvedClasspath();
-				for (int i = 0; i < length; i++) {
-					IResource res = members[i];
-					switch (res.getType()) {
-						case IResource.FILE :
-							IPath resFullPath = res.getFullPath();
-							String resName = res.getName();
-
-							// ignore a jar file on the classpath
-							if (isClasspathResolved &&
-									isClasspathEntryOrOutputLocation(resFullPath, res.getLocation()/* see https://bugs.eclipse.org/bugs/show_bug.cgi?id=244406 */, classpath, projectOutput)) {
-								break;
-							}
-							// ignore .java file if src == project
-							if (srcIsProject
-									&& Util.isValidCompilationUnitName(resName, sourceLevel, complianceLevel)
-									&& !Util.isExcluded(res, inclusionPatterns, exclusionPatterns)) {
-								break;
-							}
-							// ignore .class file if bin == project
-							if (binIsProject && Util.isValidClassFileName(resName, sourceLevel, complianceLevel)) {
-								break;
-							}
-							// else add non java resource
-							if (resources.length == resourcesCounter) {
-								// resize
-								System.arraycopy(
-										resources,
-										0,
-										(resources = new IResource[resourcesCounter * 2]),
-										0,
-										resourcesCounter);
-							}
-							resources[resourcesCounter++] = res;
-							break;
-						case IResource.FOLDER :
-							resFullPath = res.getFullPath();
-
-							// ignore non-excluded folders on the classpath or that correspond to an output location
-							if ((srcIsProject && !Util.isExcluded(res, inclusionPatterns, exclusionPatterns) && Util.isValidFolderNameForPackage(res.getName(), sourceLevel, complianceLevel))
-									|| (isClasspathResolved && isClasspathEntryOrOutputLocation(resFullPath, res.getLocation(), classpath, projectOutput))) {
-								break;
-							}
-							// else add non java resource
-							if (resources.length == resourcesCounter) {
-								// resize
-								System.arraycopy(
-										resources,
-										0,
-										(resources = new IResource[resourcesCounter * 2]),
-										0,
-										resourcesCounter);
-							}
-							resources[resourcesCounter++] = res;
-					}
-				}
-			}
-			if (resources.length != resourcesCounter) {
-				System.arraycopy(
-					resources,
-					0,
-					(resources = new IResource[resourcesCounter]),
-					0,
-					resourcesCounter);
-			}
-		} catch (CoreException e) {
-			resources = NO_NON_JAVA_RESOURCES;
-			resourcesCounter = 0;
-		}
-		return resources;
-	}
-
-	ProjectCache getProjectCache(JavaProject project, boolean excludeTestCode) {
+    ProjectCache getProjectCache(JavaProject project, boolean excludeTestCode) {
 		ProjectCache cache = excludeTestCode ? this.mainProjectCache : this.projectCache;
 		if (cache != null) {
 			for (IPackageFragmentRoot root : cache.allPkgFragmentRootsCache) {
@@ -255,20 +145,8 @@ class JavaProjectElementInfo extends OpenableElementInfo {
 		return cache;
 	}
 
-	/**
-	 * Returns an array of non-java resources contained in the receiver.
-	 */
-	Object[] getNonJavaResources(JavaProject project) {
-		Object[] resources = this.nonJavaResources;
-		if (resources == null) {
-			resources = computeNonJavaResources(project);
-			this.nonJavaResources = resources;
-		}
-		return resources;
-	}
-
-	private void initializePackageNames(IPackageFragmentRoot root, HashSetOfArray fragmentsCache) {
-		IJavaElement[] frags = null;
+    private void initializePackageNames(IPackageFragmentRoot root, HashSetOfArray fragmentsCache) {
+		IJavaElement[] frags;
 		try {
 			if (!root.isOpen()) {
 				PackageFragmentRootInfo info = root.isArchive() ? new JarPackageFragmentRootInfo() : new PackageFragmentRootInfo();
@@ -285,25 +163,7 @@ class JavaProjectElementInfo extends OpenableElementInfo {
 		}
 	}
 
-	/*
-	 * Returns whether the given path is a classpath entry or an output location.
-	 */
-	private boolean isClasspathEntryOrOutputLocation(IPath path, IPath location, IClasspathEntry[] resolvedClasspath, IPath projectOutput) {
-		if (projectOutput.equals(path)) return true;
-		for (IClasspathEntry entry : resolvedClasspath) {
-			IPath entryPath;
-			if ((entryPath = entry.getPath()).equals(path) || entryPath.equals(location)) {
-				return true;
-			}
-			IPath output;
-			if ((output = entry.getOutputLocation()) != null && output.equals(path)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/*
+    /*
 	 * Creates a new name lookup for this project info.
 	 * The given project is assumed to be the handle of this info.
 	 * This name lookup first looks in the given working copies.
@@ -316,53 +176,53 @@ class JavaProjectElementInfo extends OpenableElementInfo {
 			IPackageFragmentRoot[] allRoots = cache.allPkgFragmentRootsCache;
 			int length = allRoots.length;
 			allPkgFragmentsCache = new HashtableOfArrayToObject();
-			for (int i = 0; i < length; i++) {
-				IPackageFragmentRoot root = allRoots[i];
-				RootInfo rootInfo = rootInfos.get(root.getPath());
-				JavaProject rootProject = rootInfo == null ? project : rootInfo.project;
-				HashSetOfArray fragmentsCache;
-				if (rootProject.equals(project)) {
-					// retrieve package fragments cache from this project
-					fragmentsCache = cache.pkgFragmentsCaches.get(root);
-				} else {
-					// retrieve package fragments  cache from the root's project
-					ProjectCache rootProjectCache;
-					try {
-						rootProjectCache = rootProject.getProjectCache(excludeTestCode);
-					} catch (JavaModelException e) {
-						// project doesn't exit
-						continue;
-					}
-					fragmentsCache = rootProjectCache.pkgFragmentsCaches.get(root);
-				}
-				if (fragmentsCache == null) { // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=183833
-					fragmentsCache = new HashSetOfArray();
-					initializePackageNames(root, fragmentsCache);
-				}
-				Object[][] set = fragmentsCache.set;
-				for (Object[] element : set) {
-					String[] pkgName = (String[]) element;
-					if (pkgName == null)
-						continue;
-					Object existing = allPkgFragmentsCache.get(pkgName);
-					if (existing == null || existing == NO_ROOTS) {
-						allPkgFragmentsCache.put(pkgName, root);
-						// ensure super packages (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=119161)
-						// are also in the map
-						addSuperPackageNames(pkgName, allPkgFragmentsCache);
-					} else {
-						if (existing instanceof PackageFragmentRoot) {
-							allPkgFragmentsCache.put(pkgName, new IPackageFragmentRoot[] {(PackageFragmentRoot) existing, root});
-						} else {
-							IPackageFragmentRoot[] roots = (IPackageFragmentRoot[]) existing;
-							int rootLength = roots.length;
-							System.arraycopy(roots, 0, roots = new IPackageFragmentRoot[rootLength+1], 0, rootLength);
-							roots[rootLength] = root;
-							allPkgFragmentsCache.put(pkgName, roots);
-						}
-					}
-				}
-			}
+            for (IPackageFragmentRoot root : allRoots) {
+                RootInfo rootInfo = rootInfos.get(root.getPath());
+                JavaProject rootProject = rootInfo == null ? project : rootInfo.project;
+                HashSetOfArray fragmentsCache;
+                if (rootProject.equals(project)) {
+                    // retrieve package fragments cache from this project
+                    fragmentsCache = cache.pkgFragmentsCaches.get(root);
+                } else {
+                    // retrieve package fragments  cache from the root's project
+                    ProjectCache rootProjectCache;
+                    try {
+                        rootProjectCache = rootProject.getProjectCache(excludeTestCode);
+                    } catch (JavaModelException e) {
+                        // project doesn't exit
+                        continue;
+                    }
+                    fragmentsCache = rootProjectCache.pkgFragmentsCaches.get(root);
+                }
+                if (fragmentsCache == null) { // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=183833
+                    fragmentsCache = new HashSetOfArray();
+                    initializePackageNames(root, fragmentsCache);
+                }
+                Object[][] set = fragmentsCache.set;
+                for (Object[] element : set) {
+                    String[] pkgName = (String[]) element;
+                    if (pkgName == null)
+                        continue;
+                    Object existing = allPkgFragmentsCache.get(pkgName);
+                    if (existing == null || existing == NO_ROOTS) {
+                        allPkgFragmentsCache.put(pkgName, root);
+                        // ensure super packages (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=119161)
+                        // are also in the map
+                        addSuperPackageNames(pkgName, allPkgFragmentsCache);
+                    } else {
+                        if (existing instanceof PackageFragmentRoot) {
+                            allPkgFragmentsCache.put(pkgName,
+                                new IPackageFragmentRoot[] { (PackageFragmentRoot) existing, root });
+                        } else {
+                            IPackageFragmentRoot[] roots = (IPackageFragmentRoot[]) existing;
+                            int rootLength = roots.length;
+                            System.arraycopy(roots, 0, roots = new IPackageFragmentRoot[rootLength + 1], 0, rootLength);
+                            roots[rootLength] = root;
+                            allPkgFragmentsCache.put(pkgName, roots);
+                        }
+                    }
+                }
+            }
 			cache.allPkgFragmentsCache = allPkgFragmentsCache;
 		}
 		return new NameLookup(project, cache.allPkgFragmentRootsCache, cache.allPkgFragmentsCache, workingCopies, cache.rootToResolvedEntries);

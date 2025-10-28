@@ -17,24 +17,28 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
 
 public class CompletionOnKeyword2 extends ImportReference implements CompletionOnKeyword {
-	private final char[] token;
-	private final char[][] possibleKeywords;
-	public CompletionOnKeyword2(char[] token, long pos, char[][] possibleKeywords) {
-		super(new char[][]{token}, new long[]{pos}, false, ClassFileConstants.AccDefault);
-		this.token = token;
-		this.possibleKeywords = possibleKeywords;
-	}
-	@Override
-	public char[] getToken() {
-		return this.token;
-	}
-	@Override
-	public char[][] getPossibleKeywords() {
-		return this.possibleKeywords;
-	}
-	@Override
-	public StringBuilder print(int indent, StringBuilder output, boolean withOnDemand) {
+    private final char[] token;
+    private final char[][] possibleKeywords;
 
-		return printIndent(indent, output).append("<CompleteOnKeyword:").append(this.token).append('>'); //$NON-NLS-1$
-	}
+    public CompletionOnKeyword2(char[] token, long pos, char[][] possibleKeywords) {
+        super(new char[][] { token }, new long[] { pos }, false, ClassFileConstants.AccDefault);
+        this.token = token;
+        this.possibleKeywords = possibleKeywords;
+    }
+
+    @Override
+    public char[] getToken() {
+        return this.token;
+    }
+
+    @Override
+    public char[][] getPossibleKeywords() {
+        return this.possibleKeywords;
+    }
+
+    @Override
+    public StringBuilder print(int indent, StringBuilder output, boolean withOnDemand) {
+
+        return printIndent(indent, output).append("<CompleteOnKeyword:").append(this.token).append('>'); //$NON-NLS-1$
+    }
 }

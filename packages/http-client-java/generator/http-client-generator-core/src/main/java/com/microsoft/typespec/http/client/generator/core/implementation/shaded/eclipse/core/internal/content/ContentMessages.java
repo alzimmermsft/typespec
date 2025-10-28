@@ -13,50 +13,52 @@
  **********************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.content;
 
-import java.util.Date;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.util.NLS;
+import java.util.Date;
 
 // Runtime plugin message catalog
 public class ContentMessages extends NLS {
 
-	/**
-	 * The unique identifier constant of this plug-in.
-	 */
-	public static final String OWNER_NAME = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.contenttype"; //$NON-NLS-1$
+    /**
+     * The unique identifier constant of this plug-in.
+     */
+    public static final String OWNER_NAME
+        = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.contenttype"; //$NON-NLS-1$
 
-	private static final String BUNDLE_NAME = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.content.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME
+        = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.content.messages"; //$NON-NLS-1$
 
-	// Content type manager
-	public static String content_badInitializationData;
-	public static String content_errorReadingContents;
-	public static String content_errorLoadingSettings;
-	public static String content_errorSavingSettings;
-	public static String content_invalidContentDescriber;
-	public static String content_invalidProperty;
-	public static String content_missingIdentifier;
-	public static String content_missingName;
-	public static String content_parserConfiguration;
+    // Content type manager
+    public static String content_badInitializationData;
+    public static String content_errorReadingContents;
+    public static String content_errorLoadingSettings;
+    public static String content_errorSavingSettings;
+    public static String content_invalidContentDescriber;
+    public static String content_invalidProperty;
+    public static String content_missingIdentifier;
+    public static String content_missingName;
+    public static String content_parserConfiguration;
 
-	static {
-		// load message values from bundle file
-		reloadMessages();
-	}
+    static {
+        // load message values from bundle file
+        reloadMessages();
+    }
 
-	public static void reloadMessages() {
-		NLS.initializeMessages(BUNDLE_NAME, ContentMessages.class);
-	}
+    public static void reloadMessages() {
+        NLS.initializeMessages(BUNDLE_NAME, ContentMessages.class);
+    }
 
-	/**
-	 * Print a debug message to the console.
-	 * Pre-pend the message with the current date and the name of the current thread.
-	 */
-	public static void message(String message) {
-		StringBuilder buffer = new StringBuilder();
-		buffer.append(new Date(System.currentTimeMillis()));
-		buffer.append(" - ["); //$NON-NLS-1$
-		buffer.append(Thread.currentThread().getName());
-		buffer.append("] "); //$NON-NLS-1$
-		buffer.append(message);
-		System.out.println(buffer.toString());
-	}
+    /**
+     * Print a debug message to the console.
+     * Pre-pend the message with the current date and the name of the current thread.
+     */
+    public static void message(String message) {
+        StringBuilder buffer = new StringBuilder();
+        buffer.append(new Date(System.currentTimeMillis()));
+        buffer.append(" - ["); //$NON-NLS-1$
+        buffer.append(Thread.currentThread().getName());
+        buffer.append("] "); //$NON-NLS-1$
+        buffer.append(message);
+        System.out.println(buffer.toString());
+    }
 }

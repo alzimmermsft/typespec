@@ -39,23 +39,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 */
 public interface ICompilationUnitResolver {
 	/**
-	 * Parse the ASTs and resolve the bindings for the given source files using the following options.
-	 *
-	 * @param sourceFilePaths the compilation units to create ASTs for
-	 * @param encodings the given encoding for the source units
-	 * @param bindingKeys the binding keys to create bindings for
-	 * @param requestor the AST requestor that collects abstract syntax trees and bindings
-	 * @param apiLevel Level of AST API desired.
-	 * @param compilerOptions Compiler options. Defaults to JavaCore.getOptions().
-	 * @param classpathList A list of classpaths to use during this operation
-	 * @param flags Flags to to be used during this operation
-	 * @param monitor A progress monitor
-	 */
-	void resolve(String[] sourceFilePaths, String[] encodings, String[] bindingKeys, FileASTRequestor requestor,
-			int apiLevel, Map<String, String> compilerOptions, List<Classpath> classpathList, int flags,
-			IProgressMonitor monitor);
-
-	/**
 	 * Parse the ASTs for the given source units using the following options.
 	 *
 	 * @param compilationUnits the compilation units to create ASTs for
@@ -81,25 +64,6 @@ public interface ICompilationUnitResolver {
 	 */
 	void parse(String[] sourceFilePaths, String[] encodings, FileASTRequestor requestor, int apiLevel,
 			Map<String, String> compilerOptions, int flags, IProgressMonitor monitor);
-
-	/**
-	 * Parse and resolve bindings for the given compilation units with the following options.
-	 *
-	 * @param compilationUnits the compilation units to create ASTs for
-	 * @param bindingKeys the binding keys to create bindings for
-	 * @param requestor the AST requester that collects abstract syntax trees and bindings
-	 * @param apiLevel Level of AST API desired.
-	 * @param compilerOptions Compiler options. Defaults to JavaCore.getOptions().
-	 * @param project The project providing the context of the resolution
-	 * @param workingCopyOwner  The owner of the working copy
-	 * @param flags Flags to to be used during this operation
-	 * @param monitor A progress monitor
-	 */
-	void resolve(ICompilationUnit[] compilationUnits, String[] bindingKeys, ASTRequestor requestor, int apiLevel,
-			Map<String, String> compilerOptions, IJavaProject project, WorkingCopyOwner workingCopyOwner, int flags,
-			IProgressMonitor monitor);
-
-
 
 	/**
 	 * Convert the given source unit into a CompilationUnit using the following options.
