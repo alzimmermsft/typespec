@@ -116,7 +116,4 @@ public abstract class RegistryObject implements KeyedElement {
         extraDataOffset |= (offset & OFFSET_MASK); // set all offset bits
     }
 
-    protected String getLocale() {
-        return registry.getLocale();
-    }
 }

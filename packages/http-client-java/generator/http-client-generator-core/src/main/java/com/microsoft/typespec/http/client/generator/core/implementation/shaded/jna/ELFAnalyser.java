@@ -48,7 +48,7 @@ class ELFAnalyser {
     /**
      * Generic ELF header
      */
-    private static final byte[] ELF_MAGIC = new byte[]{(byte) 0x7F, (byte) 'E', (byte) 'L', (byte) 'F'};
+    private static final byte[] ELF_MAGIC = new byte[] { (byte) 0x7F, (byte) 'E', (byte) 'L', (byte) 'F' };
     /**
      * e_flags mask if executable file conforms to hardware floating-point
      * procedure-call standard (arm ABI version 5)
@@ -126,7 +126,7 @@ class ELFAnalyser {
 
     /**
      * @return true if file was detected to specify, that FP parameters/result
-     *         passing conforms to AAPCS, VFP variant (hardfloat)
+     * passing conforms to AAPCS, VFP variant (hardfloat)
      */
     public boolean isArmEabiAapcsVfp() {
         return armEabiAapcsVfp;
@@ -193,7 +193,7 @@ class ELFAnalyser {
             // e_machine
             arm = headerData.get(0x12) == E_MACHINE_ARM;
 
-            if(arm) {
+            if (arm) {
                 // e_flags
                 int flags = headerData.getInt(_64Bit ? 0x30 : 0x24);
                 armHardFloatFlag = (flags & EF_ARM_ABI_FLOAT_HARD) == EF_ARM_ABI_FLOAT_HARD;
@@ -214,25 +214,27 @@ class ELFAnalyser {
         ELFSectionHeaders sectionHeaders = new ELFSectionHeaders(_64Bit, bigEndian, headerData, raf);
 
         for (ELFSectionHeaderEntry eshe : sectionHeaders.getEntries()) {
-            if(".ARM.attributes".equals(eshe.getName())) {
+            if (".ARM.attributes".equals(eshe.getName())) {
                 ByteBuffer armAttributesBuffer = ByteBuffer.allocate((int) eshe.getSize());
                 armAttributesBuffer.order(bigEndian ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN);
                 raf.getChannel().read(armAttributesBuffer, eshe.getOffset());
                 armAttributesBuffer.rewind();
-                Map<Integer, Map<ArmAeabiAttributesTag, Object>> armAttributes = parseArmAttributes(armAttributesBuffer);
+                Map<Integer, Map<ArmAeabiAttributesTag, Object>> armAttributes
+                    = parseArmAttributes(armAttributesBuffer);
                 Map<ArmAeabiAttributesTag, Object> fileAttributes = armAttributes.get(1);
-                if(fileAttributes == null)  {
+                if (fileAttributes == null) {
                     continue;
                 }
                 /**
                  * Tag_ABI_VFP_args, (=28), uleb128
-                 *  0 The user intended FP parameter/result passing to conform to AAPCS, base variant
-                 *  1 The user intended FP parameter/result passing to conform to AAPCS, VFP variant
-                 *  2 The user intended FP parameter/result passing to conform to tool chain-specific conventions
-                 *  3 Code is compatible with both the base and VFP variants; the non-variadic functions to pass FP parameters/results
+                 * 0 The user intended FP parameter/result passing to conform to AAPCS, base variant
+                 * 1 The user intended FP parameter/result passing to conform to AAPCS, VFP variant
+                 * 2 The user intended FP parameter/result passing to conform to tool chain-specific conventions
+                 * 3 Code is compatible with both the base and VFP variants; the non-variadic functions to pass FP
+                 * parameters/results
                  */
                 Object abiVFPargValue = fileAttributes.get(ArmAeabiAttributesTag.ABI_VFP_args);
-                if(abiVFPargValue instanceof Integer && ((Integer) abiVFPargValue).equals(1)) {
+                if (abiVFPargValue instanceof Integer && ((Integer) abiVFPargValue).equals(1)) {
                     armEabiAapcsVfp = true;
                 } else if (abiVFPargValue instanceof BigInteger && ((BigInteger) abiVFPargValue).intValue() == 1) {
                     armEabiAapcsVfp = true;
@@ -244,7 +246,8 @@ class ELFAnalyser {
     static class ELFSectionHeaders {
         private final List<ELFSectionHeaderEntry> entries = new ArrayList<>();
 
-        public ELFSectionHeaders(boolean _64bit, boolean bigEndian, ByteBuffer headerData, RandomAccessFile raf) throws IOException {
+        public ELFSectionHeaders(boolean _64bit, boolean bigEndian, ByteBuffer headerData, RandomAccessFile raf)
+            throws IOException {
             long shoff;
             int shentsize;
             int shnum;
@@ -288,7 +291,7 @@ class ELFAnalyser {
             data.order(bigEndian ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN);
             raf.getChannel().read(data, shoff);
 
-            for(int i = 0; i < shnum; i++) {
+            for (int i = 0; i < shnum; i++) {
                 data.position(i * shentsize);
                 ByteBuffer header = data.slice();
                 header.order(data.order());
@@ -308,9 +311,9 @@ class ELFAnalyser {
 
                 ((Buffer) stringBuffer).position(eshe.getNameOffset());
 
-                while(stringBuffer.position() < stringBuffer.limit()) {
+                while (stringBuffer.position() < stringBuffer.limit()) {
                     byte b = stringBuffer.get();
-                    if(b == 0) {
+                    if (b == 0) {
                         break;
                     } else {
                         baos.write(b);
@@ -384,24 +387,11 @@ class ELFAnalyser {
 
         @Override
         public String toString() {
-            return String.format("ELFSectionHeaderEntry{"
-                    + "nameOffset=%1$d (0x%1$x)"
-                    + ", name=%2$s"
-                    + ", type=%3$d (0x%3$x)"
-                    + ", flags=%4$d (0x%4$x)"
-                    + ", addr=%5$d (0x%5$x)"
-                    + ", offset=%6$d (0x%6$x)"
-                    + ", size=%7$d (0x%7$x)"
-                    + ", link=%8$d (0x%8$x)}",
-                    nameOffset,
-                    name,
-                    type,
-                    flags,
-                    addr,
-                    offset,
-                    size,
-                    link
-            );
+            return String.format(
+                "ELFSectionHeaderEntry{" + "nameOffset=%1$d (0x%1$x)" + ", name=%2$s" + ", type=%3$d (0x%3$x)"
+                    + ", flags=%4$d (0x%4$x)" + ", addr=%5$d (0x%5$x)" + ", offset=%6$d (0x%6$x)"
+                    + ", size=%7$d (0x%7$x)" + ", link=%8$d (0x%8$x)}",
+                nameOffset, name, type, flags, addr, offset, size, link);
         }
     }
 
@@ -474,43 +464,65 @@ class ELFAnalyser {
         public static final ArmAeabiAttributesTag CPU_raw_name = addTag(4, "CPU_raw_name", ParameterType.NTBS);
         public static final ArmAeabiAttributesTag CPU_name = addTag(5, "CPU_name", ParameterType.NTBS);
         public static final ArmAeabiAttributesTag CPU_arch = addTag(6, "CPU_arch", ParameterType.ULEB128);
-        public static final ArmAeabiAttributesTag CPU_arch_profile = addTag(7, "CPU_arch_profile", ParameterType.ULEB128);
+        public static final ArmAeabiAttributesTag CPU_arch_profile
+            = addTag(7, "CPU_arch_profile", ParameterType.ULEB128);
         public static final ArmAeabiAttributesTag ARM_ISA_use = addTag(8, "ARM_ISA_use", ParameterType.ULEB128);
         public static final ArmAeabiAttributesTag THUMB_ISA_use = addTag(9, "THUMB_ISA_use", ParameterType.ULEB128);
         public static final ArmAeabiAttributesTag FP_arch = addTag(10, "FP_arch", ParameterType.ULEB128);
         public static final ArmAeabiAttributesTag WMMX_arch = addTag(11, "WMMX_arch", ParameterType.ULEB128);
-        public static final ArmAeabiAttributesTag Advanced_SIMD_arch = addTag(12, "Advanced_SIMD_arch", ParameterType.ULEB128);
+        public static final ArmAeabiAttributesTag Advanced_SIMD_arch
+            = addTag(12, "Advanced_SIMD_arch", ParameterType.ULEB128);
         public static final ArmAeabiAttributesTag PCS_config = addTag(13, "PCS_config", ParameterType.ULEB128);
         public static final ArmAeabiAttributesTag ABI_PCS_R9_use = addTag(14, "ABI_PCS_R9_use", ParameterType.ULEB128);
-        public static final ArmAeabiAttributesTag ABI_PCS_RW_data = addTag(15, "ABI_PCS_RW_data", ParameterType.ULEB128);
-        public static final ArmAeabiAttributesTag ABI_PCS_RO_data = addTag(16, "ABI_PCS_RO_data", ParameterType.ULEB128);
-        public static final ArmAeabiAttributesTag ABI_PCS_GOT_use = addTag(17, "ABI_PCS_GOT_use", ParameterType.ULEB128);
-        public static final ArmAeabiAttributesTag ABI_PCS_wchar_t = addTag(18, "ABI_PCS_wchar_t", ParameterType.ULEB128);
-        public static final ArmAeabiAttributesTag ABI_FP_rounding = addTag(19, "ABI_FP_rounding", ParameterType.ULEB128);
-        public static final ArmAeabiAttributesTag ABI_FP_denormal = addTag(20, "ABI_FP_denormal", ParameterType.ULEB128);
-        public static final ArmAeabiAttributesTag ABI_FP_exceptions = addTag(21, "ABI_FP_exceptions", ParameterType.ULEB128);
-        public static final ArmAeabiAttributesTag ABI_FP_user_exceptions = addTag(22, "ABI_FP_user_exceptions", ParameterType.ULEB128);
-        public static final ArmAeabiAttributesTag ABI_FP_number_model = addTag(23, "ABI_FP_number_model", ParameterType.ULEB128);
-        public static final ArmAeabiAttributesTag ABI_align_needed = addTag(24, "ABI_align_needed", ParameterType.ULEB128);
-        public static final ArmAeabiAttributesTag ABI_align8_preserved = addTag(25, "ABI_align8_preserved", ParameterType.ULEB128);
+        public static final ArmAeabiAttributesTag ABI_PCS_RW_data
+            = addTag(15, "ABI_PCS_RW_data", ParameterType.ULEB128);
+        public static final ArmAeabiAttributesTag ABI_PCS_RO_data
+            = addTag(16, "ABI_PCS_RO_data", ParameterType.ULEB128);
+        public static final ArmAeabiAttributesTag ABI_PCS_GOT_use
+            = addTag(17, "ABI_PCS_GOT_use", ParameterType.ULEB128);
+        public static final ArmAeabiAttributesTag ABI_PCS_wchar_t
+            = addTag(18, "ABI_PCS_wchar_t", ParameterType.ULEB128);
+        public static final ArmAeabiAttributesTag ABI_FP_rounding
+            = addTag(19, "ABI_FP_rounding", ParameterType.ULEB128);
+        public static final ArmAeabiAttributesTag ABI_FP_denormal
+            = addTag(20, "ABI_FP_denormal", ParameterType.ULEB128);
+        public static final ArmAeabiAttributesTag ABI_FP_exceptions
+            = addTag(21, "ABI_FP_exceptions", ParameterType.ULEB128);
+        public static final ArmAeabiAttributesTag ABI_FP_user_exceptions
+            = addTag(22, "ABI_FP_user_exceptions", ParameterType.ULEB128);
+        public static final ArmAeabiAttributesTag ABI_FP_number_model
+            = addTag(23, "ABI_FP_number_model", ParameterType.ULEB128);
+        public static final ArmAeabiAttributesTag ABI_align_needed
+            = addTag(24, "ABI_align_needed", ParameterType.ULEB128);
+        public static final ArmAeabiAttributesTag ABI_align8_preserved
+            = addTag(25, "ABI_align8_preserved", ParameterType.ULEB128);
         public static final ArmAeabiAttributesTag ABI_enum_size = addTag(26, "ABI_enum_size", ParameterType.ULEB128);
         public static final ArmAeabiAttributesTag ABI_HardFP_use = addTag(27, "ABI_HardFP_use", ParameterType.ULEB128);
         public static final ArmAeabiAttributesTag ABI_VFP_args = addTag(28, "ABI_VFP_args", ParameterType.ULEB128);
         public static final ArmAeabiAttributesTag ABI_WMMX_args = addTag(29, "ABI_WMMX_args", ParameterType.ULEB128);
-        public static final ArmAeabiAttributesTag ABI_optimization_goals = addTag(30, "ABI_optimization_goals", ParameterType.ULEB128);
-        public static final ArmAeabiAttributesTag ABI_FP_optimization_goals = addTag(31, "ABI_FP_optimization_goals", ParameterType.ULEB128);
+        public static final ArmAeabiAttributesTag ABI_optimization_goals
+            = addTag(30, "ABI_optimization_goals", ParameterType.ULEB128);
+        public static final ArmAeabiAttributesTag ABI_FP_optimization_goals
+            = addTag(31, "ABI_FP_optimization_goals", ParameterType.ULEB128);
         public static final ArmAeabiAttributesTag compatibility = addTag(32, "compatibility", ParameterType.NTBS);
-        public static final ArmAeabiAttributesTag CPU_unaligned_access = addTag(34, "CPU_unaligned_access", ParameterType.ULEB128);
-        public static final ArmAeabiAttributesTag FP_HP_extension = addTag(36, "FP_HP_extension", ParameterType.ULEB128);
-        public static final ArmAeabiAttributesTag ABI_FP_16bit_format = addTag(38, "ABI_FP_16bit_format", ParameterType.ULEB128);
-        public static final ArmAeabiAttributesTag MPextension_use = addTag(42, "MPextension_use", ParameterType.ULEB128);
+        public static final ArmAeabiAttributesTag CPU_unaligned_access
+            = addTag(34, "CPU_unaligned_access", ParameterType.ULEB128);
+        public static final ArmAeabiAttributesTag FP_HP_extension
+            = addTag(36, "FP_HP_extension", ParameterType.ULEB128);
+        public static final ArmAeabiAttributesTag ABI_FP_16bit_format
+            = addTag(38, "ABI_FP_16bit_format", ParameterType.ULEB128);
+        public static final ArmAeabiAttributesTag MPextension_use
+            = addTag(42, "MPextension_use", ParameterType.ULEB128);
         public static final ArmAeabiAttributesTag DIV_use = addTag(44, "DIV_use", ParameterType.ULEB128);
         public static final ArmAeabiAttributesTag nodefaults = addTag(64, "nodefaults", ParameterType.ULEB128);
-        public static final ArmAeabiAttributesTag also_compatible_with = addTag(65, "also_compatible_with", ParameterType.NTBS);
+        public static final ArmAeabiAttributesTag also_compatible_with
+            = addTag(65, "also_compatible_with", ParameterType.NTBS);
         public static final ArmAeabiAttributesTag conformance = addTag(67, "conformance", ParameterType.NTBS);
         public static final ArmAeabiAttributesTag T2EE_use = addTag(66, "T2EE_use", ParameterType.ULEB128);
-        public static final ArmAeabiAttributesTag Virtualization_use = addTag(68, "Virtualization_use", ParameterType.ULEB128);
-        public static final ArmAeabiAttributesTag MPextension_use2 = addTag(70, "MPextension_use", ParameterType.ULEB128);
+        public static final ArmAeabiAttributesTag Virtualization_use
+            = addTag(68, "Virtualization_use", ParameterType.ULEB128);
+        public static final ArmAeabiAttributesTag MPextension_use2
+            = addTag(70, "MPextension_use", ParameterType.ULEB128);
 
         private static ArmAeabiAttributesTag addTag(int value, String name, ParameterType type) {
             ArmAeabiAttributesTag tag = new ArmAeabiAttributesTag(value, name, type);
@@ -537,7 +549,8 @@ class ELFAnalyser {
             if (valueMap.containsKey(value)) {
                 return valueMap.get(value);
             } else {
-                ArmAeabiAttributesTag pseudoTag = new ArmAeabiAttributesTag(value, "Unknown " + value, getParameterType(value));
+                ArmAeabiAttributesTag pseudoTag
+                    = new ArmAeabiAttributesTag(value, "Unknown " + value, getParameterType(value));
                 return pseudoTag;
             }
         }
@@ -556,7 +569,6 @@ class ELFAnalyser {
             }
         }
     }
-
 
     private static Map<Integer, Map<ArmAeabiAttributesTag, Object>> parseArmAttributes(ByteBuffer bb) {
         byte format = bb.get();
@@ -604,9 +616,11 @@ class ELFAnalyser {
                 case UINT32:
                     result.put(tag, bb.getInt());
                     break;
+
                 case NTBS:
                     result.put(tag, readNTBS(bb, null));
                     break;
+
                 case ULEB128:
                     result.put(tag, readULEB128(bb));
                     break;

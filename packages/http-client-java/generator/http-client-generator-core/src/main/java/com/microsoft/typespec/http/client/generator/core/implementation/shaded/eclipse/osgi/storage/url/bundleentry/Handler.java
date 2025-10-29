@@ -14,16 +14,13 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.storage.url.bundleentry;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URL;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.container.Module;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.container.ModuleContainer;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.container.ModuleRevision;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.internal.location.LocationHelper;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.storage.BundleInfo;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.storage.bundlefile.BundleEntry;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.storage.url.BundleResourceHandler;
+
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * URLStreamHandler the bundleentry protocol.
@@ -31,29 +28,12 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class Handler extends BundleResourceHandler {
 
-	public Handler(ModuleContainer container, BundleEntry bundleEntry) {
-		super(container, bundleEntry);
-	}
+    public Handler(ModuleContainer container, BundleEntry bundleEntry) {
+        super(container, bundleEntry);
+    }
 
-	@Override
-	protected BundleEntry findBundleEntry(URL url, Module module) throws IOException {
-		ModuleRevision revision = module.getCurrentRevision();
-		BundleInfo.Generation revisionInfo = (BundleInfo.Generation) revision.getRevisionInfo();
-		BundleEntry entry = revisionInfo == null ? null : revisionInfo.getBundleFile().getEntry(url.getPath());
-		if (entry == null) {
-			String path = url.getPath();
-			if (revisionInfo != null && (path.indexOf('%') >= 0 || path.indexOf('+') >= 0)) {
-				entry = revisionInfo.getBundleFile().getEntry(LocationHelper.decode(path, true));
-				if (entry != null) {
-					return entry;
-				}
-				entry = revisionInfo.getBundleFile().getEntry(LocationHelper.decode(path, false));
-				if (entry != null) {
-					return entry;
-				}
-			}
-			throw new FileNotFoundException(url.getPath());
-		}
-		return entry;
-	}
+    @Override
+    public URLConnection openConnection(URL u) throws IOException {
+        return null;
+    }
 }

@@ -40,9 +40,6 @@ import java.util.function.Consumer;
  * @see JobChangeAdapter
  * @see IJobManager#addJobChangeListener(IJobChangeListener)
  * @see IJobManager#removeJobChangeListener(IJobChangeListener)
- * @see Job#addJobChangeListener(IJobChangeListener)
- * @see Job#getState()
- * @see Job#removeJobChangeListener(IJobChangeListener)
  * @since 3.0
  */
 public interface IJobChangeListener {

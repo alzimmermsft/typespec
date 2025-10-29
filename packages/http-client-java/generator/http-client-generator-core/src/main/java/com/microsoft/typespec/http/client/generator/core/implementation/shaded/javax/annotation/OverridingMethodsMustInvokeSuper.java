@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
  * An example of such method is {@link Object#finalize()}.
  */
 @Documented
-@Target( { ElementType.METHOD })
+@Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface OverridingMethodsMustInvokeSuper {
 

@@ -92,8 +92,4 @@ public class JobChangeEvent implements IJobChangeEvent {
         return result;
     }
 
-    @Override
-    public IStatus getJobGroupResult() {
-        return jobGroupResult;
-    }
 }

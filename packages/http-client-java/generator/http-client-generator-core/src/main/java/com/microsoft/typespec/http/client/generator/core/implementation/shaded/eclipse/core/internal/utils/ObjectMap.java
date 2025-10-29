@@ -33,13 +33,6 @@ public class ObjectMap<K, V> implements Map<K, V>, IStringPoolParticipant {
     protected Object[] elements = null;
 
     /**
-     * Creates a new object map of default size
-     */
-    public ObjectMap() {
-        this(DEFAULT_SIZE);
-    }
-
-    /**
      * Creates a new object map.
      * 
      * @param initialCapacity The initial number of elements that will fit in the map.

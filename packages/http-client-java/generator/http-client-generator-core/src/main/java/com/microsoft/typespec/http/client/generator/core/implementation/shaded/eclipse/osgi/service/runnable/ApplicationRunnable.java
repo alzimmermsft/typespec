@@ -19,6 +19,7 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * This class is for internal use by the platform-related plug-ins.
  * Clients outside of the base platform should not reference or subclass this class.
  * </p>
+ * 
  * @since 3.2
  */
 public interface ApplicationRunnable extends ParameterizedRunnable {

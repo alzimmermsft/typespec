@@ -32,11 +32,11 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 @ConsumerType
 @FunctionalInterface
 public interface LoggerConsumer<E extends Exception> {
-	/**
-	 * Perform this operation on the specified {@link Logger}.
-	 * 
-	 * @param l The {@link Logger} input to this operation.
-	 * @throws E An exception thrown by the operation.
-	 */
-	void accept(Logger l) throws E;
+    /**
+     * Perform this operation on the specified {@link Logger}.
+     * 
+     * @param l The {@link Logger} input to this operation.
+     * @throws E An exception thrown by the operation.
+     */
+    void accept(Logger l) throws E;
 }

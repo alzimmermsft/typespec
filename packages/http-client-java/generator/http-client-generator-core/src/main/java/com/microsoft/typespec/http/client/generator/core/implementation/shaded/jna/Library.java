@@ -30,13 +30,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-/** Derive from this interface for all native library definitions.
+/**
+ * Derive from this interface for all native library definitions.
  *
  * Define an instance of your library like this:
- * <pre><code>
+ * 
+ * <pre>
+ * <code>
  * MyNativeLibrary INSTANCE = (MyNativeLibrary)
  *     Native.load("mylib", MyNativeLibrary.class);
- * </code></pre>
+ * </code>
+ * </pre>
+ * 
  * <p>
  * By convention, method names are identical to the native names, although you
  * can map java names to different native names by providing a
@@ -46,11 +51,11 @@ import java.util.WeakHashMap;
  * <p>
  * Although the names for structures and structure fields may be chosen
  * arbitrarily, they should correspond as closely as possible to the native
- * definitions.  The same is true for parameter names.
+ * definitions. The same is true for parameter names.
  * <p>
  * This interface supports multiple, concurrent invocations of any library
- * methods on the Java side.  Check your library documentation for its
- * multi-threading requirements on the native side.  If a library is not safe
+ * methods on the Java side. Check your library documentation for its
+ * multi-threading requirements on the native side. If a library is not safe
  * for simultaneous multi-threaded access, consider using
  * {@link Native#synchronizedLibrary} to prevent simultaneous multi-threaded
  * access to the native code.
@@ -59,7 +64,7 @@ import java.util.WeakHashMap;
  * Interface options will be automatically propagated to structures defined
  * within the library provided a call to
  * {@link Native#load(String,Class,Map)} is made prior to instantiating
- * any of those structures.  One common way of ensuring this is to declare
+ * any of those structures. One common way of ensuring this is to declare
  * an <b>INSTANCE</b> field in the interface which holds the
  * <code>load</code> result.
  * <p>
@@ -67,13 +72,13 @@ import java.util.WeakHashMap;
  * <b>TYPE_MAPPER</b> (an instance of {@link TypeMapper}),
  * <b>STRUCTURE_ALIGNMENT</b> (one of the alignment types defined in
  * {@link Structure}), and <b>STRING_ENCODING</b> (a {@link String}) may also
- * be defined.  If no instance of the interface has been instantiated, these
+ * be defined. If no instance of the interface has been instantiated, these
  * fields will be used to determine customization settings for structures and
  * methods defined within the interface.
  * <p>
  *
- * @author  Todd Fast, todd.fast@sun.com
- * @author  Timothy Wall, twalljava@dev.java.net
+ * @author Todd Fast, todd.fast@sun.com
+ * @author Timothy Wall, twalljava@dev.java.net
  */
 public interface Library {
     /** Option key for a {@link TypeMapper} for the library. */
@@ -82,30 +87,34 @@ public interface Library {
     String OPTION_FUNCTION_MAPPER = "function-mapper";
     /** Option key for an {@link InvocationMapper} for the library. */
     String OPTION_INVOCATION_MAPPER = "invocation-mapper";
-    /** Option key for structure alignment type ({@link Integer}), which should
+    /**
+     * Option key for structure alignment type ({@link Integer}), which should
      * be one of the predefined alignment types in {@link Structure}.
      */
     String OPTION_STRUCTURE_ALIGNMENT = "structure-alignment";
-    /** <p>Option key for per-library String encoding.  This affects conversions
+    /**
+     * <p>Option key for per-library String encoding. This affects conversions
      * between Java unicode and native (<code>const char*</code>) strings (as
      * arguments or Structure fields).
      * </p>
      * Defaults to {@link Native#getDefaultStringEncoding()}.
      */
     String OPTION_STRING_ENCODING = "string-encoding";
-    /** Option key for a boolean flag to allow any Java class instance as a
-        parameter.  If no type mapper is found, the object is passed as a
-        pointer.
-        <em>NOTE:</em> This is for use with raw JNI interactions via the
-        JNIEnv data structure.
-    */
+    /**
+     * Option key for a boolean flag to allow any Java class instance as a
+     * parameter. If no type mapper is found, the object is passed as a
+     * pointer.
+     * <em>NOTE:</em> This is for use with raw JNI interactions via the
+     * JNIEnv data structure.
+     */
     String OPTION_ALLOW_OBJECTS = "allow-objects";
     /** Calling convention for the entire library. */
     String OPTION_CALLING_CONVENTION = "calling-convention";
     /** Flags to use when opening the native library (see {@link Native#open(String,int)}) */
     String OPTION_OPEN_FLAGS = "open-flags";
-    /** <p>Class loader to use when searching for native libraries on the
-     * resource path (classpath).  If not provided the current thread's
+    /**
+     * <p>Class loader to use when searching for native libraries on the
+     * resource path (classpath). If not provided the current thread's
      * context class loader is used.</p>
      * If extracted from the resource path (i.e. bundled in a jar file), the
      * loaded library's lifespan will mirror that of the class loader, which
@@ -128,7 +137,7 @@ public interface Library {
         static {
             try {
                 OBJECT_TOSTRING = Object.class.getMethod("toString");
-                OBJECT_HASHCODE= Object.class.getMethod("hashCode");
+                OBJECT_HASHCODE = Object.class.getMethod("hashCode");
                 OBJECT_EQUALS = Object.class.getMethod("equals", Object.class);
             } catch (Exception e) {
                 throw new Error("Error retrieving Object.toString() method");
@@ -157,7 +166,8 @@ public interface Library {
                 this.methodHandle = mh;
             }
 
-            FunctionInfo(InvocationHandler handler, Function function, Class<?>[] parameterTypes, boolean isVarArgs, Map<String, ?> options) {
+            FunctionInfo(InvocationHandler handler, Function function, Class<?>[] parameterTypes, boolean isVarArgs,
+                Map<String, ?> options) {
                 this.handler = handler;
                 this.function = function;
                 this.isVarArgs = isVarArgs;
@@ -173,6 +183,7 @@ public interface Library {
         private final Map<String, Object> options;
         private final InvocationMapper invocationMapper;
         private final Map<Method, FunctionInfo> functions = new WeakHashMap<>();
+
         public Handler(String libname, Class<?> interfaceClass, Map<String, ?> options) {
 
             if (libname != null && "".equals(libname.trim())) {
@@ -180,14 +191,15 @@ public interface Library {
             }
 
             if (!interfaceClass.isInterface()) {
-                throw new IllegalArgumentException(libname + " does not implement an interface: " + interfaceClass.getName());
+                throw new IllegalArgumentException(
+                    libname + " does not implement an interface: " + interfaceClass.getName());
             }
 
             this.interfaceClass = interfaceClass;
             this.options = new HashMap<>(options);
             int callingConvention = AltCallingConvention.class.isAssignableFrom(interfaceClass)
-                                  ? Function.ALT_CONVENTION
-                                  : Function.C_CONVENTION;
+                ? Function.ALT_CONVENTION
+                : Function.C_CONVENTION;
             if (this.options.get(OPTION_CALLING_CONVENTION) == null) {
                 this.options.put(OPTION_CALLING_CONVENTION, Integer.valueOf(callingConvention));
             }
@@ -195,7 +207,7 @@ public interface Library {
                 this.options.put(OPTION_CLASSLOADER, interfaceClass.getClassLoader());
             }
             this.nativeLibrary = NativeLibrary.getInstance(libname, this.options);
-            invocationMapper = (InvocationMapper)this.options.get(OPTION_INVOCATION_MAPPER);
+            invocationMapper = (InvocationMapper) this.options.get(OPTION_INVOCATION_MAPPER);
         }
 
         public NativeLibrary getNativeLibrary() {
@@ -211,8 +223,7 @@ public interface Library {
         }
 
         @Override
-        public Object invoke(Object proxy, Method method, Object[] inArgs)
-            throws Throwable {
+        public Object invoke(Object proxy, Method method, Object[] inArgs) throws Throwable {
 
             // Intercept Object methods
             if (OBJECT_TOSTRING.equals(method)) {
@@ -229,12 +240,12 @@ public interface Library {
 
             // Using the double-checked locking pattern to speed up function calls
             FunctionInfo f = functions.get(method);
-            if(f == null) {
-                synchronized(functions) {
+            if (f == null) {
+                synchronized (functions) {
                     f = functions.get(method);
                     if (f == null) {
                         boolean isDefault = ReflectionUtils.isDefault(method);
-                        if(! isDefault) {
+                        if (!isDefault) {
                             boolean isVarArgs = Function.isVarArgs(method);
                             InvocationHandler handler = null;
                             if (invocationMapper != null) {

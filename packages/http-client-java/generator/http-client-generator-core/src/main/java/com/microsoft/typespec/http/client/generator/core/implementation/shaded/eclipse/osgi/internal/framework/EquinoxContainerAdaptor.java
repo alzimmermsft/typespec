@@ -29,7 +29,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.FrameworkListener;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.hooks.resolver.ResolverHookFactory;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.wiring.BundleRevision;
-
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
@@ -57,8 +56,8 @@ public class EquinoxContainerAdaptor extends ModuleContainerAdaptor {
         this.container = container;
         this.storage = storage;
         this.hooks = new OSGiFrameworkHooks(container, storage);
-        this.moduleClassLoaderParent = getModuleClassLoaderParent(container.getConfiguration(),
-            container.getBootLoader());
+        this.moduleClassLoaderParent
+            = getModuleClassLoaderParent(container.getConfiguration(), container.getBootLoader());
 
         EquinoxConfiguration config = container.getConfiguration();
         @SuppressWarnings("deprecation")
@@ -74,8 +73,8 @@ public class EquinoxContainerAdaptor extends ModuleContainerAdaptor {
         } catch (NumberFormatException e) {
             resolverThreadCnt = -1;
         }
-        String startLevelThreadCntProp = config.getConfiguration(
-            EquinoxConfiguration.PROP_EQUINOX_START_LEVEL_THREAD_COUNT);
+        String startLevelThreadCntProp
+            = config.getConfiguration(EquinoxConfiguration.PROP_EQUINOX_START_LEVEL_THREAD_COUNT);
         int startLevelThreadCnt;
         try {
             // Note that start-level thread count defaults to 1 (synchronous start)

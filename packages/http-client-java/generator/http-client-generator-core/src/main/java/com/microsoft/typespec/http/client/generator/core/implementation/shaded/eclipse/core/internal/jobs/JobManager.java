@@ -31,7 +31,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.MultiStatus;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.NullProgressMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.OperationCanceledException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.ProgressMonitorWrapper;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Status;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.SubMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -108,8 +107,6 @@ public class JobManager implements IJobManager {
 
     static boolean DEBUG = false;
     static boolean DEBUG_BEGIN_END = false;
-    static boolean DEBUG_YIELDING = false;
-    static boolean DEBUG_YIELDING_DETAILED = false;
     static boolean DEBUG_DEADLOCK = false;
     static boolean DEBUG_LOCKS = false;
     static boolean DEBUG_SHUTDOWN = false;
@@ -617,20 +614,6 @@ public class JobManager implements IJobManager {
         return null;
     }
 
-    @Override
-    public ISchedulingRule currentRule() {
-        // check thread job first, because actual current job may have null rule
-        Job currentJob = implicitJobs.getThreadJob(Thread.currentThread());
-        if (currentJob != null) {
-            return currentJob.getRule();
-        }
-        currentJob = currentJob();
-        if (currentJob != null) {
-            return currentJob.getRule();
-        }
-        return null;
-    }
-
     /**
      * Returns the delay in milliseconds that a job with a given priority can
      * tolerate waiting.
@@ -707,21 +690,21 @@ public class JobManager implements IJobManager {
      * due to problems caused by premature shutdown)
      */
     private void doShutdown() {
-        Job[] toCancel = null;
+        Job[] toCancel;
         synchronized (lock) {
             if (!active) {
                 return;
             }
             active = false;
             // cancel all running jobs
-            toCancel = running.toArray(new Job[running.size()]);
+            toCancel = running.toArray(new Job[0]);
             // discard any jobs that have not yet started running
             sleeping.clear();
             waiting.clear();
         }
 
         // Give running jobs a chance to finish. Wait 0.1 seconds for up to 3 times.
-        if (toCancel != null && toCancel.length > 0) {
+        if (toCancel.length > 0) {
             for (Job element : toCancel) {
                 cancel(element); // cancel jobs outside sync block to avoid deadlock
             }
@@ -735,14 +718,12 @@ public class JobManager implements IJobManager {
                 }
                 if (DEBUG_SHUTDOWN) {
                     JobManager.debug("Shutdown - job wait cycle #" + (waitAttempts + 1)); //$NON-NLS-1$
-                    Job[] stillRunning = null;
+                    Job[] stillRunning;
                     synchronized (lock) {
-                        stillRunning = running.toArray(new Job[running.size()]);
+                        stillRunning = running.toArray(new Job[0]);
                     }
-                    if (stillRunning != null) {
-                        for (Job element : stillRunning) {
-                            JobManager.debug("\tJob: " + printJobName(element)); //$NON-NLS-1$
-                        }
+                    for (Job element : stillRunning) {
+                        JobManager.debug("\tJob: " + printJobName(element)); //$NON-NLS-1$
                     }
                 }
                 try {
@@ -754,26 +735,25 @@ public class JobManager implements IJobManager {
             }
 
             synchronized (lock) { // retrieve list of the jobs that are still running
-                toCancel = running.toArray(new Job[running.size()]);
+                toCancel = running.toArray(new Job[0]);
             }
         }
         internalWorker.cancel();
-        if (toCancel != null) {
-            for (Job job : toCancel) {
-                String jobName = printJobName(job) + " " + printState(job); //$NON-NLS-1$
-                Thread thread = job.getThread();
-                if (thread != null) {
-                    StackTraceElement[] stackTrace = thread.getStackTrace();
-                    for (StackTraceElement stackTraceElement : stackTrace) {
-                        jobName += "\n\t at " + stackTraceElement; //$NON-NLS-1$
-                    }
+        for (Job job : toCancel) {
+            String jobName = printJobName(job) + " " + printState(job); //$NON-NLS-1$
+            Thread thread = job.getThread();
+            if (thread != null) {
+                StackTraceElement[] stackTrace = thread.getStackTrace();
+                for (StackTraceElement stackTraceElement : stackTrace) {
+                    jobName += "\n\t at " + stackTraceElement; //$NON-NLS-1$
                 }
-                // this doesn't need to be translated because it's just being logged
-                String msg
-                    = "Job found still running after platform shutdown.  Jobs should be canceled by the plugin that scheduled them during shutdown: " //$NON-NLS-1$
-                        + jobName;
-                RuntimeLog.log(new Status(IStatus.WARNING, JobManager.PI_JOBS, JobManager.PLUGIN_ERROR, msg, null));
             }
+            // this doesn't need to be translated because it's just being logged
+            String msg =
+                "Job found still running after platform shutdown.  Jobs should be canceled by the plugin that scheduled them during shutdown: "
+                    //$NON-NLS-1$
+                    + jobName;
+            RuntimeLog.log(new Status(IStatus.WARNING, JobManager.PI_JOBS, JobManager.PLUGIN_ERROR, msg, null));
         }
         synchronized (lock) {
             // discard reference to any jobs still running at this point
@@ -795,7 +775,7 @@ public class JobManager implements IJobManager {
             return;
         }
         Boolean scheduled = withWriteLock(job, j -> {
-            long rescheduleDelay = InternalJob.T_NONE;
+            long rescheduleDelay;
             // if job is not known then it cannot be done
             if (job.getState() == Job.NONE) {
                 return null;
@@ -814,7 +794,7 @@ public class JobManager implements IJobManager {
             }
             if (reschedule) {
                 // adds to #sleeping or #waiting
-                return scheduleInternal(job, rescheduleDelay, reschedule);
+                return scheduleInternal(job, rescheduleDelay, true);
             }
             return false;
         });
@@ -843,7 +823,7 @@ public class JobManager implements IJobManager {
     @Override
     public Job[] find(Object family) {
         List<InternalJob> members = select(family);
-        return members.toArray(new Job[members.size()]);
+        return members.toArray(new Job[0]);
     }
 
     List<Job> find(InternalJobGroup jobGroup) {
@@ -897,22 +877,6 @@ public class JobManager implements IJobManager {
         return null;
     }
 
-    /**
-     * Returns a job from the given collection whose scheduling rule conflicts
-     * with the scheduling rule of the given job. Returns null if there are no
-     * conflicting jobs.
-     */
-    private InternalJob findBlockedJob(InternalJob job) {
-        synchronized (lock) {
-            for (InternalJob waitingJob : waitingThreadJobs) {
-                if (waitingJob.isConflicting(job)) {
-                    return waitingJob;
-                }
-            }
-            return null;
-        }
-    }
-
     void dequeue(JobQueue queue, InternalJob job) {
         synchronized (lock) {
             queue.remove(job);
@@ -943,43 +907,6 @@ public class JobManager implements IJobManager {
      */
     protected boolean isActive() {
         return active;
-    }
-
-    /**
-     * Returns true if the given job is blocking the execution of a non-system
-     * job.
-     */
-    protected boolean isBlocking(InternalJob runningJob) {
-        synchronized (lock) {
-            // if this job isn't running, it can't be blocking anyone
-            if (runningJob.getState() != Job.RUNNING) {
-                return false;
-            }
-            // if any job is queued behind this one, it is blocked by it
-            InternalJob previous = runningJob.previous();
-            while (previous != null) {
-                // ignore jobs of lower priority (higher priority value means lower priority)
-                if (previous.getPriority() < runningJob.getPriority()) {
-                    if (!previous.isSystem()) {
-                        return true;
-                    }
-                    // implicit jobs should interrupt unless they act on behalf of system jobs
-                    if (previous instanceof ThreadJob && ((ThreadJob) previous).shouldInterrupt()) {
-                        return true;
-                    }
-                }
-                previous = previous.previous();
-            }
-            // consider threads waiting on IJobManager#beginRule
-            for (InternalJob waitingThreadJob : waitingThreadJobs) {
-                ThreadJob waitingJob = (ThreadJob) waitingThreadJob;
-                if (runningJob.isConflicting(waitingJob) && waitingJob.shouldInterrupt()) {
-                    return true;
-                }
-            }
-            // none found
-            return false;
-        }
     }
 
     @Override
@@ -1103,7 +1030,7 @@ public class JobManager implements IJobManager {
                             }
                             boolean removed = jobs.remove(job);
                             assert removed;
-                            if (removed && jobs.isEmpty()) { // minimal notification
+                            if (jobs.isEmpty()) { // minimal notification
                                 synchronized (jobs) {
                                     jobs.notifyAll();
                                 }
@@ -1285,10 +1212,7 @@ public class JobManager implements IJobManager {
             }
         }
 
-        if (monitor == null) {
-            return new NullProgressMonitor();
-        }
-        return monitor;
+        return IProgressMonitor.nullSafe(monitor);
     }
 
     @Override
@@ -1316,7 +1240,7 @@ public class JobManager implements IJobManager {
                 changeState(job, Job.WAITING);
                 job = sleeping.peek();
             }
-            InternalJobGroup jobGroup = null;
+            InternalJobGroup jobGroup;
             // process the wait queue until we find a job whose rules are satisfied.
             job = waiting.peek();
             while (job != null) {
@@ -1451,12 +1375,12 @@ public class JobManager implements IJobManager {
         if (releaseWaiting) {
             synchronized (implicitJobs) {
                 synchronized (lock) {
-                    return doRunNow(job, releaseWaiting);
+                    return doRunNow(job, true);
                 }
             }
         }
         synchronized (lock) {
-            return doRunNow(job, releaseWaiting);
+            return doRunNow(job, false);
         }
     }
 
@@ -1669,186 +1593,6 @@ public class JobManager implements IJobManager {
     }
 
     /**
-     * Implementation of {@link Job#yieldRule(IProgressMonitor)}
-     */
-    protected Job yieldRule(InternalJob job, IProgressMonitor monitor) {
-        Thread currentThread = Thread.currentThread();
-        Assert.isLegal(job.getState() == Job.RUNNING,
-            "Cannot yieldRule job that is " + printState(job.internalGetState())); //$NON-NLS-1$
-        Assert.isLegal(currentThread == job.getThread(), "Cannot yieldRule from outside job's thread"); //$NON-NLS-1$
-
-        InternalJob unblocked;
-        // If job is not a ThreadJob, and it has implicitly started rules, likeThreadJob
-        // is the corresponding ThreadJob. Similarly, if likeThreadJob is not null, then
-        // job is not a ThreadJob
-        ThreadJob likeThreadJob;
-        synchronized (implicitJobs) {
-            synchronized (lock) {
-                // The nested implicit job, if any
-                likeThreadJob = implicitJobs.getThreadJob(currentThread);
-
-                unblocked = job.previous();
-
-                // if unblocked is not null, it was a blocked job. It is guaranteed
-                // that it will be the next job run by the worker threads once this
-                // lock is released.
-                if (unblocked == null) {
-
-                    if (likeThreadJob != null) {
-
-                        // look for any explicit jobs we may be blocking
-                        unblocked = ((InternalJob) likeThreadJob).previous();
-
-                        if (unblocked == null) {
-
-                            // look for any implicit (or yielding) jobs we may be blocking.
-                            unblocked = findBlockedJob(likeThreadJob);
-                        }
-
-                    } else {
-
-                        // look for any implicit (or yielding) jobs we may be blocking.
-                        unblocked = findBlockedJob(job);
-                    }
-                }
-
-                // optimization: do nothing if we don't unblock any job
-                if (unblocked == null) {
-                    return null;
-                }
-
-                // "release" our rule by exiting RUNNING state
-                changeState(job, InternalJob.YIELDING);
-                if (DEBUG_YIELDING) {
-                    JobManager.debug(job + " will yieldRule to " + unblocked); //$NON-NLS-1$
-                }
-
-                if (likeThreadJob != null && likeThreadJob != job) {
-                    // if there is a corresponding thread job, it needs yield as well
-                    changeState(likeThreadJob, InternalJob.YIELDING);
-                    if (DEBUG_YIELDING) {
-                        JobManager.debug(job + " will yieldRule to " + unblocked); //$NON-NLS-1$
-                    }
-                }
-
-                if (likeThreadJob != null) {
-                    // only null-out threads out for non-ThreadJobs
-                    job.setThread(null);
-                    if (likeThreadJob.getRule() != null) {
-                        getLockManager().removeLockThread(currentThread, likeThreadJob.getRule());
-                    }
-                }
-
-                if ((job.getRule() != null) && !(job instanceof ThreadJob)) {
-                    getLockManager().removeLockThread(currentThread, job.getRule());
-                }
-            }
-        }
-        // To prevent this job from immediately re-grabbing the scheduling rule wait until
-        // the unblocked job changes state. This unblocked job is guaranteed to be the
-        // next job of the set of similar conflicting rules to attempt to run.
-        if (DEBUG_YIELDING_DETAILED) {
-            JobManager.debug(job + " is waiting for " + unblocked + " to transition from WAITING state"); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-
-        waitForUnblocked(unblocked);
-
-        // restart this job, unless we've been restarted already
-        // This is the same as ThreadJob begin, except that cancelation CAN NOT be supported
-        // throwing the OperationCanceledException will return execution to the caller.
-        IProgressMonitor mon = monitorFor(monitor);
-        ProgressMonitorWrapper nonCanceling = new ProgressMonitorWrapper(mon) {
-            @Override
-            public boolean isCanceled() {
-                // pass-through request
-                getWrappedProgressMonitor().isCanceled();
-                // ignore result
-                return false;
-            }
-        };
-
-        if (DEBUG_YIELDING) {
-            JobManager.debug(job + " waiting to resume"); //$NON-NLS-1$
-        }
-
-        // this yielding job becomes an implicit job, unless it is one already
-        if (likeThreadJob == null) {
-            // Create a Threadjob proxy. This is strictly an internal job, but its not
-            // preventing from "leaking" out to clients in the form of listener
-            // notifications, and via IJobManager API usage like find().
-            // Set a flag to differentiate it from regular ThreadJobs.
-            ThreadJob threadJob = new ThreadJob(job.getRule()) {
-                @Override
-                boolean isResumingAfterYield() {
-                    return true;
-                }
-            };
-            threadJob.setRealJob((Job) job);
-            ThreadJob.joinRun(threadJob, nonCanceling);
-            // the following state changes are atomic
-            synchronized (lock) {
-                // Must end the temporary threadJob to remove from running list
-                changeState(threadJob, Job.NONE);
-                changeState(job, Job.RUNNING);
-                job.setThread(currentThread);
-            }
-        } else {
-            ThreadJob.joinRun(likeThreadJob, nonCanceling);
-            synchronized (lock) {
-                changeState(job, Job.RUNNING);
-                job.setThread(currentThread);
-            }
-        }
-        if (DEBUG_YIELDING) {
-            // extra assert: make sure no other conflicting jobs are running now
-            synchronized (lock) {
-                for (InternalJob other : running) {
-                    if (other == job) {
-                        continue;
-                    }
-                    Assert.isTrue(!other.isConflicting(job), other + " conflicts and ran simultaneously with " + job); //$NON-NLS-1$
-                }
-            }
-            JobManager.debug(job + " resumed"); //$NON-NLS-1$
-        }
-        if (unblocked instanceof ThreadJob && ((ThreadJob) unblocked).isResumingAfterYield()) {
-            // if the unblocked job is a proxy for a yielding job to start, return
-            // the original job. No need to expose the proxy ThreadJob.
-            return ((ThreadJob) unblocked).realJob;
-        }
-        return (Job) unblocked;
-    }
-
-    private void waitForUnblocked(InternalJob theJob) {
-        // wait until theJob leaves WAITING state
-        boolean interrupted = false;
-        synchronized (theJob.jobStateLock) {
-            if (theJob instanceof ThreadJob) {
-                // We can't acquire the implicitJob lock while holding jobStateLock,
-                // so use isWaiting instead.
-                while (((ThreadJob) theJob).isWaiting) {
-                    try {
-                        theJob.jobStateLock.wait();
-                    } catch (InterruptedException e) {
-                        interrupted = true;
-                    }
-                }
-            } else {
-                while (theJob.internalGetState() == Job.WAITING) {
-                    try {
-                        theJob.jobStateLock.wait();
-                    } catch (InterruptedException e) {
-                        interrupted = true;
-                    }
-                }
-            }
-        }
-        if (interrupted) {
-            Thread.currentThread().interrupt();
-        }
-    }
-
-    /**
      * Invokes {@link Job#shouldRun()} while guarding against unexpected failures.
      */
     private boolean shouldRun(Job job) {
@@ -1869,7 +1613,7 @@ public class JobManager implements IJobManager {
      * The worker must call endJob when the job is finished running.
      */
     protected Job startJob(Worker worker) {
-        Job job = null;
+        Job job;
         while (true) {
             job = nextJob();
             if (job == null) {
@@ -1964,35 +1708,6 @@ public class JobManager implements IJobManager {
         Assert.isLegal(rule.isConflicting(rule));
         // isConflicting method must return false when given an unknown rule
         Assert.isLegal(!rule.isConflicting(nullRule));
-    }
-
-    protected void wakeUp(InternalJob job, long delay) {
-        Assert.isLegal(delay >= 0, "Scheduling delay is negative"); //$NON-NLS-1$
-        boolean notSleeping = withWriteLock(job, j -> {
-            // cannot wake up if it is not sleeping
-            if (job.getState() != Job.SLEEPING) {
-                return true;
-            }
-            boolean scheduled = doSchedule(job, delay);
-            // only notify of wake up if immediate
-            if (scheduled && delay == 0) {
-                jobListeners.queueAwake((Job) job);
-            }
-            return false;
-        });
-        if (notSleeping) {
-            return;
-        }
-        // call the pool outside sync block to avoid deadlock
-        pool.jobQueued();
-    }
-
-    @Override
-    public void wakeUp(Object family) {
-        // don't synchronize because wakeUp calls listeners
-        for (InternalJob internalJob : select(family)) {
-            wakeUp(internalJob, 0L);
-        }
     }
 
     void endMonitoring(ThreadJob threadJob) {

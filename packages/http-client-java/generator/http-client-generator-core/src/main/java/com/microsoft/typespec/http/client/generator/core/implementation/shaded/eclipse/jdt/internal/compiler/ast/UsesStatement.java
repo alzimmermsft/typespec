@@ -15,18 +15,19 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 public class UsesStatement extends ModuleStatement {
 
-	public TypeReference serviceInterface;
+    public TypeReference serviceInterface;
 
-	public UsesStatement(TypeReference serviceInterface) {
-		this.serviceInterface = serviceInterface;
-	}
-	@Override
-	public StringBuilder print(int indent, StringBuilder output) {
-		printIndent(indent, output);
-		output.append("uses "); //$NON-NLS-1$
-		this.serviceInterface.print(0, output);
-		output.append(";"); //$NON-NLS-1$
-		return output;
-	}
+    public UsesStatement(TypeReference serviceInterface) {
+        this.serviceInterface = serviceInterface;
+    }
+
+    @Override
+    public StringBuilder print(int indent, StringBuilder output) {
+        printIndent(indent, output);
+        output.append("uses "); //$NON-NLS-1$
+        this.serviceInterface.print(0, output);
+        output.append(";"); //$NON-NLS-1$
+        return output;
+    }
 
 }

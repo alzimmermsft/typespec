@@ -18,27 +18,18 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.filesystem.URIUtil;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.resources.ProjectVariableProviderManager.Descriptor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.utils.Messages;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IPathVariableChangeEvent;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IPathVariableChangeListener;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IPathVariableManager;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IProject;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResourceStatus;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IStatus;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.NullProgressMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Status;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.jobs.ISchedulingRule;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.util.NLS;
+
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * The {@link IPathVariableManager} for a single project
@@ -63,55 +54,6 @@ public class ProjectPathVariableManager implements IPathVariableManager {
     }
 
     /**
-     * Throws a runtime exception if the given name is not valid as a path
-     * variable name.
-     */
-    private void checkIsValidName(String name) throws CoreException {
-        IStatus status = validateName(name);
-        if (!status.isOK()) {
-            throw new CoreException(status);
-        }
-    }
-
-    /**
-     * Throws an exception if the given path is not valid as a path variable
-     * value.
-     */
-    private void checkIsValidValue(URI newValue) throws CoreException {
-        IStatus status = validateValue(newValue);
-        if (!status.isOK()) {
-            throw new CoreException(status);
-        }
-    }
-
-    /**
-     * @see org.eclipse.core.resources.IPathVariableManager#getPathVariableNames()
-     */
-    @Override
-    public String[] getPathVariableNames() {
-        List<String> result = new LinkedList<>();
-        HashMap<String, VariableDescription> map;
-        try {
-            map = ((ProjectDescription) resource.getProject().getDescription()).getVariables();
-        } catch (CoreException e) {
-            return new String[0];
-        }
-        for (Descriptor variableProvider : variableProviders) {
-            String[] variableHints = variableProvider.getVariableNames(variableProvider.getName(), resource);
-            if (variableHints != null && variableHints.length > 0) {
-                for (int k = 0; k < variableHints.length; k++) {
-                    result.add(variableProvider.getVariableNames(variableProvider.getName(), resource)[k]);
-                }
-            }
-        }
-        if (map != null) {
-            result.addAll(map.keySet());
-        }
-        result.addAll(Arrays.asList(getWorkspaceManager().getPathVariableNames()));
-        return result.toArray(new String[0]);
-    }
-
-    /**
      * @deprecated use {@link #getURIValue(String)} instead.
      */
     @Deprecated
@@ -122,38 +64,6 @@ public class ProjectPathVariableManager implements IPathVariableManager {
             return URIUtil.toPath(uri);
         }
         return null;
-    }
-
-    /**
-     * If the variable is not listed in the project description, we fall back on
-     * the workspace variables.
-     *
-     * @see org.eclipse.core.resources.IPathVariableManager#getURIValue(String)
-     */
-    @Override
-    public URI getURIValue(String varName) {
-        String value = internalGetValue(varName);
-        if (value != null) {
-            if (value.contains("..")) { //$NON-NLS-1$
-                // if the path is 'reducible', lets resolve it first.
-                int index = value.indexOf(IPath.SEPARATOR);
-                if (index > 0) { // if its the first character, its an
-                    // absolute path on unix, so we don't
-                    // resolve it
-                    URI resolved = resolveVariable(value);
-                    if (resolved != null) {
-                        return resolved;
-                    }
-                }
-            }
-            try {
-                return URI.create(value);
-            } catch (IllegalArgumentException e) {
-                IPath path = IPath.fromPortableString(value);
-                return URIUtil.toURI(path);
-            }
-        }
-        return getWorkspaceManager().getURIValue(varName);
     }
 
     public String internalGetValue(String varName) {
@@ -185,42 +95,6 @@ public class ProjectPathVariableManager implements IPathVariableManager {
             }
         }
         return null;
-    }
-
-    /**
-     * @see org.eclipse.core.resources.IPathVariableManager#isDefined(String)
-     */
-    @Override
-    public boolean isDefined(String varName) {
-        for (Descriptor variableProvider : variableProviders) {
-            if (varName.startsWith(variableProvider.getName())) {
-                return true;
-            }
-        }
-
-        try {
-            HashMap<String, VariableDescription> map
-                = ((ProjectDescription) resource.getProject().getDescription()).getVariables();
-            if (map != null) {
-                for (String name : map.keySet()) {
-                    if (name.equals(varName)) {
-                        return true;
-                    }
-                }
-            }
-        } catch (CoreException e) {
-            return false;
-        }
-        boolean value = getWorkspaceManager().isDefined(varName);
-        if (!value) {
-            // this is to handle variables with encoded arguments
-            int index = varName.indexOf('-');
-            if (index != -1) {
-                String newVarName = varName.substring(0, index);
-                value = isDefined(newVarName);
-            }
-        }
-        return value;
     }
 
     /**
@@ -341,79 +215,12 @@ public class ProjectPathVariableManager implements IPathVariableManager {
     }
 
     /**
-     * @see org.eclipse.core.resources.IPathVariableManager#validateName(String)
-     */
-    @Override
-    public IStatus validateName(String name) {
-        String message = null;
-        if (name.length() == 0) {
-            message = Messages.pathvar_length;
-            return new ResourceStatus(IResourceStatus.INVALID_VALUE, null, message);
-        }
-
-        char first = name.charAt(0);
-        if (!Character.isLetter(first) && first != '_') {
-            message = NLS.bind(Messages.pathvar_beginLetter, String.valueOf(first));
-            return new ResourceStatus(IResourceStatus.INVALID_VALUE, null, message);
-        }
-
-        for (int i = 1; i < name.length(); i++) {
-            char following = name.charAt(i);
-            if (Character.isWhitespace(following)) {
-                return new ResourceStatus(IResourceStatus.INVALID_VALUE, null, Messages.pathvar_whitespace);
-            }
-            if (!Character.isLetter(following) && !Character.isDigit(following) && following != '_') {
-                message = NLS.bind(Messages.pathvar_invalidChar, String.valueOf(following));
-                return new ResourceStatus(IResourceStatus.INVALID_VALUE, null, message);
-            }
-        }
-        // check
-
-        return Status.OK_STATUS;
-    }
-
-    /**
      * @see IPathVariableManager#validateValue(IPath)
      */
     @Override
     public IStatus validateValue(IPath value) {
         // accept any format
         return Status.OK_STATUS;
-    }
-
-    /**
-     * @see IPathVariableManager#validateValue(URI)
-     */
-    @Override
-    public IStatus validateValue(URI value) {
-        // accept any format
-        return Status.OK_STATUS;
-    }
-
-    /**
-     * @see IPathVariableManager#convertToRelative(URI, boolean, String)
-     */
-    @Override
-    public URI convertToRelative(URI path, boolean force, String variableHint) throws CoreException {
-        return PathVariableUtil.convertToRelative(this, path, resource, force, variableHint);
-    }
-
-    /**
-     * @see IPathVariableManager#convertToUserEditableFormat(String, boolean)
-     */
-    @Override
-    public String convertToUserEditableFormat(String value, boolean locationFormat) {
-        return PathVariableUtil.convertToUserEditableFormatInternal(value, locationFormat);
-    }
-
-    @Override
-    public void addChangeListener(IPathVariableChangeListener listener) {
-        getWorkspaceManager().addChangeListener(listener, resource.getProject());
-    }
-
-    @Override
-    public void removeChangeListener(IPathVariableChangeListener listener) {
-        getWorkspaceManager().removeChangeListener(listener, resource.getProject());
     }
 
     /*

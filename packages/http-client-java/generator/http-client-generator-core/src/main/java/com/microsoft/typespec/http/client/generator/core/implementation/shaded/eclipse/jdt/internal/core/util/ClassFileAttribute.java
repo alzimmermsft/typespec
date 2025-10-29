@@ -23,41 +23,37 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * Default implementation of IClassFileAttribute
  */
 public class ClassFileAttribute extends ClassFileStruct implements IClassFileAttribute {
-	public static final IClassFileAttribute[] NO_ATTRIBUTES = new IClassFileAttribute[0];
-	/** unsigned integer **/
-	private final int attributeLength;
-	private final int attributeNameIndex;
-	private final char[] attributeName;
+    public static final IClassFileAttribute[] NO_ATTRIBUTES = new IClassFileAttribute[0];
+    /** unsigned integer **/
+    private final int attributeLength;
+    private final int attributeNameIndex;
+    private final char[] attributeName;
 
-	public ClassFileAttribute(byte[] classFileBytes, IConstantPool constantPool, int offset) throws ClassFormatException {
-		this.attributeNameIndex = u2At(classFileBytes, 0, offset);
-		this.attributeLength = u4At(classFileBytes, 2, offset);
-		IConstantPoolEntry constantPoolEntry = constantPool.decodeEntry(this.attributeNameIndex);
-		if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Utf8) {
-			throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
-		}
-		this.attributeName = constantPoolEntry.getUtf8Value();
-	}
+    public ClassFileAttribute(byte[] classFileBytes, IConstantPool constantPool, int offset)
+        throws ClassFormatException {
+        this.attributeNameIndex = u2At(classFileBytes, 0, offset);
+        this.attributeLength = u4At(classFileBytes, 2, offset);
+        IConstantPoolEntry constantPoolEntry = constantPool.decodeEntry(this.attributeNameIndex);
+        if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Utf8) {
+            throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
+        }
+        this.attributeName = constantPoolEntry.getUtf8Value();
+    }
 
-	@Override
-	public int getAttributeNameIndex() {
-		return this.attributeNameIndex;
-	}
+    /**
+     * @see IClassFileAttribute#getAttributeName()
+     */
+    @Override
+    public char[] getAttributeName() {
+        return this.attributeName;
+    }
 
-	/**
-	 * @see IClassFileAttribute#getAttributeName()
-	 */
-	@Override
-	public char[] getAttributeName() {
-		return this.attributeName;
-	}
-
-	/**
-	 * @see IClassFileAttribute#getAttributeLength()
-	 */
-	@Override
-	public long getAttributeLength() {
-		return Integer.toUnsignedLong(this.attributeLength);
-	}
+    /**
+     * @see IClassFileAttribute#getAttributeLength()
+     */
+    @Override
+    public long getAttributeLength() {
+        return Integer.toUnsignedLong(this.attributeLength);
+    }
 
 }

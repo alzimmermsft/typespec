@@ -48,40 +48,6 @@ class MarkerDeltaManager {
         return result;
     }
 
-    /**
-     * Flushes all delta batches up to but not including the given start Id.
-     */
-    @SuppressWarnings("unchecked")
-    protected void resetDeltas(long startId) {
-        // find offset of first batch to keep
-        int startOffset = 0;
-        for (; startOffset < nextFree; startOffset++) {
-            if (startIds[startOffset] >= startId) {
-                break;
-            }
-        }
-        if (startOffset == 0) {
-            return;
-        }
-        long[] newIds = startIds;
-        Map<IPath, MarkerSet>[] newBatches = batches;
-        // shrink the arrays if it has grown too large
-        if (startIds.length > DEFAULT_SIZE && (nextFree - startOffset < DEFAULT_SIZE)) {
-            newIds = new long[DEFAULT_SIZE];
-            newBatches = new Map[DEFAULT_SIZE];
-        }
-        // copy and compact into the new array
-        int remaining = nextFree - startOffset;
-        System.arraycopy(startIds, startOffset, newIds, 0, remaining);
-        System.arraycopy(batches, startOffset, newBatches, 0, remaining);
-        // clear the end of the array
-        Arrays.fill(startIds, remaining, startIds.length, 0);
-        Arrays.fill(batches, remaining, startIds.length, null);
-        startIds = newIds;
-        batches = newBatches;
-        nextFree = remaining;
-    }
-
     @SuppressWarnings("unchecked")
     protected Map<IPath, MarkerSet> newGeneration(long start) {
         int len = startIds.length;

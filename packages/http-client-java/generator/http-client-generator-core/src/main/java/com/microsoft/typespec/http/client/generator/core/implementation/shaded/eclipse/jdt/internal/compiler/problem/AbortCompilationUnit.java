@@ -13,9 +13,9 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.problem;
 
-import java.io.IOException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CategorizedProblem;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.CompilationResult;
+import java.io.IOException;
 
 /*
  * Special unchecked exception type used
@@ -25,19 +25,19 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class AbortCompilationUnit extends AbortCompilation {
 
-	private static final long serialVersionUID = -4253893529982226734L; // backward compatible
+    private static final long serialVersionUID = -4253893529982226734L; // backward compatible
 
-	public String encoding;
+    public String encoding;
 
-public AbortCompilationUnit(CompilationResult compilationResult, CategorizedProblem problem) {
-	super(compilationResult, problem);
-}
+    public AbortCompilationUnit(CompilationResult compilationResult, CategorizedProblem problem) {
+        super(compilationResult, problem);
+    }
 
-/**
- * Used to surface encoding issues when reading sources
- */
-public AbortCompilationUnit(CompilationResult compilationResult, IOException exception, String encoding) {
-	super(compilationResult, exception);
-	this.encoding = encoding;
-}
+    /**
+     * Used to surface encoding issues when reading sources
+     */
+    public AbortCompilationUnit(CompilationResult compilationResult, IOException exception, String encoding) {
+        super(compilationResult, exception);
+        this.encoding = encoding;
+    }
 }

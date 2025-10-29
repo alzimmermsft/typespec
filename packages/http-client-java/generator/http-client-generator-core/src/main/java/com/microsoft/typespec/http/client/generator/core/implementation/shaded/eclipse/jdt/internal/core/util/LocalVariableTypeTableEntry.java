@@ -24,92 +24,90 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class LocalVariableTypeTableEntry extends ClassFileStruct implements ILocalVariableTypeTableEntry {
 
-	private final int startPC;
-	private final int length;
-	private final int nameIndex;
-	private final int signatureIndex;
-	private final char[] name;
-	private final char[] signature;
-	private final int index;
+    private final int startPC;
+    private final int length;
+    private final int nameIndex;
+    private final int signatureIndex;
+    private final char[] name;
+    private final char[] signature;
+    private final int index;
 
-	/**
-	 * Constructor for LocalVariableTypeTableEntry.
-	 */
-	public LocalVariableTypeTableEntry(
-		byte[] classFileBytes,
-		IConstantPool constantPool,
-		int offset) throws ClassFormatException {
-			this.startPC = u2At(classFileBytes, 0, offset);
-			this.length = u2At(classFileBytes, 2, offset);
-			this.nameIndex = u2At(classFileBytes, 4, offset);
-			this.signatureIndex = u2At(classFileBytes, 6, offset);
-			this.index = u2At(classFileBytes, 8, offset);
-			IConstantPoolEntry constantPoolEntry = constantPool.decodeEntry(this.nameIndex);
-			if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Utf8) {
-				throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
-			}
-			this.name = constantPoolEntry.getUtf8Value();
-			constantPoolEntry = constantPool.decodeEntry(this.signatureIndex);
-			if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Utf8) {
-				throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
-			}
-			this.signature = constantPoolEntry.getUtf8Value();
-		}
+    /**
+     * Constructor for LocalVariableTypeTableEntry.
+     */
+    public LocalVariableTypeTableEntry(byte[] classFileBytes, IConstantPool constantPool, int offset)
+        throws ClassFormatException {
+        this.startPC = u2At(classFileBytes, 0, offset);
+        this.length = u2At(classFileBytes, 2, offset);
+        this.nameIndex = u2At(classFileBytes, 4, offset);
+        this.signatureIndex = u2At(classFileBytes, 6, offset);
+        this.index = u2At(classFileBytes, 8, offset);
+        IConstantPoolEntry constantPoolEntry = constantPool.decodeEntry(this.nameIndex);
+        if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Utf8) {
+            throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
+        }
+        this.name = constantPoolEntry.getUtf8Value();
+        constantPoolEntry = constantPool.decodeEntry(this.signatureIndex);
+        if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Utf8) {
+            throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
+        }
+        this.signature = constantPoolEntry.getUtf8Value();
+    }
 
-	/**
-	 * @see ILocalVariableTypeTableEntry#getStartPC()
-	 */
-	@Override
-	public int getStartPC() {
-		return this.startPC;
-	}
+    /**
+     * @see ILocalVariableTypeTableEntry#getStartPC()
+     */
+    @Override
+    public int getStartPC() {
+        return this.startPC;
+    }
 
-	/**
-	 * @see ILocalVariableTypeTableEntry#getLength()
-	 */
-	@Override
-	public int getLength() {
-		return this.length;
-	}
+    /**
+     * @see ILocalVariableTypeTableEntry#getLength()
+     */
+    @Override
+    public int getLength() {
+        return this.length;
+    }
 
-	/**
-	 * @see ILocalVariableTypeTableEntry#getNameIndex()
-	 */
-	@Override
-	public int getNameIndex() {
-		return this.nameIndex;
-	}
+    /**
+     * @see ILocalVariableTypeTableEntry#getNameIndex()
+     */
+    @Override
+    public int getNameIndex() {
+        return this.nameIndex;
+    }
 
-	/**
-	 * @see ILocalVariableTypeTableEntry#getSignatureIndex()
-	 */
-	@Override
-	public int getSignatureIndex() {
-		return this.signatureIndex;
-	}
+    /**
+     * @see ILocalVariableTypeTableEntry#getSignatureIndex()
+     */
+    @Override
+    public int getSignatureIndex() {
+        return this.signatureIndex;
+    }
 
-	/**
-	 * @see ILocalVariableTypeTableEntry#getIndex()
-	 */
-	@Override
-	public int getIndex() {
-		return this.index;
-	}
+    /**
+     * @see ILocalVariableTypeTableEntry#getIndex()
+     */
+    @Override
+    public int getIndex() {
+        return this.index;
+    }
 
-	/**
-	 * @see ILocalVariableTypeTableEntry#getName()
-	 */
-	@Override
-	public char[] getName() {
-		return this.name;
-	}
+    /**
+     * @see ILocalVariableTypeTableEntry#getName()
+     */
+    @Override
+    public char[] getName() {
+        return this.name;
+    }
 
-	/**
-	 * @see ILocalVariableTypeTableEntry#getSignature()
-	 */
-	@Override
-	public char[] getSignature() {
-		return this.signature;
-	}
+    /**
+     * @see ILocalVariableTypeTableEntry#getSignature()
+     */
+    @Override
+    public char[] getSignature() {
+        return this.signature;
+    }
 
 }

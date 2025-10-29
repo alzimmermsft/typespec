@@ -23,11 +23,10 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr;
 
-import java.lang.reflect.Method;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Memory;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.PointerType;
+import java.lang.reflect.Method;
 
 /**
  * Provides generic "pointer to type" functionality, often used in C code to
@@ -48,10 +47,10 @@ public abstract class ByReference extends PointerType {
      * Allocates memory at this pointer, to contain the pointed-to value.
      *
      * @param dataSize
-     *            The number of bytes to allocate. Must match the byte size of
-     *            <code>T</code> in the derived class
-     *            <code>setValue(&lt;T&gt;)</code> and
-     *            <code>&lt;T&gt; getValue()</code> methods.
+     * The number of bytes to allocate. Must match the byte size of
+     * <code>T</code> in the derived class
+     * <code>setValue(&lt;T&gt;)</code> and
+     * <code>&lt;T&gt; getValue()</code> methods.
      */
     protected ByReference(int dataSize) {
         setPointer(new Memory(dataSize));
@@ -66,10 +65,10 @@ public abstract class ByReference extends PointerType {
                 return String.format("null@0x%x", Pointer.nativeValue(getPointer()));
             }
             return String.format("%s@0x%x=%s", value.getClass().getSimpleName(), Pointer.nativeValue(getPointer()),
-                    value);
+                value);
         } catch (Exception ex) {
             return String.format("ByReference Contract violated - %s#getValue raised exception: %s",
-                    getClass().getName(), ex.getMessage());
+                getClass().getName(), ex.getMessage());
         }
     }
 }

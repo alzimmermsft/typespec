@@ -23,90 +23,94 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class BreakStatement extends BranchStatement {
 
-public BreakStatement(char[] label, int sourceStart, int e) {
-	super(label, sourceStart, e);
-}
-@Override
-public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
+    public BreakStatement(char[] label, int sourceStart, int e) {
+        super(label, sourceStart, e);
+    }
 
-	// here requires to generate a sequence of finally blocks invocations depending corresponding
-	// to each of the traversed try statements, so that execution will terminate properly.
+    @Override
+    public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
 
-	// lookup the label, this should answer the returnContext
-	FlowContext targetContext = (this.label == null)
-		? flowContext.getTargetContextForDefaultBreak()
-		: flowContext.getTargetContextForBreakLabel(this.label);
+        // here requires to generate a sequence of finally blocks invocations depending corresponding
+        // to each of the traversed try statements, so that execution will terminate properly.
 
-	if (targetContext == null) {
-		if (this.label == null) {
-			currentScope.problemReporter().invalidBreak(this);
-		} else {
-			currentScope.problemReporter().undefinedLabel(this);
-		}
-		return flowInfo; // pretend it did not break since no actual target
-	} else if (targetContext == FlowContext.NonLocalGotoThroughSwitchContext) { // JLS 13 14.15
-		currentScope.problemReporter().breakOutOfSwitchExpression(this);
-		return flowInfo; // pretend it did not break since no actual target
-	}
+        // lookup the label, this should answer the returnContext
+        FlowContext targetContext = (this.label == null)
+            ? flowContext.getTargetContextForDefaultBreak()
+            : flowContext.getTargetContextForBreakLabel(this.label);
 
-	targetContext.recordAbruptExit();
-	targetContext.expireNullCheckedFieldInfo();
+        if (targetContext == null) {
+            if (this.label == null) {
+                currentScope.problemReporter().invalidBreak(this);
+            } else {
+                currentScope.problemReporter().undefinedLabel(this);
+            }
+            return flowInfo; // pretend it did not break since no actual target
+        } else if (targetContext == FlowContext.NonLocalGotoThroughSwitchContext) { // JLS 13 14.15
+            currentScope.problemReporter().breakOutOfSwitchExpression(this);
+            return flowInfo; // pretend it did not break since no actual target
+        }
 
-	this.initStateIndex =
-		currentScope.methodScope().recordInitializationStates(flowInfo);
+        targetContext.recordAbruptExit();
+        targetContext.expireNullCheckedFieldInfo();
 
-	this.targetLabel = targetContext.breakLabel();
-	FlowContext traversedContext = flowContext;
-	int stmtCount = 0;
-	this.statementsWithFinallyBlock = new StatementWithFinallyBlock[5];
+        this.initStateIndex = currentScope.methodScope().recordInitializationStates(flowInfo);
 
-	do {
-		StatementWithFinallyBlock stmt;
-		if ((stmt = traversedContext.statementWithFinallyBlock()) != null) {
-			if (stmtCount == this.statementsWithFinallyBlock.length) {
-				System.arraycopy(this.statementsWithFinallyBlock, 0, (this.statementsWithFinallyBlock = new StatementWithFinallyBlock[stmtCount*2]), 0, stmtCount); // grow
-			}
-			this.statementsWithFinallyBlock[stmtCount++] = stmt;
-			if (stmt.isFinallyBlockEscaping()) {
-				break;
-			}
-		}
-		traversedContext.recordReturnFrom(flowInfo.unconditionalInits());
-		traversedContext.recordBreakTo(targetContext);
+        this.targetLabel = targetContext.breakLabel();
+        FlowContext traversedContext = flowContext;
+        int stmtCount = 0;
+        this.statementsWithFinallyBlock = new StatementWithFinallyBlock[5];
 
-		if (traversedContext instanceof InsideStatementWithFinallyBlockFlowContext) {
-			ASTNode node = traversedContext.associatedNode;
-			if (node instanceof TryStatement) {
-				TryStatement tryStatement = (TryStatement) node;
-				flowInfo.addInitializationsFrom(tryStatement.finallyBlockInits); // collect inits
-			}
-		} else if (traversedContext == targetContext) {
-			// only record break info once accumulated, and only against target context
-			targetContext.recordBreakFrom(flowInfo);
-			break;
-		}
-	} while ((traversedContext = traversedContext.getLocalParent()) != null);
+        do {
+            StatementWithFinallyBlock stmt;
+            if ((stmt = traversedContext.statementWithFinallyBlock()) != null) {
+                if (stmtCount == this.statementsWithFinallyBlock.length) {
+                    System.arraycopy(this.statementsWithFinallyBlock, 0,
+                        (this.statementsWithFinallyBlock = new StatementWithFinallyBlock[stmtCount * 2]), 0, stmtCount); // grow
+                }
+                this.statementsWithFinallyBlock[stmtCount++] = stmt;
+                if (stmt.isFinallyBlockEscaping()) {
+                    break;
+                }
+            }
+            traversedContext.recordReturnFrom(flowInfo.unconditionalInits());
+            traversedContext.recordBreakTo(targetContext);
 
-	if (stmtCount != this.statementsWithFinallyBlock.length) {
-		System.arraycopy(this.statementsWithFinallyBlock, 0, (this.statementsWithFinallyBlock = new StatementWithFinallyBlock[stmtCount]), 0, stmtCount);
-	}
-	return FlowInfo.DEAD_END;
-}
+            if (traversedContext instanceof InsideStatementWithFinallyBlockFlowContext) {
+                ASTNode node = traversedContext.associatedNode;
+                if (node instanceof TryStatement) {
+                    TryStatement tryStatement = (TryStatement) node;
+                    flowInfo.addInitializationsFrom(tryStatement.finallyBlockInits); // collect inits
+                }
+            } else if (traversedContext == targetContext) {
+                // only record break info once accumulated, and only against target context
+                targetContext.recordBreakFrom(flowInfo);
+                break;
+            }
+        } while ((traversedContext = traversedContext.getLocalParent()) != null);
 
-@Override
-public StringBuilder printStatement(int tab, StringBuilder output) {
-	printIndent(tab, output).append("break"); //$NON-NLS-1$
-	if (this.label != null) output.append(' ').append(this.label);
-	return output.append(';');
-}
+        if (stmtCount != this.statementsWithFinallyBlock.length) {
+            System.arraycopy(this.statementsWithFinallyBlock, 0,
+                (this.statementsWithFinallyBlock = new StatementWithFinallyBlock[stmtCount]), 0, stmtCount);
+        }
+        return FlowInfo.DEAD_END;
+    }
 
-@Override
-public void traverse(ASTVisitor visitor, BlockScope blockscope) {
-	visitor.visit(this, blockscope);
-	visitor.endVisit(this, blockscope);
-}
-@Override
-public boolean doesNotCompleteNormally() {
-	return true;
-}
+    @Override
+    public StringBuilder printStatement(int tab, StringBuilder output) {
+        printIndent(tab, output).append("break"); //$NON-NLS-1$
+        if (this.label != null)
+            output.append(' ').append(this.label);
+        return output.append(';');
+    }
+
+    @Override
+    public void traverse(ASTVisitor visitor, BlockScope blockscope) {
+        visitor.visit(this, blockscope);
+        visitor.endVisit(this, blockscope);
+    }
+
+    @Override
+    public boolean doesNotCompleteNormally() {
+        return true;
+    }
 }

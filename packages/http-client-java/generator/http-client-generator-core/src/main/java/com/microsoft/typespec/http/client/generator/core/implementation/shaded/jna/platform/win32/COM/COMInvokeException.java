@@ -51,18 +51,17 @@ public class COMInvokeException extends COMException {
      * Instantiates a new automation exception.
      *
      * @param message
-     *            the message
+     * the message
      */
     public COMInvokeException(String message) {
         this(message, (Throwable) null);
     }
 
-
     /**
      * Instantiates a new automation exception.
      *
      * @param cause
-     *            the cause
+     * the cause
      */
     public COMInvokeException(Throwable cause) {
         this(null, cause);
@@ -72,9 +71,9 @@ public class COMInvokeException extends COMException {
      * Instantiates a new automation exception.
      *
      * @param message
-     *            the message
+     * the message
      * @param cause
-     *            the cause
+     * the cause
      */
     public COMInvokeException(String message, Throwable cause) {
         super(message, cause);
@@ -108,9 +107,8 @@ public class COMInvokeException extends COMException {
      * Either this field or the scode field must be filled in; the other must be
      * set to 0.
      */
-    public COMInvokeException(String message, HRESULT hresult, Integer errorArg,
-            String description, Integer helpContext, String helpFile,
-            Integer scode, String source, Integer wCode) {
+    public COMInvokeException(String message, HRESULT hresult, Integer errorArg, String description,
+        Integer helpContext, String helpFile, Integer scode, String source, Integer wCode) {
         super(formatMessage(hresult, message, errorArg), hresult);
         this.description = description;
         this.errorArg = errorArg;
@@ -181,8 +179,7 @@ public class COMInvokeException extends COMException {
     }
 
     private static String formatMessage(HRESULT hresult, String message, Integer errArg) {
-        if (hresult.intValue() == WinError.DISP_E_TYPEMISMATCH
-                || hresult.intValue() == WinError.DISP_E_PARAMNOTFOUND) {
+        if (hresult.intValue() == WinError.DISP_E_TYPEMISMATCH || hresult.intValue() == WinError.DISP_E_PARAMNOTFOUND) {
             return message + " (puArgErr=" + errArg + ")";
         } else {
             return message;

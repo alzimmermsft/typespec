@@ -35,48 +35,48 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 public final class NativeNamespace extends Namespace {
 
-	/**
-	 * Namespace name for native capabilities and requirements.
-	 */
-	public static final String	NATIVE_NAMESPACE				= "osgi.native";
+    /**
+     * Namespace name for native capabilities and requirements.
+     */
+    public static final String NATIVE_NAMESPACE = "osgi.native";
 
-	/**
-	 * The capability attribute contains alias values of the
-	 * {@link Constants#FRAMEWORK_OS_NAME org.osgi.framework.os.name} launching
-	 * property value according to the
-	 * <a href="https://docs.osgi.org/reference/">OSGi
-	 * Specification References</a>. The value of this attribute must be of type
-	 * {@code List<String>}.
-	 */
-	public final static String	CAPABILITY_OSNAME_ATTRIBUTE		= NATIVE_NAMESPACE + ".osname";
+    /**
+     * The capability attribute contains alias values of the
+     * {@link Constants#FRAMEWORK_OS_NAME org.osgi.framework.os.name} launching
+     * property value according to the
+     * <a href="https://docs.osgi.org/reference/">OSGi
+     * Specification References</a>. The value of this attribute must be of type
+     * {@code List<String>}.
+     */
+    public final static String CAPABILITY_OSNAME_ATTRIBUTE = NATIVE_NAMESPACE + ".osname";
 
-	/**
-	 * The capability attribute contains a {@code Version} parsed from the
-	 * {@link Constants#FRAMEWORK_OS_VERSION org.osgi.framework.os.version}
-	 * launching property value. The value of this attribute must be of type
-	 * {@code Version}.
-	 */
-	public final static String	CAPABILITY_OSVERSION_ATTRIBUTE	= NATIVE_NAMESPACE + ".osversion";
+    /**
+     * The capability attribute contains a {@code Version} parsed from the
+     * {@link Constants#FRAMEWORK_OS_VERSION org.osgi.framework.os.version}
+     * launching property value. The value of this attribute must be of type
+     * {@code Version}.
+     */
+    public final static String CAPABILITY_OSVERSION_ATTRIBUTE = NATIVE_NAMESPACE + ".osversion";
 
-	/**
-	 * The capability attribute contains alias values of the
-	 * {@link Constants#FRAMEWORK_PROCESSOR org.osgi.framework.processor}
-	 * launching property value according to the
-	 * <a href="https://docs.osgi.org/reference/">OSGi
-	 * Specification References</a>. The value of this attribute must be of type
-	 * {@code List<String>}.
-	 */
-	public final static String	CAPABILITY_PROCESSOR_ATTRIBUTE	= NATIVE_NAMESPACE + ".processor";
+    /**
+     * The capability attribute contains alias values of the
+     * {@link Constants#FRAMEWORK_PROCESSOR org.osgi.framework.processor}
+     * launching property value according to the
+     * <a href="https://docs.osgi.org/reference/">OSGi
+     * Specification References</a>. The value of this attribute must be of type
+     * {@code List<String>}.
+     */
+    public final static String CAPABILITY_PROCESSOR_ATTRIBUTE = NATIVE_NAMESPACE + ".processor";
 
-	/**
-	 * The capability attribute contains the
-	 * {@link Constants#FRAMEWORK_LANGUAGE org.osgi.framework.language}
-	 * launching property value. The value of this attribute must be of type
-	 * {@code String}.
-	 */
-	public final static String	CAPABILITY_LANGUAGE_ATTRIBUTE	= NATIVE_NAMESPACE + ".language";
+    /**
+     * The capability attribute contains the
+     * {@link Constants#FRAMEWORK_LANGUAGE org.osgi.framework.language}
+     * launching property value. The value of this attribute must be of type
+     * {@code String}.
+     */
+    public final static String CAPABILITY_LANGUAGE_ATTRIBUTE = NATIVE_NAMESPACE + ".language";
 
-	private NativeNamespace() {
-		// empty
-	}
+    private NativeNamespace() {
+        // empty
+    }
 }

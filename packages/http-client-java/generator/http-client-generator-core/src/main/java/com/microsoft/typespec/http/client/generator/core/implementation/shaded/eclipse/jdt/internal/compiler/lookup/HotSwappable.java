@@ -15,5 +15,6 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup;
 
 interface HotSwappable {
-	void swapUnresolved(UnresolvedReferenceBinding unresolvedType, ReferenceBinding resolvedType, LookupEnvironment env);
+    void swapUnresolved(UnresolvedReferenceBinding unresolvedType, ReferenceBinding resolvedType,
+        LookupEnvironment env);
 }

@@ -23,9 +23,8 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna;
 
-import java.lang.reflect.InvocationTargetException;
-
-/** Type representing a type-safe native pointer.
+/**
+ * Type representing a type-safe native pointer.
  * Derived classes may override the {@link NativeMapped#fromNative} method,
  * which should instantiate a new object (or look up an existing one)
  * of the appropriate type.
@@ -38,7 +37,8 @@ public abstract class PointerType implements NativeMapped {
         this.pointer = Pointer.NULL;
     }
 
-    /** This constructor is typically used by {@link #fromNative} if generating
+    /**
+     * This constructor is typically used by {@link #fromNative} if generating
      * a new object instance.
      */
     protected PointerType(Pointer p) {
@@ -57,8 +57,10 @@ public abstract class PointerType implements NativeMapped {
         return getPointer();
     }
 
-    /** Returns the associated native {@link Pointer}.
-        @return Native pointer representation for this object.
+    /**
+     * Returns the associated native {@link Pointer}.
+     * 
+     * @return Native pointer representation for this object.
      */
     public Pointer getPointer() {
         return pointer;
@@ -68,8 +70,9 @@ public abstract class PointerType implements NativeMapped {
         this.pointer = p;
     }
 
-    /** The default implementation simply creates a new instance of the class
-     * and assigns its pointer field.  Override if you need different behavior,
+    /**
+     * The default implementation simply creates a new instance of the class
+     * and assigns its pointer field. Override if you need different behavior,
      * such as ensuring a single {@link PointerType} instance for each unique
      * {@link Pointer} value, or instantiating a different {@link PointerType}
      * subclass.
@@ -81,11 +84,12 @@ public abstract class PointerType implements NativeMapped {
             return null;
         }
         PointerType pt = Klass.newInstance(getClass());
-        pt.pointer = (Pointer)nativeValue;
+        pt.pointer = (Pointer) nativeValue;
         return pt;
     }
 
-    /** The hash code for a <code>PointerType</code> is the same as that for
+    /**
+     * The hash code for a <code>PointerType</code> is the same as that for
      * its pointer.
      */
     @Override
@@ -93,7 +97,8 @@ public abstract class PointerType implements NativeMapped {
         return pointer != null ? pointer.hashCode() : 0;
     }
 
-    /** Instances of <code>PointerType</code> with identical pointers compare
+    /**
+     * Instances of <code>PointerType</code> with identical pointers compare
      * equal by default.
      */
     @Override
@@ -102,7 +107,7 @@ public abstract class PointerType implements NativeMapped {
             return true;
         }
         if (o instanceof PointerType) {
-            Pointer p = ((PointerType)o).getPointer();
+            Pointer p = ((PointerType) o).getPointer();
             if (pointer == null) {
                 return p == null;
             }

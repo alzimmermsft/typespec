@@ -14,10 +14,8 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IAdaptable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.jobs.ISchedulingRule;
 
 /**
  * Common protocol for all elements provided by the Java model.
@@ -34,7 +32,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * 
  * @noimplement This interface is not intended to be implemented by clients.
  */
-public interface IJavaElement extends IAdaptable {
+public interface IJavaElement {
 
     /**
      * Constant representing a Java model (workspace level object).
@@ -334,15 +332,6 @@ public interface IJavaElement extends IAdaptable {
      * @since 2.0
      */
     IResource getResource();
-
-    /**
-     * Returns the scheduling rule associated with this Java element.
-     * This is a handle-only method.
-     *
-     * @return the scheduling rule associated with this Java element
-     * @since 3.0
-     */
-    ISchedulingRule getSchedulingRule();
 
     /**
      * Returns the smallest underlying resource that contains

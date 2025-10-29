@@ -22,56 +22,56 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * chain of wrapped bundle files.
  */
 public class BundleFileWrapperChain extends BundleFileWrapper {
-	private final BundleFile wrapped;
-	private final BundleFileWrapperChain next;
+    private final BundleFile wrapped;
+    private final BundleFileWrapperChain next;
 
-	public BundleFileWrapperChain(BundleFile wrapped, BundleFileWrapperChain next) {
-		super(wrapped);
-		this.wrapped = wrapped;
-		this.next = next;
-	}
+    public BundleFileWrapperChain(BundleFile wrapped, BundleFileWrapperChain next) {
+        super(wrapped);
+        this.wrapped = wrapped;
+        this.next = next;
+    }
 
-	@Override
-	public String toString() {
-		return wrapped.toString();
-	}
+    @Override
+    public String toString() {
+        return wrapped.toString();
+    }
 
-	/**
-	 * The BundleFile that is wrapped
-	 * 
-	 * @return the BunldeFile that is wrapped
-	 */
-	public BundleFile getWrapped() {
-		return wrapped;
-	}
+    /**
+     * The BundleFile that is wrapped
+     * 
+     * @return the BunldeFile that is wrapped
+     */
+    public BundleFile getWrapped() {
+        return wrapped;
+    }
 
-	/**
-	 * The next WrapperBundleFile in the chain. A <code>null</code> value is
-	 * returned if this is the end of the chain.
-	 * 
-	 * @return the next WrapperBundleFile
-	 */
-	public BundleFileWrapperChain getNext() {
-		return next;
-	}
+    /**
+     * The next WrapperBundleFile in the chain. A <code>null</code> value is
+     * returned if this is the end of the chain.
+     * 
+     * @return the next WrapperBundleFile
+     */
+    public BundleFileWrapperChain getNext() {
+        return next;
+    }
 
-	/**
-	 * Returns the first bundle file wrapped in this chain which also is an instance
-	 * of the specified type.
-	 * 
-	 * @param <T>  The type being searched for
-	 * @param type the class of the type being searched for
-	 * @return the found bundle file that is an instance of the specified type
-	 */
-	@SuppressWarnings("unchecked")
-	public <T> T getWrappedType(Class<T> type) {
-		BundleFileWrapperChain current = this;
-		do {
-			if (type.isInstance(current.getWrapped())) {
-				return (T) current.getWrapped();
-			}
-			current = current.getNext();
-		} while (current != null);
-		return null;
-	}
+    /**
+     * Returns the first bundle file wrapped in this chain which also is an instance
+     * of the specified type.
+     * 
+     * @param <T> The type being searched for
+     * @param type the class of the type being searched for
+     * @return the found bundle file that is an instance of the specified type
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getWrappedType(Class<T> type) {
+        BundleFileWrapperChain current = this;
+        do {
+            if (type.isInstance(current.getWrapped())) {
+                return (T) current.getWrapped();
+            }
+            current = current.getNext();
+        } while (current != null);
+        return null;
+    }
 }

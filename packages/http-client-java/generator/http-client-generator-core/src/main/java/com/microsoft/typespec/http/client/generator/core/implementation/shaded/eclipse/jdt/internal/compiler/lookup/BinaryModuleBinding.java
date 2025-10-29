@@ -13,9 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup;
 
-import java.net.URI;
-import java.util.LinkedHashMap;
-import java.util.stream.Stream;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CharOperation;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IBinaryAnnotation;
@@ -26,233 +23,250 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IModule.IService;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IModuleAwareNameEnvironment;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.Util;
+import java.net.URI;
+import java.util.LinkedHashMap;
+import java.util.stream.Stream;
 
 public class BinaryModuleBinding extends ModuleBinding {
 
-	private static class AutomaticModuleBinding extends ModuleBinding {
+    private static class AutomaticModuleBinding extends ModuleBinding {
 
-		boolean autoNameFromManifest;
-		boolean hasScannedPackages;
+        boolean autoNameFromManifest;
+        boolean hasScannedPackages;
 
-		public AutomaticModuleBinding(IModule module, LookupEnvironment existingEnvironment) {
-			super(module.name(), existingEnvironment);
-			existingEnvironment.root.knownModules.put(this.moduleName, this);
-			this.isAuto = true;
-			this.autoNameFromManifest = module.isAutoNameFromManifest();
-			this.requires = Binding.NO_MODULES;
-			this.requiresTransitive = Binding.NO_MODULES;
-			this.exportedPackages = Binding.NO_PLAIN_PACKAGES;
-			this.hasScannedPackages = false;
-		}
-		@Override
-		public boolean hasUnstableAutoName() {
-			return !this.autoNameFromManifest;
-		}
-		@Override
-		public ModuleBinding[] getRequiresTransitive() {
-			if (this.requiresTransitive == NO_MODULES) {
-				char[][] autoModules = ((IModuleAwareNameEnvironment)this.environment.nameEnvironment).getAllAutomaticModules();
-				this.requiresTransitive = Stream.of(autoModules)
-					.filter(name -> !CharOperation.equals(name, this.moduleName))
-					.map(name -> this.environment.getModule(name)).filter(m -> m != null)
-					.toArray(ModuleBinding[]::new);
-			}
-			return this.requiresTransitive;
-		}
-		@Override
-		PlainPackageBinding getDeclaredPackage(char[] flatName) {
-			if (!this.hasScannedPackages) {
-				for (char[] packageName : (((IModuleAwareNameEnvironment)this.environment.nameEnvironment).listPackages(nameForCUCheck()))) {
-					if (packageName.length > 0) // skip unnamed package from auto module (would be illegal when seen through the module)
-						getOrCreateDeclaredPackage(CharOperation.splitOn('.', packageName));
-				}
-				this.hasScannedPackages = true;
-			}
-			return this.declaredPackages.get(flatName);
-		}
+        public AutomaticModuleBinding(IModule module, LookupEnvironment existingEnvironment) {
+            super(module.name(), existingEnvironment);
+            existingEnvironment.root.knownModules.put(this.moduleName, this);
+            this.isAuto = true;
+            this.autoNameFromManifest = module.isAutoNameFromManifest();
+            this.requires = Binding.NO_MODULES;
+            this.requiresTransitive = Binding.NO_MODULES;
+            this.exportedPackages = Binding.NO_PLAIN_PACKAGES;
+            this.hasScannedPackages = false;
+        }
 
-		@Override
-		public char[] nameForLookup() {
-			return ANY_NAMED;
-		}
+        @Override
+        public boolean hasUnstableAutoName() {
+            return !this.autoNameFromManifest;
+        }
 
-		@Override
-		public char[] nameForCUCheck() {
-			return this.moduleName;
-		}
-	}
+        @Override
+        public ModuleBinding[] getRequiresTransitive() {
+            if (this.requiresTransitive == NO_MODULES) {
+                char[][] autoModules
+                    = ((IModuleAwareNameEnvironment) this.environment.nameEnvironment).getAllAutomaticModules();
+                this.requiresTransitive = Stream.of(autoModules)
+                    .filter(name -> !CharOperation.equals(name, this.moduleName))
+                    .map(name -> this.environment.getModule(name))
+                    .filter(m -> m != null)
+                    .toArray(ModuleBinding[]::new);
+            }
+            return this.requiresTransitive;
+        }
 
-	private IPackageExport[] unresolvedExports;
-	private IPackageExport[] unresolvedOpens;
-	private char[][] unresolvedUses;
-	private IService[] unresolvedProvides;
-	public URI path;
+        @Override
+        PlainPackageBinding getDeclaredPackage(char[] flatName) {
+            if (!this.hasScannedPackages) {
+                for (char[] packageName : (((IModuleAwareNameEnvironment) this.environment.nameEnvironment)
+                    .listPackages(nameForCUCheck()))) {
+                    if (packageName.length > 0) // skip unnamed package from auto module (would be illegal when seen
+                                                // through the module)
+                        getOrCreateDeclaredPackage(CharOperation.splitOn('.', packageName));
+                }
+                this.hasScannedPackages = true;
+            }
+            return this.declaredPackages.get(flatName);
+        }
 
-	/**
-	 * Construct a named module from binary, could be an auto module - or from an info from Java Model.
-	 * <p>
-	 * <strong>precondition:</strong> module must be either IBinaryModule or IModule.AutoModule
-	 * </p>
-	 * <p>
-	 * <strong>Side effects:</strong> adds the new module to root.knownModules and resolves its directives.
-	 * </p>
-	 */
-	public static ModuleBinding create(IModule module, LookupEnvironment existingEnvironment) {
-		if (module.isAutomatic())
-			return new AutomaticModuleBinding(module, existingEnvironment);
-		return new BinaryModuleBinding((IBinaryModule) module, existingEnvironment);
-	}
+        @Override
+        public char[] nameForLookup() {
+            return ANY_NAMED;
+        }
 
-	private BinaryModuleBinding(IBinaryModule module, LookupEnvironment existingEnvironment) {
-		super(module.name(), existingEnvironment);
-		existingEnvironment.root.knownModules.put(this.moduleName, this);
-		cachePartsFrom(module);
-		this.path = module.getURI();
-	}
+        @Override
+        public char[] nameForCUCheck() {
+            return this.moduleName;
+        }
+    }
 
-	void cachePartsFrom(IBinaryModule module) {
-		if (module.isOpen())
-			this.modifiers |= ClassFileConstants.ACC_OPEN;
-		this.tagBits |= module.getTagBits();
+    private IPackageExport[] unresolvedExports;
+    private IPackageExport[] unresolvedOpens;
+    private char[][] unresolvedUses;
+    private IService[] unresolvedProvides;
+    public URI path;
 
-		IModuleReference[] requiresReferences = module.requires();
-		this.requires = new ModuleBinding[requiresReferences.length];
-		this.requiresTransitive = new ModuleBinding[requiresReferences.length];
-		int count = 0;
-		int transitiveCount = 0;
-		for (IModuleReference ref : requiresReferences) {
-			ModuleBinding requiredModule = this.environment.getModule(ref.name());
-			if (requiredModule != null) {
-				this.requires[count++] = requiredModule;
-				if (ref.isTransitive())
-					this.requiresTransitive[transitiveCount++] = requiredModule;
-			}
-			// TODO(SHMOD): handle null case
-		}
-		if (count < this.requires.length)
-			System.arraycopy(this.requires, 0, this.requires = new ModuleBinding[count], 0, count);
-		if (transitiveCount < this.requiresTransitive.length)
-			System.arraycopy(this.requiresTransitive, 0, this.requiresTransitive = new ModuleBinding[transitiveCount], 0, transitiveCount);
+    /**
+     * Construct a named module from binary, could be an auto module - or from an info from Java Model.
+     * <p>
+     * <strong>precondition:</strong> module must be either IBinaryModule or IModule.AutoModule
+     * </p>
+     * <p>
+     * <strong>Side effects:</strong> adds the new module to root.knownModules and resolves its directives.
+     * </p>
+     */
+    public static ModuleBinding create(IModule module, LookupEnvironment existingEnvironment) {
+        if (module.isAutomatic())
+            return new AutomaticModuleBinding(module, existingEnvironment);
+        return new BinaryModuleBinding((IBinaryModule) module, existingEnvironment);
+    }
 
-		this.unresolvedExports = module.exports();
-		this.unresolvedOpens = module.opens();
-		this.unresolvedUses = module.uses();
-		this.unresolvedProvides = module.provides();
-		if (this.environment.globalOptions.isAnnotationBasedNullAnalysisEnabled) {
-			scanForNullDefaultAnnotation(module);
-		}
-		if ((this.tagBits & TagBits.AnnotationDeprecated) != 0 || this.environment.globalOptions.storeAnnotations) {
-			this.setAnnotations(BinaryTypeBinding.createAnnotations(module.getAnnotations(), this.environment, null), true);
-		}
-	}
+    private BinaryModuleBinding(IBinaryModule module, LookupEnvironment existingEnvironment) {
+        super(module.name(), existingEnvironment);
+        existingEnvironment.root.knownModules.put(this.moduleName, this);
+        cachePartsFrom(module);
+        this.path = module.getURI();
+    }
 
-	private void scanForNullDefaultAnnotation(IBinaryModule binaryModule) {
-		// trimmed-down version of BinaryTypeBinding.scanForNullDefaultAnnotation()
-		char[][] nonNullByDefaultAnnotationName = this.environment.getNonNullByDefaultAnnotationName();
-		if (nonNullByDefaultAnnotationName == null)
-			return; // not well-configured to use null annotations
+    void cachePartsFrom(IBinaryModule module) {
+        if (module.isOpen())
+            this.modifiers |= ClassFileConstants.ACC_OPEN;
+        this.tagBits |= module.getTagBits();
 
-		IBinaryAnnotation[] annotations = binaryModule.getAnnotations();
-		if (annotations != null) {
-			int nullness = NO_NULL_DEFAULT;
-			int length = annotations.length;
-			for (int i = 0; i < length; i++) {
-				char[] annotationTypeName = annotations[i].getTypeName();
-				if (annotationTypeName[0] != Util.C_RESOLVED)
-					continue;
-				int typeBit = this.environment.getAnalysisAnnotationBit(BinaryTypeBinding.signature2qualifiedTypeName(annotationTypeName));
-				if (typeBit == TypeIds.BitNonNullByDefaultAnnotation) {
-					// using NonNullByDefault we need to inspect the details of the value() attribute:
-					nullness |= BinaryTypeBinding.getNonNullByDefaultValue(annotations[i], this.environment);
-				}
-			}
-			this.defaultNullness = nullness;
-		}
-	}
+        IModuleReference[] requiresReferences = module.requires();
+        this.requires = new ModuleBinding[requiresReferences.length];
+        this.requiresTransitive = new ModuleBinding[requiresReferences.length];
+        int count = 0;
+        int transitiveCount = 0;
+        for (IModuleReference ref : requiresReferences) {
+            ModuleBinding requiredModule = this.environment.getModule(ref.name());
+            if (requiredModule != null) {
+                this.requires[count++] = requiredModule;
+                if (ref.isTransitive())
+                    this.requiresTransitive[transitiveCount++] = requiredModule;
+            }
+            // TODO(SHMOD): handle null case
+        }
+        if (count < this.requires.length)
+            System.arraycopy(this.requires, 0, this.requires = new ModuleBinding[count], 0, count);
+        if (transitiveCount < this.requiresTransitive.length)
+            System.arraycopy(this.requiresTransitive, 0, this.requiresTransitive = new ModuleBinding[transitiveCount],
+                0, transitiveCount);
 
-	@Override
-	public PlainPackageBinding[] getExports() {
-		if (this.exportedPackages == null && this.unresolvedExports != null)
-			resolvePackages();
-		return super.getExports();
-	}
+        this.unresolvedExports = module.exports();
+        this.unresolvedOpens = module.opens();
+        this.unresolvedUses = module.uses();
+        this.unresolvedProvides = module.provides();
+        if (this.environment.globalOptions.isAnnotationBasedNullAnalysisEnabled) {
+            scanForNullDefaultAnnotation(module);
+        }
+        if ((this.tagBits & TagBits.AnnotationDeprecated) != 0 || this.environment.globalOptions.storeAnnotations) {
+            this.setAnnotations(BinaryTypeBinding.createAnnotations(module.getAnnotations(), this.environment, null),
+                true);
+        }
+    }
 
-	@Override
-	public PlainPackageBinding[] getOpens() {
-		if (this.openedPackages == null && this.unresolvedOpens != null)
-			resolvePackages();
-		return super.getOpens();
-	}
+    private void scanForNullDefaultAnnotation(IBinaryModule binaryModule) {
+        // trimmed-down version of BinaryTypeBinding.scanForNullDefaultAnnotation()
+        char[][] nonNullByDefaultAnnotationName = this.environment.getNonNullByDefaultAnnotationName();
+        if (nonNullByDefaultAnnotationName == null)
+            return; // not well-configured to use null annotations
 
-	private void resolvePackages() {
-		this.exportedPackages = new PlainPackageBinding[this.unresolvedExports.length];
-		int count = 0;
-		for (IPackageExport export : this.unresolvedExports) {
-			// when resolving "exports" in a binary module we simply assume the package must exist,
-			// since this has been checked already when compiling that module.
-			PlainPackageBinding declaredPackage = getOrCreateDeclaredPackage(CharOperation.splitOn('.', export.name()));
-			this.exportedPackages[count++] = declaredPackage;
-			declaredPackage.isExported = Boolean.TRUE;
-			recordExportRestrictions(declaredPackage, export.targets());
-		}
-		if (count < this.exportedPackages.length)
-			System.arraycopy(this.exportedPackages, 0, this.exportedPackages = new PlainPackageBinding[count], 0, count);
+        IBinaryAnnotation[] annotations = binaryModule.getAnnotations();
+        if (annotations != null) {
+            int nullness = NO_NULL_DEFAULT;
+            int length = annotations.length;
+            for (int i = 0; i < length; i++) {
+                char[] annotationTypeName = annotations[i].getTypeName();
+                if (annotationTypeName[0] != Util.C_RESOLVED)
+                    continue;
+                int typeBit = this.environment
+                    .getAnalysisAnnotationBit(BinaryTypeBinding.signature2qualifiedTypeName(annotationTypeName));
+                if (typeBit == TypeIds.BitNonNullByDefaultAnnotation) {
+                    // using NonNullByDefault we need to inspect the details of the value() attribute:
+                    nullness |= BinaryTypeBinding.getNonNullByDefaultValue(annotations[i], this.environment);
+                }
+            }
+            this.defaultNullness = nullness;
+        }
+    }
 
-		this.openedPackages = new PlainPackageBinding[this.unresolvedOpens.length];
-		count = 0;
-		for (IPackageExport opens : this.unresolvedOpens) {
-			PlainPackageBinding declaredPackage = getOrCreateDeclaredPackage(CharOperation.splitOn('.', opens.name()));
-			this.openedPackages[count++] = declaredPackage;
-			recordOpensRestrictions(declaredPackage, opens.targets());
-		}
-		if (count < this.openedPackages.length)
-			System.arraycopy(this.openedPackages, 0, this.openedPackages = new PlainPackageBinding[count], 0, count);
-	}
+    @Override
+    public PlainPackageBinding[] getExports() {
+        if (this.exportedPackages == null && this.unresolvedExports != null)
+            resolvePackages();
+        return super.getExports();
+    }
 
-	@Override
-	PlainPackageBinding getDeclaredPackage(char[] flatName) {
-		getExports(); // triggers initialization of exported packages into declaredPackages
-		completeIfNeeded(UpdateKind.PACKAGE);
-		return super.getDeclaredPackage(flatName);
-	}
+    @Override
+    public PlainPackageBinding[] getOpens() {
+        if (this.openedPackages == null && this.unresolvedOpens != null)
+            resolvePackages();
+        return super.getOpens();
+    }
 
-	@Override
-	public TypeBinding[] getUses() {
-		if (this.uses == null) {
-			this.uses = new TypeBinding[this.unresolvedUses.length];
-			for (int i = 0; i < this.unresolvedUses.length; i++)
-				this.uses[i] = this.environment.getType(CharOperation.splitOn('.', this.unresolvedUses[i]), this);
-		}
-		return super.getUses();
-	}
+    private void resolvePackages() {
+        this.exportedPackages = new PlainPackageBinding[this.unresolvedExports.length];
+        int count = 0;
+        for (IPackageExport export : this.unresolvedExports) {
+            // when resolving "exports" in a binary module we simply assume the package must exist,
+            // since this has been checked already when compiling that module.
+            PlainPackageBinding declaredPackage = getOrCreateDeclaredPackage(CharOperation.splitOn('.', export.name()));
+            this.exportedPackages[count++] = declaredPackage;
+            declaredPackage.isExported = Boolean.TRUE;
+            recordExportRestrictions(declaredPackage, export.targets());
+        }
+        if (count < this.exportedPackages.length)
+            System.arraycopy(this.exportedPackages, 0, this.exportedPackages = new PlainPackageBinding[count], 0,
+                count);
 
-	@Override
-	public TypeBinding[] getServices() {
-		if (this.services == null)
-			resolveServices();
-		return super.getServices();
-	}
+        this.openedPackages = new PlainPackageBinding[this.unresolvedOpens.length];
+        count = 0;
+        for (IPackageExport opens : this.unresolvedOpens) {
+            PlainPackageBinding declaredPackage = getOrCreateDeclaredPackage(CharOperation.splitOn('.', opens.name()));
+            this.openedPackages[count++] = declaredPackage;
+            recordOpensRestrictions(declaredPackage, opens.targets());
+        }
+        if (count < this.openedPackages.length)
+            System.arraycopy(this.openedPackages, 0, this.openedPackages = new PlainPackageBinding[count], 0, count);
+    }
 
-	@Override
-	public TypeBinding[] getImplementations(TypeBinding binding) {
-		if (this.implementations == null)
-			resolveServices();
-		return super.getImplementations(binding);
-	}
-	private void resolveServices() {
-		this.services = new TypeBinding[this.unresolvedProvides.length];
-		this.implementations = new LinkedHashMap<>();
-		for (int i = 0; i < this.unresolvedProvides.length; i++) {
-			this.services[i] = this.environment.getType(CharOperation.splitOn('.', this.unresolvedProvides[i].name()), this);
-			char[][] implNames = this.unresolvedProvides[i].with();
-			TypeBinding[] impls = new TypeBinding[implNames.length];
-			for (int j = 0; j < implNames.length; j++)
-				impls[j] = this.environment.getType(CharOperation.splitOn('.', implNames[j]), this);
-			this.implementations.put(this.services[i], impls);
-		}
-	}
-	@Override
-	public AnnotationBinding[] getAnnotations() {
-		return retrieveAnnotations(this);
-	}
+    @Override
+    PlainPackageBinding getDeclaredPackage(char[] flatName) {
+        getExports(); // triggers initialization of exported packages into declaredPackages
+        completeIfNeeded(UpdateKind.PACKAGE);
+        return super.getDeclaredPackage(flatName);
+    }
+
+    @Override
+    public TypeBinding[] getUses() {
+        if (this.uses == null) {
+            this.uses = new TypeBinding[this.unresolvedUses.length];
+            for (int i = 0; i < this.unresolvedUses.length; i++)
+                this.uses[i] = this.environment.getType(CharOperation.splitOn('.', this.unresolvedUses[i]), this);
+        }
+        return super.getUses();
+    }
+
+    @Override
+    public TypeBinding[] getServices() {
+        if (this.services == null)
+            resolveServices();
+        return super.getServices();
+    }
+
+    @Override
+    public TypeBinding[] getImplementations(TypeBinding binding) {
+        if (this.implementations == null)
+            resolveServices();
+        return super.getImplementations(binding);
+    }
+
+    private void resolveServices() {
+        this.services = new TypeBinding[this.unresolvedProvides.length];
+        this.implementations = new LinkedHashMap<>();
+        for (int i = 0; i < this.unresolvedProvides.length; i++) {
+            this.services[i]
+                = this.environment.getType(CharOperation.splitOn('.', this.unresolvedProvides[i].name()), this);
+            char[][] implNames = this.unresolvedProvides[i].with();
+            TypeBinding[] impls = new TypeBinding[implNames.length];
+            for (int j = 0; j < implNames.length; j++)
+                impls[j] = this.environment.getType(CharOperation.splitOn('.', implNames[j]), this);
+            this.implementations.put(this.services[i], impls);
+        }
+    }
+
+    @Override
+    public AnnotationBinding[] getAnnotations() {
+        return retrieveAnnotations(this);
+    }
 }

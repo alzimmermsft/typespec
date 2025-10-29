@@ -16,10 +16,10 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Preconditions;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Implementation of {@link ImmutableSet} with exactly one element.
@@ -31,53 +31,53 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @SuppressWarnings("serial") // uses writeReplace(), not default serialization
 @ElementTypesAreNonnullByDefault
 final class SingletonImmutableSet<E> extends ImmutableSet<E> {
-  // We deliberately avoid caching the asList and hashCode here, to ensure that with
-  // compressed oops, a SingletonImmutableSet packs all the way down to the optimal 16 bytes.
+    // We deliberately avoid caching the asList and hashCode here, to ensure that with
+    // compressed oops, a SingletonImmutableSet packs all the way down to the optimal 16 bytes.
 
-  final transient E element;
+    final transient E element;
 
-  SingletonImmutableSet(E element) {
-    this.element = Preconditions.checkNotNull(element);
-  }
+    SingletonImmutableSet(E element) {
+        this.element = Preconditions.checkNotNull(element);
+    }
 
-  @Override
-  public int size() {
-    return 1;
-  }
+    @Override
+    public int size() {
+        return 1;
+    }
 
-  @Override
-  public boolean contains(@CheckForNull Object target) {
-    return element.equals(target);
-  }
+    @Override
+    public boolean contains(@CheckForNull Object target) {
+        return element.equals(target);
+    }
 
-  @Override
-  public UnmodifiableIterator<E> iterator() {
-    return Iterators.singletonIterator(element);
-  }
+    @Override
+    public UnmodifiableIterator<E> iterator() {
+        return Iterators.singletonIterator(element);
+    }
 
-  @Override
-  public ImmutableList<E> asList() {
-    return ImmutableList.of(element);
-  }
+    @Override
+    public ImmutableList<E> asList() {
+        return ImmutableList.of(element);
+    }
 
-  @Override
-  boolean isPartialView() {
-    return false;
-  }
+    @Override
+    boolean isPartialView() {
+        return false;
+    }
 
-  @Override
-  int copyIntoArray(@Nullable Object[] dst, int offset) {
-    dst[offset] = element;
-    return offset + 1;
-  }
+    @Override
+    int copyIntoArray(@Nullable Object[] dst, int offset) {
+        dst[offset] = element;
+        return offset + 1;
+    }
 
-  @Override
-  public final int hashCode() {
-    return element.hashCode();
-  }
+    @Override
+    public final int hashCode() {
+        return element.hashCode();
+    }
 
-  @Override
-  public String toString() {
-    return '[' + element.toString() + ']';
-  }
+    @Override
+    public String toString() {
+        return '[' + element.toString() + ']';
+    }
 }

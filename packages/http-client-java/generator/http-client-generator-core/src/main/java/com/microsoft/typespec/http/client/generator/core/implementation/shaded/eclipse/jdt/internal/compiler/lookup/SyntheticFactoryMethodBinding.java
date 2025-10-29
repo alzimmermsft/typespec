@@ -20,40 +20,46 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class SyntheticFactoryMethodBinding extends MethodBinding {
 
-	private final MethodBinding staticFactoryFor;
-	private final LookupEnvironment environment;
-	private final ReferenceBinding enclosingType;
+    private final MethodBinding staticFactoryFor;
+    private final LookupEnvironment environment;
+    private final ReferenceBinding enclosingType;
 
-	public SyntheticFactoryMethodBinding(MethodBinding method, LookupEnvironment environment, ReferenceBinding enclosingType) {
-		super(method.modifiers | ClassFileConstants.AccStatic, TypeConstants.SYNTHETIC_STATIC_FACTORY,
-				null, null, null, method.declaringClass);
-		this.environment = environment;
-		this.staticFactoryFor = method;
-		this.enclosingType = enclosingType;
-	}
+    public SyntheticFactoryMethodBinding(MethodBinding method, LookupEnvironment environment,
+        ReferenceBinding enclosingType) {
+        super(method.modifiers | ClassFileConstants.AccStatic, TypeConstants.SYNTHETIC_STATIC_FACTORY, null, null, null,
+            method.declaringClass);
+        this.environment = environment;
+        this.staticFactoryFor = method;
+        this.enclosingType = enclosingType;
+    }
 
-	public MethodBinding getConstructor() {
-		return this.staticFactoryFor;
-	}
+    public MethodBinding getConstructor() {
+        return this.staticFactoryFor;
+    }
 
-	/** Apply the given type arguments on the (declaring class of the) actual constructor being represented by this factory method and
-	    if method type arguments is not empty materialize the parameterized generic constructor
-	*/
-	public ParameterizedMethodBinding applyTypeArgumentsOnConstructor(TypeBinding[] typeArguments, TypeBinding[] constructorTypeArguments, boolean inferredWithUncheckedConversion, TypeBinding targetType) {
-		ReferenceBinding parameterizedType = typeArguments == null
-				? this.environment.createRawType(this.declaringClass, this.enclosingType)
-				: this.environment.createParameterizedType(this.declaringClass, typeArguments, this.enclosingType);
-		for (MethodBinding parameterizedMethod : parameterizedType.methods()) {
-			if (parameterizedMethod.original() == this.staticFactoryFor)
-				return (constructorTypeArguments.length > 0 || inferredWithUncheckedConversion)
-						? this.environment.createParameterizedGenericMethod(parameterizedMethod, constructorTypeArguments, inferredWithUncheckedConversion, false, targetType)
-						: (ParameterizedMethodBinding) parameterizedMethod;
-			if (parameterizedMethod instanceof ProblemMethodBinding) {
-				MethodBinding closestMatch = ((ProblemMethodBinding)parameterizedMethod).closestMatch;
-				if (closestMatch instanceof ParameterizedMethodBinding && closestMatch.original() == this.staticFactoryFor)
-					return (ParameterizedMethodBinding) closestMatch;
-			}
-		}
-		throw new IllegalArgumentException("Type doesn't have its own method?"); //$NON-NLS-1$
-	}
+    /**
+     * Apply the given type arguments on the (declaring class of the) actual constructor being represented by this
+     * factory method and
+     * if method type arguments is not empty materialize the parameterized generic constructor
+     */
+    public ParameterizedMethodBinding applyTypeArgumentsOnConstructor(TypeBinding[] typeArguments,
+        TypeBinding[] constructorTypeArguments, boolean inferredWithUncheckedConversion, TypeBinding targetType) {
+        ReferenceBinding parameterizedType = typeArguments == null
+            ? this.environment.createRawType(this.declaringClass, this.enclosingType)
+            : this.environment.createParameterizedType(this.declaringClass, typeArguments, this.enclosingType);
+        for (MethodBinding parameterizedMethod : parameterizedType.methods()) {
+            if (parameterizedMethod.original() == this.staticFactoryFor)
+                return (constructorTypeArguments.length > 0 || inferredWithUncheckedConversion)
+                    ? this.environment.createParameterizedGenericMethod(parameterizedMethod, constructorTypeArguments,
+                        inferredWithUncheckedConversion, false, targetType)
+                    : (ParameterizedMethodBinding) parameterizedMethod;
+            if (parameterizedMethod instanceof ProblemMethodBinding) {
+                MethodBinding closestMatch = ((ProblemMethodBinding) parameterizedMethod).closestMatch;
+                if (closestMatch instanceof ParameterizedMethodBinding
+                    && closestMatch.original() == this.staticFactoryFor)
+                    return (ParameterizedMethodBinding) closestMatch;
+            }
+        }
+        throw new IllegalArgumentException("Type doesn't have its own method?"); //$NON-NLS-1$
+    }
 }

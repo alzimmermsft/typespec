@@ -26,61 +26,61 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class JavadocContents17 extends JavadocContents {
 
-	JavadocContents17(BinaryType type, String content) {
-		super(type, content);
-	}
+    JavadocContents17(BinaryType type, String content) {
+        super(type, content);
+    }
 
-	@Override
-	protected int[] getAnchorIndex(int fromIndex) {
-		int index = CharOperation.indexOf(SECTION_PREFIX_START, this.content, false, fromIndex);
-		if (index != -1) {
-			return new int[]{index, SECTION_PREFIX_START.length};
-		}
-		return new int[]{-1, -1};
-	}
+    @Override
+    protected int[] getAnchorIndex(int fromIndex) {
+        int index = CharOperation.indexOf(SECTION_PREFIX_START, this.content, false, fromIndex);
+        if (index != -1) {
+            return new int[] { index, SECTION_PREFIX_START.length };
+        }
+        return new int[] { -1, -1 };
+    }
 
-	@Override
-	protected Range computeChildRange(int sectionStart, char[] anchor, int indexOfBottom) {
-		Range range = null;
+    @Override
+    protected Range computeChildRange(int sectionStart, char[] anchor, int indexOfBottom) {
+        Range range = null;
 
-		// try to find the bottom of the section
-		if (indexOfBottom != -1) {
-			// try to find the end of the section
-			// <section class="detail" id="publicField">|
-			int javadocStart = sectionStart + anchor.length + 1;
-			int indexOfEndSection = CharOperation.indexOf(SECTION_SUFFIX, this.content, false, javadocStart);
-			if (indexOfEndSection != -1) {
-				int javadocEnd = indexOfEndSection == -1 ? indexOfBottom : Math.min(indexOfEndSection, indexOfBottom);
-				range = new Range(javadocStart, javadocEnd);
-			} else {
-				// the anchor has no suffix
-				range = UNKNOWN_FORMAT;
-			}
-		} else {
-			// the detail section has no bottom
-			range = UNKNOWN_FORMAT;
-		}
+        // try to find the bottom of the section
+        if (indexOfBottom != -1) {
+            // try to find the end of the section
+            // <section class="detail" id="publicField">|
+            int javadocStart = sectionStart + anchor.length + 1;
+            int indexOfEndSection = CharOperation.indexOf(SECTION_SUFFIX, this.content, false, javadocStart);
+            if (indexOfEndSection != -1) {
+                int javadocEnd = indexOfEndSection == -1 ? indexOfBottom : Math.min(indexOfEndSection, indexOfBottom);
+                range = new Range(javadocStart, javadocEnd);
+            } else {
+                // the anchor has no suffix
+                range = UNKNOWN_FORMAT;
+            }
+        } else {
+            // the detail section has no bottom
+            range = UNKNOWN_FORMAT;
+        }
 
-		return range;
-	}
+        return range;
+    }
 
-	@Override
-	protected String getMethodName(BinaryMethod method) throws JavaModelException {
-		String methodName;
-		if (method.isConstructor()) {
-			methodName = CONSTRUCTOR_NAME;
-		} else {
-			methodName = method.getElementName();
-		}
-		return methodName;
-	}
+    @Override
+    protected String getMethodName(BinaryMethod method) throws JavaModelException {
+        String methodName;
+        if (method.isConstructor()) {
+            methodName = CONSTRUCTOR_NAME;
+        } else {
+            methodName = method.getElementName();
+        }
+        return methodName;
+    }
 
-	@Override
-	protected String createSignatureAnchor(BinaryMethod method, String methodName, IBinaryMethod info)
-			throws JavaModelException {
-		String anchor = super.createSignatureAnchor(method, methodName, info);
-		anchor = anchor.replaceAll(" ", "");  //$NON-NLS-1$//$NON-NLS-2$
-		return anchor;
-	}
+    @Override
+    protected String createSignatureAnchor(BinaryMethod method, String methodName, IBinaryMethod info)
+        throws JavaModelException {
+        String anchor = super.createSignatureAnchor(method, methodName, info);
+        anchor = anchor.replaceAll(" ", "");  //$NON-NLS-1$//$NON-NLS-2$
+        return anchor;
+    }
 
 }

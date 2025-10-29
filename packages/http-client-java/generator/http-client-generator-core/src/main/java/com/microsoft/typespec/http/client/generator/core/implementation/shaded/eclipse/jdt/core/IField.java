@@ -57,7 +57,6 @@ public interface IField extends IMember, IAnnotatable {
      * 
      * @return the binding key for this field
      * @see org.eclipse.jdt.core.dom.IBinding#getKey()
-     * @see BindingKey
      * @see #isResolved()
      * @since 3.1
      */

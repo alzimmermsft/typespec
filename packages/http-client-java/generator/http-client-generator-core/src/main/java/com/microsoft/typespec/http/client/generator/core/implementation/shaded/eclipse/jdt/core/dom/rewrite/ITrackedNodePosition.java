@@ -32,7 +32,7 @@ public interface ITrackedNodePosition {
      *
      * @return the original or modified start position of the tracked node
      */
-    public int getStartPosition();
+    int getStartPosition();
 
     /**
      * Returns the original or modified length of the tracked node depending if called before
@@ -40,6 +40,6 @@ public interface ITrackedNodePosition {
      *
      * @return the original or modified length of the tracked node
      */
-    public int getLength();
+    int getLength();
 
 }

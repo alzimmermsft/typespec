@@ -31,36 +31,28 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 @ElementTypesAreNonnullByDefault
 public abstract class AbstractGraph<N> extends AbstractBaseGraph<N> implements Graph<N> {
 
-  @Override
-  public final boolean equals(@CheckForNull Object obj) {
-    if (obj == this) {
-      return true;
+    @Override
+    public final boolean equals(@CheckForNull Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof Graph)) {
+            return false;
+        }
+        Graph<?> other = (Graph<?>) obj;
+
+        return isDirected() == other.isDirected() && nodes().equals(other.nodes()) && edges().equals(other.edges());
     }
-    if (!(obj instanceof Graph)) {
-      return false;
+
+    @Override
+    public final int hashCode() {
+        return edges().hashCode();
     }
-    Graph<?> other = (Graph<?>) obj;
 
-    return isDirected() == other.isDirected()
-        && nodes().equals(other.nodes())
-        && edges().equals(other.edges());
-  }
-
-  @Override
-  public final int hashCode() {
-    return edges().hashCode();
-  }
-
-  /** Returns a string representation of this graph. */
-  @Override
-  public String toString() {
-    return "isDirected: "
-        + isDirected()
-        + ", allowsSelfLoops: "
-        + allowsSelfLoops()
-        + ", nodes: "
-        + nodes()
-        + ", edges: "
-        + edges();
-  }
+    /** Returns a string representation of this graph. */
+    @Override
+    public String toString() {
+        return "isDirected: " + isDirected() + ", allowsSelfLoops: " + allowsSelfLoops() + ", nodes: " + nodes()
+            + ", edges: " + edges();
+    }
 }

@@ -23,9 +23,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.watson.IElementTreeData;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.QualifiedName;
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
+
 import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.TreeMap;
@@ -129,10 +127,6 @@ public class ResourceInfo implements IElementTreeData, ICoreConstants, IStringPo
         modStamp = IResource.NULL_STAMP;
     }
 
-    public void clearCharsetGenerationCount() {
-        charsetAndContentId = getContentId();
-    }
-
     public synchronized void clearSessionProperties() {
         sessionProperties = null;
     }
@@ -208,29 +202,6 @@ public class ResourceInfo implements IElementTreeData, ICoreConstants, IStringPo
     }
 
     /**
-     * Returns the property store associated with this info. The return value may be null.
-     */
-    public Object getPropertyStore() {
-        return null;
-    }
-
-    /**
-     * Returns a copy of the map of this resource session properties.
-     * An empty map is returned if there are none.
-     */
-    @SuppressWarnings({ "unchecked" })
-    public Map<QualifiedName, Object> getSessionProperties() {
-        // thread safety: (Concurrency001)
-        ObjectMap<QualifiedName, Object> temp = sessionProperties;
-        if (temp == null) {
-            temp = new ObjectMap<>(5);
-        } else {
-            temp = (ObjectMap<QualifiedName, Object>) sessionProperties.clone();
-        }
-        return temp;
-    }
-
-    /**
      * Returns the value of the identified session property
      */
     public Object getSessionProperty(QualifiedName name) {
@@ -282,23 +253,6 @@ public class ResourceInfo implements IElementTreeData, ICoreConstants, IStringPo
     }
 
     /**
-     * Increments the charset generation count.
-     * The count is incremented whenever the encoding on the resource changes.
-     */
-    public void incrementCharsetGenerationCount() {
-        // increment high order bits
-        charsetAndContentId = ((charsetAndContentId + LOWER + 1) & UPPER) + (charsetAndContentId & LOWER);
-    }
-
-    /**
-     * Mark this resource info as having changed content
-     */
-    public void incrementContentId() {
-        // increment low order bits
-        charsetAndContentId = (charsetAndContentId & UPPER) + ((charsetAndContentId + 1) & LOWER);
-    }
-
-    /**
      * Increments the marker generation count.
      * The count is incremented whenever markers on the resource change.
      */
@@ -317,30 +271,10 @@ public class ResourceInfo implements IElementTreeData, ICoreConstants, IStringPo
     }
 
     /**
-     * Increments the sync information generation count.
-     * The count is incremented whenever sync info on the resource changes.
-     */
-    public void incrementSyncInfoGenerationCount() {
-        // increment low order bits
-        markerAndSyncStamp = (markerAndSyncStamp & UPPER) + ((markerAndSyncStamp + 1) & LOWER);
-    }
-
-    /**
      * Returns true if all of the bits indicated by the mask are set.
      */
     public boolean isSet(int mask) {
         return (flags & mask) == mask;
-    }
-
-    public void readFrom(int newFlags, DataInput input) throws IOException {
-        // The flags for this info are read by the visitor (flattener).
-        // See Workspace.readElement(). This allows the reader to look ahead
-        // and see what type of info is being loaded.
-        this.flags = newFlags;
-        localInfo = input.readLong();
-        nodeId = input.readLong();
-        charsetAndContentId = input.readInt() & LOWER;
-        modStamp = input.readLong();
     }
 
     /**
@@ -389,13 +323,6 @@ public class ResourceInfo implements IElementTreeData, ICoreConstants, IStringPo
         markers = value;
     }
 
-    /**
-     * Sets the resource modification stamp.
-     */
-    public void setModificationStamp(long value) {
-        this.modStamp = value;
-    }
-
     public void setNodeId(long id) {
         nodeId = id;
         // Resource modification stamp starts from current nodeId
@@ -403,13 +330,6 @@ public class ResourceInfo implements IElementTreeData, ICoreConstants, IStringPo
         if (modStamp == 0) {
             modStamp = nodeId;
         }
-    }
-
-    /**
-     * Sets the property store associated with this info. The value may be null.
-     */
-    public void setPropertyStore(Object value) {
-        // needs to be implemented on subclasses
     }
 
     /**
@@ -451,25 +371,6 @@ public class ResourceInfo implements IElementTreeData, ICoreConstants, IStringPo
         this.syncInfo = syncInfo;
     }
 
-    public synchronized void setSyncInfo(QualifiedName id, byte[] value) {
-        if (value == null) {
-            // delete sync info
-            if (syncInfo == null) {
-                return;
-            }
-            syncInfo.remove(id);
-            if (syncInfo.isEmpty()) {
-                syncInfo = null;
-            }
-        } else {
-            // add sync info
-            if (syncInfo == null) {
-                syncInfo = new ObjectMap<>(5);
-            }
-            syncInfo.put(id, value.clone());
-        }
-    }
-
     /**
      * Sets the type for this info to the given value. Valid values are
      * FILE, FOLDER, PROJECT
@@ -496,16 +397,6 @@ public class ResourceInfo implements IElementTreeData, ICoreConstants, IStringPo
         if (markerSet != null) {
             markerSet.shareStrings(set);
         }
-    }
-
-    public void writeTo(DataOutput output) throws IOException {
-        // The flags for this info are written by the visitor (flattener).
-        // See SaveManager.writeElement(). This allows the reader to look ahead
-        // and see what type of info is being loaded.
-        output.writeLong(localInfo);
-        output.writeLong(nodeId);
-        output.writeInt(getContentId());
-        output.writeLong(modStamp);
     }
 
     /** for debugging only **/

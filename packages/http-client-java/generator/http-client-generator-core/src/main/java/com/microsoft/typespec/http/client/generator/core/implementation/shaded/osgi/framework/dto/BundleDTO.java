@@ -30,37 +30,37 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 public class BundleDTO extends DTO {
     /**
-	 * The bundle's unique identifier.
-	 * 
-	 * @see Bundle#getBundleId()
-	 */
-    public long   id;
+     * The bundle's unique identifier.
+     * 
+     * @see Bundle#getBundleId()
+     */
+    public long id;
 
     /**
-	 * The time when the bundle was last modified.
-	 * 
-	 * @see Bundle#getLastModified()
-	 */
-    public long   lastModified;
+     * The time when the bundle was last modified.
+     * 
+     * @see Bundle#getLastModified()
+     */
+    public long lastModified;
 
     /**
-	 * The bundle's state.
-	 * 
-	 * @see Bundle#getState()
-	 */
-    public int    state;
+     * The bundle's state.
+     * 
+     * @see Bundle#getState()
+     */
+    public int state;
 
     /**
-	 * The bundle's symbolic name.
-	 * 
-	 * @see Bundle#getSymbolicName()
-	 */
+     * The bundle's symbolic name.
+     * 
+     * @see Bundle#getSymbolicName()
+     */
     public String symbolicName;
 
     /**
-	 * The bundle's version.
-	 * 
-	 * @see Bundle#getVersion()
-	 */
+     * The bundle's version.
+     * 
+     * @see Bundle#getVersion()
+     */
     public String version;
 }

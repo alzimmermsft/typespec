@@ -23,67 +23,67 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class SuperReference extends ThisReference {
 
-	public SuperReference(int sourceStart, int sourceEnd) {
+    public SuperReference(int sourceStart, int sourceEnd) {
 
-		super(sourceStart, sourceEnd);
-	}
+        super(sourceStart, sourceEnd);
+    }
 
-	public static ExplicitConstructorCall implicitSuperConstructorCall() {
+    public static ExplicitConstructorCall implicitSuperConstructorCall() {
 
-		return new ExplicitConstructorCall(ExplicitConstructorCall.ImplicitSuper);
-	}
+        return new ExplicitConstructorCall(ExplicitConstructorCall.ImplicitSuper);
+    }
 
-	@Override
-	public boolean isImplicitThis() {
+    @Override
+    public boolean isImplicitThis() {
 
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	public boolean isSuper() {
+    @Override
+    public boolean isSuper() {
 
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	public boolean isUnqualifiedSuper() {
-		return true;
-	}
+    @Override
+    public boolean isUnqualifiedSuper() {
+        return true;
+    }
 
-	@Override
-	public boolean isThis() {
+    @Override
+    public boolean isThis() {
 
-		return false ;
-	}
+        return false;
+    }
 
-	@Override
-	public StringBuilder printExpression(int indent, StringBuilder output){
+    @Override
+    public StringBuilder printExpression(int indent, StringBuilder output) {
 
-		return output.append("super"); //$NON-NLS-1$
+        return output.append("super"); //$NON-NLS-1$
 
-	}
+    }
 
-	@Override
-	public TypeBinding resolveType(BlockScope scope) {
+    @Override
+    public TypeBinding resolveType(BlockScope scope) {
 
-		this.constant = Constant.NotAConstant;
-		if (scope.isInsideEarlyConstructionContext(null, false)) {
-			// always error, no need to check any details:
-			scope.problemReporter().errorExpressionInEarlyConstructionContext(this);
-		}
-		ReferenceBinding enclosingReceiverType = scope.enclosingReceiverType();
-		if (!checkAccess(scope, enclosingReceiverType))
-			return null;
-		if (enclosingReceiverType.id == T_JavaLangObject) {
-			scope.problemReporter().cannotUseSuperInJavaLangObject(this);
-			return null;
-		}
-		return this.resolvedType = enclosingReceiverType.superclass();
-	}
+        this.constant = Constant.NotAConstant;
+        if (scope.isInsideEarlyConstructionContext(null, false)) {
+            // always error, no need to check any details:
+            scope.problemReporter().errorExpressionInEarlyConstructionContext(this);
+        }
+        ReferenceBinding enclosingReceiverType = scope.enclosingReceiverType();
+        if (!checkAccess(scope, enclosingReceiverType))
+            return null;
+        if (enclosingReceiverType.id == T_JavaLangObject) {
+            scope.problemReporter().cannotUseSuperInJavaLangObject(this);
+            return null;
+        }
+        return this.resolvedType = enclosingReceiverType.superclass();
+    }
 
-	@Override
-	public void traverse(ASTVisitor visitor, BlockScope blockScope) {
-		visitor.visit(this, blockScope);
-		visitor.endVisit(this, blockScope);
-	}
+    @Override
+    public void traverse(ASTVisitor visitor, BlockScope blockScope) {
+        visitor.visit(this, blockScope);
+        visitor.endVisit(this, blockScope);
+    }
 }

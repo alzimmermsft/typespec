@@ -16,9 +16,9 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.graph;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.util.Optional;
 import java.util.Set;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 
 /**
  * A class to allow {@link ValueGraph} implementations to be backed by a provided delegate. This is
@@ -30,101 +30,101 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 @ElementTypesAreNonnullByDefault
 abstract class ForwardingValueGraph<N, V> extends AbstractValueGraph<N, V> {
 
-  abstract ValueGraph<N, V> delegate();
+    abstract ValueGraph<N, V> delegate();
 
-  @Override
-  public Set<N> nodes() {
-    return delegate().nodes();
-  }
+    @Override
+    public Set<N> nodes() {
+        return delegate().nodes();
+    }
 
-  /**
-   * Defer to {@link AbstractValueGraph#edges()} (based on {@link #successors(Object)}) for full
-   * edges() implementation.
-   */
-  @Override
-  protected long edgeCount() {
-    return delegate().edges().size();
-  }
+    /**
+     * Defer to {@link AbstractValueGraph#edges()} (based on {@link #successors(Object)}) for full
+     * edges() implementation.
+     */
+    @Override
+    protected long edgeCount() {
+        return delegate().edges().size();
+    }
 
-  @Override
-  public boolean isDirected() {
-    return delegate().isDirected();
-  }
+    @Override
+    public boolean isDirected() {
+        return delegate().isDirected();
+    }
 
-  @Override
-  public boolean allowsSelfLoops() {
-    return delegate().allowsSelfLoops();
-  }
+    @Override
+    public boolean allowsSelfLoops() {
+        return delegate().allowsSelfLoops();
+    }
 
-  @Override
-  public ElementOrder<N> nodeOrder() {
-    return delegate().nodeOrder();
-  }
+    @Override
+    public ElementOrder<N> nodeOrder() {
+        return delegate().nodeOrder();
+    }
 
-  @Override
-  public ElementOrder<N> incidentEdgeOrder() {
-    return delegate().incidentEdgeOrder();
-  }
+    @Override
+    public ElementOrder<N> incidentEdgeOrder() {
+        return delegate().incidentEdgeOrder();
+    }
 
-  @Override
-  public Set<N> adjacentNodes(N node) {
-    return delegate().adjacentNodes(node);
-  }
+    @Override
+    public Set<N> adjacentNodes(N node) {
+        return delegate().adjacentNodes(node);
+    }
 
-  @Override
-  public Set<N> predecessors(N node) {
-    return delegate().predecessors(node);
-  }
+    @Override
+    public Set<N> predecessors(N node) {
+        return delegate().predecessors(node);
+    }
 
-  @Override
-  public Set<N> successors(N node) {
-    return delegate().successors(node);
-  }
+    @Override
+    public Set<N> successors(N node) {
+        return delegate().successors(node);
+    }
 
-  @Override
-  public int degree(N node) {
-    return delegate().degree(node);
-  }
+    @Override
+    public int degree(N node) {
+        return delegate().degree(node);
+    }
 
-  @Override
-  public int inDegree(N node) {
-    return delegate().inDegree(node);
-  }
+    @Override
+    public int inDegree(N node) {
+        return delegate().inDegree(node);
+    }
 
-  @Override
-  public int outDegree(N node) {
-    return delegate().outDegree(node);
-  }
+    @Override
+    public int outDegree(N node) {
+        return delegate().outDegree(node);
+    }
 
-  @Override
-  public boolean hasEdgeConnecting(N nodeU, N nodeV) {
-    return delegate().hasEdgeConnecting(nodeU, nodeV);
-  }
+    @Override
+    public boolean hasEdgeConnecting(N nodeU, N nodeV) {
+        return delegate().hasEdgeConnecting(nodeU, nodeV);
+    }
 
-  @Override
-  public boolean hasEdgeConnecting(EndpointPair<N> endpoints) {
-    return delegate().hasEdgeConnecting(endpoints);
-  }
+    @Override
+    public boolean hasEdgeConnecting(EndpointPair<N> endpoints) {
+        return delegate().hasEdgeConnecting(endpoints);
+    }
 
-  @Override
-  public Optional<V> edgeValue(N nodeU, N nodeV) {
-    return delegate().edgeValue(nodeU, nodeV);
-  }
+    @Override
+    public Optional<V> edgeValue(N nodeU, N nodeV) {
+        return delegate().edgeValue(nodeU, nodeV);
+    }
 
-  @Override
-  public Optional<V> edgeValue(EndpointPair<N> endpoints) {
-    return delegate().edgeValue(endpoints);
-  }
+    @Override
+    public Optional<V> edgeValue(EndpointPair<N> endpoints) {
+        return delegate().edgeValue(endpoints);
+    }
 
-  @Override
-  @CheckForNull
-  public V edgeValueOrDefault(N nodeU, N nodeV, @CheckForNull V defaultValue) {
-    return delegate().edgeValueOrDefault(nodeU, nodeV, defaultValue);
-  }
+    @Override
+    @CheckForNull
+    public V edgeValueOrDefault(N nodeU, N nodeV, @CheckForNull V defaultValue) {
+        return delegate().edgeValueOrDefault(nodeU, nodeV, defaultValue);
+    }
 
-  @Override
-  @CheckForNull
-  public V edgeValueOrDefault(EndpointPair<N> endpoints, @CheckForNull V defaultValue) {
-    return delegate().edgeValueOrDefault(endpoints, defaultValue);
-  }
+    @Override
+    @CheckForNull
+    public V edgeValueOrDefault(EndpointPair<N> endpoints, @CheckForNull V defaultValue) {
+        return delegate().edgeValueOrDefault(endpoints, defaultValue);
+    }
 }

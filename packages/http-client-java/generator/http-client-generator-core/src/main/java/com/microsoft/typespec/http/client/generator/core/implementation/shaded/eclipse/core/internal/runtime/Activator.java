@@ -18,9 +18,7 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.ServiceCaller;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.framework.log.FrameworkLog;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.service.datalocation.Location;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.service.localization.BundleLocalization;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.service.urlconversion.URLConverter;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.util.NLS;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Bundle;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.BundleActivator;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.BundleContext;
@@ -32,8 +30,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 
 /**
  * The Common runtime plugin class.
@@ -55,8 +51,6 @@ public class Activator implements BundleActivator {
     @SuppressWarnings("deprecation")
     private final ServiceCaller<PackageAdmin> bundleTracker = new ServiceCaller<>(getClass(), PackageAdmin.class);
     private final ServiceCaller<FrameworkLog> logTracker = new ServiceCaller<>(getClass(), FrameworkLog.class);
-    private final ServiceCaller<BundleLocalization> localizationTracker
-        = new ServiceCaller<>(getClass(), BundleLocalization.class);
 
     /*
      * Returns the singleton for this Activator. Callers should be aware that this
@@ -134,31 +128,6 @@ public class Activator implements BundleActivator {
             return source.getSymbolicName();
         }
         return null;
-    }
-
-    /**
-     * Returns the resource bundle responsible for location of the given bundle in
-     * the given locale. Does not return null.
-     *
-     * @throws MissingResourceException If the corresponding resource could not be
-     * found
-     */
-    public static ResourceBundle getLocalization(Bundle bundle, String locale) throws MissingResourceException {
-        Activator activator = Activator.getDefault();
-        if (activator == null) {
-            throw new MissingResourceException(CommonMessages.activator_resourceBundleNotStarted,
-                bundle.getSymbolicName(), ""); //$NON-NLS-1$
-        }
-        BundleLocalization location = activator.localizationTracker.current().orElse(null);
-        ResourceBundle result = null;
-        if (location != null) {
-            result = location.getLocalization(bundle, locale);
-        }
-        if (result == null) {
-            throw new MissingResourceException(NLS.bind(CommonMessages.activator_resourceBundleNotFound, locale),
-                bundle.getSymbolicName(), ""); //$NON-NLS-1$
-        }
-        return result;
     }
 
     /*

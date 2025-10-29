@@ -24,7 +24,8 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna;
 
-/** Represents the <code>long</code> C data type, which may be 32 or 64 bits
+/**
+ * Represents the <code>long</code> C data type, which may be 32 or 64 bits
  * on *nix-based systems.
  *
  * @author wmeissner@gmail.com

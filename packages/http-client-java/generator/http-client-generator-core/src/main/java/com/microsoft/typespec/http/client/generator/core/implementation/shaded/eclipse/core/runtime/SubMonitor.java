@@ -202,7 +202,7 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  *
  * @since org.eclipse.equinox.common 3.3
  */
-public final class SubMonitor implements IProgressMonitorWithBlocking {
+public final class SubMonitor implements IProgressMonitor {
 
     /**
      * Number of trivial split operations (operations which do not report any
@@ -635,28 +635,6 @@ public final class SubMonitor implements IProgressMonitorWithBlocking {
             return root.isCanceled();
         }
         return false;
-    }
-
-    /**
-     * Checks whether cancellation of current operation has been requested and
-     * throws an {@link OperationCanceledException} if it was the case. This method
-     * is a shorthand for:
-     *
-     * <pre>
-     * if (monitor.isCanceled())
-     *     throw new OperationCanceledException();
-     * </pre>
-     *
-     * @return this SubMonitor to allow for chained invocation
-     * @throws OperationCanceledException if cancellation has been requested
-     * @see #isCanceled()
-     * @since 3.9
-     */
-    public SubMonitor checkCanceled() throws OperationCanceledException {
-        if (isCanceled()) {
-            throw new OperationCanceledException();
-        }
-        return this;
     }
 
     @Override

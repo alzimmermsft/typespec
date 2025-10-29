@@ -24,92 +24,90 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class LocalVariableTableEntry extends ClassFileStruct implements ILocalVariableTableEntry {
 
-	private final int startPC;
-	private final int length;
-	private final int nameIndex;
-	private final int descriptorIndex;
-	private final char[] name;
-	private final char[] descriptor;
-	private final int index;
+    private final int startPC;
+    private final int length;
+    private final int nameIndex;
+    private final int descriptorIndex;
+    private final char[] name;
+    private final char[] descriptor;
+    private final int index;
 
-	/**
-	 * Constructor for LocalVariableTableEntry.
-	 */
-	public LocalVariableTableEntry(
-		byte[] classFileBytes,
-		IConstantPool constantPool,
-		int offset) throws ClassFormatException {
-			this.startPC = u2At(classFileBytes, 0, offset);
-			this.length = u2At(classFileBytes, 2, offset);
-			this.nameIndex = u2At(classFileBytes, 4, offset);
-			this.descriptorIndex = u2At(classFileBytes, 6, offset);
-			this.index = u2At(classFileBytes, 8, offset);
-			IConstantPoolEntry constantPoolEntry = constantPool.decodeEntry(this.nameIndex);
-			if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Utf8) {
-				throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
-			}
-			this.name = constantPoolEntry.getUtf8Value();
-			constantPoolEntry = constantPool.decodeEntry(this.descriptorIndex);
-			if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Utf8) {
-				throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
-			}
-			this.descriptor = constantPoolEntry.getUtf8Value();
-		}
+    /**
+     * Constructor for LocalVariableTableEntry.
+     */
+    public LocalVariableTableEntry(byte[] classFileBytes, IConstantPool constantPool, int offset)
+        throws ClassFormatException {
+        this.startPC = u2At(classFileBytes, 0, offset);
+        this.length = u2At(classFileBytes, 2, offset);
+        this.nameIndex = u2At(classFileBytes, 4, offset);
+        this.descriptorIndex = u2At(classFileBytes, 6, offset);
+        this.index = u2At(classFileBytes, 8, offset);
+        IConstantPoolEntry constantPoolEntry = constantPool.decodeEntry(this.nameIndex);
+        if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Utf8) {
+            throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
+        }
+        this.name = constantPoolEntry.getUtf8Value();
+        constantPoolEntry = constantPool.decodeEntry(this.descriptorIndex);
+        if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Utf8) {
+            throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
+        }
+        this.descriptor = constantPoolEntry.getUtf8Value();
+    }
 
-	/**
-	 * @see ILocalVariableTableEntry#getStartPC()
-	 */
-	@Override
-	public int getStartPC() {
-		return this.startPC;
-	}
+    /**
+     * @see ILocalVariableTableEntry#getStartPC()
+     */
+    @Override
+    public int getStartPC() {
+        return this.startPC;
+    }
 
-	/**
-	 * @see ILocalVariableTableEntry#getLength()
-	 */
-	@Override
-	public int getLength() {
-		return this.length;
-	}
+    /**
+     * @see ILocalVariableTableEntry#getLength()
+     */
+    @Override
+    public int getLength() {
+        return this.length;
+    }
 
-	/**
-	 * @see ILocalVariableTableEntry#getNameIndex()
-	 */
-	@Override
-	public int getNameIndex() {
-		return this.nameIndex;
-	}
+    /**
+     * @see ILocalVariableTableEntry#getNameIndex()
+     */
+    @Override
+    public int getNameIndex() {
+        return this.nameIndex;
+    }
 
-	/**
-	 * @see ILocalVariableTableEntry#getDescriptorIndex()
-	 */
-	@Override
-	public int getDescriptorIndex() {
-		return this.descriptorIndex;
-	}
+    /**
+     * @see ILocalVariableTableEntry#getDescriptorIndex()
+     */
+    @Override
+    public int getDescriptorIndex() {
+        return this.descriptorIndex;
+    }
 
-	/**
-	 * @see ILocalVariableTableEntry#getIndex()
-	 */
-	@Override
-	public int getIndex() {
-		return this.index;
-	}
+    /**
+     * @see ILocalVariableTableEntry#getIndex()
+     */
+    @Override
+    public int getIndex() {
+        return this.index;
+    }
 
-	/**
-	 * @see ILocalVariableTableEntry#getName()
-	 */
-	@Override
-	public char[] getName() {
-		return this.name;
-	}
+    /**
+     * @see ILocalVariableTableEntry#getName()
+     */
+    @Override
+    public char[] getName() {
+        return this.name;
+    }
 
-	/**
-	 * @see ILocalVariableTableEntry#getDescriptor()
-	 */
-	@Override
-	public char[] getDescriptor() {
-		return this.descriptor;
-	}
+    /**
+     * @see ILocalVariableTableEntry#getDescriptor()
+     */
+    @Override
+    public char[] getDescriptor() {
+        return this.descriptor;
+    }
 
 }

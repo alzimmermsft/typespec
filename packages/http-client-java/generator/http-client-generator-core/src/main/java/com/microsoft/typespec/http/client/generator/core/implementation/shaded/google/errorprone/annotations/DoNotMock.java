@@ -35,12 +35,12 @@ import java.lang.annotation.Target;
 @Inherited
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
+@Target({ ElementType.TYPE, ElementType.ANNOTATION_TYPE })
 public @interface DoNotMock {
-  /**
-   * The reason why the annotated type should not be mocked.
-   *
-   * <p>This should suggest alternative APIs to use for testing objects of this type.
-   */
-  String value() default "Create a real instance instead";
+    /**
+     * The reason why the annotated type should not be mocked.
+     *
+     * <p>This should suggest alternative APIs to use for testing objects of this type.
+     */
+    String value() default "Create a real instance instead";
 }

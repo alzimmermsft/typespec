@@ -17,9 +17,9 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.graph;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.util.Iterator;
 import java.util.Set;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 
 /**
  * An interface for representing and manipulating an origin node's adjacent nodes and edge values in
@@ -32,49 +32,49 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 @ElementTypesAreNonnullByDefault
 interface GraphConnections<N, V> {
 
-  Set<N> adjacentNodes();
+    Set<N> adjacentNodes();
 
-  Set<N> predecessors();
+    Set<N> predecessors();
 
-  Set<N> successors();
+    Set<N> successors();
 
-  /**
-   * Returns an iterator over the incident edges.
-   *
-   * @param thisNode The node that this all of the connections in this class are connected to.
-   */
-  Iterator<EndpointPair<N>> incidentEdgeIterator(N thisNode);
+    /**
+     * Returns an iterator over the incident edges.
+     *
+     * @param thisNode The node that this all of the connections in this class are connected to.
+     */
+    Iterator<EndpointPair<N>> incidentEdgeIterator(N thisNode);
 
-  /**
-   * Returns the value associated with the edge connecting the origin node to {@code node}, or null
-   * if there is no such edge.
-   */
-  @CheckForNull
-  V value(N node);
+    /**
+     * Returns the value associated with the edge connecting the origin node to {@code node}, or null
+     * if there is no such edge.
+     */
+    @CheckForNull
+    V value(N node);
 
-  /** Remove {@code node} from the set of predecessors. */
-  void removePredecessor(N node);
+    /** Remove {@code node} from the set of predecessors. */
+    void removePredecessor(N node);
 
-  /**
-   * Remove {@code node} from the set of successors. Returns the value previously associated with
-   * the edge connecting the two nodes.
-   */
-  @CanIgnoreReturnValue
-  @CheckForNull
-  V removeSuccessor(N node);
+    /**
+     * Remove {@code node} from the set of successors. Returns the value previously associated with
+     * the edge connecting the two nodes.
+     */
+    @CanIgnoreReturnValue
+    @CheckForNull
+    V removeSuccessor(N node);
 
-  /**
-   * Add {@code node} as a predecessor to the origin node. In the case of an undirected graph, it
-   * also becomes a successor. Associates {@code value} with the edge connecting the two nodes.
-   */
-  void addPredecessor(N node, V value);
+    /**
+     * Add {@code node} as a predecessor to the origin node. In the case of an undirected graph, it
+     * also becomes a successor. Associates {@code value} with the edge connecting the two nodes.
+     */
+    void addPredecessor(N node, V value);
 
-  /**
-   * Add {@code node} as a successor to the origin node. In the case of an undirected graph, it also
-   * becomes a predecessor. Associates {@code value} with the edge connecting the two nodes. Returns
-   * the value previously associated with the edge connecting the two nodes.
-   */
-  @CanIgnoreReturnValue
-  @CheckForNull
-  V addSuccessor(N node, V value);
+    /**
+     * Add {@code node} as a successor to the origin node. In the case of an undirected graph, it also
+     * becomes a predecessor. Associates {@code value} with the edge connecting the two nodes. Returns
+     * the value previously associated with the edge connecting the two nodes.
+     */
+    @CanIgnoreReturnValue
+    @CheckForNull
+    V addSuccessor(N node, V value);
 }

@@ -13,46 +13,49 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
-import java.text.NumberFormat;
-import java.util.Date;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaElement;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IOpenable;
+import java.text.NumberFormat;
+import java.util.Date;
 
 public class VerboseElementCache<K extends IJavaElement & IOpenable> extends ElementCache<K> {
 
-	private K beingAdded;
-	private final String name;
+    private K beingAdded;
+    private final String name;
 
-	public VerboseElementCache(int size, String name) {
-		super(size);
-		this.name = name;
-	}
+    public VerboseElementCache(int size, String name) {
+        super(size);
+        this.name = name;
+    }
 
-	@Override
-	protected boolean makeSpace(int space) {
-		if (this.beingAdded == null) return super.makeSpace(space);
-		String fillingRatio = toStringFillingRation(this.name);
-		boolean result = super.makeSpace(space);
-		String newFillingRatio = toStringFillingRation(this.name);
-		if (!fillingRatio.equals(newFillingRatio)) {
-			JavaModelManager.trace(Thread.currentThread() + " " + new Date(System.currentTimeMillis()).toString()); //$NON-NLS-1$
-			JavaModelManager.trace(Thread.currentThread() + " MADE SPACE FOR " + fillingRatio + " (NOW " + NumberFormat.getInstance().format(fillingRatio()) + "% full)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			JavaModelManager.trace(Thread.currentThread() + " WHILE OPENING "+ ((JavaElement) this.beingAdded).toStringWithAncestors());  //$NON-NLS-1$
-			JavaModelManager.trace(""); //$NON-NLS-1$
-		}
-		return result;
-	}
+    @Override
+    protected boolean makeSpace(int space) {
+        if (this.beingAdded == null)
+            return super.makeSpace(space);
+        String fillingRatio = toStringFillingRation(this.name);
+        boolean result = super.makeSpace(space);
+        String newFillingRatio = toStringFillingRation(this.name);
+        if (!fillingRatio.equals(newFillingRatio)) {
+            JavaModelManager.trace(Thread.currentThread() + " " + new Date(System.currentTimeMillis()).toString()); //$NON-NLS-1$
+            JavaModelManager.trace(Thread.currentThread() + " MADE SPACE FOR " + fillingRatio + " (NOW " //$NON-NLS-1$ //$NON-NLS-2$
+                + NumberFormat.getInstance().format(fillingRatio()) + "% full)");  //$NON-NLS-1$
+            JavaModelManager.trace(
+                Thread.currentThread() + " WHILE OPENING " + ((JavaElement) this.beingAdded).toStringWithAncestors());  //$NON-NLS-1$
+            JavaModelManager.trace(""); //$NON-NLS-1$
+        }
+        return result;
+    }
 
-	@Override
-	public JavaElementInfo put(K key, JavaElementInfo value) {
-		try {
-			if (this.beingAdded == null)
-				this.beingAdded = key;
-			return super.put(key, value);
-		} finally {
-			if (key.equals(this.beingAdded))
-				this.beingAdded = null;
-		}
-	}
+    @Override
+    public JavaElementInfo put(K key, JavaElementInfo value) {
+        try {
+            if (this.beingAdded == null)
+                this.beingAdded = key;
+            return super.put(key, value);
+        } finally {
+            if (key.equals(this.beingAdded))
+                this.beingAdded = null;
+        }
+    }
 
 }

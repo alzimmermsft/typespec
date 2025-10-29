@@ -58,7 +58,7 @@ public interface IEnumVariant extends IUnknown {
     /**
      * Attempts to skip over the next celt elements in the enumeration sequence.
      *
-     * @param count  elements to skip
+     * @param count elements to skip
      */
     void Skip(int count);
 

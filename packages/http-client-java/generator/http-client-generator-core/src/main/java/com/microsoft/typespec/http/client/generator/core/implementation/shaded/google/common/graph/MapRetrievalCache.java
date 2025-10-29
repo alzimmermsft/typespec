@@ -18,8 +18,8 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Preconditions.checkNotNull;
 
-import java.util.Map;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
+import java.util.Map;
 
 /**
  * A {@link MapIteratorCache} that adds additional caching. In addition to the caching provided by
@@ -29,84 +29,86 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
  */
 @ElementTypesAreNonnullByDefault
 final class MapRetrievalCache<K, V> extends MapIteratorCache<K, V> {
-  // See the note about volatile in the superclass.
-  @CheckForNull private transient volatile CacheEntry<K, V> cacheEntry1;
-  @CheckForNull private transient volatile CacheEntry<K, V> cacheEntry2;
+    // See the note about volatile in the superclass.
+    @CheckForNull
+    private transient volatile CacheEntry<K, V> cacheEntry1;
+    @CheckForNull
+    private transient volatile CacheEntry<K, V> cacheEntry2;
 
-  MapRetrievalCache(Map<K, V> backingMap) {
-    super(backingMap);
-  }
-
-  @SuppressWarnings("unchecked") // Safe because we only cast if key is found in map.
-  @Override
-  @CheckForNull
-  V get(Object key) {
-    checkNotNull(key);
-    V value = getIfCached(key);
-    if (value != null) {
-      return value;
+    MapRetrievalCache(Map<K, V> backingMap) {
+        super(backingMap);
     }
 
-    value = getWithoutCaching(key);
-    if (value != null) {
-      addToCache((K) key, value);
+    @SuppressWarnings("unchecked") // Safe because we only cast if key is found in map.
+    @Override
+    @CheckForNull
+    V get(Object key) {
+        checkNotNull(key);
+        V value = getIfCached(key);
+        if (value != null) {
+            return value;
+        }
+
+        value = getWithoutCaching(key);
+        if (value != null) {
+            addToCache((K) key, value);
+        }
+        return value;
     }
-    return value;
-  }
 
-  // Internal methods (package-visible, but treat as only subclass-visible)
+    // Internal methods (package-visible, but treat as only subclass-visible)
 
-  @Override
-  @CheckForNull
-  V getIfCached(@CheckForNull Object key) {
-    V value = super.getIfCached(key);
-    if (value != null) {
-      return value;
+    @Override
+    @CheckForNull
+    V getIfCached(@CheckForNull Object key) {
+        V value = super.getIfCached(key);
+        if (value != null) {
+            return value;
+        }
+
+        // Store a local reference to the cache entry. If the backing map is immutable, this,
+        // in combination with immutable cache entries, will ensure a thread-safe cache.
+        CacheEntry<K, V> entry;
+
+        // Check cache. We use == on purpose because it's cheaper and a cache miss is ok.
+        entry = cacheEntry1;
+        if (entry != null && entry.key == key) {
+            return entry.value;
+        }
+        entry = cacheEntry2;
+        if (entry != null && entry.key == key) {
+            // Promote second cache entry to first so the access pattern
+            // [K1, K2, K1, K3, K1, K4...] still hits the cache half the time.
+            addToCache(entry);
+            return entry.value;
+        }
+        return null;
     }
 
-    // Store a local reference to the cache entry. If the backing map is immutable, this,
-    // in combination with immutable cache entries, will ensure a thread-safe cache.
-    CacheEntry<K, V> entry;
-
-    // Check cache. We use == on purpose because it's cheaper and a cache miss is ok.
-    entry = cacheEntry1;
-    if (entry != null && entry.key == key) {
-      return entry.value;
+    @Override
+    void clearCache() {
+        super.clearCache();
+        cacheEntry1 = null;
+        cacheEntry2 = null;
     }
-    entry = cacheEntry2;
-    if (entry != null && entry.key == key) {
-      // Promote second cache entry to first so the access pattern
-      // [K1, K2, K1, K3, K1, K4...] still hits the cache half the time.
-      addToCache(entry);
-      return entry.value;
+
+    private void addToCache(K key, V value) {
+        addToCache(new CacheEntry<K, V>(key, value));
     }
-    return null;
-  }
 
-  @Override
-  void clearCache() {
-    super.clearCache();
-    cacheEntry1 = null;
-    cacheEntry2 = null;
-  }
-
-  private void addToCache(K key, V value) {
-    addToCache(new CacheEntry<K, V>(key, value));
-  }
-
-  private void addToCache(CacheEntry<K, V> entry) {
-    // Slide new entry into first cache position. Drop previous entry in second cache position.
-    cacheEntry2 = cacheEntry1;
-    cacheEntry1 = entry;
-  }
-
-  private static final class CacheEntry<K, V> {
-    final K key;
-    final V value;
-
-    CacheEntry(K key, V value) {
-      this.key = key;
-      this.value = value;
+    private void addToCache(CacheEntry<K, V> entry) {
+        // Slide new entry into first cache position. Drop previous entry in second cache position.
+        cacheEntry2 = cacheEntry1;
+        cacheEntry1 = entry;
     }
-  }
+
+    private static final class CacheEntry<K, V> {
+        final K key;
+        final V value;
+
+        CacheEntry(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
 }

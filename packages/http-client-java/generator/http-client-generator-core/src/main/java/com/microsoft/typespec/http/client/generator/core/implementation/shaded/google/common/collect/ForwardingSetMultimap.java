@@ -16,12 +16,12 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.util.Map.Entry;
 import java.util.Set;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A set multimap which forwards all its method calls to another set multimap. Subclasses should
@@ -40,28 +40,28 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 public abstract class ForwardingSetMultimap<K extends @Nullable Object, V extends @Nullable Object>
     extends ForwardingMultimap<K, V> implements SetMultimap<K, V> {
 
-  @Override
-  protected abstract SetMultimap<K, V> delegate();
+    @Override
+    protected abstract SetMultimap<K, V> delegate();
 
-  @Override
-  public Set<Entry<K, V>> entries() {
-    return delegate().entries();
-  }
+    @Override
+    public Set<Entry<K, V>> entries() {
+        return delegate().entries();
+    }
 
-  @Override
-  public Set<V> get(@ParametricNullness K key) {
-    return delegate().get(key);
-  }
+    @Override
+    public Set<V> get(@ParametricNullness K key) {
+        return delegate().get(key);
+    }
 
-  @CanIgnoreReturnValue
-  @Override
-  public Set<V> removeAll(@CheckForNull Object key) {
-    return delegate().removeAll(key);
-  }
+    @CanIgnoreReturnValue
+    @Override
+    public Set<V> removeAll(@CheckForNull Object key) {
+        return delegate().removeAll(key);
+    }
 
-  @CanIgnoreReturnValue
-  @Override
-  public Set<V> replaceValues(@ParametricNullness K key, Iterable<? extends V> values) {
-    return delegate().replaceValues(key, values);
-  }
+    @CanIgnoreReturnValue
+    @Override
+    public Set<V> replaceValues(@ParametricNullness K key, Iterable<? extends V> values) {
+        return delegate().replaceValues(key, values);
+    }
 }

@@ -16,17 +16,18 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 public class BinaryLambdaMethod extends LambdaMethod {
 
-	BinaryLambdaMethod(JavaElement parent, String name, String key, int sourceStart, String [] parameterTypes, String [] parameterNames, String returnType, SourceMethodElementInfo elementInfo) {
-		super(parent, name, key, sourceStart, parameterTypes, parameterNames, returnType, elementInfo);
-	}
+    BinaryLambdaMethod(JavaElement parent, String name, String key, int sourceStart, String[] parameterTypes,
+        String[] parameterNames, String returnType, SourceMethodElementInfo elementInfo) {
+        super(parent, name, key, sourceStart, parameterTypes, parameterNames, returnType, elementInfo);
+    }
 
-	@Override
-	public JavaElement getPrimaryElement(boolean checkOwner) {
-		return this;
-	}
+    @Override
+    public JavaElement getPrimaryElement(boolean checkOwner) {
+        return this;
+    }
 
-	@Override
-	public boolean isBinary() {
-		return true;
-	}
+    @Override
+    public boolean isBinary() {
+        return true;
+    }
 }

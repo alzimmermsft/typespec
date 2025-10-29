@@ -14,9 +14,9 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.util.concurrent;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import java.util.concurrent.ScheduledFuture;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Helper interface to implement both {@link ListenableFuture} and {@link ScheduledFuture}.
@@ -26,5 +26,5 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
-public interface ListenableScheduledFuture<V extends @Nullable Object>
-    extends ScheduledFuture<V>, ListenableFuture<V> {}
+public interface ListenableScheduledFuture<V extends @Nullable Object> extends ScheduledFuture<V>, ListenableFuture<V> {
+}

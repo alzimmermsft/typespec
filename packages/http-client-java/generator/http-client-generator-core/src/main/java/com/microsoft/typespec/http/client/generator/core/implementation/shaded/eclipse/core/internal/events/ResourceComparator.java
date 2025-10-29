@@ -28,8 +28,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * whether the comparison is zero (equal) or non-zero (not equal).
  */
 public class ResourceComparator implements IElementComparator, ICoreConstants {
-    /* Singleton instances */
-    protected static final ResourceComparator notificationSingleton = new ResourceComparator(true, false);
     protected static final ResourceComparator buildSingleton = new ResourceComparator(false, false);
 
     /**
@@ -47,26 +45,10 @@ public class ResourceComparator implements IElementComparator, ICoreConstants {
 
     /**
      * Returns a comparator which compares resource infos, suitable for computing
-     * save and snapshot deltas.
-     */
-    public static ResourceComparator getSaveComparator() {
-        return new ResourceComparator(false, true);
-    }
-
-    /**
-     * Returns a comparator which compares resource infos, suitable for computing
      * build deltas.
      */
     public static ResourceComparator getBuildComparator() {
         return buildSingleton;
-    }
-
-    /**
-     * Returns a comparator which compares resource infos, suitable for computing
-     * build deltas.
-     */
-    public static ResourceComparator getNotificationComparator() {
-        return notificationSingleton;
     }
 
     /**

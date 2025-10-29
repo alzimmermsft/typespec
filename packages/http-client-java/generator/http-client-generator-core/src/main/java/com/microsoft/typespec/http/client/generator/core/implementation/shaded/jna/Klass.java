@@ -41,21 +41,20 @@ abstract class Klass {
      * @return the new instance
      * @throws IllegalArgumentException if the instantiation fails
      * @throws RuntimeException if the constructor for {@code klass} throws
-     *         a runtime exception
+     * a runtime exception
      */
     public static <T> T newInstance(Class<T> klass) {
         try {
             return klass.getDeclaredConstructor().newInstance();
-        } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | SecurityException e) {
-            String msg = "Can't create an instance of " + klass
-                    + ", requires a public no-arg constructor: " + e;
+        } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException
+            | SecurityException e) {
+            String msg = "Can't create an instance of " + klass + ", requires a public no-arg constructor: " + e;
             throw new IllegalArgumentException(msg, e);
         } catch (InvocationTargetException e) {
             if (e.getCause() instanceof RuntimeException) {
                 throw (RuntimeException) e.getCause();
             } else {
-                String msg = "Can't create an instance of " + klass
-                        + ", requires a public no-arg constructor: " + e;
+                String msg = "Can't create an instance of " + klass + ", requires a public no-arg constructor: " + e;
                 throw new IllegalArgumentException(msg, e);
             }
         }

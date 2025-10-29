@@ -14,7 +14,9 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.*;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Platform;
 
 /**
  * Interface for resources which may contain
@@ -26,14 +28,10 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * extensions are managed by the platform's adapter manager.
  * </p>
  *
- * @see Platform#getAdapterManager()
- * @see IProject
- * @see IFolder
- * @see IWorkspaceRoot
  * @noimplement This interface is not intended to be implemented by clients.
  * @noextend This interface is not intended to be extended by clients.
  */
-public interface IContainer extends IResource, IAdaptable {
+public interface IContainer extends IResource {
 
     /*
      * ====================================================================
@@ -54,7 +52,6 @@ public interface IContainer extends IResource, IAdaptable {
      * Member constant (bit mask value 2) indicating that team private members are
      * to be included.
      *
-     * @see IResource#isTeamPrivateMember()
      * @since 2.0
      */
     int INCLUDE_TEAM_PRIVATE_MEMBERS = 2;
@@ -81,8 +78,6 @@ public interface IContainer extends IResource, IAdaptable {
      * Member constant (bit mask value 16) indicating that a resource
      * should not be checked for existence.
      *
-     * @see IResource#accept(IResourceProxyVisitor, int)
-     * @see IResource#accept(IResourceVisitor, int, int)
      * @since 3.8
      */
     int DO_NOT_CHECK_EXISTENCE = 16;
@@ -164,10 +159,6 @@ public interface IContainer extends IResource, IAdaptable {
      * interest
      * @return the member resource, or <code>null</code> if no such
      * resource exists
-     * @see #members(boolean)
-     * @see IResource#isPhantom()
-     * @see IPath#isValidPath(String)
-     * @see IPath#isValidSegment(String)
      */
     IResource findMember(String path, boolean includePhantoms);
 
@@ -223,64 +214,8 @@ public interface IContainer extends IResource, IAdaptable {
      * interest
      * @return the member resource, or <code>null</code> if no such
      * resource exists
-     * @see #members(boolean)
-     * @see IResource#isPhantom()
      */
     IResource findMember(IPath path, boolean includePhantoms);
-
-    /**
-     * Returns the default charset for resources in this container.
-     * <p>
-     * This is a convenience method, fully equivalent to:</p>
-     * 
-     * <pre>
-     * getDefaultCharset(true);
-     * </pre>
-     * 
-     * <p>
-     * Note that this method does not check whether the result is a supported
-     * charset name. Callers should be prepared to handle
-     * <code>UnsupportedEncodingException</code> where this charset is used.
-     * </p>
-     *
-     * @return the name of the default charset encoding for this container
-     * @exception CoreException if this method fails
-     * @see IContainer#getDefaultCharset(boolean)
-     * @see IFile#getCharset()
-     * @since 3.0
-     */
-    String getDefaultCharset() throws CoreException;
-
-    /**
-     * Returns the default charset for resources in this container.
-     * <p>
-     * If checkImplicit is <code>false</code>, this method
-     * will return the charset defined by calling #setDefaultCharset, provided this
-     * container exists, or <code>null</code> otherwise.
-     * </p><p>
-     * If checkImplicit is <code>true</code>, this method uses the following
-     * algorithm to determine the charset to be returned:</p>
-     * <ol>
-     * <li>the one explicitly set by calling #setDefaultCharset
-     * (with a non-null argument) on this container, if any, and this container
-     * exists, or</li>
-     * <li>the parent's default charset, if this container has a parent (is not the
-     * workspace root), or</li>
-     * <li>the charset returned by ResourcesPlugin#getEncoding.</li>
-     * </ol>
-     * <p>
-     * Note that this method does not check whether the result is a supported
-     * charset name. Callers should be prepared to handle
-     * <code>UnsupportedEncodingException</code> where this charset is used.
-     * </p>
-     * 
-     * @return the name of the default charset encoding for this container,
-     * or <code>null</code>
-     * @exception CoreException if this method fails
-     * @see IFile#getCharset()
-     * @since 3.0
-     */
-    String getDefaultCharset(boolean checkImplicit) throws CoreException;
 
     /**
      * Returns a handle to the file identified by the given path in this

@@ -13,7 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
-import java.net.URL;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.OperationCanceledException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IAnnotation;
@@ -27,119 +26,120 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IModule;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TagBits;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaModelManager.PerProjectInfo;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.DeduplicationUtil;
+
+import java.net.URL;
 
 public class BinaryModule extends BinaryMember implements AbstractModule {
 
-	private IBinaryModule info;
+    private IBinaryModule info;
 
-	/** For creating a pure handle from its memento. */
-	public BinaryModule(JavaElement parent, String name) {
-		super(parent, name);
-	}
-	/** For creating a populated handle from a class file. */
-	public BinaryModule(JavaElement parent, IBinaryModule info) {
-		super(parent, DeduplicationUtil.toString(info.name()));
-		this.info = info;
-	}
-	@Override
-	public IModule getModuleInfo() throws JavaModelException {
-		if (this.info == null) {
-			ModularClassFile classFile = (ModularClassFile) this.getParent();
-			this.info = classFile.getBinaryModuleInfo();
-		}
-		return this.info;
-	}
-	@Override
-	public IAnnotation[] getAnnotations() throws JavaModelException {
-		IBinaryModule moduleInfo = (IBinaryModule) getModuleInfo();
-		IBinaryAnnotation[] binaryAnnotations = moduleInfo.getAnnotations();
-		long tagBits = moduleInfo.getTagBits() & ~TagBits.AnnotationDeprecated; // TODO: kludge to avoid duplication of real annotation and tagBit induced standard annotation
-		return getAnnotations(binaryAnnotations, tagBits);
-	}
-	@Override
-	public IJavaElement[] getChildren() throws JavaModelException {
-		return NO_ELEMENTS;
-	}
-	@Override
-	public boolean isBinary() {
-		return true;
-	}
-	@Override
-	public boolean isSystemModule() {
-		IPackageFragmentRoot pfr = (IPackageFragmentRoot) getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
-		return pfr instanceof JrtPackageFragmentRoot;
-	}
-	@Override
-	public int getFlags() throws JavaModelException {
-		if (getModuleInfo().isOpen())
-			return ClassFileConstants.ACC_OPEN;
-		return 0;
-	}
-	@Override
-	public char getHandleMementoDelimiter() {
-		return JavaElement.JEM_MODULE;
-	}
-	@Override
-	public String getKey(boolean forceOpen) throws JavaModelException {
-		return getKey(this, forceOpen);
-	}
-	@Override
-	public ISourceRange getSourceRange() throws JavaModelException {
-		SourceMapper mapper= getSourceMapper();
-		if (mapper != null) {
-			// ensure the class file's buffer is open so that source ranges are computed
-			((ModularClassFile)getClassFile()).getBuffer();
+    /** For creating a pure handle from its memento. */
+    public BinaryModule(JavaElement parent, String name) {
+        super(parent, name);
+    }
 
-			return mapper.getSourceRange(this);
-		} else {
-			return SourceMapper.UNKNOWN_RANGE;
-		}
-	}
-	@Override
-	public String getAttachedJavadoc(IProgressMonitor monitor) throws JavaModelException {
-		IJavadocContents javadocContents = getJavadocContents(monitor);
-		if (javadocContents == null) return null;
-		return javadocContents.getModuleDoc();
-	}
-	public IJavadocContents getJavadocContents(IProgressMonitor monitor) throws JavaModelException {
-		PerProjectInfo projectInfo = JavaModelManager.getJavaModelManager().getPerProjectInfoCheckExistence(getJavaProject().getProject());
-		IJavadocContents cachedJavadoc = null;
-		synchronized (projectInfo.javadocCache) {
-			cachedJavadoc = (IJavadocContents) projectInfo.javadocCache.get(this);
-		}
+    @Override
+    public IModule getModuleInfo() throws JavaModelException {
+        if (this.info == null) {
+            ModularClassFile classFile = (ModularClassFile) this.getParent();
+            this.info = classFile.getBinaryModuleInfo();
+        }
+        return this.info;
+    }
 
-		if (cachedJavadoc != null && cachedJavadoc != BinaryType.EMPTY_JAVADOC) {
-			return cachedJavadoc;
-		}
-		URL baseLocation= getJavadocBaseLocation();
-		if (baseLocation == null) {
-			return null;
-		}
-		StringBuilder pathBuffer = new StringBuilder(baseLocation.toExternalForm());
+    @Override
+    public IAnnotation[] getAnnotations() throws JavaModelException {
+        IBinaryModule moduleInfo = (IBinaryModule) getModuleInfo();
+        IBinaryAnnotation[] binaryAnnotations = moduleInfo.getAnnotations();
+        long tagBits = moduleInfo.getTagBits() & ~TagBits.AnnotationDeprecated; // TODO: kludge to avoid duplication of
+                                                                                // real annotation and tagBit induced
+                                                                                // standard annotation
+        return getAnnotations(binaryAnnotations, tagBits);
+    }
 
-		if (!(pathBuffer.charAt(pathBuffer.length() - 1) == '/')) {
-			pathBuffer.append('/');
-		}
-		pathBuffer.append(getElementName()).append(ExternalJavadocSupport.MODULE_FILE_SUFFIX);
-		if (monitor != null && monitor.isCanceled()) throw new OperationCanceledException();
-		String contents = getURLContents(baseLocation, String.valueOf(pathBuffer));
-		IJavadocContents javadocContents = ExternalJavadocSupport.forHtml(null, contents);
-		synchronized (projectInfo.javadocCache) {
-			projectInfo.javadocCache.put(this, javadocContents);
-		}
-		return javadocContents;
-	}
-	@Override
-	public String toString(String lineDelimiter) {
-		StringBuilder buffer = new StringBuilder();
-		try {
-			toStringContent(buffer, lineDelimiter);
-		} catch (JavaModelException e) {
-			if (JavaModelManager.VERBOSE) {
-				JavaModelManager.trace("", e); //$NON-NLS-1$
-			}
-		}
-		return buffer.toString();
-	}
+    @Override
+    public IJavaElement[] getChildren() throws JavaModelException {
+        return NO_ELEMENTS;
+    }
+
+    @Override
+    public boolean isBinary() {
+        return true;
+    }
+
+    @Override
+    public boolean isSystemModule() {
+        IPackageFragmentRoot pfr = (IPackageFragmentRoot) getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+        return pfr instanceof JrtPackageFragmentRoot;
+    }
+
+    @Override
+    public int getFlags() throws JavaModelException {
+        if (getModuleInfo().isOpen())
+            return ClassFileConstants.ACC_OPEN;
+        return 0;
+    }
+
+    @Override
+    public char getHandleMementoDelimiter() {
+        return JavaElement.JEM_MODULE;
+    }
+
+    @Override
+    public String getKey(boolean forceOpen) throws JavaModelException {
+        return getKey(this, forceOpen);
+    }
+
+    @Override
+    public ISourceRange getSourceRange() throws JavaModelException {
+        SourceMapper mapper = getSourceMapper();
+        if (mapper != null) {
+            // ensure the class file's buffer is open so that source ranges are computed
+            ((ModularClassFile) getClassFile()).getBuffer();
+
+            return mapper.getSourceRange(this);
+        } else {
+            return SourceMapper.UNKNOWN_RANGE;
+        }
+    }
+
+    @Override
+    public String getAttachedJavadoc(IProgressMonitor monitor) throws JavaModelException {
+        IJavadocContents javadocContents = getJavadocContents(monitor);
+        if (javadocContents == null)
+            return null;
+        return javadocContents.getModuleDoc();
+    }
+
+    public IJavadocContents getJavadocContents(IProgressMonitor monitor) throws JavaModelException {
+        PerProjectInfo projectInfo
+            = JavaModelManager.getJavaModelManager().getPerProjectInfoCheckExistence(getJavaProject().getProject());
+        IJavadocContents cachedJavadoc = null;
+        synchronized (projectInfo.javadocCache) {
+            cachedJavadoc = (IJavadocContents) projectInfo.javadocCache.get(this);
+        }
+
+        if (cachedJavadoc != null && cachedJavadoc != BinaryType.EMPTY_JAVADOC) {
+            return cachedJavadoc;
+        }
+        URL baseLocation = getJavadocBaseLocation();
+        if (baseLocation == null) {
+            return null;
+        }
+        StringBuilder pathBuffer = new StringBuilder(baseLocation.toExternalForm());
+
+        if (!(pathBuffer.charAt(pathBuffer.length() - 1) == '/')) {
+            pathBuffer.append('/');
+        }
+        pathBuffer.append(getElementName()).append(ExternalJavadocSupport.MODULE_FILE_SUFFIX);
+        if (monitor != null && monitor.isCanceled())
+            throw new OperationCanceledException();
+        String contents = getURLContents(baseLocation, String.valueOf(pathBuffer));
+        IJavadocContents javadocContents = ExternalJavadocSupport.forHtml(null, contents);
+        synchronized (projectInfo.javadocCache) {
+            projectInfo.javadocCache.put(this, javadocContents);
+        }
+        return javadocContents;
+    }
+
 }

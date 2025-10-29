@@ -20,25 +20,20 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * Pseudo method binding used to wrapper a real method, and expose less exceptions than original.
  * For other protocols, it should delegate to original method
  */
-public class MostSpecificExceptionMethodBinding  extends MethodBinding {
+public class MostSpecificExceptionMethodBinding extends MethodBinding {
 
-	private final MethodBinding originalMethod;
+    private final MethodBinding originalMethod;
 
-	public MostSpecificExceptionMethodBinding (MethodBinding originalMethod, ReferenceBinding[] mostSpecificExceptions) {
-		super(
-				originalMethod.modifiers,
-				originalMethod.selector,
-				originalMethod.returnType,
-				originalMethod.parameters,
-				mostSpecificExceptions,
-				originalMethod.declaringClass);
-		this.originalMethod = originalMethod;
-		this.parameterFlowBits = originalMethod.parameterFlowBits;
-		this.defaultNullness = originalMethod.defaultNullness;
-	}
+    public MostSpecificExceptionMethodBinding(MethodBinding originalMethod, ReferenceBinding[] mostSpecificExceptions) {
+        super(originalMethod.modifiers, originalMethod.selector, originalMethod.returnType, originalMethod.parameters,
+            mostSpecificExceptions, originalMethod.declaringClass);
+        this.originalMethod = originalMethod;
+        this.parameterFlowBits = originalMethod.parameterFlowBits;
+        this.defaultNullness = originalMethod.defaultNullness;
+    }
 
-	@Override
-	public MethodBinding original() {
-		return this.originalMethod.original();
-	}
+    @Override
+    public MethodBinding original() {
+        return this.originalMethod.original();
+    }
 }

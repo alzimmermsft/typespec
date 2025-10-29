@@ -18,28 +18,32 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class OpensStatement extends PackageVisibilityStatement {
 
-	public OpensStatement(ImportReference pkgRef) {
-		this(pkgRef, null);
-	}
-	public OpensStatement(ImportReference pkgRef, ModuleReference[] targets) {
-		super(pkgRef, targets);
-	}
-	@Override
-	public int computeSeverity(int problemId) {
-		switch (problemId) {
-			case IProblem.PackageDoesNotExistOrIsEmpty:
-				return ProblemSeverities.Warning;
-			default:
-				return ProblemSeverities.Error;
-		}
-	}
-	@Override
-	public StringBuilder print(int indent, StringBuilder output) {
-		printIndent(indent, output);
-		output.append("opens "); //$NON-NLS-1$
-		super.print(0, output);
-		output.append(";"); //$NON-NLS-1$
-		return output;
-	}
+    public OpensStatement(ImportReference pkgRef) {
+        this(pkgRef, null);
+    }
+
+    public OpensStatement(ImportReference pkgRef, ModuleReference[] targets) {
+        super(pkgRef, targets);
+    }
+
+    @Override
+    public int computeSeverity(int problemId) {
+        switch (problemId) {
+            case IProblem.PackageDoesNotExistOrIsEmpty:
+                return ProblemSeverities.Warning;
+
+            default:
+                return ProblemSeverities.Error;
+        }
+    }
+
+    @Override
+    public StringBuilder print(int indent, StringBuilder output) {
+        printIndent(indent, output);
+        output.append("opens "); //$NON-NLS-1$
+        super.print(0, output);
+        output.append(";"); //$NON-NLS-1$
+        return output;
+    }
 
 }

@@ -68,18 +68,19 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * @noimplement
  * @author $Id: 42f3c6bbf682a69ea3914c737d5b0001694383db $
  * @deprecated This service has been replaced by the
- *             <code>com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.startlevel</code> package.
+ * <code>com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.startlevel</code>
+ * package.
  */
 public interface StartLevel {
-	/**
-	 * Return the active start level value of the Framework.
-	 * 
-	 * If the Framework is in the process of changing the start level this
-	 * method must return the active start level if this differs from the
-	 * requested start level.
-	 * 
-	 * @return The active start level value of the Framework.
-	 */
+    /**
+     * Return the active start level value of the Framework.
+     * 
+     * If the Framework is in the process of changing the start level this
+     * method must return the active start level if this differs from the
+     * requested start level.
+     * 
+     * @return The active start level value of the Framework.
+     */
     int getStartLevel();
 
 }

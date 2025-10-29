@@ -16,9 +16,9 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import java.util.SortedMap;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An object representing the differences between two sorted maps.
@@ -31,15 +31,15 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 public interface SortedMapDifference<K extends @Nullable Object, V extends @Nullable Object>
     extends MapDifference<K, V> {
 
-  @Override
-  SortedMap<K, V> entriesOnlyOnLeft();
+    @Override
+    SortedMap<K, V> entriesOnlyOnLeft();
 
-  @Override
-  SortedMap<K, V> entriesOnlyOnRight();
+    @Override
+    SortedMap<K, V> entriesOnlyOnRight();
 
-  @Override
-  SortedMap<K, V> entriesInCommon();
+    @Override
+    SortedMap<K, V> entriesInCommon();
 
-  @Override
-  SortedMap<K, ValueDifference<V>> entriesDiffering();
+    @Override
+    SortedMap<K, ValueDifference<V>> entriesDiffering();
 }

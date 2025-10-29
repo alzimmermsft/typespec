@@ -33,14 +33,22 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
  * definitions for the Windows 32-Bit Registry API.
  * Ported from WinReg.h
  * Microsoft Windows SDK 6.0A.
+ * 
  * @author dblock[at]dblock.org
  */
 public interface WinReg {
 
     public static class HKEY extends HANDLE {
-        public HKEY() { }
-        public HKEY(Pointer p) { super(p); }
-        public HKEY(int value) { super(new Pointer(value)); }
+        public HKEY() {
+        }
+
+        public HKEY(Pointer p) {
+            super(p);
+        }
+
+        public HKEY(int value) {
+            super(new Pointer(value));
+        }
     }
 
     public static class HKEYByReference extends ByReference {
@@ -73,10 +81,10 @@ public interface WinReg {
     HKEY HKEY_CURRENT_USER = new HKEY(0x80000001);
     HKEY HKEY_LOCAL_MACHINE = new HKEY(0x80000002);
     HKEY HKEY_USERS = new HKEY(0x80000003);
-    HKEY HKEY_PERFORMANCE_DATA= new HKEY(0x80000004);
-    HKEY HKEY_PERFORMANCE_TEXT= new HKEY(0x80000050);
+    HKEY HKEY_PERFORMANCE_DATA = new HKEY(0x80000004);
+    HKEY HKEY_PERFORMANCE_TEXT = new HKEY(0x80000050);
     HKEY HKEY_PERFORMANCE_NLSTEXT = new HKEY(0x80000060);
-    HKEY HKEY_CURRENT_CONFIG  = new HKEY(0x80000005);
+    HKEY HKEY_CURRENT_CONFIG = new HKEY(0x80000005);
     HKEY HKEY_DYN_DATA = new HKEY(0x80000006);
     HKEY HKEY_CURRENT_USER_LOCAL_SETTINGS = new HKEY(0x80000007);
 }

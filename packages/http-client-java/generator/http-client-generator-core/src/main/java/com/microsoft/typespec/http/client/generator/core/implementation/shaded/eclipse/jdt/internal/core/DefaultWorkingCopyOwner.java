@@ -23,21 +23,23 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class DefaultWorkingCopyOwner extends WorkingCopyOwner {
 
-	public WorkingCopyOwner primaryBufferProvider;
+    public WorkingCopyOwner primaryBufferProvider;
 
-	public static final DefaultWorkingCopyOwner PRIMARY =  new DefaultWorkingCopyOwner();
+    public static final DefaultWorkingCopyOwner PRIMARY = new DefaultWorkingCopyOwner();
 
-	private DefaultWorkingCopyOwner() {
-		// only one instance can be created
-	}
+    private DefaultWorkingCopyOwner() {
+        // only one instance can be created
+    }
 
-	@Override
-	public IBuffer createBuffer(ICompilationUnit workingCopy) {
-		if (this.primaryBufferProvider != null) return this.primaryBufferProvider.createBuffer(workingCopy);
-		return super.createBuffer(workingCopy);
-	}
-	@Override
-	public String toString() {
-		return "Primary owner"; //$NON-NLS-1$
-	}
+    @Override
+    public IBuffer createBuffer(ICompilationUnit workingCopy) {
+        if (this.primaryBufferProvider != null)
+            return this.primaryBufferProvider.createBuffer(workingCopy);
+        return super.createBuffer(workingCopy);
+    }
+
+    @Override
+    public String toString() {
+        return "Primary owner"; //$NON-NLS-1$
+    }
 }

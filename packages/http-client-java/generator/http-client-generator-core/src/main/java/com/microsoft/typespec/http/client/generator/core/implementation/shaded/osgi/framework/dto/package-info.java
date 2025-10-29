@@ -39,4 +39,3 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.dto;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.Version;
-

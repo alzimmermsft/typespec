@@ -16,11 +16,10 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.connect;
 
-import java.util.Optional;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.ConsumerType;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Bundle;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.FrameworkUtil;
+import java.util.Optional;
 
 /**
  * A helper for the {@link FrameworkUtil} class.
@@ -30,19 +29,19 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 @ConsumerType
 public interface FrameworkUtilHelper {
-	/**
-	 * Returns the {@link Bundle} associated with the specified class.
-	 * <p>
-	 * This helper method is called by {@link FrameworkUtil#getBundle(Class)} if
-	 * the standard implementation of {@link FrameworkUtil} is unable to find
-	 * the bundle.
-	 * 
-	 * @param classFromBundle A class associated with a bundle.
-	 * @return An {@code Optional} containing the {@link Bundle} for the
-	 *         specified class, or an empty {@code Optional} if the specified
-	 *         class is not from a bundle.
-	 */
-	default Optional<Bundle> getBundle(Class< ? > classFromBundle) {
-		return Optional.empty();
-	}
+    /**
+     * Returns the {@link Bundle} associated with the specified class.
+     * <p>
+     * This helper method is called by {@link FrameworkUtil#getBundle(Class)} if
+     * the standard implementation of {@link FrameworkUtil} is unable to find
+     * the bundle.
+     * 
+     * @param classFromBundle A class associated with a bundle.
+     * @return An {@code Optional} containing the {@link Bundle} for the
+     * specified class, or an empty {@code Optional} if the specified
+     * class is not from a bundle.
+     */
+    default Optional<Bundle> getBundle(Class<?> classFromBundle) {
+        return Optional.empty();
+    }
 }

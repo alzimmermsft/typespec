@@ -68,17 +68,6 @@ public final class JobQueue implements Iterable<InternalJob> {
     }
 
     /**
-     * Return and remove the element with highest priority, or null if empty.
-     */
-    public InternalJob dequeue() {
-        InternalJob toRemove = dummy.previous();
-        if (toRemove == dummy) {
-            return null;
-        }
-        return toRemove.remove();
-    }
-
-    /**
      * Adds an item to the queue
      */
     public void enqueue(InternalJob newEntry) {

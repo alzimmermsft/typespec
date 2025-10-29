@@ -22,7 +22,6 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * Abstract base implementation of all classpath container initializer.
@@ -51,9 +50,6 @@ public abstract class ClasspathContainerInitializer {
     /**
      * Status code indicating that an attribute is not modifiable.
      *
-     * @see #getAccessRulesStatus(IPath, IJavaProject)
-     * @see #getAttributeStatus(IPath, IJavaProject, String)
-     * @see #getSourceAttachmentStatus(IPath, IJavaProject)
      *
      * @since 3.3
      */
@@ -103,8 +99,6 @@ public abstract class ClasspathContainerInitializer {
      * correct functioning of the Java model, the implementation should use
      * only the following Java model APIs:
      * <ul>
-     * <li>{@link JavaCore#setClasspathContainer(IPath, IJavaProject[], IClasspathContainer[], IProgressMonitor)}</li>
-     * <li>{@link JavaCore#getClasspathContainer(IPath, IJavaProject)}</li>
      * <li>{@link JavaCore#create(com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IWorkspaceRoot)}</li>
      * <li>{@link JavaCore#create(com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IProject)}</li>
      * <li>{@link IJavaModel#getJavaProjects()}</li>
@@ -135,52 +129,6 @@ public abstract class ClasspathContainerInitializer {
 
         // By default, a container path is the only available description
         return containerPath.makeRelative().toString();
-    }
-
-    /**
-     * Returns a classpath container that is used after this initializer failed to bind a classpath container
-     * to a {@link IClasspathContainer} for the given project. A non-<code>null</code>
-     * failure container indicates that there will be no more request to initialize the given container
-     * for the given project.
-     * <p>
-     * By default a non-<code>null</code> failure container with no classpath entries is returned.
-     * Clients wishing to get a chance to run the initializer again should override this method
-     * and return <code>null</code>.
-     * </p>
-     *
-     * @param containerPath the path of the container which failed to initialize
-     * @param project the project from which the container is referenced
-     * @return the default failure container, or <code>null</code> if wishing to run the initializer again
-     * @since 3.3
-     */
-    public IClasspathContainer getFailureContainer(final IPath containerPath, IJavaProject project) {
-        final String description = getDescription(containerPath, project);
-        return new IClasspathContainer() {
-            @Override
-            public IClasspathEntry[] getClasspathEntries() {
-                return new IClasspathEntry[0];
-            }
-
-            @Override
-            public String getDescription() {
-                return description;
-            }
-
-            @Override
-            public int getKind() {
-                return 0;
-            }
-
-            @Override
-            public IPath getPath() {
-                return containerPath;
-            }
-
-            @Override
-            public String toString() {
-                return getDescription();
-            }
-        };
     }
 
 }

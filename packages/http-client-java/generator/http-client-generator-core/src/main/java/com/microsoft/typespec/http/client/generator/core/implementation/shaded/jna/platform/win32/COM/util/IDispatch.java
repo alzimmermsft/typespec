@@ -26,14 +26,20 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.DISPID;
 
 /**
- * Java friendly version of {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IDispatch}.
+ * Java friendly version of
+ * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IDispatch}.
  *
  */
 public interface IDispatch extends IUnknown {
     <T> void setProperty(String name, T value);
+
     <T> T getProperty(Class<T> returnType, String name, Object... args);
+
     <T> T invokeMethod(Class<T> returnType, String name, Object... args);
+
     <T> void setProperty(DISPID dispid, T value);
+
     <T> T getProperty(Class<T> returnType, DISPID dispid, Object... args);
+
     <T> T invokeMethod(Class<T> returnType, DISPID dispid, Object... args);
 }

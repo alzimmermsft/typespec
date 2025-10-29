@@ -20,27 +20,28 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 // Give it an identity of its own to discriminate the fact that this type is not annotatable and so is a singleton.
 public class NullTypeBinding extends BaseTypeBinding {
 
-	NullTypeBinding() {
-		super(TypeIds.T_null, TypeConstants.NULL, new char[] { 'N' }); // N stands for null even if it is never internally used);
-	}
+    NullTypeBinding() {
+        super(TypeIds.T_null, TypeConstants.NULL, new char[] { 'N' }); // N stands for null even if it is never
+                                                                       // internally used);
+    }
 
-	@Override
-	public TypeBinding clone(TypeBinding enclosingType) {
-		return this;  // enforce solitude.
-	}
+    @Override
+    public TypeBinding clone(TypeBinding enclosingType) {
+        return this;  // enforce solitude.
+    }
 
-	@Override
-	public void setTypeAnnotations(AnnotationBinding[] annotations, boolean evalNullAnnotations) {
-		return; // reject misguided attempt.
-	}
+    @Override
+    public void setTypeAnnotations(AnnotationBinding[] annotations, boolean evalNullAnnotations) {
+        return; // reject misguided attempt.
+    }
 
-	@Override
-	public TypeBinding unannotated() {
-		return this;
-	}
+    @Override
+    public TypeBinding unannotated() {
+        return this;
+    }
 
-	@Override
-	public char[] signature() {
-		return ConstantPool.ObjectSignature;
-	}
+    @Override
+    public char[] signature() {
+        return ConstantPool.ObjectSignature;
+    }
 }

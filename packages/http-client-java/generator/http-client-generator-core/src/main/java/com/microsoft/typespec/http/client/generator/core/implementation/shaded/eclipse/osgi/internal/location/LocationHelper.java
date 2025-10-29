@@ -14,7 +14,6 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.internal.location;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.internal.location.Locker.MockLocker;
-
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -27,118 +26,119 @@ import java.nio.charset.StandardCharsets;
  * @since 3.3
  */
 public class LocationHelper {
-	public static final String PROP_OSGI_LOCKING = "osgi.locking"; //$NON-NLS-1$
-	public static final String LOCKING_NONE = "none"; //$NON-NLS-1$
-	public static final String LOCKING_IO = "java.io"; //$NON-NLS-1$
-	public static final String LOCKING_NIO = "java.nio"; //$NON-NLS-1$
+    public static final String PROP_OSGI_LOCKING = "osgi.locking"; //$NON-NLS-1$
+    public static final String LOCKING_NONE = "none"; //$NON-NLS-1$
+    public static final String LOCKING_IO = "java.io"; //$NON-NLS-1$
+    public static final String LOCKING_NIO = "java.nio"; //$NON-NLS-1$
 
-	/**
-	 * Builds a URL with the given specification
-	 * @param spec the URL specification
-	 * @param trailingSlash flag to indicate a trailing slash on the spec
-	 * @return a URL
-	 */
-	@SuppressWarnings("deprecation")
-	public static URL buildURL(String spec, boolean trailingSlash) {
-		if (spec == null)
-			return null;
-		if (File.separatorChar == '\\')
-			spec = spec.trim();
-		boolean isFile = spec.startsWith("file:"); //$NON-NLS-1$
-		try {
-			if (isFile)
-				return adjustTrailingSlash(toFileURL(spec).toURL(), trailingSlash);
-			return new URL(spec);
-		} catch (MalformedURLException e) {
-			// if we failed and it is a file spec, there is nothing more we can do
-			// otherwise, try to make the spec into a file URL.
-			if (isFile)
-				return null;
-			try {
-				return adjustTrailingSlash(new File(spec).toURL(), trailingSlash);
-			} catch (MalformedURLException e1) {
-				return null;
-			}
-		}
-	}
+    /**
+     * Builds a URL with the given specification
+     * 
+     * @param spec the URL specification
+     * @param trailingSlash flag to indicate a trailing slash on the spec
+     * @return a URL
+     */
+    @SuppressWarnings("deprecation")
+    public static URL buildURL(String spec, boolean trailingSlash) {
+        if (spec == null)
+            return null;
+        if (File.separatorChar == '\\')
+            spec = spec.trim();
+        boolean isFile = spec.startsWith("file:"); //$NON-NLS-1$
+        try {
+            if (isFile)
+                return adjustTrailingSlash(toFileURL(spec).toURL(), trailingSlash);
+            return new URL(spec);
+        } catch (MalformedURLException e) {
+            // if we failed and it is a file spec, there is nothing more we can do
+            // otherwise, try to make the spec into a file URL.
+            if (isFile)
+                return null;
+            try {
+                return adjustTrailingSlash(new File(spec).toURL(), trailingSlash);
+            } catch (MalformedURLException e1) {
+                return null;
+            }
+        }
+    }
 
-	private static File toFileURL(String spec) {
-		try {
-			// Try to build it from a URI that will be properly decoded.
-			return new File(new URI(spec));
-		} catch (URISyntaxException | IllegalArgumentException e) {
-			return new File(spec.substring(5));
-		}
-	}
+    private static File toFileURL(String spec) {
+        try {
+            // Try to build it from a URI that will be properly decoded.
+            return new File(new URI(spec));
+        } catch (URISyntaxException | IllegalArgumentException e) {
+            return new File(spec.substring(5));
+        }
+    }
 
-	private static URL adjustTrailingSlash(URL url, boolean trailingSlash) throws MalformedURLException {
-		String file = url.getPath();
-		if (trailingSlash == (file.endsWith("/"))) //$NON-NLS-1$
-			return url;
-		file = trailingSlash ? file + "/" : file.substring(0, file.length() - 1); //$NON-NLS-1$
-		return new URL(url.getProtocol(), url.getHost(), file);
-	}
+    private static URL adjustTrailingSlash(URL url, boolean trailingSlash) throws MalformedURLException {
+        String file = url.getPath();
+        if (trailingSlash == (file.endsWith("/"))) //$NON-NLS-1$
+            return url;
+        file = trailingSlash ? file + "/" : file.substring(0, file.length() - 1); //$NON-NLS-1$
+        return new URL(url.getProtocol(), url.getHost(), file);
+    }
 
-	public static Locker createLocker(File lock, String lockMode, boolean debug) {
-		if (lockMode == null) {
-			// try to get the lockMode from the system properties
-			lockMode = System.getProperty(PROP_OSGI_LOCKING);
-		}
-		if (LOCKING_NONE.equals(lockMode)) {
-			return new MockLocker();
-		}
-		if (LOCKING_IO.equals(lockMode)) {
-			return new Locker_JavaIo(lock);
-		}
-		if (LOCKING_NIO.equals(lockMode)) {
-			return new Locker_JavaNio(lock, debug);
-		}
+    public static Locker createLocker(File lock, String lockMode, boolean debug) {
+        if (lockMode == null) {
+            // try to get the lockMode from the system properties
+            lockMode = System.getProperty(PROP_OSGI_LOCKING);
+        }
+        if (LOCKING_NONE.equals(lockMode)) {
+            return new MockLocker();
+        }
+        if (LOCKING_IO.equals(lockMode)) {
+            return new Locker_JavaIo(lock);
+        }
+        if (LOCKING_NIO.equals(lockMode)) {
+            return new Locker_JavaNio(lock, debug);
+        }
 
-		//	Backup case if an invalid value has been specified
-		return new Locker_JavaNio(lock, debug);
-	}
+        // Backup case if an invalid value has been specified
+        return new Locker_JavaNio(lock, debug);
+    }
 
     public static File decodePath(File file) {
-		// Pre-check if file exists, if not, and it contains escape characters,
-		// try decoding the absolute path generated by makeAbsolute
-		if (!file.exists() && (file.getPath().indexOf('%') >= 0 || file.getPath().indexOf('+') >= 0)) {
-			String absolute = file.getAbsolutePath();
-			String decodePath = LocationHelper.decode(absolute, true);
-			File f = new File(decodePath);
-			if (f.exists()) {
-				return f;
-			}
-			decodePath = LocationHelper.decode(absolute, false);
-			f = new File(decodePath);
-			if (f.exists()) {
-				return f;
-			}
-		}
-		return file;
-	}
+        // Pre-check if file exists, if not, and it contains escape characters,
+        // try decoding the absolute path generated by makeAbsolute
+        if (!file.exists() && (file.getPath().indexOf('%') >= 0 || file.getPath().indexOf('+') >= 0)) {
+            String absolute = file.getAbsolutePath();
+            String decodePath = LocationHelper.decode(absolute, true);
+            File f = new File(decodePath);
+            if (f.exists()) {
+                return f;
+            }
+            decodePath = LocationHelper.decode(absolute, false);
+            f = new File(decodePath);
+            if (f.exists()) {
+                return f;
+            }
+        }
+        return file;
+    }
 
-	public static String decode(String urlString, boolean plusEncoded) {
-		//first encode '+' characters, because URLDecoder incorrectly converts
-		//them to spaces on certain class library implementations.
-		if (plusEncoded && urlString.indexOf('+') >= 0) {
-			int len = urlString.length();
-			StringBuilder buf = new StringBuilder(len);
-			for (int i = 0; i < len; i++) {
-				char c = urlString.charAt(i);
-				if (c == '+')
-					buf.append("%2B"); //$NON-NLS-1$
-				else
-					buf.append(c);
-			}
-			urlString = buf.toString();
-		}
-		try {
-			return URLDecoder.decode(urlString, StandardCharsets.UTF_8); //$NON-NLS-1$
-		} catch (RuntimeException e) {
-			// Tried but failed
-			// TODO should we throw runtime exception here?
-			// May have illegal characters for decoding
-			return urlString;
-		}
-	}
+    public static String decode(String urlString, boolean plusEncoded) {
+        // first encode '+' characters, because URLDecoder incorrectly converts
+        // them to spaces on certain class library implementations.
+        if (plusEncoded && urlString.indexOf('+') >= 0) {
+            int len = urlString.length();
+            StringBuilder buf = new StringBuilder(len);
+            for (int i = 0; i < len; i++) {
+                char c = urlString.charAt(i);
+                if (c == '+')
+                    buf.append("%2B"); //$NON-NLS-1$
+                else
+                    buf.append(c);
+            }
+            urlString = buf.toString();
+        }
+        try {
+            return URLDecoder.decode(urlString, StandardCharsets.UTF_8); // $NON-NLS-1$
+        } catch (RuntimeException e) {
+            // Tried but failed
+            // TODO should we throw runtime exception here?
+            // May have illegal characters for decoding
+            return urlString;
+        }
+    }
 }

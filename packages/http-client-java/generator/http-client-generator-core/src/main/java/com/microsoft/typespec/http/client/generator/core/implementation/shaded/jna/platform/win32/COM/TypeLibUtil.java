@@ -32,7 +32,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.TYPEKIND;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Ole32;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OleAuto;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WTypes;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WTypes.BSTRByReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WTypes.LPOLESTR;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.BOOLByReference;
@@ -77,11 +76,11 @@ public class TypeLibUtil {
      * Instantiates a new i type lib util.
      *
      * @param clsidStr
-     *            the clsid str
+     * the clsid str
      * @param wVerMajor
-     *            the w ver major
+     * the w ver major
      * @param wVerMinor
-     *            the w ver minor
+     * the w ver minor
      */
     public TypeLibUtil(String clsidStr, int wVerMajor, int wVerMinor) {
         CLSID.ByReference clsid = new CLSID.ByReference();
@@ -91,8 +90,7 @@ public class TypeLibUtil {
 
         // load typelib
         PointerByReference pTypeLib = new PointerByReference();
-        hr = OleAuto.INSTANCE.LoadRegTypeLib(clsid, wVerMajor, wVerMinor, lcid,
-                pTypeLib);
+        hr = OleAuto.INSTANCE.LoadRegTypeLib(clsid, wVerMajor, wVerMinor, lcid, pTypeLib);
         COMUtils.checkRC(hr);
 
         // init type lib class
@@ -137,7 +135,7 @@ public class TypeLibUtil {
      * Gets the type info type.
      *
      * @param index
-     *            the index
+     * the index
      * @return the type info type
      */
     public TYPEKIND getTypeInfoType(int index) {
@@ -151,7 +149,7 @@ public class TypeLibUtil {
      * Gets the type info.
      *
      * @param index
-     *            the index
+     * the index
      * @return the type info
      */
     public ITypeInfo getTypeInfo(int index) {
@@ -165,7 +163,7 @@ public class TypeLibUtil {
      * Gets the type info util.
      *
      * @param index
-     *            the index
+     * the index
      * @return the type info util
      */
     public TypeInfoUtil getTypeInfoUtil(int index) {
@@ -202,7 +200,7 @@ public class TypeLibUtil {
      * Gets the documentation.
      *
      * @param index
-     *            the index
+     * the index
      * @return the documentation
      */
     public TypeLibDoc getDocumentation(int index) {
@@ -211,13 +209,11 @@ public class TypeLibUtil {
         DWORDByReference pdwHelpContext = new DWORDByReference();
         BSTRByReference pBstrHelpFile = new BSTRByReference();
 
-        HRESULT hr = typelib.GetDocumentation(index, pBstrName, pBstrDocString,
-                pdwHelpContext, pBstrHelpFile);
+        HRESULT hr = typelib.GetDocumentation(index, pBstrName, pBstrDocString, pdwHelpContext, pBstrHelpFile);
         COMUtils.checkRC(hr);
 
-        TypeLibDoc typeLibDoc = new TypeLibDoc(pBstrName.getString(),
-                pBstrDocString.getString(), pdwHelpContext.getValue()
-                        .intValue(), pBstrHelpFile.getString());
+        TypeLibDoc typeLibDoc = new TypeLibDoc(pBstrName.getString(), pBstrDocString.getString(),
+            pdwHelpContext.getValue().intValue(), pBstrHelpFile.getString());
 
         OLEAUTO.SysFreeString(pBstrName.getValue());
         OLEAUTO.SysFreeString(pBstrDocString.getValue());
@@ -249,16 +245,15 @@ public class TypeLibUtil {
          * Instantiates a new type lib doc.
          *
          * @param name
-         *            the name
+         * the name
          * @param docString
-         *            the doc string
+         * the doc string
          * @param helpContext
-         *            the help context
+         * the help context
          * @param helpFile
-         *            the help file
+         * the help file
          */
-        public TypeLibDoc(String name, String docString, int helpContext,
-                String helpFile) {
+        public TypeLibDoc(String name, String docString, int helpContext, String helpFile) {
             this.name = name;
             this.docString = docString;
             this.helpContext = helpContext;
@@ -306,9 +301,9 @@ public class TypeLibUtil {
      * Checks if is name.
      *
      * @param nameBuf
-     *            the name buf
+     * the name buf
      * @param hashVal
-     *            the hash val
+     * the hash val
      * @return the checks if is name
      */
     public IsName IsName(String nameBuf, int hashVal) {
@@ -320,8 +315,7 @@ public class TypeLibUtil {
         HRESULT hr = this.typelib.IsName(szNameBuf, lHashVal, pfName);
         COMUtils.checkRC(hr);
 
-        return new IsName(szNameBuf.getValue(), pfName.getValue()
-                .booleanValue());
+        return new IsName(szNameBuf.getValue(), pfName.getValue().booleanValue());
     }
 
     /**
@@ -341,9 +335,9 @@ public class TypeLibUtil {
          * Instantiates a new checks if is name.
          *
          * @param nameBuf
-         *            the name buf
+         * the name buf
          * @param name
-         *            the name
+         * the name
          */
         public IsName(String nameBuf, boolean name) {
             this.nameBuf = nameBuf;
@@ -373,11 +367,11 @@ public class TypeLibUtil {
      * Find name.
      *
      * @param name
-     *            the name
+     * the name
      * @param hashVal
-     *            the hash val or 0 if unknown
+     * the hash val or 0 if unknown
      * @param maxResult
-     *            maximum number of items to search
+     * maximum number of items to search
      * @return the find name
      */
     public FindName FindName(String name, int hashVal, short maxResult) {
@@ -390,12 +384,10 @@ public class TypeLibUtil {
 
         Pointer[] ppTInfo = new Pointer[maxResult];
         MEMBERID[] rgMemId = new MEMBERID[maxResult];
-        HRESULT hr = this.typelib.FindName(olestr, lHashVal, ppTInfo, rgMemId,
-                pcFound);
+        HRESULT hr = this.typelib.FindName(olestr, lHashVal, ppTInfo, rgMemId, pcFound);
         COMUtils.checkRC(hr);
 
-        FindName findName = new FindName(olestr.getValue(), ppTInfo,
-                rgMemId, pcFound.getValue().shortValue());
+        FindName findName = new FindName(olestr.getValue(), ppTInfo, rgMemId, pcFound.getValue().shortValue());
 
         Ole32.INSTANCE.CoTaskMemFree(p);
 
@@ -423,16 +415,16 @@ public class TypeLibUtil {
 
         /**
          * Instantiates a new find name.
-         *  @param nameBuf
-         *            the name buf
+         * 
+         * @param nameBuf
+         * the name buf
          * @param pTInfo
-         *            the t info
+         * the t info
          * @param rgMemId
- *            the rg mem id
+         * the rg mem id
          * @param pcFound
          */
-        FindName(String nameBuf, Pointer[] pTInfo, MEMBERID[] rgMemId,
-                        short pcFound) {
+        FindName(String nameBuf, Pointer[] pTInfo, MEMBERID[] rgMemId, short pcFound) {
             this.nameBuf = nameBuf;
             this.pTInfo = new Pointer[pcFound];
             this.rgMemId = new MEMBERID[pcFound];
@@ -456,10 +448,9 @@ public class TypeLibUtil {
          * @return the t info
          */
         public ITypeInfo[] getTInfo() {
-            ITypeInfo[] values=new ITypeInfo[pcFound];
-            for(int i=0;i<pcFound;i++)
-            {
-                values[i]=new TypeInfo(pTInfo[i]);
+            ITypeInfo[] values = new ITypeInfo[pcFound];
+            for (int i = 0; i < pcFound; i++) {
+                values[i] = new TypeInfo(pTInfo[i]);
             }
             return values;
         }
@@ -487,7 +478,7 @@ public class TypeLibUtil {
      * Release t lib attr.
      *
      * @param pTLibAttr
-     *            the t lib attr
+     * the t lib attr
      */
     public void ReleaseTLibAttr(/* [in] */TLIBATTR pTLibAttr) {
         this.typelib.ReleaseTLibAttr(pTLibAttr);

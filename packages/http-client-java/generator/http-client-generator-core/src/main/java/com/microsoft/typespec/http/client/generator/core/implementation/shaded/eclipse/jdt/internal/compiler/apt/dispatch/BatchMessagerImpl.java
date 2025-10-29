@@ -15,65 +15,83 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.apt.dispatch;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CategorizedProblem;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.batch.Main;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.processing.Messager;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.AnnotationMirror;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.AnnotationValue;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.Element;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.Diagnostic.Kind;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CategorizedProblem;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.batch.Main;
 
 /**
  * An implementation of Messager that reports messages via the Compiler
  */
 public class BatchMessagerImpl extends BaseMessagerImpl implements Messager {
 
-	private final Main _compiler;
-	private final BaseProcessingEnvImpl _processingEnv;
+    private final Main _compiler;
+    private final BaseProcessingEnvImpl _processingEnv;
 
-	public BatchMessagerImpl(BaseProcessingEnvImpl processingEnv, Main compiler) {
-		this._compiler = compiler;
-		this._processingEnv = processingEnv;
-	}
+    public BatchMessagerImpl(BaseProcessingEnvImpl processingEnv, Main compiler) {
+        this._compiler = compiler;
+        this._processingEnv = processingEnv;
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.annotation.processing.Messager#printMessage(com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.Diagnostic.Kind, java.lang.CharSequence)
-	 */
-	@Override
-	public void printMessage(Kind kind, CharSequence msg) {
-		printMessage(kind, msg, null, null, null);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.annotation.processing.Messager#printMessage(com.microsoft.typespec.http.client.generator.core.
+     * implementation.shaded.javax.tools.Diagnostic.Kind, java.lang.CharSequence)
+     */
+    @Override
+    public void printMessage(Kind kind, CharSequence msg) {
+        printMessage(kind, msg, null, null, null);
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.annotation.processing.Messager#printMessage(com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.Diagnostic.Kind, java.lang.CharSequence, com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.Element)
-	 */
-	@Override
-	public void printMessage(Kind kind, CharSequence msg, Element e) {
-		printMessage(kind, msg, e, null, null);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.annotation.processing.Messager#printMessage(com.microsoft.typespec.http.client.generator.core.
+     * implementation.shaded.javax.tools.Diagnostic.Kind, java.lang.CharSequence,
+     * com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.Element)
+     */
+    @Override
+    public void printMessage(Kind kind, CharSequence msg, Element e) {
+        printMessage(kind, msg, e, null, null);
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.annotation.processing.Messager#printMessage(com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.Diagnostic.Kind, java.lang.CharSequence, com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.Element, com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.AnnotationMirror)
-	 */
-	@Override
-	public void printMessage(Kind kind, CharSequence msg, Element e,
-			AnnotationMirror a) {
-		printMessage(kind, msg, e, a, null);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.annotation.processing.Messager#printMessage(com.microsoft.typespec.http.client.generator.core.
+     * implementation.shaded.javax.tools.Diagnostic.Kind, java.lang.CharSequence,
+     * com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.Element,
+     * com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.
+     * AnnotationMirror)
+     */
+    @Override
+    public void printMessage(Kind kind, CharSequence msg, Element e, AnnotationMirror a) {
+        printMessage(kind, msg, e, a, null);
 
-	}
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.annotation.processing.Messager#printMessage(com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.Diagnostic.Kind, java.lang.CharSequence, com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.Element, com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.AnnotationMirror, com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.AnnotationValue)
-	 */
-	@Override
-	public void printMessage(Kind kind, CharSequence msg, Element e,
-			AnnotationMirror a, AnnotationValue v) {
-		if (kind == Kind.ERROR) {
-			this._processingEnv.setErrorRaised(true);
-		}
-		CategorizedProblem problem = createProblem(kind, msg, e, a, v);
-		if (problem != null) {
-			this._compiler.addExtraProblems(problem);
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.annotation.processing.Messager#printMessage(com.microsoft.typespec.http.client.generator.core.
+     * implementation.shaded.javax.tools.Diagnostic.Kind, java.lang.CharSequence,
+     * com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.Element,
+     * com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.
+     * AnnotationMirror,
+     * com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.AnnotationValue)
+     */
+    @Override
+    public void printMessage(Kind kind, CharSequence msg, Element e, AnnotationMirror a, AnnotationValue v) {
+        if (kind == Kind.ERROR) {
+            this._processingEnv.setErrorRaised(true);
+        }
+        CategorizedProblem problem = createProblem(kind, msg, e, a, v);
+        if (problem != null) {
+            this._compiler.addExtraProblems(problem);
+        }
+    }
 }

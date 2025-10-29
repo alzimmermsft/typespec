@@ -13,13 +13,13 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.tool;
 
-import java.io.File;
-import java.util.Locale;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.Diagnostic;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.JavaFileObject;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CategorizedProblem;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.problem.DefaultProblem;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.Diagnostic;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.JavaFileObject;
+import java.io.File;
+import java.util.Locale;
 
 public class EclipseDiagnostic implements Diagnostic<EclipseFileObject> {
 
@@ -33,15 +33,8 @@ public class EclipseDiagnostic implements Diagnostic<EclipseFileObject> {
     private final int endPosition;
     private final DefaultProblemFactory problemFactory;
 
-    private EclipseDiagnostic(Kind kind,
-                              int problemId,
-                              String[] problemArguments,
-                              char[] originatingFileName,
-                              DefaultProblemFactory problemFactory,
-                              int lineNumber,
-                              int columnNumber,
-                              int startPosition,
-                              int endPosition) {
+    private EclipseDiagnostic(Kind kind, int problemId, String[] problemArguments, char[] originatingFileName,
+        DefaultProblemFactory problemFactory, int lineNumber, int columnNumber, int startPosition, int endPosition) {
         this.kind = kind;
         this.problemId = problemId;
         this.problemArguments = problemArguments;
@@ -53,44 +46,34 @@ public class EclipseDiagnostic implements Diagnostic<EclipseFileObject> {
         this.endPosition = endPosition;
     }
 
-    private EclipseDiagnostic(Kind kind,
-                              int problemId,
-                              String[] problemArguments,
-                              char[] originatingFileName,
-                              DefaultProblemFactory problemFactory) {
-        this(kind, problemId, problemArguments, originatingFileName, problemFactory, (int)Diagnostic.NOPOS, (int)Diagnostic.NOPOS, (int)Diagnostic.NOPOS, (int)Diagnostic.NOPOS);
+    private EclipseDiagnostic(Kind kind, int problemId, String[] problemArguments, char[] originatingFileName,
+        DefaultProblemFactory problemFactory) {
+        this(kind, problemId, problemArguments, originatingFileName, problemFactory, (int) Diagnostic.NOPOS,
+            (int) Diagnostic.NOPOS, (int) Diagnostic.NOPOS, (int) Diagnostic.NOPOS);
     }
 
     public static EclipseDiagnostic newInstance(CategorizedProblem problem, DefaultProblemFactory factory) {
-        if(problem instanceof DefaultProblem) return newInstanceFromDefaultProblem((DefaultProblem) problem, factory);
-        return new EclipseDiagnostic(getKind(problem),
-              problem.getID(),
-              problem.getArguments(),
-              problem.getOriginatingFileName(),
-              factory);
+        if (problem instanceof DefaultProblem)
+            return newInstanceFromDefaultProblem((DefaultProblem) problem, factory);
+        return new EclipseDiagnostic(getKind(problem), problem.getID(), problem.getArguments(),
+            problem.getOriginatingFileName(), factory);
     }
 
-    private static EclipseDiagnostic newInstanceFromDefaultProblem(DefaultProblem problem, DefaultProblemFactory factory) {
-        return new EclipseDiagnostic(getKind(problem),
-              problem.getID(),
-              problem.getArguments(),
-              problem.getOriginatingFileName(),
-              factory,
-              problem.getSourceLineNumber(),
-              problem.getSourceColumnNumber(),
-              problem.getSourceStart(),
-              problem.getSourceEnd()
-        );
+    private static EclipseDiagnostic newInstanceFromDefaultProblem(DefaultProblem problem,
+        DefaultProblemFactory factory) {
+        return new EclipseDiagnostic(getKind(problem), problem.getID(), problem.getArguments(),
+            problem.getOriginatingFileName(), factory, problem.getSourceLineNumber(), problem.getSourceColumnNumber(),
+            problem.getSourceStart(), problem.getSourceEnd());
     }
 
     private static Kind getKind(CategorizedProblem problem) {
         Kind kind = Kind.OTHER;
-        if(problem.isError()) {
+        if (problem.isError()) {
             kind = Kind.ERROR;
-        } else if(problem.isWarning()) {
+        } else if (problem.isWarning()) {
             kind = Kind.WARNING;
         } else if (problem instanceof DefaultProblem && ((DefaultProblem) problem).isInfo()) {
-        	kind = Kind.NOTE;
+            kind = Kind.NOTE;
         }
         return kind;
     }
@@ -111,7 +94,7 @@ public class EclipseDiagnostic implements Diagnostic<EclipseFileObject> {
 
     @Override
     public long getPosition() {
-        return this.startPosition;  //To change body of implemented methods use File | Settings | File Templates.
+        return this.startPosition;  // To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -142,7 +125,7 @@ public class EclipseDiagnostic implements Diagnostic<EclipseFileObject> {
     @Override
     public String getMessage(Locale locale) {
         if (locale != null) {
-        	this.problemFactory.setLocale(locale);
+            this.problemFactory.setLocale(locale);
         }
         return this.problemFactory.getLocalizedMessage(this.problemId, this.problemArguments);
     }

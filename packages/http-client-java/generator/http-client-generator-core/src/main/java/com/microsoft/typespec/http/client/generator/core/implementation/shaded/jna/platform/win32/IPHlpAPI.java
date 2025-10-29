@@ -36,8 +36,8 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
  * Windows IP Helper API
  *
  * @see <A HREF=
- *      "https://msdn.microsoft.com/en-us/library/windows/desktop/aa373083(v=vs.85).aspx">IP
- *      Helper Reference</A>
+ * "https://msdn.microsoft.com/en-us/library/windows/desktop/aa373083(v=vs.85).aspx">IP
+ * Helper Reference</A>
  */
 public interface IPHlpAPI extends Library {
     IPHlpAPI INSTANCE = Native.load("IPHlpAPI", IPHlpAPI.class, W32APIOptions.DEFAULT_OPTIONS);
@@ -108,12 +108,33 @@ public interface IPHlpAPI extends Library {
      * The MIB_IFROW structure stores information about a particular interface.
      *
      * @see <A HREF=
-     *      "https://docs.microsoft.com/en-us/previous-versions/windows/desktop/api/ifmib/ns-ifmib-_mib_ifrow">MIB_IFROW</A>
+     * "https://docs.microsoft.com/en-us/previous-versions/windows/desktop/api/ifmib/ns-ifmib-_mib_ifrow">MIB_IFROW</A>
      */
-    @FieldOrder({ "wszName", "dwIndex", "dwType", "dwMtu", "dwSpeed", "dwPhysAddrLen", "bPhysAddr", "dwAdminStatus",
-            "dwOperStatus", "dwLastChange", "dwInOctets", "dwInUcastPkts", "dwInNUcastPkts", "dwInDiscards",
-            "dwInErrors", "dwInUnknownProtos", "dwOutOctets", "dwOutUcastPkts", "dwOutNUcastPkts", "dwOutDiscards",
-            "dwOutErrors", "dwOutQLen", "dwDescrLen", "bDescr" })
+    @FieldOrder({
+        "wszName",
+        "dwIndex",
+        "dwType",
+        "dwMtu",
+        "dwSpeed",
+        "dwPhysAddrLen",
+        "bPhysAddr",
+        "dwAdminStatus",
+        "dwOperStatus",
+        "dwLastChange",
+        "dwInOctets",
+        "dwInUcastPkts",
+        "dwInNUcastPkts",
+        "dwInDiscards",
+        "dwInErrors",
+        "dwInUnknownProtos",
+        "dwOutOctets",
+        "dwOutUcastPkts",
+        "dwOutNUcastPkts",
+        "dwOutDiscards",
+        "dwOutErrors",
+        "dwOutQLen",
+        "dwDescrLen",
+        "bDescr" })
     class MIB_IFROW extends Structure {
         public char[] wszName = new char[MAX_INTERFACE_NAME_LEN];
         public int dwIndex;
@@ -145,15 +166,50 @@ public interface IPHlpAPI extends Library {
      * The MIB_IF_ROW2 structure stores information about a particular interface.
      *
      * @see <A HREF=
-     *      "https://msdn.microsoft.com/library/windows/hardware/ff559214">MIB_IF_ROW2</A>
+     * "https://msdn.microsoft.com/library/windows/hardware/ff559214">MIB_IF_ROW2</A>
      */
-    @FieldOrder({ "InterfaceLuid", "InterfaceIndex", "InterfaceGuid", "Alias", "Description", "PhysicalAddressLength",
-            "PhysicalAddress", "PermanentPhysicalAddress", "Mtu", "Type", "TunnelType", "MediaType",
-            "PhysicalMediumType", "AccessType", "DirectionType", "InterfaceAndOperStatusFlags", "OperStatus",
-            "AdminStatus", "MediaConnectState", "NetworkGuid", "ConnectionType", "TransmitLinkSpeed",
-            "ReceiveLinkSpeed", "InOctets", "InUcastPkts", "InNUcastPkts", "InDiscards", "InErrors", "InUnknownProtos",
-            "InUcastOctets", "InMulticastOctets", "InBroadcastOctets", "OutOctets", "OutUcastPkts", "OutNUcastPkts",
-            "OutDiscards", "OutErrors", "OutUcastOctets", "OutMulticastOctets", "OutBroadcastOctets", "OutQLen" })
+    @FieldOrder({
+        "InterfaceLuid",
+        "InterfaceIndex",
+        "InterfaceGuid",
+        "Alias",
+        "Description",
+        "PhysicalAddressLength",
+        "PhysicalAddress",
+        "PermanentPhysicalAddress",
+        "Mtu",
+        "Type",
+        "TunnelType",
+        "MediaType",
+        "PhysicalMediumType",
+        "AccessType",
+        "DirectionType",
+        "InterfaceAndOperStatusFlags",
+        "OperStatus",
+        "AdminStatus",
+        "MediaConnectState",
+        "NetworkGuid",
+        "ConnectionType",
+        "TransmitLinkSpeed",
+        "ReceiveLinkSpeed",
+        "InOctets",
+        "InUcastPkts",
+        "InNUcastPkts",
+        "InDiscards",
+        "InErrors",
+        "InUnknownProtos",
+        "InUcastOctets",
+        "InMulticastOctets",
+        "InBroadcastOctets",
+        "OutOctets",
+        "OutUcastPkts",
+        "OutNUcastPkts",
+        "OutDiscards",
+        "OutErrors",
+        "OutUcastOctets",
+        "OutMulticastOctets",
+        "OutBroadcastOctets",
+        "OutQLen" })
     class MIB_IF_ROW2 extends Structure {
         public long InterfaceLuid; // 64-bit union NET_LUID
         public int InterfaceIndex;
@@ -207,7 +263,7 @@ public interface IPHlpAPI extends Library {
      * definition for the IP_MASK_STRING structure.
      *
      * @see <A HREF=
-     *      "https://docs.microsoft.com/en-us/windows/desktop/api/iptypes/ns-iptypes-ip_address_string">IP_ADDRESS_STRING</A>
+     * "https://docs.microsoft.com/en-us/windows/desktop/api/iptypes/ns-iptypes-ip_address_string">IP_ADDRESS_STRING</A>
      */
     @FieldOrder({ "String" })
     class IP_ADDRESS_STRING extends Structure {
@@ -222,7 +278,7 @@ public interface IPHlpAPI extends Library {
      * addresses.
      *
      * @see <A HREF=
-     *      "https://docs.microsoft.com/en-us/windows/desktop/api/iptypes/ns-iptypes-_ip_addr_string">IP_ADDR_STRING</A>
+     * "https://docs.microsoft.com/en-us/windows/desktop/api/iptypes/ns-iptypes-_ip_addr_string">IP_ADDR_STRING</A>
      */
     @FieldOrder({ "Next", "IpAddress", "IpMask", "Context" })
     class IP_ADDR_STRING extends Structure {
@@ -240,10 +296,18 @@ public interface IPHlpAPI extends Library {
      * interfaces on a computer.
      *
      * @see <A HREF=
-     *      "https://docs.microsoft.com/en-us/windows/desktop/api/iptypes/ns-iptypes-fixed_info_w2ksp1">FIXED_INFO</A>
+     * "https://docs.microsoft.com/en-us/windows/desktop/api/iptypes/ns-iptypes-fixed_info_w2ksp1">FIXED_INFO</A>
      */
-    @FieldOrder({ "HostName", "DomainName", "CurrentDnsServer", "DnsServerList", "NodeType", "ScopeId", "EnableRouting",
-            "EnableProxy", "EnableDns" })
+    @FieldOrder({
+        "HostName",
+        "DomainName",
+        "CurrentDnsServer",
+        "DnsServerList",
+        "NodeType",
+        "ScopeId",
+        "EnableRouting",
+        "EnableProxy",
+        "EnableDns" })
     class FIXED_INFO extends Structure {
         public byte[] HostName = new byte[MAX_HOSTNAME_LEN + 4];
         public byte[] DomainName = new byte[MAX_DOMAIN_NAME_LEN + 4];
@@ -274,9 +338,22 @@ public interface IPHlpAPI extends Library {
      * of this structure to be used on earlier systems including Windows 2000 and
      * later is defined as {@code MIB_TCPSTATS_W2K}.
      */
-    @FieldOrder({ "dwRtoAlgorithm", "dwRtoMin", "dwRtoMax", "dwMaxConn", "dwActiveOpens", "dwPassiveOpens",
-            "dwAttemptFails", "dwEstabResets", "dwCurrEstab", "dwInSegs", "dwOutSegs", "dwRetransSegs", "dwInErrs",
-            "dwOutRsts", "dwNumConns" })
+    @FieldOrder({
+        "dwRtoAlgorithm",
+        "dwRtoMin",
+        "dwRtoMax",
+        "dwMaxConn",
+        "dwActiveOpens",
+        "dwPassiveOpens",
+        "dwAttemptFails",
+        "dwEstabResets",
+        "dwCurrEstab",
+        "dwInSegs",
+        "dwOutSegs",
+        "dwRetransSegs",
+        "dwInErrs",
+        "dwOutRsts",
+        "dwNumConns" })
     class MIB_TCPSTATS extends Structure {
         public int dwRtoAlgorithm; // Union for _W2K version, doesn't change mapping
         public int dwRtoMin;
@@ -350,8 +427,15 @@ public interface IPHlpAPI extends Library {
     /**
      * Contains information that describes an IPv6 TCP connection.
      */
-    @FieldOrder({ "LocalAddr", "dwLocalScopeId", "dwLocalPort", "RemoteAddr", "dwRemoteScopeId", "dwRemotePort",
-            "State", "dwOwningPid" })
+    @FieldOrder({
+        "LocalAddr",
+        "dwLocalScopeId",
+        "dwLocalPort",
+        "RemoteAddr",
+        "dwRemoteScopeId",
+        "dwRemotePort",
+        "State",
+        "dwOwningPid" })
     class MIB_TCP6ROW_OWNER_PID extends Structure {
         public byte[] LocalAddr = new byte[16];
         public int dwLocalScopeId;
@@ -474,12 +558,12 @@ public interface IPHlpAPI extends Library {
      * existing interface index on the local computer.
      *
      * @param pIfRow
-     *            A pointer to a MIB_IFROW structure that, on successful return,
-     *            receives information for an interface on the local computer. On
-     *            input, set the dwIndex member of {@link MIB_IFROW} to the index of
-     *            the interface for which to retrieve information.
+     * A pointer to a MIB_IFROW structure that, on successful return,
+     * receives information for an interface on the local computer. On
+     * input, set the dwIndex member of {@link MIB_IFROW} to the index of
+     * the interface for which to retrieve information.
      * @return If the function succeeds, the return value is
-     *         {@link WinError#NO_ERROR}.
+     * {@link WinError#NO_ERROR}.
      */
     int GetIfEntry(MIB_IFROW pIfRow);
 
@@ -497,13 +581,13 @@ public interface IPHlpAPI extends Library {
      * {@link MIB_IF_ROW2} structure pointed to by the Row parameter are filled in.
      *
      * @param pIfRow2
-     *            A pointer to a {@link MIB_IF_ROW2} structure that, on successful
-     *            return, receives information for an interface on the local
-     *            computer. On input, the InterfaceLuid or the InterfaceIndex member
-     *            of the {@link MIB_IF_ROW2} must be set to the interface for which
-     *            to retrieve information.
+     * A pointer to a {@link MIB_IF_ROW2} structure that, on successful
+     * return, receives information for an interface on the local
+     * computer. On input, the InterfaceLuid or the InterfaceIndex member
+     * of the {@link MIB_IF_ROW2} must be set to the interface for which
+     * to retrieve information.
      * @return If the function succeeds, the return value is
-     *         {@link WinError#NO_ERROR}.
+     * {@link WinError#NO_ERROR}.
      */
     int GetIfEntry2(MIB_IF_ROW2 pIfRow2);
 
@@ -512,18 +596,18 @@ public interface IPHlpAPI extends Library {
      * computer.
      *
      * @param pFixedInfo
-     *            A pointer to a buffer that contains a {@link FIXED_INFO} structure
-     *            that receives the network parameters for the local computer, if
-     *            the function was successful. This buffer must be allocated by the
-     *            caller prior to calling the GetNetworkParams function.
+     * A pointer to a buffer that contains a {@link FIXED_INFO} structure
+     * that receives the network parameters for the local computer, if
+     * the function was successful. This buffer must be allocated by the
+     * caller prior to calling the GetNetworkParams function.
      * @param pOutBufLen
-     *            A pointer to a ULONG variable that specifies the size of the
-     *            {@link FIXED_INFO} structure. If this size is insufficient to hold
-     *            the information, GetNetworkParams fills in this variable with the
-     *            required size, and returns an error code of
-     *            {@link WinError#ERROR_BUFFER_OVERFLOW}.
+     * A pointer to a ULONG variable that specifies the size of the
+     * {@link FIXED_INFO} structure. If this size is insufficient to hold
+     * the information, GetNetworkParams fills in this variable with the
+     * required size, and returns an error code of
+     * {@link WinError#ERROR_BUFFER_OVERFLOW}.
      * @return If the function succeeds, the return value is
-     *         {@link WinError#ERROR_SUCCESS}.
+     * {@link WinError#ERROR_SUCCESS}.
      */
     int GetNetworkParams(Pointer pFixedInfo, IntByReference pOutBufLen);
 
@@ -532,10 +616,10 @@ public interface IPHlpAPI extends Library {
      * computer.
      *
      * @param Statistics
-     *            A {@link MIB_TCPSTATS} structure that receives the TCP statistics
-     *            for the local computer.
+     * A {@link MIB_TCPSTATS} structure that receives the TCP statistics
+     * for the local computer.
      * @return If the function succeeds, the return value is
-     *         {@link WinError#NO_ERROR}.
+     * {@link WinError#NO_ERROR}.
      */
     int GetTcpStatistics(MIB_TCPSTATS Statistics);
 
@@ -547,13 +631,13 @@ public interface IPHlpAPI extends Library {
      * protocol family.
      *
      * @param Statistics
-     *            A {@link MIB_TCPSTATS} structure that receives the TCP statistics
-     *            for the local computer.
+     * A {@link MIB_TCPSTATS} structure that receives the TCP statistics
+     * for the local computer.
      * @param Family
-     *            The protocol family for which to retrieve statistics. This
-     *            parameter must be {@link #AF_INET} or {@link #AF_INET6}.
+     * The protocol family for which to retrieve statistics. This
+     * parameter must be {@link #AF_INET} or {@link #AF_INET6}.
      * @return If the function succeeds, the return value is
-     *         {@link WinError#NO_ERROR}.
+     * {@link WinError#NO_ERROR}.
      */
     int GetTcpStatisticsEx(MIB_TCPSTATS Statistics, int Family);
 
@@ -562,10 +646,10 @@ public interface IPHlpAPI extends Library {
      * statistics for the local computer.
      *
      * @param Statistics
-     *            A {@link MIB_UDPSTATS} structure that receives the UDP statistics
-     *            for the local computer.
+     * A {@link MIB_UDPSTATS} structure that receives the UDP statistics
+     * for the local computer.
      * @return If the function succeeds, the return value is
-     *         {@link WinError#NO_ERROR}.
+     * {@link WinError#NO_ERROR}.
      */
     int GetUdpStatistics(MIB_UDPSTATS Statistics);
 
@@ -576,13 +660,13 @@ public interface IPHlpAPI extends Library {
      * supports the Internet Protocol version 6 (IPv6) protocol family.
      *
      * @param Statistics
-     *            A {@link MIB_UDPSTATS} structure that receives the UDP statistics
-     *            for the local computer.
+     * A {@link MIB_UDPSTATS} structure that receives the UDP statistics
+     * for the local computer.
      * @param Family
-     *            The protocol family for which to retrieve statistics. This
-     *            parameter must be {@link #AF_INET} or {@link #AF_INET6}.
+     * The protocol family for which to retrieve statistics. This
+     * parameter must be {@link #AF_INET} or {@link #AF_INET6}.
      * @return If the function succeeds, the return value is
-     *         {@link WinError#NO_ERROR}.
+     * {@link WinError#NO_ERROR}.
      */
     int GetUdpStatisticsEx(MIB_UDPSTATS Statistics, int Family);
 
@@ -591,73 +675,73 @@ public interface IPHlpAPI extends Library {
      * application.
      *
      * @param pTcpTable
-     *            A pointer to the table structure that contains the filtered TCP
-     *            endpoints available to the application.
+     * A pointer to the table structure that contains the filtered TCP
+     * endpoints available to the application.
      * @param pdwSize
-     *            The estimated size of the structure returned in pTcpTable, in
-     *            bytes. If this value is set too small,
-     *            {@code ERROR_INSUFFICIENT_BUFFER} is returned by this function,
-     *            and this field will contain the correct size of the structure.
+     * The estimated size of the structure returned in pTcpTable, in
+     * bytes. If this value is set too small,
+     * {@code ERROR_INSUFFICIENT_BUFFER} is returned by this function,
+     * and this field will contain the correct size of the structure.
      * @param bOrder
-     *            A value that specifies whether the TCP connection table should be
-     *            sorted. If this parameter is set to TRUE, the TCP endpoints in the
-     *            table are sorted in ascending order, starting with the lowest
-     *            local IP address. If this parameter is set to FALSE, the TCP
-     *            endpoints in the table appear in the order in which they were
-     *            retrieved. The following values are compared (as listed) when
-     *            ordering the TCP endpoints: Local IP address, Local scope ID
-     *            (applicable when the ulAf parameter is set to AF_INET6), Local TCP
-     *            port, Remote IP address, Remote scope ID (applicable when the ulAf
-     *            parameter is set to AF_INET6), Remote TCP port.
+     * A value that specifies whether the TCP connection table should be
+     * sorted. If this parameter is set to TRUE, the TCP endpoints in the
+     * table are sorted in ascending order, starting with the lowest
+     * local IP address. If this parameter is set to FALSE, the TCP
+     * endpoints in the table appear in the order in which they were
+     * retrieved. The following values are compared (as listed) when
+     * ordering the TCP endpoints: Local IP address, Local scope ID
+     * (applicable when the ulAf parameter is set to AF_INET6), Local TCP
+     * port, Remote IP address, Remote scope ID (applicable when the ulAf
+     * parameter is set to AF_INET6), Remote TCP port.
      * @param ulAf
-     *            The version of IP used by the TCP endpoints.
+     * The version of IP used by the TCP endpoints.
      * @param TableClass
-     *            The type of the TCP table structure to retrieve. This parameter
-     *            can be one of the values from the {@link TCP_TABLE_CLASS}
-     *            enumeration.
+     * The type of the TCP table structure to retrieve. This parameter
+     * can be one of the values from the {@link TCP_TABLE_CLASS}
+     * enumeration.
      * @param Reserved
-     *            Reserved. This value must be zero.
+     * Reserved. This value must be zero.
      * @return If the function succeeds, the return value is {@code NO_ERROR}. If
-     *         the function fails, the return value is an error code.
+     * the function fails, the return value is an error code.
      */
     int GetExtendedTcpTable(Pointer pTcpTable, IntByReference pdwSize, boolean bOrder, int ulAf, int TableClass,
-            int Reserved);
+        int Reserved);
 
     /**
      * Retrieves a table that contains a list of UDP endpoints available to the
      * application.
      *
      * @param pUdpTable
-     *            A pointer to the table structure that contains the filtered UDP
-     *            endpoints available to the application.
+     * A pointer to the table structure that contains the filtered UDP
+     * endpoints available to the application.
      * @param pdwSize
-     *            The estimated size of the structure returned in pTcpTable, in
-     *            bytes. If this value is set too small,
-     *            {@code ERROR_INSUFFICIENT_BUFFER} is returned by this function,
-     *            and this field will contain the correct size of the structure.
+     * The estimated size of the structure returned in pTcpTable, in
+     * bytes. If this value is set too small,
+     * {@code ERROR_INSUFFICIENT_BUFFER} is returned by this function,
+     * and this field will contain the correct size of the structure.
      * @param bOrder
-     *            A value that specifies whether the TCP connection table should be
-     *            sorted. If this parameter is set to TRUE, the TCP endpoints in the
-     *            table are sorted in ascending order, starting with the lowest
-     *            local IP address. If this parameter is set to FALSE, the TCP
-     *            endpoints in the table appear in the order in which they were
-     *            retrieved. The following values are compared (as listed) when
-     *            ordering the TCP endpoints: Local IP address, Local scope ID
-     *            (applicable when the ulAf parameter is set to {@code AF_INET6}),
-     *            Local TCP port, Remote IP address, Remote scope ID (applicable
-     *            when the ulAf parameter is set to {@code AF_INET6}), Remote TCP
-     *            port.
+     * A value that specifies whether the TCP connection table should be
+     * sorted. If this parameter is set to TRUE, the TCP endpoints in the
+     * table are sorted in ascending order, starting with the lowest
+     * local IP address. If this parameter is set to FALSE, the TCP
+     * endpoints in the table appear in the order in which they were
+     * retrieved. The following values are compared (as listed) when
+     * ordering the TCP endpoints: Local IP address, Local scope ID
+     * (applicable when the ulAf parameter is set to {@code AF_INET6}),
+     * Local TCP port, Remote IP address, Remote scope ID (applicable
+     * when the ulAf parameter is set to {@code AF_INET6}), Remote TCP
+     * port.
      * @param ulAf
-     *            The version of IP used by the UDP endpoints.
+     * The version of IP used by the UDP endpoints.
      * @param TableClass
-     *            The type of the TCP table structure to retrieve. This parameter
-     *            can be one of the values from the {@link TCP_TABLE_CLASS}
-     *            enumeration.
+     * The type of the TCP table structure to retrieve. This parameter
+     * can be one of the values from the {@link TCP_TABLE_CLASS}
+     * enumeration.
      * @param Reserved
-     *            Reserved. This value must be zero.
+     * Reserved. This value must be zero.
      * @return If the function succeeds, the return value is {@code NO_ERROR}. If
-     *         the function fails, the return value is an error code.
+     * the function fails, the return value is an error code.
      */
     int GetExtendedUdpTable(Pointer pUdpTable, IntByReference pdwSize, boolean bOrder, int ulAf, int TableClass,
-            int Reserved);
+        int Reserved);
 }

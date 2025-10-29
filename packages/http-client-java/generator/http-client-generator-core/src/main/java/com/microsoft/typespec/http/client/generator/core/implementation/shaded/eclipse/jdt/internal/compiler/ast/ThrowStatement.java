@@ -28,69 +28,70 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class ThrowStatement extends Statement {
 
-	public Expression exception;
-	public TypeBinding exceptionType;
+    public Expression exception;
+    public TypeBinding exceptionType;
 
-public ThrowStatement(Expression exception, int sourceStart, int sourceEnd) {
-	this.exception = exception;
-	this.sourceStart = sourceStart;
-	this.sourceEnd = sourceEnd;
-}
+    public ThrowStatement(Expression exception, int sourceStart, int sourceEnd) {
+        this.exception = exception;
+        this.sourceStart = sourceStart;
+        this.sourceEnd = sourceEnd;
+    }
 
-@Override
-public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
-	this.exception.analyseCode(currentScope, flowContext, flowInfo);
-	this.exception.checkNPE(currentScope, flowContext, flowInfo);
-	// need to check that exception thrown is actually caught somewhere
-	flowContext.checkExceptionHandlers(this.exceptionType, this, flowInfo, currentScope);
-	currentScope.checkUnclosedCloseables(flowInfo, flowContext, this, currentScope);
-	flowContext.recordAbruptExit();
-	return FlowInfo.DEAD_END;
-}
+    @Override
+    public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
+        this.exception.analyseCode(currentScope, flowContext, flowInfo);
+        this.exception.checkNPE(currentScope, flowContext, flowInfo);
+        // need to check that exception thrown is actually caught somewhere
+        flowContext.checkExceptionHandlers(this.exceptionType, this, flowInfo, currentScope);
+        currentScope.checkUnclosedCloseables(flowInfo, flowContext, this, currentScope);
+        flowContext.recordAbruptExit();
+        return FlowInfo.DEAD_END;
+    }
 
-/**
- * Throw code generation
- *
- * @param currentScope org.eclipse.jdt.internal.compiler.lookup.BlockScope
- * @param codeStream org.eclipse.jdt.internal.compiler.codegen.CodeStream
- */
-@Override
-public void generateCode(BlockScope currentScope, CodeStream codeStream) {
-	if ((this.bits & ASTNode.IsReachable) == 0)
-		return;
-	int pc = codeStream.position;
-	this.exception.generateCode(currentScope, codeStream, true);
-	codeStream.athrow();
-	codeStream.recordPositionsFrom(pc, this.sourceStart);
-}
+    /**
+     * Throw code generation
+     *
+     * @param currentScope org.eclipse.jdt.internal.compiler.lookup.BlockScope
+     * @param codeStream org.eclipse.jdt.internal.compiler.codegen.CodeStream
+     */
+    @Override
+    public void generateCode(BlockScope currentScope, CodeStream codeStream) {
+        if ((this.bits & ASTNode.IsReachable) == 0)
+            return;
+        int pc = codeStream.position;
+        this.exception.generateCode(currentScope, codeStream, true);
+        codeStream.athrow();
+        codeStream.recordPositionsFrom(pc, this.sourceStart);
+    }
 
-@Override
-public StringBuilder printStatement(int indent, StringBuilder output) {
-	printIndent(indent, output).append("throw "); //$NON-NLS-1$
-	this.exception.printExpression(0, output);
-	return output.append(';');
-}
+    @Override
+    public StringBuilder printStatement(int indent, StringBuilder output) {
+        printIndent(indent, output).append("throw "); //$NON-NLS-1$
+        this.exception.printExpression(0, output);
+        return output.append(';');
+    }
 
-@Override
-public void resolve(BlockScope scope) {
-	this.exceptionType = this.exception.resolveType(scope);
-	if (this.exceptionType != null && this.exceptionType.isValidBinding()) {
-		if (this.exceptionType != TypeBinding.NULL && this.exceptionType.findSuperTypeOriginatingFrom(TypeIds.T_JavaLangThrowable, true) == null) {
-			scope.problemReporter().cannotThrowType(this.exception, this.exceptionType);
-		}
-		this.exception.computeConversion(scope, this.exceptionType, this.exceptionType);
-	}
-}
+    @Override
+    public void resolve(BlockScope scope) {
+        this.exceptionType = this.exception.resolveType(scope);
+        if (this.exceptionType != null && this.exceptionType.isValidBinding()) {
+            if (this.exceptionType != TypeBinding.NULL
+                && this.exceptionType.findSuperTypeOriginatingFrom(TypeIds.T_JavaLangThrowable, true) == null) {
+                scope.problemReporter().cannotThrowType(this.exception, this.exceptionType);
+            }
+            this.exception.computeConversion(scope, this.exceptionType, this.exceptionType);
+        }
+    }
 
-@Override
-public void traverse(ASTVisitor visitor, BlockScope blockScope) {
-	if (visitor.visit(this, blockScope))
-		this.exception.traverse(visitor, blockScope);
-	visitor.endVisit(this, blockScope);
-}
+    @Override
+    public void traverse(ASTVisitor visitor, BlockScope blockScope) {
+        if (visitor.visit(this, blockScope))
+            this.exception.traverse(visitor, blockScope);
+        visitor.endVisit(this, blockScope);
+    }
 
-@Override
-public boolean doesNotCompleteNormally() {
-	return true;
-}
+    @Override
+    public boolean doesNotCompleteNormally() {
+        return true;
+    }
 }

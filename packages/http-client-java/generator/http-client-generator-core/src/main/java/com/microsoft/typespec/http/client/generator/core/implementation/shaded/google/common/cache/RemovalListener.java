@@ -26,7 +26,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.g
  * shared resources.
  *
  * @param <K> the most general type of keys this listener can listen for; for example {@code Object}
- *     if any key is acceptable
+ * if any key is acceptable
  * @param <V> the most general type of values this listener can listen for; for example {@code
  *     Object} if any key is acceptable
  * @author Charles Fry
@@ -36,13 +36,13 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.g
 @FunctionalInterface
 @ElementTypesAreNonnullByDefault
 public interface RemovalListener<K, V> {
-  /**
-   * Notifies the listener that a removal occurred at some point in the past.
-   *
-   * <p>This does not always signify that the key is now absent from the cache, as it may have
-   * already been re-added.
-   */
-  // Technically should accept RemovalNotification<? extends K, ? extends V>, but because
-  // RemovalNotification is guaranteed covariant, let's make users' lives simpler.
-  void onRemoval(RemovalNotification<K, V> notification);
+    /**
+     * Notifies the listener that a removal occurred at some point in the past.
+     *
+     * <p>This does not always signify that the key is now absent from the cache, as it may have
+     * already been re-added.
+     */
+    // Technically should accept RemovalNotification<? extends K, ? extends V>, but because
+    // RemovalNotification is guaranteed covariant, let's make users' lives simpler.
+    void onRemoval(RemovalNotification<K, V> notification);
 }

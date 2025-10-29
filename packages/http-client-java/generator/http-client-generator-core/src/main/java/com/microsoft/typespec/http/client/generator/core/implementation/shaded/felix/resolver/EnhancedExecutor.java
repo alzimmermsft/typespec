@@ -27,41 +27,30 @@ import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicReference;
 
-class EnhancedExecutor
-{
+class EnhancedExecutor {
     private final Executor executor;
     private final Queue<Future<Void>> awaiting = new ConcurrentLinkedQueue<Future<Void>>();
     private final AtomicReference<Throwable> throwable = new AtomicReference<Throwable>();
 
-    public EnhancedExecutor(Executor executor)
-    {
+    public EnhancedExecutor(Executor executor) {
         this.executor = executor;
     }
 
-    public void execute(final Runnable runnable)
-    {
-        FutureTask<Void> task = new FutureTask<Void>(new Runnable()
-        {
-            public void run()
-            {
-                try
-                {
+    public void execute(final Runnable runnable) {
+        FutureTask<Void> task = new FutureTask<Void>(new Runnable() {
+            public void run() {
+                try {
                     runnable.run();
-                }
-                catch (Throwable t)
-                {
+                } catch (Throwable t) {
                     throwable.compareAndSet(null, t);
                 }
             }
         }, (Void) null);
         // must have a happens-first to add the task to awaiting
         awaiting.add(task);
-        try
-        {
+        try {
             executor.execute(task);
-        }
-        catch (Throwable t)
-        {
+        } catch (Throwable t) {
             // if the task did not get added successfully to the executor we must cancel
             // the task so we don't await on it
             task.cancel(false);
@@ -69,40 +58,26 @@ class EnhancedExecutor
         }
     }
 
-    public void await()
-    {
+    public void await() {
         Future<Void> awaitTask;
-        while (throwable.get() == null && (awaitTask = awaiting.poll()) != null)
-        {
-            if (!awaitTask.isDone() && !awaitTask.isCancelled())
-            {
-                try
-                {
+        while (throwable.get() == null && (awaitTask = awaiting.poll()) != null) {
+            if (!awaitTask.isDone() && !awaitTask.isCancelled()) {
+                try {
                     awaitTask.get();
-                }
-                catch (CancellationException e)
-                {
+                } catch (CancellationException e) {
                     // ignore; will have throwable set
-                }
-                catch (InterruptedException e)
-                {
+                } catch (InterruptedException e) {
                     throw new IllegalStateException(e);
-                }
-                catch (ExecutionException e)
-                {
+                } catch (ExecutionException e) {
                     throw new RuntimeException(e.getCause());
                 }
             }
         }
         Throwable t = throwable.get();
-        if (t != null)
-        {
-            if (t instanceof Runnable)
-            {
+        if (t != null) {
+            if (t instanceof Runnable) {
                 throw (RuntimeException) t;
-            }
-            else if (t instanceof Error)
-            {
+            } else if (t instanceof Error) {
                 throw (Error) t;
             }
             throw new RuntimeException(t);

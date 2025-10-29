@@ -25,55 +25,59 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 /**
  * Abstraction for invocation AST nodes that can trigger overload resolution possibly involving type inference
-*/
+ */
 public interface Invocation extends InvocationSite {
 
-	Expression[] arguments();
+    Expression[] arguments();
 
-	/** Answer the resolved method binding of this invocation */
-	MethodBinding binding();
+    /** Answer the resolved method binding of this invocation */
+    MethodBinding binding();
 
-	/**
-	 * Register the given inference context, which produced the given method as its intermediate result.
-	 * Later when the same method is selected as the most specific method, the inference context
-	 * for this pair (Invocation x MethodBinding) can be looked up using {@link #getInferenceContext(ParameterizedMethodBinding)}
-	 * to continue the type inference.
-	 */
-	void registerInferenceContext(ParameterizedGenericMethodBinding method, InferenceContext18 infCtx18);
+    /**
+     * Register the given inference context, which produced the given method as its intermediate result.
+     * Later when the same method is selected as the most specific method, the inference context
+     * for this pair (Invocation x MethodBinding) can be looked up using
+     * {@link #getInferenceContext(ParameterizedMethodBinding)}
+     * to continue the type inference.
+     */
+    void registerInferenceContext(ParameterizedGenericMethodBinding method, InferenceContext18 infCtx18);
 
-	/**
-	 * Retrieve an inference context for the given method.
-	 * @param method an intermediate resolved candidate for this invocation
-	 * return the associated inference context.
-	 */
-	InferenceContext18 getInferenceContext(ParameterizedMethodBinding method);
+    /**
+     * Retrieve an inference context for the given method.
+     * 
+     * @param method an intermediate resolved candidate for this invocation
+     * return the associated inference context.
+     */
+    InferenceContext18 getInferenceContext(ParameterizedMethodBinding method);
 
-	/** Discard any state from type inference when compilation is done. */
-	void cleanUpInferenceContexts();
+    /** Discard any state from type inference when compilation is done. */
+    void cleanUpInferenceContexts();
 
-	/** Record result against target type */
-	void registerResult(TypeBinding targetType, MethodBinding method);
+    /** Record result against target type */
+    void registerResult(TypeBinding targetType, MethodBinding method);
 
-	/** Resource leak analysis: track the case that a resource is passed as an argument to an invocation. */
-	default FlowInfo handleResourcePassedToInvocation(BlockScope currentScope, MethodBinding methodBinding, Expression argument, int rank,
-			FlowContext flowContext, FlowInfo flowInfo) {
-		if (currentScope.compilerOptions().isAnnotationBasedResourceAnalysisEnabled) {
-			FakedTrackingVariable trackVar = FakedTrackingVariable.getCloseTrackingVariable(argument, flowInfo, flowContext, true);
-			if (trackVar != null) {
-				int safeRank = Math.min(rank, methodBinding.parameters.length-1); // account for varargs
-				FakedTrackingVariable.checkParameterForMissingAnnotation(argument, methodBinding, safeRank, currentScope);
-				if (methodBinding.ownsParameter(safeRank)) {
-					trackVar.markOwnedByOutside(flowInfo, flowContext);
-				} else if (methodBinding.notownsParameter(safeRank)) {
-					// ignore, no relevant change
-				} else {
-					trackVar.markAsShared();
-				}
-			}
-		} else {
-			// insert info that it *may* be closed (by the target constructor, i.e.)
-			return FakedTrackingVariable.markPassedToOutside(currentScope, argument, flowInfo, flowContext, false);
-		}
-		return flowInfo;
-	}
+    /** Resource leak analysis: track the case that a resource is passed as an argument to an invocation. */
+    default FlowInfo handleResourcePassedToInvocation(BlockScope currentScope, MethodBinding methodBinding,
+        Expression argument, int rank, FlowContext flowContext, FlowInfo flowInfo) {
+        if (currentScope.compilerOptions().isAnnotationBasedResourceAnalysisEnabled) {
+            FakedTrackingVariable trackVar
+                = FakedTrackingVariable.getCloseTrackingVariable(argument, flowInfo, flowContext, true);
+            if (trackVar != null) {
+                int safeRank = Math.min(rank, methodBinding.parameters.length - 1); // account for varargs
+                FakedTrackingVariable.checkParameterForMissingAnnotation(argument, methodBinding, safeRank,
+                    currentScope);
+                if (methodBinding.ownsParameter(safeRank)) {
+                    trackVar.markOwnedByOutside(flowInfo, flowContext);
+                } else if (methodBinding.notownsParameter(safeRank)) {
+                    // ignore, no relevant change
+                } else {
+                    trackVar.markAsShared();
+                }
+            }
+        } else {
+            // insert info that it *may* be closed (by the target constructor, i.e.)
+            return FakedTrackingVariable.markPassedToOutside(currentScope, argument, flowInfo, flowContext, false);
+        }
+        return flowInfo;
+    }
 }

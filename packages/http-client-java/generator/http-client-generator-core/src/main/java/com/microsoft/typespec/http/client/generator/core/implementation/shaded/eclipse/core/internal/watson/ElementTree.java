@@ -15,19 +15,14 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.watson;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.dtree.AbstractDataTreeNode;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.dtree.DataTreeLookup;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.dtree.DataTreeNode;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.dtree.DeltaDataTree;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.dtree.ObjectNotFoundException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.utils.Messages;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.utils.StringPool;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.util.NLS;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -88,7 +83,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * <p>
  * Classes are also available for tree serialization and navigation (
- * {@link ElementTreeReader}, {@link ElementTreeWriter},
  * {@link ElementTreeIterator} )
  * </p>
  *
@@ -121,9 +115,6 @@ public class ElementTree {
     /** synchronized access **/
     private volatile DataTreeLookup lookupCache = null;
 
-    /** synchronized access **/
-    private volatile DataTreeLookup lookupCacheIgnoreCase = null;
-
     private final static AtomicInteger treeCounter = new AtomicInteger();
     private final int treeStamp;
 
@@ -132,14 +123,6 @@ public class ElementTree {
      */
     public ElementTree() {
         this(new DeltaDataTree());
-    }
-
-    /**
-     * Creates an element tree given its internal node representation.
-     */
-    protected ElementTree(DataTreeNode rootNode) {
-        /* create the implicit root node */
-        this(new DeltaDataTree(new DataTreeNode(null, null, new AbstractDataTreeNode[] { rootNode })));
     }
 
     /**
@@ -169,30 +152,6 @@ public class ElementTree {
     }
 
     /**
-     * Collapses this tree so that the given ancestor becomes its
-     * immediate parent. Afterwards, this tree will still have exactly the
-     * same contents, but its internal structure will be compressed.
-     *
-     * <p> This operation should be used to collapse chains of
-     * element trees created by newEmptyDelta()/immutable().
-     *
-     * <p>This element tree must be immutable at the start of this operation,
-     * and will be immutable afterwards.
-     * 
-     * @return this tree.
-     */
-    public synchronized ElementTree collapseTo(ElementTree parent) {
-        Assert.isTrue(tree.isImmutable());
-        if (this == parent) {
-            // already collapsed
-            return this;
-        }
-        // collapse my tree to be a forward delta of the parent's tree.
-        tree.collapseTo(parent.tree, DefaultElementComparator.getComparator());
-        return this;
-    }
-
-    /**
      * Creates the indicated element and sets its element info.
      * The parent element must be present, otherwise an IllegalArgumentException
      * is thrown. If the indicated element is already present in the tree,
@@ -219,132 +178,10 @@ public class ElementTree {
         }
         // Set the lookup to be this newly created object.
         lookupCache = DataTreeLookup.newLookup(key, true, data, true);
-        lookupCacheIgnoreCase = null;
-    }
-
-    /**
-     * Creates or replaces the subtree below the given path with
-     * the given tree. The subtree can only have one child below
-     * the root, which will become the node specified by the given
-     * key in this tree.
-     *
-     * @param key The path of the new subtree in this tree.
-     * @see #getSubtree(IPath)
-     */
-    public synchronized void createSubtree(IPath key, ElementTree subtree) {
-        /* don't allow creating subtrees at the root */
-        if (key.isRoot()) {
-            throw new IllegalArgumentException(Messages.watson_noModify);
-        }
-
-        // Clear the child IDs cache in case it's referring to this parent.
-        // This is conservative.
-        childIDsCache = null;
-        // Clear the lookup cache, in case the element being created is the same
-        // as for the last lookup.
-        lookupCache = lookupCacheIgnoreCase = null;
-        try {
-            /* don't copy the implicit root node of the subtree */
-            IPath[] children = subtree.getChildren(subtree.getRoot());
-            if (children.length != 1) {
-                throw new IllegalArgumentException(Messages.watson_illegalSubtree);
-            }
-
-            /* get the subtree for the specified key */
-            DataTreeNode node = (DataTreeNode) subtree.tree.copyCompleteSubtree(children[0]);
-
-            /* insert the subtree in this tree */
-            tree.createSubtree(key, node);
-
-        } catch (ObjectNotFoundException e) {
-            throw createElementNotFoundException(key);
-        }
-    }
-
-    /**
-     * Deletes the indicated element and its descendents.
-     * The element must be present.
-     */
-    public synchronized void deleteElement(IPath key) {
-        /* don't allow modification of the implicit root */
-        if (key.isRoot()) {
-            return;
-        }
-
-        // Clear the child IDs cache in case it's referring to this parent.
-        // This is conservative.
-        childIDsCache = null;
-        // Clear the lookup cache, in case the element being deleted is the same
-        // as for the last lookup.
-        lookupCache = lookupCacheIgnoreCase = null;
-        try {
-            tree.deleteChild(key.removeLastSegments(1), key.lastSegment());
-        } catch (ObjectNotFoundException e) {
-            throw createElementNotFoundException(key);
-        }
     }
 
     private IllegalArgumentException createElementNotFoundException(IPath key) {
         return new IllegalArgumentException(NLS.bind(Messages.watson_elementNotFound, key));
-    }
-
-    /**
-     * Given an array of element trees, returns the index of the
-     * oldest tree. The oldest tree is the tree such that no
-     * other tree in the array is a descendent of that tree.
-     * Note that this counter-intuitive concept of oldest is based on the
-     * ElementTree orientation such that the complete tree is always the
-     * newest tree.
-     */
-    public static int findOldest(ElementTree[] trees) {
-
-        /* first put all the trees in a hashtable */
-        // using LinkedHashMap to not have a random order in the while-loop below
-        HashSet<ElementTree> candidates = new LinkedHashSet<>(List.of(trees));
-
-        /* keep removing parents until only one tree remains */
-        ElementTree oldestSoFar = null;
-        while (!candidates.isEmpty()) {
-            /* get a new candidate */
-            ElementTree current = candidates.iterator().next();
-
-            /* remove this candidate from the table */
-            candidates.remove(current);
-
-            /* remove all of this element's parents from the list of candidates */
-            ElementTree parent = current.getParent();
-
-            /* walk up chain until we hit the root or a tree we have already tested */
-            while (parent != null && parent != oldestSoFar) {
-                candidates.remove(parent);
-                parent = parent.getParent();
-            }
-
-            /* the current candidate is the oldest tree seen so far */
-            oldestSoFar = current;
-
-            /* if the table is now empty, we have a winner */
-        }
-        Assert.isNotNull(oldestSoFar);
-
-        /* return the appropriate index */
-        for (int i = 0; i < trees.length; i++) {
-            if (trees[i] == oldestSoFar) {
-                return i;
-            }
-        }
-        Assert.isTrue(false, "Should not get here"); //$NON-NLS-1$
-        return -1;
-    }
-
-    /**
-     * Returns the number of children of the element
-     * specified by the given path.
-     * The given element must be present in this tree.
-     */
-    public synchronized int getChildCount(IPath key) {
-        Assert.isNotNull(key);
-        return getChildIDs(key).length;
     }
 
     /**
@@ -407,41 +244,6 @@ public class ElementTree {
     }
 
     /**
-     * Returns the element data for the given element identifier.
-     * The given element must be present in this tree.
-     */
-    public synchronized Object getElementDataIgnoreCase(IPath key) {
-        /* don't allow modification of the implicit root */
-        if (key.isRoot()) {
-            return null;
-        }
-        DataTreeLookup lookup = lookupCacheIgnoreCase; // Grab it in case it's replaced concurrently.
-        if (lookup == null || lookup.key != key) {
-            lookupCacheIgnoreCase = lookup = tree.lookupIgnoreCase(key);
-        }
-        if (lookup.isPresent) {
-            return lookup.data;
-        }
-        throw createElementNotFoundException(key);
-    }
-
-    /**
-     * Returns the names of the children of the specified element.
-     * The specified element must exist in the tree.
-     * If the specified element is null, returns the root element path.
-     */
-    public synchronized String[] getNamesOfChildren(IPath key) {
-        try {
-            if (key == null) {
-                return new String[] { "" }; //$NON-NLS-1$
-            }
-            return tree.getNamesOfChildren(key);
-        } catch (ObjectNotFoundException e) {
-            throw createElementNotFoundException(key);
-        }
-    }
-
-    /**
      * Returns the parent tree, or <code>null</code> if there is no parent.
      */
     public ElementTree getParent() {
@@ -459,28 +261,6 @@ public class ElementTree {
      */
     public IPath getRoot() {
         return getChildIDs(null)[0];
-    }
-
-    /**
-     * Returns the subtree rooted at the given key. In the resulting tree,
-     * the implicit root node (designated by Path.ROOT), has a single child,
-     * which is the node specified by the given key in this tree.
-     *
-     * The subtree must be present in this tree.
-     *
-     * @see #createSubtree(IPath, ElementTree)
-     */
-    public ElementTree getSubtree(IPath key) {
-        /* the subtree of the root of this tree is just this tree */
-        if (key.isRoot()) {
-            return this;
-        }
-        try {
-            DataTreeNode elementNode = (DataTreeNode) tree.copyCompleteSubtree(key);
-            return new ElementTree(elementNode);
-        } catch (ObjectNotFoundException e) {
-            throw createElementNotFoundException(key);
-        }
     }
 
     /**
@@ -556,7 +336,7 @@ public class ElementTree {
              * need to clear the lookup cache since it reports whether results were found
              * in the topmost delta, and the order of deltas is changing
              */
-            lookupCache = lookupCacheIgnoreCase = null;
+            lookupCache = null;
             /* reroot the delta chain at this tree */
             tree.reroot();
         }
@@ -577,77 +357,10 @@ public class ElementTree {
     }
 
     /**
-     * Returns true if this element tree includes an element with the given
-     * key, ignoring the case of the key, and false otherwise.
-     */
-    public synchronized boolean includesIgnoreCase(IPath key) {
-        DataTreeLookup lookup = lookupCacheIgnoreCase; // Grab it in case it's replaced concurrently.
-        if (lookup == null || lookup.key != key) {
-            lookupCacheIgnoreCase = lookup = tree.lookupIgnoreCase(key);
-        }
-        return lookup.isPresent;
-    }
-
-    /**
      * Returns whether this tree is immutable.
      */
     public boolean isImmutable() {
         return tree.isImmutable();
-    }
-
-    /**
-     * Merges a chain of deltas for a certain subtree to this tree.
-     * If this tree has any data in the specified subtree, it will
-     * be overwritten. The receiver tree must be open, and it will
-     * be made immutable during the merge operation. The trees in the
-     * provided array will be replaced by new trees that have been
-     * merged into the receiver's delta chain.
-     *
-     * @param path The path of the subtree chain to merge
-     * @param trees The chain of trees to merge. The trees can be
-     * in any order, but they must all form a simple ancestral chain.
-     * @return A new open tree with the delta chain merged in.
-     */
-    public ElementTree mergeDeltaChain(IPath path, ElementTree[] trees) {
-        if (path == null || trees == null) {
-            throw new IllegalArgumentException(NLS.bind(Messages.watson_nullArg, "ElementTree.mergeDeltaChain")); //$NON-NLS-1$
-        }
-
-        /* The tree has to be open */
-        if (isImmutable()) {
-            throw new IllegalArgumentException(Messages.watson_immutable);
-        }
-        ElementTree current = this;
-        if (trees.length > 0) {
-            /* find the oldest tree to be merged */
-            ElementTree toMerge = trees[findOldest(trees)];
-
-            /* merge the trees from oldest to newest */
-            while (toMerge != null) {
-                if (path.isRoot()) {
-                    // copy all the children
-                    IPath[] children = toMerge.getChildren(IPath.ROOT);
-                    for (IPath element : children) {
-                        current.createSubtree(element, toMerge.getSubtree(element));
-                    }
-                } else {
-                    // just copy the specified node
-                    current.createSubtree(path, toMerge.getSubtree(path));
-                }
-                current.immutable();
-
-                /* replace the tree in the array */
-                /* we have to go through all trees because there may be duplicates */
-                for (int i = 0; i < trees.length; i++) {
-                    if (trees[i] == toMerge) {
-                        trees[i] = current;
-                    }
-                }
-                current = current.newEmptyDelta();
-                toMerge = toMerge.getParent();
-            }
-        }
-        return current;
     }
 
     /**
@@ -657,7 +370,7 @@ public class ElementTree {
      */
     public synchronized ElementTree newEmptyDelta() {
         // Don't want old trees hanging onto cached infos.
-        lookupCache = lookupCacheIgnoreCase = null;
+        lookupCache = null;
         // reclaim memory of childIDsCache - which is only used on the current tree:
         childIDsCache = null;
         if (!this.isImmutable()) {
@@ -697,7 +410,7 @@ public class ElementTree {
                 try {
                     Object newData = oldData.clone();
                     tree.setData(key, newData);
-                    lookupCache = lookupCacheIgnoreCase = null;
+                    lookupCache = null;
                     return newData;
                 } catch (ObjectNotFoundException e) {
                     throw createElementNotFoundException(key);
@@ -725,7 +438,7 @@ public class ElementTree {
         Assert.isNotNull(key);
         // Clear the lookup cache, in case the element being modified is the same
         // as for the last lookup.
-        lookupCache = lookupCacheIgnoreCase = null;
+        lookupCache = null;
         try {
             tree.setData(key, data);
         } catch (ObjectNotFoundException e) {
@@ -738,14 +451,6 @@ public class ElementTree {
      */
     public void setTreeData(IElementTreeData data) {
         userData = data;
-    }
-
-    /*
-     * (non-Javadoc)
-     * Method declared on IStringPoolParticipant
-     */
-    public void shareStrings(StringPool set) {
-        tree.storeStrings(set);
     }
 
     /** for debugging purposes only */

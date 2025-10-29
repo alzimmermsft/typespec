@@ -23,27 +23,28 @@ import java.util.ResourceBundle;
  * @since 3.4
  */
 class TextMessages {
-	private static final String BUNDLE_NAME= "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.TextMessages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME
+        = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.TextMessages"; //$NON-NLS-1$
 
-	private static final ResourceBundle RESOURCE_BUNDLE= ResourceBundle.getBundle(BUNDLE_NAME);
+    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
-	private TextMessages() {
-	}
+    private TextMessages() {
+    }
 
-	public static String getString(String key) {
-		try {
-			return RESOURCE_BUNDLE.getString(key);
-		} catch (MissingResourceException e) {
-			return '!' + key + '!';
-		}
-	}
+    public static String getString(String key) {
+        try {
+            return RESOURCE_BUNDLE.getString(key);
+        } catch (MissingResourceException e) {
+            return '!' + key + '!';
+        }
+    }
 
-	public static String getFormattedString(String key, Object arg) {
-		return getFormattedString(key, new Object[] { arg });
-	}
+    public static String getFormattedString(String key, Object arg) {
+        return getFormattedString(key, new Object[] { arg });
+    }
 
-	public static String getFormattedString(String key, Object[] args) {
-		return MessageFormat.format(getString(key), args);
-	}
+    public static String getFormattedString(String key, Object[] args) {
+        return MessageFormat.format(getString(key), args);
+    }
 
 }

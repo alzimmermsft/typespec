@@ -19,29 +19,34 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeReference;
 
 public class RecoveredProvidesStatement extends RecoveredModuleStatement {
-	SingleTypeReference impl;
+    SingleTypeReference impl;
 
-	public RecoveredProvidesStatement(ProvidesStatement providesStatement, RecoveredElement parent, int bracketBalance) {
-		super(providesStatement, parent, bracketBalance);
-	}
-	public RecoveredElement add(SingleTypeReference impl1,  int bracketBalance1) {
-		this.impl = impl1;
-		return this;
-	}
+    public RecoveredProvidesStatement(ProvidesStatement providesStatement, RecoveredElement parent,
+        int bracketBalance) {
+        super(providesStatement, parent, bracketBalance);
+    }
 
-	@Override
-	public String toString(int tab) {
-		return tabString(tab) + "Recovered Provides: " + super.toString(); //$NON-NLS-1$
-	}
-	public ProvidesStatement updatedProvidesStatement(){
-		ProvidesStatement providesStatement = (ProvidesStatement) this.moduleStatement;
-		if (providesStatement.implementations == null) { // only for with - actual impl by normal parse
-			providesStatement.implementations = this.impl != null ? new TypeReference[] {this.impl} : new TypeReference[0]; // dummy for completion
-		}
-		return providesStatement;
-	}
-	@Override
-	public void updateParseTree(){
-		updatedProvidesStatement();
-	}
+    public RecoveredElement add(SingleTypeReference impl1, int bracketBalance1) {
+        this.impl = impl1;
+        return this;
+    }
+
+    @Override
+    public String toString(int tab) {
+        return tabString(tab) + "Recovered Provides: " + super.toString(); //$NON-NLS-1$
+    }
+
+    public ProvidesStatement updatedProvidesStatement() {
+        ProvidesStatement providesStatement = (ProvidesStatement) this.moduleStatement;
+        if (providesStatement.implementations == null) { // only for with - actual impl by normal parse
+            providesStatement.implementations
+                = this.impl != null ? new TypeReference[] { this.impl } : new TypeReference[0]; // dummy for completion
+        }
+        return providesStatement;
+    }
+
+    @Override
+    public void updateParseTree() {
+        updatedProvidesStatement();
+    }
 }

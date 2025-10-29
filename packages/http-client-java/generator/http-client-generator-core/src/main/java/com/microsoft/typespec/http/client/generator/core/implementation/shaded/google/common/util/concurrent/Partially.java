@@ -34,17 +34,18 @@ import java.lang.annotation.Target;
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
 final class Partially {
-  /**
-   * The presence of this annotation on an API indicates that the method <i>may</i> be used with the
-   * <a href="http://www.gwtproject.org/">Google Web Toolkit</a> (GWT) but that it has <i>some
-   * restrictions</i>.
-   */
-  @Retention(RetentionPolicy.CLASS)
-  @Target({ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
-  @Documented
-  @interface GwtIncompatible {
-    String value();
-  }
+    /**
+     * The presence of this annotation on an API indicates that the method <i>may</i> be used with the
+     * <a href="http://www.gwtproject.org/">Google Web Toolkit</a> (GWT) but that it has <i>some
+     * restrictions</i>.
+     */
+    @Retention(RetentionPolicy.CLASS)
+    @Target({ ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD })
+    @Documented
+    @interface GwtIncompatible {
+        String value();
+    }
 
-  private Partially() {}
+    private Partially() {
+    }
 }

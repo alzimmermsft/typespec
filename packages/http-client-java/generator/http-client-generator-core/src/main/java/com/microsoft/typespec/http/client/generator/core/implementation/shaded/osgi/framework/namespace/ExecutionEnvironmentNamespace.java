@@ -33,23 +33,23 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 public final class ExecutionEnvironmentNamespace extends Namespace {
 
-	/**
-	 * Namespace name for execution environment capabilities and requirements.
-	 * 
-	 * <p>
-	 * Also, the capability attribute used to specify the name of the execution
-	 * environment.
-	 */
-	public static final String	EXECUTION_ENVIRONMENT_NAMESPACE	= "osgi.ee";
+    /**
+     * Namespace name for execution environment capabilities and requirements.
+     * 
+     * <p>
+     * Also, the capability attribute used to specify the name of the execution
+     * environment.
+     */
+    public static final String EXECUTION_ENVIRONMENT_NAMESPACE = "osgi.ee";
 
-	/**
-	 * The capability attribute contains the versions of the execution
-	 * environment. The value of this attribute must be of type
-	 * {@code List<Version>}.
-	 */
-	public final static String	CAPABILITY_VERSION_ATTRIBUTE	= "version";
+    /**
+     * The capability attribute contains the versions of the execution
+     * environment. The value of this attribute must be of type
+     * {@code List<Version>}.
+     */
+    public final static String CAPABILITY_VERSION_ATTRIBUTE = "version";
 
-	private ExecutionEnvironmentNamespace() {
-		// empty
-	}
+    private ExecutionEnvironmentNamespace() {
+        // empty
+    }
 }

@@ -13,9 +13,8 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.preferences;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.preferences.PrefsMessages;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.prefs.BackingStoreException;
-import java.io.*;
+
 import java.util.Properties;
 
 /**
@@ -67,60 +66,6 @@ public abstract class AbstractPreferenceStorage {
      * @throws BackingStoreException if there was a problem saving the properties
      */
     public abstract void save(String nodePath, Properties properties) throws BackingStoreException;
-
-    /**
-     * Helper method to load a <code>java.util.Properties</code> file from the given
-     * input stream. The stream will be closed on completion of the operation.
-     *
-     * @param input the stream to load from
-     * @return the <code>java.util.Properties</code> object loaded from the stream
-     * @throws BackingStoreException if there was a problem loading the file
-     */
-    protected Properties loadProperties(InputStream input) throws BackingStoreException {
-        Properties result = new Properties();
-        try {
-            input = new BufferedInputStream(input);
-            result.load(input);
-        } catch (IOException | IllegalArgumentException e) {
-            throw new BackingStoreException(PrefsMessages.preferences_loadProblems, e);
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    // ignore
-                }
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Helper method to save the given <code>java.util.Properties</code> object to
-     * the given output stream. The stream will be closed at the end of the
-     * operation.
-     *
-     * @param output the stream to store the object to
-     * @param properties the object to store
-     * @throws BackingStoreException if there was a problem saving the object
-     */
-    protected void saveProperties(OutputStream output, Properties properties) throws BackingStoreException {
-        try {
-            output = new BufferedOutputStream(output);
-            properties.store(output, null);
-            output.flush();
-        } catch (IOException e) {
-            throw new BackingStoreException(PrefsMessages.preferences_saveProblems, e);
-        } finally {
-            if (output != null) {
-                try {
-                    output.close();
-                } catch (IOException e) {
-                    // ignore
-                }
-            }
-        }
-    }
 
     /**
      * Return a string array containing the names of the children for the node with

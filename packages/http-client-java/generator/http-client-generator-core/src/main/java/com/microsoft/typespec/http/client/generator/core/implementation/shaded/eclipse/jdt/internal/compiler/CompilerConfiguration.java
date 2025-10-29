@@ -13,11 +13,11 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IContainer;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IContainer;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 
 /**
  * This class encapsulates the standard compiler options that can be
@@ -32,37 +32,37 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * @since 3.38
  */
 public final record CompilerConfiguration(
-		/**
-		 * List of file paths where the compiler can find source files.
-		 */
-		List<IContainer> sourcepaths,
-		/**
-		 * List of file paths where the compiler can find source files for modules.
-		 */
-		List<IContainer> moduleSourcepaths,
-		/**
-		 * List of file paths where the compiler can find user class files and annotation processors.
-		 */
-		List<URI> classpaths,
-		/**
-		 * List of file paths where the compiler can find modules.
-		 */
-		List<URI> modulepaths,
-		/**
-		 * Location to search for annotation processors.
-		 */
-		List<URI> annotationProcessorPaths,
-		/**
-		 * Locations to place generated source files.
-		 */
-		List<IContainer> generatedSourcePaths,
-		/**
-		 * The mapping of source files to output directories.
-		 */
-		Map<IContainer, IContainer> sourceOutputMapping,
-		/**
-		 * The compiler options used to control the compilation behavior.
-		 * See {@link CompilerOptions} for a list of available options.
-		 */
-		CompilerOptions compilerOptions) {
+    /**
+     * List of file paths where the compiler can find source files.
+     */
+    List<IContainer> sourcepaths,
+    /**
+     * List of file paths where the compiler can find source files for modules.
+     */
+    List<IContainer> moduleSourcepaths,
+    /**
+     * List of file paths where the compiler can find user class files and annotation processors.
+     */
+    List<URI> classpaths,
+    /**
+     * List of file paths where the compiler can find modules.
+     */
+    List<URI> modulepaths,
+    /**
+     * Location to search for annotation processors.
+     */
+    List<URI> annotationProcessorPaths,
+    /**
+     * Locations to place generated source files.
+     */
+    List<IContainer> generatedSourcePaths,
+    /**
+     * The mapping of source files to output directories.
+     */
+    Map<IContainer, IContainer> sourceOutputMapping,
+    /**
+     * The compiler options used to control the compilation behavior.
+     * See {@link CompilerOptions} for a list of available options.
+     */
+    CompilerOptions compilerOptions) {
 }

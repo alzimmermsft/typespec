@@ -18,30 +18,30 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface ICompilerRequestor {
 
-	/**
-	 * Accept a compilation result.
-	 */
+    /**
+     * Accept a compilation result.
+     */
     void acceptResult(CompilationResult result);
 
-	/**
-	 * Optionally called to start multiple {@link #acceptResult(CompilationResult)}
-	 */
-	default void startBatch() {
-		//nothing
-	}
+    /**
+     * Optionally called to start multiple {@link #acceptResult(CompilationResult)}
+     */
+    default void startBatch() {
+        // nothing
+    }
 
-	/**
-	 * Optionally called after some {@link #acceptResult(CompilationResult)} to signal a good point in time
-	 */
-	default void flushBatch() {
-		//nothing
-	}
+    /**
+     * Optionally called after some {@link #acceptResult(CompilationResult)} to signal a good point in time
+     */
+    default void flushBatch() {
+        // nothing
+    }
 
-	/**
-	 * if {@link #startBatch} was called then endBatch is called to finalize possibly multiple
-	 * {@link #acceptResult(CompilationResult)}
-	 */
-	default void endBatch() {
-		// nothing
-	}
+    /**
+     * if {@link #startBatch} was called then endBatch is called to finalize possibly multiple
+     * {@link #acceptResult(CompilationResult)}
+     */
+    default void endBatch() {
+        // nothing
+    }
 }

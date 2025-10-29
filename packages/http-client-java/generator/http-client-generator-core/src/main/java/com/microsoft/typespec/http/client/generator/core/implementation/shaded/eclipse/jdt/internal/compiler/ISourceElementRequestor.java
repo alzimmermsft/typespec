@@ -13,8 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler;
 
-import java.util.HashMap;
-import java.util.Map;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaElement;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CategorizedProblem;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
@@ -24,6 +22,8 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ImportReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ModuleDeclaration;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
+import java.util.HashMap;
+import java.util.Map;
 
 /*
  * Part of the source element parser responsible for building the output. It
@@ -51,202 +51,212 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public interface ISourceElementRequestor {
 
-	public static class ModuleInfo {
-		public int declarationStart;
-		public int modifiers;
-		public char[] name;
-		public int nameSourceStart;
-		public int nameSourceEnd;
-		public char[] moduleName;
-		public RequiresInfo[] requires;
-		public PackageExportInfo[] exports;
-		public ServicesInfo[] services;
-		public PackageExportInfo[] opens;
-		public char[][] usedServices;
-		public Annotation[] annotations;
-		public ModuleDeclaration node;
-		public char[][] categories;
-	}
-	public static class RequiresInfo {
-		public char[] moduleName;
-		public int modifiers;
-	}
-	public static class PackageExportInfo {
-		public char[] pkgName;
-		public char[][] targets;
-	}
-	public static class ServicesInfo {
-		public char[] serviceName;
-		public char[][] implNames;
-	}
-	public static class TypeInfo {
-		public boolean typeAnnotated;
-		public int declarationStart;
-		public int modifiers;
-		public char[] name;
-		public int nameSourceStart;
-		public int nameSourceEnd;
-		public char[] superclass;
-		public char[][] superinterfaces;
-		public char[][] permittedSubtypes;
-		public TypeParameterInfo[] typeParameters;
-		public char[][] categories;
-		public boolean secondary;
-		public boolean anonymousMember;
-		public Annotation[] annotations;
-		public int extraFlags;
-		public TypeDeclaration node;
-		public Map<IJavaElement, char[][]> childrenCategories = new HashMap<>();
-	}
+    public static class ModuleInfo {
+        public int declarationStart;
+        public int modifiers;
+        public char[] name;
+        public int nameSourceStart;
+        public int nameSourceEnd;
+        public char[] moduleName;
+        public RequiresInfo[] requires;
+        public PackageExportInfo[] exports;
+        public ServicesInfo[] services;
+        public PackageExportInfo[] opens;
+        public char[][] usedServices;
+        public Annotation[] annotations;
+        public ModuleDeclaration node;
+        public char[][] categories;
+    }
 
-	public static class TypeParameterInfo {
-		public boolean typeAnnotated;
-		public int declarationStart;
-		public int declarationEnd;
-		public char[] name;
-		public int nameSourceStart;
-		public int nameSourceEnd;
-		public char[][] bounds;
-	}
+    public static class RequiresInfo {
+        public char[] moduleName;
+        public int modifiers;
+    }
 
-	public static class MethodInfo {
-		public boolean typeAnnotated;
-		public boolean isCanonicalConstr;
-		public boolean isConstructor;
-		public boolean isAnnotation;
-		public int declarationStart;
-		public int modifiers;
-		public char[] returnType;
-		public char[] name;
-		public int nameSourceStart;
-		public int nameSourceEnd;
-		public char[][] parameterTypes;
-		public char[][] parameterNames;
-		public char[][] exceptionTypes;
-		public TypeParameterInfo[] typeParameters;
-		public char[][] categories;
-		public Annotation[] annotations;
-		public char[] declaringPackageName;
-		public int declaringTypeModifiers;
-		public int extraFlags;
-		public AbstractMethodDeclaration node;
-		public ParameterInfo[] parameterInfos;
-		public TypeDeclaration enclosingType;
-	}
+    public static class PackageExportInfo {
+        public char[] pkgName;
+        public char[][] targets;
+    }
 
-	public static class ParameterInfo {
-		public int modifiers;
-		public int declarationStart;
-		public int declarationEnd;
-		public int nameSourceStart;
-		public int nameSourceEnd;
-		public char[] name;
-	}
-	public static class FieldInfo {
-		public boolean isRecordComponent;
-		public boolean typeAnnotated;
-		public int declarationStart;
-		public int modifiers;
-		public char[] type;
-		public char[] name;
-		public int nameSourceStart;
-		public int nameSourceEnd;
-		public char[][] categories;
-		public Annotation[] annotations;
-		public AbstractVariableDeclaration node;
-	}
+    public static class ServicesInfo {
+        public char[] serviceName;
+        public char[][] implNames;
+    }
 
-	void acceptAnnotationTypeReference(char[][] annotation, int sourceStart, int sourceEnd);
+    public static class TypeInfo {
+        public boolean typeAnnotated;
+        public int declarationStart;
+        public int modifiers;
+        public char[] name;
+        public int nameSourceStart;
+        public int nameSourceEnd;
+        public char[] superclass;
+        public char[][] superinterfaces;
+        public char[][] permittedSubtypes;
+        public TypeParameterInfo[] typeParameters;
+        public char[][] categories;
+        public boolean secondary;
+        public boolean anonymousMember;
+        public Annotation[] annotations;
+        public int extraFlags;
+        public TypeDeclaration node;
+        public Map<IJavaElement, char[][]> childrenCategories = new HashMap<>();
+    }
 
-	void acceptAnnotationTypeReference(char[] annotation, int sourcePosition);
+    public static class TypeParameterInfo {
+        public boolean typeAnnotated;
+        public int declarationStart;
+        public int declarationEnd;
+        public char[] name;
+        public int nameSourceStart;
+        public int nameSourceEnd;
+        public char[][] bounds;
+    }
 
-	void acceptConstructorReference(char[] typeName, int argCount, int sourcePosition);
+    public static class MethodInfo {
+        public boolean typeAnnotated;
+        public boolean isCanonicalConstr;
+        public boolean isConstructor;
+        public boolean isAnnotation;
+        public int declarationStart;
+        public int modifiers;
+        public char[] returnType;
+        public char[] name;
+        public int nameSourceStart;
+        public int nameSourceEnd;
+        public char[][] parameterTypes;
+        public char[][] parameterNames;
+        public char[][] exceptionTypes;
+        public TypeParameterInfo[] typeParameters;
+        public char[][] categories;
+        public Annotation[] annotations;
+        public char[] declaringPackageName;
+        public int declaringTypeModifiers;
+        public int extraFlags;
+        public AbstractMethodDeclaration node;
+        public ParameterInfo[] parameterInfos;
+        public TypeDeclaration enclosingType;
+    }
 
-	void acceptFieldReference(char[] fieldName, int sourcePosition);
-	/**
-	 * @param declarationStart
-	 *                   This is the position of the first character of the import
-	 *                   keyword.
-	 * @param declarationEnd
-	 *                   This is the position of the ';' ending the import statement or
-	 *                   the end of the comment following the import.
-	 * @param nameStart
-	 *                   This is the position of the first character of the import declaration's
-	 *                   name.
-	 * @param nameEnd
-	 *                   This is the position of the last character of the import declaration's
-	 *                   name.
-	 * @param tokens
-	 *                   This are the tokens of the import like specified in the source.
-	 * @param onDemand
-	 *                   set to true if the import is an import on demand (e.g. import
-	 *                   java.io.*). False otherwise.
-	 * @param modifiers
-	 *                   can be set to static from 1.5 on.
-	 */
-	void acceptImport(int declarationStart, int declarationEnd, int nameStart, int nameEnd, char[][] tokens, boolean onDemand, int modifiers);
+    public static class ParameterInfo {
+        public int modifiers;
+        public int declarationStart;
+        public int declarationEnd;
+        public int nameSourceStart;
+        public int nameSourceEnd;
+        public char[] name;
+    }
 
-	/*
-	 * Table of line separator position. This table is passed once at the end of
-	 * the parse action, so as to allow computation of normalized ranges.
-	 *
-	 * A line separator might corresponds to several characters in the source,
-	 */
-	void acceptLineSeparatorPositions(int[] positions);
+    public static class FieldInfo {
+        public boolean isRecordComponent;
+        public boolean typeAnnotated;
+        public int declarationStart;
+        public int modifiers;
+        public char[] type;
+        public char[] name;
+        public int nameSourceStart;
+        public int nameSourceEnd;
+        public char[][] categories;
+        public Annotation[] annotations;
+        public AbstractVariableDeclaration node;
+    }
 
-	void acceptMethodReference(char[] methodName, int argCount, int sourcePosition);
+    void acceptAnnotationTypeReference(char[][] annotation, int sourceStart, int sourceEnd);
 
-	void acceptPackage(ImportReference importReference);
+    void acceptAnnotationTypeReference(char[] annotation, int sourcePosition);
 
-	void acceptProblem(CategorizedProblem problem);
+    void acceptConstructorReference(char[] typeName, int argCount, int sourcePosition);
 
-	void acceptTypeReference(char[][] typeName, int sourceStart, int sourceEnd);
+    void acceptFieldReference(char[] fieldName, int sourcePosition);
 
-	void acceptTypeReference(char[] typeName, int sourcePosition);
+    /**
+     * @param declarationStart
+     * This is the position of the first character of the import
+     * keyword.
+     * @param declarationEnd
+     * This is the position of the ';' ending the import statement or
+     * the end of the comment following the import.
+     * @param nameStart
+     * This is the position of the first character of the import declaration's
+     * name.
+     * @param nameEnd
+     * This is the position of the last character of the import declaration's
+     * name.
+     * @param tokens
+     * This are the tokens of the import like specified in the source.
+     * @param onDemand
+     * set to true if the import is an import on demand (e.g. import
+     * java.io.*). False otherwise.
+     * @param modifiers
+     * can be set to static from 1.5 on.
+     */
+    void acceptImport(int declarationStart, int declarationEnd, int nameStart, int nameEnd, char[][] tokens,
+        boolean onDemand, int modifiers);
 
-	void acceptUnknownReference(char[][] name, int sourceStart, int sourceEnd);
+    /*
+     * Table of line separator position. This table is passed once at the end of
+     * the parse action, so as to allow computation of normalized ranges.
+     *
+     * A line separator might corresponds to several characters in the source,
+     */
+    void acceptLineSeparatorPositions(int[] positions);
 
-	void acceptUnknownReference(char[] name, int sourcePosition);
+    void acceptMethodReference(char[] methodName, int argCount, int sourcePosition);
 
-	void enterCompilationUnit();
+    void acceptPackage(ImportReference importReference);
 
-	void enterConstructor(MethodInfo methodInfo);
+    void acceptProblem(CategorizedProblem problem);
 
-	void enterField(FieldInfo fieldInfo);
+    void acceptTypeReference(char[][] typeName, int sourceStart, int sourceEnd);
 
-	void enterInitializer(int declarationStart, int modifiers);
+    void acceptTypeReference(char[] typeName, int sourcePosition);
 
-	void enterMethod(MethodInfo methodInfo);
+    void acceptUnknownReference(char[][] name, int sourceStart, int sourceEnd);
 
-	void enterType(TypeInfo typeInfo);
+    void acceptUnknownReference(char[] name, int sourcePosition);
 
-	void exitCompilationUnit(int declarationEnd);
+    void enterCompilationUnit();
 
-	void exitConstructor(int declarationEnd);
+    void enterConstructor(MethodInfo methodInfo);
 
-	/*
-	 * initializationStart denotes the source start of the expression used for
-	 * initializing the field if any (-1 if no initialization).
-	 */
-	void exitField(int initializationStart, int declarationEnd, int declarationSourceEnd);
+    void enterField(FieldInfo fieldInfo);
 
-	void exitInitializer(int declarationEnd);
+    void enterInitializer(int declarationStart, int modifiers);
 
-	void exitMethod(int declarationEnd, Expression defaultValue);
+    void enterMethod(MethodInfo methodInfo);
 
-	void exitType(int declarationEnd);
+    void enterType(TypeInfo typeInfo);
 
-	default void enterModule(ModuleInfo info) {
-		// do nothing
-	}
-	default void exitModule(int declarationEnd) {
-		// do nothing
-	}
-	// There's no node pass and nothing was created for a block. Just pass the offset
-	default void enterBlock(int sourceStart) {
-		// do nothing
-	}
-	default void exitBlock(int sourceEnd) {
-		// do nothing
-	}
+    void exitCompilationUnit(int declarationEnd);
+
+    void exitConstructor(int declarationEnd);
+
+    /*
+     * initializationStart denotes the source start of the expression used for
+     * initializing the field if any (-1 if no initialization).
+     */
+    void exitField(int initializationStart, int declarationEnd, int declarationSourceEnd);
+
+    void exitInitializer(int declarationEnd);
+
+    void exitMethod(int declarationEnd, Expression defaultValue);
+
+    void exitType(int declarationEnd);
+
+    default void enterModule(ModuleInfo info) {
+        // do nothing
+    }
+
+    default void exitModule(int declarationEnd) {
+        // do nothing
+    }
+
+    // There's no node pass and nothing was created for a block. Just pass the offset
+    default void enterBlock(int sourceStart) {
+        // do nothing
+    }
+
+    default void exitBlock(int sourceEnd) {
+        // do nothing
+    }
 }

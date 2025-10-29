@@ -98,9 +98,22 @@ public interface SystemB extends LibCAPI, Library {
         public int[] mach_factor = new int[3]; // scaled by LOAD_SCALE
     }
 
-    @Structure.FieldOrder({ "free_count", "active_count", "inactive_count", "wire_count", "zero_fill_count",
-            "reactivations", "pageins", "pageouts", "faults", "cow_faults", "lookups", "hits", "purgeable_count",
-            "purges", "speculative_count" })
+    @Structure.FieldOrder({
+        "free_count",
+        "active_count",
+        "inactive_count",
+        "wire_count",
+        "zero_fill_count",
+        "reactivations",
+        "pageins",
+        "pageouts",
+        "faults",
+        "cow_faults",
+        "lookups",
+        "hits",
+        "purgeable_count",
+        "purges",
+        "speculative_count" })
     public static class VMStatistics extends Structure {
         public int free_count; // # of pages free
         public int active_count; // # of pages active
@@ -120,11 +133,31 @@ public interface SystemB extends LibCAPI, Library {
         public int speculative_count;
     }
 
-    @Structure.FieldOrder({ "free_count", "active_count", "inactive_count", "wire_count", "zero_fill_count",
-            "reactivations", "pageins", "pageouts", "faults", "cow_faults", "lookups", "hits", "purges",
-            "purgeable_count", "speculative_count", "decompressions", "compressions", "swapins", "swapouts",
-            "compressor_page_count", "throttled_count", "external_page_count", "internal_page_count",
-            "total_uncompressed_pages_in_compressor" })
+    @Structure.FieldOrder({
+        "free_count",
+        "active_count",
+        "inactive_count",
+        "wire_count",
+        "zero_fill_count",
+        "reactivations",
+        "pageins",
+        "pageouts",
+        "faults",
+        "cow_faults",
+        "lookups",
+        "hits",
+        "purges",
+        "purgeable_count",
+        "speculative_count",
+        "decompressions",
+        "compressions",
+        "swapins",
+        "swapouts",
+        "compressor_page_count",
+        "throttled_count",
+        "external_page_count",
+        "internal_page_count",
+        "total_uncompressed_pages_in_compressor" })
     public static class VMStatistics64 extends Structure {
         public int free_count; // # of pages free
         public int active_count; // # of pages active
@@ -164,9 +197,29 @@ public interface SystemB extends LibCAPI, Library {
         public ProcTaskInfo ptinfo;
     }
 
-    @Structure.FieldOrder({ "pbi_flags", "pbi_status", "pbi_xstatus", "pbi_pid", "pbi_ppid", "pbi_uid", "pbi_gid",
-            "pbi_ruid", "pbi_rgid", "pbi_svuid", "pbi_svgid", "rfu_1", "pbi_comm", "pbi_name", "pbi_nfiles", "pbi_pgid",
-            "pbi_pjobc", "e_tdev", "e_tpgid", "pbi_nice", "pbi_start_tvsec", "pbi_start_tvusec" })
+    @Structure.FieldOrder({
+        "pbi_flags",
+        "pbi_status",
+        "pbi_xstatus",
+        "pbi_pid",
+        "pbi_ppid",
+        "pbi_uid",
+        "pbi_gid",
+        "pbi_ruid",
+        "pbi_rgid",
+        "pbi_svuid",
+        "pbi_svgid",
+        "rfu_1",
+        "pbi_comm",
+        "pbi_name",
+        "pbi_nfiles",
+        "pbi_pgid",
+        "pbi_pjobc",
+        "e_tdev",
+        "e_tpgid",
+        "pbi_nice",
+        "pbi_start_tvsec",
+        "pbi_start_tvusec" })
     class ProcBsdInfo extends Structure {
         public int pbi_flags;
         public int pbi_status;
@@ -192,10 +245,25 @@ public interface SystemB extends LibCAPI, Library {
         public long pbi_start_tvusec;
     }
 
-    @Structure.FieldOrder({ "pti_virtual_size", "pti_resident_size", "pti_total_user", "pti_total_system",
-            "pti_threads_user", "pti_threads_system", "pti_policy", "pti_faults", "pti_pageins", "pti_cow_faults",
-            "pti_messages_sent", "pti_messages_received", "pti_syscalls_mach", "pti_syscalls_unix", "pti_csw",
-            "pti_threadnum", "pti_numrunning", "pti_priority" })
+    @Structure.FieldOrder({
+        "pti_virtual_size",
+        "pti_resident_size",
+        "pti_total_user",
+        "pti_total_system",
+        "pti_threads_user",
+        "pti_threads_system",
+        "pti_policy",
+        "pti_faults",
+        "pti_pageins",
+        "pti_cow_faults",
+        "pti_messages_sent",
+        "pti_messages_received",
+        "pti_syscalls_mach",
+        "pti_syscalls_unix",
+        "pti_csw",
+        "pti_threadnum",
+        "pti_numrunning",
+        "pti_priority" })
     class ProcTaskInfo extends Structure {
         public long pti_virtual_size; /* virtual memory size (bytes) */
         public long pti_resident_size; /* resident memory size (bytes) */
@@ -217,11 +285,42 @@ public interface SystemB extends LibCAPI, Library {
         public int pti_priority; /* task priority */
     }
 
-    @Structure.FieldOrder({ "v_swtch", "v_trap", "v_syscall", "v_intr", "v_soft", "v_faults", "v_lookups", "v_hits",
-            "v_vm_faults", "v_cow_faults", "v_swpin", "v_swpout", "v_pswpin", "v_pswpout", "v_pageins", "v_pageouts",
-            "v_pgpgin", "v_pgpgout", "v_intrans", "v_reactivated", "v_rev", "v_scan", "v_dfree", "v_pfree", "v_zfod",
-            "v_nzfod", "v_page_size", "v_kernel_pages", "v_free_target", "v_free_min", "v_free_count", "v_wire_count",
-            "v_active_count", "v_inactive_target", "v_inactive_count" })
+    @Structure.FieldOrder({
+        "v_swtch",
+        "v_trap",
+        "v_syscall",
+        "v_intr",
+        "v_soft",
+        "v_faults",
+        "v_lookups",
+        "v_hits",
+        "v_vm_faults",
+        "v_cow_faults",
+        "v_swpin",
+        "v_swpout",
+        "v_pswpin",
+        "v_pswpout",
+        "v_pageins",
+        "v_pageouts",
+        "v_pgpgin",
+        "v_pgpgout",
+        "v_intrans",
+        "v_reactivated",
+        "v_rev",
+        "v_scan",
+        "v_dfree",
+        "v_pfree",
+        "v_zfod",
+        "v_nzfod",
+        "v_page_size",
+        "v_kernel_pages",
+        "v_free_target",
+        "v_free_min",
+        "v_free_count",
+        "v_wire_count",
+        "v_active_count",
+        "v_inactive_target",
+        "v_inactive_count" })
     class VMMeter extends Structure {
         /*
          * General system activity.
@@ -271,11 +370,26 @@ public interface SystemB extends LibCAPI, Library {
         public int v_inactive_count; /* number of pages inactive */
     }
 
-    @Structure.FieldOrder({ "ri_uuid", "ri_user_time", "ri_system_time", "ri_pkg_idle_wkups", "ri_interrupt_wkups",
-            "ri_pageins", "ri_wired_size", "ri_resident_size", "ri_phys_footprint", "ri_proc_start_abstime",
-            "ri_proc_exit_abstime", "ri_child_user_time", "ri_child_system_time", "ri_child_pkg_idle_wkups",
-            "ri_child_interrupt_wkups", "ri_child_pageins", "ri_child_elapsed_abstime", "ri_diskio_bytesread",
-            "ri_diskio_byteswritten" })
+    @Structure.FieldOrder({
+        "ri_uuid",
+        "ri_user_time",
+        "ri_system_time",
+        "ri_pkg_idle_wkups",
+        "ri_interrupt_wkups",
+        "ri_pageins",
+        "ri_wired_size",
+        "ri_resident_size",
+        "ri_phys_footprint",
+        "ri_proc_start_abstime",
+        "ri_proc_exit_abstime",
+        "ri_child_user_time",
+        "ri_child_system_time",
+        "ri_child_pkg_idle_wkups",
+        "ri_child_interrupt_wkups",
+        "ri_child_pageins",
+        "ri_child_elapsed_abstime",
+        "ri_diskio_bytesread",
+        "ri_diskio_byteswritten" })
     class RUsageInfoV2 extends Structure {
         public byte[] ri_uuid = new byte[16];
         public long ri_user_time;
@@ -316,9 +430,23 @@ public interface SystemB extends LibCAPI, Library {
      * path argument is the path name of any file or directory within the mounted
      * file system. The buf argument is a pointer to a statfs structure.
      */
-    @Structure.FieldOrder({ "f_bsize", "f_iosize", "f_blocks", "f_bfree", "f_bavail", "f_files", "f_ffree", "f_fsid",
-            "f_owner", "f_type", "f_flags", "f_fssubtype", "f_fstypename", "f_mntonname", "f_mntfromname",
-            "f_reserved" })
+    @Structure.FieldOrder({
+        "f_bsize",
+        "f_iosize",
+        "f_blocks",
+        "f_bfree",
+        "f_bavail",
+        "f_files",
+        "f_ffree",
+        "f_fsid",
+        "f_owner",
+        "f_type",
+        "f_flags",
+        "f_fssubtype",
+        "f_fstypename",
+        "f_mntonname",
+        "f_mntfromname",
+        "f_reserved" })
     class Statfs extends Structure {
         public int f_bsize; /* fundamental file system block size */
         public int f_iosize; /* optimal transfer block size */
@@ -356,11 +484,36 @@ public interface SystemB extends LibCAPI, Library {
     /**
      * Data type as part of IFmsgHdr
      */
-    @Structure.FieldOrder({ "ifi_type", "ifi_typelen", "ifi_physical", "ifi_addrlen", "ifi_hdrlen", "ifi_recvquota",
-            "ifi_xmitquota", "ifi_unused1", "ifi_mtu", "ifi_metric", "ifi_baudrate", "ifi_ipackets", "ifi_ierrors",
-            "ifi_opackets", "ifi_oerrors", "ifi_collisions", "ifi_ibytes", "ifi_obytes", "ifi_imcasts", "ifi_omcasts",
-            "ifi_iqdrops", "ifi_noproto", "ifi_recvtiming", "ifi_xmittiming", "ifi_lastchange", "ifi_unused2",
-            "ifi_hwassist", "ifi_reserved1", "ifi_reserved2" })
+    @Structure.FieldOrder({
+        "ifi_type",
+        "ifi_typelen",
+        "ifi_physical",
+        "ifi_addrlen",
+        "ifi_hdrlen",
+        "ifi_recvquota",
+        "ifi_xmitquota",
+        "ifi_unused1",
+        "ifi_mtu",
+        "ifi_metric",
+        "ifi_baudrate",
+        "ifi_ipackets",
+        "ifi_ierrors",
+        "ifi_opackets",
+        "ifi_oerrors",
+        "ifi_collisions",
+        "ifi_ibytes",
+        "ifi_obytes",
+        "ifi_imcasts",
+        "ifi_omcasts",
+        "ifi_iqdrops",
+        "ifi_noproto",
+        "ifi_recvtiming",
+        "ifi_xmittiming",
+        "ifi_lastchange",
+        "ifi_unused2",
+        "ifi_hwassist",
+        "ifi_reserved1",
+        "ifi_reserved2" })
     class IFdata extends Structure {
         public byte ifi_type; // ethernet, tokenring, etc
         public byte ifi_typelen; // Length of frame type id
@@ -396,8 +549,14 @@ public interface SystemB extends LibCAPI, Library {
     /**
      * Return type for sysctl CTL_NET,PF_ROUTE
      */
-    @Structure.FieldOrder({ "ifm_msglen", "ifm_version", "ifm_type", "ifm_addrs", "ifm_flags", "ifm_index",
-            "ifm_data" })
+    @Structure.FieldOrder({
+        "ifm_msglen",
+        "ifm_version",
+        "ifm_type",
+        "ifm_addrs",
+        "ifm_flags",
+        "ifm_index",
+        "ifm_data" })
     class IFmsgHdr extends Structure {
         public short ifm_msglen; // to skip over non-understood messages
         public byte ifm_version; // future binary compatability
@@ -419,10 +578,32 @@ public interface SystemB extends LibCAPI, Library {
     /**
      * Data type as part of IFmsgHdr
      */
-    @Structure.FieldOrder({ "ifi_type", "ifi_typelen", "ifi_physical", "ifi_addrlen", "ifi_hdrlen", "ifi_recvquota",
-            "ifi_xmitquota", "ifi_unused1", "ifi_mtu", "ifi_metric", "ifi_baudrate", "ifi_ipackets", "ifi_ierrors",
-            "ifi_opackets", "ifi_oerrors", "ifi_collisions", "ifi_ibytes", "ifi_obytes", "ifi_imcasts", "ifi_omcasts",
-            "ifi_iqdrops", "ifi_noproto", "ifi_recvtiming", "ifi_xmittiming", "ifi_lastchange" })
+    @Structure.FieldOrder({
+        "ifi_type",
+        "ifi_typelen",
+        "ifi_physical",
+        "ifi_addrlen",
+        "ifi_hdrlen",
+        "ifi_recvquota",
+        "ifi_xmitquota",
+        "ifi_unused1",
+        "ifi_mtu",
+        "ifi_metric",
+        "ifi_baudrate",
+        "ifi_ipackets",
+        "ifi_ierrors",
+        "ifi_opackets",
+        "ifi_oerrors",
+        "ifi_collisions",
+        "ifi_ibytes",
+        "ifi_obytes",
+        "ifi_imcasts",
+        "ifi_omcasts",
+        "ifi_iqdrops",
+        "ifi_noproto",
+        "ifi_recvtiming",
+        "ifi_xmittiming",
+        "ifi_lastchange" })
     class IFdata64 extends Structure {
         public byte ifi_type; // ethernet, tokenring, etc
         public byte ifi_typelen; // Length of frame type id
@@ -454,8 +635,18 @@ public interface SystemB extends LibCAPI, Library {
     /**
      * Return type for sysctl CTL_NET,PF_ROUTE
      */
-    @Structure.FieldOrder({ "ifm_msglen", "ifm_version", "ifm_type", "ifm_addrs", "ifm_flags", "ifm_index",
-            "ifm_snd_len", "ifm_snd_maxlen", "ifm_snd_drops", "ifm_timer", "ifm_data" })
+    @Structure.FieldOrder({
+        "ifm_msglen",
+        "ifm_version",
+        "ifm_type",
+        "ifm_addrs",
+        "ifm_flags",
+        "ifm_index",
+        "ifm_snd_len",
+        "ifm_snd_maxlen",
+        "ifm_snd_drops",
+        "ifm_timer",
+        "ifm_data" })
     class IFmsgHdr2 extends Structure {
         public short ifm_msglen; // to skip over non-understood messages
         public byte ifm_version; // future binary compatability
@@ -477,8 +668,18 @@ public interface SystemB extends LibCAPI, Library {
     /**
      * Return type for getpwuid
      */
-    @Structure.FieldOrder({ "pw_name", "pw_passwd", "pw_uid", "pw_gid", "pw_change", "pw_class", "pw_gecos", "pw_dir",
-            "pw_shell", "pw_expire", "pw_fields" })
+    @Structure.FieldOrder({
+        "pw_name",
+        "pw_passwd",
+        "pw_uid",
+        "pw_gid",
+        "pw_change",
+        "pw_class",
+        "pw_gecos",
+        "pw_dir",
+        "pw_shell",
+        "pw_expire",
+        "pw_fields" })
     class Passwd extends Structure {
         public String pw_name; // user name
         public String pw_passwd; // encrypted password
@@ -533,12 +734,12 @@ public interface SystemB extends LibCAPI, Library {
      * populated. If both tp and tzp are NULL, nothing is returned.
      *
      * @param tp
-     *            Timeval structure
+     * Timeval structure
      * @param tzp
-     *            Timezone structure
+     * Timezone structure
      * @return A 0 return value indicates that the call succeeded. A -1 return value
-     *         indicates an error occurred, and in this case an error code is stored
-     *         into the global variable errno.
+     * indicates an error occurred, and in this case an error code is stored
+     * into the global variable errno.
      */
     int gettimeofday(Timeval tp, Timezone tzp);
 
@@ -563,9 +764,9 @@ public interface SystemB extends LibCAPI, Library {
      * Decrement the target port right's user reference count.
      *
      * @param port
-     *            The port holding the right.
+     * The port holding the right.
      * @param name
-     *            The port's name for the right.
+     * The port's name for the right.
      * @return 0 if successful, a {@code kern_return_t} code otherwise.
      */
     int mach_port_deallocate(int port, int name);
@@ -574,10 +775,10 @@ public interface SystemB extends LibCAPI, Library {
      * The host_page_size function returns the page size for the given host.
      *
      * @param hostPort
-     *            The name (or control) port for the host for which the page size is
-     *            desired.
+     * The name (or control) port for the host for which the page size is
+     * desired.
      * @param pPageSize
-     *            The host's page size (in bytes), set on success.
+     * The host's page size (in bytes), set on success.
      * @return 0 on success; sets errno on failure
      */
     int host_page_size(int hostPort, LongByReference pPageSize);
@@ -587,16 +788,16 @@ public interface SystemB extends LibCAPI, Library {
      * concerning the host as specified by hostStat.
      *
      * @param hostPort
-     *            The control port for the host for which information is to be
-     *            obtained.
+     * The control port for the host for which information is to be
+     * obtained.
      * @param hostStat
-     *            The type of statistics desired ({@link #HOST_LOAD_INFO},
-     *            {@link #HOST_VM_INFO}, or {@link #HOST_CPU_LOAD_INFO})
+     * The type of statistics desired ({@link #HOST_LOAD_INFO},
+     * {@link #HOST_VM_INFO}, or {@link #HOST_CPU_LOAD_INFO})
      * @param stats
-     *            Statistics about the specified host.
+     * Statistics about the specified host.
      * @param count
-     *            On input, the maximum size of the buffer; on output, the size
-     *            returned (in natural-sized units).
+     * On input, the maximum size of the buffer; on output, the size
+     * returned (in natural-sized units).
      * @return 0 on success; sets errno on failure
      */
     int host_statistics(int hostPort, int hostStat, Structure stats, IntByReference count);
@@ -606,15 +807,15 @@ public interface SystemB extends LibCAPI, Library {
      * concerning the host as specified by hostStat.
      *
      * @param hostPort
-     *            The control port for the host for which information is to be
-     *            obtained.
+     * The control port for the host for which information is to be
+     * obtained.
      * @param hostStat
-     *            The type of statistics desired ({@link #HOST_VM_INFO64})
+     * The type of statistics desired ({@link #HOST_VM_INFO64})
      * @param stats
-     *            Statistics about the specified host.
+     * Statistics about the specified host.
      * @param count
-     *            On input, the maximum size of the buffer; on output, the size
-     *            returned (in natural-sized units).
+     * On input, the maximum size of the buffer; on output, the size
+     * returned (in natural-sized units).
      * @return 0 on success; sets errno on failure
      */
     int host_statistics64(int hostPort, int hostStat, Structure stats, IntByReference count);
@@ -648,26 +849,26 @@ public interface SystemB extends LibCAPI, Library {
      * newp should be set to NULL and newlen set to 0.
      *
      * @param name
-     *            a Management Information Base (MIB) array of integers
+     * a Management Information Base (MIB) array of integers
      * @param namelen
-     *            the length of the array in {@code name}
+     * the length of the array in {@code name}
      * @param oldp
-     *            A buffer to hold the information retrieved
+     * A buffer to hold the information retrieved
      * @param oldlenp
-     *            Size of the buffer, a pointer to a {@link size_t} value
+     * Size of the buffer, a pointer to a {@link size_t} value
      * @param newp
-     *            To set a new value, a buffer of information to be written. May be
-     *            null if no value is to be set.
+     * To set a new value, a buffer of information to be written. May be
+     * null if no value is to be set.
      * @param newlen
-     *            Size of the information to be written. May be 0 if no value is to
-     *            be set.
+     * Size of the information to be written. May be 0 if no value is to
+     * be set.
      * @return 0 on success; sets errno on failure
      */
     int sysctl(int[] name, int namelen, Pointer oldp, size_t.ByReference oldlenp, Pointer newp, size_t newlen);
 
     /**
      * @deprecated Use
-     *             {@link #sysctl(int[], int, Pointer, size_t.ByReference, Pointer, size_t)}
+     * {@link #sysctl(int[], int, Pointer, size_t.ByReference, Pointer, size_t)}
      */
     @Deprecated
     int sysctl(int[] name, int namelen, Pointer oldp, IntByReference oldlenp, Pointer newp, int newlen);
@@ -678,24 +879,24 @@ public interface SystemB extends LibCAPI, Library {
      * same as the standard sysctl() function.
      *
      * @param name
-     *            ASCII representation of the MIB name
+     * ASCII representation of the MIB name
      * @param oldp
-     *            A buffer to hold the information retrieved
+     * A buffer to hold the information retrieved
      * @param oldlenp
-     *            Size of the buffer, a pointer to a {@link size_t} value
+     * Size of the buffer, a pointer to a {@link size_t} value
      * @param newp
-     *            To set a new value, a buffer of information to be written. May be
-     *            null if no value is to be set.
+     * To set a new value, a buffer of information to be written. May be
+     * null if no value is to be set.
      * @param newlen
-     *            Size of the information to be written. May be 0 if no value is to
-     *            be set.
+     * Size of the information to be written. May be 0 if no value is to
+     * be set.
      * @return 0 on success; sets errno on failure
      */
     int sysctlbyname(String name, Pointer oldp, size_t.ByReference oldlenp, Pointer newp, size_t newlen);
 
     /**
      * @deprecated Use
-     *             {@link #sysctlbyname(String, Pointer, size_t.ByReference, Pointer, size_t)}
+     * {@link #sysctlbyname(String, Pointer, size_t.ByReference, Pointer, size_t)}
      */
     @Deprecated
     int sysctlbyname(String name, Pointer oldp, IntByReference oldlenp, Pointer newp, int newlen);
@@ -720,12 +921,12 @@ public interface SystemB extends LibCAPI, Library {
      * contains the additional elements which may be written programmatically.
      *
      * @param name
-     *            ASCII representation of the name
+     * ASCII representation of the name
      * @param mibp
-     *            Integer array containing the corresponding name vector.
+     * Integer array containing the corresponding name vector.
      * @param sizep
-     *            On input, number of elements in the returned array; on output, the
-     *            number of entries copied.
+     * On input, number of elements in the returned array; on output, the
+     * number of entries copied.
      * @return 0 on success; sets errno on failure
      */
     int sysctlnametomib(String name, Pointer mibp, size_t.ByReference sizep);
@@ -740,27 +941,27 @@ public interface SystemB extends LibCAPI, Library {
      * The host_processor_info function returns information about processors.
      *
      * @param hostPort
-     *            The control port for the host for which information is to be
-     *            obtained.
+     * The control port for the host for which information is to be
+     * obtained.
      * @param flavor
-     *            The type of information requested.
+     * The type of information requested.
      * @param procCount
-     *            Pointer to the number of processors
+     * Pointer to the number of processors
      * @param procInfo
-     *            Pointer to the structure corresponding to the requested flavor
+     * Pointer to the structure corresponding to the requested flavor
      * @param procInfoCount
-     *            Pointer to number of elements in the returned structure
+     * Pointer to number of elements in the returned structure
      * @return 0 on success; sets errno on failure
      */
     int host_processor_info(int hostPort, int flavor, IntByReference procCount, PointerByReference procInfo,
-            IntByReference procInfoCount);
+        IntByReference procInfoCount);
 
     /**
      * This function searches the password database for the given user uid, always
      * returning the first one encountered.
      *
      * @param uid
-     *            The user ID
+     * The user ID
      * @return a Passwd structure matching that user
      */
     Passwd getpwuid(int uid);
@@ -771,7 +972,7 @@ public interface SystemB extends LibCAPI, Library {
      * group gids may result in undefined behavior.
      *
      * @param gid
-     *            The group ID
+     * The group ID
      * @return a Group structure matching that group
      */
     Group getgrgid(int gid);
@@ -780,18 +981,18 @@ public interface SystemB extends LibCAPI, Library {
      * Search through the current processes
      *
      * @param type
-     *            types of processes to be searched
+     * types of processes to be searched
      * @param typeinfo
-     *            adjunct information for type
+     * adjunct information for type
      * @param buffer
-     *            a C array of int-sized values to be filled with process
-     *            identifiers that hold an open file reference matching the
-     *            specified path or volume. Pass NULL to obtain the minimum buffer
-     *            size needed to hold the currently active processes.
+     * a C array of int-sized values to be filled with process
+     * identifiers that hold an open file reference matching the
+     * specified path or volume. Pass NULL to obtain the minimum buffer
+     * size needed to hold the currently active processes.
      * @param buffersize
-     *            the size (in bytes) of the provided buffer.
+     * the size (in bytes) of the provided buffer.
      * @return the number of bytes of data returned in the provided buffer; -1 if an
-     *         error was encountered;
+     * error was encountered;
      */
     int proc_listpids(int type, int typeinfo, int[] buffer, int buffersize);
 
@@ -800,17 +1001,17 @@ public interface SystemB extends LibCAPI, Library {
      * specified process
      *
      * @param pid
-     *            the process identifier
+     * the process identifier
      * @param flavor
-     *            the type of information requested
+     * the type of information requested
      * @param arg
-     *            argument possibly needed for some flavors
+     * argument possibly needed for some flavors
      * @param buffer
-     *            holds results
+     * holds results
      * @param buffersize
-     *            size of results
+     * size of results
      * @return the number of bytes of data returned in the provided buffer; -1 if an
-     *         error was encountered;
+     * error was encountered;
      */
     int proc_pidinfo(int pid, int flavor, long arg, Structure buffer, int buffersize);
 
@@ -818,11 +1019,11 @@ public interface SystemB extends LibCAPI, Library {
      * Return in buffer the name of the specified process
      *
      * @param pid
-     *            the process identifier
+     * the process identifier
      * @param buffer
-     *            holds results
+     * holds results
      * @param buffersize
-     *            size of results
+     * size of results
      * @return the length of the name returned in buffer if successful; 0 otherwise
      */
     int proc_pidpath(int pid, Pointer buffer, int buffersize);
@@ -832,13 +1033,13 @@ public interface SystemB extends LibCAPI, Library {
      * process or a zombie.
      *
      * @param pid
-     *            the process identifier
+     * the process identifier
      * @param flavor
-     *            the type of information requested
+     * the type of information requested
      * @param buffer
-     *            holds results
+     * holds results
      * @return 0 on success; or -1 on failure, with errno set to indicate the
-     *         specific error.
+     * specific error.
      */
     int proc_pid_rusage(int pid, int flavor, RUsageInfoV2 buffer);
 
@@ -851,22 +1052,22 @@ public interface SystemB extends LibCAPI, Library {
      * file system up to the size specified by bufsize.
      *
      * @param buf
-     *            Array of statfs structures that will be filled with results. If
-     *            buf is given as NULL, getfsstat() returns just the number of
-     *            mounted file systems.
+     * Array of statfs structures that will be filled with results. If
+     * buf is given as NULL, getfsstat() returns just the number of
+     * mounted file systems.
      * @param bufsize
-     *            Size of the buffer to fill
+     * Size of the buffer to fill
      * @param flags
-     *            If flags is set to MNT_NOWAIT, getfsstat() will directly return
-     *            the information retained in the kernel to avoid delays caused by
-     *            waiting for updated information from a file system that is perhaps
-     *            temporarily unable to respond. Some of the information returned
-     *            may be out of date, however; if flags is set to MNT_WAIT or
-     *            MNT_DWAIT instead, getfsstat() will request updated information
-     *            from each mounted filesystem before returning.
+     * If flags is set to MNT_NOWAIT, getfsstat() will directly return
+     * the information retained in the kernel to avoid delays caused by
+     * waiting for updated information from a file system that is perhaps
+     * temporarily unable to respond. Some of the information returned
+     * may be out of date, however; if flags is set to MNT_WAIT or
+     * MNT_DWAIT instead, getfsstat() will request updated information
+     * from each mounted filesystem before returning.
      * @return Upon successful completion, the number of statfs structures is
-     *         returned. Otherwise, -1 is returned and the global variable errno is
-     *         set to indicate the error.
+     * returned. Otherwise, -1 is returned and the global variable errno is
+     * set to indicate the error.
      */
     int getfsstat64(Statfs[] buf, int bufsize, int flags);
 

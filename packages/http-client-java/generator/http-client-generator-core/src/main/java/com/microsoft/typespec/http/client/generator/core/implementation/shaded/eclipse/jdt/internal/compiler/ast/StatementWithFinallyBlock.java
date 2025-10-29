@@ -18,59 +18,64 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.BlockScope;
 
 /**
- * Extra behavior for statements which have a finally block - e.g., try blocks have finally; synchronized statements have hidden finally blocks that call monitorexit etc.
+ * Extra behavior for statements which have a finally block - e.g., try blocks have finally; synchronized statements
+ * have hidden finally blocks that call monitorexit etc.
  */
 public abstract class StatementWithFinallyBlock extends Statement {
 
-	public static void reenterAllExceptionHandlers(StatementWithFinallyBlock[] statements, int max, CodeStream codeStream) {
-		if (statements == null) return;
-		if (max < 0) max = statements.length;
-		for (int i = 0; i < max; i++) {
-			StatementWithFinallyBlock stmt = statements[i];
-			stmt.enterAnyExceptionHandler(codeStream);
-			stmt.enterDeclaredExceptionHandlers(codeStream);
-			stmt.enterResourceExceptionHandlers(codeStream);
-		}
-	}
+    public static void reenterAllExceptionHandlers(StatementWithFinallyBlock[] statements, int max,
+        CodeStream codeStream) {
+        if (statements == null)
+            return;
+        if (max < 0)
+            max = statements.length;
+        for (int i = 0; i < max; i++) {
+            StatementWithFinallyBlock stmt = statements[i];
+            stmt.enterAnyExceptionHandler(codeStream);
+            stmt.enterDeclaredExceptionHandlers(codeStream);
+            stmt.enterResourceExceptionHandlers(codeStream);
+        }
+    }
 
-	ExceptionLabel anyExceptionLabel;
+    ExceptionLabel anyExceptionLabel;
 
-	public ExceptionLabel enterAnyExceptionHandler(CodeStream codeStream) {
+    public ExceptionLabel enterAnyExceptionHandler(CodeStream codeStream) {
 
-		if (this.anyExceptionLabel == null) {
-			this.anyExceptionLabel = new ExceptionLabel(codeStream, null /*any exception*/);
-		}
-		this.anyExceptionLabel.placeStart();
-		return this.anyExceptionLabel;
-	}
+        if (this.anyExceptionLabel == null) {
+            this.anyExceptionLabel = new ExceptionLabel(codeStream, null /* any exception */);
+        }
+        this.anyExceptionLabel.placeStart();
+        return this.anyExceptionLabel;
+    }
 
-	public void enterDeclaredExceptionHandlers(CodeStream codeStream) {
-		// do nothing by default
-	}
+    public void enterDeclaredExceptionHandlers(CodeStream codeStream) {
+        // do nothing by default
+    }
 
-	public void enterResourceExceptionHandlers(CodeStream codeStream) {
-		// do nothing by default
-	}
+    public void enterResourceExceptionHandlers(CodeStream codeStream) {
+        // do nothing by default
+    }
 
-	public void exitAnyExceptionHandler() {
-		if (this.anyExceptionLabel != null) {
-			this.anyExceptionLabel.placeEnd();
-		}
-	}
+    public void exitAnyExceptionHandler() {
+        if (this.anyExceptionLabel != null) {
+            this.anyExceptionLabel.placeEnd();
+        }
+    }
 
-	public void exitDeclaredExceptionHandlers(CodeStream codeStream) {
-		// do nothing by default
-	}
+    public void exitDeclaredExceptionHandlers(CodeStream codeStream) {
+        // do nothing by default
+    }
 
-	/**
-	 * Generate the finally block in current context.
-	 * @return boolean, <code>true</code> if the generated code will complete abruptly.
-	 */
-	public abstract boolean generateFinallyBlock(BlockScope currentScope, CodeStream codeStream, int stateIndex);
+    /**
+     * Generate the finally block in current context.
+     * 
+     * @return boolean, <code>true</code> if the generated code will complete abruptly.
+     */
+    public abstract boolean generateFinallyBlock(BlockScope currentScope, CodeStream codeStream, int stateIndex);
 
-	public abstract boolean isFinallyBlockEscaping();
+    public abstract boolean isFinallyBlockEscaping();
 
-	public void placeAllAnyExceptionHandler() {
-		this.anyExceptionLabel.place();
-	}
+    public void placeAllAnyExceptionHandler() {
+        this.anyExceptionLabel.place();
+    }
 }

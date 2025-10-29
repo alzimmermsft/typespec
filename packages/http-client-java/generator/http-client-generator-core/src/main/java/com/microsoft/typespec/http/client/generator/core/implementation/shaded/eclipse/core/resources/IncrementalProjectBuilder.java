@@ -36,52 +36,20 @@ import java.util.Map;
  * <li>must re-implement at least <code>build</code></li>
  * <li>may implement other methods</li>
  * <li>must supply a public, no-argument constructor</li>
- * <li>may implement {@link IIncrementalProjectBuilder2}</li>
  * </ul>
  * On creation, the <code>setInitializationData</code> method is called with
  * any parameter data specified in the declaring plug-in's manifest.
  *
- * @see IIncrementalProjectBuilder2
  */
 public abstract class IncrementalProjectBuilder extends InternalBuilder implements IExecutableExtension {
-    /**
-     * Build kind constant (value 6) indicating a full build request. A full
-     * build discards all previously built state and builds all resources again.
-     * Resource deltas are not applicable for this kind of build.
-     * <p>
-     * <strong>Note:</strong> If there is no previous delta, a request for {@link #INCREMENTAL_BUILD}
-     * or {@link #AUTO_BUILD} will result in the builder being called with {@link #FULL_BUILD}
-     * build kind.
-     * </p>
-     */
-    public static final int FULL_BUILD = 6;
     /**
      * Build kind constant (value 9) indicating an automatic build request. When
      * autobuild is turned on, these builds are triggered automatically whenever
      * resources change. Apart from the method by which autobuilds are triggered,
      * they otherwise operate like an incremental build.
      *
-     * @see IWorkspaceDescription#setAutoBuilding(boolean)
-     * @see IWorkspace#isAutoBuilding()
      */
     public static final int AUTO_BUILD = 9;
-    /**
-     * Build kind constant (value 10) indicating an incremental build request.
-     * Incremental builds use an {@link IResourceDelta} that describes what
-     * resources have changed since the last build. The builder calculates
-     * what resources are affected by the delta, and rebuilds the affected resources.
-     *
-     */
-    public static final int INCREMENTAL_BUILD = 10;
-    /**
-     * Build kind constant (value 15) indicating a clean build request. A clean
-     * build discards any additional state that has been computed as a result of
-     * previous builds, and returns the project to a clean slate. Resource
-     * deltas are not applicable for this kind of build.
-     * 
-     * @since 3.0
-     */
-    public static final int CLEAN_BUILD = 15;
 
     /**
      * Requests that this builder forget any state it may be retaining regarding
@@ -127,51 +95,6 @@ public abstract class IncrementalProjectBuilder extends InternalBuilder implemen
     @Override
     public final ICommand getCommand() {
         return super.getCommand();
-    }
-
-    /**
-     * Returns the resource delta recording the changes in the given project
-     * since the last time this builder was run. <code>null</code> is returned
-     * if no such delta is available. An empty delta is returned if no changes
-     * have occurred, or if deltas are not applicable for the current build kind.
-     * If <code>null</code> is returned, clients should assume
-     * that unspecified changes have occurred and take the appropriate action.
-     * <p>
-     * The system reserves the right to trim old state in an effort to conserve
-     * space. As such, callers should be prepared to receive <code>null</code>
-     * even if they previously requested a delta for a particular project by
-     * returning that project from a <code>build</code> call.
-     * </p>
-     * <p>
-     * A non- <code>null</code> delta will only be supplied for the given
-     * project if either the result returned from the previous
-     * <code>build</code> included the project or the project is the one
-     * associated with this builder.
-     * </p>
-     * <p>
-     * If the given project was mentioned in the previous <code>build</code>
-     * and subsequently deleted, a non- <code>null</code> delta containing the
-     * deletion will be returned. If the given project was mentioned in the
-     * previous <code>build</code> and was subsequently created, the returned
-     * value will be <code>null</code>.
-     * </p>
-     * <p>
-     * A valid delta will be returned only when this method is called during a
-     * build. The delta returned will be valid only for the duration of the
-     * enclosing build execution.
-     * </p>
-     * <p>
-     * The delta does not include changes made while this builder is running.
-     * If {@link #getRule(int, Map)} is overridden to return a scheduling rule other than
-     * the workspace root, changes performed in other threads during the build
-     * will not appear in the resource delta.
-     * </p>
-     *
-     * @return the resource delta for the project or <code>null</code>
-     */
-    @Override
-    public final IResourceDelta getDelta(IProject project) {
-        return super.getDelta(project);
     }
 
     /**
@@ -341,19 +264,6 @@ public abstract class IncrementalProjectBuilder extends InternalBuilder implemen
     }
 
     /**
-     * Informs this builder that it is being started by the build management
-     * infrastructure. By the time this method is run, the builder's project is
-     * available and <code>setInitializationData</code> has been called. The
-     * default implementation should be called by all overriding methods.
-     *
-     * @see #setInitializationData(IConfigurationElement, String, Object)
-     */
-    @Override
-    protected void startupOnInitialize() {
-        // reserved for future use
-    }
-
-    /**
      * Returns the scheduling rule that is required for building
      * the project build configuration for which this builder is defined. The default
      * is the workspace root rule.
@@ -392,8 +302,6 @@ public abstract class IncrementalProjectBuilder extends InternalBuilder implemen
      *
      * @param kind the kind of build being requested. Valid values include:
      * <ul>
-     * <li>{@link #FULL_BUILD} - indicates a full build.</li>
-     * <li>{@link #INCREMENTAL_BUILD} - indicates an incremental build.</li>
      * <li>{@link #AUTO_BUILD} - indicates an automatically triggered
      * incremental build (autobuilding on).</li>
      * <li>{@link #CLEAN_BUILD} - indicates a clean request.</li>

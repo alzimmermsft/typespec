@@ -24,10 +24,13 @@ import java.lang.annotation.Target;
  * the J2ObjC translator.
  *
  * <p>Example usage:
+ * 
  * <pre>
- * for (@LoopTranslation(LoopStyle.JAVA_ITERATOR) Runnable r : tasks) {
- *   r.run();
- * }</pre>
+ * for (@LoopTranslation(LoopStyle.JAVA_ITERATOR)
+ * Runnable r : tasks) {
+ *     r.run();
+ * }
+ * </pre>
  *
  * @author Keith Stanger
  */
@@ -35,26 +38,26 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.SOURCE)
 public @interface LoopTranslation {
 
-  /**
-   * Enumerates the available translation options for enhanced for loops.
-   * FAST_ENUMERATION is the default style emitted by the translator.
-   */
-  enum LoopStyle {
-    /*
-     * id<JavaUtilIterator> iter__ = [expr iterator];
-     * while ([iter__ hasNext]) {
-     *   id var = [iter__ next];
-     *   ...
-     * }
+    /**
+     * Enumerates the available translation options for enhanced for loops.
+     * FAST_ENUMERATION is the default style emitted by the translator.
      */
-    JAVA_ITERATOR,
-    /*
-     * for (id var in expr) {
-     *   ...
-     * }
-     */
-    FAST_ENUMERATION
-  }
+    enum LoopStyle {
+        /*
+         * id<JavaUtilIterator> iter__ = [expr iterator];
+         * while ([iter__ hasNext]) {
+         * id var = [iter__ next];
+         * ...
+         * }
+         */
+        JAVA_ITERATOR,
+        /*
+         * for (id var in expr) {
+         * ...
+         * }
+         */
+        FAST_ENUMERATION
+    }
 
-  LoopStyle value();
+    LoopStyle value();
 }

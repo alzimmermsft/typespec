@@ -19,57 +19,57 @@ import java.io.*;
  * Internal class.
  */
 public class Locker_JavaIo implements Locker {
-	private File lockFile;
-	private RandomAccessFile lockRAF;
+    private File lockFile;
+    private RandomAccessFile lockRAF;
 
-	public Locker_JavaIo(File lockFile) {
-		this.lockFile = lockFile;
-	}
+    public Locker_JavaIo(File lockFile) {
+        this.lockFile = lockFile;
+    }
 
-	@Override
-	public synchronized boolean lock() throws IOException {
-		//if the lock file already exists, try to delete,
-		//assume failure means another eclipse has it open
-		if (lockFile.exists())
-			lockFile.delete();
-		if (lockFile.exists())
-			return false;
+    @Override
+    public synchronized boolean lock() throws IOException {
+        // if the lock file already exists, try to delete,
+        // assume failure means another eclipse has it open
+        if (lockFile.exists())
+            lockFile.delete();
+        if (lockFile.exists())
+            return false;
 
-		//open the lock file so other instances can't co-exist
-		lockRAF = new RandomAccessFile(lockFile, "rw"); //$NON-NLS-1$
-		try {
-			lockRAF.writeByte(0);
-		} catch (IOException e) {
-			lockRAF.close();
-			lockRAF = null;
-			throw e;
-		}
+        // open the lock file so other instances can't co-exist
+        lockRAF = new RandomAccessFile(lockFile, "rw"); //$NON-NLS-1$
+        try {
+            lockRAF.writeByte(0);
+        } catch (IOException e) {
+            lockRAF.close();
+            lockRAF = null;
+            throw e;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	public synchronized void release() {
-		try {
-			if (lockRAF != null) {
-				lockRAF.close();
-				lockRAF = null;
-			}
-		} catch (IOException e) {
-			//don't complain, we're making a best effort to clean up
-		}
-		if (lockFile != null)
-			lockFile.delete();
-	}
+    @Override
+    public synchronized void release() {
+        try {
+            if (lockRAF != null) {
+                lockRAF.close();
+                lockRAF = null;
+            }
+        } catch (IOException e) {
+            // don't complain, we're making a best effort to clean up
+        }
+        if (lockFile != null)
+            lockFile.delete();
+    }
 
-	@Override
-	public synchronized boolean isLocked() throws IOException {
-		if (lockRAF != null)
-			return true;
-		try {
-			return !lock();
-		} finally {
-			release();
-		}
-	}
+    @Override
+    public synchronized boolean isLocked() throws IOException {
+        if (lockRAF != null)
+            return true;
+        try {
+            return !lock();
+        } finally {
+            release();
+        }
+    }
 }

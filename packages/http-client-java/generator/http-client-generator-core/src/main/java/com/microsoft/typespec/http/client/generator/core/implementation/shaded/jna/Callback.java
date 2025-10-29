@@ -37,26 +37,28 @@ import java.util.List;
  * <code>atexit</code> in the C library), you must ensure that you always keep a
  * live reference to the callback object.<p>
  * A callback should generally never throw an exception, since it doesn't
- * necessarily have an encompassing Java environment to catch it.  Any
+ * necessarily have an encompassing Java environment to catch it. Any
  * exceptions thrown will be passed to the default callback exception
  * handler.
  */
 public interface Callback {
     interface UncaughtExceptionHandler {
-        /** Method invoked when the given callback throws an uncaught
+        /**
+         * Method invoked when the given callback throws an uncaught
          * exception.<p>
          * Any exception thrown by this method will be ignored.
          */
         void uncaughtException(Callback c, Throwable e);
     }
-    /** You must use this method name if your callback interface has multiple
-        public methods.  Typically a callback will have only one such
-        method, in which case any method name may be used, with the exception
-        of those in {@link #FORBIDDEN_NAMES}.
-    */
+
+    /**
+     * You must use this method name if your callback interface has multiple
+     * public methods. Typically a callback will have only one such
+     * method, in which case any method name may be used, with the exception
+     * of those in {@link #FORBIDDEN_NAMES}.
+     */
     String METHOD_NAME = "callback";
 
     /** These method names may not be used for a callback method. */
-    List<String> FORBIDDEN_NAMES = Collections.unmodifiableList(
-            Arrays.asList("hashCode", "equals", "toString"));
+    List<String> FORBIDDEN_NAMES = Collections.unmodifiableList(Arrays.asList("hashCode", "equals", "toString"));
 }

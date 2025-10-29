@@ -13,12 +13,10 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.team;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.filesystem.EFS;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.filesystem.URIUtil;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.resources.InternalTeamHook;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.*;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.*;
-import java.net.URI;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IProject;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResourceRuleFactory;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IWorkspace;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.ResourcesPlugin;
 
 /**
  * A general hook class for operations that team providers may be
@@ -36,13 +34,12 @@ import java.net.URI;
  *
  * @since 2.1
  */
-public abstract class TeamHook extends InternalTeamHook {
+public abstract class TeamHook {
     /**
      * The default resource scheduling rule factory. This factory can be used for projects
      * that the team hook methods do not participate in.
      *
      * @see #getRuleFactory(IProject)
-     * @see #setRuleFactory(IProject, IResourceRuleFactory)
      * @since 3.0
      */
     protected final IResourceRuleFactory defaultFactory;
@@ -93,159 +90,4 @@ public abstract class TeamHook extends InternalTeamHook {
         return defaultFactory;
     }
 
-    /**
-     * Sets the resource scheduling rule factory to use for resource modifications
-     * in the given project. This method only needs to be called if the factory has changed
-     * since the initial call to <code>getRuleFactory</code> for the given project
-     * <p>
-     * The supplied factory must not be <code>null</code>. If no special rules are required
-     * by the team hook for the given project, the value of the <code>defaultFactory</code>
-     * field should be used.
-     * <p>
-     * Note that the new rule factory will only take effect for resource changing
-     * operations that begin after this method completes. Care should be taken to
-     * avoid calling this method during the invocation of any resource changing
-     * operation (in any thread). The best time to change rule factories is during resource
-     * change notification when the workspace is locked for modification.
-     *
-     * @param project the project to change the resource rule factory for
-     * @param factory the new resource rule factory
-     * @see #getRuleFactory(IProject)
-     * @see IResourceRuleFactory
-     * @since 3.0
-     */
-    @Override
-    protected final void setRuleFactory(IProject project, IResourceRuleFactory factory) {
-        super.setRuleFactory(project, factory);
-    }
-
-    /**
-     * Validates whether a particular attempt at link creation is allowed. This gives
-     * team providers an opportunity to hook into the beginning of the implementation
-     * of <code>IFile.createLink</code>.
-     * <p>
-     * The implementation of this method runs "below" the resources API and is
-     * therefore very restricted in what resource API method it can call. The
-     * list of useable methods includes most resource operations that read but
-     * do not update the resource tree; resource operations that modify
-     * resources and trigger deltas must not be called from within the dynamic
-     * scope of the invocation of this method.
-     * </p><p>
-     * This method should be overridden by subclasses that want to control what
-     * links are created. The default implementation of this method allows all links
-     * to be created.
-     * </p>
-     *
-     * @param file the file to be linked
-     * @param updateFlags bit-wise or of update flag constants
-     * (only ALLOW_MISSING_LOCAL is relevant here)
-     * @param location a file system path where the file should be linked
-     * @return a status object with code <code>IStatus.OK</code>
-     * if linking is allowed, otherwise a status object with severity
-     * <code>IStatus.ERROR</code> indicating why the creation is not allowed.
-     * @see org.eclipse.core.resources.IResource#ALLOW_MISSING_LOCAL
-     */
-    public IStatus validateCreateLink(IFile file, int updateFlags, IPath location) {
-        return Status.OK_STATUS;
-    }
-
-    /**
-     * Validates whether a particular attempt at link creation is allowed. This gives
-     * team providers an opportunity to hook into the beginning of the implementation
-     * of {@link IFile#createLink(URI, int, IProgressMonitor) }
-     * <p>
-     * The implementation of this method runs "below" the resources API and is
-     * therefore very restricted in what resource API method it can call. The
-     * list of useable methods includes most resource operations that read but
-     * do not update the resource tree; resource operations that modify
-     * resources and trigger deltas must not be called from within the dynamic
-     * scope of the invocation of this method.
-     * </p><p>
-     * This method should be overridden by subclasses that want to control what
-     * links are created. The default implementation of this method allows all links
-     * to be created.
-     * </p>
-     *
-     * @param file the file to be linked
-     * @param updateFlags bit-wise or of update flag constants
-     * (only ALLOW_MISSING_LOCAL is relevant here)
-     * @param location a file system URI where the file should be linked
-     * @return a status object with code <code>IStatus.OK</code>
-     * if linking is allowed, otherwise a status object with severity
-     * <code>IStatus.ERROR</code> indicating why the creation is not allowed.
-     * @see org.eclipse.core.resources.IResource#ALLOW_MISSING_LOCAL
-     * @since 3.2
-     */
-    public IStatus validateCreateLink(IFile file, int updateFlags, URI location) {
-        // forward to old method to ensure old hooks get a chance to validate in the local case
-        if (EFS.SCHEME_FILE.equals(location.getScheme())) {
-            return validateCreateLink(file, updateFlags, URIUtil.toPath(location));
-        }
-        return Status.OK_STATUS;
-    }
-
-    /**
-     * Validates whether a particular attempt at link creation is allowed. This gives
-     * team providers an opportunity to hook into the beginning of the implementation
-     * of <code>IFolder.createLink</code>.
-     * <p>
-     * The implementation of this method runs "below" the resources API and is
-     * therefore very restricted in what resource API method it can call. The
-     * list of useable methods includes most resource operations that read but
-     * do not update the resource tree; resource operations that modify
-     * resources and trigger deltas must not be called from within the dynamic
-     * scope of the invocation of this method.
-     * </p><p>
-     * This method should be overridden by subclasses that want to control what
-     * links are created. The default implementation of this method allows all links
-     * to be created.
-     * </p>
-     *
-     * @param folder the file to be linked
-     * @param updateFlags bit-wise or of update flag constants
-     * (only ALLOW_MISSING_LOCAL is relevant here)
-     * @param location a file system path where the folder should be linked
-     * @return a status object with code <code>IStatus.OK</code>
-     * if linking is allowed, otherwise a status object with severity
-     * <code>IStatus.ERROR</code> indicating why the creation is not allowed.
-     * @see org.eclipse.core.resources.IResource#ALLOW_MISSING_LOCAL
-     */
-    public IStatus validateCreateLink(IFolder folder, int updateFlags, IPath location) {
-        return Status.OK_STATUS;
-    }
-
-    /**
-     * Validates whether a particular attempt at link creation is allowed. This gives
-     * team providers an opportunity to hook into the beginning of the implementation
-     * of {@link IFolder#createLink(URI, int, IProgressMonitor)}
-     * <p>
-     * The implementation of this method runs "below" the resources API and is
-     * therefore very restricted in what resource API method it can call. The
-     * list of useable methods includes most resource operations that read but
-     * do not update the resource tree; resource operations that modify
-     * resources and trigger deltas must not be called from within the dynamic
-     * scope of the invocation of this method.
-     * </p><p>
-     * This method should be overridden by subclasses that want to control what
-     * links are created. The default implementation of this method allows all links
-     * to be created.
-     * </p>
-     *
-     * @param folder the file to be linked
-     * @param updateFlags bit-wise or of update flag constants
-     * (only ALLOW_MISSING_LOCAL is relevant here)
-     * @param location a file system path where the folder should be linked
-     * @return a status object with code <code>IStatus.OK</code>
-     * if linking is allowed, otherwise a status object with severity
-     * <code>IStatus.ERROR</code> indicating why the creation is not allowed.
-     * @see org.eclipse.core.resources.IResource#ALLOW_MISSING_LOCAL
-     * @since 3.2
-     */
-    public IStatus validateCreateLink(IFolder folder, int updateFlags, URI location) {
-        // forward to old method to ensure old hooks get a chance to validate in the local case
-        if (EFS.SCHEME_FILE.equals(location.getScheme())) {
-            return validateCreateLink(folder, updateFlags, URIUtil.toPath(location));
-        }
-        return Status.OK_STATUS;
-    }
 }

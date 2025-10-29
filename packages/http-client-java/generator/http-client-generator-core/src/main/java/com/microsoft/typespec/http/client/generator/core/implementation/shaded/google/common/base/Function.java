@@ -14,9 +14,9 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Legacy version of {@link java.util.function.Function java.util.function.Function}.
@@ -44,21 +44,21 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @ElementTypesAreNonnullByDefault
 public interface Function<F extends @Nullable Object, T extends @Nullable Object>
     extends java.util.function.Function<F, T> {
-  @Override
-  @ParametricNullness
-  T apply(@ParametricNullness F input);
+    @Override
+    @ParametricNullness
+    T apply(@ParametricNullness F input);
 
-  /**
-   * <i>May</i> return {@code true} if {@code object} is a {@code Function} that behaves identically
-   * to this function.
-   *
-   * <p><b>Warning: do not depend</b> on the behavior of this method.
-   *
-   * <p>Historically, {@code Function} instances in this library have implemented this method to
-   * recognize certain cases where distinct {@code Function} instances would in fact behave
-   * identically. However, as code migrates to {@code java.util.function}, that behavior will
-   * disappear. It is best not to depend on it.
-   */
-  @Override
-  boolean equals(@CheckForNull Object object);
+    /**
+     * <i>May</i> return {@code true} if {@code object} is a {@code Function} that behaves identically
+     * to this function.
+     *
+     * <p><b>Warning: do not depend</b> on the behavior of this method.
+     *
+     * <p>Historically, {@code Function} instances in this library have implemented this method to
+     * recognize certain cases where distinct {@code Function} instances would in fact behave
+     * identically. However, as code migrates to {@code java.util.function}, that behavior will
+     * disappear. It is best not to depend on it.
+     */
+    @Override
+    boolean equals(@CheckForNull Object object);
 }

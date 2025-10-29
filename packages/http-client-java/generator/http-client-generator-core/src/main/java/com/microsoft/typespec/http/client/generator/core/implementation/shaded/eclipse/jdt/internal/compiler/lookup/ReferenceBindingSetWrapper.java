@@ -22,36 +22,36 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 final class ReferenceBindingSetWrapper {
 
-	final ReferenceBinding referenceBinding;
-	private final int hashCode;
+    final ReferenceBinding referenceBinding;
+    private final int hashCode;
 
-	ReferenceBindingSetWrapper(ReferenceBinding referenceBinding) {
-		this.referenceBinding = referenceBinding;
-		this.hashCode = System.identityHashCode(referenceBinding);
-	}
+    ReferenceBindingSetWrapper(ReferenceBinding referenceBinding) {
+        this.referenceBinding = referenceBinding;
+        this.hashCode = System.identityHashCode(referenceBinding);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == this) {
-			return true;
-		}
-		if (obj instanceof ReferenceBindingSetWrapper other) {
-			return identityEqual(this.referenceBinding, other.referenceBinding);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof ReferenceBindingSetWrapper other) {
+            return identityEqual(this.referenceBinding, other.referenceBinding);
+        }
+        return false;
+    }
 
-	private static boolean identityEqual(Object o1, Object o2) {
-		return o1 == o2;
-	}
+    private static boolean identityEqual(Object o1, Object o2) {
+        return o1 == o2;
+    }
 
-	@Override
-	public int hashCode() {
-		return this.hashCode;
-	}
+    @Override
+    public int hashCode() {
+        return this.hashCode;
+    }
 
-	@Override
-	public String toString() {
-		return this.referenceBinding.toString();
-	}
+    @Override
+    public String toString() {
+        return this.referenceBinding.toString();
+    }
 }

@@ -14,5 +14,5 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
 public interface IPathRequestor {
-	void acceptPath(String path, boolean containsLocalTypes);
+    void acceptPath(String path, boolean containsLocalTypes);
 }

@@ -109,13 +109,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * Classpath entries can be created via methods on {@link JavaCore}.
  * </p>
  *
- * @see JavaCore#newLibraryEntry(IPath, IPath, IPath)
- * @see JavaCore#newProjectEntry(IPath)
- * @see JavaCore#newSourceEntry(IPath)
- * @see JavaCore#newVariableEntry(IPath, IPath, IPath)
- * @see JavaCore#newContainerEntry(IPath)
- * @see ClasspathVariableInitializer
- * @see ClasspathContainerInitializer
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IClasspathEntry {
@@ -491,7 +484,7 @@ public interface IClasspathEntry {
      * {@link IClasspathAttribute#TEST} and whose value is 'true'.
      * @since 3.14
      */
-    default public boolean isTest() {
+    default boolean isTest() {
         for (IClasspathAttribute attribute : getExtraAttributes()) {
             if (IClasspathAttribute.TEST.equals(attribute.getName()) && "true".equals(attribute.getValue())) //$NON-NLS-1$
                 return true;
@@ -510,7 +503,7 @@ public interface IClasspathEntry {
      * {@link IClasspathAttribute#WITHOUT_TEST_CODE} and whose value is 'true'.
      * @since 3.14
      */
-    default public boolean isWithoutTestCode() {
+    default boolean isWithoutTestCode() {
         for (IClasspathAttribute attribute : getExtraAttributes()) {
             if (IClasspathAttribute.WITHOUT_TEST_CODE.equals(attribute.getName())
                 && "true".equals(attribute.getValue())) //$NON-NLS-1$

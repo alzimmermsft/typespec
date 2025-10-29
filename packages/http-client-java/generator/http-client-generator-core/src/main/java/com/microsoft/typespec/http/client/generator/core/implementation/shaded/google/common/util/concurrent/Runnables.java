@@ -25,16 +25,17 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.g
 @ElementTypesAreNonnullByDefault
 public final class Runnables {
 
-  private static final Runnable EMPTY_RUNNABLE =
-      new Runnable() {
+    private static final Runnable EMPTY_RUNNABLE = new Runnable() {
         @Override
-        public void run() {}
-      };
+        public void run() {
+        }
+    };
 
-  /** Returns a {@link Runnable} instance that does nothing when run. */
-  public static Runnable doNothing() {
-    return EMPTY_RUNNABLE;
-  }
+    /** Returns a {@link Runnable} instance that does nothing when run. */
+    public static Runnable doNothing() {
+        return EMPTY_RUNNABLE;
+    }
 
-  private Runnables() {}
+    private Runnables() {
+    }
 }

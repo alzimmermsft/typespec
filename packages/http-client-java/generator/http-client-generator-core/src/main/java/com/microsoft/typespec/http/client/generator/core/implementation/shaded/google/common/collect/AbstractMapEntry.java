@@ -16,11 +16,11 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Objects;
-import java.util.Map.Entry;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
+import java.util.Map.Entry;
 
 /**
  * Implementation of the {@code equals}, {@code hashCode}, and {@code toString} methods of {@code
@@ -30,43 +30,41 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
-abstract class AbstractMapEntry<K extends @Nullable Object, V extends @Nullable Object>
-    implements Entry<K, V> {
+abstract class AbstractMapEntry<K extends @Nullable Object, V extends @Nullable Object> implements Entry<K, V> {
 
-  @Override
-  @ParametricNullness
-  public abstract K getKey();
+    @Override
+    @ParametricNullness
+    public abstract K getKey();
 
-  @Override
-  @ParametricNullness
-  public abstract V getValue();
+    @Override
+    @ParametricNullness
+    public abstract V getValue();
 
-  @Override
-  @ParametricNullness
-  public V setValue(@ParametricNullness V value) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public boolean equals(@CheckForNull Object object) {
-    if (object instanceof Entry) {
-      Entry<?, ?> that = (Entry<?, ?>) object;
-      return Objects.equal(this.getKey(), that.getKey())
-          && Objects.equal(this.getValue(), that.getValue());
+    @Override
+    @ParametricNullness
+    public V setValue(@ParametricNullness V value) {
+        throw new UnsupportedOperationException();
     }
-    return false;
-  }
 
-  @Override
-  public int hashCode() {
-    K k = getKey();
-    V v = getValue();
-    return ((k == null) ? 0 : k.hashCode()) ^ ((v == null) ? 0 : v.hashCode());
-  }
+    @Override
+    public boolean equals(@CheckForNull Object object) {
+        if (object instanceof Entry) {
+            Entry<?, ?> that = (Entry<?, ?>) object;
+            return Objects.equal(this.getKey(), that.getKey()) && Objects.equal(this.getValue(), that.getValue());
+        }
+        return false;
+    }
 
-  /** Returns a string representation of the form {@code {key}={value}}. */
-  @Override
-  public String toString() {
-    return getKey() + "=" + getValue();
-  }
+    @Override
+    public int hashCode() {
+        K k = getKey();
+        V v = getValue();
+        return ((k == null) ? 0 : k.hashCode()) ^ ((v == null) ? 0 : v.hashCode());
+    }
+
+    /** Returns a string representation of the form {@code {key}={value}}. */
+    @Override
+    public String toString() {
+        return getKey() + "=" + getValue();
+    }
 }

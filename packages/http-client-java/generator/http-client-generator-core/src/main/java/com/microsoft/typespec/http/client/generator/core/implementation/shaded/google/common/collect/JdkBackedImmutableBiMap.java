@@ -17,14 +17,14 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import static java.util.Objects.requireNonNull;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.VisibleForTesting;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.concurrent.LazyInit;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.j2objc.annotations.RetainedWith;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.j2objc.annotations.WeakOuter;
-import java.util.Map;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
+import java.util.Map;
 
 /**
  * Implementation of ImmutableBiMap backed by a pair of JDK HashMaps, which have smartness
@@ -33,95 +33,95 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @GwtCompatible(emulated = true)
 @ElementTypesAreNonnullByDefault
 final class JdkBackedImmutableBiMap<K, V> extends ImmutableBiMap<K, V> {
-  @VisibleForTesting
-  static <K, V> ImmutableBiMap<K, V> create(int n, @Nullable Entry<K, V>[] entryArray) {
-    Map<K, V> forwardDelegate = Maps.newHashMapWithExpectedSize(n);
-    Map<V, K> backwardDelegate = Maps.newHashMapWithExpectedSize(n);
-    for (int i = 0; i < n; i++) {
-      // requireNonNull is safe because the first `n` elements have been filled in.
-      Entry<K, V> e = RegularImmutableMap.makeImmutable(requireNonNull(entryArray[i]));
-      entryArray[i] = e;
-      V oldValue = forwardDelegate.putIfAbsent(e.getKey(), e.getValue());
-      if (oldValue != null) {
-        throw conflictException("key", e.getKey() + "=" + oldValue, entryArray[i]);
-      }
-      K oldKey = backwardDelegate.putIfAbsent(e.getValue(), e.getKey());
-      if (oldKey != null) {
-        throw conflictException("value", oldKey + "=" + e.getValue(), entryArray[i]);
-      }
-    }
-    ImmutableList<Entry<K, V>> entryList = ImmutableList.asImmutableList(entryArray, n);
-    return new JdkBackedImmutableBiMap<>(entryList, forwardDelegate, backwardDelegate);
-  }
-
-  private final transient ImmutableList<Entry<K, V>> entries;
-  private final Map<K, V> forwardDelegate;
-  private final Map<V, K> backwardDelegate;
-
-  private JdkBackedImmutableBiMap(
-      ImmutableList<Entry<K, V>> entries, Map<K, V> forwardDelegate, Map<V, K> backwardDelegate) {
-    this.entries = entries;
-    this.forwardDelegate = forwardDelegate;
-    this.backwardDelegate = backwardDelegate;
-  }
-
-  @Override
-  public int size() {
-    return entries.size();
-  }
-
-  @LazyInit @RetainedWith @CheckForNull private transient JdkBackedImmutableBiMap<V, K> inverse;
-
-  @Override
-  public ImmutableBiMap<V, K> inverse() {
-    JdkBackedImmutableBiMap<V, K> result = inverse;
-    if (result == null) {
-      inverse =
-          result =
-              new JdkBackedImmutableBiMap<>(
-                  new InverseEntries(), backwardDelegate, forwardDelegate);
-      result.inverse = this;
-    }
-    return result;
-  }
-
-  @WeakOuter
-  private final class InverseEntries extends ImmutableList<Entry<V, K>> {
-    @Override
-    public Entry<V, K> get(int index) {
-      Entry<K, V> entry = entries.get(index);
-      return Maps.immutableEntry(entry.getValue(), entry.getKey());
+    @VisibleForTesting
+    static <K, V> ImmutableBiMap<K, V> create(int n, @Nullable Entry<K, V>[] entryArray) {
+        Map<K, V> forwardDelegate = Maps.newHashMapWithExpectedSize(n);
+        Map<V, K> backwardDelegate = Maps.newHashMapWithExpectedSize(n);
+        for (int i = 0; i < n; i++) {
+            // requireNonNull is safe because the first `n` elements have been filled in.
+            Entry<K, V> e = RegularImmutableMap.makeImmutable(requireNonNull(entryArray[i]));
+            entryArray[i] = e;
+            V oldValue = forwardDelegate.putIfAbsent(e.getKey(), e.getValue());
+            if (oldValue != null) {
+                throw conflictException("key", e.getKey() + "=" + oldValue, entryArray[i]);
+            }
+            K oldKey = backwardDelegate.putIfAbsent(e.getValue(), e.getKey());
+            if (oldKey != null) {
+                throw conflictException("value", oldKey + "=" + e.getValue(), entryArray[i]);
+            }
+        }
+        ImmutableList<Entry<K, V>> entryList = ImmutableList.asImmutableList(entryArray, n);
+        return new JdkBackedImmutableBiMap<>(entryList, forwardDelegate, backwardDelegate);
     }
 
-    @Override
-    boolean isPartialView() {
-      return false;
+    private final transient ImmutableList<Entry<K, V>> entries;
+    private final Map<K, V> forwardDelegate;
+    private final Map<V, K> backwardDelegate;
+
+    private JdkBackedImmutableBiMap(ImmutableList<Entry<K, V>> entries, Map<K, V> forwardDelegate,
+        Map<V, K> backwardDelegate) {
+        this.entries = entries;
+        this.forwardDelegate = forwardDelegate;
+        this.backwardDelegate = backwardDelegate;
     }
 
     @Override
     public int size() {
-      return entries.size();
+        return entries.size();
     }
-  }
 
-  @Override
-  @CheckForNull
-  public V get(@CheckForNull Object key) {
-    return forwardDelegate.get(key);
-  }
+    @LazyInit
+    @RetainedWith
+    @CheckForNull
+    private transient JdkBackedImmutableBiMap<V, K> inverse;
 
-  @Override
-  ImmutableSet<Entry<K, V>> createEntrySet() {
-    return new ImmutableMapEntrySet.RegularEntrySet<>(this, entries);
-  }
+    @Override
+    public ImmutableBiMap<V, K> inverse() {
+        JdkBackedImmutableBiMap<V, K> result = inverse;
+        if (result == null) {
+            inverse = result = new JdkBackedImmutableBiMap<>(new InverseEntries(), backwardDelegate, forwardDelegate);
+            result.inverse = this;
+        }
+        return result;
+    }
 
-  @Override
-  ImmutableSet<K> createKeySet() {
-    return new ImmutableMapKeySet<>(this);
-  }
+    @WeakOuter
+    private final class InverseEntries extends ImmutableList<Entry<V, K>> {
+        @Override
+        public Entry<V, K> get(int index) {
+            Entry<K, V> entry = entries.get(index);
+            return Maps.immutableEntry(entry.getValue(), entry.getKey());
+        }
 
-  @Override
-  boolean isPartialView() {
-    return false;
-  }
+        @Override
+        boolean isPartialView() {
+            return false;
+        }
+
+        @Override
+        public int size() {
+            return entries.size();
+        }
+    }
+
+    @Override
+    @CheckForNull
+    public V get(@CheckForNull Object key) {
+        return forwardDelegate.get(key);
+    }
+
+    @Override
+    ImmutableSet<Entry<K, V>> createEntrySet() {
+        return new ImmutableMapEntrySet.RegularEntrySet<>(this, entries);
+    }
+
+    @Override
+    ImmutableSet<K> createKeySet() {
+        return new ImmutableMapKeySet<>(this);
+    }
+
+    @Override
+    boolean isPartialView() {
+        return false;
+    }
 }

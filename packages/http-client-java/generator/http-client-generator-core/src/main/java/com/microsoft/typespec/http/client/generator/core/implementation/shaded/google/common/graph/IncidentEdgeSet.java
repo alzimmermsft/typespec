@@ -16,9 +16,9 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.graph;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.util.AbstractSet;
 import java.util.Set;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 
 /**
  * Abstract base class for an incident edges set that allows different implementations of {@link
@@ -26,56 +26,53 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
  */
 @ElementTypesAreNonnullByDefault
 abstract class IncidentEdgeSet<N> extends AbstractSet<EndpointPair<N>> {
-  final N node;
-  final BaseGraph<N> graph;
+    final N node;
+    final BaseGraph<N> graph;
 
-  IncidentEdgeSet(BaseGraph<N> graph, N node) {
-    this.graph = graph;
-    this.node = node;
-  }
-
-  @Override
-  public boolean remove(@CheckForNull Object o) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public int size() {
-    if (graph.isDirected()) {
-      return graph.inDegree(node)
-          + graph.outDegree(node)
-          - (graph.successors(node).contains(node) ? 1 : 0);
-    } else {
-      return graph.adjacentNodes(node).size();
+    IncidentEdgeSet(BaseGraph<N> graph, N node) {
+        this.graph = graph;
+        this.node = node;
     }
-  }
 
-  @Override
-  public boolean contains(@CheckForNull Object obj) {
-    if (!(obj instanceof EndpointPair)) {
-      return false;
+    @Override
+    public boolean remove(@CheckForNull Object o) {
+        throw new UnsupportedOperationException();
     }
-    EndpointPair<?> endpointPair = (EndpointPair<?>) obj;
 
-    if (graph.isDirected()) {
-      if (!endpointPair.isOrdered()) {
-        return false;
-      }
-
-      Object source = endpointPair.source();
-      Object target = endpointPair.target();
-      return (node.equals(source) && graph.successors(node).contains(target))
-          || (node.equals(target) && graph.predecessors(node).contains(source));
-    } else {
-      if (endpointPair.isOrdered()) {
-        return false;
-      }
-      Set<N> adjacent = graph.adjacentNodes(node);
-      Object nodeU = endpointPair.nodeU();
-      Object nodeV = endpointPair.nodeV();
-
-      return (node.equals(nodeV) && adjacent.contains(nodeU))
-          || (node.equals(nodeU) && adjacent.contains(nodeV));
+    @Override
+    public int size() {
+        if (graph.isDirected()) {
+            return graph.inDegree(node) + graph.outDegree(node) - (graph.successors(node).contains(node) ? 1 : 0);
+        } else {
+            return graph.adjacentNodes(node).size();
+        }
     }
-  }
+
+    @Override
+    public boolean contains(@CheckForNull Object obj) {
+        if (!(obj instanceof EndpointPair)) {
+            return false;
+        }
+        EndpointPair<?> endpointPair = (EndpointPair<?>) obj;
+
+        if (graph.isDirected()) {
+            if (!endpointPair.isOrdered()) {
+                return false;
+            }
+
+            Object source = endpointPair.source();
+            Object target = endpointPair.target();
+            return (node.equals(source) && graph.successors(node).contains(target))
+                || (node.equals(target) && graph.predecessors(node).contains(source));
+        } else {
+            if (endpointPair.isOrdered()) {
+                return false;
+            }
+            Set<N> adjacent = graph.adjacentNodes(node);
+            Object nodeU = endpointPair.nodeU();
+            Object nodeV = endpointPair.nodeV();
+
+            return (node.equals(nodeV) && adjacent.contains(nodeU)) || (node.equals(nodeU) && adjacent.contains(nodeV));
+        }
+    }
 }

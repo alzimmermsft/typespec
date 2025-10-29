@@ -23,13 +23,9 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 
 public class ExceptionInferenceFlowContext extends FieldInitsFakingFlowContext {
-	public ExceptionInferenceFlowContext(
-			FlowContext parent,
-			ASTNode associatedNode,
-			ReferenceBinding[] handledExceptions,
-			FlowContext initializationParent,
-			BlockScope scope,
-			UnconditionalFlowInfo flowInfo) {
-	super(parent, associatedNode, handledExceptions, initializationParent, scope, flowInfo);
-}
+    public ExceptionInferenceFlowContext(FlowContext parent, ASTNode associatedNode,
+        ReferenceBinding[] handledExceptions, FlowContext initializationParent, BlockScope scope,
+        UnconditionalFlowInfo flowInfo) {
+        super(parent, associatedNode, handledExceptions, initializationParent, scope, flowInfo);
+    }
 }

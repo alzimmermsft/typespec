@@ -18,10 +18,10 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.filesystem.provider.FileStore;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.filesystem.FileStoreUtil;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IAdaptable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Status;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -52,7 +52,7 @@ import java.net.URI;
  * implementations must subclass {@link FileStore} rather than implementing
  * this interface directly.
  */
-public interface IFileStore extends IAdaptable {
+public interface IFileStore {
 
     /**
      * Returns an {@link IFileInfo} instance for each file and directory contained
@@ -363,36 +363,6 @@ public interface IFileStore extends IAdaptable {
      * </ul>
      */
     IFileStore mkdir(int options, IProgressMonitor monitor) throws CoreException;
-
-    /**
-     * Moves the file represented by this store to the provided destination store.
-     * Moving occurs with best-effort semantics; if some files cannot be moved,
-     * exceptions are recorded but other files will continue to be moved if possible.
-     *
-     * <p>
-     * The {@link EFS#OVERWRITE} option flag indicates how
-     * this method deals with files that already exist at the move destination. If
-     * the <code>OVERWRITE</code> flag is present, then existing files at the
-     * destination are overwritten with the corresponding files from the source
-     * of the move operation. When this flag is not present, existing files at
-     * the destination are not overwritten and an exception is thrown indicating
-     * what files could not be moved.
-     * </p>
-     *
-     * @param destination The destination of the move.
-     * @param options bit-wise or of option flag constants
-     * ({@link EFS#OVERWRITE}).
-     * @param monitor a progress monitor, or <code>null</code> if progress
-     * reporting and cancellation are not desired
-     * @exception CoreException if this method fails. Reasons include:
-     * <ul>
-     * <li> This store does not exist.</li>
-     * <li> The parent of the destination file store does not exist.</li>
-     * <li> The {@link EFS#OVERWRITE} flag is not specified and a file of the
-     * same name already exists at the destination.</li>
-     * </ul>
-     */
-    void move(IFileStore destination, int options, IProgressMonitor monitor) throws CoreException;
 
     /**
      * Returns an open input stream on the contents of this file. The number of

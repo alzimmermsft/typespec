@@ -18,7 +18,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.util.NLS;
 import java.io.File;
 import java.util.*;
-import javax.xml.parsers.SAXParserFactory;
 
 /**
  * This is the basic registry strategy. It describes how the registry does
@@ -44,8 +43,6 @@ import javax.xml.parsers.SAXParserFactory;
  * @since org.eclipse.equinox.registry 3.2
  */
 public class RegistryStrategy {
-
-    private SAXParserFactory theXMLParserFactory = null;
 
     /**
      * Array of file system directories to store cache files; might be
@@ -113,32 +110,6 @@ public class RegistryStrategy {
     }
 
     /**
-     * Override this method to provide additional processing performed when the
-     * registry is created and started. Overrides should call
-     * <code>super.onStart()</code> at the beginning of the processing.
-     *
-     * @param registry the extension registry being started
-     * @param loadedFromCache true is registry contents was loaded from cache when
-     * the registry was created
-     *
-     * @since 3.4
-     */
-    public void onStart(IExtensionRegistry registry, boolean loadedFromCache) {
-        // The default implementation
-    }
-
-    /**
-     * Override this method to provide additional processing to be performed just
-     * before the registry is stopped. Overrides should call
-     * <code>super.onStop()</code> at the end of the processing.
-     *
-     * @param registry the extension registry being stopped
-     */
-    public void onStop(IExtensionRegistry registry) {
-        // The default implementation
-    }
-
-    /**
      * Creates an executable extension. Override this method to supply an
      * alternative processing for the creation of executable extensions.
      * <p>
@@ -187,51 +158,6 @@ public class RegistryStrategy {
     }
 
     /**
-     * Override this method to customize scheduling of an extension registry event.
-     * Note that this method <strong>must</strong> make the following call to
-     * actually process the event:
-     *
-     * <pre>
-     * <code>
-     * 	RegistryStrategy.processChangeEvent(listeners, deltas, registry);
-     * </code>
-     * </pre>
-     * 
-     * <p>
-     * In the default implementation, the method registry events are executed in a
-     * queue on a separate thread (i.e. asynchronously, sequentially).
-     * </p>
-     *
-     * @param listeners the list of active listeners (thread safe); may not be
-     * <code>null</code>
-     * @param deltas the registry deltas (thread safe); may not be
-     * <code>null</code>
-     * @param registry the extension registry (NOT thread safe); may not be
-     * <code>null</code>
-     */
-    public void scheduleChangeEvent(Object[] listeners, Map<String, ?> deltas, Object registry) {
-        ((ExtensionRegistry) registry).scheduleChangeEvent(listeners, deltas);
-    }
-
-    /**
-     * This method performs actual processing of the registry change event. It
-     * should only be used by overrides of the RegistryStrategy.scheduleChangeEvent.
-     * It will return <code>null</code> if an unexpected registry type was
-     * encountered.
-     *
-     * @param listeners the list of active listeners; may not be <code>null</code>
-     * @param deltas the extension registry deltas; may not be <code>null</code>
-     * @param registry the extension registry; may not be <code>null</code>
-     * @return status of the operation or <code>null</code>
-     */
-    public final static IStatus processChangeEvent(Object[] listeners, Map<String, ?> deltas, Object registry) {
-        if (registry instanceof ExtensionRegistry) {
-            return ((ExtensionRegistry) registry).processChangeEvent(listeners, deltas);
-        }
-        return null;
-    }
-
-    /**
      * Override this method to specify debug requirements to the registry. In the
      * default implementation this method returns <code>false</code> indicating that
      * debug functionality is turned off.
@@ -246,27 +172,6 @@ public class RegistryStrategy {
      */
     public boolean debug() {
         return false;
-    }
-
-    /**
-     * Returns the parser used by the registry to parse descriptions of extension
-     * points and extensions. This method must not return <code>null</code>.
-     *
-     * @return this strategy's parser
-     * @see org.eclipse.core.runtime.IExtensionRegistry#addContribution(java.io.InputStream,
-     * IContributor, boolean, String, ResourceBundle, Object)
-     */
-    public SAXParserFactory getXMLParser() {
-        if (theXMLParserFactory == null) {
-            theXMLParserFactory = SAXParserFactory.newInstance();
-            try {
-                // force org.xml.sax.SAXParseException for any DOCTYPE:
-                theXMLParserFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true); //$NON-NLS-1$
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return theXMLParserFactory;
     }
 
     /**
@@ -288,7 +193,6 @@ public class RegistryStrategy {
      * This method is only used if multi-language support is enabled.
      * </p>
      *
-     * @see IExtensionRegistry#isMultiLanguage()
      * @return the default locale
      * @since org.eclipse.equinox.registry 3.5
      */

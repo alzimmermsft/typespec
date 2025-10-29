@@ -1,14 +1,13 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.meta.TypeQualifierNickname;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.meta.TypeQualifierValidator;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.meta.When;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.meta.TypeQualifierNickname;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.meta.TypeQualifierValidator;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.meta.When;
 
 /**
  * This qualifier is used to denote String values that should be a Regular

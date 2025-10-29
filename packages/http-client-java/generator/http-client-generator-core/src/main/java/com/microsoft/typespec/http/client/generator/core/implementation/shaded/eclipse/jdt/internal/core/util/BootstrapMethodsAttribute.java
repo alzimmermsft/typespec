@@ -22,44 +22,38 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * Default implementation of IBootstrapMethodsAttribute.
  */
 public class BootstrapMethodsAttribute extends ClassFileAttribute implements IBootstrapMethodsAttribute {
-	private static final IBootstrapMethodsEntry[] NO_ENTRIES = new IBootstrapMethodsEntry[0];
+    private static final IBootstrapMethodsEntry[] NO_ENTRIES = new IBootstrapMethodsEntry[0];
 
-	private IBootstrapMethodsEntry[] entries;
-	private final int numberOfBootstrapMethods;
+    private IBootstrapMethodsEntry[] entries;
+    private final int numberOfBootstrapMethods;
 
-	/**
-	 * Constructor for BootstrapMethodsAttribute.
-	 */
-	public BootstrapMethodsAttribute(
-			byte[] classFileBytes,
-			IConstantPool constantPool,
-			int offset) throws ClassFormatException {
-		super(classFileBytes, constantPool, offset);
-		this.numberOfBootstrapMethods = u2At(classFileBytes, 6, offset);
-		final int length = this.numberOfBootstrapMethods;
-		if (length != 0) {
-			int readOffset = 8;
-			this.entries = new IBootstrapMethodsEntry[length];
-			BootstrapMethodsEntry entry;
-			for (int i = 0; i < length; i++) {
-				this.entries[i] = entry = new BootstrapMethodsEntry(classFileBytes, constantPool, offset + readOffset);
-				readOffset += 4 + 2 * entry.getBootstrapArguments().length;
-			}
-		} else {
-			this.entries = NO_ENTRIES;
-		}
-	}
+    /**
+     * Constructor for BootstrapMethodsAttribute.
+     */
+    public BootstrapMethodsAttribute(byte[] classFileBytes, IConstantPool constantPool, int offset)
+        throws ClassFormatException {
+        super(classFileBytes, constantPool, offset);
+        this.numberOfBootstrapMethods = u2At(classFileBytes, 6, offset);
+        final int length = this.numberOfBootstrapMethods;
+        if (length != 0) {
+            int readOffset = 8;
+            this.entries = new IBootstrapMethodsEntry[length];
+            BootstrapMethodsEntry entry;
+            for (int i = 0; i < length; i++) {
+                this.entries[i] = entry = new BootstrapMethodsEntry(classFileBytes, constantPool, offset + readOffset);
+                readOffset += 4 + 2 * entry.getBootstrapArguments().length;
+            }
+        } else {
+            this.entries = NO_ENTRIES;
+        }
+    }
 
-	/**
-	 * @see IBootstrapMethodsAttribute#getBootstrapMethods()
-	 */
-	@Override
-	public IBootstrapMethodsEntry[] getBootstrapMethods() {
-		return this.entries;
-	}
+    /**
+     * @see IBootstrapMethodsAttribute#getBootstrapMethods()
+     */
+    @Override
+    public IBootstrapMethodsEntry[] getBootstrapMethods() {
+        return this.entries;
+    }
 
-	@Override
-	public int getBootstrapMethodsLength() {
-		return this.numberOfBootstrapMethods;
-	}
 }

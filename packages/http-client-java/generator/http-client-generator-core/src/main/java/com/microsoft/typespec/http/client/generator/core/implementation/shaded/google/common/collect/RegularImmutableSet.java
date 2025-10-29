@@ -16,12 +16,12 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.VisibleForTesting;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.util.Spliterator;
 import java.util.Spliterators;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Implementation of {@link ImmutableSet} with two or more elements.
@@ -32,96 +32,95 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @SuppressWarnings("serial") // uses writeReplace(), not default serialization
 @ElementTypesAreNonnullByDefault
 final class RegularImmutableSet<E> extends ImmutableSet.CachingAsList<E> {
-  private static final Object[] EMPTY_ARRAY = new Object[0];
-  static final RegularImmutableSet<Object> EMPTY =
-      new RegularImmutableSet<>(EMPTY_ARRAY, 0, EMPTY_ARRAY, 0);
+    private static final Object[] EMPTY_ARRAY = new Object[0];
+    static final RegularImmutableSet<Object> EMPTY = new RegularImmutableSet<>(EMPTY_ARRAY, 0, EMPTY_ARRAY, 0);
 
-  private final transient Object[] elements;
-  private final transient int hashCode;
-  // the same values as `elements` in hashed positions (plus nulls)
-  @VisibleForTesting final transient @Nullable Object[] table;
-  // 'and' with an int to get a valid table index.
-  private final transient int mask;
+    private final transient Object[] elements;
+    private final transient int hashCode;
+    // the same values as `elements` in hashed positions (plus nulls)
+    @VisibleForTesting
+    final transient @Nullable Object[] table;
+    // 'and' with an int to get a valid table index.
+    private final transient int mask;
 
-  RegularImmutableSet(Object[] elements, int hashCode, @Nullable Object[] table, int mask) {
-    this.elements = elements;
-    this.hashCode = hashCode;
-    this.table = table;
-    this.mask = mask;
-  }
-
-  @Override
-  public boolean contains(@CheckForNull Object target) {
-    @Nullable Object[] table = this.table;
-    if (target == null || table.length == 0) {
-      return false;
+    RegularImmutableSet(Object[] elements, int hashCode, @Nullable Object[] table, int mask) {
+        this.elements = elements;
+        this.hashCode = hashCode;
+        this.table = table;
+        this.mask = mask;
     }
-    for (int i = Hashing.smearedHash(target); ; i++) {
-      i &= mask;
-      Object candidate = table[i];
-      if (candidate == null) {
+
+    @Override
+    public boolean contains(@CheckForNull Object target) {
+        @Nullable
+        Object[] table = this.table;
+        if (target == null || table.length == 0) {
+            return false;
+        }
+        for (int i = Hashing.smearedHash(target);; i++) {
+            i &= mask;
+            Object candidate = table[i];
+            if (candidate == null) {
+                return false;
+            } else if (candidate.equals(target)) {
+                return true;
+            }
+        }
+    }
+
+    @Override
+    public int size() {
+        return elements.length;
+    }
+
+    @Override
+    public UnmodifiableIterator<E> iterator() {
+        return (UnmodifiableIterator<E>) Iterators.forArray(elements);
+    }
+
+    @Override
+    public Spliterator<E> spliterator() {
+        return Spliterators.spliterator(elements, SPLITERATOR_CHARACTERISTICS);
+    }
+
+    @Override
+    Object[] internalArray() {
+        return elements;
+    }
+
+    @Override
+    int internalArrayStart() {
+        return 0;
+    }
+
+    @Override
+    int internalArrayEnd() {
+        return elements.length;
+    }
+
+    @Override
+    int copyIntoArray(@Nullable Object[] dst, int offset) {
+        System.arraycopy(elements, 0, dst, offset, elements.length);
+        return offset + elements.length;
+    }
+
+    @Override
+    ImmutableList<E> createAsList() {
+        return (table.length == 0) ? ImmutableList.<E>of() : new RegularImmutableAsList<E>(this, elements);
+    }
+
+    @Override
+    boolean isPartialView() {
         return false;
-      } else if (candidate.equals(target)) {
-        return true;
-      }
     }
-  }
 
-  @Override
-  public int size() {
-    return elements.length;
-  }
+    @Override
+    public int hashCode() {
+        return hashCode;
+    }
 
-  @Override
-  public UnmodifiableIterator<E> iterator() {
-    return (UnmodifiableIterator<E>) Iterators.forArray(elements);
-  }
-
-  @Override
-  public Spliterator<E> spliterator() {
-    return Spliterators.spliterator(elements, SPLITERATOR_CHARACTERISTICS);
-  }
-
-  @Override
-  Object[] internalArray() {
-    return elements;
-  }
-
-  @Override
-  int internalArrayStart() {
-    return 0;
-  }
-
-  @Override
-  int internalArrayEnd() {
-    return elements.length;
-  }
-
-  @Override
-  int copyIntoArray(@Nullable Object[] dst, int offset) {
-    System.arraycopy(elements, 0, dst, offset, elements.length);
-    return offset + elements.length;
-  }
-
-  @Override
-  ImmutableList<E> createAsList() {
-    return (table.length == 0)
-        ? ImmutableList.<E>of()
-        : new RegularImmutableAsList<E>(this, elements);
-  }
-
-  @Override
-  boolean isPartialView() {
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return hashCode;
-  }
-
-  @Override
-  boolean isHashCodeFast() {
-    return true;
-  }
+    @Override
+    boolean isHashCodeFast() {
+        return true;
+    }
 }

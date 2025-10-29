@@ -14,11 +14,11 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.io;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtIncompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.J2ktIncompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.io.IOException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A callback to be used with the streaming {@code readLines} methods.
@@ -34,16 +34,16 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @ElementTypesAreNonnullByDefault
 public interface LineProcessor<T extends @Nullable Object> {
 
-  /**
-   * This method will be called once for each line.
-   *
-   * @param line the line read from the input, without delimiter
-   * @return true to continue processing, false to stop
-   */
-  @CanIgnoreReturnValue // some uses know that their processor never returns false
-  boolean processLine(String line) throws IOException;
+    /**
+     * This method will be called once for each line.
+     *
+     * @param line the line read from the input, without delimiter
+     * @return true to continue processing, false to stop
+     */
+    @CanIgnoreReturnValue // some uses know that their processor never returns false
+    boolean processLine(String line) throws IOException;
 
-  /** Return the result of processing all the lines. */
-  @ParametricNullness
-  T getResult();
+    /** Return the result of processing all the lines. */
+    @ParametricNullness
+    T getResult();
 }

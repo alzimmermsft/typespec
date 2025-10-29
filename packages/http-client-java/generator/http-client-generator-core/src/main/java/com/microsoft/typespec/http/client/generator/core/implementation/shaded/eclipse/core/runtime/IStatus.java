@@ -56,7 +56,7 @@ public interface IStatus {
      * @see #isOK()
      * @see Status#OK_STATUS
      */
-    public static final int OK = 0;
+    int OK = 0;
 
     /**
      * Status type severity (bit mask, value 1) indicating this status is
@@ -66,7 +66,7 @@ public interface IStatus {
      * @see #matches(int)
      * @see Status#info(String)
      */
-    public static final int INFO = 0x01;
+    int INFO = 0x01;
 
     /**
      * Status type severity (bit mask, value 2) indicating this status represents a
@@ -77,7 +77,7 @@ public interface IStatus {
      * @see Status#warning(String)
      * @see Status#warning(String, Throwable)
      */
-    public static final int WARNING = 0x02;
+    int WARNING = 0x02;
 
     /**
      * Status type severity (bit mask, value 4) indicating this status represents an
@@ -88,7 +88,7 @@ public interface IStatus {
      * @see Status#error(String)
      * @see Status#error(String, Throwable)
      */
-    public static final int ERROR = 0x04;
+    int ERROR = 0x04;
 
     /**
      * Status type severity (bit mask, value 8) indicating this status represents a
@@ -99,7 +99,7 @@ public interface IStatus {
      * @see Status#CANCEL_STATUS
      * @since 3.0
      */
-    public static final int CANCEL = 0x08;
+    int CANCEL = 0x08;
 
     /**
      * Returns a list of status object immediately contained in this multi-status,
@@ -108,14 +108,14 @@ public interface IStatus {
      * @return an array of status objects
      * @see #isMultiStatus()
      */
-    public IStatus[] getChildren();
+    IStatus[] getChildren();
 
     /**
      * Returns the plug-in-specific status code describing the outcome.
      *
      * @return plug-in-specific status code
      */
-    public int getCode();
+    int getCode();
 
     /**
      * Returns the relevant low-level exception, or <code>null</code> if none. For
@@ -125,7 +125,7 @@ public interface IStatus {
      *
      * @return the relevant low-level exception, or <code>null</code> if none
      */
-    public Throwable getException();
+    Throwable getException();
 
     /**
      * Returns the message describing the outcome. The message is localized to the
@@ -133,7 +133,7 @@ public interface IStatus {
      *
      * @return a localized message
      */
-    public String getMessage();
+    String getMessage();
 
     /**
      * Returns the unique identifier of the plug-in associated with this status
@@ -141,7 +141,7 @@ public interface IStatus {
      *
      * @return the unique identifier of the relevant plug-in
      */
-    public String getPlugin();
+    String getPlugin();
 
     /**
      * Returns the severity. The severities are as follows (in descending order):
@@ -161,7 +161,7 @@ public interface IStatus {
      * <code>INFO</code>, <code>WARNING</code>, or <code>CANCEL</code>
      * @see #matches(int)
      */
-    public int getSeverity();
+    int getSeverity();
 
     /**
      * Returns whether this status is a multi-status. A multi-status describes the
@@ -177,7 +177,7 @@ public interface IStatus {
      * @return <code>true</code> for a multi-status, <code>false</code> otherwise
      * @see #getChildren()
      */
-    public boolean isMultiStatus();
+    boolean isMultiStatus();
 
     /**
      * Returns whether this status indicates everything is okay (neither info,
@@ -186,7 +186,7 @@ public interface IStatus {
      * @return <code>true</code> if this status has severity <code>OK</code>, and
      * <code>false</code> otherwise
      */
-    public boolean isOK();
+    boolean isOK();
 
     /**
      * Returns whether the severity of this status matches the given severity mask.
@@ -205,5 +205,5 @@ public interface IStatus {
      * @see #WARNING
      * @see #INFO
      */
-    public boolean matches(int severityMask);
+    boolean matches(int severityMask);
 }

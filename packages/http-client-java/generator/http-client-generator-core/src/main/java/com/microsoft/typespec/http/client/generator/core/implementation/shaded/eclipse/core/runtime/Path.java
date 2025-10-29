@@ -206,51 +206,6 @@ public final class Path implements IPath, Cloneable {
     }
 
     /**
-     * Constructs a new POSIX path from the given string path. The string path must
-     * represent a valid file system path on a POSIX file system. The path is
-     * canonicalized and double slashes are removed except at the beginning (to
-     * handle UNC paths). All forward slashes ('/') are treated as segment
-     * delimiters. This factory method should be used if the string path is for a
-     * POSIX file system.
-     * <p>
-     * Instead of calling this method it is recommended to call
-     * {@link IPath#forPosix(String)} instead.
-     * </p>
-     *
-     * @param fullPath the string path
-     * @return the IPath representing the given POSIX string path
-     * @see #isValidPosixPath(String)
-     * @see IPath#forPosix(String)
-     * @since 3.7
-     */
-    public static Path forPosix(String fullPath) {
-        return (Path) IPath.forPosix(fullPath);
-    }
-
-    /**
-     * Constructs a new Windows path from the given string path. The string path
-     * must represent a valid file system path on the Windows file system. The path
-     * is canonicalized and double slashes are removed except at the beginning (to
-     * handle UNC paths). All forward slashes ('/') are treated as segment
-     * delimiters, and any segment ('\') and device (':') delimiters for the Windows
-     * file system are also respected. This factory method should be used if the
-     * string path is for the Windows file system.
-     * <p>
-     * Instead of calling this method it is recommended to call
-     * {@link IPath#forWindows(String)} instead.
-     * </p>
-     *
-     * @param fullPath the string path
-     * @return the IPath representing the given Windows string path
-     * @see #isValidWindowsPath(String)
-     * @see IPath#forWindows(String)
-     * @since 3.7
-     */
-    public static Path forWindows(String fullPath) {
-        return (Path) IPath.forWindows(fullPath);
-    }
-
-    /**
      * Constructs a new path from the given string path. The string path must
      * represent a valid file system path on the local file system. The path is
      * canonicalized and double slashes are removed except at the beginning. (to
@@ -500,8 +455,7 @@ public final class Path implements IPath, Cloneable {
         int segmentCount = segments.length;
         String[] stack = new String[segmentCount];
         int stackPointer = 0;
-        for (int i = 0; i < segmentCount; i++) {
-            String segment = segments[i];
+        for (String segment : segments) {
             if (segment.equals("..")) { //$NON-NLS-1$
                 if (stackPointer == 0) {
                     // if the stack is empty we are going out of our scope
@@ -587,9 +541,9 @@ public final class Path implements IPath, Cloneable {
     private static int computeHashCode(String device, String[] segments) {
         int hash = device == null ? 17 : device.hashCode();
         int segmentCount = segments.length;
-        for (int i = 0; i < segmentCount; i++) {
+        for (String segment : segments) {
             // this function tends to given a fairly even distribution
-            hash = hash * 37 + segments[i].hashCode();
+            hash = hash * 37 + segment.hashCode();
         }
         return hash;
     }
@@ -613,8 +567,8 @@ public final class Path implements IPath, Cloneable {
         String[] s = getSegments();
         int max = s.length;
         if (max > 0) {
-            for (int i = 0; i < max; i++) {
-                length += s[i].length();
+            for (String string : s) {
+                length += string.length();
             }
             // add the separator lengths
             length += max - 1;
@@ -922,39 +876,6 @@ public final class Path implements IPath, Cloneable {
     }
 
     /**
-     * Returns whether the given string is syntactically correct as a path on a
-     * POSIX file system. The path is correct if each of the segments in its
-     * canonicalized form is valid.
-     *
-     * @param path the path to check
-     * @return <code>true</code> if the given string is a valid path, and
-     * <code>false</code> otherwise
-     * @see #isValidPosixSegment(String)
-     * @since 3.7
-     */
-    public static boolean isValidPosixPath(String path) {
-        return isValidPath(path, false);
-    }
-
-    /**
-     * Returns whether the given string is syntactically correct as a path on the
-     * Windows file system. The device id is the prefix up to and including the
-     * device separator (':'); the path proper is everything to the right of it, or
-     * the entire string if there is no device separator. The device id is not
-     * checked for validity; the path proper is correct if each of the segments in
-     * its canonicalized form is valid.
-     *
-     * @param path the path to check
-     * @return <code>true</code> if the given string is a valid path, and
-     * <code>false</code> otherwise
-     * @see #isValidWindowsSegment(String)
-     * @since 3.7
-     */
-    public static boolean isValidWindowsPath(String path) {
-        return isValidPath(path, true);
-    }
-
-    /**
      * Returns whether the given string is syntactically correct as a path on the
      * specified file system. The device id is the prefix up to and including the
      * device separator for the specified file system; the path proper is everything
@@ -989,42 +910,6 @@ public final class Path implements IPath, Cloneable {
     @Override
     public boolean isValidSegment(String segment) {
         return isValidSegment(segment, (flags & IS_FOR_WINDOWS) != 0);
-    }
-
-    /**
-     * Returns whether the given string is valid as a segment in a path on a POSIX
-     * file system. The rules for valid segments are as follows:
-     * <ul>
-     * <li>the empty string is not valid
-     * <li>any string containing the slash character ('/') is not valid
-     * </ul>
-     *
-     * @param segment the path segment to check
-     * @return <code>true</code> if the given path segment is valid, and
-     * <code>false</code> otherwise
-     * @since 3.7
-     */
-    public static boolean isValidPosixSegment(String segment) {
-        return isValidSegment(segment, false);
-    }
-
-    /**
-     * Returns whether the given string is valid as a segment in a path on the
-     * Windows file system. The rules for valid segments are as follows:
-     * <ul>
-     * <li>the empty string is not valid
-     * <li>any string containing the slash character ('/') is not valid
-     * <li>any string containing segment ('\') or device (':') separator characters
-     * is not valid
-     * </ul>
-     *
-     * @param segment the path segment to check
-     * @return <code>true</code> if the given path segment is valid, and
-     * <code>false</code> otherwise
-     * @since 3.7
-     */
-    public static boolean isValidWindowsSegment(String segment) {
-        return isValidSegment(segment, true);
     }
 
     /**
@@ -1174,22 +1059,6 @@ public final class Path implements IPath, Cloneable {
             count++;
         }
         return count;
-    }
-
-    /*
-     * (Intentionally not included in javadoc)
-     *
-     * @see IPath#removeFileExtension()
-     */
-    @Override
-    public IPath removeFileExtension() {
-        String extension = getFileExtension();
-        if (extension == null || extension.equals("")) { //$NON-NLS-1$
-            return this;
-        }
-        String lastSegment = lastSegment();
-        int index = lastSegment.lastIndexOf(extension) - 1;
-        return removeLastSegments(1).append(lastSegment.substring(0, index));
     }
 
     /*

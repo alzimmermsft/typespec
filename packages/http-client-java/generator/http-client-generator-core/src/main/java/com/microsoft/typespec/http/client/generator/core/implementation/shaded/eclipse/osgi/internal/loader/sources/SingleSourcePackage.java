@@ -13,61 +13,60 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.internal.loader.sources;
 
-import java.net.URL;
-import java.util.Collection;
-import java.util.Enumeration;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.internal.loader.BundleLoader;
+import java.net.URL;
+import java.util.Enumeration;
 
 public class SingleSourcePackage extends PackageSource {
-	private final BundleLoader supplier;
+    private final BundleLoader supplier;
 
-	public SingleSourcePackage(String id, BundleLoader supplier) {
-		super(id);
-		this.supplier = supplier;
-	}
+    public SingleSourcePackage(String id, BundleLoader supplier) {
+        super(id);
+        this.supplier = supplier;
+    }
 
-	@Override
-	public SingleSourcePackage[] getSuppliers() {
-		return new SingleSourcePackage[] { this };
-	}
+    @Override
+    public SingleSourcePackage[] getSuppliers() {
+        return new SingleSourcePackage[] { this };
+    }
 
-	public BundleLoader getLoader() {
-		return supplier;
-	}
+    public BundleLoader getLoader() {
+        return supplier;
+    }
 
-	@Override
-	public Class<?> loadClass(String name) throws ClassNotFoundException {
-		return supplier.findLocalClass(name);
-	}
+    @Override
+    public Class<?> loadClass(String name) throws ClassNotFoundException {
+        return supplier.findLocalClass(name);
+    }
 
-	@Override
-	public URL getResource(String name) {
-		return supplier.findLocalResource(name);
-	}
+    @Override
+    public URL getResource(String name) {
+        return supplier.findLocalResource(name);
+    }
 
-	@Override
-	public Enumeration<URL> getResources(String name) {
-		return supplier.findLocalResources(name);
-	}
+    @Override
+    public Enumeration<URL> getResources(String name) {
+        return supplier.findLocalResources(name);
+    }
 
-	@Override
-	public boolean equals(Object source) {
-		if (this == source)
-			return true;
-		if (!(source instanceof SingleSourcePackage))
-			return false;
-		SingleSourcePackage singleSource = (SingleSourcePackage) source;
-		// we do an == test on id because the id is interned in the constructor of
-		// PackageSource
-		return supplier == singleSource.supplier && id == singleSource.getId();
-	}
+    @Override
+    public boolean equals(Object source) {
+        if (this == source)
+            return true;
+        if (!(source instanceof SingleSourcePackage))
+            return false;
+        SingleSourcePackage singleSource = (SingleSourcePackage) source;
+        // we do an == test on id because the id is interned in the constructor of
+        // PackageSource
+        return supplier == singleSource.supplier && id == singleSource.getId();
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + id.hashCode();
-		result = prime * result + supplier.hashCode();
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + id.hashCode();
+        result = prime * result + supplier.hashCode();
+        return result;
+    }
 }

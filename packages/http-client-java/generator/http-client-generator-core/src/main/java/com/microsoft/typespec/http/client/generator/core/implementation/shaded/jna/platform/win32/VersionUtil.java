@@ -27,8 +27,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.VerRsrc.VS_FIXEDFILEINFO;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Version;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Win32Exception;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.IntByReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.PointerByReference;
 
@@ -44,12 +42,12 @@ public class VersionUtil {
      * Gets the file's version number info
      *
      * @param filePath
-     *            The path to the file
+     * The path to the file
      * @return The VS_FIXEDFILEINFO structure read from the file.<br>
-     *         Use the getFileVersionMajor(), getFileVersionMinor(),
-     *         getFileVersionRevision(), and getFileVersionBuild()
+     * Use the getFileVersionMajor(), getFileVersionMinor(),
+     * getFileVersionRevision(), and getFileVersionBuild()
      * @throws UnsupportedOperationException
-     *             if VerQueryValue fails to get version info from the file.
+     * if VerQueryValue fails to get version info from the file.
      */
     public static VS_FIXEDFILEINFO getFileVersionInfo(String filePath) {
         IntByReference dwDummy = new IntByReference();
@@ -77,7 +75,8 @@ public class VersionUtil {
 
         // this does not set GetLastError, so no need to throw a Win32Exception
         if (!Version.INSTANCE.VerQueryValue(lpData, "\\", lplpBuffer, puLen)) {
-            throw new UnsupportedOperationException("Unable to extract version info from the file: \"" + filePath + "\"");
+            throw new UnsupportedOperationException(
+                "Unable to extract version info from the file: \"" + filePath + "\"");
         }
 
         VS_FIXEDFILEINFO fileInfo = new VS_FIXEDFILEINFO(lplpBuffer.getValue());

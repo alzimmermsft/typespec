@@ -23,7 +23,6 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM;
 
-
 public interface IDispatchCallback extends IDispatch, IUnknownCallback {
 
 }

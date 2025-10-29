@@ -93,10 +93,6 @@ class ThreadJob extends Job {
         ((InternalJob) this).internalSetRule(rule);
     }
 
-    boolean isResumingAfterYield() {
-        return false;
-    }
-
     /**
      * An endRule was called that did not match the last beginRule in
      * the stack. Report and log a detailed informational message.

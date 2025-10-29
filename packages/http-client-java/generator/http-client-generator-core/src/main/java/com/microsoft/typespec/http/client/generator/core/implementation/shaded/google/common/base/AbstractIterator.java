@@ -17,81 +17,84 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.NullnessCasts.uncheckedCastNullableTToT;
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Preconditions.checkState;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * Note this class is a copy of {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.AbstractIterator} (for dependency
+ * Note this class is a copy of
+ * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.AbstractIterator}
+ * (for dependency
  * reasons).
  */
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
 abstract class AbstractIterator<T extends @Nullable Object> implements Iterator<T> {
-  private State state = State.NOT_READY;
+    private State state = State.NOT_READY;
 
-  protected AbstractIterator() {}
+    protected AbstractIterator() {
+    }
 
-  private enum State {
-    READY,
-    NOT_READY,
-    DONE,
-    FAILED,
-  }
+    private enum State {
+        READY, NOT_READY, DONE, FAILED,
+    }
 
-  @CheckForNull private T next;
+    @CheckForNull
+    private T next;
 
-  @CheckForNull
-  protected abstract T computeNext();
+    @CheckForNull
+    protected abstract T computeNext();
 
-  @CanIgnoreReturnValue
-  @CheckForNull
-  protected final T endOfData() {
-    state = State.DONE;
-    return null;
-  }
+    @CanIgnoreReturnValue
+    @CheckForNull
+    protected final T endOfData() {
+        state = State.DONE;
+        return null;
+    }
 
-  @Override
-  public final boolean hasNext() {
-    checkState(state != State.FAILED);
-    switch (state) {
-      case DONE:
+    @Override
+    public final boolean hasNext() {
+        checkState(state != State.FAILED);
+        switch (state) {
+            case DONE:
+                return false;
+
+            case READY:
+                return true;
+
+            default:
+        }
+        return tryToComputeNext();
+    }
+
+    private boolean tryToComputeNext() {
+        state = State.FAILED; // temporary pessimism
+        next = computeNext();
+        if (state != State.DONE) {
+            state = State.READY;
+            return true;
+        }
         return false;
-      case READY:
-        return true;
-      default:
     }
-    return tryToComputeNext();
-  }
 
-  private boolean tryToComputeNext() {
-    state = State.FAILED; // temporary pessimism
-    next = computeNext();
-    if (state != State.DONE) {
-      state = State.READY;
-      return true;
+    @Override
+    @ParametricNullness
+    public final T next() {
+        if (!hasNext()) {
+            throw new NoSuchElementException();
+        }
+        state = State.NOT_READY;
+        // Safe because hasNext() ensures that tryToComputeNext() has put a T into `next`.
+        T result = uncheckedCastNullableTToT(next);
+        next = null;
+        return result;
     }
-    return false;
-  }
 
-  @Override
-  @ParametricNullness
-  public final T next() {
-    if (!hasNext()) {
-      throw new NoSuchElementException();
+    @Override
+    public final void remove() {
+        throw new UnsupportedOperationException();
     }
-    state = State.NOT_READY;
-    // Safe because hasNext() ensures that tryToComputeNext() has put a T into `next`.
-    T result = uncheckedCastNullableTToT(next);
-    next = null;
-    return result;
-  }
-
-  @Override
-  public final void remove() {
-    throw new UnsupportedOperationException();
-  }
 }

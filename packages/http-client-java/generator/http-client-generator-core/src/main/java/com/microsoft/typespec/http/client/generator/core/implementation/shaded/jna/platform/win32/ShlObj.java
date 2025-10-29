@@ -28,6 +28,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 /**
  * Ported from ShlObj.h.
  * Microsoft Windows SDK 6.0A.
+ * 
  * @author dblock[at]dblock.org
  */
 public interface ShlObj {
@@ -97,8 +98,7 @@ public interface ShlObj {
      * KnownFolder flags as used by SHGetKnownFolderPath, SHGetKnownFolderIDList and others.
      * Microsoft Windows SDK 7.0A.
      */
-    public enum KNOWN_FOLDER_FLAG
-    {
+    public enum KNOWN_FOLDER_FLAG {
         /**
          * None
          */
@@ -182,13 +182,11 @@ public interface ShlObj {
 
         private int flag;
 
-        KNOWN_FOLDER_FLAG(int flag)
-        {
+        KNOWN_FOLDER_FLAG(int flag) {
             this.flag = flag;
         }
 
-        public int getFlag()
-        {
+        public int getFlag() {
             return flag;
         }
     }

@@ -19,7 +19,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Constants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.FrameworkUtil;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.InvalidSyntaxException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.ServiceEvent;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.ServiceListener;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.ServiceReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.SynchronousBundleListener;
@@ -108,73 +107,6 @@ import java.util.function.Consumer;
  * @since 3.13
  */
 public class ServiceCaller<S> {
-    /**
-     * Calls an OSGi service by dynamically looking it up and passing it to the
-     * given consumer.
-     * <p>
-     * If not running under OSGi, the caller bundle is not active or the service is
-     * not available, return false. If the service is found, call the service and
-     * return true.
-     * </p>
-     * <p>
-     * Any runtime exception thrown by the consumer is rethrown by this method. If
-     * the consumer throws a checked exception, it can be propagated using a
-     * <em>sneakyThrow</em> inside a try/catch block:
-     * </p>
-     *
-     * <pre>
-     * callOnce(MyClass.class, Callable.class, (callable) -&gt; {
-     *   try {
-     *     callable.call();
-     *   } catch (Exception e) {
-     *     sneakyThrow(e);
-     *   }
-     * });
-     * ...
-     * {@literal @}SuppressWarnings("unchecked")
-     * static &lt;E extends Throwable&gt; void sneakyThrow(Throwable e) throws E {
-     *   throw (E) e;
-     * }
-     * </pre>
-     *
-     * @param caller a class from the bundle that will use service
-     * @param serviceType the OSGi service type to look up
-     * @param consumer the consumer of the OSGi service
-     * @param <S> the OSGi service type to look up
-     * @return true if the OSGi service was located and called successfully, false
-     * otherwise
-     * @throws NullPointerException if any of the parameters are {@code null}
-     * @throws IllegalStateException if the bundle associated with the caller class
-     * cannot be determined
-     */
-    public static <S> boolean callOnce(Class<?> caller, Class<S> serviceType, Consumer<S> consumer) {
-        return callOnce(caller, serviceType, null, consumer);
-    }
-
-    /**
-     * As {@link #callOnce(Class, Class, Consumer)} with an additional OSGi filter.
-     *
-     * @param caller a class from the bundle that will use service
-     * @param serviceType the OSGi service type to look up
-     * @param consumer the consumer of the OSGi service
-     * @param filter an OSGi filter to restrict the services found
-     * @param <S> the OSGi service type to look up
-     * @return true if the OSGi service was located and called successfully, false
-     * otherwise
-     * @throws NullPointerException if any of the parameters are {@code null}
-     * @throws IllegalStateException if the bundle associated with the caller class
-     * cannot be determined
-     */
-    public static <S> boolean callOnce(Class<?> caller, Class<S> serviceType, String filter, Consumer<S> consumer) {
-        return new ServiceCaller<>(caller, serviceType, filter).getCurrent().map(r -> {
-            try {
-                consumer.accept(r.instance);
-                return Boolean.TRUE;
-            } finally {
-                r.unget();
-            }
-        }).orElse(Boolean.FALSE);
-    }
 
     private static int getRank(ServiceReference<?> ref) {
         Object rank = ref.getProperty(Constants.SERVICE_RANKING);
@@ -204,18 +136,6 @@ public class ServiceCaller<S> {
             } catch (IllegalStateException e) {
                 // ignore; just trying to cleanup but context is not valid now
             }
-        }
-
-        private boolean requiresUnget(ServiceEvent e) {
-            int eventType = e.getType();
-            if (e.getServiceReference().equals(ref)) {
-                return (eventType == ServiceEvent.UNREGISTERING)
-                    || (filter != null && eventType == ServiceEvent.MODIFIED_ENDMATCH)
-                    || (eventType == ServiceEvent.MODIFIED && getRank(ref) != rank);
-                // if rank changed: untrack to force a new ReferenceAndService with new rank
-            }
-            return (eventType == ServiceEvent.MODIFIED || eventType == ServiceEvent.REGISTERED)
-                && getRank(e.getServiceReference()) > rank;
         }
 
         // must hold monitor on ServiceCaller.this when calling track
@@ -317,7 +237,7 @@ public class ServiceCaller<S> {
 
     private BundleContext getContext() {
         if (System.getSecurityManager() != null) {
-            return AccessController.doPrivileged((PrivilegedAction<BundleContext>) () -> bundle.getBundleContext());
+            return AccessController.doPrivileged((PrivilegedAction<BundleContext>) bundle::getBundleContext);
         }
         return bundle.getBundleContext();
     }
@@ -405,15 +325,4 @@ public class ServiceCaller<S> {
         }
     }
 
-    /**
-     * Releases the cached service object, if it exists. Another invocation of
-     * {@link #call(Consumer)} will lazily get the service instance again and cache
-     * the new instance if found.
-     */
-    public void unget() {
-        ReferenceAndService current = service;
-        if (current != null) {
-            current.unget();
-        }
-    }
 }

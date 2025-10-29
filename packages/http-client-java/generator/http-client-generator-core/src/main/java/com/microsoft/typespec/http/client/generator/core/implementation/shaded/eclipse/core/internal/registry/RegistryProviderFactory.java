@@ -37,7 +37,4 @@ public final class RegistryProviderFactory {
         defaultRegistryProvider = provider;
     }
 
-    public static void releaseDefault() {
-        defaultRegistryProvider = null;
-    }
 }

@@ -23,15 +23,14 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HANDLE;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Wininet.INTERNET_CACHE_ENTRY_INFO;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.IntByReference;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Wininet.INTERNET_CACHE_ENTRY_INFO;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HANDLE;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.IntByReference;
 
 /**
  * Reusable functions that use WinInet
@@ -44,7 +43,7 @@ public class WininetUtil {
      * actual files.<br>
      *
      * @return A map of cache URL =&gt; local file (or URL =&gt; empty string for
-     *         cookie and history entries)
+     * cookie and history entries)
      */
     public static Map<String, String> getCache() {
         List<INTERNET_CACHE_ENTRY_INFO> items = new ArrayList<>();
@@ -113,7 +112,8 @@ public class WininetUtil {
             }
 
             for (INTERNET_CACHE_ENTRY_INFO item : items) {
-                cacheItems.put(item.lpszSourceUrlName.getWideString(0), item.lpszLocalFileName == null ? "" : item.lpszLocalFileName.getWideString(0));
+                cacheItems.put(item.lpszSourceUrlName.getWideString(0),
+                    item.lpszLocalFileName == null ? "" : item.lpszLocalFileName.getWideString(0));
             }
 
         } catch (Win32Exception e) {

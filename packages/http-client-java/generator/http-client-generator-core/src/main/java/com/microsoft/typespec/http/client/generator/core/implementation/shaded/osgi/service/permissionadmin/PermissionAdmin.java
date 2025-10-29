@@ -63,12 +63,12 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 public interface PermissionAdmin {
 
     /**
-	 * Returns the bundle locations that have permissions assigned to them, that
-	 * is, bundle locations for which an entry exists in the permission table.
-	 * 
-	 * @return The locations of bundles that have been assigned any permissions,
-	 *         or {@code null} if the permission table is empty.
-	 */
-	String[] getLocations();
+     * Returns the bundle locations that have permissions assigned to them, that
+     * is, bundle locations for which an entry exists in the permission table.
+     * 
+     * @return The locations of bundles that have been assigned any permissions,
+     * or {@code null} if the permission table is empty.
+     */
+    String[] getLocations();
 
 }

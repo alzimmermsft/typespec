@@ -23,8 +23,6 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
-import java.util.List;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure.FieldOrder;
@@ -33,6 +31,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 /**
  * Ported from LMShare.h.
  * Windows SDK 7.1
+ * 
  * @author amarcionek[at]seven10storage.com
  */
 public interface LMShare {
@@ -68,23 +67,34 @@ public interface LMShare {
 
     /**
      * Special share reserved for interprocess communication (IPC$) or remote administration of the server (ADMIN$).
-     * Can also refer to administrative shares such as C$, D$, E$, and so forth. For more information, see the network share functions.
+     * Can also refer to administrative shares such as C$, D$, E$, and so forth. For more information, see the network
+     * share functions.
      */
     int STYPE_SPECIAL = 0x80000000;
 
     /**
-     * Contains information about the shared resource, including name of the resource, type and permissions, number of connections, and other pertinent information.
+     * Contains information about the shared resource, including name of the resource, type and permissions, number of
+     * connections, and other pertinent information.
      */
-    @FieldOrder({"shi2_netname", "shi2_type", "shi2_remark", "shi2_permissions",
-        "shi2_max_uses", "shi2_current_uses", "shi2_path", "shi2_passwd"})
+    @FieldOrder({
+        "shi2_netname",
+        "shi2_type",
+        "shi2_remark",
+        "shi2_permissions",
+        "shi2_max_uses",
+        "shi2_current_uses",
+        "shi2_path",
+        "shi2_passwd" })
     public static class SHARE_INFO_2 extends Structure {
         /**
-         * Pointer to a Unicode string specifying the name of a shared resource. Calls to the NetShareSetInfo function ignore this member.
+         * Pointer to a Unicode string specifying the name of a shared resource. Calls to the NetShareSetInfo function
+         * ignore this member.
          */
         public String shi2_netname;
 
         /**
-         * A combination of values that specify the type of share. Calls to the NetShareSetInfo function ignore this member.
+         * A combination of values that specify the type of share. Calls to the NetShareSetInfo function ignore this
+         * member.
          * One of the following values may be specified. You can isolate these values by using the STYPE_MASK value.
          * STYPE_DISKTREE, STYPE_PRINTQ, STYPE_DEVICE, STYPE_IPC, STYPE_TEMPORARY, STYPE_SPECIAL
          */
@@ -96,35 +106,46 @@ public interface LMShare {
         public String shi2_remark;
 
         /**
-         * Specifies a DWORD value that indicates the shared resource's permissions for servers running with share-level security.
-         * This member is ignored on a server running user-level security. This member can be any of the following values.
-         * Calls to the NetShareSetInfo function ignore this member. Note that Windows does not support share-level security.
-         * For more information about controlling access to securable objects, see Access Control, Privileges, and Securable Objects.
+         * Specifies a DWORD value that indicates the shared resource's permissions for servers running with share-level
+         * security.
+         * This member is ignored on a server running user-level security. This member can be any of the following
+         * values.
+         * Calls to the NetShareSetInfo function ignore this member. Note that Windows does not support share-level
+         * security.
+         * For more information about controlling access to securable objects, see Access Control, Privileges, and
+         * Securable Objects.
          * NOTE: Bit masks are defined in LmAccess.Java
          */
         public int shi2_permissions;
 
         /**
-         * Specifies a DWORD value that indicates the maximum number of concurrent connections that the shared resource can accommodate.
+         * Specifies a DWORD value that indicates the maximum number of concurrent connections that the shared resource
+         * can accommodate.
          * The number of connections is unlimited if the value specified in this member is -1.
          */
         public int shi2_max_uses;
 
         /**
-         * Specifies a DWORD value that indicates the number of current connections to the resource. Calls to the NetShareSetInfo function ignore this member.
+         * Specifies a DWORD value that indicates the number of current connections to the resource. Calls to the
+         * NetShareSetInfo function ignore this member.
          */
         public int shi2_current_uses;
 
         /**
-         * Pointer to a Unicode string that contains the local path for the shared resource. For disks, this member is the path being shared.
-         * For print queues, this member is the name of the print queue being shared. Calls to the NetShareSetInfo function ignore this member.
+         * Pointer to a Unicode string that contains the local path for the shared resource. For disks, this member is
+         * the path being shared.
+         * For print queues, this member is the name of the print queue being shared. Calls to the NetShareSetInfo
+         * function ignore this member.
          */
         public String shi2_path;
 
         /**
-         * Pointer to a Unicode string that specifies the share's password (when the server is running with share-level security). If the server is
-         * running with user-level security, this member is ignored. Note that Windows does not support share-level security.
-         * This member can be no longer than SHPWLEN+1 bytes (including a terminating null character). Calls to the NetShareSetInfo function ignore this member.
+         * Pointer to a Unicode string that specifies the share's password (when the server is running with share-level
+         * security). If the server is
+         * running with user-level security, this member is ignored. Note that Windows does not support share-level
+         * security.
+         * This member can be no longer than SHPWLEN+1 bytes (including a terminating null character). Calls to the
+         * NetShareSetInfo function ignore this member.
          */
         public String shi2_passwd;
 
@@ -139,20 +160,30 @@ public interface LMShare {
     }
 
     /**
-     * Contains information about the shared resource, including name of the resource, type and permissions, number of connections, and other pertinent information.
+     * Contains information about the shared resource, including name of the resource, type and permissions, number of
+     * connections, and other pertinent information.
      */
-    @FieldOrder({"shi502_netname", "shi502_type", "shi502_remark",
-        "shi502_permissions", "shi502_max_uses", "shi502_current_uses",
-        "shi502_path", "shi502_passwd", "shi502_reserved",
-        "shi502_security_descriptor"})
+    @FieldOrder({
+        "shi502_netname",
+        "shi502_type",
+        "shi502_remark",
+        "shi502_permissions",
+        "shi502_max_uses",
+        "shi502_current_uses",
+        "shi502_path",
+        "shi502_passwd",
+        "shi502_reserved",
+        "shi502_security_descriptor" })
     public static class SHARE_INFO_502 extends Structure {
         /**
-         * Pointer to a Unicode string specifying the name of a shared resource. Calls to the NetShareSetInfo function ignore this member.
+         * Pointer to a Unicode string specifying the name of a shared resource. Calls to the NetShareSetInfo function
+         * ignore this member.
          */
         public String shi502_netname;
 
         /**
-         * A combination of values that specify the type of share. Calls to the NetShareSetInfo function ignore this member.
+         * A combination of values that specify the type of share. Calls to the NetShareSetInfo function ignore this
+         * member.
          * One of the following values may be specified. You can isolate these values by using the STYPE_MASK value.
          * STYPE_DISKTREE, STYPE_PRINTQ, STYPE_DEVICE, STYPE_IPC, STYPE_TEMPORARY, STYPE_SPECIAL
          */
@@ -164,35 +195,46 @@ public interface LMShare {
         public String shi502_remark;
 
         /**
-         * Specifies a DWORD value that indicates the shared resource's permissions for servers running with share-level security.
-         * This member is ignored on a server running user-level security. This member can be any of the following values.
-         * Calls to the NetShareSetInfo function ignore this member. Note that Windows does not support share-level security.
-         * For more information about controlling access to securable objects, see Access Control, Privileges, and Securable Objects.
+         * Specifies a DWORD value that indicates the shared resource's permissions for servers running with share-level
+         * security.
+         * This member is ignored on a server running user-level security. This member can be any of the following
+         * values.
+         * Calls to the NetShareSetInfo function ignore this member. Note that Windows does not support share-level
+         * security.
+         * For more information about controlling access to securable objects, see Access Control, Privileges, and
+         * Securable Objects.
          * NOTE: Bit masks are defined in LmAccess.Java
          */
         public int shi502_permissions;
 
         /**
-         * Specifies a DWORD value that indicates the maximum number of concurrent connections that the shared resource can accommodate.
+         * Specifies a DWORD value that indicates the maximum number of concurrent connections that the shared resource
+         * can accommodate.
          * The number of connections is unlimited if the value specified in this member is -1.
          */
         public int shi502_max_uses;
 
         /**
-         * Specifies a DWORD value that indicates the number of current connections to the resource. Calls to the NetShareSetInfo function ignore this member.
+         * Specifies a DWORD value that indicates the number of current connections to the resource. Calls to the
+         * NetShareSetInfo function ignore this member.
          */
         public int shi502_current_uses;
 
         /**
-         * Pointer to a Unicode string that contains the local path for the shared resource. For disks, this member is the path being shared.
-         * For print queues, this member is the name of the print queue being shared. Calls to the NetShareSetInfo function ignore this member.
+         * Pointer to a Unicode string that contains the local path for the shared resource. For disks, this member is
+         * the path being shared.
+         * For print queues, this member is the name of the print queue being shared. Calls to the NetShareSetInfo
+         * function ignore this member.
          */
         public String shi502_path;
 
         /**
-         * Pointer to a Unicode string that specifies the share's password (when the server is running with share-level security). If the server is
-         * running with user-level security, this member is ignored. Note that Windows does not support share-level security.
-         * This member can be no longer than SHPWLEN+1 bytes (including a terminating null character). Calls to the NetShareSetInfo function ignore this member.
+         * Pointer to a Unicode string that specifies the share's password (when the server is running with share-level
+         * security). If the server is
+         * running with user-level security, this member is ignored. Note that Windows does not support share-level
+         * security.
+         * This member can be no longer than SHPWLEN+1 bytes (including a terminating null character). Calls to the
+         * NetShareSetInfo function ignore this member.
          */
         public String shi502_passwd;
 

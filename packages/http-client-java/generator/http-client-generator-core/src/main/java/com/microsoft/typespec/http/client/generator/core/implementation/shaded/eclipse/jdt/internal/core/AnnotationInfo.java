@@ -20,21 +20,21 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class AnnotationInfo extends SourceRefElementInfo {
 
-	/*
-	 * The start position of this annotation's name in the its
-	 * openable's buffer.
-	 */
-	public int nameStart= -1;
+    /*
+     * The start position of this annotation's name in the its
+     * openable's buffer.
+     */
+    public int nameStart = -1;
 
-	/*
-	 * The last position of this annotation in the its
-	 * openable's buffer.
-	 */
-	public int nameEnd= -1;
+    /*
+     * The last position of this annotation in the its
+     * openable's buffer.
+     */
+    public int nameEnd = -1;
 
-	/*
-	 * The member-value pairs of this annotation.
-	 */
-	public IMemberValuePair[] members;
+    /*
+     * The member-value pairs of this annotation.
+     */
+    public IMemberValuePair[] members;
 
 }

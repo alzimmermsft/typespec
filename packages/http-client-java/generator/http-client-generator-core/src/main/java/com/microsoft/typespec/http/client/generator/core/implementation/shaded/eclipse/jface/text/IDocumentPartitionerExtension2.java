@@ -14,7 +14,6 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text;
 
-
 /**
  * Extension interface for {@link IDocumentPartitioner}.
  * <p>
@@ -38,85 +37,84 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IDocumentPartitionerExtension2 {
 
-	/**
-	 * Returns the position categories that this partitioners uses in order to manage
-	 * the partitioning information of the documents. Returns <code>null</code> if
-	 * no position category is used.
-	 *
-	 * @return the position categories used to manage partitioning information or <code>null</code>
-	 */
-	String[] getManagingPositionCategories();
+    /**
+     * Returns the position categories that this partitioners uses in order to manage
+     * the partitioning information of the documents. Returns <code>null</code> if
+     * no position category is used.
+     *
+     * @return the position categories used to manage partitioning information or <code>null</code>
+     */
+    String[] getManagingPositionCategories();
 
+    /* zero-length partition support */
 
-	/* zero-length partition support */
+    /**
+     * Returns the content type of the partition containing the given offset in
+     * the connected document. There must be a document connected to this
+     * partitioner.
+     * <p>
+     * If <code>preferOpenPartitions</code> is <code>true</code>,
+     * precedence is given to an open partition ending at <code>offset</code>
+     * over a delimited partition starting at <code>offset</code>.
+     * <p>
+     * This method replaces {@link IDocumentPartitioner#getContentType(int)}and
+     * behaves like it when <code>prepreferOpenPartitions</code> is
+     * <code>false</code>, i.e. precedence is always given to the partition
+     * that does not end at <code>offset</code>.
+     * </p>
+     *
+     * @param offset the offset in the connected document
+     * @param preferOpenPartitions <code>true</code> if precedence should be
+     * given to a open partition ending at <code>offset</code> over
+     * a delimited partition starting at <code>offset</code>
+     * @return the content type of the offset's partition
+     */
+    String getContentType(int offset, boolean preferOpenPartitions);
 
-	/**
-	 * Returns the content type of the partition containing the given offset in
-	 * the connected document. There must be a document connected to this
-	 * partitioner.
-	 * <p>
-	 * If <code>preferOpenPartitions</code> is <code>true</code>,
-	 * precedence is given to an open partition ending at <code>offset</code>
-	 * over a delimited partition starting at <code>offset</code>.
-	 * <p>
-	 * This method replaces {@link IDocumentPartitioner#getContentType(int)}and
-	 * behaves like it when <code>prepreferOpenPartitions</code> is
-	 * <code>false</code>, i.e. precedence is always given to the partition
-	 * that does not end at <code>offset</code>.
-	 * </p>
-	 *
-	 * @param offset the offset in the connected document
-	 * @param preferOpenPartitions <code>true</code> if precedence should be
-	 *            given to a open partition ending at <code>offset</code> over
-	 *            a delimited partition starting at <code>offset</code>
-	 * @return the content type of the offset's partition
-	 */
-	String getContentType(int offset, boolean preferOpenPartitions);
+    /**
+     * Returns the partition containing the given offset of the connected
+     * document. There must be a document connected to this partitioner.
+     * <p>
+     * If <code>preferOpenPartitions</code> is <code>true</code>,
+     * precedence is given to an open partition ending at <code>offset</code>
+     * over a delimited partition starting at <code>offset</code>.</p>
+     * <p>
+     * This method replaces {@link IDocumentPartitioner#getPartition(int)}and
+     * behaves like it when <code>preferOpenPartitions</code> is <code>false
+     * </code>, i.e. precedence is always given to the partition that does not
+     * end at <code>offset</code>.
+     * </p>
+     *
+     * @param offset the offset for which to determine the partition
+     * @param preferOpenPartitions <code>true</code> if precedence should be
+     * given to a open partition ending at <code>offset</code> over
+     * a delimited partition starting at <code>offset</code>
+     * @return the partition containing the offset
+     */
+    ITypedRegion getPartition(int offset, boolean preferOpenPartitions);
 
-	/**
-	 * Returns the partition containing the given offset of the connected
-	 * document. There must be a document connected to this partitioner.
-	 * <p>
-	 * If <code>preferOpenPartitions</code> is <code>true</code>,
-	 * precedence is given to an open partition ending at <code>offset</code>
-	 * over a delimited partition starting at <code>offset</code>.</p>
-	 * <p>
-	 * This method replaces {@link IDocumentPartitioner#getPartition(int)}and
-	 * behaves like it when <code>preferOpenPartitions</code> is <code>false
-	 * </code>, i.e. precedence is always given to the partition that does not
-	 * end at <code>offset</code>.
-	 * </p>
-	 *
-	 * @param offset the offset for which to determine the partition
-	 * @param preferOpenPartitions <code>true</code> if precedence should be
-	 *            given to a open partition ending at <code>offset</code> over
-	 *            a delimited partition starting at <code>offset</code>
-	 * @return the partition containing the offset
-	 */
-	ITypedRegion getPartition(int offset, boolean preferOpenPartitions);
-
-	/**
-	 * Returns the partitioning of the given range of the connected document.
-	 * There must be a document connected to this partitioner.
-	 * <p>
-	 * If <code>includeZeroLengthPartitions</code> is <code>true</code>, a
-	 * zero-length partition of an open partition type (usually the default
-	 * partition) is included between two delimited partitions. If it is
-	 * <code>false</code>, no zero-length partitions are included.
-	 * </p>
-	 * <p>
-	 * This method replaces
-	 * {@link IDocumentPartitioner#computePartitioning(int, int)}and behaves
-	 * like it when <code>includeZeroLengthPartitions</code> is
-	 * <code>false</code>.
-	 * </p>
-	 *
-	 * @param offset the offset of the range of interest
-	 * @param length the length of the range of interest
-	 * @param includeZeroLengthPartitions <code>true</code> if zero-length
-	 *            partitions should be returned as part of the computed
-	 *            partitioning
-	 * @return the partitioning of the range
-	 */
-	ITypedRegion[] computePartitioning(int offset, int length, boolean includeZeroLengthPartitions);
+    /**
+     * Returns the partitioning of the given range of the connected document.
+     * There must be a document connected to this partitioner.
+     * <p>
+     * If <code>includeZeroLengthPartitions</code> is <code>true</code>, a
+     * zero-length partition of an open partition type (usually the default
+     * partition) is included between two delimited partitions. If it is
+     * <code>false</code>, no zero-length partitions are included.
+     * </p>
+     * <p>
+     * This method replaces
+     * {@link IDocumentPartitioner#computePartitioning(int, int)}and behaves
+     * like it when <code>includeZeroLengthPartitions</code> is
+     * <code>false</code>.
+     * </p>
+     *
+     * @param offset the offset of the range of interest
+     * @param length the length of the range of interest
+     * @param includeZeroLengthPartitions <code>true</code> if zero-length
+     * partitions should be returned as part of the computed
+     * partitioning
+     * @return the partitioning of the range
+     */
+    ITypedRegion[] computePartitioning(int offset, int length, boolean includeZeroLengthPartitions);
 }

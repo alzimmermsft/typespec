@@ -26,9 +26,11 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 /** Provides context for converting a native value into a Java type. */
 public class FromNativeContext {
     private Class<?> type;
+
     FromNativeContext(Class<?> javaType) {
         this.type = javaType;
     }
+
     /** The desired Java type of the result. */
     public Class<?> getTargetType() {
         return type;

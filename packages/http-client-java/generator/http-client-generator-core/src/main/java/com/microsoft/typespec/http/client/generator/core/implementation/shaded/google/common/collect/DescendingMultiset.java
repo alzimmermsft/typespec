@@ -16,15 +16,15 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.concurrent.LazyInit;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.j2objc.annotations.WeakOuter;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NavigableSet;
 import java.util.Set;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A skeleton implementation of a descending multiset. Only needs {@code forwardMultiset()} and
@@ -36,134 +36,135 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @ElementTypesAreNonnullByDefault
 abstract class DescendingMultiset<E extends @Nullable Object> extends ForwardingMultiset<E>
     implements SortedMultiset<E> {
-  abstract SortedMultiset<E> forwardMultiset();
+    abstract SortedMultiset<E> forwardMultiset();
 
-  @LazyInit @CheckForNull private transient Comparator<? super E> comparator;
+    @LazyInit
+    @CheckForNull
+    private transient Comparator<? super E> comparator;
 
-  @Override
-  public Comparator<? super E> comparator() {
-    Comparator<? super E> result = comparator;
-    if (result == null) {
-      return comparator = Ordering.from(forwardMultiset().comparator()).<E>reverse();
+    @Override
+    public Comparator<? super E> comparator() {
+        Comparator<? super E> result = comparator;
+        if (result == null) {
+            return comparator = Ordering.from(forwardMultiset().comparator()).<E>reverse();
+        }
+        return result;
     }
-    return result;
-  }
 
-  @LazyInit @CheckForNull private transient NavigableSet<E> elementSet;
+    @LazyInit
+    @CheckForNull
+    private transient NavigableSet<E> elementSet;
 
-  @Override
-  public NavigableSet<E> elementSet() {
-    NavigableSet<E> result = elementSet;
-    if (result == null) {
-      return elementSet = new SortedMultisets.NavigableElementSet<>(this);
+    @Override
+    public NavigableSet<E> elementSet() {
+        NavigableSet<E> result = elementSet;
+        if (result == null) {
+            return elementSet = new SortedMultisets.NavigableElementSet<>(this);
+        }
+        return result;
     }
-    return result;
-  }
 
-  @Override
-  @CheckForNull
-  public Entry<E> pollFirstEntry() {
-    return forwardMultiset().pollLastEntry();
-  }
-
-  @Override
-  @CheckForNull
-  public Entry<E> pollLastEntry() {
-    return forwardMultiset().pollFirstEntry();
-  }
-
-  @Override
-  public SortedMultiset<E> headMultiset(@ParametricNullness E toElement, BoundType boundType) {
-    return forwardMultiset().tailMultiset(toElement, boundType).descendingMultiset();
-  }
-
-  @Override
-  public SortedMultiset<E> subMultiset(
-      @ParametricNullness E fromElement,
-      BoundType fromBoundType,
-      @ParametricNullness E toElement,
-      BoundType toBoundType) {
-    return forwardMultiset()
-        .subMultiset(toElement, toBoundType, fromElement, fromBoundType)
-        .descendingMultiset();
-  }
-
-  @Override
-  public SortedMultiset<E> tailMultiset(@ParametricNullness E fromElement, BoundType boundType) {
-    return forwardMultiset().headMultiset(fromElement, boundType).descendingMultiset();
-  }
-
-  @Override
-  protected Multiset<E> delegate() {
-    return forwardMultiset();
-  }
-
-  @Override
-  public SortedMultiset<E> descendingMultiset() {
-    return forwardMultiset();
-  }
-
-  @Override
-  @CheckForNull
-  public Entry<E> firstEntry() {
-    return forwardMultiset().lastEntry();
-  }
-
-  @Override
-  @CheckForNull
-  public Entry<E> lastEntry() {
-    return forwardMultiset().firstEntry();
-  }
-
-  abstract Iterator<Entry<E>> entryIterator();
-
-  @LazyInit @CheckForNull private transient Set<Entry<E>> entrySet;
-
-  @Override
-  public Set<Entry<E>> entrySet() {
-    Set<Entry<E>> result = entrySet;
-    return (result == null) ? entrySet = createEntrySet() : result;
-  }
-
-  Set<Entry<E>> createEntrySet() {
-    @WeakOuter
-    class EntrySetImpl extends Multisets.EntrySet<E> {
-      @Override
-      Multiset<E> multiset() {
-        return DescendingMultiset.this;
-      }
-
-      @Override
-      public Iterator<Entry<E>> iterator() {
-        return entryIterator();
-      }
-
-      @Override
-      public int size() {
-        return forwardMultiset().entrySet().size();
-      }
+    @Override
+    @CheckForNull
+    public Entry<E> pollFirstEntry() {
+        return forwardMultiset().pollLastEntry();
     }
-    return new EntrySetImpl();
-  }
 
-  @Override
-  public Iterator<E> iterator() {
-    return Multisets.iteratorImpl(this);
-  }
+    @Override
+    @CheckForNull
+    public Entry<E> pollLastEntry() {
+        return forwardMultiset().pollFirstEntry();
+    }
 
-  @Override
-  public @Nullable Object[] toArray() {
-    return standardToArray();
-  }
+    @Override
+    public SortedMultiset<E> headMultiset(@ParametricNullness E toElement, BoundType boundType) {
+        return forwardMultiset().tailMultiset(toElement, boundType).descendingMultiset();
+    }
 
-  @Override
-  @SuppressWarnings("nullness") // b/192354773 in our checker affects toArray declarations
-  public <T extends @Nullable Object> T[] toArray(T[] array) {
-    return standardToArray(array);
-  }
+    @Override
+    public SortedMultiset<E> subMultiset(@ParametricNullness E fromElement, BoundType fromBoundType,
+        @ParametricNullness E toElement, BoundType toBoundType) {
+        return forwardMultiset().subMultiset(toElement, toBoundType, fromElement, fromBoundType).descendingMultiset();
+    }
 
-  @Override
-  public String toString() {
-    return entrySet().toString();
-  }
+    @Override
+    public SortedMultiset<E> tailMultiset(@ParametricNullness E fromElement, BoundType boundType) {
+        return forwardMultiset().headMultiset(fromElement, boundType).descendingMultiset();
+    }
+
+    @Override
+    protected Multiset<E> delegate() {
+        return forwardMultiset();
+    }
+
+    @Override
+    public SortedMultiset<E> descendingMultiset() {
+        return forwardMultiset();
+    }
+
+    @Override
+    @CheckForNull
+    public Entry<E> firstEntry() {
+        return forwardMultiset().lastEntry();
+    }
+
+    @Override
+    @CheckForNull
+    public Entry<E> lastEntry() {
+        return forwardMultiset().firstEntry();
+    }
+
+    abstract Iterator<Entry<E>> entryIterator();
+
+    @LazyInit
+    @CheckForNull
+    private transient Set<Entry<E>> entrySet;
+
+    @Override
+    public Set<Entry<E>> entrySet() {
+        Set<Entry<E>> result = entrySet;
+        return (result == null) ? entrySet = createEntrySet() : result;
+    }
+
+    Set<Entry<E>> createEntrySet() {
+        @WeakOuter
+        class EntrySetImpl extends Multisets.EntrySet<E> {
+            @Override
+            Multiset<E> multiset() {
+                return DescendingMultiset.this;
+            }
+
+            @Override
+            public Iterator<Entry<E>> iterator() {
+                return entryIterator();
+            }
+
+            @Override
+            public int size() {
+                return forwardMultiset().entrySet().size();
+            }
+        }
+        return new EntrySetImpl();
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return Multisets.iteratorImpl(this);
+    }
+
+    @Override
+    public @Nullable Object[] toArray() {
+        return standardToArray();
+    }
+
+    @Override
+    @SuppressWarnings("nullness") // b/192354773 in our checker affects toArray declarations
+    public <T extends @Nullable Object> T[] toArray(T[] array) {
+        return standardToArray(array);
+    }
+
+    @Override
+    public String toString() {
+        return entrySet().toString();
+    }
 }

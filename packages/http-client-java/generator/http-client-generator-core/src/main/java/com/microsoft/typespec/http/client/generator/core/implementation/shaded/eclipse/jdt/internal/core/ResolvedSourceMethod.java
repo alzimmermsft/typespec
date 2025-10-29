@@ -19,46 +19,47 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public class ResolvedSourceMethod extends SourceMethod {
 
-	private final String uniqueKey;
+    private final String uniqueKey;
 
-	/*
-	 * See class comments.
-	 */
-	public ResolvedSourceMethod(JavaElement parent, String name, String[] parameterTypes, String uniqueKey) {
-		super(parent, name, parameterTypes);
-		this.uniqueKey = uniqueKey;
-	}
+    /*
+     * See class comments.
+     */
+    public ResolvedSourceMethod(JavaElement parent, String name, String[] parameterTypes, String uniqueKey) {
+        super(parent, name, parameterTypes);
+        this.uniqueKey = uniqueKey;
+    }
 
-	public ResolvedSourceMethod(JavaElement parent, String name, String[] parameterTypes, String uniqueKey, int occurrenceCount) {
-		super(parent, name, parameterTypes, occurrenceCount);
-		this.uniqueKey = uniqueKey;
-	}
+    public ResolvedSourceMethod(JavaElement parent, String name, String[] parameterTypes, String uniqueKey,
+        int occurrenceCount) {
+        super(parent, name, parameterTypes, occurrenceCount);
+        this.uniqueKey = uniqueKey;
+    }
 
-	@Override
-	public String getKey() {
-		return this.uniqueKey;
-	}
+    @Override
+    public String getKey() {
+        return this.uniqueKey;
+    }
 
-	@Override
-	public boolean isResolved() {
-		return true;
-	}
+    @Override
+    public boolean isResolved() {
+        return true;
+    }
 
-	/**
-	 * for debugging only
-	 */
-	@Override
-	protected void toStringInfo(int tab, StringBuilder buffer, Object info, boolean showResolvedInfo) {
-		super.toStringInfo(tab, buffer, info, showResolvedInfo);
-		if (showResolvedInfo) {
-			buffer.append(" {key="); //$NON-NLS-1$
-			buffer.append(this.getKey());
-			buffer.append("}"); //$NON-NLS-1$
-		}
-	}
+    /**
+     * for debugging only
+     */
+    @Override
+    protected void toStringInfo(int tab, StringBuilder buffer, Object info, boolean showResolvedInfo) {
+        super.toStringInfo(tab, buffer, info, showResolvedInfo);
+        if (showResolvedInfo) {
+            buffer.append(" {key="); //$NON-NLS-1$
+            buffer.append(this.getKey());
+            buffer.append("}"); //$NON-NLS-1$
+        }
+    }
 
-	@Override
-	public SourceMethod unresolved() {
-		return new SourceMethod(this.getParent(), this.name, this.parameterTypes, this.getOccurrenceCount());
-	}
+    @Override
+    public SourceMethod unresolved() {
+        return new SourceMethod(this.getParent(), this.name, this.parameterTypes, this.getOccurrenceCount());
+    }
 }

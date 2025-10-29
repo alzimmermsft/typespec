@@ -16,8 +16,8 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 
 /**
  * A supertype for filtered {@link SetMultimap} implementations.
@@ -28,6 +28,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @ElementTypesAreNonnullByDefault
 interface FilteredSetMultimap<K extends @Nullable Object, V extends @Nullable Object>
     extends FilteredMultimap<K, V>, SetMultimap<K, V> {
-  @Override
-  SetMultimap<K, V> unfiltered();
+    @Override
+    SetMultimap<K, V> unfiltered();
 }

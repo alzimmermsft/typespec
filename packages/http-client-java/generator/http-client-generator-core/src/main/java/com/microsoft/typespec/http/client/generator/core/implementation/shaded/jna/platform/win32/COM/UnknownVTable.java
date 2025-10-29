@@ -23,8 +23,6 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM;
 
-import java.util.List;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure.FieldOrder;
@@ -33,7 +31,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.PointerByReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.win32.StdCallLibrary;
 
-@FieldOrder({"QueryInterfaceCallback", "AddRefCallback", "ReleaseCallback"})
+@FieldOrder({ "QueryInterfaceCallback", "AddRefCallback", "ReleaseCallback" })
 public class UnknownVTable extends Structure {
     public static class ByReference extends UnknownVTable implements Structure.ByReference {
     }

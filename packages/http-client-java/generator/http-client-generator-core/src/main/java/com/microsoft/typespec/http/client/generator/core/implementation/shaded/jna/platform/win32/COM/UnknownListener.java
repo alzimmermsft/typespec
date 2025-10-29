@@ -30,7 +30,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HRESULT;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.PointerByReference;
 
-@FieldOrder({"vtbl"})
+@FieldOrder({ "vtbl" })
 public class UnknownListener extends Structure {
     public UnknownVTable.ByReference vtbl;
 

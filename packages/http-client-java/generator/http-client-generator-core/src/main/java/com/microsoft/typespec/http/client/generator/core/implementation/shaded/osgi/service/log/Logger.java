@@ -42,8 +42,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  * 
  * <pre>
  * logger.info("Found service {}.", serviceReference, serviceReference);
- * logger.warn("Something named {} happened.", name, serviceReference,
- * 		throwable);
+ * logger.warn("Something named {} happened.", name, serviceReference, throwable);
  * logger.error("Failed.", exception);
  * </pre>
  * 
@@ -53,292 +52,292 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 @ProviderType
 public interface Logger {
-	/**
-	 * Root Logger Name.
-	 */
-	String ROOT_LOGGER_NAME = "ROOT";
+    /**
+     * Root Logger Name.
+     */
+    String ROOT_LOGGER_NAME = "ROOT";
 
-	/**
-	 * Return the name of this Logger.
-	 * 
-	 * @return The name of this Logger.
-	 */
-	String getName();
+    /**
+     * Return the name of this Logger.
+     * 
+     * @return The name of this Logger.
+     */
+    String getName();
 
-	/**
-	 * Is logging enabled for the {@link LogLevel#TRACE} level?
-	 * 
-	 * @return {@code true} if logging is enabled for the {@link LogLevel#TRACE}
-	 *         level.
-	 */
-	boolean isTraceEnabled();
+    /**
+     * Is logging enabled for the {@link LogLevel#TRACE} level?
+     * 
+     * @return {@code true} if logging is enabled for the {@link LogLevel#TRACE}
+     * level.
+     */
+    boolean isTraceEnabled();
 
-	/**
-	 * Log a message at the {@link LogLevel#TRACE} level.
-	 * 
-	 * @param message The message to log.
-	 */
-	void trace(String message);
+    /**
+     * Log a message at the {@link LogLevel#TRACE} level.
+     * 
+     * @param message The message to log.
+     */
+    void trace(String message);
 
-	/**
-	 * Log a formatted message at the {@link LogLevel#TRACE} level.
-	 * 
-	 * @param format The format of the message to log.
-	 * @param arg The argument to format into the message.
-	 */
-	void trace(String format, Object arg);
+    /**
+     * Log a formatted message at the {@link LogLevel#TRACE} level.
+     * 
+     * @param format The format of the message to log.
+     * @param arg The argument to format into the message.
+     */
+    void trace(String format, Object arg);
 
-	/**
-	 * Log a formatted message at the {@link LogLevel#TRACE} level.
-	 * 
-	 * @param format The format of the message to log.
-	 * @param arg1 The first argument to format into the message.
-	 * @param arg2 The second argument to format into the message.
-	 */
-	void trace(String format, Object arg1, Object arg2);
+    /**
+     * Log a formatted message at the {@link LogLevel#TRACE} level.
+     * 
+     * @param format The format of the message to log.
+     * @param arg1 The first argument to format into the message.
+     * @param arg2 The second argument to format into the message.
+     */
+    void trace(String format, Object arg1, Object arg2);
 
-	/**
-	 * Log a formatted message at the {@link LogLevel#TRACE} level.
-	 * 
-	 * @param format The format of the message to log.
-	 * @param arguments The arguments to format into the message.
-	 */
-	void trace(String format, Object... arguments);
+    /**
+     * Log a formatted message at the {@link LogLevel#TRACE} level.
+     * 
+     * @param format The format of the message to log.
+     * @param arguments The arguments to format into the message.
+     */
+    void trace(String format, Object... arguments);
 
-	/**
-	 * Perform the specified operation if logging enabled for the
-	 * {@link LogLevel#TRACE} level.
-	 * 
-	 * @param consumer The operation to perform on this Logger.
-	 * @throws E An exception thrown by the operation.
-	 */
-	<E extends Exception> void trace(LoggerConsumer<E> consumer) throws E;
+    /**
+     * Perform the specified operation if logging enabled for the
+     * {@link LogLevel#TRACE} level.
+     * 
+     * @param consumer The operation to perform on this Logger.
+     * @throws E An exception thrown by the operation.
+     */
+    <E extends Exception> void trace(LoggerConsumer<E> consumer) throws E;
 
-	/**
-	 * Is logging enabled for the {@link LogLevel#DEBUG} level?
-	 * 
-	 * @return {@code true} if logging is enabled for the {@link LogLevel#DEBUG}
-	 *         level.
-	 */
-	boolean isDebugEnabled();
+    /**
+     * Is logging enabled for the {@link LogLevel#DEBUG} level?
+     * 
+     * @return {@code true} if logging is enabled for the {@link LogLevel#DEBUG}
+     * level.
+     */
+    boolean isDebugEnabled();
 
-	/**
-	 * Log a message at the {@link LogLevel#DEBUG} level.
-	 * 
-	 * @param message The message to log.
-	 */
-	void debug(String message);
+    /**
+     * Log a message at the {@link LogLevel#DEBUG} level.
+     * 
+     * @param message The message to log.
+     */
+    void debug(String message);
 
-	/**
-	 * Log a formatted message at the {@link LogLevel#DEBUG} level.
-	 * 
-	 * @param format The format of the message to log.
-	 * @param arg The argument to format into the message.
-	 */
-	void debug(String format, Object arg);
+    /**
+     * Log a formatted message at the {@link LogLevel#DEBUG} level.
+     * 
+     * @param format The format of the message to log.
+     * @param arg The argument to format into the message.
+     */
+    void debug(String format, Object arg);
 
-	/**
-	 * Log a formatted message at the {@link LogLevel#DEBUG} level.
-	 * 
-	 * @param format The format of the message to log.
-	 * @param arg1 The first argument to format into the message.
-	 * @param arg2 The second argument to format into the message.
-	 */
-	void debug(String format, Object arg1, Object arg2);
+    /**
+     * Log a formatted message at the {@link LogLevel#DEBUG} level.
+     * 
+     * @param format The format of the message to log.
+     * @param arg1 The first argument to format into the message.
+     * @param arg2 The second argument to format into the message.
+     */
+    void debug(String format, Object arg1, Object arg2);
 
-	/**
-	 * Log a formatted message at the {@link LogLevel#DEBUG} level.
-	 * 
-	 * @param format The format of the message to log.
-	 * @param arguments The arguments to format into the message.
-	 */
-	void debug(String format, Object... arguments);
+    /**
+     * Log a formatted message at the {@link LogLevel#DEBUG} level.
+     * 
+     * @param format The format of the message to log.
+     * @param arguments The arguments to format into the message.
+     */
+    void debug(String format, Object... arguments);
 
-	/**
-	 * Perform the specified operation if logging enabled for the
-	 * {@link LogLevel#DEBUG} level.
-	 * 
-	 * @param consumer The operation to perform on this Logger.
-	 * @throws E An exception thrown by the operation.
-	 */
-	<E extends Exception> void debug(LoggerConsumer<E> consumer) throws E;
+    /**
+     * Perform the specified operation if logging enabled for the
+     * {@link LogLevel#DEBUG} level.
+     * 
+     * @param consumer The operation to perform on this Logger.
+     * @throws E An exception thrown by the operation.
+     */
+    <E extends Exception> void debug(LoggerConsumer<E> consumer) throws E;
 
-	/**
-	 * Is logging enabled for the {@link LogLevel#INFO} level?
-	 * 
-	 * @return {@code true} if logging is enabled for the {@link LogLevel#INFO}
-	 *         level.
-	 */
-	boolean isInfoEnabled();
+    /**
+     * Is logging enabled for the {@link LogLevel#INFO} level?
+     * 
+     * @return {@code true} if logging is enabled for the {@link LogLevel#INFO}
+     * level.
+     */
+    boolean isInfoEnabled();
 
-	/**
-	 * Log a message at the {@link LogLevel#INFO} level.
-	 * 
-	 * @param message The message to log.
-	 */
-	void info(String message);
+    /**
+     * Log a message at the {@link LogLevel#INFO} level.
+     * 
+     * @param message The message to log.
+     */
+    void info(String message);
 
-	/**
-	 * Log a formatted message at the {@link LogLevel#INFO} level.
-	 * 
-	 * @param format The format of the message to log.
-	 * @param arg The argument to format into the message.
-	 */
-	void info(String format, Object arg);
+    /**
+     * Log a formatted message at the {@link LogLevel#INFO} level.
+     * 
+     * @param format The format of the message to log.
+     * @param arg The argument to format into the message.
+     */
+    void info(String format, Object arg);
 
-	/**
-	 * Log a formatted message at the {@link LogLevel#INFO} level.
-	 * 
-	 * @param format The format of the message to log.
-	 * @param arg1 The first argument to format into the message.
-	 * @param arg2 The second argument to format into the message.
-	 */
-	void info(String format, Object arg1, Object arg2);
+    /**
+     * Log a formatted message at the {@link LogLevel#INFO} level.
+     * 
+     * @param format The format of the message to log.
+     * @param arg1 The first argument to format into the message.
+     * @param arg2 The second argument to format into the message.
+     */
+    void info(String format, Object arg1, Object arg2);
 
-	/**
-	 * Log a formatted message at the {@link LogLevel#INFO} level.
-	 * 
-	 * @param format The format of the message to log.
-	 * @param arguments The arguments to format into the message.
-	 */
-	void info(String format, Object... arguments);
+    /**
+     * Log a formatted message at the {@link LogLevel#INFO} level.
+     * 
+     * @param format The format of the message to log.
+     * @param arguments The arguments to format into the message.
+     */
+    void info(String format, Object... arguments);
 
-	/**
-	 * Perform the specified operation if logging enabled for the
-	 * {@link LogLevel#INFO} level.
-	 * 
-	 * @param consumer The operation to perform on this Logger.
-	 * @throws E An exception thrown by the operation.
-	 */
-	<E extends Exception> void info(LoggerConsumer<E> consumer) throws E;
+    /**
+     * Perform the specified operation if logging enabled for the
+     * {@link LogLevel#INFO} level.
+     * 
+     * @param consumer The operation to perform on this Logger.
+     * @throws E An exception thrown by the operation.
+     */
+    <E extends Exception> void info(LoggerConsumer<E> consumer) throws E;
 
-	/**
-	 * Is logging enabled for the {@link LogLevel#WARN} level?
-	 * 
-	 * @return {@code true} if logging is enabled for the {@link LogLevel#WARN}
-	 *         level.
-	 */
-	boolean isWarnEnabled();
+    /**
+     * Is logging enabled for the {@link LogLevel#WARN} level?
+     * 
+     * @return {@code true} if logging is enabled for the {@link LogLevel#WARN}
+     * level.
+     */
+    boolean isWarnEnabled();
 
-	/**
-	 * Log a message at the {@link LogLevel#WARN} level.
-	 * 
-	 * @param message The message to log.
-	 */
-	void warn(String message);
+    /**
+     * Log a message at the {@link LogLevel#WARN} level.
+     * 
+     * @param message The message to log.
+     */
+    void warn(String message);
 
-	/**
-	 * Log a formatted message at the {@link LogLevel#WARN} level.
-	 * 
-	 * @param format The format of the message to log.
-	 * @param arg The argument to format into the message.
-	 */
-	void warn(String format, Object arg);
+    /**
+     * Log a formatted message at the {@link LogLevel#WARN} level.
+     * 
+     * @param format The format of the message to log.
+     * @param arg The argument to format into the message.
+     */
+    void warn(String format, Object arg);
 
-	/**
-	 * Log a formatted message at the {@link LogLevel#WARN} level.
-	 * 
-	 * @param format The format of the message to log.
-	 * @param arg1 The first argument to format into the message.
-	 * @param arg2 The second argument to format into the message.
-	 */
-	void warn(String format, Object arg1, Object arg2);
+    /**
+     * Log a formatted message at the {@link LogLevel#WARN} level.
+     * 
+     * @param format The format of the message to log.
+     * @param arg1 The first argument to format into the message.
+     * @param arg2 The second argument to format into the message.
+     */
+    void warn(String format, Object arg1, Object arg2);
 
-	/**
-	 * Log a formatted message at the {@link LogLevel#WARN} level.
-	 * 
-	 * @param format The format of the message to log.
-	 * @param arguments The arguments to format into the message.
-	 */
-	void warn(String format, Object... arguments);
+    /**
+     * Log a formatted message at the {@link LogLevel#WARN} level.
+     * 
+     * @param format The format of the message to log.
+     * @param arguments The arguments to format into the message.
+     */
+    void warn(String format, Object... arguments);
 
-	/**
-	 * Perform the specified operation if logging enabled for the
-	 * {@link LogLevel#WARN} level.
-	 * 
-	 * @param consumer The operation to perform on this Logger.
-	 * @throws E An exception thrown by the operation.
-	 */
-	<E extends Exception> void warn(LoggerConsumer<E> consumer) throws E;
+    /**
+     * Perform the specified operation if logging enabled for the
+     * {@link LogLevel#WARN} level.
+     * 
+     * @param consumer The operation to perform on this Logger.
+     * @throws E An exception thrown by the operation.
+     */
+    <E extends Exception> void warn(LoggerConsumer<E> consumer) throws E;
 
-	/**
-	 * Is logging enabled for the {@link LogLevel#ERROR} level?
-	 * 
-	 * @return {@code true} if logging is enabled for the {@link LogLevel#ERROR}
-	 *         level.
-	 */
-	boolean isErrorEnabled();
+    /**
+     * Is logging enabled for the {@link LogLevel#ERROR} level?
+     * 
+     * @return {@code true} if logging is enabled for the {@link LogLevel#ERROR}
+     * level.
+     */
+    boolean isErrorEnabled();
 
-	/**
-	 * Log a message at the {@link LogLevel#ERROR} level.
-	 * 
-	 * @param message The message to log.
-	 */
-	void error(String message);
+    /**
+     * Log a message at the {@link LogLevel#ERROR} level.
+     * 
+     * @param message The message to log.
+     */
+    void error(String message);
 
-	/**
-	 * Log a formatted message at the {@link LogLevel#ERROR} level.
-	 * 
-	 * @param format The format of the message to log.
-	 * @param arg The argument to format into the message.
-	 */
-	void error(String format, Object arg);
+    /**
+     * Log a formatted message at the {@link LogLevel#ERROR} level.
+     * 
+     * @param format The format of the message to log.
+     * @param arg The argument to format into the message.
+     */
+    void error(String format, Object arg);
 
-	/**
-	 * Log a formatted message at the {@link LogLevel#ERROR} level.
-	 * 
-	 * @param format The format of the message to log.
-	 * @param arg1 The first argument to format into the message.
-	 * @param arg2 The second argument to format into the message.
-	 */
-	void error(String format, Object arg1, Object arg2);
+    /**
+     * Log a formatted message at the {@link LogLevel#ERROR} level.
+     * 
+     * @param format The format of the message to log.
+     * @param arg1 The first argument to format into the message.
+     * @param arg2 The second argument to format into the message.
+     */
+    void error(String format, Object arg1, Object arg2);
 
-	/**
-	 * Log a formatted message at the {@link LogLevel#ERROR} level.
-	 * 
-	 * @param format The format of the message to log.
-	 * @param arguments The arguments to format into the message.
-	 */
-	void error(String format, Object... arguments);
+    /**
+     * Log a formatted message at the {@link LogLevel#ERROR} level.
+     * 
+     * @param format The format of the message to log.
+     * @param arguments The arguments to format into the message.
+     */
+    void error(String format, Object... arguments);
 
-	/**
-	 * Perform the specified operation if logging enabled for the
-	 * {@link LogLevel#ERROR} level.
-	 * 
-	 * @param consumer The operation to perform on this Logger.
-	 * @throws E An exception thrown by the operation.
-	 */
-	<E extends Exception> void error(LoggerConsumer<E> consumer) throws E;
+    /**
+     * Perform the specified operation if logging enabled for the
+     * {@link LogLevel#ERROR} level.
+     * 
+     * @param consumer The operation to perform on this Logger.
+     * @throws E An exception thrown by the operation.
+     */
+    <E extends Exception> void error(LoggerConsumer<E> consumer) throws E;
 
-	/**
-	 * Log a message at the {@link LogLevel#AUDIT} level.
-	 * 
-	 * @param message The message to log.
-	 */
-	void audit(String message);
+    /**
+     * Log a message at the {@link LogLevel#AUDIT} level.
+     * 
+     * @param message The message to log.
+     */
+    void audit(String message);
 
-	/**
-	 * Log a formatted message at the {@link LogLevel#AUDIT} level.
-	 * 
-	 * @param format The format of the message to log.
-	 * @param arg The argument to format into the message.
-	 */
-	void audit(String format, Object arg);
+    /**
+     * Log a formatted message at the {@link LogLevel#AUDIT} level.
+     * 
+     * @param format The format of the message to log.
+     * @param arg The argument to format into the message.
+     */
+    void audit(String format, Object arg);
 
-	/**
-	 * Log a formatted message at the {@link LogLevel#AUDIT} level.
-	 * 
-	 * @param format The format of the message to log.
-	 * @param arg1 The first argument to format into the message.
-	 * @param arg2 The second argument to format into the message.
-	 */
-	void audit(String format, Object arg1, Object arg2);
+    /**
+     * Log a formatted message at the {@link LogLevel#AUDIT} level.
+     * 
+     * @param format The format of the message to log.
+     * @param arg1 The first argument to format into the message.
+     * @param arg2 The second argument to format into the message.
+     */
+    void audit(String format, Object arg1, Object arg2);
 
-	/**
-	 * Log a formatted message at the {@link LogLevel#AUDIT} level.
-	 * 
-	 * @param format The format of the message to log.
-	 * @param arguments The arguments to format into the message.
-	 */
-	void audit(String format, Object... arguments);
+    /**
+     * Log a formatted message at the {@link LogLevel#AUDIT} level.
+     * 
+     * @param format The format of the message to log.
+     * @param arguments The arguments to format into the message.
+     */
+    void audit(String format, Object... arguments);
 }

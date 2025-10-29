@@ -23,8 +23,6 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM;
 
-import java.util.List;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure.FieldOrder;
@@ -43,7 +41,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.IntByReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.PointerByReference;
 
-@FieldOrder({"vtbl"})
+@FieldOrder({ "vtbl" })
 public class DispatchListener extends Structure {
     public DispatchListener(IDispatchCallback callback) {
         this.vtbl = this.constructVTable();
@@ -91,15 +89,15 @@ public class DispatchListener extends Structure {
         this.vtbl.GetIDsOfNamesCallback = new DispatchVTable.GetIDsOfNamesCallback() {
             @Override
             public HRESULT invoke(Pointer thisPointer, REFIID riid, WString[] rgszNames, int cNames, LCID lcid,
-                    DISPIDByReference rgDispId) {
+                DISPIDByReference rgDispId) {
                 return callback.GetIDsOfNames(riid, rgszNames, cNames, lcid, rgDispId);
             }
         };
         this.vtbl.InvokeCallback = new DispatchVTable.InvokeCallback() {
             @Override
             public HRESULT invoke(Pointer thisPointer, DISPID dispIdMember, REFIID riid, LCID lcid, WORD wFlags,
-                    DISPPARAMS.ByReference pDispParams, VARIANT.ByReference pVarResult, EXCEPINFO.ByReference pExcepInfo,
-                    IntByReference puArgErr) {
+                DISPPARAMS.ByReference pDispParams, VARIANT.ByReference pVarResult, EXCEPINFO.ByReference pExcepInfo,
+                IntByReference puArgErr) {
 
                 return callback.Invoke(dispIdMember, riid, lcid, wFlags, pDispParams, pVarResult, pExcepInfo, puArgErr);
             }

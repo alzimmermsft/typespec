@@ -26,48 +26,48 @@ import java.util.Date;
  * </p>
  */
 public interface CertificateChain {
-	/**
-	 * Returns the list of X500 distinguished names that make up the certificate
-	 * chain. Each distinguished name is separated by a ';'. The first distinguished
-	 * name is the signer and the last is the root Certificate Authority.
-	 * 
-	 * @return the list of X500 distinguished names that make up the certificate
-	 *         chain
-	 */
-	public String getChain();
+    /**
+     * Returns the list of X500 distinguished names that make up the certificate
+     * chain. Each distinguished name is separated by a ';'. The first distinguished
+     * name is the signer and the last is the root Certificate Authority.
+     * 
+     * @return the list of X500 distinguished names that make up the certificate
+     * chain
+     */
+    public String getChain();
 
-	/**
-	 * Retruns all certificates in this certificate chain
-	 * 
-	 * @return all certificates in this certificate chain
-	 */
-	public Certificate[] getCertificates();
+    /**
+     * Retruns all certificates in this certificate chain
+     * 
+     * @return all certificates in this certificate chain
+     */
+    public Certificate[] getCertificates();
 
-	/**
-	 * Returns the first certificate of the certificate chain
-	 * 
-	 * @return the first certificate of the certificate chain
-	 */
-	public Certificate getSigner();
+    /**
+     * Returns the first certificate of the certificate chain
+     * 
+     * @return the first certificate of the certificate chain
+     */
+    public Certificate getSigner();
 
-	/**
-	 * Returns the root certificate of the certificate chain
-	 * 
-	 * @return the foot certificate of the certificate chain
-	 */
-	public Certificate getRoot();
+    /**
+     * Returns the root certificate of the certificate chain
+     * 
+     * @return the foot certificate of the certificate chain
+     */
+    public Certificate getRoot();
 
-	/**
-	 * Returns true if this certificate chain is trusted
-	 * 
-	 * @return true if this certificate chain is trusted
-	 */
-	boolean isTrusted();
+    /**
+     * Returns true if this certificate chain is trusted
+     * 
+     * @return true if this certificate chain is trusted
+     */
+    boolean isTrusted();
 
-	/**
-	 * Return the signing time for this signer.
-	 *
-	 * @return null if there is a signing time for this signer null otherwise
-	 */
-	public Date getSigningTime();
+    /**
+     * Return the signing time for this signer.
+     *
+     * @return null if there is a signing time for this signer null otherwise
+     */
+    public Date getSigningTime();
 }

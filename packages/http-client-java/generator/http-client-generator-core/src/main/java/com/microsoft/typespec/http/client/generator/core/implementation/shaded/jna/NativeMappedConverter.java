@@ -25,20 +25,18 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.WeakHashMap;
 
 /** Provides type conversion for instances of {@link NativeMapped}. */
 public class NativeMappedConverter implements TypeConverter {
-    private static final Map<Class<?>, Reference<NativeMappedConverter>> converters =
-            new WeakHashMap<>();
+    private static final Map<Class<?>, Reference<NativeMappedConverter>> converters = new WeakHashMap<>();
     private final Class<?> type;
     private final Class<?> nativeType;
     private final NativeMapped instance;
 
     public static NativeMappedConverter getInstance(Class<?> cls) {
-        synchronized(converters) {
+        synchronized (converters) {
             Reference<NativeMappedConverter> r = converters.get(cls);
             NativeMappedConverter nmc = r != null ? r.get() : null;
             if (nmc == null) {
@@ -83,6 +81,6 @@ public class NativeMappedConverter implements TypeConverter {
             }
             value = defaultValue();
         }
-        return ((NativeMapped)value).toNative();
+        return ((NativeMapped) value).toNative();
     }
 }

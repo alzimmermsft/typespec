@@ -16,10 +16,10 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.hooks.bundle;
 
-import java.util.Collection;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.ConsumerType;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.BundleContext;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.BundleEvent;
+import java.util.Collection;
 
 /**
  * OSGi Framework Bundle Event Hook Service.
@@ -34,30 +34,30 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 @ConsumerType
 public interface EventHook {
 
-	/**
-	 * Bundle event hook method. This method is called prior to bundle event
-	 * delivery when a bundle is installed, resolved, started, stopped,
-	 * unresolved, or uninstalled. This method can filter the bundles which
-	 * receive the event.
-	 * <p>
-	 * This method must be called by the framework one and only one time for
-	 * each bundle event generated, this included bundle events which are
-	 * generated when there are no bundle listeners registered. This method must
-	 * be called on the same thread that is performing the action which
-	 * generated the specified event. The specified collection includes bundle
-	 * contexts with synchronous and asynchronous bundle listeners registered
-	 * with them.
-	 * 
-	 * @param event The bundle event to be delivered
-	 * @param contexts A collection of Bundle Contexts for bundles which have
-	 *        listeners to which the specified event will be delivered. The
-	 *        implementation of this method may remove bundle contexts from the
-	 *        collection to prevent the event from being delivered to the
-	 *        associated bundles. The collection supports all the optional
-	 *        {@code Collection} operations except {@code add} and
-	 *        {@code addAll}. Attempting to add to the collection will result in
-	 *        an {@code UnsupportedOperationException}. The collection is not
-	 *        synchronized.
-	 */
-	void event(BundleEvent event, Collection<BundleContext> contexts);
+    /**
+     * Bundle event hook method. This method is called prior to bundle event
+     * delivery when a bundle is installed, resolved, started, stopped,
+     * unresolved, or uninstalled. This method can filter the bundles which
+     * receive the event.
+     * <p>
+     * This method must be called by the framework one and only one time for
+     * each bundle event generated, this included bundle events which are
+     * generated when there are no bundle listeners registered. This method must
+     * be called on the same thread that is performing the action which
+     * generated the specified event. The specified collection includes bundle
+     * contexts with synchronous and asynchronous bundle listeners registered
+     * with them.
+     * 
+     * @param event The bundle event to be delivered
+     * @param contexts A collection of Bundle Contexts for bundles which have
+     * listeners to which the specified event will be delivered. The
+     * implementation of this method may remove bundle contexts from the
+     * collection to prevent the event from being delivered to the
+     * associated bundles. The collection supports all the optional
+     * {@code Collection} operations except {@code add} and
+     * {@code addAll}. Attempting to add to the collection will result in
+     * an {@code UnsupportedOperationException}. The collection is not
+     * synchronized.
+     */
+    void event(BundleEvent event, Collection<BundleContext> contexts);
 }

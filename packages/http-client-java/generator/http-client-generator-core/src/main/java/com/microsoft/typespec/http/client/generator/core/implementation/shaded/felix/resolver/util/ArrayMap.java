@@ -172,7 +172,6 @@ public class ArrayMap<K, V> extends AbstractMap<K, V> {
             return key;
         }
 
-
         public V getValue() {
             return value;
         }

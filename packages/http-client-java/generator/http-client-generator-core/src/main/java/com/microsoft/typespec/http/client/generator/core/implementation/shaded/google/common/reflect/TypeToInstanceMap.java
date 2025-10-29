@@ -14,12 +14,12 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.reflect;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.DoNotMock;
-import java.util.Map;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.NonNull;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.DoNotMock;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
+import java.util.Map;
 
 /**
  * A map, each entry of which maps a {@link TypeToken} to an instance of that type. In addition to
@@ -42,50 +42,49 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @DoNotMock("Use ImmutableTypeToInstanceMap or MutableTypeToInstanceMap")
 @ElementTypesAreNonnullByDefault
-public interface TypeToInstanceMap<B extends @Nullable Object>
-    extends Map<TypeToken<? extends @NonNull B>, B> {
+public interface TypeToInstanceMap<B extends @Nullable Object> extends Map<TypeToken<? extends @NonNull B>, B> {
 
-  /**
-   * Returns the value the specified class is mapped to, or {@code null} if no entry for this class
-   * is present. This will only return a value that was bound to this specific class, not a value
-   * that may have been bound to a subtype.
-   *
-   * <p>{@code getInstance(Foo.class)} is equivalent to {@code
-   * getInstance(TypeToken.of(Foo.class))}.
-   */
-  @CheckForNull
-  <T extends @NonNull B> T getInstance(Class<T> type);
+    /**
+     * Returns the value the specified class is mapped to, or {@code null} if no entry for this class
+     * is present. This will only return a value that was bound to this specific class, not a value
+     * that may have been bound to a subtype.
+     *
+     * <p>{@code getInstance(Foo.class)} is equivalent to {@code
+     * getInstance(TypeToken.of(Foo.class))}.
+     */
+    @CheckForNull
+    <T extends @NonNull B> T getInstance(Class<T> type);
 
-  /**
-   * Returns the value the specified type is mapped to, or {@code null} if no entry for this type is
-   * present. This will only return a value that was bound to this specific type, not a value that
-   * may have been bound to a subtype.
-   */
-  @CheckForNull
-  <T extends @NonNull B> T getInstance(TypeToken<T> type);
+    /**
+     * Returns the value the specified type is mapped to, or {@code null} if no entry for this type is
+     * present. This will only return a value that was bound to this specific type, not a value that
+     * may have been bound to a subtype.
+     */
+    @CheckForNull
+    <T extends @NonNull B> T getInstance(TypeToken<T> type);
 
-  /**
-   * Maps the specified class to the specified value. Does <i>not</i> associate this value with any
-   * of the class's supertypes.
-   *
-   * <p>{@code putInstance(Foo.class, foo)} is equivalent to {@code
-   * putInstance(TypeToken.of(Foo.class), foo)}.
-   *
-   * @return the value previously associated with this class (possibly {@code null}), or {@code
-   *     null} if there was no previous entry.
-   */
-  @CanIgnoreReturnValue
-  @CheckForNull
-  <T extends B> T putInstance(Class<@NonNull T> type, @ParametricNullness T value);
+    /**
+     * Maps the specified class to the specified value. Does <i>not</i> associate this value with any
+     * of the class's supertypes.
+     *
+     * <p>{@code putInstance(Foo.class, foo)} is equivalent to {@code
+     * putInstance(TypeToken.of(Foo.class), foo)}.
+     *
+     * @return the value previously associated with this class (possibly {@code null}), or {@code
+     *     null} if there was no previous entry.
+     */
+    @CanIgnoreReturnValue
+    @CheckForNull
+    <T extends B> T putInstance(Class<@NonNull T> type, @ParametricNullness T value);
 
-  /**
-   * Maps the specified type to the specified value. Does <i>not</i> associate this value with any
-   * of the type's supertypes.
-   *
-   * @return the value previously associated with this type (possibly {@code null}), or {@code null}
-   *     if there was no previous entry.
-   */
-  @CanIgnoreReturnValue
-  @CheckForNull
-  <T extends B> T putInstance(TypeToken<@NonNull T> type, @ParametricNullness T value);
+    /**
+     * Maps the specified type to the specified value. Does <i>not</i> associate this value with any
+     * of the type's supertypes.
+     *
+     * @return the value previously associated with this type (possibly {@code null}), or {@code null}
+     * if there was no previous entry.
+     */
+    @CanIgnoreReturnValue
+    @CheckForNull
+    <T extends B> T putInstance(TypeToken<@NonNull T> type, @ParametricNullness T value);
 }

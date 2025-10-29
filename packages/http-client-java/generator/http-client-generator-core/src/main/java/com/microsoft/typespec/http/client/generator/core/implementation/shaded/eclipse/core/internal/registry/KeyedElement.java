@@ -14,9 +14,9 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.registry;
 
 public interface KeyedElement {
-    public int getKeyHashCode();
+    int getKeyHashCode();
 
-    public boolean compare(KeyedElement other);
+    boolean compare(KeyedElement other);
 
-    public Object getKey();
+    Object getKey();
 }

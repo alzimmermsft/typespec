@@ -13,9 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
-import java.io.IOException;
-import java.util.Map;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.*;
@@ -30,240 +27,236 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.nd.java.model.BinaryModuleFactory;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.MementoTokenizer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Util;
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * A handle to a modular class file.
  */
 public class ModularClassFile extends AbstractClassFile implements IModularClassFile {
 
-	protected ModularClassFile(PackageFragment parent) {
-		super(parent, TypeConstants.MODULE_INFO_NAME_STRING);
-	}
+    protected ModularClassFile(PackageFragment parent) {
+        super(parent, TypeConstants.MODULE_INFO_NAME_STRING);
+    }
 
     @Override
-	public IType findPrimaryType() {
-		return null;
-	}
+    public IType findPrimaryType() {
+        return null;
+    }
 
-	@Override
-	public boolean isClass() throws JavaModelException {
-		return false;
-	}
+    @Override
+    public boolean isClass() throws JavaModelException {
+        return false;
+    }
 
-	@Override
-	public boolean isInterface() throws JavaModelException {
-		return false;
-	}
+    @Override
+    public boolean isInterface() throws JavaModelException {
+        return false;
+    }
 
-	/**
-	 * @return never returns.
-	 * @throws UnsupportedOperationException
-	 *             always.
-	 * @deprecated should only be used as {@link IOrdinaryClassFile#getType()}.
-	 * @see IClassFile#getType()
-	 */
+    /**
+     * @return never returns.
+     * @throws UnsupportedOperationException
+     * always.
+     * @deprecated should only be used as {@link IOrdinaryClassFile#getType()}.
+     * @see IClassFile#getType()
+     */
 
-	@Deprecated
-	@Override
-	public IType getType() {
-		throw new UnsupportedOperationException("IClassFile#getType() cannot be used on an IModularClassFile"); //$NON-NLS-1$
-	}
+    @Deprecated
+    @Override
+    public IType getType() {
+        throw new UnsupportedOperationException("IClassFile#getType() cannot be used on an IModularClassFile"); //$NON-NLS-1$
+    }
 
-	/**
-	 * Returns the <code>IBinaryModule</code> specific for this IClassFile, based
-	 * on its underlying resource, or <code>null</code> if unable to create
-	 * the diet class file.
-	 * There are two cases to consider:<ul>
-	 * <li>a class file corresponding to an IFile resource</li>
-	 * <li>a class file corresponding to a zip entry in a JAR</li>
-	 * </ul>
-	 *
-	 * @exception JavaModelException when the IFile resource or JAR is not available
-	 * or when this class file is not present in the JAR
-	 */
-	public IBinaryModule getBinaryModuleInfo() throws JavaModelException {
-		try {
-			IBinaryModule info = getJarBinaryModuleInfo();
-			if (info == null) {
-				throw newNotPresentException();
-			}
-			return info;
-		} catch (ClassFormatException cfe) {
-			//the structure remains unknown
-			return null;
-		} catch (IOException ioe) {
-			throw new JavaModelException(ioe, IJavaModelStatusConstants.IO_EXCEPTION);
-		} catch (CoreException e) {
-			if (e instanceof JavaModelException) {
-				throw (JavaModelException)e;
-			} else {
-				throw new JavaModelException(e);
-			}
-		}
-	}
+    /**
+     * Returns the <code>IBinaryModule</code> specific for this IClassFile, based
+     * on its underlying resource, or <code>null</code> if unable to create
+     * the diet class file.
+     * There are two cases to consider:<ul>
+     * <li>a class file corresponding to an IFile resource</li>
+     * <li>a class file corresponding to a zip entry in a JAR</li>
+     * </ul>
+     *
+     * @exception JavaModelException when the IFile resource or JAR is not available
+     * or when this class file is not present in the JAR
+     */
+    public IBinaryModule getBinaryModuleInfo() throws JavaModelException {
+        try {
+            IBinaryModule info = getJarBinaryModuleInfo();
+            if (info == null) {
+                throw newNotPresentException();
+            }
+            return info;
+        } catch (ClassFormatException cfe) {
+            // the structure remains unknown
+            return null;
+        } catch (IOException ioe) {
+            throw new JavaModelException(ioe, IJavaModelStatusConstants.IO_EXCEPTION);
+        } catch (CoreException e) {
+            if (e instanceof JavaModelException) {
+                throw (JavaModelException) e;
+            } else {
+                throw new JavaModelException(e);
+            }
+        }
+    }
 
-	private IBinaryModule getJarBinaryModuleInfo() throws CoreException, IOException, ClassFormatException {
-		BinaryModuleDescriptor descriptor = BinaryModuleFactory.createDescriptor(this);
+    private IBinaryModule getJarBinaryModuleInfo() throws CoreException, IOException, ClassFormatException {
+        BinaryModuleDescriptor descriptor = BinaryModuleFactory.createDescriptor(this);
 
-		if (descriptor == null) {
-			return null;
-		}
-		IBinaryModule result = null;
-		IPackageFragmentRoot root = getPackageFragmentRoot();
-		if (getPackageFragmentRoot() instanceof JarPackageFragmentRoot) {
-			if (root instanceof JrtPackageFragmentRoot || this.name.equals(IModule.MODULE_INFO)) {
-				PackageFragment pkg = (PackageFragment) getParent();
-				JarPackageFragmentRoot jarRoot = (JarPackageFragmentRoot) getPackageFragmentRoot();
-				String entryName = jarRoot.getClassFilePath(Util.concatWith(pkg.names, getElementName(), '/'));
-				byte[] contents = getClassFileContent(jarRoot, entryName);
-				if (contents != null) {
-					String fileName = root.getHandleIdentifier() + IDependent.JAR_FILE_ENTRY_SEPARATOR + entryName;
-					ClassFileReader classFileReader = new ClassFileReader(contents, fileName.toCharArray(), false);
-					return classFileReader.getModuleDeclaration();
-				}
-			} else {
-				result = BinaryModuleFactory.readModule(descriptor, null);
-			}
-		} else {
-			result = BinaryModuleFactory.readModule(descriptor, null);
-		}
+        if (descriptor == null) {
+            return null;
+        }
+        IBinaryModule result = null;
+        IPackageFragmentRoot root = getPackageFragmentRoot();
+        if (getPackageFragmentRoot() instanceof JarPackageFragmentRoot) {
+            if (root instanceof JrtPackageFragmentRoot || this.name.equals(IModule.MODULE_INFO)) {
+                PackageFragment pkg = (PackageFragment) getParent();
+                JarPackageFragmentRoot jarRoot = (JarPackageFragmentRoot) getPackageFragmentRoot();
+                String entryName = jarRoot.getClassFilePath(Util.concatWith(pkg.names, getElementName(), '/'));
+                byte[] contents = getClassFileContent(jarRoot, entryName);
+                if (contents != null) {
+                    String fileName = root.getHandleIdentifier() + IDependent.JAR_FILE_ENTRY_SEPARATOR + entryName;
+                    ClassFileReader classFileReader = new ClassFileReader(contents, fileName.toCharArray(), false);
+                    return classFileReader.getModuleDeclaration();
+                }
+            } else {
+                result = BinaryModuleFactory.readModule(descriptor, null);
+            }
+        } else {
+            result = BinaryModuleFactory.readModule(descriptor, null);
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * @see ITypeRoot
-	 */
-	@Override
-	public IJavaElement getElementAt(int position) throws JavaModelException {
-		IJavaElement parentElement = getParent();
-		while (parentElement.getElementType() != IJavaElement.PACKAGE_FRAGMENT_ROOT) {
-			parentElement = parentElement.getParent();
-		}
-		PackageFragmentRoot root = (PackageFragmentRoot) parentElement;
-		SourceMapper mapper = root.getSourceMapper();
-		if (mapper == null) {
-			return null;
-		} else {
-			// ensure this class file's buffer is open so that source ranges are computed
-			getBuffer();
+    /**
+     * @see ITypeRoot
+     */
+    @Override
+    public IJavaElement getElementAt(int position) throws JavaModelException {
+        IJavaElement parentElement = getParent();
+        while (parentElement.getElementType() != IJavaElement.PACKAGE_FRAGMENT_ROOT) {
+            parentElement = parentElement.getParent();
+        }
+        PackageFragmentRoot root = (PackageFragmentRoot) parentElement;
+        SourceMapper mapper = root.getSourceMapper();
+        if (mapper == null) {
+            return null;
+        } else {
+            // ensure this class file's buffer is open so that source ranges are computed
+            getBuffer();
 
-			IModuleDescription module = getModule();
-			return findElement(module, position, mapper);
-		}
-	}
-	@Override
-	public IJavaElement getHandleFromMemento(String token, MementoTokenizer memento, WorkingCopyOwner owner) {
-		switch (token.charAt(0)) {
-			case JEM_MODULE:
-				if (!memento.hasMoreTokens()) return this;
-				String modName = memento.nextToken();
-				JavaElement mod = new BinaryModule(this, modName);
-				return mod.getHandleFromMemento(memento, owner);
-		}
-		return null;
-	}
-	/**
-	 * @see JavaElement#getHandleMemento()
-	 */
-	@Override
-	protected char getHandleMementoDelimiter() {
-		return JavaElement.JEM_MODULAR_CLASSFILE;
-	}
-	@Override
-	protected void escapeMementoName(StringBuilder buffer, String mementoName) {
-		// nop, name is irrelevant
-	}
-	@Override
-	public ICompilationUnit getWorkingCopy(WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaModelException {
-		CompilationUnit workingCopy = new ClassFileWorkingCopy(this, owner == null ? DefaultWorkingCopyOwner.PRIMARY : owner);
-		JavaModelManager manager = JavaModelManager.getJavaModelManager();
-		JavaModelManager.PerWorkingCopyInfo perWorkingCopyInfo =
-			manager.getPerWorkingCopyInfo(workingCopy, false/*don't create*/, true/*record usage*/, null/*not used since don't create*/);
-		if (perWorkingCopyInfo != null) {
-			return perWorkingCopyInfo.getWorkingCopy(); // return existing handle instead of the one created above
-		}
-		BecomeWorkingCopyOperation op = new BecomeWorkingCopyOperation(workingCopy, null);
-		op.runOperation(monitor);
-		return workingCopy;
-	}
-	/**
-	 * Opens and returns buffer on the source code associated with this class file.
-	 * Maps the source code to the children elements of this class file.
-	 * If no source code is associated with this class file,
-	 * <code>null</code> is returned.
-	 *
-	 * @see Openable
-	 */
-	@Override
-	protected IBuffer openBuffer(IProgressMonitor pm, IElementInfo info) throws JavaModelException {
-		SourceMapper mapper = getSourceMapper();
-		if (mapper != null) {
-			return mapSource(mapper);
-		}
-		return null;
-	}
+            IModuleDescription module = getModule();
+            return findElement(module, position, mapper);
+        }
+    }
 
-	/** Loads the buffer via SourceMapper, and maps it in SourceMapper */
-	private IBuffer mapSource(SourceMapper mapper) throws JavaModelException {
-		char[] contents = mapper.findSource(getModule());
-		if (contents != null) {
-			// create buffer
-			IBuffer buffer = BufferManager.createBuffer(this);
-			if (buffer == null) return null;
-			BufferManager bufManager = getBufferManager();
-			bufManager.addBuffer(buffer);
+    @Override
+    public IJavaElement getHandleFromMemento(String token, MementoTokenizer memento, WorkingCopyOwner owner) {
+        switch (token.charAt(0)) {
+            case JEM_MODULE:
+                if (!memento.hasMoreTokens())
+                    return this;
+                String modName = memento.nextToken();
+                JavaElement mod = new BinaryModule(this, modName);
+                return mod.getHandleFromMemento(memento, owner);
+        }
+        return null;
+    }
 
-			// set the buffer source
-			if (buffer.getCharacters() == null){
-				buffer.setContents(contents);
-			}
+    /**
+     * @see JavaElement#getHandleMemento()
+     */
+    @Override
+    protected char getHandleMementoDelimiter() {
+        return JavaElement.JEM_MODULAR_CLASSFILE;
+    }
 
-			// listen to buffer changes
-			buffer.addBufferChangedListener(this);
+    @Override
+    protected void escapeMementoName(StringBuilder buffer, String mementoName) {
+        // nop, name is irrelevant
+    }
 
-			// do the source mapping
-			mapper.mapSource((NamedMember) getModule(), contents, null);
+    /**
+     * Opens and returns buffer on the source code associated with this class file.
+     * Maps the source code to the children elements of this class file.
+     * If no source code is associated with this class file,
+     * <code>null</code> is returned.
+     *
+     * @see Openable
+     */
+    @Override
+    protected IBuffer openBuffer(IProgressMonitor pm, IElementInfo info) throws JavaModelException {
+        SourceMapper mapper = getSourceMapper();
+        if (mapper != null) {
+            return mapSource(mapper);
+        }
+        return null;
+    }
 
-			return buffer;
-		} else {
-			// create buffer
-			IBuffer buffer = BufferManager.createNullBuffer(this);
-			if (buffer == null) return null;
-			BufferManager bufManager = getBufferManager();
-			bufManager.addBuffer(buffer);
+    /** Loads the buffer via SourceMapper, and maps it in SourceMapper */
+    private IBuffer mapSource(SourceMapper mapper) throws JavaModelException {
+        char[] contents = mapper.findSource(getModule());
+        if (contents != null) {
+            // create buffer
+            IBuffer buffer = BufferManager.createBuffer(this);
+            if (buffer == null)
+                return null;
+            BufferManager bufManager = getBufferManager();
+            bufManager.addBuffer(buffer);
 
-			// listen to buffer changes
-			buffer.addBufferChangedListener(this);
-			return buffer;
-		}
-	}
+            // set the buffer source
+            if (buffer.getCharacters() == null) {
+                buffer.setContents(contents);
+            }
 
-	@Override
-	public IModuleDescription getModule() throws JavaModelException {
-		Object info = getElementInfo();
-		if(info == notExists) {
-			throw newNotPresentException();
-		}
-		BinaryModule module = (BinaryModule) ((ClassFileInfo) info).getModule();
-		if (module == null) {
-			throw newNotPresentException();
-		}
-		return module;
-	}
+            // listen to buffer changes
+            buffer.addBufferChangedListener(this);
 
-	private static final ClassFileInfo notExists = new ClassFileInfo();
+            // do the source mapping
+            mapper.mapSource((NamedMember) getModule(), contents, null);
 
-	@Override
-	public boolean exists() {
-		Object info = JavaModelManager.getJavaModelManager().getInfo(this);
-		if (info == notExists)
-			return false;
-		if (info != null)
-			return true;
-		boolean exists = super.exists();
-		if (!exists)
-			JavaModelManager.getJavaModelManager().putInfos(this, notExists, false, Map.of(this, notExists));
-		return exists;
-	}
+            return buffer;
+        } else {
+            // create buffer
+            IBuffer buffer = BufferManager.createNullBuffer(this);
+            if (buffer == null)
+                return null;
+            BufferManager bufManager = getBufferManager();
+            bufManager.addBuffer(buffer);
+
+            // listen to buffer changes
+            buffer.addBufferChangedListener(this);
+            return buffer;
+        }
+    }
+
+    @Override
+    public IModuleDescription getModule() throws JavaModelException {
+        Object info = getElementInfo();
+        if (info == notExists) {
+            throw newNotPresentException();
+        }
+        BinaryModule module = (BinaryModule) ((ClassFileInfo) info).getModule();
+        if (module == null) {
+            throw newNotPresentException();
+        }
+        return module;
+    }
+
+    private static final ClassFileInfo notExists = new ClassFileInfo();
+
+    @Override
+    public boolean exists() {
+        Object info = JavaModelManager.getJavaModelManager().getInfo(this);
+        if (info == notExists)
+            return false;
+        if (info != null)
+            return true;
+        boolean exists = super.exists();
+        if (!exists)
+            JavaModelManager.getJavaModelManager().putInfos(this, notExists, false, Map.of(this, notExists));
+        return exists;
+    }
 }

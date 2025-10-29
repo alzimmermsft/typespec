@@ -22,101 +22,99 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 /**
  * Default implementation of IInnerClassesAttributeEntry
  */
-public class InnerClassesAttributeEntry
-	extends ClassFileStruct
-	implements IInnerClassesAttributeEntry {
+public class InnerClassesAttributeEntry extends ClassFileStruct implements IInnerClassesAttributeEntry {
 
-	private final int innerClassNameIndex;
-	private final int outerClassNameIndex;
-	private final int innerNameIndex;
-	private char[] innerClassName;
-	private char[] outerClassName;
-	private char[] innerName;
-	private final int accessFlags;
+    private final int innerClassNameIndex;
+    private final int outerClassNameIndex;
+    private final int innerNameIndex;
+    private char[] innerClassName;
+    private char[] outerClassName;
+    private char[] innerName;
+    private final int accessFlags;
 
-	public InnerClassesAttributeEntry(byte classFileBytes[], IConstantPool constantPool, int offset)
-		throws ClassFormatException {
-		this.innerClassNameIndex = u2At(classFileBytes, 0, offset);
-		this.outerClassNameIndex = u2At(classFileBytes, 2, offset);
-		this.innerNameIndex = u2At(classFileBytes, 4, offset);
-		this.accessFlags = u2At(classFileBytes, 6, offset);
-		IConstantPoolEntry constantPoolEntry;
-		if (this.innerClassNameIndex != 0) {
-			constantPoolEntry = constantPool.decodeEntry(this.innerClassNameIndex);
-			if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Class) {
-				throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
-			}
-			this.innerClassName = constantPoolEntry.getClassInfoName();
-		}
-		if (this.outerClassNameIndex != 0) {
-			constantPoolEntry = constantPool.decodeEntry(this.outerClassNameIndex);
-			if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Class) {
-				throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
-			}
-			this.outerClassName = constantPoolEntry.getClassInfoName();
-		}
-		if (this.innerNameIndex != 0) {
-			constantPoolEntry = constantPool.decodeEntry(this.innerNameIndex);
-			if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Utf8) {
-				throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
-			}
-			this.innerName = constantPoolEntry.getUtf8Value();
-		}
-	}
+    public InnerClassesAttributeEntry(byte classFileBytes[], IConstantPool constantPool, int offset)
+        throws ClassFormatException {
+        this.innerClassNameIndex = u2At(classFileBytes, 0, offset);
+        this.outerClassNameIndex = u2At(classFileBytes, 2, offset);
+        this.innerNameIndex = u2At(classFileBytes, 4, offset);
+        this.accessFlags = u2At(classFileBytes, 6, offset);
+        IConstantPoolEntry constantPoolEntry;
+        if (this.innerClassNameIndex != 0) {
+            constantPoolEntry = constantPool.decodeEntry(this.innerClassNameIndex);
+            if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Class) {
+                throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
+            }
+            this.innerClassName = constantPoolEntry.getClassInfoName();
+        }
+        if (this.outerClassNameIndex != 0) {
+            constantPoolEntry = constantPool.decodeEntry(this.outerClassNameIndex);
+            if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Class) {
+                throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
+            }
+            this.outerClassName = constantPoolEntry.getClassInfoName();
+        }
+        if (this.innerNameIndex != 0) {
+            constantPoolEntry = constantPool.decodeEntry(this.innerNameIndex);
+            if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Utf8) {
+                throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
+            }
+            this.innerName = constantPoolEntry.getUtf8Value();
+        }
+    }
 
-	/**
-	 * @see IInnerClassesAttributeEntry#getAccessFlags()
-	 */
-	@Override
-	public int getAccessFlags() {
-		return this.accessFlags;
-	}
+    /**
+     * @see IInnerClassesAttributeEntry#getAccessFlags()
+     */
+    @Override
+    public int getAccessFlags() {
+        return this.accessFlags;
+    }
 
-	/**
-	 * @see IInnerClassesAttributeEntry#getInnerClassName()
-	 */
-	@Override
-	public char[] getInnerClassName() {
-		return this.innerClassName;
-	}
+    /**
+     * @see IInnerClassesAttributeEntry#getInnerClassName()
+     */
+    @Override
+    public char[] getInnerClassName() {
+        return this.innerClassName;
+    }
 
-	/**
-	 * @see IInnerClassesAttributeEntry#getInnerClassNameIndex()
-	 */
-	@Override
-	public int getInnerClassNameIndex() {
-		return this.innerClassNameIndex;
-	}
+    /**
+     * @see IInnerClassesAttributeEntry#getInnerClassNameIndex()
+     */
+    @Override
+    public int getInnerClassNameIndex() {
+        return this.innerClassNameIndex;
+    }
 
-	/**
-	 * @see IInnerClassesAttributeEntry#getInnerName()
-	 */
-	@Override
-	public char[] getInnerName() {
-		return this.innerName;
-	}
+    /**
+     * @see IInnerClassesAttributeEntry#getInnerName()
+     */
+    @Override
+    public char[] getInnerName() {
+        return this.innerName;
+    }
 
-	/**
-	 * @see IInnerClassesAttributeEntry#getInnerNameIndex()
-	 */
-	@Override
-	public int getInnerNameIndex() {
-		return this.innerNameIndex;
-	}
+    /**
+     * @see IInnerClassesAttributeEntry#getInnerNameIndex()
+     */
+    @Override
+    public int getInnerNameIndex() {
+        return this.innerNameIndex;
+    }
 
-	/**
-	 * @see IInnerClassesAttributeEntry#getOuterClassName()
-	 */
-	@Override
-	public char[] getOuterClassName() {
-		return this.outerClassName;
-	}
+    /**
+     * @see IInnerClassesAttributeEntry#getOuterClassName()
+     */
+    @Override
+    public char[] getOuterClassName() {
+        return this.outerClassName;
+    }
 
-	/**
-	 * @see IInnerClassesAttributeEntry#getOuterClassNameIndex()
-	 */
-	@Override
-	public int getOuterClassNameIndex() {
-		return this.outerClassNameIndex;
-	}
+    /**
+     * @see IInnerClassesAttributeEntry#getOuterClassNameIndex()
+     */
+    @Override
+    public int getOuterClassNameIndex() {
+        return this.outerClassNameIndex;
+    }
 }

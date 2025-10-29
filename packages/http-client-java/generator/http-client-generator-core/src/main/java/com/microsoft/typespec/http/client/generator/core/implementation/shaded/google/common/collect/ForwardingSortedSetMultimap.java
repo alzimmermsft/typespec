@@ -16,11 +16,11 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.util.Comparator;
 import java.util.SortedSet;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A sorted set multimap which forwards all its method calls to another sorted set multimap.
@@ -36,34 +36,34 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
-public abstract class ForwardingSortedSetMultimap<
-        K extends @Nullable Object, V extends @Nullable Object>
+public abstract class ForwardingSortedSetMultimap<K extends @Nullable Object, V extends @Nullable Object>
     extends ForwardingSetMultimap<K, V> implements SortedSetMultimap<K, V> {
 
-  /** Constructor for use by subclasses. */
-  protected ForwardingSortedSetMultimap() {}
+    /** Constructor for use by subclasses. */
+    protected ForwardingSortedSetMultimap() {
+    }
 
-  @Override
-  protected abstract SortedSetMultimap<K, V> delegate();
+    @Override
+    protected abstract SortedSetMultimap<K, V> delegate();
 
-  @Override
-  public SortedSet<V> get(@ParametricNullness K key) {
-    return delegate().get(key);
-  }
+    @Override
+    public SortedSet<V> get(@ParametricNullness K key) {
+        return delegate().get(key);
+    }
 
-  @Override
-  public SortedSet<V> removeAll(@CheckForNull Object key) {
-    return delegate().removeAll(key);
-  }
+    @Override
+    public SortedSet<V> removeAll(@CheckForNull Object key) {
+        return delegate().removeAll(key);
+    }
 
-  @Override
-  public SortedSet<V> replaceValues(@ParametricNullness K key, Iterable<? extends V> values) {
-    return delegate().replaceValues(key, values);
-  }
+    @Override
+    public SortedSet<V> replaceValues(@ParametricNullness K key, Iterable<? extends V> values) {
+        return delegate().replaceValues(key, values);
+    }
 
-  @Override
-  @CheckForNull
-  public Comparator<? super V> valueComparator() {
-    return delegate().valueComparator();
-  }
+    @Override
+    @CheckForNull
+    public Comparator<? super V> valueComparator() {
+        return delegate().valueComparator();
+    }
 }

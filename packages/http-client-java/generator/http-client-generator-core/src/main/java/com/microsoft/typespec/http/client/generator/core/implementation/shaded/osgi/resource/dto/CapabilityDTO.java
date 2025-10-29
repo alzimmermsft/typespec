@@ -16,9 +16,9 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.dto;
 
-import java.util.Map;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.dto.DTO;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Capability;
+import java.util.Map;
 
 /**
  * Data Transfer Object for a Capability.
@@ -33,14 +33,14 @@ public class CapabilityDTO extends DTO {
      * <p>
      * This identifier is transiently assigned and may vary across restarts.
      */
-    public int                 id;
+    public int id;
 
     /**
      * The namespace for the capability.
      * 
      * @see Capability#getNamespace()
      */
-    public String              namespace;
+    public String namespace;
 
     /**
      * The directives for the capability.
@@ -61,10 +61,10 @@ public class CapabilityDTO extends DTO {
     public Map<String, Object> attributes;
 
     /**
-	 * The identifier of the resource declaring the capability.
-	 * 
-	 * @see ResourceDTO#id
-	 * @see Capability#getResource()
-	 */
-    public int                 resource;
+     * The identifier of the resource declaring the capability.
+     * 
+     * @see ResourceDTO#id
+     * @see Capability#getResource()
+     */
+    public int resource;
 }

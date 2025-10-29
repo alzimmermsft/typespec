@@ -23,8 +23,11 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna;
 
-/** Tagging interface to indicate the library or callback uses an alternate
+/**
+ * Tagging interface to indicate the library or callback uses an alternate
  * calling convention.
+ * 
  * @author twall
  */
-public interface AltCallingConvention {}
+public interface AltCallingConvention {
+}

@@ -29,6 +29,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Util;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -152,14 +153,11 @@ class DefaultBindingResolver extends BindingResolver {
         if (binding == null) {
             return null;
         }
-        if (binding instanceof IMethodBinding) {
-            IMethodBinding methodBinding = (IMethodBinding) binding;
+        if (binding instanceof IMethodBinding methodBinding) {
             return (ASTNode) this.bindingsToAstNodes.get(methodBinding.getMethodDeclaration());
-        } else if (binding instanceof ITypeBinding) {
-            ITypeBinding typeBinding = (ITypeBinding) binding;
+        } else if (binding instanceof ITypeBinding typeBinding) {
             return (ASTNode) this.bindingsToAstNodes.get(typeBinding.getTypeDeclaration());
-        } else if (binding instanceof IVariableBinding) {
-            IVariableBinding variableBinding = (IVariableBinding) binding;
+        } else if (binding instanceof IVariableBinding variableBinding) {
             return (ASTNode) this.bindingsToAstNodes.get(variableBinding.getVariableDeclaration());
         }
         return (ASTNode) this.bindingsToAstNodes.get(binding);
@@ -177,51 +175,27 @@ class DefaultBindingResolver extends BindingResolver {
     }
 
     IBinding getBinding(Binding binding) {
-        switch (binding.kind()) {
-            case Binding.PACKAGE:
-                return getPackageBinding(
-                    (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.PackageBinding) binding);
-
-            case Binding.TYPE:
-            case Binding.BASE_TYPE:
-            case Binding.GENERIC_TYPE:
-            case Binding.PARAMETERIZED_TYPE:
-            case Binding.RAW_TYPE:
-                return getTypeBinding(
+        return switch (binding.kind()) {
+            case Binding.PACKAGE -> getPackageBinding(
+                (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.PackageBinding) binding);
+            case Binding.TYPE, Binding.BASE_TYPE, Binding.GENERIC_TYPE, Binding.PARAMETERIZED_TYPE, Binding.RAW_TYPE ->
+                getTypeBinding(
                     (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding) binding);
-
-            case Binding.ARRAY_TYPE:
-            case Binding.TYPE_PARAMETER:
-                return new TypeBinding(this,
-                    (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding) binding);
-
-            case Binding.METHOD:
-                return getMethodBinding(
-                    (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.MethodBinding) binding);
-
-            case Binding.MODULE:
-                return getModuleBinding(
-                    (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.ModuleBinding) binding);
-
-            case Binding.FIELD:
-            case Binding.LOCAL:
-            case Binding.RECORD_COMPONENT:
-                return getVariableBinding(
-                    (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.VariableBinding) binding);
-        }
-        return null;
+            case Binding.ARRAY_TYPE, Binding.TYPE_PARAMETER -> new TypeBinding(this,
+                (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding) binding);
+            case Binding.METHOD -> getMethodBinding(
+                (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.MethodBinding) binding);
+            case Binding.MODULE -> getModuleBinding(
+                (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.ModuleBinding) binding);
+            case Binding.FIELD, Binding.LOCAL, Binding.RECORD_COMPONENT -> getVariableBinding(
+                (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.VariableBinding) binding);
+            default -> null;
+        };
     }
 
     Util.BindingsToNodesMap getBindingsToNodesMap() {
-        return new Util.BindingsToNodesMap() {
-            @Override
-            public
-                com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode
-                get(Binding binding) {
-                return (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode) DefaultBindingResolver.this.newAstToOldAst
-                    .get(DefaultBindingResolver.this.bindingsToAstNodes.get(binding));
-            }
-        };
+        return binding -> (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode) DefaultBindingResolver.this.newAstToOldAst
+            .get(DefaultBindingResolver.this.bindingsToAstNodes.get(binding));
     }
 
     @Override
@@ -280,9 +254,6 @@ class DefaultBindingResolver extends BindingResolver {
         return binding;
     }
 
-    /**
-     * @see org.eclipse.jdt.core.dom.BindingResolver#getModuleBinding(com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.ModuleBinding)
-     */
     @Override
     synchronized IModuleBinding getModuleBinding(
         com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.ModuleBinding moduleBinding) {
@@ -370,8 +341,7 @@ class DefaultBindingResolver extends BindingResolver {
             switch (referenceBinding.problemId()) {
                 case ProblemReasons.NotVisible:
                 case ProblemReasons.NonStaticReferenceInStaticContext:
-                    if (referenceBinding instanceof ProblemReferenceBinding) {
-                        ProblemReferenceBinding problemReferenceBinding = (ProblemReferenceBinding) referenceBinding;
+                    if (referenceBinding instanceof ProblemReferenceBinding problemReferenceBinding) {
                         com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding binding2
                             = problemReferenceBinding.closestMatch();
                         ITypeBinding binding
@@ -448,8 +418,7 @@ class DefaultBindingResolver extends BindingResolver {
                     /*
                      * http://dev.eclipse.org/bugs/show_bug.cgi?id=24449
                      */
-                    if (variableBinding instanceof ProblemFieldBinding) {
-                        ProblemFieldBinding problemFieldBinding = (ProblemFieldBinding) variableBinding;
+                    if (variableBinding instanceof ProblemFieldBinding problemFieldBinding) {
                         switch (problemFieldBinding.problemId()) {
                             case ProblemReasons.NotVisible:
                             case ProblemReasons.NonStaticReferenceInStaticContext:
@@ -508,8 +477,7 @@ class DefaultBindingResolver extends BindingResolver {
                 /*
                  * http://dev.eclipse.org/bugs/show_bug.cgi?id=24449
                  */
-                if (variableBinding instanceof ProblemFieldBinding) {
-                    ProblemFieldBinding problemFieldBinding = (ProblemFieldBinding) variableBinding;
+                if (variableBinding instanceof ProblemFieldBinding problemFieldBinding) {
                     switch (problemFieldBinding.problemId()) {
                         case ProblemReasons.NotVisible:
                         case ProblemReasons.NonStaticReferenceInStaticContext:
@@ -570,7 +538,7 @@ class DefaultBindingResolver extends BindingResolver {
         Object key = new AnnotationIdentityBinding(internalInstance);
         IAnnotationBinding newDomInstance = new AnnotationBinding(internalInstance, this);
         IAnnotationBinding domInstance
-            = (IAnnotationBinding) ((ConcurrentHashMap) this.bindingTables.compilerAnnotationBindingsToASTBindings)
+            = (IAnnotationBinding) this.bindingTables.compilerAnnotationBindingsToASTBindings
                 .putIfAbsent(key, newDomInstance);
         return domInstance != null ? domInstance : newDomInstance;
     }
@@ -578,15 +546,12 @@ class DefaultBindingResolver extends BindingResolver {
     @Override
     boolean isResolvedTypeInferredFromExpectedType(MethodInvocation methodInvocation) {
         Object oldNode = this.newAstToOldAst.get(methodInvocation);
-        if (oldNode instanceof MessageSend) {
-            MessageSend messageSend = (MessageSend) oldNode;
+        if (oldNode instanceof MessageSend messageSend) {
             com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.MethodBinding methodBinding
                 = messageSend.binding;
-            if (methodBinding instanceof ParameterizedGenericMethodBinding) {
-                ParameterizedGenericMethodBinding genericMethodBinding
-                    = (ParameterizedGenericMethodBinding) methodBinding;
+            if (methodBinding instanceof ParameterizedGenericMethodBinding genericMethodBinding) {
                 if (genericMethodBinding.wasInferred && messageSend.typeArguments == null) {
-                    return org.eclipse.jdt.internal.compiler.lookup.TypeBinding
+                    return com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding
                         .notEquals(genericMethodBinding.original().returnType, genericMethodBinding.returnType);
                 }
             }
@@ -597,13 +562,10 @@ class DefaultBindingResolver extends BindingResolver {
     @Override
     boolean isResolvedTypeInferredFromExpectedType(SuperMethodInvocation superMethodInvocation) {
         Object oldNode = this.newAstToOldAst.get(superMethodInvocation);
-        if (oldNode instanceof MessageSend) {
-            MessageSend messageSend = (MessageSend) oldNode;
+        if (oldNode instanceof MessageSend messageSend) {
             com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.MethodBinding methodBinding
                 = messageSend.binding;
-            if (methodBinding instanceof ParameterizedGenericMethodBinding) {
-                ParameterizedGenericMethodBinding genericMethodBinding
-                    = (ParameterizedGenericMethodBinding) methodBinding;
+            if (methodBinding instanceof ParameterizedGenericMethodBinding genericMethodBinding) {
                 return genericMethodBinding.inferredReturnType;
             }
         }
@@ -613,8 +575,7 @@ class DefaultBindingResolver extends BindingResolver {
     @Override
     boolean isResolvedTypeInferredFromExpectedType(ClassInstanceCreation classInstanceCreation) {
         Object oldNode = this.newAstToOldAst.get(classInstanceCreation);
-        if (oldNode instanceof AllocationExpression) {
-            AllocationExpression allocationExpression = (AllocationExpression) oldNode;
+        if (oldNode instanceof AllocationExpression allocationExpression) {
             return allocationExpression.inferredReturnType;
         }
         return false;
@@ -625,9 +586,6 @@ class DefaultBindingResolver extends BindingResolver {
         return this.scope.environment();
     }
 
-    /**
-     * @see org.eclipse.jdt.core.dom.BindingResolver#recordScope(ASTNode, BlockScope)
-     */
     @Override
     synchronized void recordScope(ASTNode astNode, BlockScope blockScope) {
         this.astNodesToBlockScope.put(astNode, blockScope);
@@ -638,11 +596,9 @@ class DefaultBindingResolver extends BindingResolver {
         com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode node
             = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode) this.newAstToOldAst
                 .get(expression);
-        if (node instanceof org.eclipse.jdt.internal.compiler.ast.Expression
-            && ((com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.Expression) node)
+        if (node instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.Expression compilerExpression
+            && compilerExpression
                 .isTrulyExpression()) {
-            com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.Expression compilerExpression
-                = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.Expression) node;
             return (compilerExpression.implicitConversion & TypeIds.BOXING) != 0;
         }
         return false;
@@ -653,9 +609,7 @@ class DefaultBindingResolver extends BindingResolver {
         com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode node
             = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode) this.newAstToOldAst
                 .get(expression);
-        if (node instanceof org.eclipse.jdt.internal.compiler.ast.Expression) {
-            com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.Expression compilerExpression
-                = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.Expression) node;
+        if (node instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.Expression compilerExpression) {
             return (compilerExpression.implicitConversion & TypeIds.UNBOXING) != 0;
         }
         return false;
@@ -666,45 +620,26 @@ class DefaultBindingResolver extends BindingResolver {
         com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode node
             = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode) this.newAstToOldAst
                 .get(expression);
-        if (node instanceof org.eclipse.jdt.internal.compiler.ast.FieldDeclaration) {
+        if (node instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.FieldDeclaration) {
             node = ((FieldDeclaration) node).initialization;
         }
-        if (node instanceof org.eclipse.jdt.internal.compiler.ast.Expression
-            && ((com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.Expression) node)
+        if (node instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.Expression compilerExpression
+            && compilerExpression
                 .isTrulyExpression()) {
-            com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.Expression compilerExpression
-                = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.Expression) node;
             Constant constant = compilerExpression.constant;
             if (constant != null && constant != Constant.NotAConstant) {
-                switch (constant.typeID()) {
-                    case TypeIds.T_int:
-                        return Integer.valueOf(constant.intValue());
-
-                    case TypeIds.T_byte:
-                        return Byte.valueOf(constant.byteValue());
-
-                    case TypeIds.T_short:
-                        return Short.valueOf(constant.shortValue());
-
-                    case TypeIds.T_char:
-                        return Character.valueOf(constant.charValue());
-
-                    case TypeIds.T_float:
-                        return Float.valueOf(constant.floatValue());
-
-                    case TypeIds.T_double:
-                        return Double.valueOf(constant.doubleValue());
-
-                    case TypeIds.T_boolean:
-                        return constant.booleanValue() ? Boolean.TRUE : Boolean.FALSE;
-
-                    case TypeIds.T_long:
-                        return Long.valueOf(constant.longValue());
-
-                    case TypeIds.T_JavaLangString:
-                        return constant.stringValue();
-                }
-                return null;
+                return switch (constant.typeID()) {
+                    case TypeIds.T_int -> constant.intValue();
+                    case TypeIds.T_byte -> constant.byteValue();
+                    case TypeIds.T_short -> constant.shortValue();
+                    case TypeIds.T_char -> constant.charValue();
+                    case TypeIds.T_float -> constant.floatValue();
+                    case TypeIds.T_double -> constant.doubleValue();
+                    case TypeIds.T_boolean -> constant.booleanValue() ? Boolean.TRUE : Boolean.FALSE;
+                    case TypeIds.T_long -> constant.longValue();
+                    case TypeIds.T_JavaLangString -> constant.stringValue();
+                    default -> null;
+                };
             }
         }
         return null;
@@ -730,8 +665,7 @@ class DefaultBindingResolver extends BindingResolver {
         com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode node
             = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode) this.newAstToOldAst
                 .get(expression);
-        if (node instanceof ExplicitConstructorCall) {
-            ExplicitConstructorCall explicitConstructorCall = (ExplicitConstructorCall) node;
+        if (node instanceof ExplicitConstructorCall explicitConstructorCall) {
             return getMethodBinding(explicitConstructorCall.binding);
         }
         return null;
@@ -742,8 +676,7 @@ class DefaultBindingResolver extends BindingResolver {
         com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode node
             = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode) this.newAstToOldAst
                 .get(enumConstantDeclaration);
-        if (node instanceof org.eclipse.jdt.internal.compiler.ast.FieldDeclaration) {
-            FieldDeclaration fieldDeclaration = (FieldDeclaration) node;
+        if (node instanceof FieldDeclaration fieldDeclaration) {
             if (fieldDeclaration.getKind() == AbstractVariableDeclaration.ENUM_CONSTANT
                 && fieldDeclaration.initialization != null) {
                 AllocationExpression allocationExpression = (AllocationExpression) fieldDeclaration.initialization;
@@ -758,8 +691,7 @@ class DefaultBindingResolver extends BindingResolver {
         com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode node
             = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode) this.newAstToOldAst
                 .get(expression);
-        if (node instanceof ExplicitConstructorCall) {
-            ExplicitConstructorCall explicitConstructorCall = (ExplicitConstructorCall) node;
+        if (node instanceof ExplicitConstructorCall explicitConstructorCall) {
             return getMethodBinding(explicitConstructorCall.binding);
         }
         return null;
@@ -770,20 +702,17 @@ class DefaultBindingResolver extends BindingResolver {
         try {
             switch (expression.getNodeType()) {
                 case ASTNode.CLASS_INSTANCE_CREATION:
-                    org.eclipse.jdt.internal.compiler.ast.ASTNode astNode
+                    com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode astNode
                         = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode) this.newAstToOldAst
                             .get(expression);
-                    if (astNode instanceof org.eclipse.jdt.internal.compiler.ast.TypeDeclaration) {
+                    if (astNode instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeDeclaration typeDeclaration) {
                         // anonymous type case
-                        org.eclipse.jdt.internal.compiler.ast.TypeDeclaration typeDeclaration
-                            = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeDeclaration) astNode;
                         ITypeBinding typeBinding = this.getTypeBinding(typeDeclaration.binding);
                         if (typeBinding != null) {
                             return typeBinding;
                         }
-                    } else if (astNode instanceof AllocationExpression) {
+                    } else if (astNode instanceof AllocationExpression allocationExpression) {
                         // should be an AllocationExpression
-                        AllocationExpression allocationExpression = (AllocationExpression) astNode;
                         return this.getTypeBinding(allocationExpression.resolvedType);
                     }
                     break;
@@ -819,7 +748,7 @@ class DefaultBindingResolver extends BindingResolver {
                 case ASTNode.SINGLE_MEMBER_ANNOTATION:
                 case ASTNode.GUARDED_PATTERN:
                 case ASTNode.TYPE_PATTERN:
-                    org.eclipse.jdt.internal.compiler.ast.Expression compilerExpression
+                    com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.Expression compilerExpression
                         = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.Expression) this.newAstToOldAst
                             .get(expression);
                     if (compilerExpression != null) {
@@ -877,8 +806,7 @@ class DefaultBindingResolver extends BindingResolver {
     @Override
     synchronized IVariableBinding resolveField(FieldAccess fieldAccess) {
         Object oldNode = this.newAstToOldAst.get(fieldAccess);
-        if (oldNode instanceof FieldReference) {
-            FieldReference fieldReference = (FieldReference) oldNode;
+        if (oldNode instanceof FieldReference fieldReference) {
             return this.getVariableBinding(fieldReference.binding);
         }
         return null;
@@ -887,8 +815,7 @@ class DefaultBindingResolver extends BindingResolver {
     @Override
     synchronized IVariableBinding resolveField(SuperFieldAccess fieldAccess) {
         Object oldNode = this.newAstToOldAst.get(fieldAccess);
-        if (oldNode instanceof FieldReference) {
-            FieldReference fieldReference = (FieldReference) oldNode;
+        if (oldNode instanceof FieldReference fieldReference) {
             return this.getVariableBinding(fieldReference.binding);
         }
         return null;
@@ -908,18 +835,18 @@ class DefaultBindingResolver extends BindingResolver {
                     Binding binding = this.scope.getImport(importReference.tokens, true, importReference.modifiers);
                     if (binding != null) {
                         if (isStatic) {
-                            if (binding instanceof org.eclipse.jdt.internal.compiler.lookup.TypeBinding tb) {
+                            if (binding instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding tb) {
                                 return this.getTypeBinding(tb);
                             }
                         } else {
                             if ((binding.kind() & Binding.PACKAGE) != 0) {
-                                if (binding instanceof org.eclipse.jdt.internal.compiler.lookup.PackageBinding pack) {
+                                if (binding instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.PackageBinding pack) {
                                     return getPackageBinding(pack);
                                 }
                             } else {
-                                if (binding instanceof org.eclipse.jdt.internal.compiler.lookup.ModuleBinding moduleBinding) {
+                                if (binding instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.ModuleBinding moduleBinding) {
                                     return getModuleBinding(moduleBinding);
-                                } else if (binding instanceof org.eclipse.jdt.internal.compiler.lookup.TypeBinding typeBinding) {
+                                } else if (binding instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding typeBinding) {
                                     return getTypeBinding(typeBinding);
                                 }
                             }
@@ -929,17 +856,17 @@ class DefaultBindingResolver extends BindingResolver {
                     Binding binding = this.scope.getImport(importReference.tokens, false, importReference.modifiers);
                     if (binding != null) {
                         if (isStatic) {
-                            if (binding instanceof org.eclipse.jdt.internal.compiler.lookup.TypeBinding tb) {
+                            if (binding instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding tb) {
                                 return this.getTypeBinding(tb);
                             } else if (binding instanceof FieldBinding fieldBinding) {
                                 return this.getVariableBinding(fieldBinding);
-                            } else if (binding instanceof org.eclipse.jdt.internal.compiler.lookup.MethodBinding methodBinding) {
+                            } else if (binding instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.MethodBinding methodBinding) {
                                 return getMethodBinding(methodBinding);
                             } else if (binding instanceof RecordComponentBinding recordComponentBinding) {
                                 return this.getVariableBinding(recordComponentBinding);
                             }
                         } else {
-                            if (binding instanceof org.eclipse.jdt.internal.compiler.lookup.TypeBinding tb) {
+                            if (binding instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding tb) {
                                 return this.getTypeBinding(tb);
                             }
                         }
@@ -957,8 +884,7 @@ class DefaultBindingResolver extends BindingResolver {
     @Override
     IMethodBinding resolveMember(AnnotationTypeMemberDeclaration declaration) {
         Object oldNode = this.newAstToOldAst.get(declaration);
-        if (oldNode instanceof AbstractMethodDeclaration) {
-            AbstractMethodDeclaration methodDeclaration = (AbstractMethodDeclaration) oldNode;
+        if (oldNode instanceof AbstractMethodDeclaration methodDeclaration) {
             IMethodBinding methodBinding = getMethodBinding(methodDeclaration.binding);
             if (methodBinding == null) {
                 return null;
@@ -1025,7 +951,7 @@ class DefaultBindingResolver extends BindingResolver {
                     for (FieldDeclaration field : enclosingType.fields) {
                         if (field.declarationSourceStart <= node.sourceStart
                             && node.sourceEnd <= field.declarationSourceEnd) {
-                            if (field instanceof org.eclipse.jdt.internal.compiler.ast.Initializer)
+                            if (field instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.Initializer)
                                 return getMethodBinding(
                                     ((com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.Initializer) field)
                                         .getMethodBinding());
@@ -1065,8 +991,7 @@ class DefaultBindingResolver extends BindingResolver {
     @Override
     synchronized IMethodBinding resolveMethod(MethodDeclaration method) {
         Object oldNode = this.newAstToOldAst.get(method);
-        if (oldNode instanceof AbstractMethodDeclaration) {
-            AbstractMethodDeclaration methodDeclaration = (AbstractMethodDeclaration) oldNode;
+        if (oldNode instanceof AbstractMethodDeclaration methodDeclaration) {
             IMethodBinding methodBinding = getMethodBinding(methodDeclaration.binding);
             if (methodBinding == null) {
                 return null;
@@ -1084,8 +1009,7 @@ class DefaultBindingResolver extends BindingResolver {
     @Override
     synchronized IMethodBinding resolveMethod(MethodInvocation method) {
         Object oldNode = this.newAstToOldAst.get(method);
-        if (oldNode instanceof MessageSend) {
-            MessageSend messageSend = (MessageSend) oldNode;
+        if (oldNode instanceof MessageSend messageSend) {
             return getMethodBinding(messageSend.binding);
         }
         return null;
@@ -1110,8 +1034,7 @@ class DefaultBindingResolver extends BindingResolver {
     @Override
     synchronized IMethodBinding resolveMethod(SuperMethodInvocation method) {
         Object oldNode = this.newAstToOldAst.get(method);
-        if (oldNode instanceof MessageSend) {
-            MessageSend messageSend = (MessageSend) oldNode;
+        if (oldNode instanceof MessageSend messageSend) {
             return getMethodBinding(messageSend.binding);
         }
         return null;
@@ -1122,8 +1045,7 @@ class DefaultBindingResolver extends BindingResolver {
             = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode) this.newAstToOldAst
                 .get(name);
         int index = name.index;
-        if (node instanceof QualifiedNameReference) {
-            QualifiedNameReference qualifiedNameReference = (QualifiedNameReference) node;
+        if (node instanceof QualifiedNameReference qualifiedNameReference) {
             final char[][] tokens = qualifiedNameReference.tokens;
             if (tokens.length == index) {
                 return this.getTypeBinding(qualifiedNameReference.resolvedType);
@@ -1137,18 +1059,20 @@ class DefaultBindingResolver extends BindingResolver {
                     if (internalScope == null) {
                         if (this.scope == null)
                             return null;
-                        binding = this.scope.getTypeOrPackage(CharOperation.subarray(tokens, 0, index));
+                        binding = this.scope.getTypeOrPackage(
+                            Objects.requireNonNull(CharOperation.subarray(tokens, 0, index)));
                     } else {
-                        binding = internalScope.getTypeOrPackage(CharOperation.subarray(tokens, 0, index));
+                        binding = internalScope.getTypeOrPackage(
+                            Objects.requireNonNull(CharOperation.subarray(tokens, 0, index)));
                     }
                 } catch (AbortCompilation e) {
                     // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=53357
                     // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=63550
                     // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=64299
                 }
-                if (binding instanceof org.eclipse.jdt.internal.compiler.lookup.PackageBinding) {
+                if (binding instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.PackageBinding) {
                     return null;
-                } else if (binding instanceof org.eclipse.jdt.internal.compiler.lookup.TypeBinding) {
+                } else if (binding instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding) {
                     // it is a type
                     return this.getTypeBinding(
                         (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding) binding);
@@ -1168,20 +1092,14 @@ class DefaultBindingResolver extends BindingResolver {
                         = fieldBinding.declaringClass;
                     if (type == null) { // array length scenario
                         // use type from first binding (no capture needed for array type)
-                        switch (qualifiedNameReference.bits
+                        type = switch (qualifiedNameReference.bits
                             & org.eclipse.jdt.internal.compiler.ast.ASTNode.RestrictiveFlagMASK) {
-                            case Binding.FIELD:
-                                type = ((FieldBinding) qualifiedNameReference.binding).type;
-                                break;
-
-                            case Binding.LOCAL:
-                                type = ((LocalVariableBinding) qualifiedNameReference.binding).type;
-                                break;
-
-                            case Binding.RECORD_COMPONENT:
-                                type = ((RecordComponentBinding) qualifiedNameReference.binding).type;
-                                break;
-                        }
+                            case Binding.FIELD -> ((FieldBinding) qualifiedNameReference.binding).type;
+                            case Binding.LOCAL -> ((LocalVariableBinding) qualifiedNameReference.binding).type;
+                            case Binding.RECORD_COMPONENT ->
+                                ((RecordComponentBinding) qualifiedNameReference.binding).type;
+                            default -> type;
+                        };
                     }
                     return this.getTypeBinding(type);
                 }
@@ -1210,8 +1128,7 @@ class DefaultBindingResolver extends BindingResolver {
                 }
                 return this.getTypeBinding(type);
             }
-        } else if (node instanceof QualifiedTypeReference) {
-            QualifiedTypeReference qualifiedTypeReference = (QualifiedTypeReference) node;
+        } else if (node instanceof QualifiedTypeReference qualifiedTypeReference) {
             if (qualifiedTypeReference.resolvedType == null) {
                 return null;
             }
@@ -1233,17 +1150,19 @@ class DefaultBindingResolver extends BindingResolver {
                             if (this.scope == null)
                                 return null;
                             binding = this.scope
-                                .getTypeOrPackage(CharOperation.subarray(qualifiedTypeReference.tokens, 0, index));
+                                .getTypeOrPackage(Objects.requireNonNull(
+                                    CharOperation.subarray(qualifiedTypeReference.tokens, 0, index)));
                         } else {
                             binding = internalScope
-                                .getTypeOrPackage(CharOperation.subarray(qualifiedTypeReference.tokens, 0, index));
+                                .getTypeOrPackage(Objects.requireNonNull(
+                                    CharOperation.subarray(qualifiedTypeReference.tokens, 0, index)));
                         }
                     } catch (AbortCompilation e) {
                         // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=53357
                     }
-                    if (binding instanceof org.eclipse.jdt.internal.compiler.lookup.PackageBinding) {
+                    if (binding instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.PackageBinding) {
                         return null;
-                    } else if (binding instanceof org.eclipse.jdt.internal.compiler.lookup.TypeBinding) {
+                    } else if (binding instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding) {
                         // it is a type
                         return this.getTypeBinding(
                             (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding) binding);
@@ -1252,10 +1171,9 @@ class DefaultBindingResolver extends BindingResolver {
                     }
                 }
             }
-        } else if (node instanceof ImportReference) {
+        } else if (node instanceof ImportReference importReference) {
             if ((node.bits & org.eclipse.jdt.internal.compiler.ast.ASTNode.inModule) != 0)
                 return null;
-            ImportReference importReference = (ImportReference) node;
             int importReferenceLength = importReference.tokens.length;
             if (index >= 0) {
                 Binding binding = null;
@@ -1278,7 +1196,7 @@ class DefaultBindingResolver extends BindingResolver {
                     }
                 }
                 if (binding != null) {
-                    if (binding instanceof org.eclipse.jdt.internal.compiler.lookup.TypeBinding) {
+                    if (binding instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding) {
                         // it is a type
                         return this.getTypeBinding(
                             (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding) binding);
@@ -1286,33 +1204,27 @@ class DefaultBindingResolver extends BindingResolver {
                     return null;
                 }
             }
-        } else if (node instanceof AbstractMethodDeclaration) {
-            AbstractMethodDeclaration methodDeclaration = (AbstractMethodDeclaration) node;
+        } else if (node instanceof AbstractMethodDeclaration methodDeclaration) {
             IMethodBinding method = getMethodBinding(methodDeclaration.binding);
             if (method == null)
                 return null;
             return method.getReturnType();
-        } else if (node instanceof org.eclipse.jdt.internal.compiler.ast.TypeDeclaration) {
-            com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeDeclaration typeDeclaration
-                = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeDeclaration) node;
+        } else if (node instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeDeclaration typeDeclaration) {
             ITypeBinding typeBinding = this.getTypeBinding(typeDeclaration.binding);
             if (typeBinding != null) {
                 return typeBinding;
             }
         }
-        if (node instanceof JavadocSingleNameReference) {
-            JavadocSingleNameReference singleNameReference = (JavadocSingleNameReference) node;
+        if (node instanceof JavadocSingleNameReference singleNameReference) {
             com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.VariableBinding localVariable
                 = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.VariableBinding) singleNameReference.binding;
             if (localVariable != null) {
                 return this.getTypeBinding(localVariable.type);
             }
         }
-        if (node instanceof SingleNameReference) {
-            SingleNameReference singleNameReference = (SingleNameReference) node;
+        if (node instanceof SingleNameReference singleNameReference) {
             return this.getTypeBinding(singleNameReference.resolvedType);
-        } else if (node instanceof QualifiedSuperReference) {
-            QualifiedSuperReference qualifiedSuperReference = (QualifiedSuperReference) node;
+        } else if (node instanceof QualifiedSuperReference qualifiedSuperReference) {
             return this.getTypeBinding(qualifiedSuperReference.qualification.resolvedType);
         } else if (node instanceof Receiver) {
             com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding receiver
@@ -1323,57 +1235,46 @@ class DefaultBindingResolver extends BindingResolver {
             if (variable == null)
                 return null;
             return variable.getType();
-        } else if (node instanceof JavadocFieldReference) {
-            JavadocFieldReference fieldRef = (JavadocFieldReference) node;
+        } else if (node instanceof JavadocFieldReference fieldRef) {
             if (fieldRef.methodBinding != null) {
                 return getMethodBinding(fieldRef.methodBinding).getReturnType();
             }
             return getTypeBinding(fieldRef.resolvedType);
         } else if (node instanceof FieldReference) {
             return getTypeBinding(((FieldReference) node).resolvedType);
-        } else if (node instanceof SingleTypeReference) {
-            SingleTypeReference singleTypeReference = (SingleTypeReference) node;
+        } else if (node instanceof SingleTypeReference singleTypeReference) {
             com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding binding
                 = singleTypeReference.resolvedType;
             if (binding != null) {
                 return this.getTypeBinding(binding.leafComponentType());
             }
-        } else if (node instanceof org.eclipse.jdt.internal.compiler.ast.FieldDeclaration) {
-            FieldDeclaration fieldDeclaration = (FieldDeclaration) node;
+        } else if (node instanceof FieldDeclaration fieldDeclaration) {
             IVariableBinding field = this.getVariableBinding(fieldDeclaration.binding);
             if (field == null)
                 return null;
             return field.getType();
-        } else if (node instanceof MessageSend) {
-            MessageSend messageSend = (MessageSend) node;
+        } else if (node instanceof MessageSend messageSend) {
             IMethodBinding method = getMethodBinding(messageSend.binding);
             if (method == null)
                 return null;
             return method.getReturnType();
-        } else if (node instanceof AllocationExpression) {
-            AllocationExpression allocation = (AllocationExpression) node;
+        } else if (node instanceof AllocationExpression allocation) {
             return getTypeBinding(allocation.resolvedType);
-        } else if (node instanceof JavadocImplicitTypeReference) {
-            JavadocImplicitTypeReference implicitRef = (JavadocImplicitTypeReference) node;
+        } else if (node instanceof JavadocImplicitTypeReference implicitRef) {
             return getTypeBinding(implicitRef.resolvedType);
-        } else if (node instanceof org.eclipse.jdt.internal.compiler.ast.TypeParameter) {
-            com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeParameter typeParameter
-                = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeParameter) node;
+        } else if (node instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeParameter typeParameter) {
             return this.getTypeBinding(typeParameter.binding);
-        } else if (node instanceof org.eclipse.jdt.internal.compiler.ast.MemberValuePair) {
-            MemberValuePair memberValuePair = (MemberValuePair) node;
+        } else if (node instanceof MemberValuePair memberValuePair) {
             IMethodBinding method = getMethodBinding(memberValuePair.binding);
             if (method == null)
                 return null;
             return method.getReturnType();
-        } else if (node instanceof org.eclipse.jdt.internal.compiler.ast.ReferenceExpression) {
-            ReferenceExpression referenceExpression = (ReferenceExpression) node;
+        } else if (node instanceof ReferenceExpression referenceExpression) {
             IMethodBinding method = getMethodBinding(referenceExpression.getMethodBinding());
             if (method == null)
                 return null;
             return method.getReturnType();
-        } else if (node instanceof org.eclipse.jdt.internal.compiler.ast.RecordComponent) {
-            RecordComponent recordComponent = (RecordComponent) node;
+        } else if (node instanceof RecordComponent recordComponent) {
             com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding recordComponentType
                 = recordComponent.type.resolvedType;
             return this.getTypeBinding(recordComponentType);
@@ -1387,8 +1288,7 @@ class DefaultBindingResolver extends BindingResolver {
             = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode) this.newAstToOldAst
                 .get(name);
         int index = name.index;
-        if (node instanceof QualifiedNameReference) {
-            QualifiedNameReference qualifiedNameReference = (QualifiedNameReference) node;
+        if (node instanceof QualifiedNameReference qualifiedNameReference) {
             final char[][] tokens = qualifiedNameReference.tokens;
             int indexOfFirstFieldBinding = qualifiedNameReference.indexOfFirstFieldBinding; // one-based
             if (index < indexOfFirstFieldBinding) {
@@ -1399,19 +1299,21 @@ class DefaultBindingResolver extends BindingResolver {
                     if (internalScope == null) {
                         if (this.scope == null)
                             return null;
-                        binding = this.scope.getTypeOrPackage(CharOperation.subarray(tokens, 0, index));
+                        binding = this.scope.getTypeOrPackage(
+                            Objects.requireNonNull(CharOperation.subarray(tokens, 0, index)));
                     } else {
-                        binding = internalScope.getTypeOrPackage(CharOperation.subarray(tokens, 0, index));
+                        binding = internalScope.getTypeOrPackage(
+                            Objects.requireNonNull(CharOperation.subarray(tokens, 0, index)));
                     }
                 } catch (AbortCompilation e) {
                     // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=53357
                     // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=63550
                     // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=64299
                 }
-                if (binding instanceof org.eclipse.jdt.internal.compiler.lookup.PackageBinding) {
+                if (binding instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.PackageBinding) {
                     return getPackageBinding(
                         (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.PackageBinding) binding);
-                } else if (binding instanceof org.eclipse.jdt.internal.compiler.lookup.TypeBinding) {
+                } else if (binding instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding) {
                     // it is a type
                     return this.getTypeBinding(
                         (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding) binding);
@@ -1425,8 +1327,7 @@ class DefaultBindingResolver extends BindingResolver {
                         if (binding.isValidBinding()) {
                             return this.getVariableBinding(
                                 (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.VariableBinding) binding);
-                        } else if (binding instanceof ProblemFieldBinding) {
-                            ProblemFieldBinding problemFieldBinding = (ProblemFieldBinding) binding;
+                        } else if (binding instanceof ProblemFieldBinding problemFieldBinding) {
                             switch (problemFieldBinding.problemId()) {
                                 case ProblemReasons.NotVisible:
                                 case ProblemReasons.NonStaticReferenceInStaticContext:
@@ -1466,8 +1367,7 @@ class DefaultBindingResolver extends BindingResolver {
                         .getVariableBinding(qualifiedNameReference.otherBindings[index - indexOfFirstFieldBinding - 1]);
                 }
             }
-        } else if (node instanceof JavadocModuleReference) {
-            JavadocModuleReference modRef = (JavadocModuleReference) node;
+        } else if (node instanceof JavadocModuleReference modRef) {
             if (modRef.typeReference == null) {
                 ModuleReference moduleReference = modRef.moduleReference;
                 IModuleBinding moduleBinding = getModuleBinding(moduleReference.binding);
@@ -1479,8 +1379,7 @@ class DefaultBindingResolver extends BindingResolver {
                     return resolveName(((ModuleQualifiedName) name).getName());
                 }
             }
-        } else if (node instanceof QualifiedTypeReference) {
-            QualifiedTypeReference qualifiedTypeReference = (QualifiedTypeReference) node;
+        } else if (node instanceof QualifiedTypeReference qualifiedTypeReference) {
             if (qualifiedTypeReference.resolvedType == null) {
                 return null;
             }
@@ -1502,18 +1401,20 @@ class DefaultBindingResolver extends BindingResolver {
                             if (this.scope == null)
                                 return null;
                             binding = this.scope
-                                .getTypeOrPackage(CharOperation.subarray(qualifiedTypeReference.tokens, 0, index));
+                                .getTypeOrPackage(Objects.requireNonNull(
+                                    CharOperation.subarray(qualifiedTypeReference.tokens, 0, index)));
                         } else {
                             binding = internalScope
-                                .getTypeOrPackage(CharOperation.subarray(qualifiedTypeReference.tokens, 0, index));
+                                .getTypeOrPackage(Objects.requireNonNull(
+                                    CharOperation.subarray(qualifiedTypeReference.tokens, 0, index)));
                         }
                     } catch (AbortCompilation e) {
                         // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=53357
                     }
-                    if (binding instanceof org.eclipse.jdt.internal.compiler.lookup.PackageBinding) {
+                    if (binding instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.PackageBinding) {
                         return getPackageBinding(
                             (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.PackageBinding) binding);
-                    } else if (binding instanceof org.eclipse.jdt.internal.compiler.lookup.TypeBinding) {
+                    } else if (binding instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding) {
                         // it is a type
                         return this.getTypeBinding(
                             (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding) binding);
@@ -1522,10 +1423,9 @@ class DefaultBindingResolver extends BindingResolver {
                     }
                 }
             }
-        } else if (node instanceof ImportReference) {
-            ImportReference importReference = (ImportReference) node;
+        } else if (node instanceof ImportReference importReference) {
             int importReferenceLength = importReference.tokens.length;
-            boolean inModule = (importReference.bits & org.eclipse.jdt.internal.compiler.ast.ASTNode.inModule) != 0;
+            boolean inModule = (importReference.bits & com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode.inModule) != 0;
             if (index >= 0) {
                 Binding binding = null;
                 if (this.scope == null)
@@ -1533,7 +1433,7 @@ class DefaultBindingResolver extends BindingResolver {
                 if (importReferenceLength == index && !inModule) {
                     try {
                         binding = this.scope.getImport(CharOperation.subarray(importReference.tokens, 0, index),
-                            (importReference.bits & org.eclipse.jdt.internal.compiler.ast.ASTNode.OnDemand) != 0,
+                            (importReference.bits & com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode.OnDemand) != 0,
                             importReference.modifiers);
                     } catch (AbortCompilation e) {
                         // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=53357
@@ -1550,21 +1450,21 @@ class DefaultBindingResolver extends BindingResolver {
                     }
                 }
                 if (binding != null) {
-                    if (binding instanceof org.eclipse.jdt.internal.compiler.lookup.PackageBinding) {
+                    if (binding instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.PackageBinding) {
                         return getPackageBinding(
                             (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.PackageBinding) binding);
-                    } else if (binding instanceof org.eclipse.jdt.internal.compiler.lookup.TypeBinding) {
+                    } else if (binding instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding) {
                         // it is a type
                         return this.getTypeBinding(
                             (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding) binding);
-                    } else if (binding instanceof org.eclipse.jdt.internal.compiler.lookup.FieldBinding) {
+                    } else if (binding instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.FieldBinding) {
                         // it is a type
                         return this.getVariableBinding((FieldBinding) binding);
-                    } else if (binding instanceof org.eclipse.jdt.internal.compiler.lookup.MethodBinding) {
+                    } else if (binding instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.MethodBinding) {
                         // it is a type
                         return getMethodBinding(
                             (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.MethodBinding) binding);
-                    } else if (binding instanceof org.eclipse.jdt.internal.compiler.lookup.RecordComponentBinding) {
+                    } else if (binding instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.RecordComponentBinding) {
                         // it is a type
                         return this.getVariableBinding((RecordComponentBinding) binding);
                     } else {
@@ -1572,8 +1472,7 @@ class DefaultBindingResolver extends BindingResolver {
                     }
                 }
             }
-        } else if (node instanceof CompilationUnitDeclaration) {
-            CompilationUnitDeclaration compilationUnitDeclaration = (CompilationUnitDeclaration) node;
+        } else if (node instanceof CompilationUnitDeclaration compilationUnitDeclaration) {
             com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeDeclaration[] types
                 = compilationUnitDeclaration.types;
             if (types == null || types.length == 0) {
@@ -1587,35 +1486,28 @@ class DefaultBindingResolver extends BindingResolver {
                     return typeBinding.getPackage();
                 }
             }
-        } else if (node instanceof AbstractMethodDeclaration) {
-            AbstractMethodDeclaration methodDeclaration = (AbstractMethodDeclaration) node;
+        } else if (node instanceof AbstractMethodDeclaration methodDeclaration) {
             IMethodBinding methodBinding = getMethodBinding(methodDeclaration.binding);
             if (methodBinding != null) {
                 return methodBinding;
             }
-        } else if (node instanceof ModuleReference) {
-            ModuleReference moduleReference = (ModuleReference) node;
+        } else if (node instanceof ModuleReference moduleReference) {
             IModuleBinding moduleBinding = getModuleBinding(moduleReference.binding);
             if (moduleBinding != null) {
                 return moduleBinding;
             }
-        } else if (node instanceof org.eclipse.jdt.internal.compiler.ast.ModuleDeclaration) {
-            com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ModuleDeclaration moduleDeclaration
-                = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ModuleDeclaration) node;
+        } else if (node instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ModuleDeclaration moduleDeclaration) {
             IModuleBinding moduleBinding = getModuleBinding(moduleDeclaration.binding);
             if (moduleBinding != null) {
                 return moduleBinding;
             }
-        } else if (node instanceof org.eclipse.jdt.internal.compiler.ast.TypeDeclaration) {
-            com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeDeclaration typeDeclaration
-                = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeDeclaration) node;
+        } else if (node instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeDeclaration typeDeclaration) {
             ITypeBinding typeBinding = this.getTypeBinding(typeDeclaration.binding);
             if (typeBinding != null) {
                 return typeBinding;
             }
         }
-        if (node instanceof SingleNameReference) {
-            SingleNameReference singleNameReference = (SingleNameReference) node;
+        if (node instanceof SingleNameReference singleNameReference) {
             if (singleNameReference.isTypeReference()) {
                 return this.getTypeBinding(singleNameReference.resolvedType);
             } else {
@@ -1629,8 +1521,7 @@ class DefaultBindingResolver extends BindingResolver {
                         /*
                          * http://dev.eclipse.org/bugs/show_bug.cgi?id=24449
                          */
-                        if (binding instanceof ProblemFieldBinding) {
-                            ProblemFieldBinding problemFieldBinding = (ProblemFieldBinding) binding;
+                        if (binding instanceof ProblemFieldBinding problemFieldBinding) {
                             switch (problemFieldBinding.problemId()) {
                                 case ProblemReasons.NotVisible:
                                 case ProblemReasons.NonStaticReferenceInStaticContext:
@@ -1658,8 +1549,7 @@ class DefaultBindingResolver extends BindingResolver {
                     }
                 }
             }
-        } else if (node instanceof QualifiedSuperReference) {
-            QualifiedSuperReference qualifiedSuperReference = (QualifiedSuperReference) node;
+        } else if (node instanceof QualifiedSuperReference qualifiedSuperReference) {
             return this.getTypeBinding(qualifiedSuperReference.qualification.resolvedType);
         } else if (node instanceof LocalDeclaration) {
             return name.getAST().apiLevel() >= AST.JLS10_INTERNAL
@@ -1667,52 +1557,40 @@ class DefaultBindingResolver extends BindingResolver {
                 && ((SimpleName) name).isVar()
                     ? resolveTypeBindingForName(name)
                     : this.getVariableBinding(((LocalDeclaration) node).binding);
-        } else if (node instanceof JavadocFieldReference) {
-            JavadocFieldReference fieldRef = (JavadocFieldReference) node;
+        } else if (node instanceof JavadocFieldReference fieldRef) {
             if (fieldRef.methodBinding != null) {
                 return getMethodBinding(fieldRef.methodBinding);
             }
             return getVariableBinding(fieldRef.binding);
         } else if (node instanceof FieldReference) {
             return getVariableBinding(((FieldReference) node).binding);
-        } else if (node instanceof SingleTypeReference) {
-            if (node instanceof JavadocSingleTypeReference) {
-                JavadocSingleTypeReference typeRef = (JavadocSingleTypeReference) node;
+        } else if (node instanceof SingleTypeReference singleTypeReference) {
+            if (node instanceof JavadocSingleTypeReference typeRef) {
                 if (typeRef.packageBinding != null) {
                     return getPackageBinding(typeRef.packageBinding);
                 }
             }
-            SingleTypeReference singleTypeReference = (SingleTypeReference) node;
             com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding binding
                 = singleTypeReference.resolvedType;
             if (binding == null) {
                 return null;
             }
             return this.getTypeBinding(binding.leafComponentType());
-        } else if (node instanceof org.eclipse.jdt.internal.compiler.ast.FieldDeclaration) {
-            FieldDeclaration fieldDeclaration = (FieldDeclaration) node;
+        } else if (node instanceof FieldDeclaration fieldDeclaration) {
             return this.getVariableBinding(fieldDeclaration.binding);
-        } else if (node instanceof MessageSend) {
-            MessageSend messageSend = (MessageSend) node;
+        } else if (node instanceof MessageSend messageSend) {
             return getMethodBinding(messageSend.binding);
-        } else if (node instanceof AllocationExpression) {
-            AllocationExpression allocation = (AllocationExpression) node;
+        } else if (node instanceof AllocationExpression allocation) {
             return getMethodBinding(allocation.binding);
-        } else if (node instanceof JavadocImplicitTypeReference) {
-            JavadocImplicitTypeReference implicitRef = (JavadocImplicitTypeReference) node;
+        } else if (node instanceof JavadocImplicitTypeReference implicitRef) {
             return getTypeBinding(implicitRef.resolvedType);
-        } else if (node instanceof org.eclipse.jdt.internal.compiler.ast.TypeParameter) {
-            com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeParameter typeParameter
-                = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeParameter) node;
+        } else if (node instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeParameter typeParameter) {
             return this.getTypeBinding(typeParameter.binding);
-        } else if (node instanceof org.eclipse.jdt.internal.compiler.ast.MemberValuePair) {
-            MemberValuePair memberValuePair = (MemberValuePair) node;
+        } else if (node instanceof MemberValuePair memberValuePair) {
             return getMethodBinding(memberValuePair.binding);
-        } else if (node instanceof org.eclipse.jdt.internal.compiler.ast.ReferenceExpression) {
-            ReferenceExpression referenceExpression = (ReferenceExpression) node;
+        } else if (node instanceof ReferenceExpression referenceExpression) {
             return getMethodBinding(referenceExpression.getMethodBinding());
-        } else if (node instanceof org.eclipse.jdt.internal.compiler.ast.RecordComponent) {
-            RecordComponent recordComponent = (RecordComponent) node;
+        } else if (node instanceof RecordComponent recordComponent) {
             return this.getVariableBinding(recordComponent.binding);
         }
         return null;
@@ -1726,17 +1604,15 @@ class DefaultBindingResolver extends BindingResolver {
             com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode node
                 = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode) this.newAstToOldAst
                     .get(pkg);
-            if (node instanceof ImportReference) {
-                ImportReference importReference = (ImportReference) node;
+            if (node instanceof ImportReference importReference) {
                 Binding binding = this.scope
                     .getOnlyPackage(CharOperation.subarray(importReference.tokens, 0, importReference.tokens.length));
                 if ((binding != null) && (binding.isValidBinding())) {
-                    if (binding instanceof ReferenceBinding) {
+                    if (binding instanceof ReferenceBinding referenceBinding) {
                         // this only happens if a type name has the same name as its package
-                        ReferenceBinding referenceBinding = (ReferenceBinding) binding;
                         binding = referenceBinding.fPackage;
                     }
-                    if (binding instanceof org.eclipse.jdt.internal.compiler.lookup.PackageBinding) {
+                    if (binding instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.PackageBinding) {
                         IPackageBinding packageBinding = getPackageBinding(
                             (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.PackageBinding) binding);
                         if (packageBinding == null) {
@@ -1766,8 +1642,7 @@ class DefaultBindingResolver extends BindingResolver {
                 .get(ref);
         if (expression instanceof TypeReference) {
             return getTypeBinding(expression.resolvedType);
-        } else if (expression instanceof JavadocFieldReference) {
-            JavadocFieldReference fieldRef = (JavadocFieldReference) expression;
+        } else if (expression instanceof JavadocFieldReference fieldRef) {
             if (fieldRef.methodBinding != null) {
                 return getMethodBinding(fieldRef.methodBinding);
             }
@@ -1911,7 +1786,7 @@ class DefaultBindingResolver extends BindingResolver {
     @Override
     synchronized ITypeBinding resolveType(Type type) {
         // retrieve the old ast node
-        org.eclipse.jdt.internal.compiler.ast.ASTNode node
+        com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode node
             = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode) this.newAstToOldAst
                 .get(type);
         com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding binding
@@ -1923,8 +1798,7 @@ class DefaultBindingResolver extends BindingResolver {
             if (node instanceof Receiver) {
                 node = ((Receiver) node).type;
             }
-            if (node instanceof ParameterizedQualifiedTypeReference) {
-                ParameterizedQualifiedTypeReference typeReference = (ParameterizedQualifiedTypeReference) node;
+            if (node instanceof ParameterizedQualifiedTypeReference typeReference) {
                 com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding typeBinding
                     = typeReference.resolvedType;
                 // This unlikely case is possible when for some reason binding resolution has been stopped, like
@@ -1968,7 +1842,7 @@ class DefaultBindingResolver extends BindingResolver {
                 } else {
                     binding = typeBinding;
                 }
-            } else if (node instanceof TypeReference) {
+            } else if (node instanceof TypeReference typeReference) {
                 if (type instanceof SimpleType && node instanceof QualifiedTypeReference) {
                     return resolveTypeBindingForName(((SimpleType) type).getName());
                 } else if (type instanceof QualifiedType) {
@@ -1976,7 +1850,6 @@ class DefaultBindingResolver extends BindingResolver {
                 } else if (type instanceof NameQualifiedType) {
                     return resolveTypeBindingForName(((NameQualifiedType) type).getName());
                 }
-                TypeReference typeReference = (TypeReference) node;
                 binding = typeReference.resolvedType;
             } else if (node instanceof SingleNameReference && ((SingleNameReference) node).isTypeReference()) {
                 binding = (((SingleNameReference) node).resolvedType);
@@ -2041,7 +1914,7 @@ class DefaultBindingResolver extends BindingResolver {
             cells++;
         }
         if (cells > 0)
-            System.arraycopy(oldies, i, newbies = new org.eclipse.jdt.internal.compiler.lookup.AnnotationBinding[cells],
+            System.arraycopy(oldies, i, newbies = new com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.AnnotationBinding[cells],
                 0, cells);
         return newbies;
     }
@@ -2070,7 +1943,7 @@ class DefaultBindingResolver extends BindingResolver {
     @Override
     synchronized ITypeBinding resolveType(ImplicitTypeDeclaration type) {
         final Object node = this.newAstToOldAst.get(type);
-        if (node instanceof org.eclipse.jdt.internal.compiler.ast.ImplicitTypeDeclaration implicitTypeDeclaration) {
+        if (node instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ImplicitTypeDeclaration implicitTypeDeclaration) {
             ITypeBinding typeBinding = internalGetTypeBinding(implicitTypeDeclaration.binding, null);
             if (typeBinding == null) {
                 return null;
@@ -2127,14 +2000,11 @@ class DefaultBindingResolver extends BindingResolver {
     @Override
     synchronized IVariableBinding resolveVariable(VariableDeclaration variable) {
         final Object node = this.newAstToOldAst.get(variable);
-        if (node instanceof AbstractVariableDeclaration) {
-            AbstractVariableDeclaration abstractVariableDeclaration = (AbstractVariableDeclaration) node;
+        if (node instanceof AbstractVariableDeclaration abstractVariableDeclaration) {
             IVariableBinding variableBinding = null;
-            if (abstractVariableDeclaration instanceof org.eclipse.jdt.internal.compiler.ast.FieldDeclaration) {
-                FieldDeclaration fieldDeclaration = (FieldDeclaration) abstractVariableDeclaration;
+            if (abstractVariableDeclaration instanceof FieldDeclaration fieldDeclaration) {
                 variableBinding = this.getVariableBinding(fieldDeclaration.binding, variable);
-            } else if (abstractVariableDeclaration instanceof org.eclipse.jdt.internal.compiler.ast.RecordComponent) {
-                RecordComponent recordComponent = (RecordComponent) abstractVariableDeclaration;
+            } else if (abstractVariableDeclaration instanceof RecordComponent recordComponent) {
                 variableBinding = this.getVariableBinding(recordComponent.binding, variable);
             } else {
                 variableBinding
@@ -2300,7 +2170,7 @@ class DefaultBindingResolver extends BindingResolver {
                 dimensions = 0; // Just means there were no annotations
         }
         com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.AnnotationBinding[] newAnnots
-            = new org.eclipse.jdt.internal.compiler.lookup.AnnotationBinding[annots.length - index + dimensions];
+            = new com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.AnnotationBinding[annots.length - index + dimensions];
 
         System.arraycopy(annots, index, newAnnots, dimensions, annots.length - index);
         return newAnnots;

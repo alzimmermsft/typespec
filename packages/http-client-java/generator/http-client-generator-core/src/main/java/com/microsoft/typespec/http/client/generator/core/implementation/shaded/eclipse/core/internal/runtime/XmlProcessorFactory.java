@@ -14,7 +14,6 @@ import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.TransformerFactory;
 import org.w3c.dom.Document;
 
@@ -74,28 +73,6 @@ public class XmlProcessorFactory {
     public static synchronized DocumentBuilder createDocumentBuilderWithErrorOnDOCTYPE()
         throws ParserConfigurationException {
         return DOCUMENT_BUILDER_FACTORY_ERROR_ON_DOCTYPE.newDocumentBuilder();
-    }
-
-    /**
-     * Creates DocumentBuilderFactory which throws SAXParseException when detecting
-     * external entities.
-     *
-     * @param awareness true if the parser produced by this code will provide
-     * support for XML namespaces; false otherwise.
-     * @return javax.xml.parsers.DocumentBuilderFactory
-     */
-    public static synchronized SAXParserFactory createSAXFactoryWithErrorOnDOCTYPE(boolean awareness) {
-        SAXParserFactory f = SAXParserFactory.newInstance();
-        if (awareness) {
-            f.setNamespaceAware(true);
-        }
-        try {
-            // force org.xml.sax.SAXParseException for any DOCTYPE:
-            f.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true); //$NON-NLS-1$
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return f;
     }
 
     /**

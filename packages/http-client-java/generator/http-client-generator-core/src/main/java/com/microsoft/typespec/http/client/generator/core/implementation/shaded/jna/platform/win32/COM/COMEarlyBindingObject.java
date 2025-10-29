@@ -46,11 +46,9 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
  *
  * @author Tobias Wolf, wolf.tobias@gmx.net
  */
-public class COMEarlyBindingObject extends COMBindingBaseObject implements
-        IDispatch {
+public class COMEarlyBindingObject extends COMBindingBaseObject implements IDispatch {
 
-    public COMEarlyBindingObject(CLSID clsid, boolean useActiveInstance,
-            int dwClsContext) {
+    public COMEarlyBindingObject(CLSID clsid, boolean useActiveInstance, int dwClsContext) {
         super(clsid, useActiveInstance, dwClsContext);
     }
 
@@ -86,24 +84,19 @@ public class COMEarlyBindingObject extends COMBindingBaseObject implements
     }
 
     @Override
-    public HRESULT GetTypeInfo(UINT iTInfo, LCID lcid,
-            PointerByReference ppTInfo) {
+    public HRESULT GetTypeInfo(UINT iTInfo, LCID lcid, PointerByReference ppTInfo) {
         return this.getIDispatch().GetTypeInfo(iTInfo, lcid, ppTInfo);
     }
 
     @Override
-    public HRESULT GetIDsOfNames(REFIID riid, WString[] rgszNames, int cNames,
-            LCID lcid, DISPIDByReference rgDispId) {
-        return this.getIDispatch().GetIDsOfNames(riid, rgszNames, cNames, lcid,
-                rgDispId);
+    public HRESULT GetIDsOfNames(REFIID riid, WString[] rgszNames, int cNames, LCID lcid, DISPIDByReference rgDispId) {
+        return this.getIDispatch().GetIDsOfNames(riid, rgszNames, cNames, lcid, rgDispId);
     }
 
     @Override
-    public HRESULT Invoke(DISPID dispIdMember, REFIID riid, LCID lcid,
-            WORD wFlags, DISPPARAMS.ByReference pDispParams,
-            VARIANT.ByReference pVarResult, EXCEPINFO.ByReference pExcepInfo,
-            IntByReference puArgErr) {
-        return this.getIDispatch().Invoke(dispIdMember, riid, lcid, wFlags,
-                pDispParams, pVarResult, pExcepInfo, puArgErr);
+    public HRESULT Invoke(DISPID dispIdMember, REFIID riid, LCID lcid, WORD wFlags, DISPPARAMS.ByReference pDispParams,
+        VARIANT.ByReference pVarResult, EXCEPINFO.ByReference pExcepInfo, IntByReference puArgErr) {
+        return this.getIDispatch()
+            .Invoke(dispIdMember, riid, lcid, wFlags, pDispParams, pVarResult, pExcepInfo, puArgErr);
     }
 }

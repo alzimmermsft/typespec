@@ -652,18 +652,6 @@ public class DeadlockDetector {
     }
 
     /**
-     * For tests that are supposed to create deadlocks.
-     */
-    public static void runSilent(Runnable runnable) {
-        DeadlockDetector.noDeadlockReport = true;
-        try {
-            runnable.run();
-        } finally {
-            DeadlockDetector.noDeadlockReport = false;
-        }
-    }
-
-    /**
      * Adds a 'deadlock detected' message to the log with a stack trace.
      */
     private void reportDeadlock(Deadlock deadlock) {

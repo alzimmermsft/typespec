@@ -23,8 +23,6 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
-import java.util.List;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure.FieldOrder;
@@ -43,14 +41,19 @@ public interface DsGetDC {
      * The DOMAIN_CONTROLLER_INFO structure is used with the DsGetDcName
      * function to receive data about a domain controller.
      */
-    @FieldOrder({"DomainControllerName",
-        "DomainControllerAddress", "DomainControllerAddressType",
-        "DomainGuid", "DomainName", "DnsForestName", "Flags",
-        "DcSiteName", "ClientSiteName"})
+    @FieldOrder({
+        "DomainControllerName",
+        "DomainControllerAddress",
+        "DomainControllerAddressType",
+        "DomainGuid",
+        "DomainName",
+        "DnsForestName",
+        "Flags",
+        "DcSiteName",
+        "ClientSiteName" })
     public static class DOMAIN_CONTROLLER_INFO extends Structure {
 
-        public static class ByReference extends DOMAIN_CONTROLLER_INFO
-                implements Structure.ByReference {
+        public static class ByReference extends DOMAIN_CONTROLLER_INFO implements Structure.ByReference {
         }
 
         /**
@@ -131,11 +134,10 @@ public interface DsGetDC {
     /**
      * Pointer to DOMAIN_CONTROLLER_INFO.
      */
-    @FieldOrder({"dci"})
+    @FieldOrder({ "dci" })
     public static class PDOMAIN_CONTROLLER_INFO extends Structure {
 
-        public static class ByReference extends PDOMAIN_CONTROLLER_INFO
-                implements Structure.ByReference {
+        public static class ByReference extends PDOMAIN_CONTROLLER_INFO implements Structure.ByReference {
 
         }
 
@@ -169,21 +171,25 @@ public interface DsGetDC {
     /**
      * Valid domain flags.
      */
-    int DS_DOMAIN_VALID_FLAGS = DS_DOMAIN_IN_FOREST | DS_DOMAIN_DIRECT_OUTBOUND
-            | DS_DOMAIN_TREE_ROOT | DS_DOMAIN_PRIMARY | DS_DOMAIN_NATIVE_MODE
-            | DS_DOMAIN_DIRECT_INBOUND;
+    int DS_DOMAIN_VALID_FLAGS = DS_DOMAIN_IN_FOREST | DS_DOMAIN_DIRECT_OUTBOUND | DS_DOMAIN_TREE_ROOT
+        | DS_DOMAIN_PRIMARY | DS_DOMAIN_NATIVE_MODE | DS_DOMAIN_DIRECT_INBOUND;
 
     /**
      * The DS_DOMAIN_TRUSTS structure is used with the DsEnumerateDomainTrusts
      * function to contain trust data for a domain.
      */
-    @FieldOrder({"NetbiosDomainName",
-                "DnsDomainName", "Flags", "ParentIndex", "TrustType",
-                "TrustAttributes", "DomainSid", "DomainGuid"})
+    @FieldOrder({
+        "NetbiosDomainName",
+        "DnsDomainName",
+        "Flags",
+        "ParentIndex",
+        "TrustType",
+        "TrustAttributes",
+        "DomainSid",
+        "DomainGuid" })
     public static class DS_DOMAIN_TRUSTS extends Structure {
 
-        public static class ByReference extends DS_DOMAIN_TRUSTS implements
-                Structure.ByReference {
+        public static class ByReference extends DS_DOMAIN_TRUSTS implements Structure.ByReference {
         }
 
         /**

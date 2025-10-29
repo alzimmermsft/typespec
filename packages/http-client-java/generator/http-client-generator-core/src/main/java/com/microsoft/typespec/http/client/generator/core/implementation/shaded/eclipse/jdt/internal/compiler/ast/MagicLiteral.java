@@ -13,22 +13,22 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast;
 
-public abstract class  MagicLiteral extends Literal {
+public abstract class MagicLiteral extends Literal {
 
-	public MagicLiteral(int start , int end) {
+    public MagicLiteral(int start, int end) {
 
-		super(start,end);
-	}
+        super(start, end);
+    }
 
-	@Override
-	public boolean isValidJavaStatement(){
+    @Override
+    public boolean isValidJavaStatement() {
 
-		return false ;
-	}
+        return false;
+    }
 
-	@Override
-	public char[] source() {
+    @Override
+    public char[] source() {
 
-		return null;
-	}
+        return null;
+    }
 }

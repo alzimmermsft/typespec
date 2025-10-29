@@ -28,6 +28,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 
 /**
  * <I>libc</I> API
+ * 
  * @author Lyor Goldstein
  */
 public interface LibC extends LibCAPI, Library {

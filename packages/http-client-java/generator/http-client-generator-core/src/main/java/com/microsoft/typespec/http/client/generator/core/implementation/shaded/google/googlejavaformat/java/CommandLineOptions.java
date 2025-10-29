@@ -36,99 +36,84 @@ import java.util.Optional;
  * @param sortImports Sort imports.
  * @param removeUnusedImports Remove unused imports.
  * @param dryRun Print the paths of the files whose contents would change if the formatter were run
- *     normally.
+ * normally.
  * @param setExitIfChanged Return exit code 1 if there are any formatting changes.
  * @param assumeFilename Return the name to use for diagnostics when formatting standard input.
  */
-record CommandLineOptions(
-    ImmutableList<String> files,
-    boolean inPlace,
-    ImmutableRangeSet<Integer> lines,
-    ImmutableList<Integer> offsets,
-    ImmutableList<Integer> lengths,
-    boolean aosp,
-    boolean version,
-    boolean help,
-    boolean stdin,
-    boolean fixImportsOnly,
-    boolean sortImports,
-    boolean removeUnusedImports,
-    boolean dryRun,
-    boolean setExitIfChanged,
-    Optional<String> assumeFilename,
-    boolean reflowLongStrings,
-    boolean formatJavadoc) {
+record CommandLineOptions(ImmutableList<String> files, boolean inPlace, ImmutableRangeSet<Integer> lines,
+    ImmutableList<Integer> offsets, ImmutableList<Integer> lengths, boolean aosp, boolean version, boolean help,
+    boolean stdin, boolean fixImportsOnly, boolean sortImports, boolean removeUnusedImports, boolean dryRun,
+    boolean setExitIfChanged, Optional<String> assumeFilename, boolean reflowLongStrings, boolean formatJavadoc) {
 
-  /** Returns true if partial formatting was selected. */
-  boolean isSelection() {
-    return !lines().isEmpty() || !offsets().isEmpty() || !lengths().isEmpty();
-  }
-
-  static Builder builder() {
-    return new AutoBuilder_CommandLineOptions_Builder()
-        .sortImports(true)
-        .removeUnusedImports(true)
-        .reflowLongStrings(true)
-        .formatJavadoc(true)
-        .aosp(false)
-        .version(false)
-        .help(false)
-        .stdin(false)
-        .fixImportsOnly(false)
-        .dryRun(false)
-        .setExitIfChanged(false)
-        .inPlace(false);
-  }
-
-  @AutoBuilder
-  interface Builder {
-
-    ImmutableList.Builder<String> filesBuilder();
-
-    Builder inPlace(boolean inPlace);
-
-    Builder lines(ImmutableRangeSet<Integer> lines);
-
-    ImmutableList.Builder<Integer> offsetsBuilder();
-
-    @CanIgnoreReturnValue
-    default Builder addOffset(Integer offset) {
-      offsetsBuilder().add(offset);
-      return this;
+    /** Returns true if partial formatting was selected. */
+    boolean isSelection() {
+        return !lines().isEmpty() || !offsets().isEmpty() || !lengths().isEmpty();
     }
 
-    ImmutableList.Builder<Integer> lengthsBuilder();
-
-    @CanIgnoreReturnValue
-    default Builder addLength(Integer length) {
-      lengthsBuilder().add(length);
-      return this;
+    static Builder builder() {
+        return new AutoBuilder_CommandLineOptions_Builder().sortImports(true)
+            .removeUnusedImports(true)
+            .reflowLongStrings(true)
+            .formatJavadoc(true)
+            .aosp(false)
+            .version(false)
+            .help(false)
+            .stdin(false)
+            .fixImportsOnly(false)
+            .dryRun(false)
+            .setExitIfChanged(false)
+            .inPlace(false);
     }
 
-    Builder aosp(boolean aosp);
+    @AutoBuilder
+    interface Builder {
 
-    Builder version(boolean version);
+        ImmutableList.Builder<String> filesBuilder();
 
-    Builder help(boolean help);
+        Builder inPlace(boolean inPlace);
 
-    Builder stdin(boolean stdin);
+        Builder lines(ImmutableRangeSet<Integer> lines);
 
-    Builder fixImportsOnly(boolean fixImportsOnly);
+        ImmutableList.Builder<Integer> offsetsBuilder();
 
-    Builder sortImports(boolean sortImports);
+        @CanIgnoreReturnValue
+        default Builder addOffset(Integer offset) {
+            offsetsBuilder().add(offset);
+            return this;
+        }
 
-    Builder removeUnusedImports(boolean removeUnusedImports);
+        ImmutableList.Builder<Integer> lengthsBuilder();
 
-    Builder dryRun(boolean dryRun);
+        @CanIgnoreReturnValue
+        default Builder addLength(Integer length) {
+            lengthsBuilder().add(length);
+            return this;
+        }
 
-    Builder setExitIfChanged(boolean setExitIfChanged);
+        Builder aosp(boolean aosp);
 
-    Builder assumeFilename(String assumeFilename);
+        Builder version(boolean version);
 
-    Builder reflowLongStrings(boolean reflowLongStrings);
+        Builder help(boolean help);
 
-    Builder formatJavadoc(boolean formatJavadoc);
+        Builder stdin(boolean stdin);
 
-    CommandLineOptions build();
-  }
+        Builder fixImportsOnly(boolean fixImportsOnly);
+
+        Builder sortImports(boolean sortImports);
+
+        Builder removeUnusedImports(boolean removeUnusedImports);
+
+        Builder dryRun(boolean dryRun);
+
+        Builder setExitIfChanged(boolean setExitIfChanged);
+
+        Builder assumeFilename(String assumeFilename);
+
+        Builder reflowLongStrings(boolean reflowLongStrings);
+
+        Builder formatJavadoc(boolean formatJavadoc);
+
+        CommandLineOptions build();
+    }
 }

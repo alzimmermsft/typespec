@@ -62,7 +62,7 @@ public interface IExtensionPoint {
      * @throws InvalidRegistryObjectException if this extension point is no longer
      * valid
      */
-    public IConfigurationElement[] getConfigurationElements() throws InvalidRegistryObjectException;
+    IConfigurationElement[] getConfigurationElements() throws InvalidRegistryObjectException;
 
     /**
      * Returns the namespace for this extension point. This value can be used in
@@ -122,17 +122,7 @@ public interface IExtensionPoint {
      * </p>
      */
     @Deprecated
-    public String getNamespace() throws InvalidRegistryObjectException;
-
-    /**
-     * Returns the namespace name for this extension point.
-     *
-     * @return the namespace name for this extension point
-     * @throws InvalidRegistryObjectException if this extension point is no longer
-     * valid
-     * @since org.eclipse.equinox.registry 3.2
-     */
-    public String getNamespaceIdentifier() throws InvalidRegistryObjectException;
+    String getNamespace() throws InvalidRegistryObjectException;
 
     /**
      * Returns the contributor of this extension point.
@@ -142,21 +132,7 @@ public interface IExtensionPoint {
      * valid
      * @since org.eclipse.equinox.registry 3.2
      */
-    public IContributor getContributor() throws InvalidRegistryObjectException;
-
-    /**
-     * Returns the extension with the given unique identifier configured into this
-     * extension point, or <code>null</code> if there is no such extension. Since an
-     * extension might not have an identifier, some extensions can only be found via
-     * the <code>getExtensions</code> method.
-     *
-     * @param extensionId the unique identifier of an extension (e.g.
-     * <code>"com.example.acme.main"</code>).
-     * @return an extension, or <code>null</code>
-     * @throws InvalidRegistryObjectException if this extension point is no longer
-     * valid
-     */
-    public IExtension getExtension(String extensionId) throws InvalidRegistryObjectException;
+    IContributor getContributor() throws InvalidRegistryObjectException;
 
     /**
      * Returns all extensions configured into this extension point. Returns an empty
@@ -166,7 +142,7 @@ public interface IExtensionPoint {
      * @throws InvalidRegistryObjectException if this extension point is no longer
      * valid
      */
-    public IExtension[] getExtensions() throws InvalidRegistryObjectException;
+    IExtension[] getExtensions() throws InvalidRegistryObjectException;
 
     /**
      * Returns a displayable label for this extension point. Returns the empty
@@ -182,7 +158,7 @@ public interface IExtensionPoint {
      * @throws InvalidRegistryObjectException if this extension point is no longer
      * valid
      */
-    public String getLabel() throws InvalidRegistryObjectException;
+    String getLabel() throws InvalidRegistryObjectException;
 
     /**
      * When multi-language support is enabled, this method returns a displayable
@@ -207,31 +183,7 @@ public interface IExtensionPoint {
      * @see IExtensionRegistry#isMultiLanguage()
      * @since 3.5
      */
-    public String getLabel(String locale) throws InvalidRegistryObjectException;
-
-    /**
-     * Returns reference to the extension point schema. The schema reference is
-     * returned as a URL path relative to the plug-in installation URL. Returns the
-     * empty string if no schema for this extension point is specified in the
-     * plug-in manifest file.
-     *
-     * @return a relative URL path, or an empty string
-     * @throws InvalidRegistryObjectException if this extension point is no longer
-     * valid
-     */
-    public String getSchemaReference() throws InvalidRegistryObjectException;
-
-    /**
-     * Returns the simple identifier of this extension point. This identifier is a
-     * non-empty string containing no period characters (<code>'.'</code>) and is
-     * guaranteed to be unique within the namespace.
-     *
-     * @return the simple identifier of the extension point (e.g.
-     * <code>"builders"</code>)
-     * @throws InvalidRegistryObjectException if this extension point is no longer
-     * valid
-     */
-    public String getSimpleIdentifier() throws InvalidRegistryObjectException;
+    String getLabel(String locale) throws InvalidRegistryObjectException;
 
     /**
      * Returns the unique identifier of this extension point. This identifier is
@@ -244,7 +196,7 @@ public interface IExtensionPoint {
      * @throws InvalidRegistryObjectException if this extension point is no longer
      * valid
      */
-    public String getUniqueIdentifier() throws InvalidRegistryObjectException;
+    String getUniqueIdentifier() throws InvalidRegistryObjectException;
 
     /*
      * (non-javadoc)
@@ -252,7 +204,7 @@ public interface IExtensionPoint {
      * @see Object#equals(java.lang.Object)
      */
     @Override
-    public boolean equals(Object o);
+    boolean equals(Object o);
 
     /**
      * Returns whether this extension point object is valid.
@@ -261,5 +213,5 @@ public interface IExtensionPoint {
      * it is no longer valid
      * @since 3.1
      */
-    public boolean isValid();
+    boolean isValid();
 }

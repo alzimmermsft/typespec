@@ -18,6 +18,7 @@ import static com.microsoft.typespec.http.client.generator.core.implementation.s
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtIncompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.J2ktIncompatible;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
@@ -25,7 +26,6 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 
 /**
  * Utility methods for working with {@link Enum} instances.
@@ -38,119 +38,116 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 @ElementTypesAreNonnullByDefault
 public final class Enums {
 
-  private Enums() {}
-
-  /**
-   * Returns the {@link Field} in which {@code enumValue} is defined. For example, to get the {@code
-   * Description} annotation on the {@code GOLF} constant of enum {@code Sport}, use {@code
-   * Enums.getField(Sport.GOLF).getAnnotation(Description.class)}.
-   *
-   * @since 12.0
-   */
-  @GwtIncompatible // reflection
-  public static Field getField(Enum<?> enumValue) {
-    Class<?>
-        clazz = enumValue.getDeclaringClass();
-    try {
-      return clazz.getDeclaredField(enumValue.name());
-    } catch (NoSuchFieldException impossible) {
-      throw new AssertionError(impossible);
-    }
-  }
-
-  /**
-   * Returns an optional enum constant for the given type, using {@link Enum#valueOf}. If the
-   * constant does not exist, {@link Optional#absent} is returned. A common use case is for parsing
-   * user input or falling back to a default enum constant. For example, {@code
-   * Enums.getIfPresent(Country.class, countryInput).or(Country.DEFAULT);}
-   *
-   * @since 12.0
-   */
-  public static <T extends Enum<T>> Optional<T> getIfPresent(Class<T> enumClass, String value) {
-    checkNotNull(enumClass);
-    checkNotNull(value);
-    return Platform.getEnumIfPresent(enumClass, value);
-  }
-
-  @GwtIncompatible // java.lang.ref.WeakReference
-  private static final Map<Class<? extends Enum<?>>, Map<String, WeakReference<? extends Enum<?>>>>
-      enumConstantCache = new WeakHashMap<>();
-
-  @GwtIncompatible // java.lang.ref.WeakReference
-  private static <T extends Enum<T>> Map<String, WeakReference<? extends Enum<?>>> populateCache(
-      Class<T> enumClass) {
-    Map<String, WeakReference<? extends Enum<?>>> result = new HashMap<>();
-    for (T enumInstance : EnumSet.allOf(enumClass)) {
-      result.put(enumInstance.name(), new WeakReference<Enum<?>>(enumInstance));
-    }
-    enumConstantCache.put(enumClass, result);
-    return result;
-  }
-
-  @GwtIncompatible // java.lang.ref.WeakReference
-  static <T extends Enum<T>> Map<String, WeakReference<? extends Enum<?>>> getEnumConstants(
-      Class<T> enumClass) {
-    synchronized (enumConstantCache) {
-      Map<String, WeakReference<? extends Enum<?>>> constants = enumConstantCache.get(enumClass);
-      if (constants == null) {
-        constants = populateCache(enumClass);
-      }
-      return constants;
-    }
-  }
-
-  /**
-   * Returns a serializable converter that converts between strings and {@code enum} values of type
-   * {@code enumClass} using {@link Enum#valueOf(Class, String)} and {@link Enum#name()}. The
-   * converter will throw an {@code IllegalArgumentException} if the argument is not the name of any
-   * enum constant in the specified enum.
-   *
-   * @since 16.0
-   */
-  @GwtIncompatible
-  public static <T extends Enum<T>> Converter<String, T> stringConverter(Class<T> enumClass) {
-    return new StringConverter<>(enumClass);
-  }
-
-  @GwtIncompatible
-  private static final class StringConverter<T extends Enum<T>> extends Converter<String, T>
-      implements Serializable {
-
-    private final Class<T> enumClass;
-
-    StringConverter(Class<T> enumClass) {
-      this.enumClass = checkNotNull(enumClass);
+    private Enums() {
     }
 
-    @Override
-    protected T doForward(String value) {
-      return Enum.valueOf(enumClass, value);
+    /**
+     * Returns the {@link Field} in which {@code enumValue} is defined. For example, to get the {@code
+     * Description} annotation on the {@code GOLF} constant of enum {@code Sport}, use {@code
+     * Enums.getField(Sport.GOLF).getAnnotation(Description.class)}.
+     *
+     * @since 12.0
+     */
+    @GwtIncompatible // reflection
+    public static Field getField(Enum<?> enumValue) {
+        Class<?> clazz = enumValue.getDeclaringClass();
+        try {
+            return clazz.getDeclaredField(enumValue.name());
+        } catch (NoSuchFieldException impossible) {
+            throw new AssertionError(impossible);
+        }
     }
 
-    @Override
-    protected String doBackward(T enumValue) {
-      return enumValue.name();
+    /**
+     * Returns an optional enum constant for the given type, using {@link Enum#valueOf}. If the
+     * constant does not exist, {@link Optional#absent} is returned. A common use case is for parsing
+     * user input or falling back to a default enum constant. For example, {@code
+     * Enums.getIfPresent(Country.class, countryInput).or(Country.DEFAULT);}
+     *
+     * @since 12.0
+     */
+    public static <T extends Enum<T>> Optional<T> getIfPresent(Class<T> enumClass, String value) {
+        checkNotNull(enumClass);
+        checkNotNull(value);
+        return Platform.getEnumIfPresent(enumClass, value);
     }
 
-    @Override
-    public boolean equals(@CheckForNull Object object) {
-      if (object instanceof StringConverter) {
-        StringConverter<?> that = (StringConverter<?>) object;
-        return this.enumClass.equals(that.enumClass);
-      }
-      return false;
+    @GwtIncompatible // java.lang.ref.WeakReference
+    private static final Map<Class<? extends Enum<?>>, Map<String, WeakReference<? extends Enum<?>>>> enumConstantCache
+        = new WeakHashMap<>();
+
+    @GwtIncompatible // java.lang.ref.WeakReference
+    private static <T extends Enum<T>> Map<String, WeakReference<? extends Enum<?>>> populateCache(Class<T> enumClass) {
+        Map<String, WeakReference<? extends Enum<?>>> result = new HashMap<>();
+        for (T enumInstance : EnumSet.allOf(enumClass)) {
+            result.put(enumInstance.name(), new WeakReference<Enum<?>>(enumInstance));
+        }
+        enumConstantCache.put(enumClass, result);
+        return result;
     }
 
-    @Override
-    public int hashCode() {
-      return enumClass.hashCode();
+    @GwtIncompatible // java.lang.ref.WeakReference
+    static <T extends Enum<T>> Map<String, WeakReference<? extends Enum<?>>> getEnumConstants(Class<T> enumClass) {
+        synchronized (enumConstantCache) {
+            Map<String, WeakReference<? extends Enum<?>>> constants = enumConstantCache.get(enumClass);
+            if (constants == null) {
+                constants = populateCache(enumClass);
+            }
+            return constants;
+        }
     }
 
-    @Override
-    public String toString() {
-      return "Enums.stringConverter(" + enumClass.getName() + ".class)";
+    /**
+     * Returns a serializable converter that converts between strings and {@code enum} values of type
+     * {@code enumClass} using {@link Enum#valueOf(Class, String)} and {@link Enum#name()}. The
+     * converter will throw an {@code IllegalArgumentException} if the argument is not the name of any
+     * enum constant in the specified enum.
+     *
+     * @since 16.0
+     */
+    @GwtIncompatible
+    public static <T extends Enum<T>> Converter<String, T> stringConverter(Class<T> enumClass) {
+        return new StringConverter<>(enumClass);
     }
 
-    private static final long serialVersionUID = 0L;
-  }
+    @GwtIncompatible
+    private static final class StringConverter<T extends Enum<T>> extends Converter<String, T> implements Serializable {
+
+        private final Class<T> enumClass;
+
+        StringConverter(Class<T> enumClass) {
+            this.enumClass = checkNotNull(enumClass);
+        }
+
+        @Override
+        protected T doForward(String value) {
+            return Enum.valueOf(enumClass, value);
+        }
+
+        @Override
+        protected String doBackward(T enumValue) {
+            return enumValue.name();
+        }
+
+        @Override
+        public boolean equals(@CheckForNull Object object) {
+            if (object instanceof StringConverter) {
+                StringConverter<?> that = (StringConverter<?>) object;
+                return this.enumClass.equals(that.enumClass);
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return enumClass.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return "Enums.stringConverter(" + enumClass.getName() + ".class)";
+        }
+
+        private static final long serialVersionUID = 0L;
+    }
 }

@@ -24,4 +24,5 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.g
 // TODO(cpovirk): Should we just use ChecksumType directly instead of defining this type?
 @Immutable
 @ElementTypesAreNonnullByDefault
-interface ImmutableSupplier<T> extends Supplier<T> {}
+interface ImmutableSupplier<T> extends Supplier<T> {
+}

@@ -21,29 +21,29 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public abstract class TryFlowContext extends FlowContext {
 
-	/**
-	 * For a try statement nested inside a finally block this reference
-	 * points to the flow context of the outer try block, for access to its initsOnFinally.
-	 */
-	public FlowContext outerTryContext;
+    /**
+     * For a try statement nested inside a finally block this reference
+     * points to the flow context of the outer try block, for access to its initsOnFinally.
+     */
+    public FlowContext outerTryContext;
 
-	public TryFlowContext(FlowContext parent, ASTNode associatedNode) {
-		super(parent, associatedNode, true);
-	}
+    public TryFlowContext(FlowContext parent, ASTNode associatedNode) {
+        super(parent, associatedNode, true);
+    }
 
-	@Override
-	public void markFinallyNullStatus(LocalVariableBinding local, int nullStatus) {
-		if (this.outerTryContext != null) {
-			this.outerTryContext.markFinallyNullStatus(local, nullStatus);
-		}
-		super.markFinallyNullStatus(local, nullStatus);
-	}
+    @Override
+    public void markFinallyNullStatus(LocalVariableBinding local, int nullStatus) {
+        if (this.outerTryContext != null) {
+            this.outerTryContext.markFinallyNullStatus(local, nullStatus);
+        }
+        super.markFinallyNullStatus(local, nullStatus);
+    }
 
-	@Override
-	public void mergeFinallyNullInfo(FlowInfo flowInfo) {
-		if (this.outerTryContext != null) {
-			this.outerTryContext.mergeFinallyNullInfo(flowInfo);
-		}
-		super.mergeFinallyNullInfo(flowInfo);
-	}
+    @Override
+    public void mergeFinallyNullInfo(FlowInfo flowInfo) {
+        if (this.outerTryContext != null) {
+            this.outerTryContext.mergeFinallyNullInfo(flowInfo);
+        }
+        super.mergeFinallyNullInfo(flowInfo);
+    }
 }

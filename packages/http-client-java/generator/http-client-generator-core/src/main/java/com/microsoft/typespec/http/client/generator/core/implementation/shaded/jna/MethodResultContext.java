@@ -26,11 +26,13 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import java.lang.reflect.Method;
 
-/** Provide result conversion context for a function call that is called via
+/**
+ * Provide result conversion context for a function call that is called via
  * a Library interface.
  */
 public class MethodResultContext extends FunctionResultContext {
     private final Method method;
+
     MethodResultContext(Class<?> resultClass, Function function, Object[] args, Method method) {
         super(resultClass, function, args);
         this.method = method;

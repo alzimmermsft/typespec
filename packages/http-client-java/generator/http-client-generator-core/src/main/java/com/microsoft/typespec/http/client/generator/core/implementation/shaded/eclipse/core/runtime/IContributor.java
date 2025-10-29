@@ -46,5 +46,5 @@ public interface IContributor {
      *
      * @return name of the registry contributor
      */
-    public String getName();
+    String getName();
 }

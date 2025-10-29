@@ -14,7 +14,6 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text;
 
-
 /**
  * Extension interface for {@link IDocumentPartitioner}.
  * <p>
@@ -28,20 +27,20 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IDocumentPartitionerExtension {
 
-	/**
-	 * The document has been changed. The partitioner updates the document's
-	 * partitioning and returns the minimal region that comprises all partition
-	 * changes caused in response to the given document event. This method
-	 * returns <code>null</code> if the partitioning did not change.
-	 * <p>
-	 *
-	 * Will be called by the connected document and is not intended to be used
-	 * by clients other than the connected document.
-	 * <p>
-	 * Replaces {@link IDocumentPartitioner#documentChanged(DocumentEvent)}.
-	 *
-	 * @param event the event describing the document change
-	 * @return the region of the document in which the partition type changed or <code>null</code>
-	 */
-	IRegion documentChanged2(DocumentEvent event);
+    /**
+     * The document has been changed. The partitioner updates the document's
+     * partitioning and returns the minimal region that comprises all partition
+     * changes caused in response to the given document event. This method
+     * returns <code>null</code> if the partitioning did not change.
+     * <p>
+     *
+     * Will be called by the connected document and is not intended to be used
+     * by clients other than the connected document.
+     * <p>
+     * Replaces {@link IDocumentPartitioner#documentChanged(DocumentEvent)}.
+     *
+     * @param event the event describing the document change
+     * @return the region of the document in which the partition type changed or <code>null</code>
+     */
+    IRegion documentChanged2(DocumentEvent event);
 }

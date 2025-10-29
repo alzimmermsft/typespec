@@ -13,13 +13,13 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup;
 
-public class InnerEmulationDependency{
+public class InnerEmulationDependency {
 
-	public BlockScope scope;
-	public boolean wasEnclosingInstanceSupplied;
+    public BlockScope scope;
+    public boolean wasEnclosingInstanceSupplied;
 
-	public InnerEmulationDependency(BlockScope scope, boolean wasEnclosingInstanceSupplied) {
-		this.scope = scope;
-		this.wasEnclosingInstanceSupplied = wasEnclosingInstanceSupplied;
-	}
+    public InnerEmulationDependency(BlockScope scope, boolean wasEnclosingInstanceSupplied) {
+        this.scope = scope;
+        this.wasEnclosingInstanceSupplied = wasEnclosingInstanceSupplied;
+    }
 }

@@ -16,51 +16,57 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.classfmt;
 
 public class FieldInfoWithAnnotation extends FieldInfo {
-	private final AnnotationInfo[] annotations;
+    private final AnnotationInfo[] annotations;
 
-FieldInfoWithAnnotation(FieldInfo info, AnnotationInfo[] annos) {
-	super(info.reference, info.constantPoolOffsets, info.structOffset, info.version);
-	this.accessFlags = info.accessFlags;
-	this.attributeBytes = info.attributeBytes;
-	this.constant = info.constant;
-	this.constantPoolOffsets = info.constantPoolOffsets;
-	this.descriptor = info.descriptor;
-	this.name = info.name;
-	this.signature = info.signature;
-	this.signatureUtf8Offset = info.signatureUtf8Offset;
-	this.tagBits = info.tagBits;
-	this.wrappedConstantValue = info.wrappedConstantValue;
-	this.annotations = annos;
-}
-@Override
-public com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IBinaryAnnotation[] getAnnotations() {
-	return this.annotations;
-}
-@Override
-protected void initialize() {
-	if (this.annotations != null)
-		for (AnnotationInfo annotation : this.annotations)
-			annotation.initialize();
-	super.initialize();
-}
-@Override
-protected void reset() {
-	if (this.annotations != null)
-		for (AnnotationInfo annotation : this.annotations)
-			annotation.reset();
-	super.reset();
-}
-@Override
-public String toString() {
-	StringBuilder buffer = new StringBuilder(getClass().getName());
-	if (this.annotations != null) {
-		buffer.append('\n');
-		for (AnnotationInfo annotation : this.annotations) {
-			buffer.append(annotation);
-			buffer.append('\n');
-		}
-	}
-	toStringContent(buffer);
-	return buffer.toString();
-}
+    FieldInfoWithAnnotation(FieldInfo info, AnnotationInfo[] annos) {
+        super(info.reference, info.constantPoolOffsets, info.structOffset, info.version);
+        this.accessFlags = info.accessFlags;
+        this.attributeBytes = info.attributeBytes;
+        this.constant = info.constant;
+        this.constantPoolOffsets = info.constantPoolOffsets;
+        this.descriptor = info.descriptor;
+        this.name = info.name;
+        this.signature = info.signature;
+        this.signatureUtf8Offset = info.signatureUtf8Offset;
+        this.tagBits = info.tagBits;
+        this.wrappedConstantValue = info.wrappedConstantValue;
+        this.annotations = annos;
+    }
+
+    @Override
+    public
+        com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IBinaryAnnotation[]
+        getAnnotations() {
+        return this.annotations;
+    }
+
+    @Override
+    protected void initialize() {
+        if (this.annotations != null)
+            for (AnnotationInfo annotation : this.annotations)
+                annotation.initialize();
+        super.initialize();
+    }
+
+    @Override
+    protected void reset() {
+        if (this.annotations != null)
+            for (AnnotationInfo annotation : this.annotations)
+                annotation.reset();
+        super.reset();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder buffer = new StringBuilder(getClass().getName());
+        if (this.annotations != null) {
+            buffer.append('\n');
+            for (AnnotationInfo annotation : this.annotations) {
+                buffer.append(annotation);
+                buffer.append('\n');
+            }
+        }
+        toStringContent(buffer);
+        return buffer.toString();
+    }
 }

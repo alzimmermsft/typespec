@@ -25,10 +25,4 @@ public interface IContentConstants {
     String RUNTIME_NAME
         = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime"; //$NON-NLS-1$
 
-    /**
-     * Name of this plugin
-     */
-    String CONTENT_NAME
-        = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.contenttype"; //$NON-NLS-1$
-
 }

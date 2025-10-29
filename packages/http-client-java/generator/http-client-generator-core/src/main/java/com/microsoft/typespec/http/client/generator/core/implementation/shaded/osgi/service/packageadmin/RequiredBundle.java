@@ -45,32 +45,32 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  * @ThreadSafe
  * @noimplement
  * @deprecated The PackageAdmin service has been replaced by the
- *             <code>com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.wiring</code> package.
+ * <code>com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.wiring</code> package.
  * @author $Id: 08ab9c1a6f4a9af2060293d2c2972e4e07e2a238 $
  */
 public interface RequiredBundle {
-	/**
-	 * Returns the symbolic name of this required bundle.
-	 * 
-	 * @return The symbolic name of this required bundle.
-	 */
-	public String getSymbolicName();
-
-	/**
-	 * Returns the bundle associated with this required bundle.
-	 * 
-	 * @return The bundle, or {@code null} if this
-	 *         {@code RequiredBundle} object has become stale.
-	 */
-	public Bundle getBundle();
+    /**
+     * Returns the symbolic name of this required bundle.
+     * 
+     * @return The symbolic name of this required bundle.
+     */
+    public String getSymbolicName();
 
     /**
-	 * Returns the version of this required bundle.
-	 * 
-	 * @return The version of this required bundle, or
-	 *         {@link Version#emptyVersion} if no version information is
-	 *         available.
-	 */
-	public Version getVersion();
+     * Returns the bundle associated with this required bundle.
+     * 
+     * @return The bundle, or {@code null} if this
+     * {@code RequiredBundle} object has become stale.
+     */
+    public Bundle getBundle();
+
+    /**
+     * Returns the version of this required bundle.
+     * 
+     * @return The version of this required bundle, or
+     * {@link Version#emptyVersion} if no version information is
+     * available.
+     */
+    public Version getVersion();
 
 }

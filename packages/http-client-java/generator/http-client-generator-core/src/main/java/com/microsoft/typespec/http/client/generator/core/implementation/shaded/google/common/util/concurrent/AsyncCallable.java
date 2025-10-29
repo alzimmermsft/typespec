@@ -14,9 +14,9 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.util.concurrent;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import java.util.concurrent.Future;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Computes a value, possibly asynchronously. For an example usage and more information, see {@link
@@ -31,12 +31,12 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
 public interface AsyncCallable<V extends @Nullable Object> {
-  /**
-   * Computes a result {@code Future}. The output {@code Future} need not be {@linkplain
-   * Future#isDone done}, making {@code AsyncCallable} suitable for asynchronous derivations.
-   *
-   * <p>Throwing an exception from this method is equivalent to returning a failing {@link
-   * ListenableFuture}.
-   */
-  ListenableFuture<V> call() throws Exception;
+    /**
+     * Computes a result {@code Future}. The output {@code Future} need not be {@linkplain
+     * Future#isDone done}, making {@code AsyncCallable} suitable for asynchronous derivations.
+     *
+     * <p>Throwing an exception from this method is equivalent to returning a failing {@link
+     * ListenableFuture}.
+     */
+    ListenableFuture<V> call() throws Exception;
 }

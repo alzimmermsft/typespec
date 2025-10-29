@@ -14,6 +14,7 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.util.concurrent;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Preconditions;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.ForwardingObject;
@@ -22,7 +23,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A {@link Future} which forwards all its method calls to another future. Subclasses should
@@ -36,63 +36,61 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
-public abstract class ForwardingFuture<V extends @Nullable Object> extends ForwardingObject
-    implements Future<V> {
-  /** Constructor for use by subclasses. */
-  protected ForwardingFuture() {}
-
-  @Override
-  protected abstract Future<? extends V> delegate();
-
-  @Override
-  @CanIgnoreReturnValue
-  public boolean cancel(boolean mayInterruptIfRunning) {
-    return delegate().cancel(mayInterruptIfRunning);
-  }
-
-  @Override
-  public boolean isCancelled() {
-    return delegate().isCancelled();
-  }
-
-  @Override
-  public boolean isDone() {
-    return delegate().isDone();
-  }
-
-  @Override
-  @CanIgnoreReturnValue
-  @ParametricNullness
-  public V get() throws InterruptedException, ExecutionException {
-    return delegate().get();
-  }
-
-  @Override
-  @CanIgnoreReturnValue
-  @ParametricNullness
-  public V get(long timeout, TimeUnit unit)
-      throws InterruptedException, ExecutionException, TimeoutException {
-    return delegate().get(timeout, unit);
-  }
-
-  // TODO(cpovirk): Use standard Javadoc form for SimpleForwarding* class and constructor
-  /**
-   * A simplified version of {@link ForwardingFuture} where subclasses can pass in an already
-   * constructed {@link Future} as the delegate.
-   *
-   * @since 9.0
-   */
-  public abstract static class SimpleForwardingFuture<V extends @Nullable Object>
-      extends ForwardingFuture<V> {
-    private final Future<V> delegate;
-
-    protected SimpleForwardingFuture(Future<V> delegate) {
-      this.delegate = Preconditions.checkNotNull(delegate);
+public abstract class ForwardingFuture<V extends @Nullable Object> extends ForwardingObject implements Future<V> {
+    /** Constructor for use by subclasses. */
+    protected ForwardingFuture() {
     }
 
     @Override
-    protected final Future<V> delegate() {
-      return delegate;
+    protected abstract Future<? extends V> delegate();
+
+    @Override
+    @CanIgnoreReturnValue
+    public boolean cancel(boolean mayInterruptIfRunning) {
+        return delegate().cancel(mayInterruptIfRunning);
     }
-  }
+
+    @Override
+    public boolean isCancelled() {
+        return delegate().isCancelled();
+    }
+
+    @Override
+    public boolean isDone() {
+        return delegate().isDone();
+    }
+
+    @Override
+    @CanIgnoreReturnValue
+    @ParametricNullness
+    public V get() throws InterruptedException, ExecutionException {
+        return delegate().get();
+    }
+
+    @Override
+    @CanIgnoreReturnValue
+    @ParametricNullness
+    public V get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+        return delegate().get(timeout, unit);
+    }
+
+    // TODO(cpovirk): Use standard Javadoc form for SimpleForwarding* class and constructor
+    /**
+     * A simplified version of {@link ForwardingFuture} where subclasses can pass in an already
+     * constructed {@link Future} as the delegate.
+     *
+     * @since 9.0
+     */
+    public abstract static class SimpleForwardingFuture<V extends @Nullable Object> extends ForwardingFuture<V> {
+        private final Future<V> delegate;
+
+        protected SimpleForwardingFuture(Future<V> delegate) {
+            this.delegate = Preconditions.checkNotNull(delegate);
+        }
+
+        @Override
+        protected final Future<V> delegate() {
+            return delegate;
+        }
+    }
 }

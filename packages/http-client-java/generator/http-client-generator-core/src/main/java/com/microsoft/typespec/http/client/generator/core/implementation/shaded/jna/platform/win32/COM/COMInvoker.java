@@ -34,8 +34,7 @@ public abstract class COMInvoker extends PointerType {
         Pointer vptr = this.getPointer().getPointer(0);
         // we take the vtable id and multiply with the pointer size (4 bytes on
         // 32bit OS)
-        Function func = Function.getFunction(vptr.getPointer(vtableId
-                * Native.POINTER_SIZE));
+        Function func = Function.getFunction(vptr.getPointer(vtableId * Native.POINTER_SIZE));
         return func.invokeInt(args);
     }
 
@@ -43,8 +42,7 @@ public abstract class COMInvoker extends PointerType {
         Pointer vptr = this.getPointer().getPointer(0);
         // we take the vtable id and multiply with the pointer size (4 bytes on
         // 32bit OS)
-        Function func = Function.getFunction(vptr.getPointer(vtableId
-                * Native.POINTER_SIZE));
+        Function func = Function.getFunction(vptr.getPointer(vtableId * Native.POINTER_SIZE));
         return func.invoke(returnType, args);
     }
 
@@ -52,8 +50,7 @@ public abstract class COMInvoker extends PointerType {
         Pointer vptr = this.getPointer().getPointer(0);
         // we take the vtable id and multiply with the pointer size (4 bytes on
         // 32bit OS)
-        Function func = Function.getFunction(vptr.getPointer(vtableId
-                * Native.POINTER_SIZE));
+        Function func = Function.getFunction(vptr.getPointer(vtableId * Native.POINTER_SIZE));
         func.invokeVoid(args);
     }
 

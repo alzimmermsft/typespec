@@ -37,7 +37,8 @@ import java.lang.annotation.Target;
  * are refactored, while prohibiting new call-sites. Call-sites determined to be acceptable, for
  * example through code review, could be marked {@code @ReviewedFooBar}.
  *
- * <pre>{@code
+ * <pre>
+ * {@code
  * public @interface LegacyUnsafeFooBar{}
  *
  * public @interface ReviewedFooBar{
@@ -46,7 +47,7 @@ import java.lang.annotation.Target;
  * }
  *
  * public class Foo {
- *   @RestrictedApi(
+ *   &#64;RestrictedApi(
  *      explanation="You could shoot yourself in the foot with Foo.bar if you aren't careful",
  *      link="http://edsger.dijkstra/foo_bar_consider_harmful.html",
  *      allowedOnPath="testsuite/.*", // Unsafe behavior in tests is ok.
@@ -61,7 +62,7 @@ import java.lang.annotation.Target;
  *   }
  *   boolean complicatedCondition = true;
  *
- *   @ReviewedFooBar(
+ *   &#64;ReviewedFooBar(
  *      reviewer="bangert",
  *      comments="Makes sure complicatedCondition isn't true, so bar is safe!"
  *   )
@@ -71,39 +72,40 @@ import java.lang.annotation.Target;
  *      }
  *   }
  *
- *   @LegacyUnsafeFooBar
+ *   &#64;LegacyUnsafeFooBar
  *   public void someOldCode() {
  *      // ...
  *      bar()
  *      // ...
  *   }
  * }
- * }</pre>
+ * }
+ * </pre>
  */
-@Target({ElementType.CONSTRUCTOR, ElementType.METHOD})
+@Target({ ElementType.CONSTRUCTOR, ElementType.METHOD })
 public @interface RestrictedApi {
-  /** Explanation why the API is restricted, to be inserted into the compiler output. */
-  String explanation();
+    /** Explanation why the API is restricted, to be inserted into the compiler output. */
+    String explanation();
 
-  /** Optional link explaining why the API is restricted. */
-  String link() default "";
+    /** Optional link explaining why the API is restricted. */
+    String link() default "";
 
-  /**
-   * Allow the restricted API on paths matching this regular expression.
-   *
-   * <p>Leave empty (the default) to enforce the API restrictions on all paths.
-   */
-  String allowedOnPath() default "";
+    /**
+     * Allow the restricted API on paths matching this regular expression.
+     *
+     * <p>Leave empty (the default) to enforce the API restrictions on all paths.
+     */
+    String allowedOnPath() default "";
 
-  /** Allow calls to the restricted API in methods or classes with this annotation. */
-  Class<? extends Annotation>[] allowlistAnnotations() default {};
+    /** Allow calls to the restricted API in methods or classes with this annotation. */
+    Class<? extends Annotation>[] allowlistAnnotations() default { };
 
-  /**
-   * Emit warnings, not errors, on calls to the restricted API for callers with this annotation.
-   *
-   * <p>This should only be used if callers should aggressively move away from this API (or change
-   * to a allowlist annotation after review). Too many warnings will lead to ALL warnings being
-   * ignored, so tread very carefully.
-   */
-  Class<? extends Annotation>[] allowlistWithWarningAnnotations() default {};
+    /**
+     * Emit warnings, not errors, on calls to the restricted API for callers with this annotation.
+     *
+     * <p>This should only be used if callers should aggressively move away from this API (or change
+     * to a allowlist annotation after review). Too many warnings will lead to ALL warnings being
+     * ignored, so tread very carefully.
+     */
+    Class<? extends Annotation>[] allowlistWithWarningAnnotations() default { };
 }

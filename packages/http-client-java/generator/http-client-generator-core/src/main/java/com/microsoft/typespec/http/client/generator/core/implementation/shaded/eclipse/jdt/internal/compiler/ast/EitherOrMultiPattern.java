@@ -26,128 +26,134 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class EitherOrMultiPattern extends Pattern {
 
-	private Pattern [] patterns;
-	private int patternsCount;
+    private Pattern[] patterns;
+    private int patternsCount;
 
-	public EitherOrMultiPattern(Pattern [] patterns) {
-		this.patterns = patterns;
-		this.patternsCount = patterns.length;
-		this.sourceStart = patterns[0].sourceStart;
-		this.sourceEnd = patterns[this.patternsCount - 1].sourceEnd;
-		setIsEitherOrPattern();
-	}
+    public EitherOrMultiPattern(Pattern[] patterns) {
+        this.patterns = patterns;
+        this.patternsCount = patterns.length;
+        this.sourceStart = patterns[0].sourceStart;
+        this.sourceEnd = patterns[this.patternsCount - 1].sourceEnd;
+        setIsEitherOrPattern();
+    }
 
-	@Override
-	public Pattern[] getAlternatives() {
-		return this.patterns;
-	}
+    @Override
+    public Pattern[] getAlternatives() {
+        return this.patterns;
+    }
 
-	@Override
-	public void setIsEitherOrPattern() {
-		for (int i = 0; i < this.patternsCount; i++)
-			this.patterns[i].setIsEitherOrPattern();
-	}
+    @Override
+    public void setIsEitherOrPattern() {
+        for (int i = 0; i < this.patternsCount; i++)
+            this.patterns[i].setIsEitherOrPattern();
+    }
 
-	@Override
-	public void setIsGuarded() {
-		for (int i = 0; i < this.patternsCount; i++)
-			this.patterns[i].setIsGuarded();
-	}
+    @Override
+    public void setIsGuarded() {
+        for (int i = 0; i < this.patternsCount; i++)
+            this.patterns[i].setIsGuarded();
+    }
 
-	@Override
-	public void setOuterExpressionType(TypeBinding expressionType) {
-		super.setOuterExpressionType(expressionType);
-		for (int i = 0; i < this.patternsCount; i++)
-			this.patterns[i].setOuterExpressionType(expressionType);
-	}
+    @Override
+    public void setOuterExpressionType(TypeBinding expressionType) {
+        super.setOuterExpressionType(expressionType);
+        for (int i = 0; i < this.patternsCount; i++)
+            this.patterns[i].setOuterExpressionType(expressionType);
+    }
 
-	@Override
-	public TypeBinding resolveType(BlockScope scope) {
-		boolean hasError = false;
-		for (int i = 0; i < this.patternsCount; i++) {
-			TypeBinding t = this.patterns[i].resolveType(scope);
-			if (t == null || !t.isValidBinding())
-				hasError = true;
-			for (int j = 0; j < i; j++) {
-				if (this.patterns[j].dominates(this.patterns[i])) {
-					scope.problemReporter().patternDominatedByAnother(this.patterns[i]);
-					break;
-				}
-			}
-		}
-		return this.resolvedType = hasError ? null : this.patterns[0].resolvedType; // for now, we don't have a union type abstraction
-	}
+    @Override
+    public TypeBinding resolveType(BlockScope scope) {
+        boolean hasError = false;
+        for (int i = 0; i < this.patternsCount; i++) {
+            TypeBinding t = this.patterns[i].resolveType(scope);
+            if (t == null || !t.isValidBinding())
+                hasError = true;
+            for (int j = 0; j < i; j++) {
+                if (this.patterns[j].dominates(this.patterns[i])) {
+                    scope.problemReporter().patternDominatedByAnother(this.patterns[i]);
+                    break;
+                }
+            }
+        }
+        return this.resolvedType = hasError ? null : this.patterns[0].resolvedType; // for now, we don't have a union
+                                                                                    // type abstraction
+    }
 
-	@Override
-	public void generateCode(BlockScope currentScope, CodeStream codeStream, BranchLabel patternMatchLabel, BranchLabel matchFailLabel) {
-		/* JVM Stack on entry - [expression] // && expression instanceof _one of the_ EitherOrMultiPattern, we don't know which one
-		   JVM stack on exit with successful pattern match or failed match -> []
-		 */
-		BranchLabel [] checkNextLabel = new BranchLabel [this.patternsCount];
-		for (int i = 0; i < this.patternsCount; i++) {
-			checkNextLabel[i] = new BranchLabel(codeStream);
-			Pattern p = this.patterns[i];
-			codeStream.dup();
-			codeStream.instance_of(p.resolvedType); // mandatory since we don't know which alternative instance we have on stack
-			codeStream.ifeq(checkNextLabel[i]);
-			codeStream.dup();
-			this.patterns[i].generateCode(currentScope, codeStream, patternMatchLabel, checkNextLabel[i]);
-			codeStream.pop();
-			codeStream.goto_(patternMatchLabel);
-			checkNextLabel[i].place();
-		}
-		codeStream.pop();
-		codeStream.goto_(matchFailLabel);
-	}
+    @Override
+    public void generateCode(BlockScope currentScope, CodeStream codeStream, BranchLabel patternMatchLabel,
+        BranchLabel matchFailLabel) {
+        /*
+         * JVM Stack on entry - [expression] // && expression instanceof _one of the_ EitherOrMultiPattern, we don't
+         * know which one
+         * JVM stack on exit with successful pattern match or failed match -> []
+         */
+        BranchLabel[] checkNextLabel = new BranchLabel[this.patternsCount];
+        for (int i = 0; i < this.patternsCount; i++) {
+            checkNextLabel[i] = new BranchLabel(codeStream);
+            Pattern p = this.patterns[i];
+            codeStream.dup();
+            codeStream.instance_of(p.resolvedType); // mandatory since we don't know which alternative instance we have
+                                                    // on stack
+            codeStream.ifeq(checkNextLabel[i]);
+            codeStream.dup();
+            this.patterns[i].generateCode(currentScope, codeStream, patternMatchLabel, checkNextLabel[i]);
+            codeStream.pop();
+            codeStream.goto_(patternMatchLabel);
+            checkNextLabel[i].place();
+        }
+        codeStream.pop();
+        codeStream.goto_(matchFailLabel);
+    }
 
-	@Override
-	public boolean dominates(Pattern p) {
-		if (!isUnguarded())
-			return false;
-		for (Pattern thiz : this.patterns) {
-			if (thiz.dominates(p))
-				return true;
-		}
-		return false;
-	}
+    @Override
+    public boolean dominates(Pattern p) {
+        if (!isUnguarded())
+            return false;
+        for (Pattern thiz : this.patterns) {
+            if (thiz.dominates(p))
+                return true;
+        }
+        return false;
+    }
 
-	@Override
-	public boolean coversType(TypeBinding type, Scope scope) {
-		if (!isUnguarded())
-			return false;
-		for (Pattern p : this.patterns) {
-			if (p.coversType(type, scope))
-				return true;
-		}
-		return false;
-	}
+    @Override
+    public boolean coversType(TypeBinding type, Scope scope) {
+        if (!isUnguarded())
+            return false;
+        for (Pattern p : this.patterns) {
+            if (p.coversType(type, scope))
+                return true;
+        }
+        return false;
+    }
 
-	@Override
-	public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
-		return flowInfo;
-	}
+    @Override
+    public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
+        return flowInfo;
+    }
 
-	@Override
-	public LocalVariableBinding[] bindingsWhenTrue() {
-		return NO_VARIABLES; // emphatically.
-	}
+    @Override
+    public LocalVariableBinding[] bindingsWhenTrue() {
+        return NO_VARIABLES; // emphatically.
+    }
 
-	@Override
-	public StringBuilder printExpression(int indent, StringBuilder output) {
-		for (int i = 0; i < this.patternsCount; i++) {
-			if (i > 0) output.append(", "); //$NON-NLS-1$
-			this.patterns[i].print(0, output);
-		}
-		return output;
-	}
+    @Override
+    public StringBuilder printExpression(int indent, StringBuilder output) {
+        for (int i = 0; i < this.patternsCount; i++) {
+            if (i > 0)
+                output.append(", "); //$NON-NLS-1$
+            this.patterns[i].print(0, output);
+        }
+        return output;
+    }
 
-	@Override
-	public void traverse(ASTVisitor visitor, BlockScope scope) {
-		if (visitor.visit(this, scope)) {
-			for (Pattern p : this.patterns) {
-				p.traverse(visitor, scope);
-			}
-		}
-		visitor.endVisit(this, scope);
-	}
+    @Override
+    public void traverse(ASTVisitor visitor, BlockScope scope) {
+        if (visitor.visit(this, scope)) {
+            for (Pattern p : this.patterns) {
+                p.traverse(visitor, scope);
+            }
+        }
+        visitor.endVisit(this, scope);
+    }
 }

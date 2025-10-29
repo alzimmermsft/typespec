@@ -27,86 +27,86 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 @ProviderType
 public interface BundleWire extends Wire {
-	/**
-	 * Returns the {@link BundleCapability} for this wire.
-	 * 
-	 * @return The {@link BundleCapability} for this wire.
-	 */
-	@Override
-	BundleCapability getCapability();
+    /**
+     * Returns the {@link BundleCapability} for this wire.
+     * 
+     * @return The {@link BundleCapability} for this wire.
+     */
+    @Override
+    BundleCapability getCapability();
 
-	/**
-	 * Return the {@link BundleRequirement} for this wire.
-	 * 
-	 * @return The {@link BundleRequirement} for this wire.
-	 */
-	@Override
-	BundleRequirement getRequirement();
+    /**
+     * Return the {@link BundleRequirement} for this wire.
+     * 
+     * @return The {@link BundleRequirement} for this wire.
+     */
+    @Override
+    BundleRequirement getRequirement();
 
-	/**
-	 * Returns the bundle wiring {@link BundleWiring#getProvidedWires(String)
-	 * providing} the {@link #getCapability() capability}.
-	 * 
-	 * <p>
-	 * The bundle revision referenced by the returned bundle wiring may differ
-	 * from the bundle revision referenced by the {@link #getCapability()
-	 * capability}.
-	 * 
-	 * @return The bundle wiring providing the capability. If the bundle wiring
-	 *         providing the capability is not {@link BundleWiring#isInUse() in
-	 *         use}, {@code null} will be returned.
-	 */
-	BundleWiring getProviderWiring();
+    /**
+     * Returns the bundle wiring {@link BundleWiring#getProvidedWires(String)
+     * providing} the {@link #getCapability() capability}.
+     * 
+     * <p>
+     * The bundle revision referenced by the returned bundle wiring may differ
+     * from the bundle revision referenced by the {@link #getCapability()
+     * capability}.
+     * 
+     * @return The bundle wiring providing the capability. If the bundle wiring
+     * providing the capability is not {@link BundleWiring#isInUse() in
+     * use}, {@code null} will be returned.
+     */
+    BundleWiring getProviderWiring();
 
-	/**
-	 * Returns the bundle wiring who
-	 * {@link BundleWiring#getRequiredWires(String) requires} the
-	 * {@link #getCapability() capability}.
-	 * 
-	 * <p>
-	 * The bundle revision referenced by the returned bundle wiring may differ
-	 * from the bundle revision referenced by the {@link #getRequirement()
-	 * requirement}.
-	 * 
-	 * @return The bundle wiring whose requirement is wired to the capability.
-	 *         If the bundle wiring requiring the capability is not
-	 *         {@link BundleWiring#isInUse() in use}, {@code null} will be
-	 *         returned.
-	 */
-	BundleWiring getRequirerWiring();
+    /**
+     * Returns the bundle wiring who
+     * {@link BundleWiring#getRequiredWires(String) requires} the
+     * {@link #getCapability() capability}.
+     * 
+     * <p>
+     * The bundle revision referenced by the returned bundle wiring may differ
+     * from the bundle revision referenced by the {@link #getRequirement()
+     * requirement}.
+     * 
+     * @return The bundle wiring whose requirement is wired to the capability.
+     * If the bundle wiring requiring the capability is not
+     * {@link BundleWiring#isInUse() in use}, {@code null} will be
+     * returned.
+     */
+    BundleWiring getRequirerWiring();
 
-	/**
-	 * Returns the resource providing the {@link #getCapability() capability}.
-	 * 
-	 * <p>
-	 * The returned resource may differ from the resource referenced by the
-	 * {@link #getCapability() capability}.
-	 * 
-	 * <p>
-	 * This method returns the same value as {@link #getProviderWiring()}.
-	 * {@link BundleWiring#getRevision() getRevision()}.
-	 * 
-	 * @return The resource providing the capability.
-	 * @since 1.1
-	 */
-	@Override
-	BundleRevision getProvider();
+    /**
+     * Returns the resource providing the {@link #getCapability() capability}.
+     * 
+     * <p>
+     * The returned resource may differ from the resource referenced by the
+     * {@link #getCapability() capability}.
+     * 
+     * <p>
+     * This method returns the same value as {@link #getProviderWiring()}.
+     * {@link BundleWiring#getRevision() getRevision()}.
+     * 
+     * @return The resource providing the capability.
+     * @since 1.1
+     */
+    @Override
+    BundleRevision getProvider();
 
-	/**
-	 * Returns the resource who {@link #getRequirement() requires} the
-	 * {@link #getCapability() capability}.
-	 * 
-	 * <p>
-	 * The returned resource may differ from the resource referenced by the
-	 * {@link #getRequirement() requirement}.
-	 * 
-	 * <p>
-	 * This method returns the same value as {@link #getRequirerWiring()}.
-	 * {@link BundleWiring#getRevision() getRevision()}.
-	 * 
-	 * @return The resource who requires the capability.
-	 * @since 1.1
-	 */
-	@Override
-	BundleRevision getRequirer();
+    /**
+     * Returns the resource who {@link #getRequirement() requires} the
+     * {@link #getCapability() capability}.
+     * 
+     * <p>
+     * The returned resource may differ from the resource referenced by the
+     * {@link #getRequirement() requirement}.
+     * 
+     * <p>
+     * This method returns the same value as {@link #getRequirerWiring()}.
+     * {@link BundleWiring#getRevision() getRevision()}.
+     * 
+     * @return The resource who requires the capability.
+     * @since 1.1
+     */
+    @Override
+    BundleRevision getRequirer();
 }

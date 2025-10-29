@@ -25,14 +25,14 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.PointerType;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinCrypt.*;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.HWND;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HANDLE;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.win32.StdCallLibrary;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.win32.W32APIOptions;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinCrypt.*;
 
 /**
  * Cryptui.dll Interface.
+ * 
  * @author roshan[dot]muralidharan[at]cerner[dot]com
  */
 public interface Cryptui extends StdCallLibrary {
@@ -45,24 +45,24 @@ public interface Cryptui extends StdCallLibrary {
      *
      * @param hCertStore Handle of the certificate store to be searched.
      * @param hwnd Handle of the window for the display. If NULL,
-     *                          defaults to the desktop window.
+     * defaults to the desktop window.
      * @param pwszTitle String used as the title of the dialog box. If
-     *                          NULL, the default title, "Select Certificate,"
-     *                          is used.
+     * NULL, the default title, "Select Certificate,"
+     * is used.
      * @param pwszDisplayString Text statement in the selection dialog box. If
-     *                          NULL, the default phrase, "Select a certificate
-     *                          you want to use," is used.
+     * NULL, the default phrase, "Select a certificate
+     * you want to use," is used.
      * @param dwDontUseColumn Flags that can be combined to exclude columns of
-     *                          the display.
+     * the display.
      * @param dwFlags Currently not used and should be set to 0.
      * @param pvReserved Reserved for future use.
      *
      * @return Returns a pointer to the selected certificate context. If no
-     *         certificate was selected, NULL is returned. When you have
-     *         finished using the certificate, free the certificate context by
-     *         calling the CertFreeCertificateContext function.
+     * certificate was selected, NULL is returned. When you have
+     * finished using the certificate, free the certificate context by
+     * calling the CertFreeCertificateContext function.
      */
     CERT_CONTEXT.ByReference CryptUIDlgSelectCertificateFromStore(HCERTSTORE hCertStore, HWND hwnd, String pwszTitle,
-            String pwszDisplayString, int dwDontUseColumn, int dwFlags, PointerType pvReserved);
+        String pwszDisplayString, int dwDontUseColumn, int dwFlags, PointerType pvReserved);
 
 }

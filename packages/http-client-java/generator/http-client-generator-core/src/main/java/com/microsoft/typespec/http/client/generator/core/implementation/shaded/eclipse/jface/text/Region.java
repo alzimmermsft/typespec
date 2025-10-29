@@ -13,54 +13,53 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text;
 
-
 /**
  * The default implementation of the {@link IRegion} interface.
  */
 public class Region implements IRegion {
 
-	/** The region offset */
-	private int fOffset;
-	/** The region length */
-	private int fLength;
+    /** The region offset */
+    private int fOffset;
+    /** The region length */
+    private int fLength;
 
-	/**
-	 * Create a new region.
-	 *
-	 * @param offset the offset of the region
-	 * @param length the length of the region
-	 */
-	public Region(int offset, int length) {
-		fOffset= offset;
-		fLength= length;
-	}
+    /**
+     * Create a new region.
+     *
+     * @param offset the offset of the region
+     * @param length the length of the region
+     */
+    public Region(int offset, int length) {
+        fOffset = offset;
+        fLength = length;
+    }
 
-	@Override
-	public int getLength() {
-		return fLength;
-	}
+    @Override
+    public int getLength() {
+        return fLength;
+    }
 
-	@Override
-	public int getOffset() {
-		return fOffset;
-	}
+    @Override
+    public int getOffset() {
+        return fOffset;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-	 	if (o instanceof IRegion) {
-	 		IRegion r= (IRegion) o;
-	 		return r.getOffset() == fOffset && r.getLength() == fLength;
-	 	}
-	 	return false;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof IRegion) {
+            IRegion r = (IRegion) o;
+            return r.getOffset() == fOffset && r.getLength() == fLength;
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-	 	return (fOffset << 24) | (fLength << 16);
-	}
+    @Override
+    public int hashCode() {
+        return (fOffset << 24) | (fLength << 16);
+    }
 
-	@Override
-	public String toString() {
-		return "offset: " + fOffset + ", length: " + fLength; //$NON-NLS-1$ //$NON-NLS-2$;
-	}
+    @Override
+    public String toString() {
+        return "offset: " + fOffset + ", length: " + fLength; //$NON-NLS-1$ //$NON-NLS-2$ ;
+    }
 }

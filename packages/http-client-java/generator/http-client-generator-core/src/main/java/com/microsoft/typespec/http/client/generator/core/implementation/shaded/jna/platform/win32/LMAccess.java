@@ -23,8 +23,6 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
-import java.util.List;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure.FieldOrder;
@@ -34,11 +32,12 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 /**
  * Ported from LMAccess.h.
  * Windows SDK 6.0A.
+ * 
  * @author dblock[at]dblock.org
  */
 public interface LMAccess {
 
-    @FieldOrder({"lgrui0_name"})
+    @FieldOrder({ "lgrui0_name" })
     public static class LOCALGROUP_INFO_0 extends Structure {
         public String lgrui0_name;
 
@@ -52,7 +51,7 @@ public interface LMAccess {
         }
     }
 
-    @FieldOrder({"lgrui1_name", "lgrui1_comment"})
+    @FieldOrder({ "lgrui1_name", "lgrui1_comment" })
     public static class LOCALGROUP_INFO_1 extends Structure {
         public String lgrui1_name;
         public String lgrui1_comment;
@@ -81,7 +80,7 @@ public interface LMAccess {
     /**
      * The USER_INFO_0 structure contains a user account name.
      */
-    @FieldOrder({"usri0_name"})
+    @FieldOrder({ "usri0_name" })
     public static class USER_INFO_0 extends Structure {
         /**
          * Pointer to a Unicode string that specifies the name of the user account.
@@ -103,8 +102,15 @@ public interface LMAccess {
      * account name, password data, privilege level, and the path to the user's home
      * directory.
      */
-    @FieldOrder({"usri1_name", "usri1_password", "usri1_password_age", "usri1_priv",
-                "usri1_home_dir", "usri1_comment", "usri1_flags", "usri1_script_path"})
+    @FieldOrder({
+        "usri1_name",
+        "usri1_password",
+        "usri1_password_age",
+        "usri1_priv",
+        "usri1_home_dir",
+        "usri1_comment",
+        "usri1_flags",
+        "usri1_script_path" })
     public static class USER_INFO_1 extends Structure {
         /**
          * Pointer to a Unicode string that specifies the name of the user
@@ -165,7 +171,7 @@ public interface LMAccess {
      * The USER_INFO_23 structure supersedes the USER_INFO_20 structure.
      * It is recommended that applications use the USER_INFO_23 structure instead of the USER_INFO_20 structure.
      */
-    @FieldOrder({"usri23_name", "usri23_full_name", "usri23_comment", "usri23_flags", "usri23_user_sid"})
+    @FieldOrder({ "usri23_name", "usri23_full_name", "usri23_comment", "usri23_flags", "usri23_user_sid" })
     public static class USER_INFO_23 extends Structure {
         /**
          * A pointer to a Unicode string that specifies the name of the user account.
@@ -174,49 +180,65 @@ public interface LMAccess {
         public String usri23_name;
         /**
          * A pointer to a Unicode string that contains the full name of the user.
-         * This string can be a null string, or it can have any number of characters before the terminating null character.
+         * This string can be a null string, or it can have any number of characters before the terminating null
+         * character.
          */
         public String usri23_full_name;
         /**
          * A pointer to a Unicode string that contains a comment associated with the user account.
-         * This string can be a null string, or it can have any number of characters before the terminating null character.
+         * This string can be a null string, or it can have any number of characters before the terminating null
+         * character.
          */
         public String usri23_comment;
         /**
          * This member can be one or more of the following values.
          * Note that setting user account control flags may require certain privileges and control access rights.
          * For more information, see the Remarks section of the NetUserSetInfo function.
-         * Value             Meaning
-         * UF_SCRIPT         The logon script executed. This value must be set.
+         * Value Meaning
+         * UF_SCRIPT The logon script executed. This value must be set.
          * UF_ACCOUNTDISABLE The user's account is disabled.
          * UF_HOMEDIR_REQUIRED The home directory is required. This value is ignored.
          * UF_PASSWD_NOTREQD No password is required.
          * UF_PASSWD_CANT_CHANGE The user cannot change the password.
-         * UF_LOCKOUT        The account is currently locked out. You can call the NetUserSetInfo function to clear this value and unlock a previously locked account. You cannot use this value to lock a previously unlocked account.
+         * UF_LOCKOUT The account is currently locked out. You can call the NetUserSetInfo function to clear this value
+         * and unlock a previously locked account. You cannot use this value to lock a previously unlocked account.
          * UF_DONT_EXPIRE_PASSWD The password should never expire on the account.
-         * UF_ENCRYPTED_TEXT_PASSWORD_ALLOWED The user's password is stored under reversible encryption in the Active Directory.
+         * UF_ENCRYPTED_TEXT_PASSWORD_ALLOWED The user's password is stored under reversible encryption in the Active
+         * Directory.
          * UF_NOT_DELEGATED Marks the account as "sensitive"; other users cannot act as delegates of this user account.
          * UF_SMARTCARD_REQUIRED Requires the user to log on to the user account with a smart card.
-         * UF_USE_DES_KEY_ONLY Restrict this principal to use only Data Encryption Standard (DES) encryption types for keys.
+         * UF_USE_DES_KEY_ONLY Restrict this principal to use only Data Encryption Standard (DES) encryption types for
+         * keys.
          * UF_DONT_REQUIRE_PREAUTH This account does not require Kerberos preauthentication for logon.
-         * UF_TRUSTED_FOR_DELEGATION The account is enabled for delegation. This is a security-sensitive setting; accounts with this option enabled should be tightly controlled. This setting allows a service running under the account to assume a client's identity and authenticate as that user to other remote servers on the network.
-         * UF_PASSWORD_EXPIRED The user's password has expired. Windows 2000:  This value is not supported.
-         * UF_TRUSTED_TO_AUTHENTICATE_FOR_DELEGATION The account is trusted to authenticate a user outside of the Kerberos security package and delegate that user through constrained delegation. This is a security-sensitive setting; accounts with this option enabled should be tightly controlled. This setting allows a service running under the account to assert a client's identity and authenticate as that user to specifically configured services on the network. Windows XP/2000:  This value is not supported.
+         * UF_TRUSTED_FOR_DELEGATION The account is enabled for delegation. This is a security-sensitive setting;
+         * accounts with this option enabled should be tightly controlled. This setting allows a service running under
+         * the account to assume a client's identity and authenticate as that user to other remote servers on the
+         * network.
+         * UF_PASSWORD_EXPIRED The user's password has expired. Windows 2000: This value is not supported.
+         * UF_TRUSTED_TO_AUTHENTICATE_FOR_DELEGATION The account is trusted to authenticate a user outside of the
+         * Kerberos security package and delegate that user through constrained delegation. This is a security-sensitive
+         * setting; accounts with this option enabled should be tightly controlled. This setting allows a service
+         * running under the account to assert a client's identity and authenticate as that user to specifically
+         * configured services on the network. Windows XP/2000: This value is not supported.
          *
-         * The following values describe the account type. Only one value can be set. You cannot change the account type using the NetUserSetInfo function.
-         * Value                 Meaning
-         * UF_NORMAL_ACCOUNT     This is a default account type that represents a typical user.
-         * UF_TEMP_DUPLICATE_ACCOUNT This is an account for users whose primary account is in another domain. This account provides user access to this domain, but not to any domain that trusts this domain. The User Manager refers to this account type as a local user account.
+         * The following values describe the account type. Only one value can be set. You cannot change the account type
+         * using the NetUserSetInfo function.
+         * Value Meaning
+         * UF_NORMAL_ACCOUNT This is a default account type that represents a typical user.
+         * UF_TEMP_DUPLICATE_ACCOUNT This is an account for users whose primary account is in another domain. This
+         * account provides user access to this domain, but not to any domain that trusts this domain. The User Manager
+         * refers to this account type as a local user account.
          * UF_WORKSTATION_TRUST_ACCOUNT This is a computer account for a computer that is a member of this domain.
-         * UF_SERVER_TRUST_ACCOUNT This is a computer account for a backup domain controller that is a member of this domain.
+         * UF_SERVER_TRUST_ACCOUNT This is a computer account for a backup domain controller that is a member of this
+         * domain.
          * UF_INTERDOMAIN_TRUST_ACCOUNT This is a permit to trust account for a domain that trusts other domains.
          */
-        public int  usri23_flags;
+        public int usri23_flags;
         /**
          * A pointer to a SID structure that contains the security identifier (SID)
          * that uniquely identifies the user. The NetUserAdd and NetUserSetInfo functions ignore this member.
          */
-        public PSID.ByReference   usri23_user_sid;
+        public PSID.ByReference usri23_user_sid;
 
         public USER_INFO_23() {
             super(W32APITypeMapper.UNICODE);
@@ -231,7 +253,7 @@ public interface LMAccess {
     /**
      * The GROUP_USERS_INFO_0 structure contains global group member information.
      */
-    @FieldOrder({"grui0_name"})
+    @FieldOrder({ "grui0_name" })
     public static class GROUP_USERS_INFO_0 extends Structure {
         /**
          * Pointer to a null-terminated Unicode character string that specifies a name.
@@ -251,7 +273,7 @@ public interface LMAccess {
     /**
      * The LOCALGROUP_USERS_INFO_0 structure contains local group member information.
      */
-    @FieldOrder({"lgrui0_name"})
+    @FieldOrder({ "lgrui0_name" })
     public static class LOCALGROUP_USERS_INFO_0 extends Structure {
         /**
          * Pointer to a Unicode string specifying the name of a local group to which the user belongs.
@@ -273,8 +295,8 @@ public interface LMAccess {
      * database, which is the security accounts manager (SAM) database or, in the case
      * of domain controllers, the Active Directory.
      */
-    @FieldOrder({"grpi0_name"})
-    public static class GROUP_INFO_0  extends Structure {
+    @FieldOrder({ "grpi0_name" })
+    public static class GROUP_INFO_0 extends Structure {
         /**
          * Pointer to a null-terminated Unicode character string that specifies
          * the name of the global group.
@@ -295,7 +317,7 @@ public interface LMAccess {
      * The GROUP_INFO_1 structure contains a global group name and a comment to
      * associate with the group.
      */
-    @FieldOrder({"grpi1_name", "grpi1_comment"})
+    @FieldOrder({ "grpi1_name", "grpi1_comment" })
     public static class GROUP_INFO_1 extends Structure {
         /**
          * Pointer to a null-terminated Unicode character string that specifies
@@ -323,8 +345,8 @@ public interface LMAccess {
      * The GROUP_INFO_2 structure contains information about a global group, including
      * name, identifier, and resource attributes.
      */
-    @FieldOrder({"grpi2_name", "grpi2_comment", "grpi2_group_id", "grpi2_attributes"})
-    public static class GROUP_INFO_2  extends Structure {
+    @FieldOrder({ "grpi2_name", "grpi2_comment", "grpi2_group_id", "grpi2_attributes" })
+    public static class GROUP_INFO_2 extends Structure {
         /**
          * Pointer to a null-terminated Unicode character string that
          * specifies the name of the global group.
@@ -361,8 +383,8 @@ public interface LMAccess {
      * The GROUP_INFO_3 structure contains information about a global group, including
      * name, security identifier (SID), and resource attributes.
      */
-    @FieldOrder({"grpi3_name", "grpi3_comment", "grpi3_group_sid", "grpi3_attributes"})
-    public static class GROUP_INFO_3  extends Structure {
+    @FieldOrder({ "grpi3_name", "grpi3_comment", "grpi3_group_sid", "grpi3_attributes" })
+    public static class GROUP_INFO_3 extends Structure {
         /**
          * Pointer to a null-terminated Unicode character string that
          * specifies the name of the global group.
@@ -405,9 +427,9 @@ public interface LMAccess {
     int USER_PRIV_ADMIN = 2;
 
     //
-    //  Bit values for the access permissions.  ACCESS_ALL is a handy
-    //  way to specify maximum permissions.  These are used in
-    //  acl_access field of access_list structures.
+    // Bit values for the access permissions. ACCESS_ALL is a handy
+    // way to specify maximum permissions. These are used in
+    // acl_access field of access_list structures.
     //
 
     int ACCESS_NONE = 0x00;
@@ -418,6 +440,7 @@ public interface LMAccess {
     int ACCESS_DELETE = 0x10;
     int ACCESS_ATRIB = 0x20;
     int ACCESS_PERM = 0x40;
-    int ACCESS_ALL = ACCESS_READ | ACCESS_WRITE | ACCESS_CREATE | ACCESS_EXEC | ACCESS_DELETE | ACCESS_ATRIB | ACCESS_PERM;
+    int ACCESS_ALL
+        = ACCESS_READ | ACCESS_WRITE | ACCESS_CREATE | ACCESS_EXEC | ACCESS_DELETE | ACCESS_ATRIB | ACCESS_PERM;
     int ACCESS_GROUP = 0x8000;
 }

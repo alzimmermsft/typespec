@@ -13,7 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text;
 
-
 /**
  * A position updater is responsible for adapting document positions. When
  * installed on a document, the position updater updates the document's
@@ -32,13 +31,13 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IPositionUpdater {
 
-	/**
-	 * Adapts positions to the change specified by the document event.
-	 * It is ensured that the document's partitioning has been adapted to
-	 * this document change and that all the position updaters which have
-	 * a smaller index in the document's position updater list have been called.
-	 *
-	 * @param event the document event describing the document change
-	 */
-	void update(DocumentEvent event);
+    /**
+     * Adapts positions to the change specified by the document event.
+     * It is ensured that the document's partitioning has been adapted to
+     * this document change and that all the position updaters which have
+     * a smaller index in the document's position updater list have been called.
+     *
+     * @param event the document event describing the document change
+     */
+    void update(DocumentEvent event);
 }

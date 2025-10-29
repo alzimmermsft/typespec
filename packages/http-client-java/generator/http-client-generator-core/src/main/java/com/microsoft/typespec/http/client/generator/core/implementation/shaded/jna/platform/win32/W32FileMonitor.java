@@ -23,12 +23,6 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.FileMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.BaseTSD.ULONG_PTRByReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinBase.OVERLAPPED;
@@ -36,6 +30,11 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HANDLE;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.IntByReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.PointerByReference;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -53,6 +52,7 @@ public class W32FileMonitor extends FileMonitor {
         public final FILE_NOTIFY_INFORMATION info = new FILE_NOTIFY_INFORMATION(BUFFER_SIZE);
         public final IntByReference infoLength = new IntByReference();
         public final OVERLAPPED overlapped = new OVERLAPPED();
+
         public FileInfo(File f, HANDLE h, int mask, boolean recurse) {
             this.file = f;
             this.handle = h;
@@ -60,6 +60,7 @@ public class W32FileMonitor extends FileMonitor {
             this.recursive = recurse;
         }
     }
+
     private Thread watcher;
     private HANDLE port;
     private final Map<File, FileInfo> fileMap = new HashMap<>();
@@ -74,24 +75,30 @@ public class W32FileMonitor extends FileMonitor {
         do {
             FileEvent event = null;
             File file = new File(finfo.file, fni.getFilename());
-            switch(fni.Action) {
+            switch (fni.Action) {
                 case 0:
                     break;
+
                 case WinNT.FILE_ACTION_MODIFIED:
                     event = new FileEvent(file, FILE_MODIFIED);
                     break;
+
                 case WinNT.FILE_ACTION_ADDED:
                     event = new FileEvent(file, FILE_CREATED);
                     break;
+
                 case WinNT.FILE_ACTION_REMOVED:
                     event = new FileEvent(file, FILE_DELETED);
                     break;
+
                 case WinNT.FILE_ACTION_RENAMED_OLD_NAME:
                     event = new FileEvent(file, FILE_NAME_CHANGED_OLD);
                     break;
+
                 case WinNT.FILE_ACTION_RENAMED_NEW_NAME:
                     event = new FileEvent(file, FILE_NAME_CHANGED_NEW);
                     break;
+
                 default:
                     // TODO: other actions...
                     LOG.log(Level.WARNING, "Unrecognized file action ''{0}''", fni.Action);
@@ -110,15 +117,12 @@ public class W32FileMonitor extends FileMonitor {
             return;
         }
 
-        if (!klib.ReadDirectoryChangesW(finfo.handle, finfo.info,
-                finfo.info.size(), finfo.recursive, finfo.notifyMask,
-                finfo.infoLength, finfo.overlapped, null)) {
+        if (!klib.ReadDirectoryChangesW(finfo.handle, finfo.info, finfo.info.size(), finfo.recursive, finfo.notifyMask,
+            finfo.infoLength, finfo.overlapped, null)) {
             if (!disposing) {
                 int err = klib.GetLastError();
-                throw new IOException("ReadDirectoryChangesW failed on "
-                        + finfo.file + ": '"
-                        + Kernel32Util.formatMessageFromLastErrorCode(err)
-                        + "' (" + err + ")");
+                throw new IOException("ReadDirectoryChangesW failed on " + finfo.file + ": '"
+                    + Kernel32Util.formatMessageFromLastErrorCode(err) + "' (" + err + ")");
             }
         }
     }
@@ -127,7 +131,7 @@ public class W32FileMonitor extends FileMonitor {
         IntByReference rcount = new IntByReference();
         ULONG_PTRByReference rkey = new ULONG_PTRByReference();
         PointerByReference roverlap = new PointerByReference();
-        if (! Kernel32.INSTANCE.GetQueuedCompletionStatus(port, rcount, rkey, roverlap, WinBase.INFINITE)) {
+        if (!Kernel32.INSTANCE.GetQueuedCompletionStatus(port, rcount, rkey, roverlap, WinBase.INFINITE)) {
             return null;
         }
         synchronized (this) {
@@ -181,17 +185,12 @@ public class W32FileMonitor extends FileMonitor {
             throw new FileNotFoundException("No ancestor found for " + file);
         }
         Kernel32 klib = Kernel32.INSTANCE;
-        int mask = WinNT.FILE_SHARE_READ
-            | WinNT.FILE_SHARE_WRITE | WinNT.FILE_SHARE_DELETE;
-        int flags = WinNT.FILE_FLAG_BACKUP_SEMANTICS
-            | WinNT.FILE_FLAG_OVERLAPPED;
-        HANDLE handle = klib.CreateFile(file.getAbsolutePath(),
-                WinNT.FILE_LIST_DIRECTORY,
-                mask, null, WinNT.OPEN_EXISTING,
-                flags, null);
+        int mask = WinNT.FILE_SHARE_READ | WinNT.FILE_SHARE_WRITE | WinNT.FILE_SHARE_DELETE;
+        int flags = WinNT.FILE_FLAG_BACKUP_SEMANTICS | WinNT.FILE_FLAG_OVERLAPPED;
+        HANDLE handle = klib.CreateFile(file.getAbsolutePath(), WinNT.FILE_LIST_DIRECTORY, mask, null,
+            WinNT.OPEN_EXISTING, flags, null);
         if (WinBase.INVALID_HANDLE_VALUE.equals(handle)) {
-            throw new IOException("Unable to open " + file + " ("
-                                  + klib.GetLastError() + ")");
+            throw new IOException("Unable to open " + file + " (" + klib.GetLastError() + ")");
         }
         int notifyMask = convertMask(eventMask);
         FileInfo finfo = new FileInfo(file, handle, notifyMask, recursive);
@@ -200,20 +199,16 @@ public class W32FileMonitor extends FileMonitor {
         // Existing port is returned
         port = klib.CreateIoCompletionPort(handle, port, handle.getPointer(), 0);
         if (WinBase.INVALID_HANDLE_VALUE.equals(port)) {
-            throw new IOException("Unable to create/use I/O Completion port "
-                    + "for " + file + " ("
-                    + klib.GetLastError() + ")");
+            throw new IOException(
+                "Unable to create/use I/O Completion port " + "for " + file + " (" + klib.GetLastError() + ")");
         }
         // TODO: use FileIOCompletionRoutine callback method instead of a
         // dedicated thread
-        if (!klib.ReadDirectoryChangesW(handle, finfo.info, finfo.info.size(),
-                                        recursive, notifyMask, finfo.infoLength,
-                                        finfo.overlapped, null)) {
+        if (!klib.ReadDirectoryChangesW(handle, finfo.info, finfo.info.size(), recursive, notifyMask, finfo.infoLength,
+            finfo.overlapped, null)) {
             int err = klib.GetLastError();
-            throw new IOException("ReadDirectoryChangesW failed on "
-                                  + finfo.file + ", handle " + handle
-                                  + ": '" + Kernel32Util.formatMessageFromLastErrorCode(err)
-                                  + "' (" + err + ")");
+            throw new IOException("ReadDirectoryChangesW failed on " + finfo.file + ", handle " + handle + ": '"
+                + Kernel32Util.formatMessageFromLastErrorCode(err) + "' (" + err + ")");
         }
         if (watcher == null) {
             watcher = new Thread("W32 File Monitor-" + (watcherThreadID++)) {
@@ -264,7 +259,7 @@ public class W32FileMonitor extends FileMonitor {
         // unwatch any remaining files in map, allows watcher thread to exit
         int i = 0;
         for (Object[] keys = fileMap.keySet().toArray(); !fileMap.isEmpty();) {
-            unwatch((File)keys[i++]);
+            unwatch((File) keys[i++]);
         }
 
         Kernel32 klib = Kernel32.INSTANCE;

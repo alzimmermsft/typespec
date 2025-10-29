@@ -30,7 +30,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.connect.ConnectContent;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.connect.ConnectModule;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.connect.ModuleConnector;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -43,152 +42,153 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 
 public class EquinoxContainer implements ThreadFactory, Runnable {
-	public static final String NAME = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi"; //$NON-NLS-1$
-	static final SecureAction secureAction = AccessController.doPrivileged(SecureAction.createSecureAction());
+    public static final String NAME
+        = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi"; //$NON-NLS-1$
+    static final SecureAction secureAction = AccessController.doPrivileged(SecureAction.createSecureAction());
 
     public Storage getStorage() {
-		return null;
-	}
+        return null;
+    }
 
-	public EquinoxConfiguration getConfiguration() {
-		return null;
-	}
+    public EquinoxConfiguration getConfiguration() {
+        return null;
+    }
 
-	public EquinoxLocations getLocations() {
-		return null;
-	}
+    public EquinoxLocations getLocations() {
+        return null;
+    }
 
-	public EquinoxLogServices getLogServices() {
-		return null;
-	}
+    public EquinoxLogServices getLogServices() {
+        return null;
+    }
 
-	public Bundle getBundle(Class<?> clazz) {
-		Bundle b = FrameworkUtil.getBundle(clazz);
-		if (b != null) {
-			return b;
-		}
-		// check if it is the system bundle
-		return AccessController.doPrivileged((PrivilegedAction<Bundle>) () -> {
-			if (clazz.getClassLoader() == EquinoxContainer.class.getClassLoader()) {
-				return getStorage().getModuleContainer().getModule(0).getBundle();
-			}
-			return null;
-		});
-	}
+    public Bundle getBundle(Class<?> clazz) {
+        Bundle b = FrameworkUtil.getBundle(clazz);
+        if (b != null) {
+            return b;
+        }
+        // check if it is the system bundle
+        return AccessController.doPrivileged((PrivilegedAction<Bundle>) () -> {
+            if (clazz.getClassLoader() == EquinoxContainer.class.getClassLoader()) {
+                return getStorage().getModuleContainer().getModule(0).getBundle();
+            }
+            return null;
+        });
+    }
 
-	public SignedContentFactory getSignedContentFactory() {
-		return null;
-	}
+    public SignedContentFactory getSignedContentFactory() {
+        return null;
+    }
 
-	public boolean isBootDelegationPackage(String name) {
-		return false;
-	}
+    public boolean isBootDelegationPackage(String name) {
+        return false;
+    }
 
     public EquinoxEventPublisher getEventPublisher() {
         return null;
-	}
+    }
 
-	ScheduledExecutorService getScheduledExecutor() {
+    ScheduledExecutorService getScheduledExecutor() {
         return null;
-	}
+    }
 
-	public ServiceRegistry getServiceRegistry() {
+    public ServiceRegistry getServiceRegistry() {
         return null;
-	}
+    }
 
     public <K, V, E> ListenerQueue<K, V, E> newListenerQueue() {
-		return null;
-	}
+        return null;
+    }
 
-	void checkAdminPermission(Bundle bundle, String action) {
-		if (bundle == null)
-			return;
-		SecurityManager sm = System.getSecurityManager();
-		if (sm != null)
-			sm.checkPermission(new AdminPermission(bundle, action));
-	}
+    void checkAdminPermission(Bundle bundle, String action) {
+        if (bundle == null)
+            return;
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null)
+            sm.checkPermission(new AdminPermission(bundle, action));
+    }
 
     @Override
-	public String toString() {
-		return "Equinox Container: " + null; //$NON-NLS-1$
-	}
+    public String toString() {
+        return "Equinox Container: " + null; //$NON-NLS-1$
+    }
 
-	StorageSaver getStorageSaver() {
+    StorageSaver getStorageSaver() {
         return null;
-	}
+    }
 
-	@Override
-	public Thread newThread(Runnable r) {
-		Thread t = new Thread(r, "Active Thread: " + toString()); //$NON-NLS-1$
+    @Override
+    public Thread newThread(Runnable r) {
+        Thread t = new Thread(r, "Active Thread: " + toString()); //$NON-NLS-1$
         t.setDaemon(true);
-		t.setPriority(Thread.NORM_PRIORITY);
-		return t;
-	}
+        t.setPriority(Thread.NORM_PRIORITY);
+        return t;
+    }
 
-	@Override
-	public void run() {
-		// Do nothing; just used to ensure the active thread is created during init
-	}
+    @Override
+    public void run() {
+        // Do nothing; just used to ensure the active thread is created during init
+    }
 
-	public ClassLoader getBootLoader() {
-		return null;
-	}
+    public ClassLoader getBootLoader() {
+        return null;
+    }
 
-	public ConnectModules getConnectModules() {
-		return null;
-	}
+    public ConnectModules getConnectModules() {
+        return null;
+    }
 
-	public static class ConnectModules {
-		final ModuleConnector moduleConnector;
-		private final ConcurrentMap<String, ConnectModule> connectModules = new ConcurrentHashMap<>();
-		private final WeakHashMap<ConnectContent, WeakReference<ConnectBundleFile>> contents = new WeakHashMap<>();
+    public static class ConnectModules {
+        final ModuleConnector moduleConnector;
+        private final ConcurrentMap<String, ConnectModule> connectModules = new ConcurrentHashMap<>();
+        private final WeakHashMap<ConnectContent, WeakReference<ConnectBundleFile>> contents = new WeakHashMap<>();
 
-		public ConnectModules(ModuleConnector moduleConnector) {
-			this.moduleConnector = moduleConnector;
-		}
+        public ConnectModules(ModuleConnector moduleConnector) {
+            this.moduleConnector = moduleConnector;
+        }
 
-		public ConnectModule connect(String location) {
-			if (moduleConnector == null) {
-				return null;
-			}
-			ConnectModule result = connectModules.compute(location, (k, v) -> {
-				try {
-					return moduleConnector.connect(location).orElse(null);
-				} catch (BundleException e) {
-					throw new IllegalStateException(e);
-				}
-			});
-			return result;
-		}
+        public ConnectModule connect(String location) {
+            if (moduleConnector == null) {
+                return null;
+            }
+            ConnectModule result = connectModules.compute(location, (k, v) -> {
+                try {
+                    return moduleConnector.connect(location).orElse(null);
+                } catch (BundleException e) {
+                    throw new IllegalStateException(e);
+                }
+            });
+            return result;
+        }
 
-		public ConnectBundleFile getConnectBundleFile(ConnectModule module, File basefile,
-				BundleInfo.Generation generation, MRUBundleFileList mruList) throws IOException {
-			ConnectContent content = module.getContent();
-			synchronized (contents) {
-				WeakReference<ConnectBundleFile> ref = contents.get(content);
-				if (ref != null) {
-					ConnectBundleFile bundleFile = ref.get();
-					if (bundleFile != null) {
-						return bundleFile;
-					}
-				}
-				ConnectBundleFile bundleFile = new ConnectBundleFile(module, basefile, generation, mruList);
-				contents.put(content, new WeakReference<>(bundleFile));
-				return bundleFile;
-			}
-		}
+        public ConnectBundleFile getConnectBundleFile(ConnectModule module, File basefile,
+            BundleInfo.Generation generation, MRUBundleFileList mruList) throws IOException {
+            ConnectContent content = module.getContent();
+            synchronized (contents) {
+                WeakReference<ConnectBundleFile> ref = contents.get(content);
+                if (ref != null) {
+                    ConnectBundleFile bundleFile = ref.get();
+                    if (bundleFile != null) {
+                        return bundleFile;
+                    }
+                }
+                ConnectBundleFile bundleFile = new ConnectBundleFile(module, basefile, generation, mruList);
+                contents.put(content, new WeakReference<>(bundleFile));
+                return bundleFile;
+            }
+        }
 
-		public ModuleConnector getModuleConnector() {
-			return moduleConnector;
-		}
+        public ModuleConnector getModuleConnector() {
+            return moduleConnector;
+        }
 
-		public ConnectModule getConnectModule(String location) {
-			return connectModules.get(location);
-		}
-	}
+        public ConnectModule getConnectModule(String location) {
+            return connectModules.get(location);
+        }
+    }
 
-	@SuppressWarnings("unchecked")
-	public static <E extends Throwable> void sneakyThrow(Throwable e) throws E {
-		throw (E) e;
-	}
+    @SuppressWarnings("unchecked")
+    public static <E extends Throwable> void sneakyThrow(Throwable e) throws E {
+        throw (E) e;
+    }
 }

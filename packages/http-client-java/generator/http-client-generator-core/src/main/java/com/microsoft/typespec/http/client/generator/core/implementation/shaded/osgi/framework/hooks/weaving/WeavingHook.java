@@ -40,25 +40,25 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 @ConsumerType
 public interface WeavingHook {
-	/**
-	 * Weaving hook method.
-	 * <p>
-	 * This method can modify the specified woven class object to weave the
-	 * class being defined.
-	 * <p>
-	 * If this method throws any exception, the framework must log the exception
-	 * and fail the class load in progress. This weaving hook service must be
-	 * deny listed by the framework and must not be called again. The deny
-	 * listing of this weaving hook service must expire when this weaving hook
-	 * service is unregistered. However, this method can throw a
-	 * {@link WeavingException} to deliberately fail the class load in progress
-	 * without being deny listed by the framework.
-	 * 
-	 * @param wovenClass The {@link WovenClass} object that represents the data
-	 *            that will be used to define the class.
-	 * @throws WeavingException If this weaving hook wants to deliberately fail
-	 *             the class load in progress without being deny listed by the
-	 *             framework
-	 */
-	public void weave(WovenClass wovenClass);
+    /**
+     * Weaving hook method.
+     * <p>
+     * This method can modify the specified woven class object to weave the
+     * class being defined.
+     * <p>
+     * If this method throws any exception, the framework must log the exception
+     * and fail the class load in progress. This weaving hook service must be
+     * deny listed by the framework and must not be called again. The deny
+     * listing of this weaving hook service must expire when this weaving hook
+     * service is unregistered. However, this method can throw a
+     * {@link WeavingException} to deliberately fail the class load in progress
+     * without being deny listed by the framework.
+     * 
+     * @param wovenClass The {@link WovenClass} object that represents the data
+     * that will be used to define the class.
+     * @throws WeavingException If this weaving hook wants to deliberately fail
+     * the class load in progress without being deny listed by the
+     * framework
+     */
+    public void weave(WovenClass wovenClass);
 }

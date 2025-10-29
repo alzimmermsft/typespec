@@ -23,6 +23,7 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.W32FileMonitor;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,12 +32,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.W32FileMonitor;
-
-/** Provides notification of file system changes.  Actual capabilities may
+/**
+ * Provides notification of file system changes. Actual capabilities may
  * vary slightly by platform.
  * <p>
  * Watched files which are removed from the filesystem are no longer watched.
+ * 
  * @author twall
  */
 
@@ -49,7 +50,7 @@ public abstract class FileMonitor {
     public static final int FILE_ACCESSED = 0x8;
     public static final int FILE_NAME_CHANGED_OLD = 0x10;
     public static final int FILE_NAME_CHANGED_NEW = 0x20;
-    public static final int FILE_RENAMED = FILE_NAME_CHANGED_OLD|FILE_NAME_CHANGED_NEW;
+    public static final int FILE_RENAMED = FILE_NAME_CHANGED_OLD | FILE_NAME_CHANGED_NEW;
     public static final int FILE_SIZE_CHANGED = 0x40;
     public static final int FILE_ATTRIBUTES_CHANGED = 0x80;
     public static final int FILE_SECURITY_CHANGED = 0x100;
@@ -62,13 +63,21 @@ public abstract class FileMonitor {
     public class FileEvent extends EventObject {
         private final File file;
         private final int type;
+
         public FileEvent(File file, int type) {
             super(FileMonitor.this);
             this.file = file;
             this.type = type;
         }
-        public File getFile() { return file; }
-        public int getType() { return type; }
+
+        public File getFile() {
+            return file;
+        }
+
+        public int getType() {
+            return type;
+        }
+
         public String toString() {
             return "FileEvent: " + file + ":" + type;
         }
@@ -77,8 +86,10 @@ public abstract class FileMonitor {
     private final Map<File, Integer> watched = new HashMap<>();
     private List<FileListener> listeners = new ArrayList<>();
 
-    protected abstract void watch(File file, int mask, boolean recursive) throws IOException ;
+    protected abstract void watch(File file, int mask, boolean recursive) throws IOException;
+
     protected abstract void unwatch(File file);
+
     public abstract void dispose();
 
     public void addWatch(File dir) throws IOException {
@@ -133,8 +144,7 @@ public abstract class FileMonitor {
             String os = System.getProperty("os.name");
             if (os.startsWith("Windows")) {
                 INSTANCE = new W32FileMonitor();
-            }
-            else {
+            } else {
                 throw new Error("FileMonitor not implemented for " + os);
             }
         }

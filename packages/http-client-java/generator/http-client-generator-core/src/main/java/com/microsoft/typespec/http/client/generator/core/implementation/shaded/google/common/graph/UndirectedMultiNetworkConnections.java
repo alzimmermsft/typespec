@@ -24,13 +24,13 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.g
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.ImmutableMap;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.Multiset;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.concurrent.LazyInit;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 
 /**
  * An implementation of {@link NetworkConnections} for undirected networks with parallel edges.
@@ -40,85 +40,85 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
  * @param <E> Edge parameter type
  */
 @ElementTypesAreNonnullByDefault
-final class UndirectedMultiNetworkConnections<N, E>
-    extends AbstractUndirectedNetworkConnections<N, E> {
+final class UndirectedMultiNetworkConnections<N, E> extends AbstractUndirectedNetworkConnections<N, E> {
 
-  private UndirectedMultiNetworkConnections(Map<E, N> incidentEdges) {
-    super(incidentEdges);
-  }
-
-  static <N, E> UndirectedMultiNetworkConnections<N, E> of() {
-    return new UndirectedMultiNetworkConnections<>(
-        new HashMap<E, N>(INNER_CAPACITY, INNER_LOAD_FACTOR));
-  }
-
-  static <N, E> UndirectedMultiNetworkConnections<N, E> ofImmutable(Map<E, N> incidentEdges) {
-    return new UndirectedMultiNetworkConnections<>(ImmutableMap.copyOf(incidentEdges));
-  }
-
-  @CheckForNull @LazyInit private transient Reference<Multiset<N>> adjacentNodesReference;
-
-  @Override
-  public Set<N> adjacentNodes() {
-    return Collections.unmodifiableSet(adjacentNodesMultiset().elementSet());
-  }
-
-  private Multiset<N> adjacentNodesMultiset() {
-    Multiset<N> adjacentNodes = getReference(adjacentNodesReference);
-    if (adjacentNodes == null) {
-      adjacentNodes = HashMultiset.create(incidentEdgeMap.values());
-      adjacentNodesReference = new SoftReference<>(adjacentNodes);
+    private UndirectedMultiNetworkConnections(Map<E, N> incidentEdges) {
+        super(incidentEdges);
     }
-    return adjacentNodes;
-  }
 
-  @Override
-  public Set<E> edgesConnecting(N node) {
-    return new MultiEdgesConnecting<E>(incidentEdgeMap, node) {
-      @Override
-      public int size() {
-        return adjacentNodesMultiset().count(node);
-      }
-    };
-  }
-
-  @Override
-  @CheckForNull
-  public N removeInEdge(E edge, boolean isSelfLoop) {
-    if (!isSelfLoop) {
-      return removeOutEdge(edge);
+    static <N, E> UndirectedMultiNetworkConnections<N, E> of() {
+        return new UndirectedMultiNetworkConnections<>(new HashMap<E, N>(INNER_CAPACITY, INNER_LOAD_FACTOR));
     }
-    return null;
-  }
 
-  @Override
-  public N removeOutEdge(E edge) {
-    N node = super.removeOutEdge(edge);
-    Multiset<N> adjacentNodes = getReference(adjacentNodesReference);
-    if (adjacentNodes != null) {
-      checkState(adjacentNodes.remove(node));
+    static <N, E> UndirectedMultiNetworkConnections<N, E> ofImmutable(Map<E, N> incidentEdges) {
+        return new UndirectedMultiNetworkConnections<>(ImmutableMap.copyOf(incidentEdges));
     }
-    return node;
-  }
 
-  @Override
-  public void addInEdge(E edge, N node, boolean isSelfLoop) {
-    if (!isSelfLoop) {
-      addOutEdge(edge, node);
+    @CheckForNull
+    @LazyInit
+    private transient Reference<Multiset<N>> adjacentNodesReference;
+
+    @Override
+    public Set<N> adjacentNodes() {
+        return Collections.unmodifiableSet(adjacentNodesMultiset().elementSet());
     }
-  }
 
-  @Override
-  public void addOutEdge(E edge, N node) {
-    super.addOutEdge(edge, node);
-    Multiset<N> adjacentNodes = getReference(adjacentNodesReference);
-    if (adjacentNodes != null) {
-      checkState(adjacentNodes.add(node));
+    private Multiset<N> adjacentNodesMultiset() {
+        Multiset<N> adjacentNodes = getReference(adjacentNodesReference);
+        if (adjacentNodes == null) {
+            adjacentNodes = HashMultiset.create(incidentEdgeMap.values());
+            adjacentNodesReference = new SoftReference<>(adjacentNodes);
+        }
+        return adjacentNodes;
     }
-  }
 
-  @CheckForNull
-  private static <T> T getReference(@CheckForNull Reference<T> reference) {
-    return (reference == null) ? null : reference.get();
-  }
+    @Override
+    public Set<E> edgesConnecting(N node) {
+        return new MultiEdgesConnecting<E>(incidentEdgeMap, node) {
+            @Override
+            public int size() {
+                return adjacentNodesMultiset().count(node);
+            }
+        };
+    }
+
+    @Override
+    @CheckForNull
+    public N removeInEdge(E edge, boolean isSelfLoop) {
+        if (!isSelfLoop) {
+            return removeOutEdge(edge);
+        }
+        return null;
+    }
+
+    @Override
+    public N removeOutEdge(E edge) {
+        N node = super.removeOutEdge(edge);
+        Multiset<N> adjacentNodes = getReference(adjacentNodesReference);
+        if (adjacentNodes != null) {
+            checkState(adjacentNodes.remove(node));
+        }
+        return node;
+    }
+
+    @Override
+    public void addInEdge(E edge, N node, boolean isSelfLoop) {
+        if (!isSelfLoop) {
+            addOutEdge(edge, node);
+        }
+    }
+
+    @Override
+    public void addOutEdge(E edge, N node) {
+        super.addOutEdge(edge, node);
+        Multiset<N> adjacentNodes = getReference(adjacentNodesReference);
+        if (adjacentNodes != null) {
+            checkState(adjacentNodes.add(node));
+        }
+    }
+
+    @CheckForNull
+    private static <T> T getReference(@CheckForNull Reference<T> reference) {
+        return (reference == null) ? null : reference.get();
+    }
 }

@@ -50,55 +50,55 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 @ConsumerType
 public interface BundleTrackerCustomizer<T> {
-	/**
-	 * A bundle is being added to the {@code BundleTracker}.
-	 * 
-	 * <p>
-	 * This method is called before a bundle which matched the search parameters
-	 * of the {@code BundleTracker} is added to the {@code BundleTracker}. This
-	 * method should return the object to be tracked for the specified
-	 * {@code Bundle}. The returned object is stored in the
-	 * {@code BundleTracker} and is available from the
-	 * {@link BundleTracker#getObject(Bundle) getObject} method.
-	 * 
-	 * @param bundle The {@code Bundle} being added to the {@code BundleTracker}
-	 *        .
-	 * @param event The bundle event which caused this customizer method to be
-	 *        called or {@code null} if there is no bundle event associated with
-	 *        the call to this method.
-	 * @return The object to be tracked for the specified {@code Bundle} object
-	 *         or {@code null} if the specified {@code Bundle} object should not
-	 *         be tracked.
-	 */
-	public T addingBundle(Bundle bundle, BundleEvent event);
+    /**
+     * A bundle is being added to the {@code BundleTracker}.
+     * 
+     * <p>
+     * This method is called before a bundle which matched the search parameters
+     * of the {@code BundleTracker} is added to the {@code BundleTracker}. This
+     * method should return the object to be tracked for the specified
+     * {@code Bundle}. The returned object is stored in the
+     * {@code BundleTracker} and is available from the
+     * {@link BundleTracker#getObject(Bundle) getObject} method.
+     * 
+     * @param bundle The {@code Bundle} being added to the {@code BundleTracker}
+     * .
+     * @param event The bundle event which caused this customizer method to be
+     * called or {@code null} if there is no bundle event associated with
+     * the call to this method.
+     * @return The object to be tracked for the specified {@code Bundle} object
+     * or {@code null} if the specified {@code Bundle} object should not
+     * be tracked.
+     */
+    public T addingBundle(Bundle bundle, BundleEvent event);
 
-	/**
-	 * A bundle tracked by the {@code BundleTracker} has been modified.
-	 * 
-	 * <p>
-	 * This method is called when a bundle being tracked by the
-	 * {@code BundleTracker} has had its state modified.
-	 * 
-	 * @param bundle The {@code Bundle} whose state has been modified.
-	 * @param event The bundle event which caused this customizer method to be
-	 *        called or {@code null} if there is no bundle event associated with
-	 *        the call to this method.
-	 * @param object The tracked object for the specified bundle.
-	 */
-	public void modifiedBundle(Bundle bundle, BundleEvent event, T object);
+    /**
+     * A bundle tracked by the {@code BundleTracker} has been modified.
+     * 
+     * <p>
+     * This method is called when a bundle being tracked by the
+     * {@code BundleTracker} has had its state modified.
+     * 
+     * @param bundle The {@code Bundle} whose state has been modified.
+     * @param event The bundle event which caused this customizer method to be
+     * called or {@code null} if there is no bundle event associated with
+     * the call to this method.
+     * @param object The tracked object for the specified bundle.
+     */
+    public void modifiedBundle(Bundle bundle, BundleEvent event, T object);
 
-	/**
-	 * A bundle tracked by the {@code BundleTracker} has been removed.
-	 * 
-	 * <p>
-	 * This method is called after a bundle is no longer being tracked by the
-	 * {@code BundleTracker}.
-	 * 
-	 * @param bundle The {@code Bundle} that has been removed.
-	 * @param event The bundle event which caused this customizer method to be
-	 *        called or {@code null} if there is no bundle event associated with
-	 *        the call to this method.
-	 * @param object The tracked object for the specified bundle.
-	 */
-	public void removedBundle(Bundle bundle, BundleEvent event, T object);
+    /**
+     * A bundle tracked by the {@code BundleTracker} has been removed.
+     * 
+     * <p>
+     * This method is called after a bundle is no longer being tracked by the
+     * {@code BundleTracker}.
+     * 
+     * @param bundle The {@code Bundle} that has been removed.
+     * @param event The bundle event which caused this customizer method to be
+     * called or {@code null} if there is no bundle event associated with
+     * the call to this method.
+     * @param object The tracked object for the specified bundle.
+     */
+    public void removedBundle(Bundle bundle, BundleEvent event, T object);
 }

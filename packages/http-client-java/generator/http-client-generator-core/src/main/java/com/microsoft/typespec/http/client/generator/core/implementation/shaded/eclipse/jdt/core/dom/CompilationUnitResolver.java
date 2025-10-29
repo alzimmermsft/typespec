@@ -19,7 +19,6 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IProject;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.SubMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IClasspathEntry;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ICompilationUnit;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaProject;
@@ -49,19 +48,16 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.problem.ProblemReporter;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.HashtableOfObject;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.Util;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.CancelableNameEnvironment;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.CancelableProblemFactory;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.ClasspathEntry;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.INameEnvironmentWithProgress;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaProject;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.NameLookup;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.SourceTypeElementInfo;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.dom.ICompilationUnitResolver;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.BindingKeyResolver;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.CommentRecorderParser;
-import java.io.File;
-import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -70,20 +66,6 @@ import java.util.Map;
 class CompilationUnitResolver extends Compiler {
 
     private static final class ECJCompilationUnitResolver implements ICompilationUnitResolver {
-
-        @Override
-        public void parse(ICompilationUnit[] compilationUnits, ASTRequestor requestor, int apiLevel,
-            Map<String, String> compilerOptions, int flags, IProgressMonitor monitor) {
-            CompilationUnitResolver.parse(compilationUnits, requestor, apiLevel, compilerOptions, flags, monitor);
-        }
-
-        @Override
-        public void parse(String[] sourceFilePaths, String[] encodings, FileASTRequestor requestor, int apiLevel,
-            Map<String, String> compilerOptions, int flags, IProgressMonitor monitor) {
-            CompilationUnitResolver.parse(sourceFilePaths, encodings, requestor, apiLevel, compilerOptions, flags,
-                monitor);
-        }
-
         @Override
         public CompilationUnit toCompilationUnit(
             com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.ICompilationUnit sourceUnit,
@@ -112,19 +94,6 @@ class CompilationUnitResolver extends Compiler {
     public static final int IGNORE_METHOD_BODIES = 0x8;
     public static final int BINDING_RECOVERY = 0x10;
     public static final int INCLUDE_RUNNING_VM_BOOTCLASSPATH = 0x20;
-
-    /* A list of int */
-    static class IntArrayList {
-        public int[] list = new int[5];
-        public int length = 0;
-
-        public void add(int i) {
-            if (this.list.length == this.length) {
-                System.arraycopy(this.list, 0, this.list = new int[this.length * 2], 0, this.length);
-            }
-            this.list[this.length++] = i;
-        }
-    }
 
     /*
      * The sources that were requested.
@@ -227,14 +196,6 @@ class CompilationUnitResolver extends Compiler {
         DefaultBindingResolver resolver = new DefaultBindingResolver(this.lookupEnvironment, null/* no owner */,
             this.bindingTables, false, this.fromJavaProject);
         return resolver.getBinding(compilerBinding);
-    }
-
-    public static CompilationUnit convert(CompilationUnitDeclaration compilationUnitDeclaration, char[] source,
-        int apiLevel, Map options, boolean needToResolveBindings, WorkingCopyOwner owner,
-        DefaultBindingResolver.BindingTables bindingTables, int flags, IProgressMonitor monitor,
-        boolean fromJavaProject) {
-        return convert(compilationUnitDeclaration, source, apiLevel, options, needToResolveBindings, owner,
-            bindingTables, flags, monitor, fromJavaProject, null);
     }
 
     public static CompilationUnit convert(CompilationUnitDeclaration compilationUnitDeclaration, char[] source,
@@ -363,11 +324,8 @@ class CompilationUnitResolver extends Compiler {
      * Answer the component to which will be handed back compilation results from the compiler
      */
     protected static ICompilerRequestor getRequestor() {
-        return new ICompilerRequestor() {
-            @Override
-            public void acceptResult(CompilationResult compilationResult) {
-                // do nothing
-            }
+        return compilationResult -> {
+            // do nothing
         };
     }
 
@@ -409,106 +367,6 @@ class CompilationUnitResolver extends Compiler {
         this.abortProblem = abortException.problem;
     }
 
-    public static void parse(ICompilationUnit[] compilationUnits, ASTRequestor astRequestor, int apiLevel, Map options,
-        int flags, IProgressMonitor monitor) {
-        CompilerOptions compilerOptions = new CompilerOptions(options);
-        compilerOptions.ignoreMethodBodies = (flags & ICompilationUnit.IGNORE_METHOD_BODIES) != 0;
-        Parser parser
-            = new CommentRecorderParser(new ProblemReporter(DefaultErrorHandlingPolicies.proceedWithAllProblems(),
-                compilerOptions, new DefaultProblemFactory()), false);
-        int unitLength = compilationUnits.length;
-        SubMonitor subMonitor = SubMonitor.convert(monitor);
-        for (int i = 0; i < unitLength; i++) {
-            subMonitor.setWorkRemaining(unitLength - i);
-            com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.ICompilationUnit sourceUnit
-                = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.ICompilationUnit) compilationUnits[i];
-            CompilationResult compilationResult
-                = new CompilationResult(sourceUnit, 0, 0, compilerOptions.maxProblemsPerUnit);
-            CompilationUnitDeclaration compilationUnitDeclaration = parser.dietParse(sourceUnit, compilationResult);
-
-            if (compilationUnitDeclaration.ignoreMethodBodies) {
-                compilationUnitDeclaration.ignoreFurtherInvestigation = true;
-                // if initial diet parse did not work, no need to dig into method bodies.
-                continue;
-            }
-
-            // fill the methods bodies in order for the code to be generated
-            // real parse of the method....
-            TypeDeclaration[] types = compilationUnitDeclaration.types;
-            if (types != null) {
-                for (TypeDeclaration type : types) {
-                    type.parseMethods(parser, compilationUnitDeclaration);
-                }
-            }
-
-            // convert AST
-            CompilationUnit node = convert(compilationUnitDeclaration, parser.scanner.getSource(), apiLevel, options,
-                false/* don't resolve binding */, null/* no owner needed */, null/* no binding table needed */,
-                flags /* flags */, subMonitor.split(1), true);
-            node.setTypeRoot(compilationUnits[i]);
-
-            // accept AST
-            astRequestor.acceptAST(compilationUnits[i], node);
-        }
-    }
-
-    public static void parse(String[] sourceUnits, String[] encodings, FileASTRequestor astRequestor, int apiLevel,
-        Map options, int flags, IProgressMonitor monitor) {
-        CompilerOptions compilerOptions = new CompilerOptions(options);
-        compilerOptions.ignoreMethodBodies = (flags & ICompilationUnit.IGNORE_METHOD_BODIES) != 0;
-        Parser parser
-            = new CommentRecorderParser(new ProblemReporter(DefaultErrorHandlingPolicies.proceedWithAllProblems(),
-                compilerOptions, new DefaultProblemFactory()), false);
-        int unitLength = sourceUnits.length;
-        SubMonitor subMonitor = SubMonitor.convert(monitor, unitLength);
-        for (int i = 0; i < unitLength; i++) {
-            SubMonitor iterationMonitor = subMonitor.split(1);
-            char[] contents;
-            String encoding = encodings != null ? encodings[i] : null;
-            try {
-                contents = Util.getFileCharContent(new File(sourceUnits[i]), encoding);
-            } catch (IOException e) {
-                // go to the next unit
-                continue;
-            }
-            if (contents == null) {
-                // go to the next unit
-                continue;
-            }
-            com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.batch.CompilationUnit compilationUnit
-                = new com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.batch.CompilationUnit(contents, sourceUnits[i], encoding);
-            com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.ICompilationUnit sourceUnit
-                = compilationUnit;
-            CompilationResult compilationResult
-                = new CompilationResult(sourceUnit, 0, 0, compilerOptions.maxProblemsPerUnit);
-            CompilationUnitDeclaration compilationUnitDeclaration = parser.dietParse(sourceUnit, compilationResult);
-
-            if (compilationUnitDeclaration.ignoreMethodBodies) {
-                compilationUnitDeclaration.ignoreFurtherInvestigation = true;
-                // if initial diet parse did not work, no need to dig into method bodies.
-                continue;
-            }
-
-            // fill the methods bodies in order for the code to be generated
-            // real parse of the method....
-            com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeDeclaration[] types = compilationUnitDeclaration.types;
-            if (types != null) {
-                for (TypeDeclaration type : types) {
-                    type.parseMethods(parser, compilationUnitDeclaration);
-                }
-            }
-
-            // convert AST
-            CompilationUnit node = convert(compilationUnitDeclaration, parser.scanner.getSource(), apiLevel, options,
-                false/* don't resolve binding */, null/* no owner needed */, null/* no binding table needed */,
-                flags /* flags */, iterationMonitor, true);
-            node.setTypeRoot(null);
-
-            // accept AST
-            astRequestor.acceptAST(sourceUnits[i], node);
-        }
-    }
-
     public static CompilationUnitDeclaration parse(
         com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.ICompilationUnit sourceUnit,
         NodeSearcher nodeSearcher, Map settings, int flags) {
@@ -526,16 +384,16 @@ class CompilationUnitResolver extends Compiler {
         compilerOptions.performMethodsFullRecovery = statementsRecovery;
         compilerOptions.performStatementsRecovery = statementsRecovery;
         compilerOptions.ignoreMethodBodies = (flags & ICompilationUnit.IGNORE_METHOD_BODIES) != 0;
-        Parser parser = new CommentRecorderParser(
-            new ProblemReporter(DefaultErrorHandlingPolicies.proceedWithAllProblems(), compilerOptions,
-                new DefaultProblemFactory()), false);
+        Parser parser
+            = new CommentRecorderParser(new ProblemReporter(DefaultErrorHandlingPolicies.proceedWithAllProblems(),
+                compilerOptions, new DefaultProblemFactory()), false);
         if (project != null) {
             parser.javadocParser.setProjectPath(getProjectPath(project));
             parser.javadocParser.setProjectSrcClasspath(getSourceClassPaths(project));
 
         }
-        CompilationResult compilationResult = new CompilationResult(sourceUnit, 0, 0,
-            compilerOptions.maxProblemsPerUnit);
+        CompilationResult compilationResult
+            = new CompilationResult(sourceUnit, 0, 0, compilerOptions.maxProblemsPerUnit);
         CompilationUnitDeclaration compilationUnitDeclaration = parser.dietParse(sourceUnit, compilationResult);
 
         if (compilationUnitDeclaration.ignoreMethodBodies) {
@@ -554,8 +412,8 @@ class CompilationUnitResolver extends Compiler {
 
             compilationUnitDeclaration.traverse(nodeSearcher, compilationUnitDeclaration.scope);
 
-            com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode
-                node = nodeSearcher.found;
+            com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ASTNode node
+                = nodeSearcher.found;
             if (node == null) {
                 return compilationUnitDeclaration;
             }
@@ -566,8 +424,8 @@ class CompilationUnitResolver extends Compiler {
                 ((AbstractMethodDeclaration) node).parseStatements(parser, compilationUnitDeclaration);
             } else if (enclosingTypeDeclaration != null) {
                 if (node instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.Initializer) {
-                    ((com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.Initializer) node).parseStatements(
-                        parser, enclosingTypeDeclaration, compilationUnitDeclaration);
+                    ((com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.Initializer) node)
+                        .parseStatements(parser, enclosingTypeDeclaration, compilationUnitDeclaration);
                 } else if (node instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeDeclaration) {
                     ((TypeDeclaration) node).parseMethods(parser, compilationUnitDeclaration);
                 }
@@ -631,10 +489,6 @@ class CompilationUnitResolver extends Compiler {
                     unitDeclaration.compilationResult.problems = new CategorizedProblem[] { resolver.abortProblem };
                 }
                 return unitDeclaration;
-            }
-            if (NameLookup.VERBOSE && environment instanceof CancelableNameEnvironment) {
-                CancelableNameEnvironment cancelableNameEnvironment = (CancelableNameEnvironment) environment;
-                cancelableNameEnvironment.printTimeSpent();
             }
             if (unit != null
                 && unit.scope != null
@@ -707,7 +561,9 @@ class CompilationUnitResolver extends Compiler {
             if (unit == null) {
                 // build and record parsed units
                 this.parseThreshold = 0; // will request a full parse
-                beginToCompile(new com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.ICompilationUnit[] { sourceUnit });
+                beginToCompile(
+                    new com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.ICompilationUnit[] {
+                        sourceUnit });
                 // find the right unit from what was injected via accept(ICompilationUnit,..):
                 for (int i = 0, max = this.totalUnits; i < max; i++) {
                     CompilationUnitDeclaration currentCompilationUnitDeclaration = this.unitsToProcess[i];

@@ -23,15 +23,6 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.nio.ByteOrder;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.LastErrorException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Memory;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
@@ -44,6 +35,14 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.IntByReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.PointerByReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.win32.W32APITypeMapper;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Kernel32 utility API.
@@ -109,7 +108,7 @@ public abstract class Kernel32Util implements WinDef {
         for (HANDLEByReference r : refs) {
             try {
                 closeHandleRef(r);
-            } catch(Win32Exception e) {
+            } catch (Win32Exception e) {
                 if (err == null) {
                     err = e;
                 } else {
@@ -122,6 +121,7 @@ public abstract class Kernel32Util implements WinDef {
             throw err;
         }
     }
+
     /**
      * Closes the handle in the reference
      *
@@ -147,7 +147,7 @@ public abstract class Kernel32Util implements WinDef {
         for (HANDLE h : handles) {
             try {
                 closeHandle(h);
-            } catch(Win32Exception e) {
+            } catch (Win32Exception e) {
                 if (err == null) {
                     err = e;
                 } else {
@@ -194,11 +194,11 @@ public abstract class Kernel32Util implements WinDef {
      *
      * <p>If you pass in zero, FormatMessage looks for a message for LANGIDs in the following order:</p>
      * <ol>
-     *   <li>Language neutral</li>
-     *   <li>Thread LANGID, based on the thread's locale value</li>
-     *   <li>User default LANGID, based on the user's default locale value</li>
-     *   <li>System default LANGID, based on the system default locale value</li>
-     *   <li>US English</li>
+     * <li>Language neutral</li>
+     * <li>Thread LANGID, based on the thread's locale value</li>
+     * <li>User default LANGID, based on the user's default locale value</li>
+     * <li>System default LANGID, based on the system default locale value</li>
+     * <li>US English</li>
      * </ol>
      *
      * @param code The error code
@@ -209,13 +209,9 @@ public abstract class Kernel32Util implements WinDef {
     public static String formatMessage(int code, int primaryLangId, int sublangId) {
         PointerByReference buffer = new PointerByReference();
         int nLen = Kernel32.INSTANCE.FormatMessage(
-                WinBase.FORMAT_MESSAGE_ALLOCATE_BUFFER
-                | WinBase.FORMAT_MESSAGE_FROM_SYSTEM
+            WinBase.FORMAT_MESSAGE_ALLOCATE_BUFFER | WinBase.FORMAT_MESSAGE_FROM_SYSTEM
                 | WinBase.FORMAT_MESSAGE_IGNORE_INSERTS,
-                null,
-                code,
-                WinNT.LocaleMacros.MAKELANGID(primaryLangId, sublangId),
-                buffer, 0, null);
+            null, code, WinNT.LocaleMacros.MAKELANGID(primaryLangId, sublangId), buffer, 0, null);
         if (nLen == 0) {
             throw new LastErrorException(Native.getLastError());
         }
@@ -233,7 +229,7 @@ public abstract class Kernel32Util implements WinDef {
      * Format a message from an HRESULT.
      *
      * @param code
-     *            HRESULT
+     * HRESULT
      * @return Formatted message in the default locale.
      */
     public static String formatMessage(HRESULT code) {
@@ -244,11 +240,11 @@ public abstract class Kernel32Util implements WinDef {
      * Format a message from an HRESULT.
      *
      * @param code
-     *            HRESULT
+     * HRESULT
      * @param primaryLangId
-     *            The primary language identifier
+     * The primary language identifier
      * @param sublangId
-     *            The primary language identifier
+     * The primary language identifier
      * @return Formatted message in the specified locale.
      */
     public static String formatMessage(HRESULT code, int primaryLangId, int sublangId) {
@@ -259,7 +255,7 @@ public abstract class Kernel32Util implements WinDef {
      * Format a system message from an error code.
      *
      * @param code
-     *            Error code, typically a result of GetLastError.
+     * Error code, typically a result of GetLastError.
      * @return Formatted message in the default locale.
      */
     public static String formatMessageFromLastErrorCode(int code) {
@@ -270,11 +266,11 @@ public abstract class Kernel32Util implements WinDef {
      * Format a system message from an error code.
      *
      * @param code
-     *            Error code, typically a result of GetLastError.
+     * Error code, typically a result of GetLastError.
      * @param primaryLangId
-     *            The primary language identifier
+     * The primary language identifier
      * @param sublangId
-     *            The primary language identifier
+     * The primary language identifier
      * @return Formatted message in the specified locale.
      */
     public static String formatMessageFromLastErrorCode(int code, int primaryLangId, int sublangId) {
@@ -283,20 +279,18 @@ public abstract class Kernel32Util implements WinDef {
 
     /**
      * @return Obtains the human-readable error message text from the last error
-     *         that occurred by invocating {@code Kernel32.GetLastError()} in the default locale.
+     * that occurred by invocating {@code Kernel32.GetLastError()} in the default locale.
      */
     public static String getLastErrorMessage() {
-        return Kernel32Util.formatMessageFromLastErrorCode(Kernel32.INSTANCE
-                .GetLastError());
+        return Kernel32Util.formatMessageFromLastErrorCode(Kernel32.INSTANCE.GetLastError());
     }
 
     /**
      * @return Obtains the human-readable error message text from the last error
-     *         that occurred by invocating {@code Kernel32.GetLastError()} in the specified locale.
+     * that occurred by invocating {@code Kernel32.GetLastError()} in the specified locale.
      */
     public static String getLastErrorMessage(int primaryLangId, int sublangId) {
-        return Kernel32Util.formatMessageFromLastErrorCode(Kernel32.INSTANCE
-                .GetLastError(), primaryLangId, sublangId);
+        return Kernel32Util.formatMessageFromLastErrorCode(Kernel32.INSTANCE.GetLastError(), primaryLangId, sublangId);
     }
 
     /**
@@ -344,7 +338,7 @@ public abstract class Kernel32Util implements WinDef {
      * Retrieves file system attributes for a specified file or directory.
      *
      * @param fileName
-     *            The name of the file or directory.
+     * The name of the file or directory.
      * @return The attributes of the specified file or directory.
      */
     public static int getFileAttributes(String fileName) {
@@ -357,6 +351,7 @@ public abstract class Kernel32Util implements WinDef {
 
     /**
      * Retrieves the result of GetFileType, provided the file exists.
+     * 
      * @param fileName file name
      * @return file type
      * @throws FileNotFoundException if file not found
@@ -370,10 +365,9 @@ public abstract class Kernel32Util implements WinDef {
         HANDLE hFile = null;
         Win32Exception err = null;
         try {
-            hFile = Kernel32.INSTANCE.CreateFile(fileName, WinNT.GENERIC_READ,
-                    WinNT.FILE_SHARE_READ, new WinBase.SECURITY_ATTRIBUTES(),
-                    WinNT.OPEN_EXISTING, WinNT.FILE_ATTRIBUTE_NORMAL,
-                    new HANDLEByReference().getValue());
+            hFile = Kernel32.INSTANCE.CreateFile(fileName, WinNT.GENERIC_READ, WinNT.FILE_SHARE_READ,
+                new WinBase.SECURITY_ATTRIBUTES(), WinNT.OPEN_EXISTING, WinNT.FILE_ATTRIBUTE_NORMAL,
+                new HANDLEByReference().getValue());
 
             if (WinBase.INVALID_HANDLE_VALUE.equals(hFile)) {
                 throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
@@ -386,13 +380,14 @@ public abstract class Kernel32Util implements WinDef {
                     switch (rc) {
                         case WinError.NO_ERROR:
                             break;
+
                         default:
                             throw new Win32Exception(rc);
                     }
                 default:
                     return type;
             }
-        } catch(final Win32Exception e) {
+        } catch (final Win32Exception e) {
             throw err = e; // re-throw to avoid return value!
         } finally {
             cleanUp(hFile, err);
@@ -411,7 +406,7 @@ public abstract class Kernel32Util implements WinDef {
      * Get the value of an environment variable.
      *
      * @param name
-     *            Name of the environment variable.
+     * Name of the environment variable.
      * @return Value of an environment variable.
      */
     public static String getEnvironmentVariable(String name) {
@@ -424,8 +419,7 @@ public abstract class Kernel32Util implements WinDef {
         }
         // obtain the value
         char[] buffer = new char[size];
-        size = Kernel32.INSTANCE.GetEnvironmentVariable(name, buffer,
-                buffer.length);
+        size = Kernel32.INSTANCE.GetEnvironmentVariable(name, buffer, buffer.length);
         if (size <= 0) {
             throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
         }
@@ -435,13 +429,14 @@ public abstract class Kernel32Util implements WinDef {
     /**
      * Uses the {@link Kernel32#GetEnvironmentStrings()} to retrieve and
      * parse the current process environment
+     * 
      * @return The current process environment as a {@link Map}.
      * @throws LastErrorException if failed to get or free the environment
      * data block
      * @see #getEnvironmentVariables(Pointer, long)
      */
-    public static Map<String,String> getEnvironmentVariables() {
-        Pointer lpszEnvironmentBlock=Kernel32.INSTANCE.GetEnvironmentStrings();
+    public static Map<String, String> getEnvironmentVariables() {
+        Pointer lpszEnvironmentBlock = Kernel32.INSTANCE.GetEnvironmentStrings();
         if (lpszEnvironmentBlock == null) {
             throw new LastErrorException(Kernel32.INSTANCE.GetLastError());
         }
@@ -457,7 +452,8 @@ public abstract class Kernel32Util implements WinDef {
 
     /**
      * @param lpszEnvironmentBlock The environment block as received from the
-     * <A HREF="https://msdn.microsoft.com/en-us/library/windows/desktop/ms683187(v=vs.85).aspx">GetEnvironmentStrings</A>
+     * <A
+     * HREF="https://msdn.microsoft.com/en-us/library/windows/desktop/ms683187(v=vs.85).aspx">GetEnvironmentStrings</A>
      * function
      * @param offset Offset within the block to parse the data
      * @return A {@link Map} of the parsed <code>name=value</code> pairs.
@@ -466,27 +462,27 @@ public abstract class Kernel32Util implements WinDef {
      * between the case that the data block is {@code null} and when there are
      * no environment variables (as unlikely as it may be)
      */
-    public static Map<String,String> getEnvironmentVariables(Pointer lpszEnvironmentBlock, long offset) {
+    public static Map<String, String> getEnvironmentVariables(Pointer lpszEnvironmentBlock, long offset) {
         if (lpszEnvironmentBlock == null) {
             return null;
         }
 
-        Map<String,String>  vars=new TreeMap<>();
-        boolean             asWideChars=isWideCharEnvironmentStringBlock(lpszEnvironmentBlock, offset);
-        long                stepFactor=asWideChars ? 2L : 1L;
-        for (long    curOffset=offset; ; ) {
-            String  nvp=readEnvironmentStringBlockEntry(lpszEnvironmentBlock, curOffset, asWideChars);
-            int     len=nvp.length();
+        Map<String, String> vars = new TreeMap<>();
+        boolean asWideChars = isWideCharEnvironmentStringBlock(lpszEnvironmentBlock, offset);
+        long stepFactor = asWideChars ? 2L : 1L;
+        for (long curOffset = offset;;) {
+            String nvp = readEnvironmentStringBlockEntry(lpszEnvironmentBlock, curOffset, asWideChars);
+            int len = nvp.length();
             if (len == 0) { // found the ending '\0'
                 break;
             }
 
-            int pos=nvp.indexOf('=');
+            int pos = nvp.indexOf('=');
             if (pos < 0) {
                 throw new IllegalArgumentException("Missing variable value separator in " + nvp);
             }
 
-            String  name=nvp.substring(0, pos), value=nvp.substring(pos + 1);
+            String name = nvp.substring(0, pos), value = nvp.substring(pos + 1);
             vars.put(name, value);
 
             curOffset += (len + 1 /* skip the ending '\0' */) * stepFactor;
@@ -497,7 +493,8 @@ public abstract class Kernel32Util implements WinDef {
 
     /**
      * @param lpszEnvironmentBlock The environment block as received from the
-     * <A HREF="https://msdn.microsoft.com/en-us/library/windows/desktop/ms683187(v=vs.85).aspx">GetEnvironmentStrings</A>
+     * <A
+     * HREF="https://msdn.microsoft.com/en-us/library/windows/desktop/ms683187(v=vs.85).aspx">GetEnvironmentStrings</A>
      * function
      * @param offset Offset within the block to look for the entry
      * @param asWideChars If {@code true} then the block contains {@code wchar_t}
@@ -507,21 +504,22 @@ public abstract class Kernel32Util implements WinDef {
      * @see #isWideCharEnvironmentStringBlock
      * @see #findEnvironmentStringBlockEntryEnd
      */
-    public static String readEnvironmentStringBlockEntry(Pointer lpszEnvironmentBlock, long offset, boolean asWideChars) {
-        long endOffset=findEnvironmentStringBlockEntryEnd(lpszEnvironmentBlock, offset, asWideChars);
-        int  dataLen=(int) (endOffset - offset);
+    public static String readEnvironmentStringBlockEntry(Pointer lpszEnvironmentBlock, long offset,
+        boolean asWideChars) {
+        long endOffset = findEnvironmentStringBlockEntryEnd(lpszEnvironmentBlock, offset, asWideChars);
+        int dataLen = (int) (endOffset - offset);
         if (dataLen == 0) {
             return "";
         }
 
-        int         charsLen=asWideChars ? (dataLen / 2) : dataLen;
-        char[]      chars=new char[charsLen];
-        long        curOffset=offset, stepSize=asWideChars ? 2L : 1L;
-        ByteOrder   byteOrder=ByteOrder.nativeOrder();
-        for (int index=0; index < chars.length; index++, curOffset += stepSize) {
-            byte b=lpszEnvironmentBlock.getByte(curOffset);
+        int charsLen = asWideChars ? (dataLen / 2) : dataLen;
+        char[] chars = new char[charsLen];
+        long curOffset = offset, stepSize = asWideChars ? 2L : 1L;
+        ByteOrder byteOrder = ByteOrder.nativeOrder();
+        for (int index = 0; index < chars.length; index++, curOffset += stepSize) {
+            byte b = lpszEnvironmentBlock.getByte(curOffset);
             if (asWideChars) {
-                byte x=lpszEnvironmentBlock.getByte(curOffset + 1L);
+                byte x = lpszEnvironmentBlock.getByte(curOffset + 1L);
                 if (ByteOrder.LITTLE_ENDIAN.equals(byteOrder)) {
                     chars[index] = (char) (((x << Byte.SIZE) & 0xFF00) | (b & 0x00FF));
                 } else {    // unlikely, but handle it
@@ -537,7 +535,8 @@ public abstract class Kernel32Util implements WinDef {
 
     /**
      * @param lpszEnvironmentBlock The environment block as received from the
-     * <A HREF="https://msdn.microsoft.com/en-us/library/windows/desktop/ms683187(v=vs.85).aspx">GetEnvironmentStrings</A>
+     * <A
+     * HREF="https://msdn.microsoft.com/en-us/library/windows/desktop/ms683187(v=vs.85).aspx">GetEnvironmentStrings</A>
      * function
      * @param offset Offset within the block to look for the entry
      * @param asWideChars If {@code true} then the block contains {@code wchar_t}
@@ -547,9 +546,10 @@ public abstract class Kernel32Util implements WinDef {
      * string.
      * @see #isWideCharEnvironmentStringBlock
      */
-    public static long findEnvironmentStringBlockEntryEnd(Pointer lpszEnvironmentBlock, long offset, boolean asWideChars) {
-        for (long curOffset=offset, stepSize=asWideChars ? 2L : 1L; ; curOffset += stepSize) {
-            byte b=lpszEnvironmentBlock.getByte(curOffset);
+    public static long findEnvironmentStringBlockEntryEnd(Pointer lpszEnvironmentBlock, long offset,
+        boolean asWideChars) {
+        for (long curOffset = offset, stepSize = asWideChars ? 2L : 1L;; curOffset += stepSize) {
+            byte b = lpszEnvironmentBlock.getByte(curOffset);
             if (b == 0) {
                 return curOffset;
             }
@@ -562,31 +562,33 @@ public abstract class Kernel32Util implements WinDef {
      * 2 bytes from the specified offset - the character value and its charset
      * indicator - and examining them as follows:</P>
      * <UL>
-     *      <LI>
-     *      If the charset indicator is non-zero then it is assumed to be
-     *      a &quot;plain old&quot; {@code char}s data block. <B>Note:</B>
-     *      the assumption is that the environment variable <U>name</U> (at
-     *      least) is ASCII.
-     *      </LI>
+     * <LI>
+     * If the charset indicator is non-zero then it is assumed to be
+     * a &quot;plain old&quot; {@code char}s data block. <B>Note:</B>
+     * the assumption is that the environment variable <U>name</U> (at
+     * least) is ASCII.
+     * </LI>
      *
-     *      <LI>
-     *      Otherwise (i.e., zero charset indicator), it is assumed to be
-     *      a {@code wchar_t}
-     *      </LI>
+     * <LI>
+     * Otherwise (i.e., zero charset indicator), it is assumed to be
+     * a {@code wchar_t}
+     * </LI>
      * </UL>
      * <B>Note:</B> the code takes into account the {@link ByteOrder} even though
      * only {@link ByteOrder#LITTLE_ENDIAN} is the likely one
+     * 
      * @param lpszEnvironmentBlock The environment block as received from the
-     * <A HREF="https://msdn.microsoft.com/en-us/library/windows/desktop/ms683187(v=vs.85).aspx">GetEnvironmentStrings</A>
+     * <A
+     * HREF="https://msdn.microsoft.com/en-us/library/windows/desktop/ms683187(v=vs.85).aspx">GetEnvironmentStrings</A>
      * function
      * @param offset offset
      * @return {@code true} if the block contains {@code wchar_t} instead of
      * &quot;plain old&quot; {@code char}s
      */
     public static boolean isWideCharEnvironmentStringBlock(Pointer lpszEnvironmentBlock, long offset) {
-        byte        b0=lpszEnvironmentBlock.getByte(offset);
-        byte        b1=lpszEnvironmentBlock.getByte(offset + 1L);
-        ByteOrder   byteOrder=ByteOrder.nativeOrder();
+        byte b0 = lpszEnvironmentBlock.getByte(offset);
+        byte b1 = lpszEnvironmentBlock.getByte(offset + 1L);
+        ByteOrder byteOrder = ByteOrder.nativeOrder();
         if (ByteOrder.LITTLE_ENDIAN.equals(byteOrder)) {
             return isWideCharEnvironmentStringBlock(b1);
         } else {
@@ -608,88 +610,85 @@ public abstract class Kernel32Util implements WinDef {
      * initialization file.
      *
      * @param appName
-     *            The name of the section in the initialization file.
+     * The name of the section in the initialization file.
      * @param keyName
-     *            The name of the key whose value is to be retrieved. This value
-     *            is in the form of a string; the
-     *            {@link Kernel32#GetPrivateProfileInt} function converts the
-     *            string into an integer and returns the integer.
+     * The name of the key whose value is to be retrieved. This value
+     * is in the form of a string; the
+     * {@link Kernel32#GetPrivateProfileInt} function converts the
+     * string into an integer and returns the integer.
      * @param defaultValue
-     *            The default value to return if the key name cannot be found in
-     *            the initialization file.
+     * The default value to return if the key name cannot be found in
+     * the initialization file.
      * @param fileName
-     *            The name of the initialization file. If this parameter does
-     *            not contain a full path to the file, the system searches for
-     *            the file in the Windows directory.
+     * The name of the initialization file. If this parameter does
+     * not contain a full path to the file, the system searches for
+     * the file in the Windows directory.
      * @return The retrieved integer, or the default if not found.
      */
-    public static final int getPrivateProfileInt(final String appName,
-            final String keyName, final int defaultValue, final String fileName) {
-        return Kernel32.INSTANCE.GetPrivateProfileInt(appName, keyName,
-                defaultValue, fileName);
+    public static final int getPrivateProfileInt(final String appName, final String keyName, final int defaultValue,
+        final String fileName) {
+        return Kernel32.INSTANCE.GetPrivateProfileInt(appName, keyName, defaultValue, fileName);
     }
 
     /**
      * Retrieves a string from the specified section in an initialization file.
      *
      * @param lpAppName
-     *            The name of the section containing the key name. If this
-     *            parameter is {@code null}, the
-     *            {@link Kernel32#GetPrivateProfileString} function copies all
-     *            section names in the file to the supplied buffer.
+     * The name of the section containing the key name. If this
+     * parameter is {@code null}, the
+     * {@link Kernel32#GetPrivateProfileString} function copies all
+     * section names in the file to the supplied buffer.
      * @param lpKeyName
-     *            The name of the key whose associated string is to be
-     *            retrieved. If this parameter is {@code null}, all key names in
-     *            the section specified by the {@code lpAppName} parameter are
-     *            returned.
+     * The name of the key whose associated string is to be
+     * retrieved. If this parameter is {@code null}, all key names in
+     * the section specified by the {@code lpAppName} parameter are
+     * returned.
      * @param lpDefault
-     *            A default string. If the {@code lpKeyName} key cannot be found
-     *            in the initialization file,
-     *            {@link Kernel32#GetPrivateProfileString} returns the default.
-     *            If this parameter is {@code null}, the default is an empty
-     *            string, {@code ""}.
-     *            <p>
-     *            Avoid specifying a default string with trailing blank
-     *            characters. The function inserts a {@code null} character in
-     *            the {@code lpReturnedString} buffer to strip any trailing
-     *            blanks.
-     *            </p>
+     * A default string. If the {@code lpKeyName} key cannot be found
+     * in the initialization file,
+     * {@link Kernel32#GetPrivateProfileString} returns the default.
+     * If this parameter is {@code null}, the default is an empty
+     * string, {@code ""}.
+     * <p>
+     * Avoid specifying a default string with trailing blank
+     * characters. The function inserts a {@code null} character in
+     * the {@code lpReturnedString} buffer to strip any trailing
+     * blanks.
+     * </p>
      * @param lpFileName
-     *            The name of the initialization file. If this parameter does
-     *            not contain a full path to the file, the system searches for
-     *            the file in the Windows directory.
+     * The name of the initialization file. If this parameter does
+     * not contain a full path to the file, the system searches for
+     * the file in the Windows directory.
      * @return <p>
-     *         If neither {@code lpAppName} nor {@code lpKeyName} is
-     *         {@code null} and the destination buffer is too small to hold the
-     *         requested string, the string is truncated.
-     *         </p>
-     *         <p>
-     *         If either {@code lpAppName} or {@code lpKeyName} is {@code null}
-     *         and the destination buffer is too small to hold all the strings,
-     *         the last string is truncated and followed by two {@code null}
-     *         characters.
-     *         </p>
-     *         <p>
-     *         In the event the initialization file specified by
-     *         {@code lpFileName} is not found, or contains invalid values, this
-     *         function will set errorno with a value of '0x2' (File Not Found).
-     *         To retrieve extended error information, call
-     *         {@link Kernel32#GetLastError}.
-     *         </p>
+     * If neither {@code lpAppName} nor {@code lpKeyName} is
+     * {@code null} and the destination buffer is too small to hold the
+     * requested string, the string is truncated.
+     * </p>
+     * <p>
+     * If either {@code lpAppName} or {@code lpKeyName} is {@code null}
+     * and the destination buffer is too small to hold all the strings,
+     * the last string is truncated and followed by two {@code null}
+     * characters.
+     * </p>
+     * <p>
+     * In the event the initialization file specified by
+     * {@code lpFileName} is not found, or contains invalid values, this
+     * function will set errorno with a value of '0x2' (File Not Found).
+     * To retrieve extended error information, call
+     * {@link Kernel32#GetLastError}.
+     * </p>
      */
-    public static final String getPrivateProfileString(final String lpAppName,
-            final String lpKeyName, final String lpDefault,
-            final String lpFileName) {
+    public static final String getPrivateProfileString(final String lpAppName, final String lpKeyName,
+        final String lpDefault, final String lpFileName) {
         final char buffer[] = new char[1024];
-        Kernel32.INSTANCE.GetPrivateProfileString(lpAppName, lpKeyName,
-                lpDefault, buffer, new DWORD(buffer.length), lpFileName);
+        Kernel32.INSTANCE.GetPrivateProfileString(lpAppName, lpKeyName, lpDefault, buffer, new DWORD(buffer.length),
+            lpFileName);
         return Native.toString(buffer);
     }
 
-    public static final void writePrivateProfileString(final String appName,
-            final String keyName, final String string, final String fileName) {
-        if (!Kernel32.INSTANCE.WritePrivateProfileString(appName, keyName,
-                string, fileName))
+    public static final void writePrivateProfileString(final String appName, final String keyName, final String string,
+        final String fileName) {
+        if (!Kernel32.INSTANCE.WritePrivateProfileString(appName, keyName, string, fileName))
             throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
     }
 
@@ -700,15 +699,12 @@ public abstract class Kernel32Util implements WinDef {
      * @return the array of processor information.
      */
     public static final WinNT.SYSTEM_LOGICAL_PROCESSOR_INFORMATION[] getLogicalProcessorInformation() {
-        int sizePerStruct = new WinNT.SYSTEM_LOGICAL_PROCESSOR_INFORMATION()
-                .size();
-        DWORDByReference bufferSize = new DWORDByReference(
-                new DWORD(sizePerStruct));
+        int sizePerStruct = new WinNT.SYSTEM_LOGICAL_PROCESSOR_INFORMATION().size();
+        DWORDByReference bufferSize = new DWORDByReference(new DWORD(sizePerStruct));
         Memory memory;
         while (true) {
             memory = new Memory(bufferSize.getValue().intValue());
-            if (!Kernel32.INSTANCE.GetLogicalProcessorInformation(memory,
-                    bufferSize)) {
+            if (!Kernel32.INSTANCE.GetLogicalProcessorInformation(memory, bufferSize)) {
                 int err = Kernel32.INSTANCE.GetLastError();
                 if (err != WinError.ERROR_INSUFFICIENT_BUFFER)
                     throw new Win32Exception(err);
@@ -716,12 +712,11 @@ public abstract class Kernel32Util implements WinDef {
                 break;
             }
         }
-        WinNT.SYSTEM_LOGICAL_PROCESSOR_INFORMATION firstInformation = new WinNT.SYSTEM_LOGICAL_PROCESSOR_INFORMATION(
-            memory);
-        int returnedStructCount = bufferSize.getValue().intValue()
-            / sizePerStruct;
+        WinNT.SYSTEM_LOGICAL_PROCESSOR_INFORMATION firstInformation
+            = new WinNT.SYSTEM_LOGICAL_PROCESSOR_INFORMATION(memory);
+        int returnedStructCount = bufferSize.getValue().intValue() / sizePerStruct;
         return (WinNT.SYSTEM_LOGICAL_PROCESSOR_INFORMATION[]) firstInformation
-                .toArray(new WinNT.SYSTEM_LOGICAL_PROCESSOR_INFORMATION[returnedStructCount]);
+            .toArray(new WinNT.SYSTEM_LOGICAL_PROCESSOR_INFORMATION[returnedStructCount]);
     }
 
     /**
@@ -730,18 +725,18 @@ public abstract class Kernel32Util implements WinDef {
      * structures.
      *
      * @param relationshipType
-     *            The type of relationship to retrieve. This parameter can be
-     *            one of the following values:
-     *            {@link LOGICAL_PROCESSOR_RELATIONSHIP#RelationCache},
-     *            {@link LOGICAL_PROCESSOR_RELATIONSHIP#RelationGroup},
-     *            {@link LOGICAL_PROCESSOR_RELATIONSHIP#RelationNumaNode},
-     *            {@link LOGICAL_PROCESSOR_RELATIONSHIP#RelationProcessorCore},
-     *            {@link LOGICAL_PROCESSOR_RELATIONSHIP#RelationProcessorPackage},
-     *            or {@link LOGICAL_PROCESSOR_RELATIONSHIP#RelationAll}
+     * The type of relationship to retrieve. This parameter can be
+     * one of the following values:
+     * {@link LOGICAL_PROCESSOR_RELATIONSHIP#RelationCache},
+     * {@link LOGICAL_PROCESSOR_RELATIONSHIP#RelationGroup},
+     * {@link LOGICAL_PROCESSOR_RELATIONSHIP#RelationNumaNode},
+     * {@link LOGICAL_PROCESSOR_RELATIONSHIP#RelationProcessorCore},
+     * {@link LOGICAL_PROCESSOR_RELATIONSHIP#RelationProcessorPackage},
+     * or {@link LOGICAL_PROCESSOR_RELATIONSHIP#RelationAll}
      * @return the array of processor information.
      */
-    public static final SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX[] getLogicalProcessorInformationEx(
-            int relationshipType) {
+    public static final SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX[]
+        getLogicalProcessorInformationEx(int relationshipType) {
         DWORDByReference bufferSize = new DWORDByReference(new DWORD(1));
         Memory memory;
         while (true) {
@@ -758,8 +753,8 @@ public abstract class Kernel32Util implements WinDef {
         List<SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX> procInfoList = new ArrayList<>();
         int offset = 0;
         while (offset < bufferSize.getValue().intValue()) {
-            SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX information = SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX
-                    .fromPointer(memory.share(offset));
+            SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX information
+                = SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX.fromPointer(memory.share(offset));
             procInfoList.add(information);
             offset += information.size;
         }
@@ -776,19 +771,23 @@ public abstract class Kernel32Util implements WinDef {
      * Each string has the following format: {@code key=string}.
      * </p>
      * <p>
-     * This operation is atomic; no updates to the specified initialization file are allowed while this method is executed.
+     * This operation is atomic; no updates to the specified initialization file are allowed while this method is
+     * executed.
      * </p>
      *
      * @param appName
-     *            The name of the section in the initialization file.
+     * The name of the section in the initialization file.
      * @param fileName
-     *            The name of the initialization file. If this parameter does not contain a full path to the file, the system searches for the file in the
-     *            Windows directory.
+     * The name of the initialization file. If this parameter does not contain a full path to the file, the system
+     * searches for the file in the
+     * Windows directory.
      * @return The key name and value pairs associated with the named section.
      */
     public static final String[] getPrivateProfileSection(final String appName, final String fileName) {
-        final char buffer[] = new char[32768]; // Maximum section size according to MSDN (http://msdn.microsoft.com/en-us/library/windows/desktop/ms724348(v=vs.85).aspx)
-        if (Kernel32.INSTANCE.GetPrivateProfileSection(appName, buffer, new DWORD(buffer.length), fileName).intValue() == 0) {
+        final char buffer[] = new char[32768]; // Maximum section size according to MSDN
+                                               // (http://msdn.microsoft.com/en-us/library/windows/desktop/ms724348(v=vs.85).aspx)
+        if (Kernel32.INSTANCE.GetPrivateProfileSection(appName, buffer, new DWORD(buffer.length), fileName).intValue()
+            == 0) {
             final int lastError = Kernel32.INSTANCE.GetLastError();
             if (lastError == Kernel32.ERROR_SUCCESS) {
                 return EMPTY_STRING_ARRAY;
@@ -806,13 +805,16 @@ public abstract class Kernel32Util implements WinDef {
      * </p>
      *
      * @param fileName
-     *            The name of the initialization file. If this parameter is {@code NULL}, the function searches the Win.ini file. If this parameter does not
-     *            contain a full path to the file, the system searches for the file in the Windows directory.
+     * The name of the initialization file. If this parameter is {@code NULL}, the function searches the Win.ini file.
+     * If this parameter does not
+     * contain a full path to the file, the system searches for the file in the Windows directory.
      * @return the section names associated with the named file.
      */
     public static final String[] getPrivateProfileSectionNames(final String fileName) {
-        final char buffer[] = new char[65536]; // Maximum INI file size according to MSDN (http://support.microsoft.com/kb/78346)
-        if (Kernel32.INSTANCE.GetPrivateProfileSectionNames(buffer, new DWORD(buffer.length), fileName).intValue() == 0) {
+        final char buffer[] = new char[65536]; // Maximum INI file size according to MSDN
+                                               // (http://support.microsoft.com/kb/78346)
+        if (Kernel32.INSTANCE.GetPrivateProfileSectionNames(buffer, new DWORD(buffer.length), fileName).intValue()
+            == 0) {
             throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
         }
         return new String(buffer).split("\0");
@@ -820,19 +822,24 @@ public abstract class Kernel32Util implements WinDef {
 
     /**
      * @param appName
-     *            The name of the section in which data is written. This section name is typically the name of the calling application.
+     * The name of the section in which data is written. This section name is typically the name of the calling
+     * application.
      * @param strings
-     *            The new key names and associated values that are to be written to the named section. Each entry must be of the form {@code key=value}.
+     * The new key names and associated values that are to be written to the named section. Each entry must be of the
+     * form {@code key=value}.
      * @param fileName
-     *            The name of the initialization file. If this parameter does not contain a full path for the file, the function searches the Windows directory
-     *            for the file. If the file does not exist and lpFileName does not contain a full path, the function creates the file in the Windows directory.
+     * The name of the initialization file. If this parameter does not contain a full path for the file, the function
+     * searches the Windows directory
+     * for the file. If the file does not exist and lpFileName does not contain a full path, the function creates the
+     * file in the Windows directory.
      */
-    public static final void writePrivateProfileSection(final String appName, final String[] strings, final String fileName) {
+    public static final void writePrivateProfileSection(final String appName, final String[] strings,
+        final String fileName) {
         final StringBuilder buffer = new StringBuilder();
         for (final String string : strings)
             buffer.append(string).append('\0');
         buffer.append('\0');
-        if (! Kernel32.INSTANCE.WritePrivateProfileSection(appName, buffer.toString(), fileName)) {
+        if (!Kernel32.INSTANCE.WritePrivateProfileSection(appName, buffer.toString(), fileName)) {
             throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
         }
     }
@@ -840,6 +847,7 @@ public abstract class Kernel32Util implements WinDef {
     /**
      * Invokes the {@link Kernel32#QueryDosDevice(String, char[], int)} method
      * and parses the result
+     * 
      * @param lpszDeviceName The device name
      * @param maxTargetSize The work buffer size to use for the query
      * @return The parsed result
@@ -855,7 +863,9 @@ public abstract class Kernel32Util implements WinDef {
     }
 
     /**
-     * Invokes and parses the result of {@link Kernel32#GetVolumePathNamesForVolumeName(String, char[], int, IntByReference)}
+     * Invokes and parses the result of
+     * {@link Kernel32#GetVolumePathNamesForVolumeName(String, char[], int, IntByReference)}
+     * 
      * @param lpszVolumeName The volume name
      * @return The parsed result
      * @throws Win32Exception If failed to retrieve the required information
@@ -864,7 +874,8 @@ public abstract class Kernel32Util implements WinDef {
         char[] lpszVolumePathNames = new char[WinDef.MAX_PATH + 1];
         IntByReference lpcchReturnLength = new IntByReference();
 
-        if (!Kernel32.INSTANCE.GetVolumePathNamesForVolumeName(lpszVolumeName, lpszVolumePathNames, lpszVolumePathNames.length, lpcchReturnLength)) {
+        if (!Kernel32.INSTANCE.GetVolumePathNamesForVolumeName(lpszVolumeName, lpszVolumePathNames,
+            lpszVolumePathNames.length, lpcchReturnLength)) {
             int hr = Kernel32.INSTANCE.GetLastError();
             if (hr != WinError.ERROR_MORE_DATA) {
                 throw new Win32Exception(hr);
@@ -873,7 +884,8 @@ public abstract class Kernel32Util implements WinDef {
             int required = lpcchReturnLength.getValue();
             lpszVolumePathNames = new char[required];
             // this time we MUST succeed
-            if (!Kernel32.INSTANCE.GetVolumePathNamesForVolumeName(lpszVolumeName, lpszVolumePathNames, lpszVolumePathNames.length, lpcchReturnLength)) {
+            if (!Kernel32.INSTANCE.GetVolumePathNamesForVolumeName(lpszVolumeName, lpszVolumePathNames,
+                lpszVolumePathNames.length, lpcchReturnLength)) {
                 throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
             }
         }
@@ -892,11 +904,12 @@ public abstract class Kernel32Util implements WinDef {
      * {@link Kernel32#FindNextVolume} calls
      *
      * @param volumeGUIDPath
-     *              The volume GUID path as returned by one of the above mentioned calls
+     * The volume GUID path as returned by one of the above mentioned calls
      * @return The pure GUID value after stripping the &quot;\\?\&quot; prefix and
      * removing the trailing backslash.
      * @throws IllegalArgumentException if bad format encountered
-     * @see <A HREF="https://msdn.microsoft.com/en-us/library/windows/desktop/aa365248(v=vs.85).aspx">Naming a Volume</A>
+     * @see <A HREF="https://msdn.microsoft.com/en-us/library/windows/desktop/aa365248(v=vs.85).aspx">Naming a
+     * Volume</A>
      */
     public static final String extractVolumeGUID(String volumeGUIDPath) {
         if ((volumeGUIDPath == null)
@@ -906,27 +919,29 @@ public abstract class Kernel32Util implements WinDef {
             throw new IllegalArgumentException("Bad volume GUID path format: " + volumeGUIDPath);
         }
 
-        return volumeGUIDPath.substring(VOLUME_GUID_PATH_PREFIX.length(), volumeGUIDPath.length() - VOLUME_GUID_PATH_SUFFIX.length());
+        return volumeGUIDPath.substring(VOLUME_GUID_PATH_PREFIX.length(),
+            volumeGUIDPath.length() - VOLUME_GUID_PATH_SUFFIX.length());
     }
 
     /**
      * This function retrieves the full path of the executable file of a given process identifier.
      *
      * @param pid
-     *          Identifier for the running process
+     * Identifier for the running process
      * @param dwFlags
-     *          0 - The name should use the Win32 path format.
-     *          1(WinNT.PROCESS_NAME_NATIVE) - The name should use the native system path format.
+     * 0 - The name should use the Win32 path format.
+     * 1(WinNT.PROCESS_NAME_NATIVE) - The name should use the native system path format.
      *
      * @return the full path of the process's executable file of null if failed. To get extended error information,
-     *         call GetLastError.
+     * call GetLastError.
      */
     public static final String QueryFullProcessImageName(int pid, int dwFlags) {
         HANDLE hProcess = null;
         Win32Exception we = null;
 
         try {
-            hProcess = Kernel32.INSTANCE.OpenProcess(WinNT.PROCESS_QUERY_INFORMATION | WinNT.PROCESS_VM_READ, false, pid);
+            hProcess
+                = Kernel32.INSTANCE.OpenProcess(WinNT.PROCESS_QUERY_INFORMATION | WinNT.PROCESS_VM_READ, false, pid);
             if (hProcess == null) {
                 throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
             }
@@ -943,13 +958,13 @@ public abstract class Kernel32Util implements WinDef {
      * This function retrieves the full path of the executable file of a given process.
      *
      * @param hProcess
-     *          Handle for the running process
+     * Handle for the running process
      * @param dwFlags
-     *          0 - The name should use the Win32 path format.
-     *          1(WinNT.PROCESS_NAME_NATIVE) - The name should use the native system path format.
+     * 0 - The name should use the Win32 path format.
+     * 1(WinNT.PROCESS_NAME_NATIVE) - The name should use the native system path format.
      *
      * @return the full path of the process's executable file of null if failed. To get extended error information,
-     *         call GetLastError.
+     * call GetLastError.
      */
     public static final String QueryFullProcessImageName(HANDLE hProcess, int dwFlags) {
         int size = WinDef.MAX_PATH; // Start with MAX_PATH, then increment with 1024 each iteration
@@ -969,12 +984,12 @@ public abstract class Kernel32Util implements WinDef {
      * Gets the specified resource out of the specified executable file
      *
      * @param path
-     *            The path to the executable file
+     * The path to the executable file
      * @param type
-     *            The type of the resource (either a type name or type ID is
-     *            allowed)
+     * The type of the resource (either a type name or type ID is
+     * allowed)
      * @param name
-     *            The name or ID of the resource
+     * The name or ID of the resource
      * @return The resource bytes, or null if no such resource exists.
      * @throws IllegalStateException if the call to LockResource fails
      */
@@ -1011,7 +1026,8 @@ public abstract class Kernel32Util implements WinDef {
                 throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
             }
 
-            // according to MSDN, on 32 bit Windows or newer, calling FreeResource() is not necessary - and in fact does nothing but return false.
+            // according to MSDN, on 32 bit Windows or newer, calling FreeResource() is not necessary - and in fact does
+            // nothing but return false.
             HANDLE loaded = Kernel32.INSTANCE.LoadResource(target, hrsrc);
             if (loaded == null) {
                 throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
@@ -1022,7 +1038,8 @@ public abstract class Kernel32Util implements WinDef {
                 throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
             }
 
-            // MSDN: It is not necessary to unlock resources because the system automatically deletes them when the process that created them terminates.
+            // MSDN: It is not necessary to unlock resources because the system automatically deletes them when the
+            // process that created them terminates.
             // MSDN does not say that LockResource sets GetLastError
             start = Kernel32.INSTANCE.LockResource(loaded);
             if (start == null) {
@@ -1056,10 +1073,10 @@ public abstract class Kernel32Util implements WinDef {
      * Gets a list of all resources from the specified executable file
      *
      * @param path
-     *            The path to the executable file
+     * The path to the executable file
      * @return A map of resource type name/ID =&gt; resources.<br>
-     *         A map key + a single list item + the path to the executable can
-     *         be handed off to getResource() to actually get the resource.
+     * A map key + a single list item + the path to the executable can
+     * be handed off to getResource() to actually get the resource.
      */
     public static Map<String, List<String>> getResourceNames(String path) {
         HMODULE target = Kernel32.INSTANCE.LoadLibraryEx(path, null, Kernel32.LOAD_LIBRARY_AS_DATAFILE);
@@ -1110,7 +1127,6 @@ public abstract class Kernel32Util implements WinDef {
             }
         };
 
-
         Win32Exception err = null;
         try {
             if (!Kernel32.INSTANCE.EnumResourceTypes(target, ertp, null)) {
@@ -1121,7 +1137,8 @@ public abstract class Kernel32Util implements WinDef {
                 result.put(typeName, new ArrayList<String>());
 
                 // simulate MAKEINTRESOURCE macro in WinUser.h
-                // basically, if the value passed in can be parsed as a number then convert it into one and run with that.
+                // basically, if the value passed in can be parsed as a number then convert it into one and run with
+                // that.
                 // otherwise, assume it's a string and construct a pointer to said string.
                 Pointer pointer = null;
                 try {
@@ -1163,7 +1180,7 @@ public abstract class Kernel32Util implements WinDef {
      * Returns all the executable modules for a given process ID.<br>
      *
      * @param processID
-     *            The process ID to get executable modules for
+     * The process ID to get executable modules for
      * @return All the modules in the process.
      */
     public static List<Tlhelp32.MODULEENTRY32W> getModules(int processID) {
@@ -1210,34 +1227,34 @@ public abstract class Kernel32Util implements WinDef {
      * defined for the current user.
      *
      * @param input A string that contains one or more environment-variable
-     *              strings in the form: %variableName%. For each such
-     *              reference, the %variableName% portion is replaced with the
-     *              current value of that environment variable.
+     * strings in the form: %variableName%. For each such
+     * reference, the %variableName% portion is replaced with the
+     * current value of that environment variable.
      *
-     *              <p>Case is ignored when looking up the environment-variable
-     *              name. If the name is not found, the %variableName% portion
-     *              is left unexpanded.</p>
+     * <p>Case is ignored when looking up the environment-variable
+     * name. If the name is not found, the %variableName% portion
+     * is left unexpanded.</p>
      *
-     *              <p>Note that this function does not support all the features
-     *              that Cmd.exe supports. For example, it does not support
-     *              %variableName:str1=str2% or %variableName:~offset,length%.</p>
+     * <p>Note that this function does not support all the features
+     * that Cmd.exe supports. For example, it does not support
+     * %variableName:str1=str2% or %variableName:~offset,length%.</p>
      *
      * @return the replaced string
      * @throws Win32Exception if an error occurs
      */
     public static String expandEnvironmentStrings(String input) {
-        if(input == null) {
+        if (input == null) {
             return "";
         }
 
         int resultChars = Kernel32.INSTANCE.ExpandEnvironmentStrings(input, null, 0);
 
-        if(resultChars == 0) {
+        if (resultChars == 0) {
             throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
         }
 
         Memory resultMemory;
-        if( W32APITypeMapper.DEFAULT == W32APITypeMapper.UNICODE ) {
+        if (W32APITypeMapper.DEFAULT == W32APITypeMapper.UNICODE) {
             resultMemory = new Memory(resultChars * Native.WCHAR_SIZE);
         } else {
             // return value is length in chars including terminating NULL,
@@ -1247,11 +1264,11 @@ public abstract class Kernel32Util implements WinDef {
         }
         resultChars = Kernel32.INSTANCE.ExpandEnvironmentStrings(input, resultMemory, resultChars);
 
-        if(resultChars == 0) {
+        if (resultChars == 0) {
             throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
         }
 
-        if( W32APITypeMapper.DEFAULT == W32APITypeMapper.UNICODE ) {
+        if (W32APITypeMapper.DEFAULT == W32APITypeMapper.UNICODE) {
             return resultMemory.getWideString(0);
         } else {
             return resultMemory.getString(0);
@@ -1295,7 +1312,8 @@ public abstract class Kernel32Util implements WinDef {
      */
     public static void setCurrentProcessBackgroundMode(final boolean enable) {
         // Note: PROCESS_MODE_BACKGROUN_{BEGIN,END} only works with the "current" process handle!
-        final DWORD dwPriorityClass = enable ? Kernel32.PROCESS_MODE_BACKGROUND_BEGIN : Kernel32.PROCESS_MODE_BACKGROUND_END;
+        final DWORD dwPriorityClass
+            = enable ? Kernel32.PROCESS_MODE_BACKGROUND_BEGIN : Kernel32.PROCESS_MODE_BACKGROUND_END;
         if (!Kernel32.INSTANCE.SetPriorityClass(Kernel32.INSTANCE.GetCurrentProcess(), dwPriorityClass)) {
             throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
         }
@@ -1351,7 +1369,7 @@ public abstract class Kernel32Util implements WinDef {
      * @throws Win32Exception if an error occurs.
      */
     public static DWORD getProcessPriority(final int pid) {
-        final HANDLE hProcess = Kernel32.INSTANCE.OpenProcess(WinNT.PROCESS_QUERY_INFORMATION , false, pid);
+        final HANDLE hProcess = Kernel32.INSTANCE.OpenProcess(WinNT.PROCESS_QUERY_INFORMATION, false, pid);
         if (hProcess == null) {
             throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
         }
@@ -1462,12 +1480,12 @@ public abstract class Kernel32Util implements WinDef {
      * @return Returns true, if and only if the given priority value was valid
      */
     public static boolean isValidPriorityClass(final DWORD dwPriorityClass) {
-        return Kernel32.NORMAL_PRIORITY_CLASS.equals(dwPriorityClass) ||
-            Kernel32.IDLE_PRIORITY_CLASS.equals(dwPriorityClass) ||
-            Kernel32.HIGH_PRIORITY_CLASS.equals(dwPriorityClass) ||
-            Kernel32.REALTIME_PRIORITY_CLASS.equals(dwPriorityClass) ||
-            Kernel32.BELOW_NORMAL_PRIORITY_CLASS.equals(dwPriorityClass) ||
-            Kernel32.ABOVE_NORMAL_PRIORITY_CLASS.equals(dwPriorityClass);
+        return Kernel32.NORMAL_PRIORITY_CLASS.equals(dwPriorityClass)
+            || Kernel32.IDLE_PRIORITY_CLASS.equals(dwPriorityClass)
+            || Kernel32.HIGH_PRIORITY_CLASS.equals(dwPriorityClass)
+            || Kernel32.REALTIME_PRIORITY_CLASS.equals(dwPriorityClass)
+            || Kernel32.BELOW_NORMAL_PRIORITY_CLASS.equals(dwPriorityClass)
+            || Kernel32.ABOVE_NORMAL_PRIORITY_CLASS.equals(dwPriorityClass);
     }
 
     /**
@@ -1478,7 +1496,7 @@ public abstract class Kernel32Util implements WinDef {
      * @return Returns true, if and only if the given priority value was valid
      */
     public static boolean isValidThreadPriority(final int nPriority) {
-        switch(nPriority) {
+        switch (nPriority) {
             case Kernel32.THREAD_PRIORITY_IDLE:
             case Kernel32.THREAD_PRIORITY_LOWEST:
             case Kernel32.THREAD_PRIORITY_BELOW_NORMAL:
@@ -1487,6 +1505,7 @@ public abstract class Kernel32Util implements WinDef {
             case Kernel32.THREAD_PRIORITY_HIGHEST:
             case Kernel32.THREAD_PRIORITY_TIME_CRITICAL:
                 return true;
+
             default:
                 return false;
         }

@@ -13,7 +13,8 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.*;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Platform;
 
 /**
  * A root resource represents the top of the resource hierarchy in a workspace.
@@ -31,11 +32,10 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * extensions are managed by the platform's adapter manager.
  * </p>
  *
- * @see Platform#getAdapterManager()
  * @noimplement This interface is not intended to be implemented by clients.
  * @noextend This interface is not intended to be extended by clients.
  */
-public interface IWorkspaceRoot extends IContainer, IAdaptable {
+public interface IWorkspaceRoot extends IContainer {
 
     /**
      * Returns a handle to the project resource with the given name

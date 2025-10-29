@@ -27,14 +27,17 @@ import java.util.List;
  * Indicates that the annotated method should not be called under any normal circumstances, yet is
  * either <i>impossible</i> to remove, or <i>should not</i> ever be removed. Example:
  *
- * <pre>{@code
- * public class ImmutableList<E> implements List<E> {
- *   @DoNotCall("guaranteed to throw an exception")
- *   @Override public add(E e) {
- *     throw new UnsupportedOperationException();
- *   }
+ * <pre>
+ * {
+ *     &#64;code
+ *     public class ImmutableList<E> implements List<E> {
+ *   &#64;DoNotCall("guaranteed to throw an exception")
+ *         &#64;Override public add(E e){
+ *         throw new UnsupportedOperationException();
+ *         }
+ *     }
  * }
- * }</pre>
+ * </pre>
  *
  * By the demands of the {@code List} interface, this method can never be removed. However, since it
  * should always throw an exception, there can be no valid reason to call it except in the rarest of
@@ -68,6 +71,6 @@ import java.util.List;
 @Target(METHOD)
 public @interface DoNotCall {
 
-  /** An optional explanation of why the method should not be called. */
-  String value() default "";
+    /** An optional explanation of why the method should not be called. */
+    String value() default "";
 }

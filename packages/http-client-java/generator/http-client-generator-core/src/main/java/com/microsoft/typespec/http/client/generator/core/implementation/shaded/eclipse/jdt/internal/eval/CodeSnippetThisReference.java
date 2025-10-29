@@ -36,116 +36,119 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class CodeSnippetThisReference extends ThisReference implements EvaluationConstants, InvocationSite {
 
-	EvaluationContext evaluationContext;
-	FieldBinding delegateThis;
-	boolean isImplicit;
+    EvaluationContext evaluationContext;
+    FieldBinding delegateThis;
+    boolean isImplicit;
 
-	/**
-	 * CodeSnippetThisReference constructor comment.
-	 * @param s int
-	 * @param sourceEnd int
-	 */
-	public CodeSnippetThisReference(int s, int sourceEnd, EvaluationContext evaluationContext, boolean isImplicit) {
-		super(s, sourceEnd);
-		this.evaluationContext = evaluationContext;
-		this.isImplicit = isImplicit;
-	}
+    /**
+     * CodeSnippetThisReference constructor comment.
+     * 
+     * @param s int
+     * @param sourceEnd int
+     */
+    public CodeSnippetThisReference(int s, int sourceEnd, EvaluationContext evaluationContext, boolean isImplicit) {
+        super(s, sourceEnd);
+        this.evaluationContext = evaluationContext;
+        this.isImplicit = isImplicit;
+    }
 
-	@Override
-	public boolean checkAccess(BlockScope scope, ReferenceBinding thisType) {
-		// this/super cannot be used in constructor call
-		MethodScope methodScope = scope.methodScope();
-		if (this.evaluationContext.isConstructorCall) {
-			methodScope.problemReporter().fieldsOrThisBeforeConstructorInvocation(this);
-			return false;
-		}
+    @Override
+    public boolean checkAccess(BlockScope scope, ReferenceBinding thisType) {
+        // this/super cannot be used in constructor call
+        MethodScope methodScope = scope.methodScope();
+        if (this.evaluationContext.isConstructorCall) {
+            methodScope.problemReporter().fieldsOrThisBeforeConstructorInvocation(this);
+            return false;
+        }
 
-		// static may not refer to this/super
-		if (this.evaluationContext.declaringTypeName == null || this.evaluationContext.isStatic) {
-			methodScope.problemReporter().errorThisSuperInStatic(this);
-			return false;
-		}
-		scope.tagAsAccessingEnclosingInstanceStateOf(thisType, false /* type variable access */);
-		return true;
-	}
+        // static may not refer to this/super
+        if (this.evaluationContext.declaringTypeName == null || this.evaluationContext.isStatic) {
+            methodScope.problemReporter().errorThisSuperInStatic(this);
+            return false;
+        }
+        scope.tagAsAccessingEnclosingInstanceStateOf(thisType, false /* type variable access */);
+        return true;
+    }
 
-	@Override
-	public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
-		int pc = codeStream.position;
-		if (valueRequired) {
-			codeStream.aload_0();
-			codeStream.fieldAccess(Opcodes.OPC_getfield, this.delegateThis, null /* default declaringClass */); // delegate field access
-		}
-		codeStream.recordPositionsFrom(pc, this.sourceStart);
-	}
+    @Override
+    public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
+        int pc = codeStream.position;
+        if (valueRequired) {
+            codeStream.aload_0();
+            codeStream.fieldAccess(Opcodes.OPC_getfield, this.delegateThis, null /* default declaringClass */); // delegate
+                                                                                                                // field
+                                                                                                                // access
+        }
+        codeStream.recordPositionsFrom(pc, this.sourceStart);
+    }
 
-	/**
-	 * @see org.eclipse.jdt.internal.compiler.lookup.InvocationSite#genericTypeArguments()
-	 */
-	@Override
-	public TypeBinding[] genericTypeArguments() {
-		return null;
-	}
+    /**
+     * @see org.eclipse.jdt.internal.compiler.lookup.InvocationSite#genericTypeArguments()
+     */
+    @Override
+    public TypeBinding[] genericTypeArguments() {
+        return null;
+    }
 
-	@Override
-	public InferenceContext18 freshInferenceContext(Scope scope) {
-		return null;
-	}
+    @Override
+    public InferenceContext18 freshInferenceContext(Scope scope) {
+        return null;
+    }
 
-	@Override
-	public boolean isSuperAccess(){
-		return false;
-	}
+    @Override
+    public boolean isSuperAccess() {
+        return false;
+    }
 
-	@Override
-	public boolean isTypeAccess(){
-		return false;
-	}
+    @Override
+    public boolean isTypeAccess() {
+        return false;
+    }
 
-	@Override
-	public StringBuilder printExpression(int indent, StringBuilder output){
+    @Override
+    public StringBuilder printExpression(int indent, StringBuilder output) {
 
-		char[] declaringType = this.evaluationContext.declaringTypeName;
-		output.append('(');
-		if (declaringType == null)
-			output.append("<NO DECLARING TYPE>"); //$NON-NLS-1$
-		else
-			output.append(declaringType);
-		return output.append(")this"); //$NON-NLS-1$
-	}
+        char[] declaringType = this.evaluationContext.declaringTypeName;
+        output.append('(');
+        if (declaringType == null)
+            output.append("<NO DECLARING TYPE>"); //$NON-NLS-1$
+        else
+            output.append(declaringType);
+        return output.append(")this"); //$NON-NLS-1$
+    }
 
-	@Override
-	public TypeBinding resolveType(BlockScope scope) {
-		// implicit this
-		this.constant = Constant.NotAConstant;
-		ReferenceBinding snippetType = scope.enclosingSourceType();
-		MethodScope methodScope = scope.methodScope();
-		if (!this.isImplicit && !checkAccess(scope, snippetType)) {
-			return null;
-		}
+    @Override
+    public TypeBinding resolveType(BlockScope scope) {
+        // implicit this
+        this.constant = Constant.NotAConstant;
+        ReferenceBinding snippetType = scope.enclosingSourceType();
+        MethodScope methodScope = scope.methodScope();
+        if (!this.isImplicit && !checkAccess(scope, snippetType)) {
+            return null;
+        }
 
-		this.delegateThis = scope.getField(snippetType, DELEGATE_THIS, this);
-		if (this.delegateThis == null || !this.delegateThis.isValidBinding()) {
-			// should not happen
-			// if this happen we should report illegal access to this in a static context
-			methodScope.problemReporter().errorThisSuperInStatic(this);
-			return null;
-		}
-		return this.resolvedType = this.delegateThis.type;
-	}
+        this.delegateThis = scope.getField(snippetType, DELEGATE_THIS, this);
+        if (this.delegateThis == null || !this.delegateThis.isValidBinding()) {
+            // should not happen
+            // if this happen we should report illegal access to this in a static context
+            methodScope.problemReporter().errorThisSuperInStatic(this);
+            return null;
+        }
+        return this.resolvedType = this.delegateThis.type;
+    }
 
-	@Override
-	public void setActualReceiverType(ReferenceBinding receiverType) {
-		// ignored
-	}
+    @Override
+    public void setActualReceiverType(ReferenceBinding receiverType) {
+        // ignored
+    }
 
-	@Override
-	public void setDepth(int depth){
-		// ignored
-	}
+    @Override
+    public void setDepth(int depth) {
+        // ignored
+    }
 
-	@Override
-	public void setFieldIndex(int index){
-		// ignored
-	}
+    @Override
+    public void setFieldIndex(int index) {
+        // ignored
+    }
 }

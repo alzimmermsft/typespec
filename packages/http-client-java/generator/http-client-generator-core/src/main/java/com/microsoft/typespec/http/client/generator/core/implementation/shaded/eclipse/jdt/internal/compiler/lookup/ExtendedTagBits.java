@@ -17,26 +17,29 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public interface ExtendedTagBits {
 
-	int HasUnresolvedPermittedSubtypes = ASTNode.Bit2;
+    int HasUnresolvedPermittedSubtypes = ASTNode.Bit2;
 
-	/** From Java 16
-	 *  Flag used to identify the annotation jdk.internal.ValueBased
-	 */
-	int AnnotationValueBased = ASTNode.Bit3;
+    /**
+     * From Java 16
+     * Flag used to identify the annotation jdk.internal.ValueBased
+     */
+    int AnnotationValueBased = ASTNode.Bit3;
 
-	// Java 16 Records
-	int IsCanonicalConstructor = ASTNode.Bit4; // constructor
+    // Java 16 Records
+    int IsCanonicalConstructor = ASTNode.Bit4; // constructor
 
-	// @Owning / closing
-	int IsClosingMethod = ASTNode.Bit1; // method
+    // @Owning / closing
+    int IsClosingMethod = ASTNode.Bit1; // method
 
-	int HasMissingOwningAnnotation = ASTNode.Bit2; // method/ctor or field
+    int HasMissingOwningAnnotation = ASTNode.Bit2; // method/ctor or field
 
-	int AnnotationResolved = ASTNode.Bit6;
-	int DeprecatedAnnotationResolved = ASTNode.Bit7;
-	int NullDefaultAnnotationResolved = ASTNode.Bit8; // package, type, method or variable
-	int AllAnnotationsResolved = ExtendedTagBits.AnnotationResolved | ExtendedTagBits.DeprecatedAnnotationResolved | ExtendedTagBits.NullDefaultAnnotationResolved;
-	static boolean areAllAnnotationsResolved(long extendedTagBits) {
-		return (extendedTagBits & AllAnnotationsResolved) == AllAnnotationsResolved;
-	}
+    int AnnotationResolved = ASTNode.Bit6;
+    int DeprecatedAnnotationResolved = ASTNode.Bit7;
+    int NullDefaultAnnotationResolved = ASTNode.Bit8; // package, type, method or variable
+    int AllAnnotationsResolved = ExtendedTagBits.AnnotationResolved | ExtendedTagBits.DeprecatedAnnotationResolved
+        | ExtendedTagBits.NullDefaultAnnotationResolved;
+
+    static boolean areAllAnnotationsResolved(long extendedTagBits) {
+        return (extendedTagBits & AllAnnotationsResolved) == AllAnnotationsResolved;
+    }
 }

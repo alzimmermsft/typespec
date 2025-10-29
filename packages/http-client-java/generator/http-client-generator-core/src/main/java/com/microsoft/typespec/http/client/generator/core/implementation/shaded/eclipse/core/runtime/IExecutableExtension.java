@@ -127,6 +127,6 @@ public interface IExecutableExtension {
      * processing
      * @see IConfigurationElement#createExecutableExtension(String)
      */
-    public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
+    void setInitializationData(IConfigurationElement config, String propertyName, Object data)
         throws CoreException;
 }

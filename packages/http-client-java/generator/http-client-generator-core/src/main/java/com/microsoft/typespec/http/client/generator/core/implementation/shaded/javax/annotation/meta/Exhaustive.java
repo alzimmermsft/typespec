@@ -21,9 +21,14 @@ import java.lang.annotation.RetentionPolicy;
  * {@literal @Foo(Color.Red)} or {@literal @Foo(Color.Blue)}
  * 
  * <pre>
- * &#064;TypeQualifier  &#064;interface Foo {
- *     enum Color {RED, BLUE, GREEN};
- *     &#064;Exhaustive Color value();
+ * &#064;TypeQualifier
+ * &#064;interface Foo {
+ *     enum Color {
+ *         RED, BLUE, GREEN
+ *     };
+ * 
+ *     &#064;Exhaustive
+ *     Color value();
  * }
  * </pre>
  */

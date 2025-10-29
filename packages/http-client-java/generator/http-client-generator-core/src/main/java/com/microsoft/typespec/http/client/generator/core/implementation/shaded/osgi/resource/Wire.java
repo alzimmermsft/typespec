@@ -31,62 +31,62 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 @ConsumerType
 public interface Wire {
-	/**
-	 * Returns the {@link Capability} for this wire.
-	 * 
-	 * @return The {@link Capability} for this wire.
-	 */
-	Capability getCapability();
+    /**
+     * Returns the {@link Capability} for this wire.
+     * 
+     * @return The {@link Capability} for this wire.
+     */
+    Capability getCapability();
 
-	/**
-	 * Returns the {@link Requirement} for this wire.
-	 * 
-	 * @return The {@link Requirement} for this wire.
-	 */
-	Requirement getRequirement();
+    /**
+     * Returns the {@link Requirement} for this wire.
+     * 
+     * @return The {@link Requirement} for this wire.
+     */
+    Requirement getRequirement();
 
-	/**
-	 * Returns the resource providing the {@link #getCapability() capability}.
-	 * 
-	 * <p>
-	 * The returned resource may differ from the resource referenced by the
-	 * {@link #getCapability() capability}.
-	 * 
-	 * @return The resource providing the capability.
-	 */
-	Resource getProvider();
+    /**
+     * Returns the resource providing the {@link #getCapability() capability}.
+     * 
+     * <p>
+     * The returned resource may differ from the resource referenced by the
+     * {@link #getCapability() capability}.
+     * 
+     * @return The resource providing the capability.
+     */
+    Resource getProvider();
 
-	/**
-	 * Returns the resource who {@link #getRequirement() requires} the
-	 * {@link #getCapability() capability}.
-	 * 
-	 * <p>
-	 * The returned resource may differ from the resource referenced by the
-	 * {@link #getRequirement() requirement}.
-	 * 
-	 * @return The resource who requires the capability.
-	 */
-	Resource getRequirer();
+    /**
+     * Returns the resource who {@link #getRequirement() requires} the
+     * {@link #getCapability() capability}.
+     * 
+     * <p>
+     * The returned resource may differ from the resource referenced by the
+     * {@link #getRequirement() requirement}.
+     * 
+     * @return The resource who requires the capability.
+     */
+    Resource getRequirer();
 
-	/**
-	 * Compares this {@code Wire} to another {@code Wire}.
-	 * 
-	 * <p>
-	 * This {@code Wire} is equal to another {@code Wire} if they have the same
-	 * capability, requirement, provider and requirer.
-	 * 
-	 * @param obj The object to compare against this {@code Wire}.
-	 * @return {@code true} if this {@code Wire} is equal to the other object;
-	 *         {@code false} otherwise.
-	 */
-	@Override
-	boolean equals(Object obj);
+    /**
+     * Compares this {@code Wire} to another {@code Wire}.
+     * 
+     * <p>
+     * This {@code Wire} is equal to another {@code Wire} if they have the same
+     * capability, requirement, provider and requirer.
+     * 
+     * @param obj The object to compare against this {@code Wire}.
+     * @return {@code true} if this {@code Wire} is equal to the other object;
+     * {@code false} otherwise.
+     */
+    @Override
+    boolean equals(Object obj);
 
-	/**
-	 * Returns the hashCode of this {@code Wire}.
-	 * 
-	 * @return The hashCode of this {@code Wire}.
-	 */
-	@Override
-	int hashCode();
+    /**
+     * Returns the hashCode of this {@code Wire}.
+     * 
+     * @return The hashCode of this {@code Wire}.
+     */
+    @Override
+    int hashCode();
 }

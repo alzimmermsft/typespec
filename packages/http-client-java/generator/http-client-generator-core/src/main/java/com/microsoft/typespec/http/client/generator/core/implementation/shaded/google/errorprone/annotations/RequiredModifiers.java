@@ -26,16 +26,20 @@ import java.lang.annotation.Target;
  * Annotation declaring that the target annotation requires all the specified modifiers. For
  * example, an annotation declared as:
  *
- * <pre>{@code
- * @RequiredModifiers(modifier = Modifier.PUBLIC)
- * @interface MyAnnotation {}
- * }</pre>
+ * <pre>
+ * {@code
+ * &#64;RequiredModifiers(modifier = Modifier.PUBLIC)
+ * &#64;interface MyAnnotation {}
+ * }
+ * </pre>
  *
  * <p>will be considered illegal when used on non-public elements such as:
  *
- * <pre>{@code
- * @MyAnnotation void foo() {}
- * }</pre>
+ * <pre>
+ * {@code
+ * &#64;MyAnnotation void foo() {}
+ * }
+ * </pre>
  *
  * @author benyu@google.com (Jige Yu)
  */
@@ -44,18 +48,18 @@ import java.lang.annotation.Target;
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface RequiredModifiers {
 
-  /**
-   * @deprecated use {@link #modifier} instead
-   */
-  @Deprecated
-  javax.lang.model.element.Modifier[] value() default {};
+    /**
+     * @deprecated use {@link #modifier} instead
+     */
+    @Deprecated
+    javax.lang.model.element.Modifier[] value() default { };
 
-  /**
-   * The required modifiers. The annotated element is illegal if any one or more of these modifiers
-   * are absent.
-   *
-   * <p>Empty array has the same effect as not applying this annotation at all; duplicates are
-   * allowed but have no effect.
-   */
-  Modifier[] modifier() default {};
+    /**
+     * The required modifiers. The annotated element is illegal if any one or more of these modifiers
+     * are absent.
+     *
+     * <p>Empty array has the same effect as not applying this annotation at all; duplicates are
+     * allowed but have no effect.
+     */
+    Modifier[] modifier() default { };
 }

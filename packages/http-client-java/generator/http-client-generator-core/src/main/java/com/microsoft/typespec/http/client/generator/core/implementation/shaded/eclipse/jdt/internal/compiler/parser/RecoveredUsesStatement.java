@@ -18,18 +18,21 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class RecoveredUsesStatement extends RecoveredModuleStatement {
 
-	public RecoveredUsesStatement(UsesStatement usesStatement, RecoveredElement parent, int bracketBalance) {
-		super(usesStatement, parent, bracketBalance);
-	}
-	@Override
-	public String toString(int tab) {
-		return tabString(tab) + "Recovered Uses: " + super.toString(); //$NON-NLS-1$
-	}
-	public UsesStatement updatedUsesStatement(){
-		return (UsesStatement)this.moduleStatement;
-	}
-	@Override
-	public void updateParseTree(){
-		updatedUsesStatement();
-	}
+    public RecoveredUsesStatement(UsesStatement usesStatement, RecoveredElement parent, int bracketBalance) {
+        super(usesStatement, parent, bracketBalance);
+    }
+
+    @Override
+    public String toString(int tab) {
+        return tabString(tab) + "Recovered Uses: " + super.toString(); //$NON-NLS-1$
+    }
+
+    public UsesStatement updatedUsesStatement() {
+        return (UsesStatement) this.moduleStatement;
+    }
+
+    @Override
+    public void updateParseTree() {
+        updatedUsesStatement();
+    }
 }

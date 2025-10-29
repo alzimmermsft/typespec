@@ -18,11 +18,12 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class RecoveredOpensStatement extends RecoveredPackageVisibilityStatement {
 
-	public RecoveredOpensStatement(OpensStatement opensStatement, RecoveredElement parent, int bracketBalance) {
-		super(opensStatement, parent, bracketBalance);
-	}
-	@Override
-	public String toString(int tab) {
-		return tabString(tab) + "Recovered opens stmt: " + super.toString(); //$NON-NLS-1$
-	}
+    public RecoveredOpensStatement(OpensStatement opensStatement, RecoveredElement parent, int bracketBalance) {
+        super(opensStatement, parent, bracketBalance);
+    }
+
+    @Override
+    public String toString(int tab) {
+        return tabString(tab) + "Recovered opens stmt: " + super.toString(); //$NON-NLS-1$
+    }
 }

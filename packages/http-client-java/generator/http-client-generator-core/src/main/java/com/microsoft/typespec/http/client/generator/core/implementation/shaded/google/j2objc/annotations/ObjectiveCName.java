@@ -31,9 +31,11 @@ import java.lang.annotation.Target;
  * <p>For classes specify the desired Objective-C class name for the translated type.
  *
  * <p>For methods specify the desired Objective-C selector for the translated method:
+ * 
  * <pre>
  * &#64;ObjectiveCName("setDateWithYear:month:day:")
- * public void setDate(int year, int month, int day);</pre>
+ * public void setDate(int year, int month, int day);
+ * </pre>
  *
  * @author Tom Ball
  */
@@ -42,10 +44,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.CLASS)
 public @interface ObjectiveCName {
 
-  /**
-   * The Objective-C name to use for this element.
-   *
-   * @return the Objective-C name.
-   */
-  String value();
+    /**
+     * The Objective-C name to use for this element.
+     *
+     * @return the Objective-C name.
+     */
+    String value();
 }

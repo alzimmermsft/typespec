@@ -15,9 +15,7 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.MultiStringMatcher.Match;
-
 
 /**
  * Standard implementation of a generic
@@ -30,52 +28,53 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * <p>
  * This class is not intended to be subclassed.
  * </p>
+ * 
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class ConfigurableLineTracker extends AbstractLineTracker {
 
-	/** The strings which are considered being the line delimiter */
-	private final String[] fDelimiters;
-	/** A predefined delimiter information which is always reused as return value */
-	private final DelimiterInfo fDelimiterInfo= new DelimiterInfo();
-	/** Util to search the configured line delimiters in text. <code>null</code> if only one delimiter is used. */
-	private final MultiStringMatcher fMatcher;
+    /** The strings which are considered being the line delimiter */
+    private final String[] fDelimiters;
+    /** A predefined delimiter information which is always reused as return value */
+    private final DelimiterInfo fDelimiterInfo = new DelimiterInfo();
+    /** Util to search the configured line delimiters in text. <code>null</code> if only one delimiter is used. */
+    private final MultiStringMatcher fMatcher;
 
-	/**
-	 * Creates a standard line tracker for the given line delimiters.
-	 *
-	 * @param legalLineDelimiters the tracker's legal line delimiters,
-	 *		may not be <code>null</code> and must be longer than 0
-	 */
-	public ConfigurableLineTracker(String[] legalLineDelimiters) {
-		Assert.isTrue(legalLineDelimiters != null && legalLineDelimiters.length > 0);
-		fDelimiters= TextUtilities.copy(legalLineDelimiters);
-		fMatcher= legalLineDelimiters.length > 1 ? MultiStringMatcher.create(legalLineDelimiters) : null;
-	}
+    /**
+     * Creates a standard line tracker for the given line delimiters.
+     *
+     * @param legalLineDelimiters the tracker's legal line delimiters,
+     * may not be <code>null</code> and must be longer than 0
+     */
+    public ConfigurableLineTracker(String[] legalLineDelimiters) {
+        Assert.isTrue(legalLineDelimiters != null && legalLineDelimiters.length > 0);
+        fDelimiters = TextUtilities.copy(legalLineDelimiters);
+        fMatcher = legalLineDelimiters.length > 1 ? MultiStringMatcher.create(legalLineDelimiters) : null;
+    }
 
-	@Override
-	public String[] getLegalLineDelimiters() {
-		return TextUtilities.copy(fDelimiters);
-	}
+    @Override
+    public String[] getLegalLineDelimiters() {
+        return TextUtilities.copy(fDelimiters);
+    }
 
-	@Override
-	protected DelimiterInfo nextDelimiterInfo(String text, int offset) {
-		if (fMatcher != null) {
-			Match m = fMatcher.indexOf(text, offset);
-			if (m == null) {
-				return null;
-			}
-			fDelimiterInfo.delimiterIndex= m.getOffset();
-			fDelimiterInfo.delimiter= m.getText();
-		} else {
-			int index= text.indexOf(fDelimiters[0], offset);
-			if (index == -1)
-				return null;
-			fDelimiterInfo.delimiterIndex= index;
-			fDelimiterInfo.delimiter= fDelimiters[0];
-		}
+    @Override
+    protected DelimiterInfo nextDelimiterInfo(String text, int offset) {
+        if (fMatcher != null) {
+            Match m = fMatcher.indexOf(text, offset);
+            if (m == null) {
+                return null;
+            }
+            fDelimiterInfo.delimiterIndex = m.getOffset();
+            fDelimiterInfo.delimiter = m.getText();
+        } else {
+            int index = text.indexOf(fDelimiters[0], offset);
+            if (index == -1)
+                return null;
+            fDelimiterInfo.delimiterIndex = index;
+            fDelimiterInfo.delimiter = fDelimiters[0];
+        }
 
-		fDelimiterInfo.delimiterLength= fDelimiterInfo.delimiter.length();
-		return fDelimiterInfo;
-	}
+        fDelimiterInfo.delimiterLength = fDelimiterInfo.delimiter.length();
+        return fDelimiterInfo;
+    }
 }

@@ -28,7 +28,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 public class ByteByReference extends ByReference {
 
     public ByteByReference() {
-        this((byte)0);
+        this((byte) 0);
     }
 
     public ByteByReference(byte value) {

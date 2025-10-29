@@ -13,10 +13,16 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.preferences.*;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.preferences.DefaultScope;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.preferences.IEclipsePreferences;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.preferences.InstanceScope;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.EventListener;
+import java.util.EventObject;
+import java.util.Properties;
 
 /**
  * A table of preference settings, mapping named properties to values. Property
@@ -88,7 +94,7 @@ import java.util.*;
  * @deprecated This class is replaced by {@link IEclipsePreferences}. Setting a default
  * value is accomplished by a setting a value in the {@link DefaultScope}, and setting
  * an explicit non-default value is accomplished by setting a value in the {@link InstanceScope}.
- * To obtain a preference value, use the preference accessor methods on {@link IPreferencesService}.
+ * To obtain a preference value, use the preference accessor methods on .
  */
 @Deprecated
 public class Preferences {
@@ -134,11 +140,6 @@ public class Preferences {
      * (<code>"false"</code>).
      */
     protected static final String FALSE = "false"; //$NON-NLS-1$
-
-    /**
-     * Singleton empty string array (optimization)
-     */
-    private static final String[] EMPTY_STRING_ARRAY = new String[0];
 
     /**
      * An event object describing a change to a named property.
@@ -318,23 +319,6 @@ public class Preferences {
     public Preferences() {
         defaultProperties = new Properties();
         properties = new Properties(defaultProperties);
-    }
-
-    /**
-     * Adds a property change listener to this preference object.
-     * Has no effect if the identical listener is already registered.
-     * <p>
-     * <em>Note:</em> Depending on the means in which the property
-     * values changed, the old and new values for the property can
-     * be either typed, a string representation of the value, or <code>null</code>.
-     * Clients who wish to behave properly in all cases should all
-     * three cases in their implementation of the property change listener.
-     * </p>
-     * 
-     * @param listener a property change listener
-     */
-    public void addPropertyChangeListener(IPropertyChangeListener listener) {
-        listeners.add(listener);
     }
 
     /**
@@ -518,7 +502,7 @@ public class Preferences {
             // mark as dirty since value did really change
             dirty = true;
             // report property change if getValue now returns different value
-            firePropertyChangeEvent(name, Double.valueOf(oldValue), Double.valueOf(value));
+            firePropertyChangeEvent(name, oldValue, value);
         }
     }
 
@@ -612,7 +596,7 @@ public class Preferences {
             // mark as dirty since value did really change
             dirty = true;
             // report property change if getValue now returns different value
-            firePropertyChangeEvent(name, Float.valueOf(oldValue), Float.valueOf(value));
+            firePropertyChangeEvent(name, oldValue, value);
         }
     }
 
@@ -702,7 +686,7 @@ public class Preferences {
             // mark as dirty since value did really change
             dirty = true;
             // report property change if getValue now returns different value
-            firePropertyChangeEvent(name, Integer.valueOf(oldValue), Integer.valueOf(value));
+            firePropertyChangeEvent(name, oldValue, value);
         }
     }
 
@@ -792,7 +776,7 @@ public class Preferences {
             // mark as dirty since value did really change
             dirty = true;
             // report property change if getValue now returns different value
-            firePropertyChangeEvent(name, Long.valueOf(oldValue), Long.valueOf(value));
+            firePropertyChangeEvent(name, oldValue, value);
         }
     }
 
@@ -947,16 +931,6 @@ public class Preferences {
         // n.b. newValue == null if there is no default value
         // can't determine correct default-default without knowing type
         firePropertyChangeEvent(name, oldPropertyValue, newValue);
-    }
-
-    /**
-     * Returns a list of all properties known to this preference object which
-     * have current values other than their default value.
-     *
-     * @return an array of property names
-     */
-    public String[] propertyNames() {
-        return properties.keySet().toArray(EMPTY_STRING_ARRAY);
     }
 
     /**

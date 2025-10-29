@@ -17,22 +17,22 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * Represents an import declaration that did not originally occur in the compilation unit.
  */
 class NewImportEntry extends ImportEntry {
-	NewImportEntry(ImportName importName) {
-		super(importName);
-	}
+    NewImportEntry(ImportName importName) {
+        super(importName);
+    }
 
-	@Override
-	public String toString() {
-		return String.format("NewImportEntry(%s)", this.importName); //$NON-NLS-1$
-	}
+    @Override
+    public String toString() {
+        return String.format("NewImportEntry(%s)", this.importName); //$NON-NLS-1$
+    }
 
-	@Override
-	boolean isOriginal() {
-		return false;
-	}
+    @Override
+    boolean isOriginal() {
+        return false;
+    }
 
-	@Override
-	OriginalImportEntry asOriginalImportEntry() {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    OriginalImportEntry asOriginalImportEntry() {
+        throw new UnsupportedOperationException();
+    }
 }

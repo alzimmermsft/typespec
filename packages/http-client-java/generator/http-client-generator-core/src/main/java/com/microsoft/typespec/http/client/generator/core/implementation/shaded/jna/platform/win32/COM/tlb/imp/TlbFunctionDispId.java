@@ -23,10 +23,10 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.tlb.imp;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.ELEMDESC;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.FUNCDESC;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeInfoUtil;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeLibUtil;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.ELEMDESC;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.FUNCDESC;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -40,16 +40,16 @@ public class TlbFunctionDispId extends TlbAbstractMethod {
      * Instantiates a new tlb function.
      *
      * @param index
-     *            the index
+     * the index
      * @param typeLibUtil
-     *            the type lib util
+     * the type lib util
      * @param funcDesc
-     *            the func desc
+     * the func desc
      * @param typeInfoUtil
-     *            the type info util
+     * the type info util
      */
-    public TlbFunctionDispId(int count, int index, TypeLibUtil typeLibUtil,
-            FUNCDESC funcDesc, TypeInfoUtil typeInfoUtil) {
+    public TlbFunctionDispId(int count, int index, TypeLibUtil typeLibUtil, FUNCDESC funcDesc,
+        TypeInfoUtil typeInfoUtil) {
         super(index, typeLibUtil, funcDesc, typeInfoUtil);
 
         String[] names = typeInfoUtil.getNames(funcDesc.memid, paramCount + 1);
@@ -61,8 +61,8 @@ public class TlbFunctionDispId extends TlbAbstractMethod {
             String _methodName = this.replaceJavaKeyword(methodName);
             methodparams += type + " " + _methodName;
 
-            //wrap all in a VARIANT
-            if(type.equals("VARIANT"))
+            // wrap all in a VARIANT
+            if (type.equals("VARIANT"))
                 methodvariables += _methodName;
             else
                 methodvariables += "new VARIANT(" + _methodName + ")";
@@ -75,7 +75,7 @@ public class TlbFunctionDispId extends TlbAbstractMethod {
         }
 
         String returnValue;
-        if(this.returnType.equalsIgnoreCase("VARIANT"))
+        if (this.returnType.equalsIgnoreCase("VARIANT"))
             returnValue = "pResult";
         else
             returnValue = "((" + returnType + ") pResult.getValue())";

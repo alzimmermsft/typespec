@@ -21,45 +21,41 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 /**
  * Default implementation of IRuntimeInvisibleAnnotations
  */
-public class RuntimeInvisibleAnnotationsAttribute
-	extends ClassFileAttribute
-	implements IRuntimeInvisibleAnnotationsAttribute {
+public class RuntimeInvisibleAnnotationsAttribute extends ClassFileAttribute
+    implements IRuntimeInvisibleAnnotationsAttribute {
 
-	private static final IAnnotation[] NO_ENTRIES = new IAnnotation[0];
-	private final int annotationsNumber;
-	private IAnnotation[] annotations;
+    private static final IAnnotation[] NO_ENTRIES = new IAnnotation[0];
+    private final int annotationsNumber;
+    private IAnnotation[] annotations;
 
-	/**
-	 * Constructor for RuntimeInvisibleAnnotations.
-	 */
-	public RuntimeInvisibleAnnotationsAttribute(
-			byte[] classFileBytes,
-			IConstantPool constantPool,
-			int offset)
-			throws ClassFormatException {
-		super(classFileBytes, constantPool, offset);
-		final int length = u2At(classFileBytes, 6, offset);
-		this.annotationsNumber = length;
-		if (length != 0) {
-			int readOffset = 8;
-			this.annotations = new IAnnotation[length];
-			for (int i = 0; i < length; i++) {
-				Annotation annotation = new Annotation(classFileBytes, constantPool, offset + readOffset);
-				this.annotations[i] = annotation;
-				readOffset += annotation.sizeInBytes();
-			}
-		} else {
-			this.annotations = NO_ENTRIES;
-		}
-	}
+    /**
+     * Constructor for RuntimeInvisibleAnnotations.
+     */
+    public RuntimeInvisibleAnnotationsAttribute(byte[] classFileBytes, IConstantPool constantPool, int offset)
+        throws ClassFormatException {
+        super(classFileBytes, constantPool, offset);
+        final int length = u2At(classFileBytes, 6, offset);
+        this.annotationsNumber = length;
+        if (length != 0) {
+            int readOffset = 8;
+            this.annotations = new IAnnotation[length];
+            for (int i = 0; i < length; i++) {
+                Annotation annotation = new Annotation(classFileBytes, constantPool, offset + readOffset);
+                this.annotations[i] = annotation;
+                readOffset += annotation.sizeInBytes();
+            }
+        } else {
+            this.annotations = NO_ENTRIES;
+        }
+    }
 
-	@Override
-	public IAnnotation[] getAnnotations() {
-		return this.annotations;
-	}
+    @Override
+    public IAnnotation[] getAnnotations() {
+        return this.annotations;
+    }
 
-	@Override
-	public int getAnnotationsNumber() {
-		return this.annotationsNumber;
-	}
+    @Override
+    public int getAnnotationsNumber() {
+        return this.annotationsNumber;
+    }
 }

@@ -14,10 +14,10 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.util.concurrent;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Preconditions;
 import java.util.concurrent.Executor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A {@link ListenableFuture} which forwards all its method calls to another future. Subclasses
@@ -31,38 +31,39 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
-public abstract class ForwardingListenableFuture<V extends @Nullable Object>
-    extends ForwardingFuture<V> implements ListenableFuture<V> {
+public abstract class ForwardingListenableFuture<V extends @Nullable Object> extends ForwardingFuture<V>
+    implements ListenableFuture<V> {
 
-  /** Constructor for use by subclasses. */
-  protected ForwardingListenableFuture() {}
-
-  @Override
-  protected abstract ListenableFuture<? extends V> delegate();
-
-  @Override
-  public void addListener(Runnable listener, Executor exec) {
-    delegate().addListener(listener, exec);
-  }
-
-  // TODO(cpovirk): Use standard Javadoc form for SimpleForwarding* class and constructor
-  /**
-   * A simplified version of {@link ForwardingListenableFuture} where subclasses can pass in an
-   * already constructed {@link ListenableFuture} as the delegate.
-   *
-   * @since 9.0
-   */
-  public abstract static class SimpleForwardingListenableFuture<V extends @Nullable Object>
-      extends ForwardingListenableFuture<V> {
-    private final ListenableFuture<V> delegate;
-
-    protected SimpleForwardingListenableFuture(ListenableFuture<V> delegate) {
-      this.delegate = Preconditions.checkNotNull(delegate);
+    /** Constructor for use by subclasses. */
+    protected ForwardingListenableFuture() {
     }
 
     @Override
-    protected final ListenableFuture<V> delegate() {
-      return delegate;
+    protected abstract ListenableFuture<? extends V> delegate();
+
+    @Override
+    public void addListener(Runnable listener, Executor exec) {
+        delegate().addListener(listener, exec);
     }
-  }
+
+    // TODO(cpovirk): Use standard Javadoc form for SimpleForwarding* class and constructor
+    /**
+     * A simplified version of {@link ForwardingListenableFuture} where subclasses can pass in an
+     * already constructed {@link ListenableFuture} as the delegate.
+     *
+     * @since 9.0
+     */
+    public abstract static class SimpleForwardingListenableFuture<V extends @Nullable Object>
+        extends ForwardingListenableFuture<V> {
+        private final ListenableFuture<V> delegate;
+
+        protected SimpleForwardingListenableFuture(ListenableFuture<V> delegate) {
+            this.delegate = Preconditions.checkNotNull(delegate);
+        }
+
+        @Override
+        protected final ListenableFuture<V> delegate() {
+            return delegate;
+        }
+    }
 }

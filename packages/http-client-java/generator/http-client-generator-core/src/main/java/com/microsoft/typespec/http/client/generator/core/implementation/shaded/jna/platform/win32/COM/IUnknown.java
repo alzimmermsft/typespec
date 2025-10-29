@@ -44,8 +44,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 public interface IUnknown {
 
     /** The Constant IID_IDispatch. */
-    public final static IID IID_IUNKNOWN = new IID(
-            "{00000000-0000-0000-C000-000000000046}");
+    public final static IID IID_IUNKNOWN = new IID("{00000000-0000-0000-C000-000000000046}");
 
     public HRESULT QueryInterface(REFIID riid, PointerByReference ppvObject);
 

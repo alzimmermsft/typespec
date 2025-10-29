@@ -188,30 +188,6 @@ public final class JavaConventions {
     }
 
     /**
-     * Validate the given compilation unit name.
-     * <p>
-     * A compilation unit name must obey the following rules:
-     * <ul>
-     * <li> it must not be null
-     * <li> it must be suffixed by a dot ('.') followed by one of the
-     * {@link JavaCore#getJavaLikeExtensions() Java-like extensions}
-     * <li> its prefix must be a valid identifier
-     * <li> it must not contain any characters or substrings that are not valid
-     * on the file system on which workspace root is located.
-     * </ul>
-     * 
-     * @param name the name of a compilation unit
-     * @return a status object with code <code>IStatus.OK</code> if
-     * the given name is valid as a compilation unit name, otherwise a status
-     * object indicating what is wrong with the name
-     * @deprecated Use {@link #validateCompilationUnitName(String id, String sourceLevel, String complianceLevel)}
-     * instead
-     */
-    public static IStatus validateCompilationUnitName(String name) {
-        return validateCompilationUnitName(name, CompilerOptions.VERSION_1_3, CompilerOptions.VERSION_1_3);
-    }
-
-    /**
      * Validate the given compilation unit name for the given source and compliance levels.
      * <p>
      * A compilation unit name must obey the following rules:

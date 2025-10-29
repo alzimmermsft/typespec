@@ -14,8 +14,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.filtermatchers.AbstractFileInfoMatcher;
-
 /**
  * A filter descriptor contains information about a filter type
  * obtained from the plug-in manifest (<code>plugin.xml</code>) files.
@@ -24,9 +22,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * independent of whether that filter's bundle has been started.
  * </p>
  *
- * @see AbstractFileInfoMatcher
- * @see IWorkspace#getFilterMatcherDescriptor(String)
- * @see IWorkspace#getFilterMatcherDescriptors()
  * @since 3.6
  * @noimplement This interface is not intended to be implemented by clients.
  * @noextend This interface is not intended to be extended by clients.

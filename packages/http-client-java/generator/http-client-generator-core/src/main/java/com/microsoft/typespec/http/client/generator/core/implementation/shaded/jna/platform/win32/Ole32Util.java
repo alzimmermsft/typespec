@@ -29,6 +29,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 
 /**
  * Ole32 Utility API.
+ * 
  * @author dblock[at]dblock.org
  */
 public abstract class Ole32Util {

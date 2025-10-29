@@ -13,7 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.rules;
 
-
 /**
  * Defines the interface by which <code>WhitespaceRule</code>
  * determines whether a given character is to be considered
@@ -24,11 +23,11 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IWhitespaceDetector {
 
-	/**
-	 * Returns whether the specified character is whitespace.
-	 *
-	 * @param c the character to be checked
-	 * @return <code>true</code> if the specified character is a whitespace char
-	 */
-	boolean isWhitespace(char c);
+    /**
+     * Returns whether the specified character is whitespace.
+     *
+     * @param c the character to be checked
+     * @return <code>true</code> if the specified character is a whitespace char
+     */
+    boolean isWhitespace(char c);
 }

@@ -26,8 +26,10 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import java.awt.Point;
 import java.awt.dnd.DropTargetEvent;
 
-/** Provides a callback for {@link DropHandler} to customize drop target
+/**
+ * Provides a callback for {@link DropHandler} to customize drop target
  * feedback.
+ * 
  * @author twall
  */
 public interface DropTargetPainter {

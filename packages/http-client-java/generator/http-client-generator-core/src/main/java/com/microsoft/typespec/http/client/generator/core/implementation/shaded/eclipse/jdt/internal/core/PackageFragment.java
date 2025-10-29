@@ -13,11 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IContainer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IFolder;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
@@ -34,446 +29,470 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.MementoTokenizer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Messages;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Util;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  * @see IPackageFragment
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class PackageFragment extends Openable implements IPackageFragment, SuffixConstants {
-	/**
-	 * Constant empty list of class files
-	 */
-	protected static final IClassFile[] NO_CLASSFILES = new IClassFile[] {};
-	protected static final IOrdinaryClassFile[] NO_ORDINARY_CLASSFILES = new IOrdinaryClassFile[] {};
-	/**
-	 * Constant empty list of compilation units
-	 */
-	protected static final ICompilationUnit[] NO_COMPILATION_UNITS = new ICompilationUnit[] {};
+    /**
+     * Constant empty list of class files
+     */
+    protected static final IClassFile[] NO_CLASSFILES = new IClassFile[] { };
+    protected static final IOrdinaryClassFile[] NO_ORDINARY_CLASSFILES = new IOrdinaryClassFile[] { };
+    /**
+     * Constant empty list of compilation units
+     */
+    protected static final ICompilationUnit[] NO_COMPILATION_UNITS = new ICompilationUnit[] { };
 
-	public final String[] names;
+    public final String[] names;
 
-	private final boolean isValidPackageName;
+    private final boolean isValidPackageName;
 
-protected PackageFragment(PackageFragmentRoot root, String[] names) {
-	super(root);
-	this.names = names;
-	this.isValidPackageName = internalIsValidPackageName();
-}
+    protected PackageFragment(PackageFragmentRoot root, String[] names) {
+        super(root);
+        this.names = names;
+        this.isValidPackageName = internalIsValidPackageName();
+    }
 
     /**
- * Returns true if this fragment contains at least one java resource.
- * Returns false otherwise.
- */
-@Override
-public boolean containsJavaResources() throws JavaModelException {
-	return ((PackageFragmentInfo) getElementInfo()).containsJavaResources();
-}
+     * Returns true if this fragment contains at least one java resource.
+     * Returns false otherwise.
+     */
+    @Override
+    public boolean containsJavaResources() throws JavaModelException {
+        return ((PackageFragmentInfo) getElementInfo()).containsJavaResources();
+    }
 
     /**
- * @see JavaElement
- */
-@Override
-protected PackageFragmentInfo createElementInfo() {
-	return new PackageFragmentInfo();
-}
-@Override
-public boolean equals(Object o) {
-	if (this == o) return true;
-	if (!(o instanceof PackageFragment other)) return false;
-	return Util.equalArraysOrNull(this.names, other.names) &&
-			this.getParent().equals(other.getParent());
-}
+     * @see JavaElement
+     */
+    @Override
+    protected PackageFragmentInfo createElementInfo() {
+        return new PackageFragmentInfo();
+    }
 
-@Override
-protected int calculateHashCode() {
-	return Util.combineHashCodes(this.getParent().hashCode(), Arrays.hashCode(this.names));
-}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof PackageFragment other))
+            return false;
+        return Util.equalArraysOrNull(this.names, other.names) && this.getParent().equals(other.getParent());
+    }
 
-@Override
-public boolean exists() {
-	// super.exist() only checks for the parent and the resource existence
-	// so also ensure that:
-	//  - the package is not excluded (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=138577)
-	//  - its name is valide (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=108456)
-	return super.exists() && !Util.isExcluded(this) && isValidPackageName();
-}
-/**
- * @see IPackageFragment#getOrdinaryClassFile(String)
- * @exception IllegalArgumentException if the name does not end with ".class" or if the name is "module-info.class".
- */
-@Override
-public IOrdinaryClassFile getOrdinaryClassFile(String classFileName) {
-	if (!com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.Util.isClassFileName(classFileName)) {
-		throw new IllegalArgumentException(Messages.bind(Messages.element_invalidClassFileName, classFileName));
-	}
-	if (TypeConstants.MODULE_INFO_CLASS_NAME_STRING.equals(classFileName)) {
-		throw new IllegalArgumentException(Messages.element_moduleInfoNotSupported);
-	}
-	// don't hold on the .class file extension to save memory
-	// also make sure to not use substring as the resulting String may hold on the underlying char[] which might be much bigger than necessary
-	int length = classFileName.length() - 6;
-	char[] nameWithoutExtension = new char[length];
-	classFileName.getChars(0, length, nameWithoutExtension, 0);
-	return new ClassFile(this, DeduplicationUtil.toString(nameWithoutExtension));
-}
-/**
- * @see IPackageFragment#getClassFile(String)
- * @exception IllegalArgumentException if the name does not end with ".class".
- */
-@Override
-public IClassFile getClassFile(String classFileName) {
-	if (TypeConstants.MODULE_INFO_CLASS_NAME_STRING.equals(classFileName))
-		return getModularClassFile();
-	return getOrdinaryClassFile(classFileName);
-}
-@Override
-public IModularClassFile getModularClassFile() {
-	// don't hold on the .class file extension to save memory
-	// also make sure to not use substring as the resulting String may hold on the underlying char[] which might be much bigger than necessary
-	return new ModularClassFile(this);
-}
+    @Override
+    protected int calculateHashCode() {
+        return Util.combineHashCodes(this.getParent().hashCode(), Arrays.hashCode(this.names));
+    }
 
-/**
- * Returns a collection of ordinary class files in this - a folder package fragment which has a root
- * that has its kind set to <code>IPackageFragmentRoot.K_Source</code> does not
- * recognize class files.
- *
- * @see IPackageFragment#getOrdinaryClassFiles()
- */
-@Override
-public IOrdinaryClassFile[] getOrdinaryClassFiles() throws JavaModelException {
-	if (getKind() == IPackageFragmentRoot.K_SOURCE) {
-		return NO_ORDINARY_CLASSFILES;
-	}
+    @Override
+    public boolean exists() {
+        // super.exist() only checks for the parent and the resource existence
+        // so also ensure that:
+        // - the package is not excluded (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=138577)
+        // - its name is valide (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=108456)
+        return super.exists() && !Util.isExcluded(this) && isValidPackageName();
+    }
 
-	ArrayList list = getChildrenOfType(CLASS_FILE);
-	for (Iterator iterator = list.iterator(); iterator.hasNext();) {
-		if (iterator.next() instanceof ModularClassFile)
-			iterator.remove();
-	}
-	IOrdinaryClassFile[] array= new IOrdinaryClassFile[list.size()];
-	list.toArray(array);
-	return array;
-}
-/**
- * Returns a collection of all class files in this - a folder package fragment which has a root
- * that has its kind set to <code>IPackageFragmentRoot.K_Source</code> does not
- * recognize class files.
- *
- * @see IPackageFragment#getAllClassFiles()
- */
-@Override
-public IClassFile[] getAllClassFiles() throws JavaModelException {
-	if (getKind() == IPackageFragmentRoot.K_SOURCE) {
-		return NO_CLASSFILES;
-	}
+    /**
+     * @see IPackageFragment#getOrdinaryClassFile(String)
+     * @exception IllegalArgumentException if the name does not end with ".class" or if the name is "module-info.class".
+     */
+    @Override
+    public IOrdinaryClassFile getOrdinaryClassFile(String classFileName) {
+        if (!com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.Util
+            .isClassFileName(classFileName)) {
+            throw new IllegalArgumentException(Messages.bind(Messages.element_invalidClassFileName, classFileName));
+        }
+        if (TypeConstants.MODULE_INFO_CLASS_NAME_STRING.equals(classFileName)) {
+            throw new IllegalArgumentException(Messages.element_moduleInfoNotSupported);
+        }
+        // don't hold on the .class file extension to save memory
+        // also make sure to not use substring as the resulting String may hold on the underlying char[] which might be
+        // much bigger than necessary
+        int length = classFileName.length() - 6;
+        char[] nameWithoutExtension = new char[length];
+        classFileName.getChars(0, length, nameWithoutExtension, 0);
+        return new ClassFile(this, DeduplicationUtil.toString(nameWithoutExtension));
+    }
 
-	ArrayList list = getChildrenOfType(CLASS_FILE);
-	IClassFile[] array= new IClassFile[list.size()];
-	list.toArray(array);
-	return array;
-}
+    /**
+     * @see IPackageFragment#getClassFile(String)
+     * @exception IllegalArgumentException if the name does not end with ".class".
+     */
+    @Override
+    public IClassFile getClassFile(String classFileName) {
+        if (TypeConstants.MODULE_INFO_CLASS_NAME_STRING.equals(classFileName))
+            return getModularClassFile();
+        return getOrdinaryClassFile(classFileName);
+    }
 
-@Deprecated
-@Override
-public IClassFile[] getClassFiles() throws JavaModelException {
-	return getOrdinaryClassFiles();
-}
+    @Override
+    public IModularClassFile getModularClassFile() {
+        // don't hold on the .class file extension to save memory
+        // also make sure to not use substring as the resulting String may hold on the underlying char[] which might be
+        // much bigger than necessary
+        return new ModularClassFile(this);
+    }
 
-/**
- * @see IPackageFragment#getCompilationUnit(String)
- * @exception IllegalArgumentException if the name does not end with ".java"
- */
-@Override
-public ICompilationUnit getCompilationUnit(String cuName) {
-	if (!Util.isJavaLikeFileName(cuName)) {
-		throw new IllegalArgumentException(Messages.convention_unit_notJavaName);
-	}
-	return new CompilationUnit(this, cuName, DefaultWorkingCopyOwner.PRIMARY);
-}
-/**
- * @see IPackageFragment#getCompilationUnits()
- */
-@Override
-public ICompilationUnit[] getCompilationUnits() throws JavaModelException {
-	if (getKind() == IPackageFragmentRoot.K_BINARY) {
-		return NO_COMPILATION_UNITS;
-	}
+    /**
+     * Returns a collection of ordinary class files in this - a folder package fragment which has a root
+     * that has its kind set to <code>IPackageFragmentRoot.K_Source</code> does not
+     * recognize class files.
+     *
+     * @see IPackageFragment#getOrdinaryClassFiles()
+     */
+    @Override
+    public IOrdinaryClassFile[] getOrdinaryClassFiles() throws JavaModelException {
+        if (getKind() == IPackageFragmentRoot.K_SOURCE) {
+            return NO_ORDINARY_CLASSFILES;
+        }
 
-	ArrayList list = getChildrenOfType(COMPILATION_UNIT);
-	ICompilationUnit[] array= new ICompilationUnit[list.size()];
-	list.toArray(array);
-	return array;
-}
-/**
- * @see IPackageFragment#getCompilationUnits(WorkingCopyOwner)
- */
-@Override
-public ICompilationUnit[] getCompilationUnits(WorkingCopyOwner owner) {
-	ICompilationUnit[] workingCopies = JavaModelManager.getJavaModelManager().getWorkingCopies(owner, false/*don't add primary*/);
-	if (workingCopies == null) return JavaModelManager.NO_WORKING_COPY;
-	int length = workingCopies.length;
-	ICompilationUnit[] result = new ICompilationUnit[length];
-	int index = 0;
-    for (ICompilationUnit wc : workingCopies) {
-        if (equals(wc.getParent()) && !Util.isExcluded(wc)) { // 59933 - excluded wc shouldn't be answered back
-            result[index++] = wc;
+        ArrayList list = getChildrenOfType(CLASS_FILE);
+        for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+            if (iterator.next() instanceof ModularClassFile)
+                iterator.remove();
+        }
+        IOrdinaryClassFile[] array = new IOrdinaryClassFile[list.size()];
+        list.toArray(array);
+        return array;
+    }
+
+    /**
+     * Returns a collection of all class files in this - a folder package fragment which has a root
+     * that has its kind set to <code>IPackageFragmentRoot.K_Source</code> does not
+     * recognize class files.
+     *
+     * @see IPackageFragment#getAllClassFiles()
+     */
+    @Override
+    public IClassFile[] getAllClassFiles() throws JavaModelException {
+        if (getKind() == IPackageFragmentRoot.K_SOURCE) {
+            return NO_CLASSFILES;
+        }
+
+        ArrayList list = getChildrenOfType(CLASS_FILE);
+        IClassFile[] array = new IClassFile[list.size()];
+        list.toArray(array);
+        return array;
+    }
+
+    /**
+     * @see IPackageFragment#getCompilationUnit(String)
+     * @exception IllegalArgumentException if the name does not end with ".java"
+     */
+    @Override
+    public ICompilationUnit getCompilationUnit(String cuName) {
+        if (!Util.isJavaLikeFileName(cuName)) {
+            throw new IllegalArgumentException(Messages.convention_unit_notJavaName);
+        }
+        return new CompilationUnit(this, cuName, DefaultWorkingCopyOwner.PRIMARY);
+    }
+
+    /**
+     * @see IPackageFragment#getCompilationUnits()
+     */
+    @Override
+    public ICompilationUnit[] getCompilationUnits() throws JavaModelException {
+        if (getKind() == IPackageFragmentRoot.K_BINARY) {
+            return NO_COMPILATION_UNITS;
+        }
+
+        ArrayList list = getChildrenOfType(COMPILATION_UNIT);
+        ICompilationUnit[] array = new ICompilationUnit[list.size()];
+        list.toArray(array);
+        return array;
+    }
+
+    /**
+     * @see IPackageFragment#getCompilationUnits(WorkingCopyOwner)
+     */
+    @Override
+    public ICompilationUnit[] getCompilationUnits(WorkingCopyOwner owner) {
+        ICompilationUnit[] workingCopies
+            = JavaModelManager.getJavaModelManager().getWorkingCopies(owner, false/* don't add primary */);
+        if (workingCopies == null)
+            return JavaModelManager.NO_WORKING_COPY;
+        int length = workingCopies.length;
+        ICompilationUnit[] result = new ICompilationUnit[length];
+        int index = 0;
+        for (ICompilationUnit wc : workingCopies) {
+            if (equals(wc.getParent()) && !Util.isExcluded(wc)) { // 59933 - excluded wc shouldn't be answered back
+                result[index++] = wc;
+            }
+        }
+        if (index != length) {
+            System.arraycopy(result, 0, result = new ICompilationUnit[index], 0, index);
+        }
+        return result;
+    }
+
+    @Override
+    public String getElementName() {
+        if (this.names.length == 0)
+            return DEFAULT_PACKAGE_NAME;
+        return Util.concatWith(this.names, '.');
+    }
+
+    /**
+     * @see IJavaElement
+     */
+    @Override
+    public int getElementType() {
+        return PACKAGE_FRAGMENT;
+    }
+
+    /*
+     * @see JavaElement
+     */
+    @Override
+    public IJavaElement getHandleFromMemento(String token, MementoTokenizer memento, WorkingCopyOwner owner) {
+        switch (token.charAt(0)) {
+            case JEM_CLASSFILE:
+                if (!memento.hasMoreTokens())
+                    return this;
+                String classFileName = memento.nextToken();
+                JavaElement classFile = (JavaElement) getClassFile(classFileName);
+                return classFile.getHandleFromMemento(memento, owner);
+
+            case JEM_MODULAR_CLASSFILE:
+                classFile = (JavaElement) getModularClassFile();
+                return classFile.getHandleFromMemento(memento, owner);
+
+            case JEM_COMPILATIONUNIT:
+                if (!memento.hasMoreTokens())
+                    return this;
+                String cuName = memento.nextToken();
+                JavaElement cu = new CompilationUnit(this, cuName, owner);
+                return cu.getHandleFromMemento(memento, owner);
+        }
+        return null;
+    }
+
+    /**
+     * @see JavaElement#getHandleMementoDelimiter()
+     */
+    @Override
+    protected char getHandleMementoDelimiter() {
+        return JavaElement.JEM_PACKAGEFRAGMENT;
+    }
+
+    /**
+     * @see IPackageFragment#getKind()
+     */
+    @Override
+    public int getKind() throws JavaModelException {
+        return ((IPackageFragmentRoot) getParent()).getKind();
+    }
+
+    /**
+     * @see IJavaElement#getPath()
+     */
+    @Override
+    public IPath getPath() {
+        PackageFragmentRoot root = getPackageFragmentRoot();
+        if (root.isArchive()) {
+            return root.getPath();
+        } else {
+            IPath path = root.getPath();
+            for (String name : this.names) {
+                path = path.append(name);
+            }
+            return path;
         }
     }
-	if (index != length) {
-		System.arraycopy(result, 0, result = new ICompilationUnit[index], 0, index);
-	}
-	return result;
-}
-@Override
-public String getElementName() {
-	if (this.names.length == 0)
-		return DEFAULT_PACKAGE_NAME;
-	return Util.concatWith(this.names, '.');
-}
-/**
- * @see IJavaElement
- */
-@Override
-public int getElementType() {
-	return PACKAGE_FRAGMENT;
-}
-/*
- * @see JavaElement
- */
-@Override
-public IJavaElement getHandleFromMemento(String token, MementoTokenizer memento, WorkingCopyOwner owner) {
-	switch (token.charAt(0)) {
-		case JEM_CLASSFILE:
-			if (!memento.hasMoreTokens()) return this;
-			String classFileName = memento.nextToken();
-			JavaElement classFile = (JavaElement) getClassFile(classFileName);
-			return classFile.getHandleFromMemento(memento, owner);
-		case JEM_MODULAR_CLASSFILE:
-			classFile = (JavaElement) getModularClassFile();
-			return classFile.getHandleFromMemento(memento, owner);
-		case JEM_COMPILATIONUNIT:
-			if (!memento.hasMoreTokens()) return this;
-			String cuName = memento.nextToken();
-			JavaElement cu = new CompilationUnit(this, cuName, owner);
-			return cu.getHandleFromMemento(memento, owner);
-	}
-	return null;
-}
-/**
- * @see JavaElement#getHandleMementoDelimiter()
- */
-@Override
-protected char getHandleMementoDelimiter() {
-	return JavaElement.JEM_PACKAGEFRAGMENT;
-}
-/**
- * @see IPackageFragment#getKind()
- */
-@Override
-public int getKind() throws JavaModelException {
-	return ((IPackageFragmentRoot)getParent()).getKind();
-}
-/**
- * Returns an array of non-java resources contained in the receiver.
- */
-@Override
-public Object[] getNonJavaResources() throws JavaModelException {
-	if (isDefaultPackage()) {
-		// We don't want to show non java resources of the default package (see PR #1G58NB8)
-		return JavaElementInfo.NO_NON_JAVA_RESOURCES;
-	} else {
-		return ((PackageFragmentInfo) getElementInfo()).getNonJavaResources(resource(), getPackageFragmentRoot());
-	}
-}
-/**
- * @see IJavaElement#getPath()
- */
-@Override
-public IPath getPath() {
-	PackageFragmentRoot root = getPackageFragmentRoot();
-	if (root.isArchive()) {
-		return root.getPath();
-	} else {
-		IPath path = root.getPath();
-		for (String name : this.names) {
-			path = path.append(name);
-		}
-		return path;
-	}
-}
-/**
- * @see JavaElement#resource()
- */
-@Override
-public IResource resource(PackageFragmentRoot root) {
-	int length = this.names.length;
-	if (length == 0) {
-		return root.resource(root);
-	} else {
-		IPath path = new Path(this.names[0]);
-		for (int i = 1; i < length; i++)
-			path = path.append(this.names[i]);
-		return ((IContainer)root.resource(root)).getFolder(path);
-	}
-}
-/**
- * @see IJavaElement#getUnderlyingResource()
- */
-@Override
-public IResource getUnderlyingResource() throws JavaModelException {
-	IResource rootResource = this.getParent().getUnderlyingResource();
-	if (rootResource == null) {
-		//jar package fragment root that has no associated resource
-		return null;
-	}
-	// the underlying resource may be a folder or a project (in the case that the project folder
-	// is atually the package fragment root)
-	if (rootResource.getType() == IResource.FOLDER || rootResource.getType() == IResource.PROJECT) {
-		IContainer folder = (IContainer) rootResource;
-		String[] segs = this.names;
-		for (String seg : segs) {
-			IResource child = folder.findMember(seg);
-			if (child == null || child.getType() != IResource.FOLDER) {
-				throw newNotPresentException();
-			}
-			folder = (IFolder) child;
-		}
-		return folder;
-	} else {
-		return rootResource;
-	}
-}
-/**
- * @see IParent
- */
-@Override
-public boolean hasChildren() throws JavaModelException {
-	return getChildren().length > 0;
-}
-/**
- * @see IPackageFragment#hasSubpackages()
- */
-@Override
-public boolean hasSubpackages() throws JavaModelException {
-	IJavaElement[] packages= ((IPackageFragmentRoot)getParent()).getChildren();
-	int namesLength = this.names.length;
-	nextPackage: for (IJavaElement package1 : packages) {
-		String[] otherNames = ((PackageFragment) package1).names;
-		if (otherNames.length <= namesLength) continue nextPackage;
-		for (int j = 0; j < namesLength; j++)
-			if (!this.names[j].equals(otherNames[j]))
-				continue nextPackage;
-		return true;
-	}
-	return false;
-}
-protected boolean internalIsValidPackageName() {
-	// if package fragment refers to folder in another IProject, then
-	// resource().getProject() is different than getJavaProject().getProject()
-	// use the other java project's options to verify the name
-    String sourceLevel = "1.8";
-	String complianceLevel = "1.8";
-	for (String name : this.names) {
-		if (!Util.isValidFolderNameForPackage(name, sourceLevel, complianceLevel))
-			return false;
-	}
-	return true;
-}
-/**
- * @see IPackageFragment#isDefaultPackage()
- */
-@Override
-public boolean isDefaultPackage() {
-	return this.names.length == 0;
-}
-protected final boolean isValidPackageName() {
-	return this.isValidPackageName;
-}
-/**
- * Debugging purposes
- */
-@Override
-protected void toStringChildren(int tab, StringBuilder buffer, Object info) {
-	if (tab == 0) {
-		super.toStringChildren(tab, buffer, info);
-	}
-}
-/**
- * Debugging purposes
- */
-@Override
-protected void toStringInfo(int tab, StringBuilder buffer, Object info, boolean showResolvedInfo) {
-	buffer.append(tabString(tab));
-	if (this.names.length == 0) {
-		buffer.append("<default>"); //$NON-NLS-1$
-	} else {
-		toStringName(buffer);
-	}
-	if (info == null) {
-		buffer.append(" (not open)"); //$NON-NLS-1$
-	} else {
-		if (tab > 0) {
-			buffer.append(" (...)"); //$NON-NLS-1$
-		}
-	}
-}
 
-@Override
-public String getAttachedJavadoc(IProgressMonitor monitor) throws JavaModelException {
-	PerProjectInfo projectInfo = JavaModelManager.getJavaModelManager().getPerProjectInfoCheckExistence(getJavaProject().getProject());
-	String cachedJavadoc = null;
-	synchronized (projectInfo.javadocCache) {
-		cachedJavadoc = (String) projectInfo.javadocCache.get(this);
-	}
-	if (cachedJavadoc != null) {
-		return cachedJavadoc;
-	}
-	URL baseLocation= getJavadocBaseLocation();
-	if (baseLocation == null) {
-		return null;
-	}
-	StringBuilder pathBuffer = new StringBuilder(baseLocation.toExternalForm());
+    /**
+     * @see JavaElement#resource()
+     */
+    @Override
+    public IResource resource(PackageFragmentRoot root) {
+        int length = this.names.length;
+        if (length == 0) {
+            return root.resource(root);
+        } else {
+            IPath path = new Path(this.names[0]);
+            for (int i = 1; i < length; i++)
+                path = path.append(this.names[i]);
+            return ((IContainer) root.resource(root)).getFolder(path);
+        }
+    }
 
-	if (!(pathBuffer.charAt(pathBuffer.length() - 1) == '/')) {
-		pathBuffer.append('/');
-	}
-	String packPath= getElementName().replace('.', '/');
-	pathBuffer.append(packPath).append('/').append(ExternalJavadocSupport.PACKAGE_FILE_NAME);
+    /**
+     * @see IJavaElement#getUnderlyingResource()
+     */
+    @Override
+    public IResource getUnderlyingResource() throws JavaModelException {
+        IResource rootResource = this.getParent().getUnderlyingResource();
+        if (rootResource == null) {
+            // jar package fragment root that has no associated resource
+            return null;
+        }
+        // the underlying resource may be a folder or a project (in the case that the project folder
+        // is atually the package fragment root)
+        if (rootResource.getType() == IResource.FOLDER || rootResource.getType() == IResource.PROJECT) {
+            IContainer folder = (IContainer) rootResource;
+            String[] segs = this.names;
+            for (String seg : segs) {
+                IResource child = folder.findMember(seg);
+                if (child == null || child.getType() != IResource.FOLDER) {
+                    throw newNotPresentException();
+                }
+                folder = (IFolder) child;
+            }
+            return folder;
+        } else {
+            return rootResource;
+        }
+    }
 
-	if (monitor != null && monitor.isCanceled()) throw new OperationCanceledException();
-	String contents = getURLContents(baseLocation, String.valueOf(pathBuffer));
-	if (monitor != null && monitor.isCanceled()) throw new OperationCanceledException();
-	if (contents == null) return null;
+    /**
+     * @see IParent
+     */
+    @Override
+    public boolean hasChildren() throws JavaModelException {
+        return getChildren().length > 0;
+    }
 
-	contents = ExternalJavadocSupport.forHtml(null, contents).getPackageDoc();
-	if (contents == null) contents = ""; //$NON-NLS-1$
-	synchronized (projectInfo.javadocCache) {
-		projectInfo.javadocCache.put(this, contents);
-	}
-	return contents;
-}
+    /**
+     * @see IPackageFragment#hasSubpackages()
+     */
+    @Override
+    public boolean hasSubpackages() throws JavaModelException {
+        IJavaElement[] packages = ((IPackageFragmentRoot) getParent()).getChildren();
+        int namesLength = this.names.length;
+        nextPackage: for (IJavaElement package1 : packages) {
+            String[] otherNames = ((PackageFragment) package1).names;
+            if (otherNames.length <= namesLength)
+                continue nextPackage;
+            for (int j = 0; j < namesLength; j++)
+                if (!this.names[j].equals(otherNames[j]))
+                    continue nextPackage;
+            return true;
+        }
+        return false;
+    }
 
-@Override
-protected IStatus validateExistence(IResource underlyingResource) {
-	// check that the name of the package is valid (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=108456)
-	if (!isValidPackageName())
-		return newDoesNotExistStatus();
+    protected boolean internalIsValidPackageName() {
+        // if package fragment refers to folder in another IProject, then
+        // resource().getProject() is different than getJavaProject().getProject()
+        // use the other java project's options to verify the name
+        String sourceLevel = "1.8";
+        String complianceLevel = "1.8";
+        for (String name : this.names) {
+            if (!Util.isValidFolderNameForPackage(name, sourceLevel, complianceLevel))
+                return false;
+        }
+        return true;
+    }
 
-	// check whether this pkg can be opened
-	if (underlyingResource != null && !resourceExists(underlyingResource))
-		return newDoesNotExistStatus();
+    /**
+     * @see IPackageFragment#isDefaultPackage()
+     */
+    @Override
+    public boolean isDefaultPackage() {
+        return this.names.length == 0;
+    }
 
-	// check that it is not excluded (https://bugs.eclipse.org/bugs/show_bug.cgi?id=138577)
-	int kind;
-	try {
-		kind = getKind();
-	} catch (JavaModelException e) {
-		return e.getStatus();
-	}
-	if (kind == IPackageFragmentRoot.K_SOURCE && Util.isExcluded(this))
-		return newDoesNotExistStatus();
+    protected final boolean isValidPackageName() {
+        return this.isValidPackageName;
+    }
 
-	return JavaModelStatus.VERIFIED_OK;
-}
+    /**
+     * Debugging purposes
+     */
+    @Override
+    protected void toStringChildren(int tab, StringBuilder buffer, Object info) {
+        if (tab == 0) {
+            super.toStringChildren(tab, buffer, info);
+        }
+    }
+
+    /**
+     * Debugging purposes
+     */
+    @Override
+    protected void toStringInfo(int tab, StringBuilder buffer, Object info, boolean showResolvedInfo) {
+        buffer.append(tabString(tab));
+        if (this.names.length == 0) {
+            buffer.append("<default>"); //$NON-NLS-1$
+        } else {
+            toStringName(buffer);
+        }
+        if (info == null) {
+            buffer.append(" (not open)"); //$NON-NLS-1$
+        } else {
+            if (tab > 0) {
+                buffer.append(" (...)"); //$NON-NLS-1$
+            }
+        }
+    }
+
+    @Override
+    public String getAttachedJavadoc(IProgressMonitor monitor) throws JavaModelException {
+        PerProjectInfo projectInfo
+            = JavaModelManager.getJavaModelManager().getPerProjectInfoCheckExistence(getJavaProject().getProject());
+        String cachedJavadoc = null;
+        synchronized (projectInfo.javadocCache) {
+            cachedJavadoc = (String) projectInfo.javadocCache.get(this);
+        }
+        if (cachedJavadoc != null) {
+            return cachedJavadoc;
+        }
+        URL baseLocation = getJavadocBaseLocation();
+        if (baseLocation == null) {
+            return null;
+        }
+        StringBuilder pathBuffer = new StringBuilder(baseLocation.toExternalForm());
+
+        if (!(pathBuffer.charAt(pathBuffer.length() - 1) == '/')) {
+            pathBuffer.append('/');
+        }
+        String packPath = getElementName().replace('.', '/');
+        pathBuffer.append(packPath).append('/').append(ExternalJavadocSupport.PACKAGE_FILE_NAME);
+
+        if (monitor != null && monitor.isCanceled())
+            throw new OperationCanceledException();
+        String contents = getURLContents(baseLocation, String.valueOf(pathBuffer));
+        if (monitor != null && monitor.isCanceled())
+            throw new OperationCanceledException();
+        if (contents == null)
+            return null;
+
+        contents = ExternalJavadocSupport.forHtml(null, contents).getPackageDoc();
+        if (contents == null)
+            contents = ""; //$NON-NLS-1$
+        synchronized (projectInfo.javadocCache) {
+            projectInfo.javadocCache.put(this, contents);
+        }
+        return contents;
+    }
+
+    @Override
+    protected IStatus validateExistence(IResource underlyingResource) {
+        // check that the name of the package is valid (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=108456)
+        if (!isValidPackageName())
+            return newDoesNotExistStatus();
+
+        // check whether this pkg can be opened
+        if (underlyingResource != null && !resourceExists(underlyingResource))
+            return newDoesNotExistStatus();
+
+        // check that it is not excluded (https://bugs.eclipse.org/bugs/show_bug.cgi?id=138577)
+        int kind;
+        try {
+            kind = getKind();
+        } catch (JavaModelException e) {
+            return e.getStatus();
+        }
+        if (kind == IPackageFragmentRoot.K_SOURCE && Util.isExcluded(this))
+            return newDoesNotExistStatus();
+
+        return JavaModelStatus.VERIFIED_OK;
+    }
 }

@@ -18,15 +18,14 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.bundle;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.ConsumerType;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.ProviderType;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.Version;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.ConsumerType;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.ProviderType;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.Version;
 
 /**
  * Mark a package to be exported from its bundle.
@@ -43,75 +42,75 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 @Retention(RetentionPolicy.CLASS)
 @Target(ElementType.PACKAGE)
 public @interface Export {
-	/**
-	 * A list of package names that are used by this package.
-	 * <p>
-	 * If the {@code uses} directive must be omitted from the export package
-	 * clause for this package, the empty value <code>&#x7B;&#x7D;</code> must
-	 * be specified.
-	 * <p>
-	 * If not specified, the {@code uses} directive for the export package
-	 * clause is calculated by inspection of the classes in this package.
-	 */
-	String[] uses() default {};
+    /**
+     * A list of package names that are used by this package.
+     * <p>
+     * If the {@code uses} directive must be omitted from the export package
+     * clause for this package, the empty value <code>&#x7B;&#x7D;</code> must
+     * be specified.
+     * <p>
+     * If not specified, the {@code uses} directive for the export package
+     * clause is calculated by inspection of the classes in this package.
+     */
+    String[] uses() default { };
 
-	/**
-	 * A list of attribute or directive names and values.
-	 * <p>
-	 * Each string should be specified in the form:
-	 * <ul>
-	 * <li>{@code "name=value"} for attributes.</li>
-	 * <li>{@code "name:type=value"} for typed attributes.</li>
-	 * <li>{@code "name:=value"} for directives.</li>
-	 * </ul>
-	 * These are added, separated by semicolons, to the export package clause.
-	 */
-	String[] attribute() default {};
+    /**
+     * A list of attribute or directive names and values.
+     * <p>
+     * Each string should be specified in the form:
+     * <ul>
+     * <li>{@code "name=value"} for attributes.</li>
+     * <li>{@code "name:type=value"} for typed attributes.</li>
+     * <li>{@code "name:=value"} for directives.</li>
+     * </ul>
+     * These are added, separated by semicolons, to the export package clause.
+     */
+    String[] attribute() default { };
 
-	/**
-	 * Specify the policy for substitutably importing this package.
-	 * <p>
-	 * Bundles that collaborate require the same class loader for types used in
-	 * the collaboration. If multiple bundles export packages with collaboration
-	 * types then they will have to be placed in disjoint class spaces, making
-	 * collaboration impossible. Collaboration is significantly improved when
-	 * bundles are willing to import exported packages; these imports will allow
-	 * a framework to substitute exports for imports.
-	 * <p>
-	 * If not specified, the {@link Substitution#CALCULATED} substitution
-	 * policy is used for this package.
-	 */
-	Substitution substitution() default Substitution.CALCULATED;
+    /**
+     * Specify the policy for substitutably importing this package.
+     * <p>
+     * Bundles that collaborate require the same class loader for types used in
+     * the collaboration. If multiple bundles export packages with collaboration
+     * types then they will have to be placed in disjoint class spaces, making
+     * collaboration impossible. Collaboration is significantly improved when
+     * bundles are willing to import exported packages; these imports will allow
+     * a framework to substitute exports for imports.
+     * <p>
+     * If not specified, the {@link Substitution#CALCULATED} substitution
+     * policy is used for this package.
+     */
+    Substitution substitution() default Substitution.CALCULATED;
 
-	/**
-	 * Substitution policy for this package.
-	 */
-	public enum Substitution {
-		/**
-		 * Use a consumer type version range for the import package clause when
-		 * substitutably importing a package.
-		 * 
-		 * @see ConsumerType
-		 */
-		CONSUMER,
+    /**
+     * Substitution policy for this package.
+     */
+    public enum Substitution {
+        /**
+         * Use a consumer type version range for the import package clause when
+         * substitutably importing a package.
+         * 
+         * @see ConsumerType
+         */
+        CONSUMER,
 
-		/**
-		 * Use a provider type version range for the import package clause when
-		 * substitutably importing a package.
-		 * 
-		 * @see ProviderType
-		 */
-		PROVIDER,
+        /**
+         * Use a provider type version range for the import package clause when
+         * substitutably importing a package.
+         * 
+         * @see ProviderType
+         */
+        PROVIDER,
 
-		/**
-		 * The package must not be substitutably imported.
-		 */
-		NOIMPORT,
+        /**
+         * The package must not be substitutably imported.
+         */
+        NOIMPORT,
 
-		/**
-		 * The policy value is calculated by inspection of the classes in the
-		 * package.
-		 */
-		CALCULATED
-	}
+        /**
+         * The policy value is calculated by inspection of the classes in the
+         * package.
+         */
+        CALCULATED
+    }
 }

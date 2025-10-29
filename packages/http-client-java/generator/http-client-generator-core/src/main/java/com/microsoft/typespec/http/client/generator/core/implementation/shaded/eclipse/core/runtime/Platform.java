@@ -17,7 +17,6 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.runtime.InternalPlatform;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.content.IContentTypeManager;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.preferences.IPreferencesService;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.service.datalocation.Location;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.service.environment.EnvironmentInfo;
@@ -114,24 +113,6 @@ public final class Platform {
     public static final int PLUGIN_ERROR = 2;
 
     /**
-     * Status code constant (value 3) indicating an error internal to the
-     * platform has occurred.
-     */
-    public static final int INTERNAL_ERROR = 3;
-
-    /**
-     * Status code constant (value 4) indicating the platform could not read
-     * some of its metadata.
-     */
-    public static final int FAILED_READ_METADATA = 4;
-
-    /**
-     * Status code constant (value 5) indicating the platform could not write
-     * some of its metadata.
-     */
-    public static final int FAILED_WRITE_METADATA = 5;
-
-    /**
      * Constant string (value {@code win32}) indicating the platform is running on a
      * Window 32-bit operating system (e.g., Windows 98, NT, 2000).
      * <p>
@@ -154,65 +135,6 @@ public final class Platform {
      * @since 3.0
      */
     public static final String OS_LINUX = "linux";//$NON-NLS-1$
-
-    /**
-     * Constant string (value {@code aix} indicating the platform is running on an
-     * AIX-based operating system.
-     * <p>
-     * Note this constant has been moved from the deprecated
-     * org.eclipse.core.boot.BootLoader class and its value has not changed.
-     * </p>
-     *
-     * @since 3.0
-     * @deprecated not supported anymore
-     */
-    @Deprecated(forRemoval = true, since = "2025-03")
-    public static final String OS_AIX = "aix";//$NON-NLS-1$
-
-    /**
-     * Constant string (value {@code solaris}) indicating the platform is running on
-     * a Solaris-based operating system.
-     * <p>
-     * Note this constant has been moved from the deprecated
-     * org.eclipse.core.boot.BootLoader class and its value has not changed.
-     * </p>
-     *
-     * @since 3.0
-     *
-     * @deprecated not supported anymore
-     */
-    @Deprecated(forRemoval = true, since = "2025-03")
-    public static final String OS_SOLARIS = "solaris";//$NON-NLS-1$
-
-    /**
-     * Constant string (value {@code hpux}) indicating the platform is running on an
-     * HP/UX-based operating system.
-     * <p>
-     * Note this constant has been moved from the deprecated
-     * org.eclipse.core.boot.BootLoader class and its value has not changed.
-     * </p>
-     *
-     * @since 3.0
-     *
-     * @deprecated not supported anymore
-     */
-    @Deprecated(forRemoval = true, since = "2025-03")
-    public static final String OS_HPUX = "hpux";//$NON-NLS-1$
-
-    /**
-     * Constant string (value {@code qnx}) indicating the platform is running on a
-     * QNX-based operating system.
-     * <p>
-     * Note this constant has been moved from the deprecated
-     * org.eclipse.core.boot.BootLoader class and its value has not changed.
-     * </p>
-     *
-     * @since 3.0
-     *
-     * @deprecated not supported anymore
-     */
-    @Deprecated(forRemoval = true, since = "2025-03")
-    public static final String OS_QNX = "qnx";//$NON-NLS-1$
 
     /**
      * Constant string (value {@code macosx}) indicating the platform is running on
@@ -277,30 +199,6 @@ public final class Platform {
     }
 
     /**
-     * Returns the adapter manager used for extending
-     * <code>IAdaptable</code> objects.
-     *
-     * @return the adapter manager for this platform
-     * @see IAdapterManager
-     */
-    public static IAdapterManager getAdapterManager() {
-        return InternalPlatform.getDefault().getAdapterManager();
-    }
-
-    /**
-     * Returns the content type manager.
-     * <p>
-     * Clients are also able to acquire the {@link IContentTypeManager} service.
-     * </p>
-     * 
-     * @return the content type manager
-     * @since 3.0
-     */
-    public static IContentTypeManager getContentTypeManager() {
-        return null;
-    }
-
-    /**
      * Returns the location of the platform working directory.
      * <p>
      * Callers of this method should consider using <code>getInstanceLocation</code>
@@ -345,28 +243,6 @@ public final class Platform {
      */
     public static IExtensionRegistry getExtensionRegistry() {
         return RegistryFactory.getRegistry();
-    }
-
-    /**
-     * Returns the location in the local file system of the
-     * plug-in state area for the given bundle.
-     * If the plug-in state area did not exist prior to this call,
-     * it is created.
-     * <p>
-     * The plug-in state area is a file directory within the
-     * platform's metadata area where a plug-in is free to create files.
-     * The content and structure of this area is defined by the plug-in,
-     * and the particular plug-in is solely responsible for any files
-     * it puts there. It is recommended for plug-in preference settings and
-     * other configuration parameters.
-     * </p>
-     *
-     * @param bundle the bundle whose state location if returned
-     * @return a local file system path
-     * @since 3.0
-     */
-    public static IPath getStateLocation(Bundle bundle) {
-        return InternalPlatform.getDefault().getStateLocation(bundle);
     }
 
     /**

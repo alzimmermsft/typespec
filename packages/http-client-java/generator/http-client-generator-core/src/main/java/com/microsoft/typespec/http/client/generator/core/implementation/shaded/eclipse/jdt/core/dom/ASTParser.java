@@ -1104,8 +1104,9 @@ public class ASTParser {
                 return block;
 
             case K_EXPRESSION:
-                com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.Expression expression = codeSnippetParsingUtil
-                    .parseExpression(this.rawSource, this.sourceOffset, this.sourceLength, this.compilerOptions, true);
+                com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.Expression expression
+                    = codeSnippetParsingUtil.parseExpression(this.rawSource, this.sourceOffset, this.sourceLength,
+                        this.compilerOptions, true);
                 recordedParsingInformation = codeSnippetParsingUtil.recordedParsingInformation;
                 comments = recordedParsingInformation.commentPositions;
                 if (comments != null) {

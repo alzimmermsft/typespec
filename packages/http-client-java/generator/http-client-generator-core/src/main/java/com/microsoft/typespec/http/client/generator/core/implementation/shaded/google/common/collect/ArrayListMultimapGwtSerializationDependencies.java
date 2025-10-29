@@ -30,10 +30,9 @@ import java.util.Map;
  * <p>TODO(cpovirk): Consider applying this subclass approach to our other types.
  */
 @GwtCompatible(emulated = true)
-abstract class ArrayListMultimapGwtSerializationDependencies<K, V>
-    extends AbstractListMultimap<K, V> {
-  ArrayListMultimapGwtSerializationDependencies(Map<K, Collection<V>> map) {
-    super(map);
-  }
-  // TODO(cpovirk): Maybe I should have just one shared superclass for AbstractMultimap itself?
+abstract class ArrayListMultimapGwtSerializationDependencies<K, V> extends AbstractListMultimap<K, V> {
+    ArrayListMultimapGwtSerializationDependencies(Map<K, Collection<V>> map) {
+        super(map);
+    }
+    // TODO(cpovirk): Maybe I should have just one shared superclass for AbstractMultimap itself?
 }

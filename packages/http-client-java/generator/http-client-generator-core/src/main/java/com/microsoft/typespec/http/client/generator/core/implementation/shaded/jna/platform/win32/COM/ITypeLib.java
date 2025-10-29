@@ -48,44 +48,28 @@ public interface ITypeLib extends IUnknown {
 
     public UINT GetTypeInfoCount();
 
-    public HRESULT GetTypeInfo(
-        /* [in] */UINT index,
-        /* [out] */ PointerByReference pTInfo);
+    public HRESULT GetTypeInfo(/* [in] */UINT index, /* [out] */ PointerByReference pTInfo);
 
-    public HRESULT GetTypeInfoType(
-        /* [in] */UINT index,
-        /* [out] */ TYPEKIND.ByReference pTKind);
+    public HRESULT GetTypeInfoType(/* [in] */UINT index, /* [out] */ TYPEKIND.ByReference pTKind);
 
-    public HRESULT GetTypeInfoOfGuid(
-        /* [in] */GUID guid,
-        /* [out] */ PointerByReference pTinfo);
+    public HRESULT GetTypeInfoOfGuid(/* [in] */GUID guid, /* [out] */ PointerByReference pTinfo);
 
-    public HRESULT GetLibAttr(
-        /* [out] */PointerByReference ppTLibAttr);
+    public HRESULT GetLibAttr(/* [out] */PointerByReference ppTLibAttr);
 
-    public HRESULT GetTypeComp(
-        /* [out] */PointerByReference ppTComp);
+    public HRESULT GetTypeComp(/* [out] */PointerByReference ppTComp);
 
-    public HRESULT GetDocumentation(
-        /* [in] */int index,
-        /* [out] */ BSTRByReference pBstrName,
-        /* [out] */ BSTRByReference pBstrDocString,
-        /* [out] */ DWORDByReference pdwHelpContext,
+    public HRESULT GetDocumentation(/* [in] */int index, /* [out] */ BSTRByReference pBstrName,
+        /* [out] */ BSTRByReference pBstrDocString, /* [out] */ DWORDByReference pdwHelpContext,
         /* [out] */ BSTRByReference pBstrHelpFile);
 
     public HRESULT IsName(
         /* [annotation][out][in] */
-        LPOLESTR szNameBuf,
-        /* [in] */ ULONG lHashVal,
-        /* [out] */ BOOLByReference pfName);
+        LPOLESTR szNameBuf, /* [in] */ ULONG lHashVal, /* [out] */ BOOLByReference pfName);
 
     public HRESULT FindName(
         /* [annotation][out][in] */
-        LPOLESTR szNameBuf,
-        /* [in] */ ULONG lHashVal,
-        /* [length_is][size_is][out] */ Pointer[] ppTInfo,
-        /* [length_is][size_is][out] */ MEMBERID[] rgMemId,
-        /* [out][in] */ USHORTByReference pcFound);
+        LPOLESTR szNameBuf, /* [in] */ ULONG lHashVal, /* [length_is][size_is][out] */ Pointer[] ppTInfo,
+        /* [length_is][size_is][out] */ MEMBERID[] rgMemId, /* [out][in] */ USHORTByReference pcFound);
 
     public void ReleaseTLibAttr(/* [in] */TLIBATTR pTLibAttr);
 }

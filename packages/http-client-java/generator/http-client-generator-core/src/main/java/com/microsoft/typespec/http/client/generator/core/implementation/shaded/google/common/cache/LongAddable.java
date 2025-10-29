@@ -24,9 +24,9 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.g
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
 interface LongAddable {
-  void increment();
+    void increment();
 
-  void add(long x);
+    void add(long x);
 
-  long sum();
+    long sum();
 }

@@ -26,16 +26,16 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IDocumentPartitioningListenerExtension2 {
 
-	/**
-	 * Signals the change of document partitionings.
-	 * <p>
-	 * This method replaces
-	 * {@link IDocumentPartitioningListener#documentPartitioningChanged(IDocument)}
-	 * and
-	 * {@link IDocumentPartitioningListenerExtension#documentPartitioningChanged(IDocument, IRegion)}
-	 *
-	 * @param event the event describing the change
-	 * @see IDocument#addDocumentPartitioningListener(IDocumentPartitioningListener)
-	 */
-	void documentPartitioningChanged(DocumentPartitioningChangedEvent event);
+    /**
+     * Signals the change of document partitionings.
+     * <p>
+     * This method replaces
+     * {@link IDocumentPartitioningListener#documentPartitioningChanged(IDocument)}
+     * and
+     * {@link IDocumentPartitioningListenerExtension#documentPartitioningChanged(IDocument, IRegion)}
+     *
+     * @param event the event describing the change
+     * @see IDocument#addDocumentPartitioningListener(IDocumentPartitioningListener)
+     */
+    void documentPartitioningChanged(DocumentPartitioningChangedEvent event);
 }

@@ -23,28 +23,28 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.util;
 
-import java.util.Iterator;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.COMUtils;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.Dispatch;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IEnumMoniker;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.Moniker;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.PointerByReference;
+import java.util.Iterator;
 
 /**
  * Enumerates the components of a moniker or the monikers in a table of
  * monikers.
  *
  * @see <a
- *      href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms692852%28v=vs.85%29.aspx">MSDN</a>
+ * href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms692852%28v=vs.85%29.aspx">MSDN</a>
  *
  */
 public class EnumMoniker implements Iterable<IDispatch> {
 
-    protected EnumMoniker(IEnumMoniker raw, com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IRunningObjectTable rawRot,
-            ObjectFactory factory) {
+    protected EnumMoniker(IEnumMoniker raw,
+        com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IRunningObjectTable rawRot,
+        ObjectFactory factory) {
 
         assert COMUtils.comIsInitialized() : "COM not initialized";
 
@@ -117,7 +117,7 @@ public class EnumMoniker implements Iterable<IDispatch> {
                 Dispatch dispatch = new Dispatch(ppunkObject.getValue());
                 EnumMoniker.this.cacheNext();
                 IDispatch d = EnumMoniker.this.factory.createProxy(IDispatch.class, dispatch);
-                //must release a COM Ref, GetObject returns a pointer with +1
+                // must release a COM Ref, GetObject returns a pointer with +1
                 int n = dispatch.Release();
                 return d;
             }

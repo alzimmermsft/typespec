@@ -26,8 +26,10 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
 
-/** Represents a reference to a pointer to native data.
+/**
+ * Represents a reference to a pointer to native data.
  * In C notation, <code>void**</code>.
+ * 
  * @author twall
  */
 public class PointerByReference extends ByReference {

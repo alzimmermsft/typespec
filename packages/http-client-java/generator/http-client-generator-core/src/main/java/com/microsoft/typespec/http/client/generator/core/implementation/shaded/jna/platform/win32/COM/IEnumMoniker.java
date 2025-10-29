@@ -23,11 +23,11 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.PointerByReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Guid.IID;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.ULONG;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.ULONGByReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HRESULT;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.PointerByReference;
 
 /**
  * Enumerates the components of a moniker or the monikers in a table of monikers.

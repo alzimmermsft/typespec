@@ -13,49 +13,46 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup;
 
-import java.util.Arrays;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.SortedCharArrays;
+import java.util.Arrays;
 
 /**
  * Sorted and simplified version of previously existed SimpleNameVector
  */
 final class SortedSimpleNameVector {
 
-	static int INITIAL_SIZE = 10;
+    static int INITIAL_SIZE = 10;
 
-	int size;
-	char[][] elements;
+    int size;
+    char[][] elements;
 
-	public SortedSimpleNameVector() {
-		this.size = 0;
-		this.elements = new char[INITIAL_SIZE][];
-	}
+    public SortedSimpleNameVector() {
+        this.size = 0;
+        this.elements = new char[INITIAL_SIZE][];
+    }
 
-	public boolean add(char[] newElement) {
-		int idx = Arrays.binarySearch(this.elements, 0, this.size, newElement, SortedCharArrays.CHAR_ARR_COMPARATOR);
-		if (idx < 0) {
-			this.elements = SortedCharArrays.insertIntoArray(
-					this.elements,
-					this.size < this.elements.length ? this.elements : new char[this.elements.length * 2][],
-					newElement,
-					-(idx + 1),
-					this.size++);
-			return true;
-		}
-		return false;
-	}
+    public boolean add(char[] newElement) {
+        int idx = Arrays.binarySearch(this.elements, 0, this.size, newElement, SortedCharArrays.CHAR_ARR_COMPARATOR);
+        if (idx < 0) {
+            this.elements = SortedCharArrays.insertIntoArray(this.elements,
+                this.size < this.elements.length ? this.elements : new char[this.elements.length * 2][], newElement,
+                -(idx + 1), this.size++);
+            return true;
+        }
+        return false;
+    }
 
-	public char[] elementAt(int index) {
-		return this.elements[index];
-	}
+    public char[] elementAt(int index) {
+        return this.elements[index];
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder buffer = new StringBuilder();
-		for (int i = 0; i < this.size; i++) {
-			buffer.append(this.elements[i]).append("\n"); //$NON-NLS-1$
-		}
-		return buffer.toString();
-	}
+    @Override
+    public String toString() {
+        StringBuilder buffer = new StringBuilder();
+        for (int i = 0; i < this.size; i++) {
+            buffer.append(this.elements[i]).append("\n"); //$NON-NLS-1$
+        }
+        return buffer.toString();
+    }
 
 }

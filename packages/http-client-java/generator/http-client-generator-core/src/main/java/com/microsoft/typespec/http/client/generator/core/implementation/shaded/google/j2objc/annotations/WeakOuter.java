@@ -31,6 +31,7 @@ import java.lang.annotation.Target;
  *
  * @author Tom Ball
  */
-@Target({TYPE, TYPE_USE, LOCAL_VARIABLE})
+@Target({ TYPE, TYPE_USE, LOCAL_VARIABLE })
 @Retention(SOURCE)
-public @interface WeakOuter {}
+public @interface WeakOuter {
+}

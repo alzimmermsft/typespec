@@ -22,49 +22,57 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class ClasspathAccessRule extends AccessRule implements IAccessRule {
 
-	private IPath path;
+    private IPath path;
 
-	public ClasspathAccessRule(IPath pattern, int kind) {
-		this(pattern.toString().toCharArray(), toProblemId(kind));
-		// avoid IPath creation (Bug 571159):
-		this.path = pattern;
-	}
+    public ClasspathAccessRule(IPath pattern, int kind) {
+        this(pattern.toString().toCharArray(), toProblemId(kind));
+        // avoid IPath creation (Bug 571159):
+        this.path = pattern;
+    }
 
-	public ClasspathAccessRule(char[] pattern, int problemId) {
-		super(DeduplicationUtil.intern(pattern), problemId);
-	}
+    public ClasspathAccessRule(char[] pattern, int problemId) {
+        super(DeduplicationUtil.intern(pattern), problemId);
+    }
 
-	private static int toProblemId(int kind) {
-		boolean ignoreIfBetter = (kind & IAccessRule.IGNORE_IF_BETTER) != 0;
-		switch (kind & ~IAccessRule.IGNORE_IF_BETTER) {
-			case K_NON_ACCESSIBLE:
-				return ignoreIfBetter ? IProblem.ForbiddenReference | AccessRule.IgnoreIfBetter : IProblem.ForbiddenReference;
-			case K_DISCOURAGED:
-				return ignoreIfBetter ? IProblem.DiscouragedReference | AccessRule.IgnoreIfBetter : IProblem.DiscouragedReference;
-			default:
-				return ignoreIfBetter ? AccessRule.IgnoreIfBetter : 0;
-		}
-	}
+    private static int toProblemId(int kind) {
+        boolean ignoreIfBetter = (kind & IAccessRule.IGNORE_IF_BETTER) != 0;
+        switch (kind & ~IAccessRule.IGNORE_IF_BETTER) {
+            case K_NON_ACCESSIBLE:
+                return ignoreIfBetter
+                    ? IProblem.ForbiddenReference | AccessRule.IgnoreIfBetter
+                    : IProblem.ForbiddenReference;
 
-	@Override
-	public IPath getPattern() {
-		if (this.path == null) {
-			// cache the IPath (Bug 571159):
-			this.path = new Path(new String(this.pattern));
-		}
-		return this.path;
-	}
+            case K_DISCOURAGED:
+                return ignoreIfBetter
+                    ? IProblem.DiscouragedReference | AccessRule.IgnoreIfBetter
+                    : IProblem.DiscouragedReference;
 
-	@Override
-	public int getKind() {
-		switch (getProblemId()) {
-			case IProblem.ForbiddenReference:
-				return K_NON_ACCESSIBLE;
-			case IProblem.DiscouragedReference:
-				return K_DISCOURAGED;
-			default:
-				return K_ACCESSIBLE;
-		}
-	}
+            default:
+                return ignoreIfBetter ? AccessRule.IgnoreIfBetter : 0;
+        }
+    }
+
+    @Override
+    public IPath getPattern() {
+        if (this.path == null) {
+            // cache the IPath (Bug 571159):
+            this.path = new Path(new String(this.pattern));
+        }
+        return this.path;
+    }
+
+    @Override
+    public int getKind() {
+        switch (getProblemId()) {
+            case IProblem.ForbiddenReference:
+                return K_NON_ACCESSIBLE;
+
+            case IProblem.DiscouragedReference:
+                return K_DISCOURAGED;
+
+            default:
+                return K_ACCESSIBLE;
+        }
+    }
 
 }

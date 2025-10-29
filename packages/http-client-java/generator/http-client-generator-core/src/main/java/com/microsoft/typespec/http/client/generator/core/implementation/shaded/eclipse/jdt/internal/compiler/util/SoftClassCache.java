@@ -25,62 +25,62 @@ import java.util.concurrent.ConcurrentMap;
  */
 class SoftClassCache {
 
-	private final ConcurrentMap<Path, JdkClasses> jdks = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Path, JdkClasses> jdks = new ConcurrentHashMap<>();
 
-	void clear() {
-		this.jdks.clear();
-	}
+    void clear() {
+        this.jdks.clear();
+    }
 
-	public byte[] getClassBytes(Jdk jdk, Path path) throws IOException {
-		return this.jdks.computeIfAbsent(jdk.path, JdkClasses::new).get(path);
-	}
+    public byte[] getClassBytes(Jdk jdk, Path path) throws IOException {
+        return this.jdks.computeIfAbsent(jdk.path, JdkClasses::new).get(path);
+    }
 
-	private static final class JdkClasses {
-		private final ConcurrentMap<Path, ClassBytes> classes = new ConcurrentHashMap<>(10007);
-		private final Path jdkPath;
+    private static final class JdkClasses {
+        private final ConcurrentMap<Path, ClassBytes> classes = new ConcurrentHashMap<>(10007);
+        private final Path jdkPath;
 
-		public JdkClasses(Path jdkPath) {
-			this.jdkPath = jdkPath;
-		}
+        public JdkClasses(Path jdkPath) {
+            this.jdkPath = jdkPath;
+        }
 
-		public byte[] get(Path path) throws IOException {
-			return this.classes.computeIfAbsent(path, ClassBytes::new).getBytes();
-		}
+        public byte[] get(Path path) throws IOException {
+            return this.classes.computeIfAbsent(path, ClassBytes::new).getBytes();
+        }
 
-		@Override
-		public String toString() {
-			return "Class Cache for " + this.jdkPath; //$NON-NLS-1$
-		}
-	}
+        @Override
+        public String toString() {
+            return "Class Cache for " + this.jdkPath; //$NON-NLS-1$
+        }
+    }
 
-	private static final class ClassBytes {
-		private final Path path;
-		private volatile boolean empty;
-		private volatile SoftReference<byte[]> bytes;
+    private static final class ClassBytes {
+        private final Path path;
+        private volatile boolean empty;
+        private volatile SoftReference<byte[]> bytes;
 
-		public ClassBytes(Path path) {
-			this.path = path;
-		}
+        public ClassBytes(Path path) {
+            this.path = path;
+        }
 
-		public byte[] getBytes() throws IOException {
-			if (this.empty) {
-				return null;
-			}
-			SoftReference<byte[]> reference = this.bytes;
-			if (reference != null) {
-				byte[] bs = reference.get();
-				if (bs != null) {
-					return bs;
-				}
-			}
-			byte[] readBytes = JRTUtil.safeReadBytes(this.path);
-			if (readBytes == null) {
-				this.empty = true;
-				return null;
-			}
-			this.bytes = new SoftReference<>(readBytes);
-			return readBytes;
-		}
-	}
+        public byte[] getBytes() throws IOException {
+            if (this.empty) {
+                return null;
+            }
+            SoftReference<byte[]> reference = this.bytes;
+            if (reference != null) {
+                byte[] bs = reference.get();
+                if (bs != null) {
+                    return bs;
+                }
+            }
+            byte[] readBytes = JRTUtil.safeReadBytes(this.path);
+            if (readBytes == null) {
+                this.empty = true;
+                return null;
+            }
+            this.bytes = new SoftReference<>(readBytes);
+            return readBytes;
+        }
+    }
 
 }

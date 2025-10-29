@@ -24,11 +24,10 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
-import java.util.Arrays;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.DWORD;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HANDLE;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.IntByReference;
+import java.util.Arrays;
 
 /**
  * Psapi utility API.
@@ -61,12 +60,12 @@ public abstract class PsapiUtil {
      * Retrieves the name of the executable file for the specified process.
      *
      * @param hProcess
-     *            A handle to the process. The handle must have the
-     *            PROCESS_QUERY_INFORMATION or PROCESS_QUERY_LIMITED_INFORMATION
-     *            access right. For more information, see Process Security and
-     *            Access Rights. <br>
-     *            Windows Server 2003 and Windows XP: The handle must have the
-     *            PROCESS_QUERY_INFORMATION access right.
+     * A handle to the process. The handle must have the
+     * PROCESS_QUERY_INFORMATION or PROCESS_QUERY_LIMITED_INFORMATION
+     * access right. For more information, see Process Security and
+     * Access Rights. <br>
+     * Windows Server 2003 and Windows XP: The handle must have the
+     * PROCESS_QUERY_INFORMATION access right.
      * @return ame of the executable file for the specified process.
      * @throws Win32Exception in case an error occurs
      * @see <a href="http://msdn.microsoft.com/en-us/library/ms683217(VS.85).aspx">MSDN</a>
@@ -75,10 +74,9 @@ public abstract class PsapiUtil {
         int size = 2048;
         while (true) {
             final char[] filePath = new char[size];
-            int length = Psapi.INSTANCE.GetProcessImageFileName(hProcess,
-                filePath, filePath.length);
-            if(length == 0) {
-                if(Native.getLastError() != WinError.ERROR_INSUFFICIENT_BUFFER) {
+            int length = Psapi.INSTANCE.GetProcessImageFileName(hProcess, filePath, filePath.length);
+            if (length == 0) {
+                if (Native.getLastError() != WinError.ERROR_INSUFFICIENT_BUFFER) {
                     throw new Win32Exception(Native.getLastError());
                 }
                 size += 2048;

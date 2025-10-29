@@ -19,40 +19,46 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class RecoveredModuleReference extends RecoveredElement {
 
-	public ModuleReference moduleReference;
-public RecoveredModuleReference(ModuleReference moduleReference, RecoveredElement parent, int bracketBalance){
-	super(parent, bracketBalance);
-	this.moduleReference = moduleReference;
-}
-/*
- * Answer the associated parsed structure
- */
-@Override
-public ASTNode parseTree(){
-	return this.moduleReference;
-}
-/*
- * Answer the very source end of the corresponding parse node
- */
-@Override
-public int sourceEnd(){
-	return this.moduleReference.sourceEnd;
-}
-@Override
-public String toString(int tab) {
-	return tabString(tab) + "Recovered ModuleReference: " + this.moduleReference.toString(); //$NON-NLS-1$
-}
-public ModuleReference updatedModuleReference(){
+    public ModuleReference moduleReference;
 
-	return this.moduleReference;
-}
-@Override
-public void updateParseTree(){
-	updatedModuleReference();
-}
-/*
- * Update the declarationSourceEnd of the corresponding parse node
- */
+    public RecoveredModuleReference(ModuleReference moduleReference, RecoveredElement parent, int bracketBalance) {
+        super(parent, bracketBalance);
+        this.moduleReference = moduleReference;
+    }
+
+    /*
+     * Answer the associated parsed structure
+     */
+    @Override
+    public ASTNode parseTree() {
+        return this.moduleReference;
+    }
+
+    /*
+     * Answer the very source end of the corresponding parse node
+     */
+    @Override
+    public int sourceEnd() {
+        return this.moduleReference.sourceEnd;
+    }
+
+    @Override
+    public String toString(int tab) {
+        return tabString(tab) + "Recovered ModuleReference: " + this.moduleReference.toString(); //$NON-NLS-1$
+    }
+
+    public ModuleReference updatedModuleReference() {
+
+        return this.moduleReference;
+    }
+
+    @Override
+    public void updateParseTree() {
+        updatedModuleReference();
+    }
+    /*
+     * Update the declarationSourceEnd of the corresponding parse node
+     */
 //public void updateSourceEndIfNecessary(int bodyStart, int bodyEnd){
 //	if (this.moduleReference.declarationSourceEnd == 0) {
 //		this.moduleReference.declarationSourceEnd = bodyEnd;

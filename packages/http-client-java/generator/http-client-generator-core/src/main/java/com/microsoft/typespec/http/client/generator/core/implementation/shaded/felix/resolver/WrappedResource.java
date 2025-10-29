@@ -18,40 +18,34 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver;
 
-import java.util.*;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.namespace.ExecutionEnvironmentNamespace;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.namespace.HostNamespace;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Capability;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Requirement;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Resource;
+import java.util.*;
 
-class WrappedResource implements Resource
-{
+class WrappedResource implements Resource {
     private final Resource m_host;
     private final List<Resource> m_fragments;
     private final List<Capability> m_cachedCapabilities;
     private final List<Requirement> m_cachedRequirements;
 
-    public WrappedResource(Resource host, List<Resource> fragments)
-    {
+    public WrappedResource(Resource host, List<Resource> fragments) {
         m_host = host;
         m_fragments = fragments;
- 
+
         // Wrap host capabilities.
         List<Capability> caps = new ArrayList<Capability>();
-        for (Capability cap : m_host.getCapabilities(null))
-        {
+        for (Capability cap : m_host.getCapabilities(null)) {
             caps.add(new WrappedCapability(this, cap));
         }
 
         // Wrap fragment capabilities.
-        if (m_fragments != null)
-        {
-            for (Resource fragment : m_fragments)
-            {
-                for (Capability cap : fragment.getCapabilities(null))
-                {
-                    caps.add(new WrappedCapability(this,  cap));
+        if (m_fragments != null) {
+            for (Resource fragment : m_fragments) {
+                for (Capability cap : fragment.getCapabilities(null)) {
+                    caps.add(new WrappedCapability(this, cap));
                 }
             }
         }
@@ -59,24 +53,18 @@ class WrappedResource implements Resource
 
         // Wrap host requirements.
         List<Requirement> reqs = new ArrayList<Requirement>();
-        for (Requirement req : m_host.getRequirements(null))
-        {
+        for (Requirement req : m_host.getRequirements(null)) {
             reqs.add(new WrappedRequirement(this, req));
         }
 
         // Wrap fragment requirements.
-        if (m_fragments != null)
-        {
-            for (Resource fragment : m_fragments)
-            {
-                for (Requirement req : fragment.getRequirements(null))
-                {
+        if (m_fragments != null) {
+            for (Resource fragment : m_fragments) {
+                for (Requirement req : fragment.getRequirements(null)) {
                     // Filter out host and execution environment requirements,
                     // since they are not part of the fragment payload.
                     if (!req.getNamespace().equals(HostNamespace.HOST_NAMESPACE)
-                        && !req.getNamespace().equals(
-                            ExecutionEnvironmentNamespace.EXECUTION_ENVIRONMENT_NAMESPACE))
-                    {
+                        && !req.getNamespace().equals(ExecutionEnvironmentNamespace.EXECUTION_ENVIRONMENT_NAMESPACE)) {
                         reqs.add(new WrappedRequirement(this, req));
                     }
                 }
@@ -85,18 +73,15 @@ class WrappedResource implements Resource
         m_cachedRequirements = Collections.unmodifiableList(reqs);
     }
 
-    public Resource getDeclaredResource()
-    {
+    public Resource getDeclaredResource() {
         return m_host;
     }
 
-    public List<Resource> getFragments()
-    {
+    public List<Resource> getFragments() {
         return m_fragments;
     }
 
-    public List<Capability> getCapabilities(String namespace)
-    {
+    public List<Capability> getCapabilities(String namespace) {
         if (namespace != null) {
             List<Capability> filtered = new ArrayList<Capability>();
             for (Capability capability : m_cachedCapabilities) {
@@ -109,8 +94,7 @@ class WrappedResource implements Resource
         return m_cachedCapabilities;
     }
 
-    public List<Requirement> getRequirements(String namespace)
-    {
+    public List<Requirement> getRequirements(String namespace) {
         if (namespace != null) {
             List<Requirement> filtered = new ArrayList<Requirement>();
             for (Requirement requirement : m_cachedRequirements) {
@@ -123,8 +107,7 @@ class WrappedResource implements Resource
         return m_cachedRequirements;
     }
 
-    public String toString()
-    {
+    public String toString() {
         return m_host.toString();
     }
 }

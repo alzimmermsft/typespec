@@ -13,10 +13,10 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.dom.rewrite.imports;
 
-import java.util.Comparator;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.Signature;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaProject;
+import java.util.Comparator;
 
 /**
  * Sorts imports according to a lexicographic comparison of their containing package names.
@@ -29,52 +29,52 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * https://bugs.eclipse.org/194358.
  */
 final class PackageImportComparator implements Comparator<ImportName> {
-	private final JavaProject javaProject;
+    private final JavaProject javaProject;
 
-	PackageImportComparator(JavaProject javaProject) {
-		this.javaProject = javaProject;
-	}
+    PackageImportComparator(JavaProject javaProject) {
+        this.javaProject = javaProject;
+    }
 
-	@Override
-	public int compare(ImportName o1, ImportName o2) {
-		return determinePackageName(o1).compareTo(determinePackageName(o2));
-	}
+    @Override
+    public int compare(ImportName o1, ImportName o2) {
+        return determinePackageName(o1).compareTo(determinePackageName(o2));
+    }
 
-	private String determinePackageName(ImportName importName) {
-		String containerName = importName.containerName;
+    private String determinePackageName(ImportName importName) {
+        String containerName = importName.containerName;
 
-		try {
-			// Loop from longest to shortest prefix (of dot-separated name segments) of the
-			// container name until a package name is found.
-			String containerNamePrefix = containerName;
-			while (true) {
-				// Try to find a package named with this prefix.
-				if (this.javaProject.findPackageFragment(containerNamePrefix) != null) {
-					return containerNamePrefix;
-				}
+        try {
+            // Loop from longest to shortest prefix (of dot-separated name segments) of the
+            // container name until a package name is found.
+            String containerNamePrefix = containerName;
+            while (true) {
+                // Try to find a package named with this prefix.
+                if (this.javaProject.findPackageFragment(containerNamePrefix) != null) {
+                    return containerNamePrefix;
+                }
 
-				int lastSegmentStart = containerNamePrefix.lastIndexOf(Signature.C_DOT) + 1;
+                int lastSegmentStart = containerNamePrefix.lastIndexOf(Signature.C_DOT) + 1;
 
-				// Use the heuristic that a prefix whose last segment starts with a lowercase letter
-				// is a package name, if we don't recognize the prefix as the name of a type.
-				if (this.javaProject.findType(containerNamePrefix) == null) {
-					if (Character.isLowerCase(containerNamePrefix.charAt(lastSegmentStart))) {
-						return containerNamePrefix;
-					}
-				}
+                // Use the heuristic that a prefix whose last segment starts with a lowercase letter
+                // is a package name, if we don't recognize the prefix as the name of a type.
+                if (this.javaProject.findType(containerNamePrefix) == null) {
+                    if (Character.isLowerCase(containerNamePrefix.charAt(lastSegmentStart))) {
+                        return containerNamePrefix;
+                    }
+                }
 
-				if (lastSegmentStart == 0) {
-					// No prefix of containerName could be resolved to a package name.
-					break;
-				}
+                if (lastSegmentStart == 0) {
+                    // No prefix of containerName could be resolved to a package name.
+                    break;
+                }
 
-				containerNamePrefix = containerNamePrefix.substring(0, lastSegmentStart - 1);
-			}
-		} catch (JavaModelException e) {
-			// An error occurred when we asked the JavaProject to resolve a name,
-			// so there is no point in proceeding with the loop.
-		}
+                containerNamePrefix = containerNamePrefix.substring(0, lastSegmentStart - 1);
+            }
+        } catch (JavaModelException e) {
+            // An error occurred when we asked the JavaProject to resolve a name,
+            // so there is no point in proceeding with the loop.
+        }
 
-		return containerName;
-	}
+        return containerName;
+    }
 }

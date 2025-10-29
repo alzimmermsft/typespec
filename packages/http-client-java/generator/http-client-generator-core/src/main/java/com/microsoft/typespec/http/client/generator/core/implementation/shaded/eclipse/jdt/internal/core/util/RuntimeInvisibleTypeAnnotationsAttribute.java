@@ -23,46 +23,43 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 /**
  * Default implementation of IRuntimeInvisibleTypeAnnotations
  */
-public class RuntimeInvisibleTypeAnnotationsAttribute
-	extends ClassFileAttribute
-	implements IRuntimeInvisibleTypeAnnotationsAttribute {
+public class RuntimeInvisibleTypeAnnotationsAttribute extends ClassFileAttribute
+    implements IRuntimeInvisibleTypeAnnotationsAttribute {
 
-	private static final IExtendedAnnotation[] NO_ENTRIES = new IExtendedAnnotation[0];
-	private final int extendedAnnotationsNumber;
-	private IExtendedAnnotation[] extendedAnnotations;
+    private static final IExtendedAnnotation[] NO_ENTRIES = new IExtendedAnnotation[0];
+    private final int extendedAnnotationsNumber;
+    private IExtendedAnnotation[] extendedAnnotations;
 
-	/**
-	 * Constructor for RuntimeInvisibleTypeAnnotations.
-	 */
-	public RuntimeInvisibleTypeAnnotationsAttribute(
-			byte[] classFileBytes,
-			IConstantPool constantPool,
-			int offset)
-			throws ClassFormatException {
-		super(classFileBytes, constantPool, offset);
-		// read extended annotations
-		final int length = u2At(classFileBytes, 6, offset);
-		this.extendedAnnotationsNumber = length;
-		if (length != 0) {
-			int readOffset = 8;
-			this.extendedAnnotations = new IExtendedAnnotation[length];
-			for (int i = 0; i < length; i++) {
-				ExtendedAnnotation extendedAnnotation = new ExtendedAnnotation(classFileBytes, constantPool, offset + readOffset);
-				this.extendedAnnotations[i] = extendedAnnotation;
-				readOffset += extendedAnnotation.sizeInBytes();
-			}
-		} else {
-			this.extendedAnnotations = NO_ENTRIES;
-		}
-	}
+    /**
+     * Constructor for RuntimeInvisibleTypeAnnotations.
+     */
+    public RuntimeInvisibleTypeAnnotationsAttribute(byte[] classFileBytes, IConstantPool constantPool, int offset)
+        throws ClassFormatException {
+        super(classFileBytes, constantPool, offset);
+        // read extended annotations
+        final int length = u2At(classFileBytes, 6, offset);
+        this.extendedAnnotationsNumber = length;
+        if (length != 0) {
+            int readOffset = 8;
+            this.extendedAnnotations = new IExtendedAnnotation[length];
+            for (int i = 0; i < length; i++) {
+                ExtendedAnnotation extendedAnnotation
+                    = new ExtendedAnnotation(classFileBytes, constantPool, offset + readOffset);
+                this.extendedAnnotations[i] = extendedAnnotation;
+                readOffset += extendedAnnotation.sizeInBytes();
+            }
+        } else {
+            this.extendedAnnotations = NO_ENTRIES;
+        }
+    }
 
-	@Override
-	public IExtendedAnnotation[] getExtendedAnnotations() {
-		return this.extendedAnnotations;
-	}
+    @Override
+    public IExtendedAnnotation[] getExtendedAnnotations() {
+        return this.extendedAnnotations;
+    }
 
-	@Override
-	public int getExtendedAnnotationsNumber() {
-		return this.extendedAnnotationsNumber;
-	}
+    @Override
+    public int getExtendedAnnotationsNumber() {
+        return this.extendedAnnotationsNumber;
+    }
 }

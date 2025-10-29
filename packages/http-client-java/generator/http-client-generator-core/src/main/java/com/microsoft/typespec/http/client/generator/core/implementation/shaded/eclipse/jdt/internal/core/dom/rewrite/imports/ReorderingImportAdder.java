@@ -26,22 +26,22 @@ import java.util.Set;
  * and omitting duplicate entries.
  */
 final class ReorderingImportAdder implements ImportAdder {
-	private final Comparator<ImportName> importComparator;
+    private final Comparator<ImportName> importComparator;
 
-	ReorderingImportAdder(Comparator<ImportName> importComparator) {
-		this.importComparator = importComparator;
-	}
+    ReorderingImportAdder(Comparator<ImportName> importComparator) {
+        this.importComparator = importComparator;
+    }
 
-	@Override
-	public List<ImportName> addImports(Collection<ImportName> existingImports, Collection<ImportName> importsToAdd) {
-		int setCapacity = 2 * (existingImports.size() + importsToAdd.size());
-		Set<ImportName> uniqueImportsWithAdditions = new HashSet<>(setCapacity);
-		uniqueImportsWithAdditions.addAll(existingImports);
-		uniqueImportsWithAdditions.addAll(importsToAdd);
+    @Override
+    public List<ImportName> addImports(Collection<ImportName> existingImports, Collection<ImportName> importsToAdd) {
+        int setCapacity = 2 * (existingImports.size() + importsToAdd.size());
+        Set<ImportName> uniqueImportsWithAdditions = new HashSet<>(setCapacity);
+        uniqueImportsWithAdditions.addAll(existingImports);
+        uniqueImportsWithAdditions.addAll(importsToAdd);
 
-		List<ImportName> sortedImports = new ArrayList<>(uniqueImportsWithAdditions);
-		Collections.sort(sortedImports, this.importComparator);
+        List<ImportName> sortedImports = new ArrayList<>(uniqueImportsWithAdditions);
+        Collections.sort(sortedImports, this.importComparator);
 
-		return sortedImports;
-	}
+        return sortedImports;
+    }
 }

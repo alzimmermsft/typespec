@@ -73,7 +73,8 @@ public class ReflectionUtils {
         METHOD_HANDLES_LOOKUP = lookupMethod(methodHandles, "lookup");
         METHOD_HANDLES_LOOKUP_IN = lookupMethod(lookup, "in", Class.class);
         METHOD_HANDLES_LOOKUP_UNREFLECT_SPECIAL = lookupMethod(lookup, "unreflectSpecial", Method.class, Class.class);
-        METHOD_HANDLES_LOOKUP_FIND_SPECIAL = lookupMethod(lookup, "findSpecial", Class.class, String.class, methodType, Class.class);
+        METHOD_HANDLES_LOOKUP_FIND_SPECIAL
+            = lookupMethod(lookup, "findSpecial", Class.class, String.class, methodType, Class.class);
         METHOD_HANDLES_BIND_TO = lookupMethod(methodHandle, "bindTo", Object.class);
         METHOD_HANDLES_INVOKE_WITH_ARGUMENTS = lookupMethod(methodHandle, "invokeWithArguments", Object[].class);
         METHOD_HANDLES_PRIVATE_LOOKUP_IN = lookupMethod(methodHandles, "privateLookupIn", Class.class, lookup);
@@ -81,9 +82,9 @@ public class ReflectionUtils {
     }
 
     private static Constructor lookupDeclaredConstructor(Class clazz, Class... arguments) {
-        if(clazz == null) {
+        if (clazz == null) {
             LOG.log(Level.FINE, "Failed to lookup method: <init>#{1}({2})",
-                new Object[]{clazz, Arrays.toString(arguments)});
+                new Object[] { clazz, Arrays.toString(arguments) });
             return null;
         }
         try {
@@ -92,22 +93,22 @@ public class ReflectionUtils {
             return init;
         } catch (Exception ex) {
             LOG.log(Level.FINE, "Failed to lookup method: <init>#{1}({2})",
-                new Object[]{clazz, Arrays.toString(arguments)});
+                new Object[] { clazz, Arrays.toString(arguments) });
             return null;
         }
     }
 
     private static Method lookupMethod(Class clazz, String methodName, Class... arguments) {
-        if(clazz == null) {
+        if (clazz == null) {
             LOG.log(Level.FINE, "Failed to lookup method: {0}#{1}({2})",
-                new Object[]{clazz, methodName, Arrays.toString(arguments)});
+                new Object[] { clazz, methodName, Arrays.toString(arguments) });
             return null;
         }
         try {
             return clazz.getMethod(methodName, arguments);
         } catch (Exception ex) {
             LOG.log(Level.FINE, "Failed to lookup method: {0}#{1}({2})",
-                new Object[]{clazz, methodName, Arrays.toString(arguments)});
+                new Object[] { clazz, methodName, Arrays.toString(arguments) });
             return null;
         }
     }
@@ -174,12 +175,8 @@ public class ReflectionUtils {
     }
 
     private static Object mhViaFindSpecial(Object lookup, Method method) throws Exception {
-        return METHOD_HANDLES_LOOKUP_FIND_SPECIAL.invoke(
-            lookup,
-            method.getDeclaringClass(),
-            method.getName(),
-            METHOD_TYPE.invoke(null, method.getReturnType(), method.getParameterTypes()),
-            method.getDeclaringClass());
+        return METHOD_HANDLES_LOOKUP_FIND_SPECIAL.invoke(lookup, method.getDeclaringClass(), method.getName(),
+            METHOD_TYPE.invoke(null, method.getReturnType(), method.getParameterTypes()), method.getDeclaringClass());
     }
 
     private static Object mhViaUnreflectSpecial(Object lookup, Method method) throws Exception {
@@ -207,7 +204,7 @@ public class ReflectionUtils {
      */
     public static Object invokeDefaultMethod(Object target, Object methodHandle, Object... args) throws Throwable {
         Object boundMethodHandle = METHOD_HANDLES_BIND_TO.invoke(methodHandle, target);
-        return METHOD_HANDLES_INVOKE_WITH_ARGUMENTS.invoke(boundMethodHandle, new Object[]{args});
+        return METHOD_HANDLES_INVOKE_WITH_ARGUMENTS.invoke(boundMethodHandle, new Object[] { args });
     }
 
 }

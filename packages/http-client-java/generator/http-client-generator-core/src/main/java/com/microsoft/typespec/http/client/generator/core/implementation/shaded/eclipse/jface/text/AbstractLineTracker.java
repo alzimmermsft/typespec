@@ -36,352 +36,353 @@ import java.util.List;
  */
 public abstract class AbstractLineTracker implements ILineTracker, ILineTrackerExtension {
 
-	/**
-	 * Tells whether this class is in debug mode.
-	 *
-	 * @since 3.1
-	 */
-	private static final boolean DEBUG= false;
+    /**
+     * Tells whether this class is in debug mode.
+     *
+     * @since 3.1
+     */
+    private static final boolean DEBUG = false;
 
-	/**
-	 * Combines the information of the occurrence of a line delimiter. <code>delimiterIndex</code>
-	 * is the index where a line delimiter starts, whereas <code>delimiterLength</code>,
-	 * indicates the length of the delimiter.
-	 * @since 3.10
-	 */
-	public static class DelimiterInfo {
-		public int delimiterIndex;
-		public int delimiterLength;
-		public String delimiter;
-	}
+    /**
+     * Combines the information of the occurrence of a line delimiter. <code>delimiterIndex</code>
+     * is the index where a line delimiter starts, whereas <code>delimiterLength</code>,
+     * indicates the length of the delimiter.
+     * 
+     * @since 3.10
+     */
+    public static class DelimiterInfo {
+        public int delimiterIndex;
+        public int delimiterLength;
+        public String delimiter;
+    }
 
-	/**
-	 * Representation of replace and set requests.
-	 *
-	 * @since 3.1
-	 */
-	protected static class Request {
-		public final int offset;
-		public final int length;
-		public final String text;
+    /**
+     * Representation of replace and set requests.
+     *
+     * @since 3.1
+     */
+    protected static class Request {
+        public final int offset;
+        public final int length;
+        public final String text;
 
-		public Request(int offset, int length, String text) {
-			this.offset= offset;
-			this.length= length;
-			this.text= text;
-		}
+        public Request(int offset, int length, String text) {
+            this.offset = offset;
+            this.length = length;
+            this.text = text;
+        }
 
-		public Request(String text) {
-			this.offset= -1;
-			this.length= -1;
-			this.text= text;
-		}
+        public Request(String text) {
+            this.offset = -1;
+            this.length = -1;
+            this.text = text;
+        }
 
-		public boolean isReplaceRequest() {
-			return this.offset > -1 && this.length > -1;
-		}
-	}
-	
-	/**
-	 * Holder of the active {@link DocumentRewriteSession} with associated list of {@link Request}
-	 * objects.
-	 * <p>
-	 * On starting new {@link DocumentRewriteSession} or on the end of the active
-	 * {@link DocumentRewriteSession} this object is being replaced by another one.
-	 * <p>
-	 * 
-	 * @see AbstractLineTracker#startRewriteSession(DocumentRewriteSession)
-	 * @see AbstractLineTracker#stopRewriteSession(DocumentRewriteSession, String)
-	 */
-	private static class SessionData {
+        public boolean isReplaceRequest() {
+            return this.offset > -1 && this.length > -1;
+        }
+    }
 
-		/**
-		 * The active rewrite session. Not final, but can only be changed to null.
-		 *
-		 * @since 3.1
-		 */
-		private volatile DocumentRewriteSession fActiveRewriteSession;
-		/**
-		 * The list of pending requests.
-		 *
-		 * @since 3.1
-		 */
-		private List<Request> fPendingRequests;
-		
-		/**
-		 * @param activeRewriteSession may be null
-		 */
-		SessionData(DocumentRewriteSession activeRewriteSession){
-			fActiveRewriteSession = activeRewriteSession;
-			if (activeRewriteSession != null) {
-				fPendingRequests = new ArrayList<>(20);
-			} else {
-				fPendingRequests = Collections.emptyList();
-			}
-		}
-		
-		boolean isSessionActive() {
-			return fActiveRewriteSession != null;
-		}
-		
-		boolean setIfActive(String text) {
-			if (isSessionActive()) {
-				synchronized (this) {
-					if (!isSessionActive()) {						
-						return false;
-					}
-					fPendingRequests.clear();
-					fPendingRequests.add(new Request(text));
-				}
-				return true;
-			} else {
-				return false;
-			}
-		}
+    /**
+     * Holder of the active {@link DocumentRewriteSession} with associated list of {@link Request}
+     * objects.
+     * <p>
+     * On starting new {@link DocumentRewriteSession} or on the end of the active
+     * {@link DocumentRewriteSession} this object is being replaced by another one.
+     * <p>
+     * 
+     * @see AbstractLineTracker#startRewriteSession(DocumentRewriteSession)
+     * @see AbstractLineTracker#stopRewriteSession(DocumentRewriteSession, String)
+     */
+    private static class SessionData {
 
-		boolean addIfActive(int offset, int length, String text) {
-			if (isSessionActive()) {
-				synchronized (this) {
-					if (!isSessionActive()) {						
-						return false;
-					}
-					fPendingRequests.add(new Request(offset, length, text));
-				}
-				return true;
-			} else {
-				return false;
-			}
-		}
-		
-		Iterator<Request> flush() {
-			synchronized (this) {				
-				fActiveRewriteSession = null;
-				Iterator<Request> requests = fPendingRequests.iterator();
-				fPendingRequests = Collections.emptyList();
-				return requests;
-			}
-		}
+        /**
+         * The active rewrite session. Not final, but can only be changed to null.
+         *
+         * @since 3.1
+         */
+        private volatile DocumentRewriteSession fActiveRewriteSession;
+        /**
+         * The list of pending requests.
+         *
+         * @since 3.1
+         */
+        private List<Request> fPendingRequests;
 
-		boolean sameSession(DocumentRewriteSession session) {
-			return fActiveRewriteSession == session;
-		}
-		
-		@Override
-		public String toString() {
-			StringBuilder builder= new StringBuilder();
-			builder.append("SessionData ["); //$NON-NLS-1$
-			builder.append("activeRewriteSession="); //$NON-NLS-1$
-			builder.append(fActiveRewriteSession);
-			builder.append(", "); //$NON-NLS-1$
-			builder.append("pendingRequests="); //$NON-NLS-1$
-			builder.append(fPendingRequests);
-			builder.append("]"); //$NON-NLS-1$
-			return builder.toString();
-		}
-	}
+        /**
+         * @param activeRewriteSession may be null
+         */
+        SessionData(DocumentRewriteSession activeRewriteSession) {
+            fActiveRewriteSession = activeRewriteSession;
+            if (activeRewriteSession != null) {
+                fPendingRequests = new ArrayList<>(20);
+            } else {
+                fPendingRequests = Collections.emptyList();
+            }
+        }
 
-	private volatile SessionData sessionData;
-	private final Object sessionLock = new Object();
-	
-	/**
-	 * The implementation that this tracker delegates to.
-	 *
-	 * @since 3.2
-	 */
-	private volatile ILineTracker fDelegate= new ListLineTracker() {
-		@Override
-		public String[] getLegalLineDelimiters() {
-			return AbstractLineTracker.this.getLegalLineDelimiters();
-		}
+        boolean isSessionActive() {
+            return fActiveRewriteSession != null;
+        }
 
-		@Override
-		protected DelimiterInfo nextDelimiterInfo(String text, int offset) {
-			return AbstractLineTracker.this.nextDelimiterInfo(text, offset);
-		}
-	};
-	/**
-	 * Whether the delegate needs conversion when the line structure is modified.
-	 */
-	private boolean fNeedsConversion= true;
+        boolean setIfActive(String text) {
+            if (isSessionActive()) {
+                synchronized (this) {
+                    if (!isSessionActive()) {
+                        return false;
+                    }
+                    fPendingRequests.clear();
+                    fPendingRequests.add(new Request(text));
+                }
+                return true;
+            } else {
+                return false;
+            }
+        }
 
-	/**
-	 * Creates a new line tracker.
-	 */
-	protected AbstractLineTracker() {
-		sessionData = new SessionData(null);
-	}
+        boolean addIfActive(int offset, int length, String text) {
+            if (isSessionActive()) {
+                synchronized (this) {
+                    if (!isSessionActive()) {
+                        return false;
+                    }
+                    fPendingRequests.add(new Request(offset, length, text));
+                }
+                return true;
+            } else {
+                return false;
+            }
+        }
 
-	@Override
-	public int computeNumberOfLines(String text) {
-		return fDelegate.computeNumberOfLines(text);
-	}
+        Iterator<Request> flush() {
+            synchronized (this) {
+                fActiveRewriteSession = null;
+                Iterator<Request> requests = fPendingRequests.iterator();
+                fPendingRequests = Collections.emptyList();
+                return requests;
+            }
+        }
 
-	@Override
-	public String getLineDelimiter(int line) throws BadLocationException {
-		checkRewriteSession();
-		return fDelegate.getLineDelimiter(line);
-	}
+        boolean sameSession(DocumentRewriteSession session) {
+            return fActiveRewriteSession == session;
+        }
 
-	@Override
-	public IRegion getLineInformation(int line) throws BadLocationException {
-		checkRewriteSession();
-		return fDelegate.getLineInformation(line);
-	}
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            builder.append("SessionData ["); //$NON-NLS-1$
+            builder.append("activeRewriteSession="); //$NON-NLS-1$
+            builder.append(fActiveRewriteSession);
+            builder.append(", "); //$NON-NLS-1$
+            builder.append("pendingRequests="); //$NON-NLS-1$
+            builder.append(fPendingRequests);
+            builder.append("]"); //$NON-NLS-1$
+            return builder.toString();
+        }
+    }
 
-	@Override
-	public IRegion getLineInformationOfOffset(int offset) throws BadLocationException {
-		checkRewriteSession();
-		return fDelegate.getLineInformationOfOffset(offset);
-	}
+    private volatile SessionData sessionData;
+    private final Object sessionLock = new Object();
 
-	@Override
-	public int getLineLength(int line) throws BadLocationException {
-		checkRewriteSession();
-		return fDelegate.getLineLength(line);
-	}
+    /**
+     * The implementation that this tracker delegates to.
+     *
+     * @since 3.2
+     */
+    private volatile ILineTracker fDelegate = new ListLineTracker() {
+        @Override
+        public String[] getLegalLineDelimiters() {
+            return AbstractLineTracker.this.getLegalLineDelimiters();
+        }
 
-	@Override
-	public int getLineNumberOfOffset(int offset) throws BadLocationException {
-		checkRewriteSession();
-		return fDelegate.getLineNumberOfOffset(offset);
-	}
+        @Override
+        protected DelimiterInfo nextDelimiterInfo(String text, int offset) {
+            return AbstractLineTracker.this.nextDelimiterInfo(text, offset);
+        }
+    };
+    /**
+     * Whether the delegate needs conversion when the line structure is modified.
+     */
+    private boolean fNeedsConversion = true;
 
-	@Override
-	public int getLineOffset(int line) throws BadLocationException {
-		checkRewriteSession();
-		return fDelegate.getLineOffset(line);
-	}
+    /**
+     * Creates a new line tracker.
+     */
+    protected AbstractLineTracker() {
+        sessionData = new SessionData(null);
+    }
 
-	@Override
-	public int getNumberOfLines() {
-		try {
-			checkRewriteSession();
-		} catch (BadLocationException x) {
-			// TODO there is currently no way to communicate that exception back to the document
-		}
-		return fDelegate.getNumberOfLines();
-	}
+    @Override
+    public int computeNumberOfLines(String text) {
+        return fDelegate.computeNumberOfLines(text);
+    }
 
-	@Override
-	public int getNumberOfLines(int offset, int length) throws BadLocationException {
-		checkRewriteSession();
-		return fDelegate.getNumberOfLines(offset, length);
-	}
+    @Override
+    public String getLineDelimiter(int line) throws BadLocationException {
+        checkRewriteSession();
+        return fDelegate.getLineDelimiter(line);
+    }
 
-	@Override
-	public void set(String text) {
-		boolean hasActiveRewriteSession = sessionData.setIfActive(text);
-		if (hasActiveRewriteSession) {
-			return;
-		}
+    @Override
+    public IRegion getLineInformation(int line) throws BadLocationException {
+        checkRewriteSession();
+        return fDelegate.getLineInformation(line);
+    }
 
-		fDelegate.set(text);
-	}
+    @Override
+    public IRegion getLineInformationOfOffset(int offset) throws BadLocationException {
+        checkRewriteSession();
+        return fDelegate.getLineInformationOfOffset(offset);
+    }
 
-	@Override
-	public void replace(int offset, int length, String text) throws BadLocationException {
-		boolean hasActiveRewriteSession = sessionData.addIfActive(offset, length, text);
-		if (hasActiveRewriteSession) {
-			return;
-		}
+    @Override
+    public int getLineLength(int line) throws BadLocationException {
+        checkRewriteSession();
+        return fDelegate.getLineLength(line);
+    }
 
-		checkImplementation();
+    @Override
+    public int getLineNumberOfOffset(int offset) throws BadLocationException {
+        checkRewriteSession();
+        return fDelegate.getLineNumberOfOffset(offset);
+    }
 
-		fDelegate.replace(offset, length, text);
-	}
+    @Override
+    public int getLineOffset(int line) throws BadLocationException {
+        checkRewriteSession();
+        return fDelegate.getLineOffset(line);
+    }
 
-	/**
-	 * Converts the implementation to be a {@link TreeLineTracker} if it isn't yet.
-	 *
-	 * @since 3.2
-	 */
-	private synchronized void checkImplementation() {
-		if (fNeedsConversion) {
-			fNeedsConversion= false;
-			fDelegate= new TreeLineTracker((ListLineTracker) fDelegate) {
-				@Override
-				protected DelimiterInfo nextDelimiterInfo(String text, int offset) {
-					return AbstractLineTracker.this.nextDelimiterInfo(text, offset);
-				}
+    @Override
+    public int getNumberOfLines() {
+        try {
+            checkRewriteSession();
+        } catch (BadLocationException x) {
+            // TODO there is currently no way to communicate that exception back to the document
+        }
+        return fDelegate.getNumberOfLines();
+    }
 
-				@Override
-				public String[] getLegalLineDelimiters() {
-					return AbstractLineTracker.this.getLegalLineDelimiters();
-				}
-			};
-		}
-	}
+    @Override
+    public int getNumberOfLines(int offset, int length) throws BadLocationException {
+        checkRewriteSession();
+        return fDelegate.getNumberOfLines(offset, length);
+    }
 
-	/**
-	 * Returns the information about the first delimiter found in the given text starting at the
-	 * given offset.
-	 *
-	 * @param text the text to be searched
-	 * @param offset the offset in the given text
-	 * @return the information of the first found delimiter or <code>null</code>
-	 */
-	protected abstract DelimiterInfo nextDelimiterInfo(String text, int offset);
+    @Override
+    public void set(String text) {
+        boolean hasActiveRewriteSession = sessionData.setIfActive(text);
+        if (hasActiveRewriteSession) {
+            return;
+        }
 
-	@Override
-	public final void startRewriteSession(DocumentRewriteSession session) {
-		synchronized (sessionLock) {
-			if (sessionData.isSessionActive()){
-				throw new IllegalStateException("Rewrite session is already active: " + sessionData); //$NON-NLS-1$
-			}
-			sessionData = new SessionData(session);
-		}
-	}
+        fDelegate.set(text);
+    }
 
-	@Override
-	public final void stopRewriteSession(DocumentRewriteSession session, String text) {
-		synchronized (sessionLock) {
-			if (sessionData.sameSession(session)) {
-				sessionData = new SessionData(null);
-				set(text);
-			}
-		}
-	}
+    @Override
+    public void replace(int offset, int length, String text) throws BadLocationException {
+        boolean hasActiveRewriteSession = sessionData.addIfActive(offset, length, text);
+        if (hasActiveRewriteSession) {
+            return;
+        }
 
-	/**
-	 * Tells whether there's an active rewrite session.
-	 *
-	 * @return <code>true</code> if there is an active rewrite session, <code>false</code>
-	 *         otherwise
-	 * @since 3.1
-	 */
-	protected final boolean hasActiveRewriteSession() {
-		return sessionData.isSessionActive();
-	}
+        checkImplementation();
 
-	/**
-	 * Flushes the active rewrite session.
-	 *
-	 * @throws BadLocationException in case the recorded requests cannot be processed correctly
-	 * @since 3.1
-	 */
-	protected final void flushRewriteSession() throws BadLocationException {
-		if (DEBUG)
-			System.out.println("AbstractLineTracker: Flushing rewrite session: " + sessionData); //$NON-NLS-1$
-		synchronized (sessionData) {
-			Iterator<Request> e= sessionData.flush();
-			while (e.hasNext()) {
-				Request request= e.next();
-				if (request.isReplaceRequest())
-					replace(request.offset, request.length, request.text);
-				else
-					set(request.text);
-			}
-		}
-	}
+        fDelegate.replace(offset, length, text);
+    }
 
-	/**
-	 * Checks the presence of a rewrite session and flushes it.
-	 *
-	 * @throws BadLocationException in case flushing does not succeed
-	 * @since 3.1
-	 */
-	protected final void checkRewriteSession() throws BadLocationException {
-		if (hasActiveRewriteSession())
-			flushRewriteSession();
-	}
+    /**
+     * Converts the implementation to be a {@link TreeLineTracker} if it isn't yet.
+     *
+     * @since 3.2
+     */
+    private synchronized void checkImplementation() {
+        if (fNeedsConversion) {
+            fNeedsConversion = false;
+            fDelegate = new TreeLineTracker((ListLineTracker) fDelegate) {
+                @Override
+                protected DelimiterInfo nextDelimiterInfo(String text, int offset) {
+                    return AbstractLineTracker.this.nextDelimiterInfo(text, offset);
+                }
+
+                @Override
+                public String[] getLegalLineDelimiters() {
+                    return AbstractLineTracker.this.getLegalLineDelimiters();
+                }
+            };
+        }
+    }
+
+    /**
+     * Returns the information about the first delimiter found in the given text starting at the
+     * given offset.
+     *
+     * @param text the text to be searched
+     * @param offset the offset in the given text
+     * @return the information of the first found delimiter or <code>null</code>
+     */
+    protected abstract DelimiterInfo nextDelimiterInfo(String text, int offset);
+
+    @Override
+    public final void startRewriteSession(DocumentRewriteSession session) {
+        synchronized (sessionLock) {
+            if (sessionData.isSessionActive()) {
+                throw new IllegalStateException("Rewrite session is already active: " + sessionData); //$NON-NLS-1$
+            }
+            sessionData = new SessionData(session);
+        }
+    }
+
+    @Override
+    public final void stopRewriteSession(DocumentRewriteSession session, String text) {
+        synchronized (sessionLock) {
+            if (sessionData.sameSession(session)) {
+                sessionData = new SessionData(null);
+                set(text);
+            }
+        }
+    }
+
+    /**
+     * Tells whether there's an active rewrite session.
+     *
+     * @return <code>true</code> if there is an active rewrite session, <code>false</code>
+     * otherwise
+     * @since 3.1
+     */
+    protected final boolean hasActiveRewriteSession() {
+        return sessionData.isSessionActive();
+    }
+
+    /**
+     * Flushes the active rewrite session.
+     *
+     * @throws BadLocationException in case the recorded requests cannot be processed correctly
+     * @since 3.1
+     */
+    protected final void flushRewriteSession() throws BadLocationException {
+        if (DEBUG)
+            System.out.println("AbstractLineTracker: Flushing rewrite session: " + sessionData); //$NON-NLS-1$
+        synchronized (sessionData) {
+            Iterator<Request> e = sessionData.flush();
+            while (e.hasNext()) {
+                Request request = e.next();
+                if (request.isReplaceRequest())
+                    replace(request.offset, request.length, request.text);
+                else
+                    set(request.text);
+            }
+        }
+    }
+
+    /**
+     * Checks the presence of a rewrite session and flushes it.
+     *
+     * @throws BadLocationException in case flushing does not succeed
+     * @since 3.1
+     */
+    protected final void checkRewriteSession() throws BadLocationException {
+        if (hasActiveRewriteSession())
+            flushRewriteSession();
+    }
 }

@@ -1,8 +1,7 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.meta;
 
-import java.lang.annotation.Annotation;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.Nonnull;
+import java.lang.annotation.Annotation;
 
 public interface TypeQualifierValidator<A extends Annotation> {
     /**
@@ -10,12 +9,11 @@ public interface TypeQualifierValidator<A extends Annotation> {
      * is an instance of the set of values denoted by the qualifier.
      * 
      * @param annotation
-     *                the type qualifier
+     * the type qualifier
      * @param value
-     *                the value to check
+     * the value to check
      * @return a value indicating whether or not the value is an member of the
-     *         values denoted by the type qualifier
+     * values denoted by the type qualifier
      */
-    public @Nonnull
-    When forConstantValue(@Nonnull A annotation, Object value);
+    public @Nonnull When forConstantValue(@Nonnull A annotation, Object value);
 }

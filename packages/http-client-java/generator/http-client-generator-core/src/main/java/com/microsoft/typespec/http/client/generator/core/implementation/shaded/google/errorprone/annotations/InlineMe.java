@@ -27,19 +27,19 @@ import java.lang.annotation.Target;
  * in terms of another API, for example a method that just calls another method.
  */
 @Documented
-@Target({METHOD, CONSTRUCTOR})
+@Target({ METHOD, CONSTRUCTOR })
 public @interface InlineMe {
-  /**
-   * What the caller should be replaced with. Local parameter names can be used in the replacement
-   * string. If you are invoking an instance method or constructor, you must include the implicit
-   * {@code this} in the replacement body. If you are invoking a static method, you must include the
-   * implicit {@code ClassName} in the replacement body.
-   */
-  String replacement();
+    /**
+     * What the caller should be replaced with. Local parameter names can be used in the replacement
+     * string. If you are invoking an instance method or constructor, you must include the implicit
+     * {@code this} in the replacement body. If you are invoking a static method, you must include the
+     * implicit {@code ClassName} in the replacement body.
+     */
+    String replacement();
 
-  /** The new imports to (optionally) add to the caller. */
-  String[] imports() default {};
+    /** The new imports to (optionally) add to the caller. */
+    String[] imports() default { };
 
-  /** The new static imports to (optionally) add to the caller. */
-  String[] staticImports() default {};
+    /** The new static imports to (optionally) add to the caller. */
+    String[] staticImports() default { };
 }

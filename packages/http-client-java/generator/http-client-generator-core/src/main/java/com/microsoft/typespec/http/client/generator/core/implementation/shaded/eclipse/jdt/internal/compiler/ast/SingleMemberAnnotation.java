@@ -25,69 +25,68 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class SingleMemberAnnotation extends Annotation {
 
-	public Expression memberValue;
-	private MemberValuePair[] singlePairs; // fake pair set, only value has accurate positions
+    public Expression memberValue;
+    private MemberValuePair[] singlePairs; // fake pair set, only value has accurate positions
 
-	public SingleMemberAnnotation(TypeReference type, int sourceStart) {
-		this.type = type;
-		this.sourceStart = sourceStart;
-		this.sourceEnd = type.sourceEnd;
-	}
+    public SingleMemberAnnotation(TypeReference type, int sourceStart) {
+        this.type = type;
+        this.sourceStart = sourceStart;
+        this.sourceEnd = type.sourceEnd;
+    }
 
-	public SingleMemberAnnotation() {
-		// for subclasses.
-	}
+    public SingleMemberAnnotation() {
+        // for subclasses.
+    }
 
-	@Override
-	public ElementValuePair[] computeElementValuePairs() {
-		return new ElementValuePair[] {memberValuePairs()[0].compilerElementPair};
-	}
+    @Override
+    public ElementValuePair[] computeElementValuePairs() {
+        return new ElementValuePair[] { memberValuePairs()[0].compilerElementPair };
+    }
 
-	/**
-	 * @see org.eclipse.jdt.internal.compiler.ast.Annotation#memberValuePairs()
-	 */
-	@Override
-	public MemberValuePair[] memberValuePairs() {
-		if (this.singlePairs == null) {
-			this.singlePairs =
-				new MemberValuePair[]{
-					new MemberValuePair(VALUE, this.memberValue.sourceStart, this.memberValue.sourceEnd, this.memberValue)
-				};
-		}
-		return this.singlePairs;
-	}
+    /**
+     * @see org.eclipse.jdt.internal.compiler.ast.Annotation#memberValuePairs()
+     */
+    @Override
+    public MemberValuePair[] memberValuePairs() {
+        if (this.singlePairs == null) {
+            this.singlePairs = new MemberValuePair[] {
+                new MemberValuePair(VALUE, this.memberValue.sourceStart, this.memberValue.sourceEnd,
+                    this.memberValue) };
+        }
+        return this.singlePairs;
+    }
 
-	@Override
-	public StringBuilder printExpression(int indent, StringBuilder output) {
-		super.printExpression(indent, output);
-		output.append('(');
-		this.memberValue.printExpression(indent, output);
-		return output.append(')');
-	}
+    @Override
+    public StringBuilder printExpression(int indent, StringBuilder output) {
+        super.printExpression(indent, output);
+        output.append('(');
+        this.memberValue.printExpression(indent, output);
+        return output.append(')');
+    }
 
-	@Override
-	public void traverse(ASTVisitor visitor, BlockScope scope) {
-		if (visitor.visit(this, scope)) {
-			if (this.type != null) {
-				this.type.traverse(visitor, scope);
-			}
-			if (this.memberValue != null) {
-				this.memberValue.traverse(visitor, scope);
-			}
-		}
-		visitor.endVisit(this, scope);
-	}
+    @Override
+    public void traverse(ASTVisitor visitor, BlockScope scope) {
+        if (visitor.visit(this, scope)) {
+            if (this.type != null) {
+                this.type.traverse(visitor, scope);
+            }
+            if (this.memberValue != null) {
+                this.memberValue.traverse(visitor, scope);
+            }
+        }
+        visitor.endVisit(this, scope);
+    }
 
-	@Override
-	public void traverse(ASTVisitor visitor, ClassScope scope) {
-		if (visitor.visit(this, scope)) {
-			if (this.type != null) {
-				this.type.traverse(visitor, scope);
-			}
-			if (this.memberValue != null) {
-				this.memberValue.traverse(visitor, scope);
-			}
-		}
-		visitor.endVisit(this, scope);
-	}
+    @Override
+    public void traverse(ASTVisitor visitor, ClassScope scope) {
+        if (visitor.visit(this, scope)) {
+            if (this.type != null) {
+                this.type.traverse(visitor, scope);
+            }
+            if (this.memberValue != null) {
+                this.memberValue.traverse(visitor, scope);
+            }
+        }
+        visitor.endVisit(this, scope);
+    }
 }

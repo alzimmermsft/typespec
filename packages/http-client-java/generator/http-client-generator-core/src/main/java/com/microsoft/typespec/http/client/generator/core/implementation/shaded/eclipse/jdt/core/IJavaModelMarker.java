@@ -76,7 +76,6 @@ public interface IJavaModelMarker {
      * </p>
      *
      * @since 2.0
-     * @see CorrectionEngine#getProblemArguments(IMarker)
      */
     String ARGUMENTS = "arguments"; //$NON-NLS-1$
 

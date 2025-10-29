@@ -17,28 +17,30 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class CatchParameterBinding extends LocalVariableBinding {
 
-	TypeBinding [] preciseTypes = Binding.NO_EXCEPTIONS;  // the catch block can be entered with the parameters set to these types.
+    TypeBinding[] preciseTypes = Binding.NO_EXCEPTIONS;  // the catch block can be entered with the parameters set to
+                                                         // these types.
 
-	public CatchParameterBinding(LocalDeclaration declaration, TypeBinding type, int modifiers, boolean isArgument) {
-		super(declaration, type, modifiers, isArgument);
-	}
+    public CatchParameterBinding(LocalDeclaration declaration, TypeBinding type, int modifiers, boolean isArgument) {
+        super(declaration, type, modifiers, isArgument);
+    }
 
-	public TypeBinding [] getPreciseTypes() {
-		return this.preciseTypes;
-	}
+    public TypeBinding[] getPreciseTypes() {
+        return this.preciseTypes;
+    }
 
-	public void setPreciseType(TypeBinding raisedException) {
-		int length = this.preciseTypes.length;
-		for (int i = 0; i < length; ++i) {
-			if (TypeBinding.equalsEquals(this.preciseTypes[i], raisedException))
-				return;
-		}
-		System.arraycopy(this.preciseTypes, 0, this.preciseTypes = new TypeBinding [length + 1], 0, length);
-		this.preciseTypes[length] = raisedException;
-		return;
-	}
-	@Override
-	public boolean isCatchParameter() {
-		return true;
-	}
+    public void setPreciseType(TypeBinding raisedException) {
+        int length = this.preciseTypes.length;
+        for (int i = 0; i < length; ++i) {
+            if (TypeBinding.equalsEquals(this.preciseTypes[i], raisedException))
+                return;
+        }
+        System.arraycopy(this.preciseTypes, 0, this.preciseTypes = new TypeBinding[length + 1], 0, length);
+        this.preciseTypes[length] = raisedException;
+        return;
+    }
+
+    @Override
+    public boolean isCatchParameter() {
+        return true;
+    }
 }

@@ -31,65 +31,67 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IDocumentExtension {
 
-	/**
-	 * Interface for a post notification replace operation.
-	 */
-	public interface IReplace {
+    /**
+     * Interface for a post notification replace operation.
+     */
+    public interface IReplace {
 
-		/**
-		 * Executes the replace operation on the given document.
-		 *
-		 * @param document the document to be changed
-		 * @param owner the owner of this replace operation
-		 */
-		void perform(IDocument document, IDocumentListener owner);
-	}
+        /**
+         * Executes the replace operation on the given document.
+         *
+         * @param document the document to be changed
+         * @param owner the owner of this replace operation
+         */
+        void perform(IDocument document, IDocumentListener owner);
+    }
 
-	/**
-	 * Callback for document listeners to be used inside <code>documentChanged</code>
-	 * to register a post notification replace operation on the document notifying them.
-	 *
-	 * @param owner the owner of the replace operation
-	 * @param replace the replace operation to be executed
-	 * @exception UnsupportedOperationException if <code>registerPostNotificationReplace</code>
-	 * 	is not supported by this document
-	 */
-	void registerPostNotificationReplace(IDocumentListener owner, IReplace replace) throws UnsupportedOperationException;
+    /**
+     * Callback for document listeners to be used inside <code>documentChanged</code>
+     * to register a post notification replace operation on the document notifying them.
+     *
+     * @param owner the owner of the replace operation
+     * @param replace the replace operation to be executed
+     * @exception UnsupportedOperationException if <code>registerPostNotificationReplace</code>
+     * is not supported by this document
+     */
+    void registerPostNotificationReplace(IDocumentListener owner, IReplace replace)
+        throws UnsupportedOperationException;
 
-	/**
-	 * Stops the processing of registered post notification replace operations until
-	 * <code>resumePostNotificationProcessing</code> is called.
-	 */
-	void stopPostNotificationProcessing();
+    /**
+     * Stops the processing of registered post notification replace operations until
+     * <code>resumePostNotificationProcessing</code> is called.
+     */
+    void stopPostNotificationProcessing();
 
-	/**
-	 * Resumes the processing of post notification replace operations. If the queue of registered
-	 * <code>IDocumentExtension.IReplace</code> objects is not empty, they are immediately processed if the
-	 * document is not inside a replace operation. If the document is inside a replace operation,
-	 * they are processed directly after the replace operation has finished.
-	 */
-	void resumePostNotificationProcessing();
+    /**
+     * Resumes the processing of post notification replace operations. If the queue of registered
+     * <code>IDocumentExtension.IReplace</code> objects is not empty, they are immediately processed if the
+     * document is not inside a replace operation. If the document is inside a replace operation,
+     * they are processed directly after the replace operation has finished.
+     */
+    void resumePostNotificationProcessing();
 
-	/**
-	 * Tells the document that it is about to be sequentially rewritten. That is a
-	 * sequence of non-overlapping replace operations will be performed on it. The
-	 * <code>normalize</code> flag indicates whether the rewrite is performed from
-	 * the start of the document to its end or from an arbitrary start offset. <p>
-	 *
-	 * The document is considered being in sequential rewrite mode as long as
-	 * <code>stopSequentialRewrite</code> has not been called.
-	 *
-	 * @param normalize <code>true</code> if performed from the start to the end of the document
-	 * @deprecated since 3.1. Use {@link IDocumentExtension4#startRewriteSession(DocumentRewriteSessionType)} instead.
-	 */
-	@Deprecated
-	void startSequentialRewrite(boolean normalize);
+    /**
+     * Tells the document that it is about to be sequentially rewritten. That is a
+     * sequence of non-overlapping replace operations will be performed on it. The
+     * <code>normalize</code> flag indicates whether the rewrite is performed from
+     * the start of the document to its end or from an arbitrary start offset. <p>
+     *
+     * The document is considered being in sequential rewrite mode as long as
+     * <code>stopSequentialRewrite</code> has not been called.
+     *
+     * @param normalize <code>true</code> if performed from the start to the end of the document
+     * @deprecated since 3.1. Use {@link IDocumentExtension4#startRewriteSession(DocumentRewriteSessionType)} instead.
+     */
+    @Deprecated
+    void startSequentialRewrite(boolean normalize);
 
-	/**
-	 * Tells the document that the sequential rewrite has been finished. This method
-	 * has only any effect if <code>startSequentialRewrite</code> has been called before.
-	 * @deprecated since 3.1. Use {@link IDocumentExtension4#stopRewriteSession(DocumentRewriteSession)} instead.
-	 */
-	@Deprecated
-	void stopSequentialRewrite();
+    /**
+     * Tells the document that the sequential rewrite has been finished. This method
+     * has only any effect if <code>startSequentialRewrite</code> has been called before.
+     * 
+     * @deprecated since 3.1. Use {@link IDocumentExtension4#stopRewriteSession(DocumentRewriteSession)} instead.
+     */
+    @Deprecated
+    void stopSequentialRewrite();
 }

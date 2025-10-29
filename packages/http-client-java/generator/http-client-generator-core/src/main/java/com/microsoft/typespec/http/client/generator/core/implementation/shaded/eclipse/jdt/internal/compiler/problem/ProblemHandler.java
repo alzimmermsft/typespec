@@ -38,228 +38,191 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class ProblemHandler {
 
-	public final static String[] NoArgument = CharOperation.NO_STRINGS;
+    public final static String[] NoArgument = CharOperation.NO_STRINGS;
 
-	public IErrorHandlingPolicy policy;
-	public final IProblemFactory problemFactory;
-	public final CompilerOptions options;
+    public IErrorHandlingPolicy policy;
+    public final IProblemFactory problemFactory;
+    public final CompilerOptions options;
 
-	/* When temporarily switching policies, store here the original root policy (for temporary resume). */
-	private IErrorHandlingPolicy rootPolicy;
+    /* When temporarily switching policies, store here the original root policy (for temporary resume). */
+    private IErrorHandlingPolicy rootPolicy;
 
-	protected boolean suppressTagging = false;
-/*
- * Problem handler can be supplied with a policy to specify
- * its behavior in error handling. Also see static methods for
- * built-in policies.
- */
-public ProblemHandler(IErrorHandlingPolicy policy, CompilerOptions options, IProblemFactory problemFactory) {
-	this.policy = policy;
-	this.problemFactory = problemFactory;
-	this.options = options;
-}
-/*
- * Given the current configuration, answers which category the problem
- * falls into:
- *		Error | Warning | Ignore
- */
-public int computeSeverity(int problemId){
+    protected boolean suppressTagging = false;
 
-	return ProblemSeverities.Error; // by default all problems are errors
-}
-public CategorizedProblem createProblem(
-	char[] fileName,
-	int problemId,
-	String[] problemArguments,
-	String[] messageArguments,
-	int severity,
-	int problemStartPosition,
-	int problemEndPosition,
-	int lineNumber,
-	int columnNumber) {
+    /*
+     * Problem handler can be supplied with a policy to specify
+     * its behavior in error handling. Also see static methods for
+     * built-in policies.
+     */
+    public ProblemHandler(IErrorHandlingPolicy policy, CompilerOptions options, IProblemFactory problemFactory) {
+        this.policy = policy;
+        this.problemFactory = problemFactory;
+        this.options = options;
+    }
 
-	return this.problemFactory.createProblem(
-		fileName,
-		problemId,
-		problemArguments,
-		messageArguments,
-		severity,
-		problemStartPosition,
-		problemEndPosition,
-		lineNumber,
-		columnNumber);
-}
-public CategorizedProblem createProblem(
-		char[] fileName,
-		int problemId,
-		String[] problemArguments,
-		int elaborationId,
-		String[] messageArguments,
-		int severity,
-		int problemStartPosition,
-		int problemEndPosition,
-		int lineNumber,
-		int columnNumber) {
-	return this.problemFactory.createProblem(
-		fileName,
-		problemId,
-		problemArguments,
-		elaborationId,
-		messageArguments,
-		severity,
-		problemStartPosition,
-		problemEndPosition,
-		lineNumber,
-		columnNumber);
-}
-public void handle(
-	int problemId,
-	String[] problemArguments,
-	int elaborationId,
-	String[] messageArguments,
-	int severity,
-	int problemStartPosition,
-	int problemEndPosition,
-	ReferenceContext referenceContext,
-	CompilationResult unitResult) {
+    /*
+     * Given the current configuration, answers which category the problem
+     * falls into:
+     * Error | Warning | Ignore
+     */
+    public int computeSeverity(int problemId) {
 
-	if (severity == ProblemSeverities.Ignore)
-		return;
+        return ProblemSeverities.Error; // by default all problems are errors
+    }
 
-	 boolean mandatory = (severity & (ProblemSeverities.Error | ProblemSeverities.Optional)) == ProblemSeverities.Error;
-	 if ((severity & ProblemSeverities.InternalError) == 0 && this.policy.ignoreAllErrors()) {
-		 // Error is not to be exposed, but clients may need still notification as to whether there are silently-ignored-errors.
-		 // if no reference context, we need to abort from the current compilation process
-		 if (referenceContext == null) {
-			 if ((severity & ProblemSeverities.Error) != 0) { // non reportable error is fatal
-				 CategorizedProblem problem = this.createProblem(null, problemId, problemArguments, elaborationId, messageArguments, severity, 0, 0, 0, 0);
-				 throw new AbortCompilation(null, problem);
-			 } else {
-				 return; // ignore non reportable warning
-			 }
-		 }
-		 return;
-	 }
+    public CategorizedProblem createProblem(char[] fileName, int problemId, String[] problemArguments,
+        String[] messageArguments, int severity, int problemStartPosition, int problemEndPosition, int lineNumber,
+        int columnNumber) {
 
-	if ((severity & ProblemSeverities.Optional) != 0 && problemId != IProblem.Task  && !this.options.ignoreSourceFolderWarningOption) {
-		ICompilationUnit cu = unitResult.getCompilationUnit();
-		try{
-			if (cu != null && cu.ignoreOptionalProblems())
-				return;
-		// workaround for illegal implementation of ICompilationUnit, see https://bugs.eclipse.org/372351
-		} catch (AbstractMethodError ex) {
-			// continue
-		}
-	}
+        return this.problemFactory.createProblem(fileName, problemId, problemArguments, messageArguments, severity,
+            problemStartPosition, problemEndPosition, lineNumber, columnNumber);
+    }
 
-	// if no reference context, we need to abort from the current compilation process
-	if (referenceContext == null) {
-		if ((severity & ProblemSeverities.Error) != 0) { // non reportable error is fatal
-			CategorizedProblem problem = this.createProblem(null, problemId, problemArguments, elaborationId, messageArguments, severity, 0, 0, 0, 0);
-			throw new AbortCompilation(null, problem);
-		} else {
-			return; // ignore non reportable warning
-		}
-	}
+    public CategorizedProblem createProblem(char[] fileName, int problemId, String[] problemArguments,
+        int elaborationId, String[] messageArguments, int severity, int problemStartPosition, int problemEndPosition,
+        int lineNumber, int columnNumber) {
+        return this.problemFactory.createProblem(fileName, problemId, problemArguments, elaborationId, messageArguments,
+            severity, problemStartPosition, problemEndPosition, lineNumber, columnNumber);
+    }
 
-	int[] lineEnds;
-	int lineNumber = problemStartPosition >= 0
-			? Util.getLineNumber(problemStartPosition, lineEnds = unitResult.getLineSeparatorPositions(), 0, lineEnds.length-1)
-			: 0;
-	int columnNumber = problemStartPosition >= 0
-			? Util.searchColumnNumber(unitResult.getLineSeparatorPositions(), lineNumber, problemStartPosition)
-			: 0;
-	CategorizedProblem problem =
-		this.createProblem(
-			unitResult.getFileName(),
-			problemId,
-			problemArguments,
-			elaborationId,
-			messageArguments,
-			severity,
-			problemStartPosition,
-			problemEndPosition,
-			lineNumber,
-			columnNumber);
+    public void handle(int problemId, String[] problemArguments, int elaborationId, String[] messageArguments,
+        int severity, int problemStartPosition, int problemEndPosition, ReferenceContext referenceContext,
+        CompilationResult unitResult) {
 
-	if (problem == null) return; // problem couldn't be created, ignore
+        if (severity == ProblemSeverities.Ignore)
+            return;
 
-	switch (severity & ProblemSeverities.Error) {
-		case ProblemSeverities.Error :
-			record(problem, unitResult, referenceContext, mandatory);
-			if ((severity & ProblemSeverities.Fatal) != 0) {
-				// don't abort or tag as error if the error is suppressed
-				if (!referenceContext.hasErrors() && !mandatory && this.options.suppressOptionalErrors) {
-					CompilationUnitDeclaration unitDecl = referenceContext.getCompilationUnitDeclaration();
-					if (unitDecl != null && unitDecl.isSuppressed(problem)) {
-						return;
-					}
-				}
-				if (!this.suppressTagging || this.options.treatOptionalErrorAsFatal) {
-					referenceContext.tagAsHavingErrors();
-				}
-				// should abort ?
-				int abortLevel;
-				if ((abortLevel = this.policy.stopOnFirstError() ? ProblemSeverities.AbortCompilation : severity & ProblemSeverities.Abort) != 0) {
-					referenceContext.abort(abortLevel, problem);
-				}
-			}
-			break;
-		case ProblemSeverities.Warning :
-			record(problem, unitResult, referenceContext, false);
-			break;
-	}
-}
-/**
- * Standard problem handling API, the actual severity (warning/error/ignore) is deducted
- * from the problem ID and the current compiler options.
- */
-public void handle(
-	int problemId,
-	String[] problemArguments,
-	String[] messageArguments,
-	int problemStartPosition,
-	int problemEndPosition,
-	ReferenceContext referenceContext,
-	CompilationResult unitResult) {
+        boolean mandatory
+            = (severity & (ProblemSeverities.Error | ProblemSeverities.Optional)) == ProblemSeverities.Error;
+        if ((severity & ProblemSeverities.InternalError) == 0 && this.policy.ignoreAllErrors()) {
+            // Error is not to be exposed, but clients may need still notification as to whether there are
+            // silently-ignored-errors.
+            // if no reference context, we need to abort from the current compilation process
+            if (referenceContext == null) {
+                if ((severity & ProblemSeverities.Error) != 0) { // non reportable error is fatal
+                    CategorizedProblem problem = this.createProblem(null, problemId, problemArguments, elaborationId,
+                        messageArguments, severity, 0, 0, 0, 0);
+                    throw new AbortCompilation(null, problem);
+                } else {
+                    return; // ignore non reportable warning
+                }
+            }
+            return;
+        }
 
-	this.handle(
-		problemId,
-		problemArguments,
-		0, // no message elaboration
-		messageArguments,
-		computeSeverity(problemId), // severity inferred using the ID
-		problemStartPosition,
-		problemEndPosition,
-		referenceContext,
-		unitResult);
-}
-public void record(CategorizedProblem problem, CompilationResult unitResult, ReferenceContext referenceContext, boolean mandatoryError) {
-	unitResult.record(problem, referenceContext, mandatoryError);
-}
-/** @return old policy. */
-public IErrorHandlingPolicy switchErrorHandlingPolicy(IErrorHandlingPolicy newPolicy) {
-	if (this.rootPolicy == null)
-		this.rootPolicy = this.policy;
-	IErrorHandlingPolicy presentPolicy = this.policy;
-	this.policy = newPolicy;
-	return presentPolicy;
-}
-/**
- * Temporarily suspend a temporary error handling policy.
- * @return old policy.
- */
-public IErrorHandlingPolicy suspendTempErrorHandlingPolicy() {
-	IErrorHandlingPolicy presentPolicy = this.policy;
-	if (this.rootPolicy != null)
-		this.policy = this.rootPolicy;
-	return presentPolicy;
-}
-/**
- * Resume from a corresponding {@link #suspendTempErrorHandlingPolicy()}.
- * @param previousPolicy the result value of the matching suspend call
- */
-public void resumeTempErrorHandlingPolicy(IErrorHandlingPolicy previousPolicy) {
-	this.policy = previousPolicy;
-}
+        if ((severity & ProblemSeverities.Optional) != 0
+            && problemId != IProblem.Task
+            && !this.options.ignoreSourceFolderWarningOption) {
+            ICompilationUnit cu = unitResult.getCompilationUnit();
+            try {
+                if (cu != null && cu.ignoreOptionalProblems())
+                    return;
+                // workaround for illegal implementation of ICompilationUnit, see https://bugs.eclipse.org/372351
+            } catch (AbstractMethodError ex) {
+                // continue
+            }
+        }
+
+        // if no reference context, we need to abort from the current compilation process
+        if (referenceContext == null) {
+            if ((severity & ProblemSeverities.Error) != 0) { // non reportable error is fatal
+                CategorizedProblem problem = this.createProblem(null, problemId, problemArguments, elaborationId,
+                    messageArguments, severity, 0, 0, 0, 0);
+                throw new AbortCompilation(null, problem);
+            } else {
+                return; // ignore non reportable warning
+            }
+        }
+
+        int[] lineEnds;
+        int lineNumber = problemStartPosition >= 0
+            ? Util.getLineNumber(problemStartPosition, lineEnds = unitResult.getLineSeparatorPositions(), 0,
+                lineEnds.length - 1)
+            : 0;
+        int columnNumber = problemStartPosition >= 0
+            ? Util.searchColumnNumber(unitResult.getLineSeparatorPositions(), lineNumber, problemStartPosition)
+            : 0;
+        CategorizedProblem problem
+            = this.createProblem(unitResult.getFileName(), problemId, problemArguments, elaborationId, messageArguments,
+                severity, problemStartPosition, problemEndPosition, lineNumber, columnNumber);
+
+        if (problem == null)
+            return; // problem couldn't be created, ignore
+
+        switch (severity & ProblemSeverities.Error) {
+            case ProblemSeverities.Error:
+                record(problem, unitResult, referenceContext, mandatory);
+                if ((severity & ProblemSeverities.Fatal) != 0) {
+                    // don't abort or tag as error if the error is suppressed
+                    if (!referenceContext.hasErrors() && !mandatory && this.options.suppressOptionalErrors) {
+                        CompilationUnitDeclaration unitDecl = referenceContext.getCompilationUnitDeclaration();
+                        if (unitDecl != null && unitDecl.isSuppressed(problem)) {
+                            return;
+                        }
+                    }
+                    if (!this.suppressTagging || this.options.treatOptionalErrorAsFatal) {
+                        referenceContext.tagAsHavingErrors();
+                    }
+                    // should abort ?
+                    int abortLevel;
+                    if ((abortLevel = this.policy.stopOnFirstError()
+                        ? ProblemSeverities.AbortCompilation
+                        : severity & ProblemSeverities.Abort) != 0) {
+                        referenceContext.abort(abortLevel, problem);
+                    }
+                }
+                break;
+
+            case ProblemSeverities.Warning:
+                record(problem, unitResult, referenceContext, false);
+                break;
+        }
+    }
+
+    /**
+     * Standard problem handling API, the actual severity (warning/error/ignore) is deducted
+     * from the problem ID and the current compiler options.
+     */
+    public void handle(int problemId, String[] problemArguments, String[] messageArguments, int problemStartPosition,
+        int problemEndPosition, ReferenceContext referenceContext, CompilationResult unitResult) {
+
+        this.handle(problemId, problemArguments, 0, // no message elaboration
+            messageArguments, computeSeverity(problemId), // severity inferred using the ID
+            problemStartPosition, problemEndPosition, referenceContext, unitResult);
+    }
+
+    public void record(CategorizedProblem problem, CompilationResult unitResult, ReferenceContext referenceContext,
+        boolean mandatoryError) {
+        unitResult.record(problem, referenceContext, mandatoryError);
+    }
+
+    /** @return old policy. */
+    public IErrorHandlingPolicy switchErrorHandlingPolicy(IErrorHandlingPolicy newPolicy) {
+        if (this.rootPolicy == null)
+            this.rootPolicy = this.policy;
+        IErrorHandlingPolicy presentPolicy = this.policy;
+        this.policy = newPolicy;
+        return presentPolicy;
+    }
+
+    /**
+     * Temporarily suspend a temporary error handling policy.
+     * 
+     * @return old policy.
+     */
+    public IErrorHandlingPolicy suspendTempErrorHandlingPolicy() {
+        IErrorHandlingPolicy presentPolicy = this.policy;
+        if (this.rootPolicy != null)
+            this.policy = this.rootPolicy;
+        return presentPolicy;
+    }
+
+    /**
+     * Resume from a corresponding {@link #suspendTempErrorHandlingPolicy()}.
+     * 
+     * @param previousPolicy the result value of the matching suspend call
+     */
+    public void resumeTempErrorHandlingPolicy(IErrorHandlingPolicy previousPolicy) {
+        this.policy = previousPolicy;
+    }
 }

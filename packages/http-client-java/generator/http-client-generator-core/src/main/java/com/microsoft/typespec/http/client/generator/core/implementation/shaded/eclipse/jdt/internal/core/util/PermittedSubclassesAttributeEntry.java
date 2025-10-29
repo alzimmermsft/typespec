@@ -21,35 +21,34 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class PermittedSubclassesAttributeEntry extends ClassFileStruct implements IPermittedSubclassesAttributeEntry {
 
-	private final int permittedClassNameIndex;
-	private char[] permittedClassName;
+    private final int permittedClassNameIndex;
+    private char[] permittedClassName;
 
-	public PermittedSubclassesAttributeEntry(byte[] classFileBytes, IConstantPool constantPool, int offset)
-			throws ClassFormatException {
-		this.permittedClassNameIndex = u2At(classFileBytes, 0, offset);
-		if (this.permittedClassNameIndex != 0) {
-			IConstantPoolEntry constantPoolEntry;
-			constantPoolEntry = constantPool.decodeEntry(this.permittedClassNameIndex);
-			if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Class) {
-				throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
-			}
-			this.permittedClassName = constantPoolEntry.getClassInfoName();
-		}
-	}
+    public PermittedSubclassesAttributeEntry(byte[] classFileBytes, IConstantPool constantPool, int offset)
+        throws ClassFormatException {
+        this.permittedClassNameIndex = u2At(classFileBytes, 0, offset);
+        if (this.permittedClassNameIndex != 0) {
+            IConstantPoolEntry constantPoolEntry;
+            constantPoolEntry = constantPool.decodeEntry(this.permittedClassNameIndex);
+            if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Class) {
+                throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
+            }
+            this.permittedClassName = constantPoolEntry.getClassInfoName();
+        }
+    }
 
-	@Override
-	public String toString() {
-		return new String(this.permittedClassName);
-	}
+    @Override
+    public String toString() {
+        return new String(this.permittedClassName);
+    }
 
-	@Override
-	public char[] getPermittedSubclassName() {
-		return this.permittedClassName;
-	}
+    @Override
+    public char[] getPermittedSubclassName() {
+        return this.permittedClassName;
+    }
 
-	@Override
-	public int gePermittedSubclassIndex() {
-		return this.permittedClassNameIndex;
-	}
+    @Override
+    public int gePermittedSubclassIndex() {
+        return this.permittedClassNameIndex;
+    }
 }
-

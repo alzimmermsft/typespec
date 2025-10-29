@@ -23,29 +23,29 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public interface IJavadocContents {
 
-	/**
-	 * Returns the part of the javadoc that describes the type
-	 */
-	String getTypeDoc() throws JavaModelException;
+    /**
+     * Returns the part of the javadoc that describes the type
+     */
+    String getTypeDoc() throws JavaModelException;
 
-	/**
-	 * Returns the part of the javadoc that describes the package
-	 */
-	String getPackageDoc() throws JavaModelException;
+    /**
+     * Returns the part of the javadoc that describes the package
+     */
+    String getPackageDoc() throws JavaModelException;
 
-	/**
-	 * Returns the part of the javadoc that describes the module
-	 */
-	String getModuleDoc() throws JavaModelException;
+    /**
+     * Returns the part of the javadoc that describes the module
+     */
+    String getModuleDoc() throws JavaModelException;
 
-	/**
-	 * Returns the part of the javadoc that describes a field of the type
-	 */
-	String getFieldDoc(IField child) throws JavaModelException;
+    /**
+     * Returns the part of the javadoc that describes a field of the type
+     */
+    String getFieldDoc(IField child) throws JavaModelException;
 
-	/**
-	 * Returns the part of the javadoc that describe a method of the type
-	 */
-	String getMethodDoc(IMethod child) throws JavaModelException;
+    /**
+     * Returns the part of the javadoc that describe a method of the type
+     */
+    String getMethodDoc(IMethod child) throws JavaModelException;
 
 }

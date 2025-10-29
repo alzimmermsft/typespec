@@ -26,21 +26,22 @@ import java.nio.Buffer;
 @GwtIncompatible
 @ElementTypesAreNonnullByDefault
 final class Java8Compatibility {
-  static void clear(Buffer b) {
-    b.clear();
-  }
+    static void clear(Buffer b) {
+        b.clear();
+    }
 
-  static void flip(Buffer b) {
-    b.flip();
-  }
+    static void flip(Buffer b) {
+        b.flip();
+    }
 
-  static void limit(Buffer b, int limit) {
-    b.limit(limit);
-  }
+    static void limit(Buffer b, int limit) {
+        b.limit(limit);
+    }
 
-  static void position(Buffer b, int position) {
-    b.position(position);
-  }
+    static void position(Buffer b, int position) {
+        b.position(position);
+    }
 
-  private Java8Compatibility() {}
+    private Java8Compatibility() {
+    }
 }

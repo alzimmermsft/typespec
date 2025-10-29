@@ -15,29 +15,17 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.ResourcesPlugin;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.ILog;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IStatus;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.NullProgressMonitor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.OperationCanceledException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Platform;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Status;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.SubProgressMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Bundle;
 
 public class Policy {
 
     public static final boolean buildOnCancel = false;
-    public static final long MAX_BUILD_DELAY = 1000;
 
-    public static final long MIN_BUILD_DELAY = 100;
     public static int opWork = 100;
     public static final int totalWork = 100;
-
-    public static void checkCanceled(IProgressMonitor monitor) {
-        if (monitor.isCanceled()) {
-            throw new OperationCanceledException();
-        }
-    }
 
     public static void log(int severity, String message, Throwable t) {
         if (message == null) {
@@ -61,17 +49,4 @@ public class Policy {
         log(IStatus.ERROR, "Internal Error", t); //$NON-NLS-1$
     }
 
-    public static IProgressMonitor monitorFor(IProgressMonitor monitor) {
-        return monitor == null ? new NullProgressMonitor() : monitor;
-    }
-
-    public static IProgressMonitor subMonitorFor(IProgressMonitor monitor, int ticks) {
-        if (monitor == null) {
-            return new NullProgressMonitor();
-        }
-        if (monitor instanceof NullProgressMonitor) {
-            return monitor;
-        }
-        return new SubProgressMonitor(monitor, ticks);
-    }
 }

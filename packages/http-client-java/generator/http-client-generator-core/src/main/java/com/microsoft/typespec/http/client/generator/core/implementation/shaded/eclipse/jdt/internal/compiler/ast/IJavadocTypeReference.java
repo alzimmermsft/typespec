@@ -20,7 +20,8 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IJavadocTypeReference {
 
-	public int getTagSourceStart();
-	public int getTagSourceEnd();
+    public int getTagSourceStart();
+
+    public int getTagSourceEnd();
 
 }

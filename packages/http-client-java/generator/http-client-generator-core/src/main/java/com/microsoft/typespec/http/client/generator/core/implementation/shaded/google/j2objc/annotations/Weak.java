@@ -24,14 +24,13 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-
 /**
  * Annotation that indicates a variable has a weak relationship to its owner. The variable will be
  * declared with the __unsafe_unretained annotation.
  *
  * @author Tom Ball
  */
-@Target({FIELD, LOCAL_VARIABLE, PARAMETER})
+@Target({ FIELD, LOCAL_VARIABLE, PARAMETER })
 @Retention(CLASS)
 public @interface Weak {
 }

@@ -29,4 +29,5 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.PACKAGE)
 @Retention(RetentionPolicy.CLASS)
-public @interface SuppressPackageLocation {}
+public @interface SuppressPackageLocation {
+}

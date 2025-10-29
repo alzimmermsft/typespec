@@ -20,7 +20,6 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Requirement;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.resolver.ResolutionException;
-
 import java.util.Collection;
 import java.util.Collections;
 

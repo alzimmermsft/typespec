@@ -24,8 +24,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * This interface may be implemented by clients.
  * </p>
  *
- * @see org.eclipse.core.runtime.RegistryFactory#getRegistry()
- * @see org.eclipse.core.runtime.RegistryFactory#setDefaultRegistryProvider(IRegistryProvider)
  * @since org.eclipse.equinox.registry 3.2
  */
 public interface IRegistryProvider {
@@ -36,5 +34,5 @@ public interface IRegistryProvider {
      *
      * @return an extension registry
      */
-    public IExtensionRegistry getRegistry();
+    IExtensionRegistry registry();
 }

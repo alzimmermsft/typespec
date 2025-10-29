@@ -25,36 +25,35 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure.FieldOrder;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HANDLE;
 
 /**
  * Conversion of PhysicalMonitorEnumerationAPI.h
+ * 
  * @author Martin Steiger
  */
-public interface PhysicalMonitorEnumerationAPI
-{
+public interface PhysicalMonitorEnumerationAPI {
 
     /******************************************************************************
-      Physical Monitor Constants
-    ******************************************************************************/
+     * Physical Monitor Constants
+     ******************************************************************************/
 
     /**
-     * A physical monitor description is always an array of 128 characters.  Some
+     * A physical monitor description is always an array of 128 characters. Some
      * of the characters may not be used.
      */
-    final int PHYSICAL_MONITOR_DESCRIPTION_SIZE =                   128;
+    final int PHYSICAL_MONITOR_DESCRIPTION_SIZE = 128;
 
     /******************************************************************************
-      Physical Monitor Structures
-    ******************************************************************************/
+     * Physical Monitor Structures
+     ******************************************************************************/
 
     /**
      * Contains a handle and text description corresponding to a physical monitor.
      */
-    @FieldOrder({"hPhysicalMonitor", "szPhysicalMonitorDescription"})
+    @FieldOrder({ "hPhysicalMonitor", "szPhysicalMonitorDescription" })
     public class PHYSICAL_MONITOR extends Structure {
         /**
          * Handle to the physical monitor.

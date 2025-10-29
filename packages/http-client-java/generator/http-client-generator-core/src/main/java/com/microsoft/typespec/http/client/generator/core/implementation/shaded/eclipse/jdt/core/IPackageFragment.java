@@ -35,7 +35,7 @@ public interface IPackageFragment extends IParent, IJavaElement, IOpenable, ISou
      * string, <code>""</code>).
      * </p>
      */
-    public static final String DEFAULT_PACKAGE_NAME = ""; //$NON-NLS-1$
+    String DEFAULT_PACKAGE_NAME = ""; //$NON-NLS-1$
 
     /**
      * Returns whether this fragment contains at least one Java resource.
@@ -103,25 +103,6 @@ public interface IPackageFragment extends IParent, IJavaElement, IOpenable, ISou
      * @since 3.14
      */
     IClassFile[] getAllClassFiles() throws JavaModelException;
-
-    /**
-     * Returns all of the ordinary class files in this package fragment.
-     *
-     * <p>Note: this list never includes a modular class file
-     * (see {@link #getModularClassFile()}).</p>
-     *
-     * <p>Note: it is possible that a package fragment contains only
-     * compilation units (in other words, its kind is <code>K_SOURCE</code>), in
-     * which case this method returns an empty collection.</p>
-     *
-     * @exception JavaModelException if this element does not exist or if an
-     * exception occurs while accessing its corresponding resource.
-     * @return all of the ordinary class files in this package fragment
-     * @deprecated Clients are advised to specifically use either {@link #getOrdinaryClassFiles()}
-     * or {@link #getAllClassFiles()} to express their intent.
-     */
-    @Deprecated
-    IClassFile[] getClassFiles() throws JavaModelException;
 
     /**
      * Returns all of the ordinary class files in this package fragment,
@@ -207,33 +188,6 @@ public interface IPackageFragment extends IParent, IJavaElement, IOpenable, ISou
      * @see IPackageFragmentRoot#K_BINARY
      */
     int getKind() throws JavaModelException;
-
-    /**
-     * Returns an array of non-Java resources contained in this package fragment.
-     * <p>
-     * Non-Java resources includes other files and folders located in the same
-     * directory as the compilation units or class files for this package
-     * fragment. Source files excluded from this package by virtue of
-     * inclusion/exclusion patterns on the corresponding source classpath entry
-     * are considered non-Java resources and will appear in the result
-     * (possibly in a folder).
-     * </p><p>
-     * Since 3.3, if this package fragment is inside an archive, the non-Java resources
-     * are a tree of {@link IJarEntryResource}s. One can navigate this tree using
-     * the {@link IJarEntryResource#getChildren()} and
-     * {@link IJarEntryResource#getParent()} methods.
-     * </p>
-     *
-     * @exception JavaModelException if this element does not exist or if an
-     * exception occurs while accessing its corresponding resource.
-     * @return an array of non-Java resources (<code>IFile</code>s,
-     * <code>IFolder</code>s, or <code>IStorage</code>s if the
-     * package fragment is in an archive) contained in this package
-     * fragment
-     * @see IClasspathEntry#getInclusionPatterns()
-     * @see IClasspathEntry#getExclusionPatterns()
-     */
-    Object[] getNonJavaResources() throws JavaModelException;
 
     /**
      * Returns whether this package fragment's name is

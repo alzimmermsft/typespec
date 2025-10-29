@@ -28,24 +28,27 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/** Provide custom mappings to and from native types.  The default lookup
+/**
+ * Provide custom mappings to and from native types. The default lookup
  * checks classes corresponding to converters in the order added; if the
  * class to be converted is an instance of the converter's registered class,
  * the converter will be used.<p>
  * Derived classes should install additional converters using
  * {@link #addToNativeConverter}
- * and/or {@link #addFromNativeConverter} in the default constructor.  Classes
+ * and/or {@link #addFromNativeConverter} in the default constructor. Classes
  * for primitive types will automatically register for the corresponding
  * Object type and vice versa (i.e. you don't have to register both
  * <code>int.class</code> and <code>Integer.class</code>).
  * If you want different mapping behavior than the default, simply override
  * {@link #getToNativeConverter} and {@link #getFromNativeConverter}.
+ * 
  * @see Library#OPTION_TYPE_MAPPER
  */
 public class DefaultTypeMapper implements TypeMapper {
     private static class Entry {
         public Class<?> type;
         public Object converter;
+
         public Entry(Class<?> type, Object converter) {
             this.type = type;
             this.converter = converter;
@@ -91,9 +94,12 @@ public class DefaultTypeMapper implements TypeMapper {
         }
         return null;
     }
-    /** Add a {@link ToNativeConverter} to define the conversion into a native
-     * type from arguments of the given Java type.  Converters are
+
+    /**
+     * Add a {@link ToNativeConverter} to define the conversion into a native
+     * type from arguments of the given Java type. Converters are
      * checked for in the order added.
+     * 
      * @param cls Java class requiring conversion
      * @param converter {@link ToNativeConverter} to transform an object of
      * the given Java class into its native-compatible form.
@@ -105,9 +111,10 @@ public class DefaultTypeMapper implements TypeMapper {
             toNativeConverters.add(new Entry(alt, converter));
         }
     }
+
     /**
      * Add a {@link FromNativeConverter} to convert a native result type into the
-     * given Java type.  Converters are checked for in the order added.
+     * given Java type. Converters are checked for in the order added.
      *
      * @param cls Java class for the Java representation of a native type.
      * @param converter {@link FromNativeConverter} to transform a
@@ -145,11 +152,11 @@ public class DefaultTypeMapper implements TypeMapper {
 
     @Override
     public FromNativeConverter getFromNativeConverter(Class<?> javaType) {
-        return (FromNativeConverter)lookupConverter(javaType, fromNativeConverters);
+        return (FromNativeConverter) lookupConverter(javaType, fromNativeConverters);
     }
 
     @Override
     public ToNativeConverter getToNativeConverter(Class<?> javaType) {
-        return (ToNativeConverter)lookupConverter(javaType, toNativeConverters);
+        return (ToNativeConverter) lookupConverter(javaType, toNativeConverters);
     }
 }

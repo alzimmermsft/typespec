@@ -24,7 +24,6 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure.FieldOrder;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.EnumUtils;
@@ -33,14 +32,14 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 
 /**
  * Conversion of LowLevelMonitorConfigurationAPI.h
+ * 
  * @author Martin Steiger
  */
-public interface LowLevelMonitorConfigurationAPI
-{
+public interface LowLevelMonitorConfigurationAPI {
     /**
      * Contains information from a monitor's timing report.
      */
-    @FieldOrder({"dwHorizontalFrequencyInHZ", "dwVerticalFrequencyInHZ", "bTimingStatusByte"})
+    @FieldOrder({ "dwHorizontalFrequencyInHZ", "dwVerticalFrequencyInHZ", "bTimingStatusByte" })
     class MC_TIMING_REPORT extends Structure {
         /**
          * The monitor's horizontal synchronization frequency in Hz.
@@ -62,8 +61,7 @@ public interface LowLevelMonitorConfigurationAPI
     /**
      * Describes a Virtual Control Panel (VCP) code type.
      */
-    enum MC_VCP_CODE_TYPE
-    {
+    enum MC_VCP_CODE_TYPE {
         /**
          * Momentary VCP code. Sending a command of this type causes the monitor to initiate a self-timed
          * operation and then revert to its original state. Examples include display tests and degaussing.
@@ -78,7 +76,8 @@ public interface LowLevelMonitorConfigurationAPI
         /**
          * Defines a Reference to the enum
          */
-        public static class ByReference extends com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.ByReference {
+        public static class ByReference
+            extends com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.ByReference {
 
             /**
              * Create an uninitialized reference
@@ -89,6 +88,7 @@ public interface LowLevelMonitorConfigurationAPI
 
             /**
              * Instantiates a new reference.
+             * 
              * @param value the value
              */
             public ByReference(MC_VCP_CODE_TYPE value) {
@@ -98,6 +98,7 @@ public interface LowLevelMonitorConfigurationAPI
 
             /**
              * Sets the value.
+             * 
              * @param value the new value
              */
             public void setValue(MC_VCP_CODE_TYPE value) {
@@ -106,6 +107,7 @@ public interface LowLevelMonitorConfigurationAPI
 
             /**
              * Gets the value.
+             * 
              * @return the value
              */
             public MC_VCP_CODE_TYPE getValue() {
@@ -114,4 +116,3 @@ public interface LowLevelMonitorConfigurationAPI
         }
     }
 }
-

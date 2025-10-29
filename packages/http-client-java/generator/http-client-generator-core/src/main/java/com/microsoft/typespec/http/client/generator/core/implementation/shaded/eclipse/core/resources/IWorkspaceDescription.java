@@ -144,9 +144,6 @@ public interface IWorkspaceDescription {
      *
      * @param value <code>true</code> to turn on autobuilding,
      * and <code>false</code> to turn it off
-     * @see IWorkspace#setDescription(IWorkspaceDescription)
-     * @see #isAutoBuilding()
-     * @see ResourcesPlugin#PREF_AUTO_BUILDING
      */
     void setAutoBuilding(boolean value);
 
@@ -177,10 +174,6 @@ public interface IWorkspaceDescription {
      *
      * @param time the maximum number of milliseconds a file state should be
      * kept in the local history
-     * @see IWorkspace#setDescription(IWorkspaceDescription)
-     * @see #getFileStateLongevity()
-     * @see #setApplyFileStatePolicy(boolean)
-     * @see ResourcesPlugin#PREF_FILE_STATE_LONGEVITY
      */
     void setFileStateLongevity(long time);
 
@@ -194,9 +187,6 @@ public interface IWorkspaceDescription {
      *
      * @param number the maximum number of times that the workspace should rebuild
      * when builders affect projects that have already been built.
-     * @see IWorkspace#setDescription(IWorkspaceDescription)
-     * @see #getMaxBuildIterations()
-     * @see ResourcesPlugin#PREF_MAX_BUILD_ITERATIONS
      * @since 2.1
      */
     void setMaxBuildIterations(int number);
@@ -212,10 +202,6 @@ public interface IWorkspaceDescription {
      * </p>
      *
      * @param number the maximum number of states per file that can be stored in the local history
-     * @see IWorkspace#setDescription(IWorkspaceDescription)
-     * @see #getMaxFileStates()
-     * @see #setApplyFileStatePolicy(boolean)
-     * @see ResourcesPlugin#PREF_MAX_FILE_STATES
      */
     void setMaxFileStates(int number);
 
@@ -229,10 +215,6 @@ public interface IWorkspaceDescription {
      * </p>
      *
      * @param size the maximum permitted size of a file to be stored in the local history
-     * @see IWorkspace#setDescription(IWorkspaceDescription)
-     * @see #getMaxFileStateSize()
-     * @see #setApplyFileStatePolicy(boolean)
-     * @see ResourcesPlugin#PREF_MAX_FILE_STATE_SIZE
      */
     void setMaxFileStateSize(long size);
 
@@ -245,9 +227,6 @@ public interface IWorkspaceDescription {
      *
      * @param keepDerivedState <code>true</code> if a history of derived files is
      * needed.
-     * @see IWorkspace#setDescription(IWorkspaceDescription)
-     * @see #isKeepDerivedState()
-     * @see ResourcesPlugin#PREF_KEEP_DERIVED_STATE
      * @since 3.15
      */
     void setKeepDerivedState(boolean keepDerivedState);
@@ -263,12 +242,6 @@ public interface IWorkspaceDescription {
      *
      * @param apply <code>true</code> if file states are removed due to the policy,
      * <code>false</code> otherwise
-     * @see IWorkspace#setDescription(IWorkspaceDescription)
-     * @see #setFileStateLongevity(long)
-     * @see #setMaxFileStates(int)
-     * @see #setMaxFileStateSize(long)
-     * @see #isApplyFileStatePolicy()
-     * @see ResourcesPlugin#PREF_APPLY_FILE_STATE_POLICY
      * @since 3.6
      */
     void setApplyFileStatePolicy(boolean apply);
@@ -282,9 +255,6 @@ public interface IWorkspaceDescription {
      * </p>
      *
      * @param delay the amount of time in milliseconds between automatic workspace snapshots
-     * @see IWorkspace#setDescription(IWorkspaceDescription)
-     * @see #getSnapshotInterval()
-     * @see ResourcesPlugin#PREF_SNAPSHOT_INTERVAL
      * @since 2.0
      */
     void setSnapshotInterval(long delay);

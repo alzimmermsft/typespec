@@ -15,14 +15,10 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.resources;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.localstore.SafeChunkyInputStream;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.localstore.SafeFileInputStream;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.utils.Messages;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.utils.Policy;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.watson.*;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.*;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.*;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.util.NLS;
+
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -206,7 +202,7 @@ public class MarkerManager {
         IPath path = resource.getFullPath();
         MarkerSet previousChanges = currentDeltas.get(path);
         MarkerSet result = MarkerDelta.merge(previousChanges, changes);
-        if (result.size() == 0) {
+        if (result.isEmpty()) {
             currentDeltas.remove(path);
         } else {
             currentDeltas.put(path, result);
@@ -215,14 +211,6 @@ public class MarkerManager {
         if (info != null) {
             info.incrementMarkerGenerationCount();
         }
-    }
-
-    /**
-     * Returns the marker with the given id or <code>null</code> if none is found.
-     */
-    public IMarker findMarker(IResource resource, long id) {
-        MarkerInfo info = findMarkerInfo(resource, id);
-        return info == null ? null : new Marker(resource, info.getId());
     }
 
     /**
@@ -270,17 +258,6 @@ public class MarkerManager {
         }
     }
 
-    public long getChangeId() {
-        return changeId.get();
-    }
-
-    /**
-     * Returns the map of all marker deltas since the given change Id.
-     */
-    public Map<IPath, MarkerSet> getMarkerDeltas(long startChangeId) {
-        return deltaManager.assembleDeltas(startChangeId);
-    }
-
     /**
      * Returns true if this manager has a marker delta record for the given marker
      * id, and false otherwise.
@@ -319,40 +296,6 @@ public class MarkerManager {
      */
     public boolean isSubtype(String type, String superType) {
         return cache.isSubtype(type, superType);
-    }
-
-    public void moved(final IResource source, final IResource destination, int depth) throws CoreException {
-        final int count = destination.getFullPath().segmentCount();
-
-        // we removed from the source and added to the destination
-        IResourceVisitor visitor = resource -> {
-            Resource r = (Resource) resource;
-            ResourceInfo info = r.getResourceInfo(false, true);
-            MarkerSet markers = info.getMarkers(false);
-            if (markers == null) {
-                return true;
-            }
-            info.set(ICoreConstants.M_MARKERS_SNAP_DIRTY);
-            IMarkerSetElement[] removed = new IMarkerSetElement[markers.size()];
-            IMarkerSetElement[] added = new IMarkerSetElement[markers.size()];
-            IPath path = resource.getFullPath().removeFirstSegments(count);
-            path = source.getFullPath().append(path);
-            IResource sourceChild = workspace.newResource(path, resource.getType());
-            IMarkerSetElement[] elements = markers.elements();
-            for (int i = 0; i < elements.length; i++) {
-                // calculate the ADDED delta
-                MarkerInfo markerInfo = (MarkerInfo) elements[i];
-                MarkerDelta delta = new MarkerDelta(IResourceDelta.ADDED, resource, markerInfo);
-                added[i] = delta;
-                // calculate the REMOVED delta
-                delta = new MarkerDelta(IResourceDelta.REMOVED, sourceChild, markerInfo);
-                removed[i] = delta;
-            }
-            changedMarkers(resource, added);
-            changedMarkers(sourceChild, removed);
-            return true;
-        };
-        destination.accept(visitor, depth, IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS | IContainer.INCLUDE_HIDDEN);
     }
 
     /**
@@ -435,7 +378,7 @@ public class MarkerManager {
         int size = markers.size();
         markers.remove(markerInfo);
         // if that was the last marker remove the set to save space.
-        info.setMarkers(markers.size() == 0 ? null : markers);
+        info.setMarkers(markers.isEmpty() ? null : markers);
         // if we actually did remove a marker, post a delta for the change.
         if (markers.size() != size) {
             if (isPersistent(markerInfo)) {
@@ -448,13 +391,6 @@ public class MarkerManager {
     }
 
     /**
-     * Remove all markers for the given resource to the specified depth.
-     */
-    public void removeMarkers(IResource resource, int depth) {
-        removeMarkers(resource, null, false, depth);
-    }
-
-    /**
      * Remove all markers with the given type from the node at the given path.
      * Passing <code>null</code> for the type specifies a match for all types (i.e.,
      * <code>null</code> is a wildcard.
@@ -464,58 +400,6 @@ public class MarkerManager {
             visitorRemoveMarkers(target.getFullPath(), type, includeSubtypes);
         } else {
             recursiveRemoveMarkers(target.getFullPath(), type, includeSubtypes, depth);
-        }
-    }
-
-    /**
-     * Reset the marker deltas up to but not including the given start Id.
-     */
-    public void resetMarkerDeltas(long startId) {
-        currentDeltas = null;
-        deltaManager.resetDeltas(startId);
-    }
-
-    public void restore(IResource resource, boolean generateDeltas, IProgressMonitor monitor) throws CoreException {
-        // first try and load the last saved file, then apply the snapshots
-        restoreFromSave(resource, generateDeltas);
-        restoreFromSnap(resource);
-    }
-
-    protected void restoreFromSave(IResource resource, boolean generateDeltas) throws CoreException {
-        IPath sourceLocation = workspace.getMetaArea().getMarkersLocationFor(resource);
-        IPath tempLocation = workspace.getMetaArea().getBackupLocationFor(sourceLocation);
-        java.io.File sourceFile = new java.io.File(sourceLocation.toOSString());
-        java.io.File tempFile = new java.io.File(tempLocation.toOSString());
-        if (!sourceFile.exists() && !tempFile.exists()) {
-            return;
-        }
-        try (DataInputStream input
-            = new DataInputStream(new SafeFileInputStream(sourceLocation.toOSString(), tempLocation.toOSString()))) {
-            MarkerReader reader = new MarkerReader(workspace);
-            reader.read(input, generateDeltas);
-        } catch (Exception e) {
-            // don't let runtime exceptions such as ArrayIndexOutOfBounds prevent startup
-            String msg = NLS.bind(Messages.resources_readMeta, sourceLocation);
-            throw new ResourceException(IResourceStatus.FAILED_READ_METADATA, sourceLocation, msg, e);
-        }
-    }
-
-    protected void restoreFromSnap(IResource resource) {
-        IPath sourceLocation = workspace.getMetaArea().getMarkersSnapshotLocationFor(resource);
-        if (!sourceLocation.toFile().exists()) {
-            return;
-        }
-        try (DataInputStream input = new DataInputStream(new SafeChunkyInputStream(sourceLocation.toFile()))) {
-            MarkerSnapshotReader reader = new MarkerSnapshotReader(workspace);
-            while (true) {
-                reader.read(input);
-            }
-        } catch (EOFException eof) {
-            // ignore end of file
-        } catch (Exception e) {
-            // only log the exception, we should not fail restoring the snapshot
-            String msg = NLS.bind(Messages.resources_readMeta, sourceLocation);
-            Policy.log(new ResourceStatus(IResourceStatus.FAILED_READ_METADATA, sourceLocation, msg, e));
         }
     }
 

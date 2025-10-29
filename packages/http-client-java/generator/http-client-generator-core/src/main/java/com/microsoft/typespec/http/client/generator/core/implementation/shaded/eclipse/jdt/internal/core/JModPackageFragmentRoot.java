@@ -28,24 +28,25 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class JModPackageFragmentRoot extends JarPackageFragmentRoot {
 
-	/**
-	 * Constructs a package fragment root which is the root of the Java package directory hierarchy
-	 * based on a JMOD file that is not contained in a <code>IJavaProject</code> and
-	 * does not have an associated <code>IResource</code>.
-	 */
-	protected JModPackageFragmentRoot(IPath externalPath, JavaProject project, IClasspathAttribute[] extraAttributes) {
-		super(null, externalPath, project, extraAttributes);
-	}
+    /**
+     * Constructs a package fragment root which is the root of the Java package directory hierarchy
+     * based on a JMOD file that is not contained in a <code>IJavaProject</code> and
+     * does not have an associated <code>IResource</code>.
+     */
+    protected JModPackageFragmentRoot(IPath externalPath, JavaProject project, IClasspathAttribute[] extraAttributes) {
+        super(null, externalPath, project, extraAttributes);
+    }
 
-	/**
-	 * @see PackageFragmentRoot#getClassFilePath(String)
-	 */
-	@Override
-	public String getClassFilePath(String entryName) {
-		return ClasspathJMod.CLASSES_FOLDER + entryName;
-	}
-	@Override
-	protected String getClassNameSubFolder() {
-		return ClasspathJMod.CLASSES_FOLDER;
-	}
+    /**
+     * @see PackageFragmentRoot#getClassFilePath(String)
+     */
+    @Override
+    public String getClassFilePath(String entryName) {
+        return ClasspathJMod.CLASSES_FOLDER + entryName;
+    }
+
+    @Override
+    protected String getClassNameSubFolder() {
+        return ClasspathJMod.CLASSES_FOLDER;
+    }
 }

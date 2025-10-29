@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
     ElementType.CONSTRUCTOR,
     ElementType.FIELD,
     ElementType.METHOD,
-    ElementType.TYPE
-})
+    ElementType.TYPE })
 @Retention(RetentionPolicy.SOURCE)
-public @interface J2ObjCIncompatible {}
+public @interface J2ObjCIncompatible {
+}

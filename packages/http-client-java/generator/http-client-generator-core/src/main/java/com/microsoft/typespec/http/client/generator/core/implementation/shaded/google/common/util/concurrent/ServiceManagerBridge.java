@@ -30,5 +30,5 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.g
 @GwtIncompatible
 @ElementTypesAreNonnullByDefault
 interface ServiceManagerBridge {
-  ImmutableMultimap<State, Service> servicesByState();
+    ImmutableMultimap<State, Service> servicesByState();
 }

@@ -15,84 +15,84 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 public class CharConstant extends Constant {
 
-	private final char value;
+    private final char value;
 
-	public static Constant fromValue(char value) {
-		return new CharConstant(value);
-	}
+    public static Constant fromValue(char value) {
+        return new CharConstant(value);
+    }
 
-	private CharConstant(char value) {
-		this.value = value;
-	}
+    private CharConstant(char value) {
+        this.value = value;
+    }
 
-	@Override
-	public byte byteValue() {
-		return (byte) this.value;
-	}
+    @Override
+    public byte byteValue() {
+        return (byte) this.value;
+    }
 
-	@Override
-	public char charValue() {
-		return this.value;
-	}
+    @Override
+    public char charValue() {
+        return this.value;
+    }
 
-	@Override
-	public double doubleValue() {
-		return this.value; // implicit cast to return type
-	}
+    @Override
+    public double doubleValue() {
+        return this.value; // implicit cast to return type
+    }
 
-	@Override
-	public float floatValue() {
-		return this.value; // implicit cast to return type
-	}
+    @Override
+    public float floatValue() {
+        return this.value; // implicit cast to return type
+    }
 
-	@Override
-	public int intValue() {
-		return this.value; // implicit cast to return type
-	}
+    @Override
+    public int intValue() {
+        return this.value; // implicit cast to return type
+    }
 
-	@Override
-	public long longValue() {
-		return this.value; // implicit cast to return type
-	}
+    @Override
+    public long longValue() {
+        return this.value; // implicit cast to return type
+    }
 
-	@Override
-	public short shortValue() {
-		return (short) this.value;
-	}
+    @Override
+    public short shortValue() {
+        return (short) this.value;
+    }
 
-	@Override
-	public String stringValue() {
-		// spec 15.17.11
-		return String.valueOf(this.value);
-	}
+    @Override
+    public String stringValue() {
+        // spec 15.17.11
+        return String.valueOf(this.value);
+    }
 
-	@Override
-	public String toString() {
-		return "(char)" + this.value; //$NON-NLS-1$
-	}
+    @Override
+    public String toString() {
+        return "(char)" + this.value; //$NON-NLS-1$
+    }
 
-	@Override
-	public int typeID() {
-		return T_char;
-	}
+    @Override
+    public int typeID() {
+        return T_char;
+    }
 
-	@Override
-	public int hashCode() {
-		return this.value;
-	}
+    @Override
+    public int hashCode() {
+        return this.value;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		CharConstant other = (CharConstant) obj;
-		return this.value == other.value;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        CharConstant other = (CharConstant) obj;
+        return this.value == other.value;
+    }
 }

@@ -16,9 +16,8 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.wiring.dto;
 
-import java.util.Set;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.dto.DTO;
+import java.util.Set;
 
 /**
  * Data Transfer Object for the wiring graph of the framework.
@@ -31,18 +30,18 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  * @since 1.3
  */
 public class FrameworkWiringDTO extends DTO {
-	/**
-	 * The set of wiring nodes referenced by the wiring graph of the framework.
-	 * <p>
-	 * All wiring nodes referenced by wiring node identifiers in the wiring
-	 * graph are contained in this set.
-	 */
-	public Set<BundleWiringDTO.NodeDTO>	wirings;
-	/**
-	 * The set of resources referenced by the wiring graph of the framework.
-	 * <p>
-	 * All resources referenced by resource identifiers in the wiring graph are
-	 * contained in this set.
-	 */
-	public Set<BundleRevisionDTO>		resources;
+    /**
+     * The set of wiring nodes referenced by the wiring graph of the framework.
+     * <p>
+     * All wiring nodes referenced by wiring node identifiers in the wiring
+     * graph are contained in this set.
+     */
+    public Set<BundleWiringDTO.NodeDTO> wirings;
+    /**
+     * The set of resources referenced by the wiring graph of the framework.
+     * <p>
+     * All resources referenced by resource identifiers in the wiring graph are
+     * contained in this set.
+     */
+    public Set<BundleRevisionDTO> resources;
 }

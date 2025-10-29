@@ -14,57 +14,68 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.apt.model;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.type.TypeKind;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.type.TypeMirror;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.type.TypeVisitor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.type.WildcardType;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.Wildcard;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.WildcardBinding;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.type.TypeKind;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.type.TypeMirror;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.type.TypeVisitor;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.type.WildcardType;
 
 /**
  * Implementation of the WildcardType
  */
 public class WildcardTypeImpl extends TypeMirrorImpl implements WildcardType {
 
-	WildcardTypeImpl(BaseProcessingEnvImpl env, WildcardBinding binding) {
-		super(env, binding);
-	}
+    WildcardTypeImpl(BaseProcessingEnvImpl env, WildcardBinding binding) {
+        super(env, binding);
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.lang.model.type.WildcardType#getExtendsBound()
-	 */
-	@Override
-	public TypeMirror getExtendsBound() {
-		WildcardBinding wildcardBinding = (WildcardBinding) this._binding;
-		if (wildcardBinding.boundKind != Wildcard.EXTENDS) return null;
-		TypeBinding bound = wildcardBinding.bound;
-		if (bound == null) return null;
-		return this._env.getFactory().newTypeMirror(bound);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.lang.model.type.WildcardType#getExtendsBound()
+     */
+    @Override
+    public TypeMirror getExtendsBound() {
+        WildcardBinding wildcardBinding = (WildcardBinding) this._binding;
+        if (wildcardBinding.boundKind != Wildcard.EXTENDS)
+            return null;
+        TypeBinding bound = wildcardBinding.bound;
+        if (bound == null)
+            return null;
+        return this._env.getFactory().newTypeMirror(bound);
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.lang.model.type.TypeMirror#getKind()
-	 */
-	@Override
-	public TypeKind getKind() {
-		return TypeKind.WILDCARD;
-	}
-	/* (non-Javadoc)
-	 * @see javax.lang.model.type.WildcardType#getSuperBound()
-	 */
-	@Override
-	public TypeMirror getSuperBound() {
-		WildcardBinding wildcardBinding = (WildcardBinding) this._binding;
-		if (wildcardBinding.boundKind != Wildcard.SUPER) return null;
-		TypeBinding bound = wildcardBinding.bound;
-		if (bound == null) return null;
-		return this._env.getFactory().newTypeMirror(bound);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.lang.model.type.TypeMirror#getKind()
+     */
+    @Override
+    public TypeKind getKind() {
+        return TypeKind.WILDCARD;
+    }
 
-	@Override
-	public <R, P> R accept(TypeVisitor<R, P> v, P p) {
-		return v.visitWildcard(this, p);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.lang.model.type.WildcardType#getSuperBound()
+     */
+    @Override
+    public TypeMirror getSuperBound() {
+        WildcardBinding wildcardBinding = (WildcardBinding) this._binding;
+        if (wildcardBinding.boundKind != Wildcard.SUPER)
+            return null;
+        TypeBinding bound = wildcardBinding.bound;
+        if (bound == null)
+            return null;
+        return this._env.getFactory().newTypeMirror(bound);
+    }
+
+    @Override
+    public <R, P> R accept(TypeVisitor<R, P> v, P p) {
+        return v.visitWildcard(this, p);
+    }
 }

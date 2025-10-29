@@ -13,10 +13,9 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.eval;
 
-import java.util.Map;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.IProblemFactory;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.INameEnvironment;
+import java.util.Map;
 
 /**
  * A evaluator builds a compilation unit and compiles it into class files.
@@ -24,25 +23,27 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * requestor.
  */
 public abstract class Evaluator {
-	EvaluationContext context;
-	INameEnvironment environment;
-	Map<String, String> options;
-	IRequestor requestor;
-	IProblemFactory problemFactory;
-/**
- * Creates a new evaluator.
- */
-Evaluator(EvaluationContext context, INameEnvironment environment, Map<String, String> options, IRequestor requestor, IProblemFactory problemFactory) {
-	this.context = context;
-	this.environment = environment;
-	this.options = options;
-	this.requestor = requestor;
-	this.problemFactory = problemFactory;
-}
+    EvaluationContext context;
+    INameEnvironment environment;
+    Map<String, String> options;
+    IRequestor requestor;
+    IProblemFactory problemFactory;
 
     /**
- * Returns the name of the current class. This is the simple name of the class.
- * This doesn't include the extension ".java" nor the name of the package.
- */
-protected abstract char[] getClassName();
+     * Creates a new evaluator.
+     */
+    Evaluator(EvaluationContext context, INameEnvironment environment, Map<String, String> options,
+        IRequestor requestor, IProblemFactory problemFactory) {
+        this.context = context;
+        this.environment = environment;
+        this.options = options;
+        this.requestor = requestor;
+        this.problemFactory = problemFactory;
+    }
+
+    /**
+     * Returns the name of the current class. This is the simple name of the class.
+     * This doesn't include the extension ".java" nor the name of the package.
+     */
+    protected abstract char[] getClassName();
 }

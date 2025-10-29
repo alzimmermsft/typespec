@@ -31,29 +31,29 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 public interface SignedContent {
 
     /**
-	 * Returns all the signer infos for this <code>SignedContent</code>. If the
-	 * content is not signed then an empty array is returned.
-	 * 
-	 * @return all the signer infos for this <code>SignedContent</code>
-	 */
+     * Returns all the signer infos for this <code>SignedContent</code>. If the
+     * content is not signed then an empty array is returned.
+     * 
+     * @return all the signer infos for this <code>SignedContent</code>
+     */
     SignerInfo[] getSignerInfos();
 
-	/**
-	 * Returns true if the content is signed; false otherwise. This is a convenience
-	 * method equivalent to calling
-	 * <code>{@link #getSignerInfos()}.length &gt; 0</code>
-	 * 
-	 * @return true if the content is signed
-	 */
+    /**
+     * Returns true if the content is signed; false otherwise. This is a convenience
+     * method equivalent to calling
+     * <code>{@link #getSignerInfos()}.length &gt; 0</code>
+     * 
+     * @return true if the content is signed
+     */
     boolean isSigned();
 
     /**
-	 * Returns the TSA signer info used to authenticate the signer time of a signer
-	 * info.
-	 * 
-	 * @param signerInfo the signer info to get the TSA signer for
-	 * @return the TSA signer info
-	 */
+     * Returns the TSA signer info used to authenticate the signer time of a signer
+     * info.
+     * 
+     * @param signerInfo the signer info to get the TSA signer for
+     * @return the TSA signer info
+     */
     SignerInfo getTSASignerInfo(SignerInfo signerInfo);
 
 }

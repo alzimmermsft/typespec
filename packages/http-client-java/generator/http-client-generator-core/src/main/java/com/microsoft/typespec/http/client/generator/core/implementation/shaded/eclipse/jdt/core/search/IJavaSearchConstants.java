@@ -13,8 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.search;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.search.processing.IJob;
-
 /**
  * <p>
  * This interface defines the constants used by the search engine.
@@ -24,7 +22,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * </p>
  * 
  * @see org.eclipse.jdt.core.search.SearchEngine
- * @noimplement This interface is not intended to be implemented by clients.
+ * &#064;noimplement  This interface is not intended to be implemented by clients.
  */
 public interface IJavaSearchConstants {
 
@@ -40,35 +38,35 @@ public interface IJavaSearchConstants {
      * The searched element is a type, which may include classes, interfaces,
      * enums, and annotation types.
      *
-     * @category searchFor
+     * &#064;category  searchFor
      */
     int TYPE = 0;
 
     /**
      * The searched element is a method.
      *
-     * @category searchFor
+     * &#064;category  searchFor
      */
     int METHOD = 1;
 
     /**
      * The searched element is a package.
      *
-     * @category searchFor
+     * &#064;category  searchFor
      */
     int PACKAGE = 2;
 
     /**
      * The searched element is a constructor.
      *
-     * @category searchFor
+     * &#064;category  searchFor
      */
     int CONSTRUCTOR = 3;
 
     /**
      * The searched element is a field.
      *
-     * @category searchFor
+     * &#064;category  searchFor
      */
     int FIELD = 4;
 
@@ -76,7 +74,7 @@ public interface IJavaSearchConstants {
      * The searched element is a class.
      * More selective than using {@link #TYPE}.
      *
-     * @category searchFor
+     * &#064;category  searchFor
      */
     int CLASS = 5;
 
@@ -84,7 +82,7 @@ public interface IJavaSearchConstants {
      * The searched element is an interface.
      * More selective than using {@link #TYPE}.
      *
-     * @category searchFor
+     * &#064;category  searchFor
      */
     int INTERFACE = 6;
 
@@ -93,7 +91,7 @@ public interface IJavaSearchConstants {
      * More selective than using {@link #TYPE}.
      *
      * @since 3.1
-     * @category searchFor
+     * &#064;category  searchFor
      */
     int ENUM = 7;
 
@@ -102,139 +100,18 @@ public interface IJavaSearchConstants {
      * More selective than using {@link #TYPE}.
      *
      * @since 3.1
-     * @category searchFor
+     * &#064;category  searchFor
      */
     int ANNOTATION_TYPE = 8;
-
-    /**
-     * The searched element is a class or enum type.
-     * More selective than using {@link #TYPE}.
-     *
-     * @since 3.1
-     * @category searchFor
-     */
-    int CLASS_AND_ENUM = 9;
-
-    /**
-     * The searched element is a class or interface type.
-     * More selective than using {@link #TYPE}.
-     *
-     * @since 3.1
-     * @category searchFor
-     */
-    int CLASS_AND_INTERFACE = 10;
-
-    /**
-     * The searched element is an interface or annotation type.
-     * More selective than using {@link #TYPE}.
-     * 
-     * @since 3.3
-     * @category searchFor
-     */
-    int INTERFACE_AND_ANNOTATION = 11;
 
     /**
      * The searched element is a module.
      * 
      * @since 3.14
-     * @category searchFor
+     * &#064;category  searchFor
      */
     int MODULE = 12;
     /* Nature of match */
-
-    /**
-     * The search result is a declaration.
-     * Can be used in conjunction with any of the nature of searched elements
-     * so as to better narrow down the search.
-     *
-     * @category limitTo
-     */
-    int DECLARATIONS = 0;
-
-    /**
-     * The search result is a type that implements an interface or extends a class.
-     * Used in conjunction with either TYPE or CLASS or INTERFACE, it will
-     * respectively search for any type implementing/extending a type,
-     * or rather exclusively search for classes implementing/extending the type, or
-     * interfaces extending the type.
-     *
-     * @category limitTo
-     */
-    int IMPLEMENTORS = 1;
-
-    /**
-     * The search result is a reference.
-     * Can be used in conjunction with any of the nature of searched elements
-     * so as to better narrow down the search.
-     * References can contain implementers since they are more generic kind
-     * of matches.
-     *
-     * @category limitTo
-     */
-    int REFERENCES = 2;
-
-    /**
-     * The search result is a declaration, a reference, or an implementer
-     * of an interface.
-     * Can be used in conjunction with any of the nature of searched elements
-     * so as to better narrow down the search.
-     *
-     * @category limitTo
-     */
-    int ALL_OCCURRENCES = 3;
-
-    /**
-     * When searching for field matches, it will exclusively find read accesses, as
-     * opposed to write accesses. Note that some expressions are considered both
-     * as field read/write accesses: for example, x++; x+= 1;
-     *
-     * @since 2.0
-     * @category limitTo
-     */
-    int READ_ACCESSES = 4;
-
-    /**
-     * When searching for field matches, it will exclusively find write accesses, as
-     * opposed to read accesses. Note that some expressions are considered both
-     * as field read/write accesses: for example, x++; x+= 1;
-     *
-     * @since 2.0
-     * @category limitTo
-     */
-    int WRITE_ACCESSES = 5;
-
-    /**
-     * When searching for Type Declaration matches, and if a module is given, this
-     * will find type declaration matches in this module as well as the dependent
-     * module graph of the given module.
-     *
-     * @since 3.14
-     * @category limitTo
-     */
-    int MODULE_GRAPH = 6;
-
-    /**
-     * Ignore declaring type while searching result.
-     * Can be used in conjunction with any of the nature of match.
-     *
-     * @since 3.1
-     * @category limitTo
-     */
-    int IGNORE_DECLARING_TYPE = 0x10;
-
-    /**
-     * Ignore return type while searching result.
-     * Can be used in conjunction with any other nature of match.
-     * Note that:
-     * <ul>
-     * <li>for fields search, pattern will ignore field type</li>
-     * <li>this flag will have no effect for types search</li>
-     * </ul>
-     *
-     * @since 3.1
-     * @category limitTo
-     */
-    int IGNORE_RETURN_TYPE = 0x20;
 
     /**
      * Return only type references used as the type of a field declaration.
@@ -244,7 +121,7 @@ public interface IJavaSearchConstants {
      * </p>
      * 
      * @since 3.4
-     * @category limitTo
+     * &#064;category  limitTo
      */
     int FIELD_DECLARATION_TYPE_REFERENCE = 0x40;
 
@@ -256,7 +133,7 @@ public interface IJavaSearchConstants {
      * </p>
      * 
      * @since 3.4
-     * @category limitTo
+     * &#064;category  limitTo
      */
     int LOCAL_VARIABLE_DECLARATION_TYPE_REFERENCE = 0x80;
 
@@ -269,7 +146,7 @@ public interface IJavaSearchConstants {
      * </p>
      * 
      * @since 3.4
-     * @category limitTo
+     * &#064;category  limitTo
      */
     int PARAMETER_DECLARATION_TYPE_REFERENCE = 0x100;
 
@@ -281,7 +158,7 @@ public interface IJavaSearchConstants {
      * </p>
      * 
      * @since 3.4
-     * @category limitTo
+     * &#064;category  limitTo
      */
     int SUPERTYPE_TYPE_REFERENCE = 0x200;
 
@@ -293,7 +170,7 @@ public interface IJavaSearchConstants {
      * </p>
      * 
      * @since 3.4
-     * @category limitTo
+     * &#064;category  limitTo
      */
     int THROWS_CLAUSE_TYPE_REFERENCE = 0x400;
 
@@ -305,7 +182,7 @@ public interface IJavaSearchConstants {
      * </p>
      * 
      * @since 3.4
-     * @category limitTo
+     * &#064;category  limitTo
      */
     int CAST_TYPE_REFERENCE = 0x800;
 
@@ -317,7 +194,7 @@ public interface IJavaSearchConstants {
      * </p>
      * 
      * @since 3.4
-     * @category limitTo
+     * &#064;category  limitTo
      */
     int CATCH_TYPE_REFERENCE = 0x1000;
 
@@ -345,7 +222,7 @@ public interface IJavaSearchConstants {
      * </p>
      * 
      * @since 3.4
-     * @category limitTo
+     * &#064;category  limitTo
      */
     int CLASS_INSTANCE_CREATION_TYPE_REFERENCE = 0x2000;
 
@@ -357,7 +234,7 @@ public interface IJavaSearchConstants {
      * </p>
      * 
      * @since 3.4
-     * @category limitTo
+     * &#064;category  limitTo
      */
     int RETURN_TYPE_REFERENCE = 0x4000;
 
@@ -369,7 +246,7 @@ public interface IJavaSearchConstants {
      * </p>
      * 
      * @since 3.4
-     * @category limitTo
+     * &#064;category  limitTo
      */
     int IMPORT_DECLARATION_TYPE_REFERENCE = 0x8000;
 
@@ -381,7 +258,7 @@ public interface IJavaSearchConstants {
      * </p>
      * 
      * @since 3.4
-     * @category limitTo
+     * &#064;category  limitTo
      */
     int ANNOTATION_TYPE_REFERENCE = 0x10000;
 
@@ -394,7 +271,7 @@ public interface IJavaSearchConstants {
      * </p>
      * 
      * @since 3.4
-     * @category limitTo
+     * &#064;category  limitTo
      */
     int TYPE_ARGUMENT_TYPE_REFERENCE = 0x20000;
 
@@ -406,7 +283,7 @@ public interface IJavaSearchConstants {
      * </p>
      * 
      * @since 3.4
-     * @category limitTo
+     * &#064;category  limitTo
      */
     int TYPE_VARIABLE_BOUND_TYPE_REFERENCE = 0x40000;
 
@@ -418,7 +295,7 @@ public interface IJavaSearchConstants {
      * </p>
      * 
      * @since 3.4
-     * @category limitTo
+     * &#064;category  limitTo
      */
     int WILDCARD_BOUND_TYPE_REFERENCE = 0x80000;
 
@@ -431,7 +308,7 @@ public interface IJavaSearchConstants {
      * </p>
      * 
      * @since 3.4
-     * @category limitTo
+     * &#064;category  limitTo
      */
     int INSTANCEOF_TYPE_REFERENCE = 0x100000;
 
@@ -449,7 +326,7 @@ public interface IJavaSearchConstants {
      * </ul>
      * 
      * @since 3.4
-     * @category limitTo
+     * &#064;category  limitTo
      */
     int SUPER_REFERENCE = 0x1000000;
 
@@ -466,7 +343,7 @@ public interface IJavaSearchConstants {
      * </ul>
      * 
      * @since 3.4
-     * @category limitTo
+     * &#064;category  limitTo
      */
     int QUALIFIED_REFERENCE = 0x2000000;
 
@@ -484,7 +361,7 @@ public interface IJavaSearchConstants {
      * </ul>
      * 
      * @since 3.4
-     * @category limitTo
+     * &#064;category  limitTo
      */
     int THIS_REFERENCE = 0x4000000;
 
@@ -501,7 +378,7 @@ public interface IJavaSearchConstants {
      * </ul>
      * 
      * @since 3.4
-     * @category limitTo
+     * &#064;category  limitTo
      */
     int IMPLICIT_THIS_REFERENCE = 0x8000000;
 
@@ -513,7 +390,7 @@ public interface IJavaSearchConstants {
      * </p>
      * 
      * @since 3.10
-     * @category limitTo
+     * &#064;category  limitTo
      */
     int METHOD_REFERENCE_EXPRESSION = 0x10000000;
 
@@ -525,7 +402,7 @@ public interface IJavaSearchConstants {
      * </p>
      * 
      * @since 3.24
-     * @category limitTo
+     * &#064;category  limitTo
      */
     int PERMITTYPE_TYPE_REFERENCE = 0x20000000;
 
@@ -536,14 +413,14 @@ public interface IJavaSearchConstants {
      * that is, the source of the search result equals the search pattern.
      *
      * @deprecated Use {@link SearchPattern#R_EXACT_MATCH} instead.
-     * @category matchRule
+     * &#064;category  matchRule
      */
     int EXACT_MATCH = 0;
     /**
      * The search pattern is a prefix of the search result.
      *
      * @deprecated Use {@link SearchPattern#R_PREFIX_MATCH} instead.
-     * @category matchRule
+     * &#064;category  matchRule
      */
     int PREFIX_MATCH = 1;
     /**
@@ -551,7 +428,7 @@ public interface IJavaSearchConstants {
      * wild-card can replace 0 or more characters in the search result.
      *
      * @deprecated Use {@link SearchPattern#R_PATTERN_MATCH} instead.
-     * @category matchRule
+     * &#064;category  matchRule
      */
     int PATTERN_MATCH = 2;
 
@@ -563,7 +440,7 @@ public interface IJavaSearchConstants {
      *
      * @deprecated Use the methods that take the matchMode
      * with {@link SearchPattern#R_CASE_SENSITIVE} as a matchRule instead.
-     * @category matchRule
+     * &#064;category  matchRule
      */
     boolean CASE_SENSITIVE = true;
     /**
@@ -571,38 +448,8 @@ public interface IJavaSearchConstants {
      *
      * @deprecated Use the methods that take the matchMode
      * without {@link SearchPattern#R_CASE_SENSITIVE} as a matchRule instead.
-     * @category matchRule
+     * &#064;category  matchRule
      */
     boolean CASE_INSENSITIVE = false;
-
-    /* Waiting policies */
-
-    /**
-     * The search operation starts immediately, even if the underlying indexer
-     * has not finished indexing the workspace. Results will more likely
-     * not contain all the matches.
-     */
-    int FORCE_IMMEDIATE_SEARCH = IJob.ForceImmediate;
-    /**
-     * The search operation throws an
-     * <code>com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.OperationCanceledException</code>
-     * if the underlying indexer has not finished indexing the workspace.
-     */
-    int CANCEL_IF_NOT_READY_TO_SEARCH = IJob.CancelIfNotReady;
-    /**
-     * The search operation waits for the underlying indexer to finish indexing
-     * the workspace before starting the search.
-     */
-    int WAIT_UNTIL_READY_TO_SEARCH = IJob.WaitUntilReady;
-
-    /* Special Constant for module search */
-
-    /**
-     * The unnamed module is represented by this constant for making the intent explicit
-     * in searches involving modules
-     * 
-     * @since 3.14
-     */
-    char[] ALL_UNNAMED = "ALL-UNNAMED".toCharArray(); ////$NON-NLS-1$
 
 }

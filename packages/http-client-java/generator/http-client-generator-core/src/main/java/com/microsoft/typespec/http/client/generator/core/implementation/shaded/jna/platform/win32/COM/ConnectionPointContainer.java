@@ -28,8 +28,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HRESULT;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.PointerByReference;
 
-public class ConnectionPointContainer extends Unknown implements
-        IConnectionPointContainer {
+public class ConnectionPointContainer extends Unknown implements IConnectionPointContainer {
 
     public ConnectionPointContainer(Pointer pointer) {
         super(pointer);
@@ -40,7 +39,6 @@ public class ConnectionPointContainer extends Unknown implements
         // methods in the full interface, as this inherits IUnknown, which
         // has 3 methods, we start here at 3 (0 indexed).
         final int vTableId = 3;
-
 
 //        return (HRESULT) this._invokeNativeObject(3,
 //                new Object[] { this.getPointer(), riid, ppCP }, HRESULT.class);
@@ -54,8 +52,8 @@ public class ConnectionPointContainer extends Unknown implements
         // this as this inherits IUnknown, which has 3 methods, we have here 4.
         // second in this class
         final int vTableId = 4;
-        return (HRESULT) this._invokeNativeObject(vTableId,
-                new Object[] { this.getPointer(), riid, ppCP }, HRESULT.class);
+        return (HRESULT) this._invokeNativeObject(vTableId, new Object[] { this.getPointer(), riid, ppCP },
+            HRESULT.class);
     }
 
 }

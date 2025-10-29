@@ -13,13 +13,10 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.text.templates;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.templates.Template;
 import java.util.Objects;
 import java.util.UUID;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.templates.Template;
-
 
 /**
  * TemplatePersistenceData stores information about a template. It uniquely
@@ -35,194 +32,197 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class TemplatePersistenceData {
-	private final Template fOriginalTemplate;
-	private final String fId;
-	private final boolean fOriginalIsEnabled;
+    private final Template fOriginalTemplate;
+    private final String fId;
+    private final boolean fOriginalIsEnabled;
 
-	private Template fCustomTemplate= null;
-	private boolean fIsDeleted= false;
-	private boolean fCustomIsEnabled= true;
+    private Template fCustomTemplate = null;
+    private boolean fIsDeleted = false;
+    private boolean fCustomIsEnabled = true;
 
-	/*
-	 * Required to support equals() with deprecated type org.eclipse.jface.text.templates.persistence.TemplatePersistenceData.
-	 */
-	private final UUID uniqueIdForEquals = UUID.randomUUID();
+    /*
+     * Required to support equals() with deprecated type
+     * org.eclipse.jface.text.templates.persistence.TemplatePersistenceData.
+     */
+    private final UUID uniqueIdForEquals = UUID.randomUUID();
 
-	/**
-	 * Creates a new, user-added instance that is not linked to a contributed
-	 * template.
-	 *
-	 * @param template the template which is stored by the new instance
-	 * @param enabled whether the template is enabled
-	 */
-	public TemplatePersistenceData(Template template, boolean enabled) {
-		this(template, enabled, null);
-	}
+    /**
+     * Creates a new, user-added instance that is not linked to a contributed
+     * template.
+     *
+     * @param template the template which is stored by the new instance
+     * @param enabled whether the template is enabled
+     */
+    public TemplatePersistenceData(Template template, boolean enabled) {
+        this(template, enabled, null);
+    }
 
-	/**
-	 * Creates a new instance. If <code>id</code> is not <code>null</code>,
-	 * the instance is represents a template that is contributed and can be
-	 * identified via its id.
-	 *
-	 * @param template the template which is stored by the new instance
-	 * @param enabled whether the template is enabled
-	 * @param id the id of the template, or <code>null</code> if a user-added
-	 *        instance should be created
-	 */
-	public TemplatePersistenceData(Template template, boolean enabled, String id) {
-		Assert.isNotNull(template);
-		fOriginalTemplate= template;
-		fCustomTemplate= template;
-		fOriginalIsEnabled= enabled;
-		fCustomIsEnabled= enabled;
-		fId= id;
-	}
+    /**
+     * Creates a new instance. If <code>id</code> is not <code>null</code>,
+     * the instance is represents a template that is contributed and can be
+     * identified via its id.
+     *
+     * @param template the template which is stored by the new instance
+     * @param enabled whether the template is enabled
+     * @param id the id of the template, or <code>null</code> if a user-added
+     * instance should be created
+     */
+    public TemplatePersistenceData(Template template, boolean enabled, String id) {
+        Assert.isNotNull(template);
+        fOriginalTemplate = template;
+        fCustomTemplate = template;
+        fOriginalIsEnabled = enabled;
+        fCustomIsEnabled = enabled;
+        fId = id;
+    }
 
-	/**
-	 * Returns the id of this template store, or <code>null</code> if there is none.
-	 *
-	 * @return the id of this template store
-	 */
-	public String getId() {
-		return fId;
-	}
+    /**
+     * Returns the id of this template store, or <code>null</code> if there is none.
+     *
+     * @return the id of this template store
+     */
+    public String getId() {
+        return fId;
+    }
 
-	/**
-	 * Returns the deletion state of the stored template. This is only relevant
-	 * of contributed templates.
-	 *
-	 * @return the deletion state of the stored template
-	 */
-	public boolean isDeleted() {
-		return fIsDeleted;
-	}
+    /**
+     * Returns the deletion state of the stored template. This is only relevant
+     * of contributed templates.
+     *
+     * @return the deletion state of the stored template
+     */
+    public boolean isDeleted() {
+        return fIsDeleted;
+    }
 
-	/**
-	 * Sets the deletion state of the stored template.
-	 *
-	 * @param isDeleted the deletion state of the stored template
-	 */
-	public void setDeleted(boolean isDeleted) {
-		fIsDeleted= isDeleted;
-	}
+    /**
+     * Sets the deletion state of the stored template.
+     *
+     * @param isDeleted the deletion state of the stored template
+     */
+    public void setDeleted(boolean isDeleted) {
+        fIsDeleted = isDeleted;
+    }
 
-	/**
-	 * Returns the template encapsulated by the receiver.
-	 *
-	 * @return the template encapsulated by the receiver
-	 */
-	public Template getTemplate() {
-		return fCustomTemplate;
-	}
+    /**
+     * Returns the template encapsulated by the receiver.
+     *
+     * @return the template encapsulated by the receiver
+     */
+    public Template getTemplate() {
+        return fCustomTemplate;
+    }
 
+    /**
+     * Sets the template encapsulated by the receiver.
+     *
+     * @param template the new template
+     */
+    public void setTemplate(Template template) {
+        fCustomTemplate = template;
+    }
 
-	/**
-	 * Sets the template encapsulated by the receiver.
-	 *
-	 * @param template the new template
-	 */
-	public void setTemplate(Template template) {
-		fCustomTemplate= template;
-	}
+    /**
+     * Returns whether the receiver represents a custom template, i.e. is either
+     * a user-added template or a contributed template that has been modified.
+     *
+     * @return <code>true</code> if the contained template is a custom
+     * template and cannot be reconstructed from the contributed
+     * templates
+     */
+    public boolean isCustom() {
+        return fId == null
+            || fIsDeleted
+            || fOriginalIsEnabled != fCustomIsEnabled
+            || !fOriginalTemplate.equals(fCustomTemplate);
+    }
 
-	/**
-	 * Returns whether the receiver represents a custom template, i.e. is either
-	 * a user-added template or a contributed template that has been modified.
-	 *
-	 * @return <code>true</code> if the contained template is a custom
-	 *         template and cannot be reconstructed from the contributed
-	 *         templates
-	 */
-	public boolean isCustom() {
-		return fId == null
-				|| fIsDeleted
-				|| fOriginalIsEnabled != fCustomIsEnabled
-				|| !fOriginalTemplate.equals(fCustomTemplate);
-	}
+    /**
+     * Returns whether the receiver represents a modified template, i.e. a
+     * contributed template that has been changed.
+     *
+     * @return <code>true</code> if the contained template is contributed but has been modified, <code>false</code>
+     * otherwise
+     */
+    public boolean isModified() {
+        return isCustom() && !isUserAdded();
+    }
 
-	/**
-	 * Returns whether the receiver represents a modified template, i.e. a
-	 * contributed template that has been changed.
-	 *
-	 * @return <code>true</code> if the contained template is contributed but has been modified, <code>false</code> otherwise
-	 */
-	public boolean isModified() {
-		return isCustom() && !isUserAdded();
-	}
+    /**
+     * Returns <code>true</code> if the contained template was added by a
+     * user, i.e. does not reference a contributed template.
+     *
+     * @return <code>true</code> if the contained template was added by a user, <code>false</code> otherwise
+     */
+    public boolean isUserAdded() {
+        return fId == null;
+    }
 
-	/**
-	 * Returns <code>true</code> if the contained template was added by a
-	 * user, i.e. does not reference a contributed template.
-	 *
-	 * @return <code>true</code> if the contained template was added by a user, <code>false</code> otherwise
-	 */
-	public boolean isUserAdded() {
-		return fId == null;
-	}
+    /**
+     * Reverts the template to its original setting.
+     */
+    public void revert() {
+        fCustomTemplate = fOriginalTemplate;
+        fCustomIsEnabled = fOriginalIsEnabled;
+        fIsDeleted = false;
+    }
 
+    /**
+     * Returns the enablement state of the contained template.
+     *
+     * @return the enablement state of the contained template
+     */
+    public boolean isEnabled() {
+        return fCustomIsEnabled;
+    }
 
-	/**
-	 * Reverts the template to its original setting.
-	 */
-	public void revert() {
-		fCustomTemplate= fOriginalTemplate;
-		fCustomIsEnabled= fOriginalIsEnabled;
-		fIsDeleted= false;
-	}
+    /**
+     * Sets the enablement state of the contained template.
+     *
+     * @param isEnabled the new enablement state of the contained template
+     */
+    public void setEnabled(boolean isEnabled) {
+        fCustomIsEnabled = isEnabled;
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(uniqueIdForEquals);
+    }
 
-	/**
-	 * Returns the enablement state of the contained template.
-	 *
-	 * @return the enablement state of the contained template
-	 */
-	public boolean isEnabled() {
-		return fCustomIsEnabled;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof TemplatePersistenceData)) {
+            return false;
+        }
+        TemplatePersistenceData other = (TemplatePersistenceData) obj;
+        return Objects.equals(uniqueIdForEquals, other.getUniqueIdForEquals());
+    }
 
-	/**
-	 * Sets the enablement state of the contained template.
-	 *
-	 * @param isEnabled the new enablement state of the contained template
-	 */
-	public void setEnabled(boolean isEnabled) {
-		fCustomIsEnabled= isEnabled;
-	}
+    /**
+     * Required to support equals() with deprecated type
+     * org.eclipse.jface.text.templates.persistence.TemplatePersistenceData.
+     * 
+     * @return unique id to support {@link #equals(Object)}
+     * @since 3.8
+     */
+    protected UUID getUniqueIdForEquals() {
+        return uniqueIdForEquals;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(uniqueIdForEquals);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!(obj instanceof TemplatePersistenceData)) {
-			return false;
-		}
-		TemplatePersistenceData other= (TemplatePersistenceData) obj;
-		return Objects.equals(uniqueIdForEquals, other.getUniqueIdForEquals());
-	}
-
-	/**
-	 * Required to support equals() with deprecated type org.eclipse.jface.text.templates.persistence.TemplatePersistenceData.
-	 * @return unique id to support {@link #equals(Object)}
-	 * @since 3.8
-	 */
-	protected UUID getUniqueIdForEquals() {
-		return uniqueIdForEquals;
-	}
-
-	/**
-	 * Required to support equals() with deprecated type org.eclipse.jface.text.templates.persistence.TemplatePersistenceData.
-	 * @param data non null
-	 * @return unique id to support {@link #equals(Object)}
-	 * @since 3.8
-	 */
-	protected static final UUID getUniqueIdForEquals(TemplatePersistenceData data) {
-		return data.getUniqueIdForEquals();
-	}
+    /**
+     * Required to support equals() with deprecated type
+     * org.eclipse.jface.text.templates.persistence.TemplatePersistenceData.
+     * 
+     * @param data non null
+     * @return unique id to support {@link #equals(Object)}
+     * @since 3.8
+     */
+    protected static final UUID getUniqueIdForEquals(TemplatePersistenceData data) {
+        return data.getUniqueIdForEquals();
+    }
 
 }

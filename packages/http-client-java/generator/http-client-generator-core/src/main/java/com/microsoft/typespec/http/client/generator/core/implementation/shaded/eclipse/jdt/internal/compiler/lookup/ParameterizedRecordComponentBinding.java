@@ -25,37 +25,46 @@ public class ParameterizedRecordComponentBinding extends RecordComponentBinding 
 
     public RecordComponentBinding originalRecordComponent;
 
-public ParameterizedRecordComponentBinding(ParameterizedTypeBinding parameterizedDeclaringClass, RecordComponentBinding originalRecordComponent) {
-	super (originalRecordComponent.name,
-            Scope.substitute(parameterizedDeclaringClass, originalRecordComponent.type), // no need to check for static as components cannot be static
-            originalRecordComponent.modifiers,
-            parameterizedDeclaringClass);
-    this.originalRecordComponent = originalRecordComponent;
-    this.tagBits = originalRecordComponent.tagBits;
-    this.id = originalRecordComponent.id;
-}
+    public ParameterizedRecordComponentBinding(ParameterizedTypeBinding parameterizedDeclaringClass,
+        RecordComponentBinding originalRecordComponent) {
+        super(originalRecordComponent.name, Scope.substitute(parameterizedDeclaringClass, originalRecordComponent.type), // no
+                                                                                                                         // need
+                                                                                                                         // to
+                                                                                                                         // check
+                                                                                                                         // for
+                                                                                                                         // static
+                                                                                                                         // as
+                                                                                                                         // components
+                                                                                                                         // cannot
+                                                                                                                         // be
+                                                                                                                         // static
+            originalRecordComponent.modifiers, parameterizedDeclaringClass);
+        this.originalRecordComponent = originalRecordComponent;
+        this.tagBits = originalRecordComponent.tagBits;
+        this.id = originalRecordComponent.id;
+    }
 
-/**
- * @see org.eclipse.jdt.internal.compiler.lookup.VariableBinding#constant()
- */
-@Override
-public Constant constant() {
-	return this.originalRecordComponent.constant();
-}
+    /**
+     * @see org.eclipse.jdt.internal.compiler.lookup.VariableBinding#constant()
+     */
+    @Override
+    public Constant constant() {
+        return this.originalRecordComponent.constant();
+    }
 
-/**
- * @see org.eclipse.jdt.internal.compiler.lookup.RecordComponentBinding#original()
- */
-@Override
-public RecordComponentBinding original() {
-	return this.originalRecordComponent.original();
-}
+    /**
+     * @see org.eclipse.jdt.internal.compiler.lookup.RecordComponentBinding#original()
+     */
+    @Override
+    public RecordComponentBinding original() {
+        return this.originalRecordComponent.original();
+    }
 
-/**
- * @see org.eclipse.jdt.internal.compiler.lookup.VariableBinding#constant()
- */
-@Override
-public void setConstant(Constant constant) {
-	this.originalRecordComponent.setConstant(constant);
-}
+    /**
+     * @see org.eclipse.jdt.internal.compiler.lookup.VariableBinding#constant()
+     */
+    @Override
+    public void setConstant(Constant constant) {
+        this.originalRecordComponent.setConstant(constant);
+    }
 }

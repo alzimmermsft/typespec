@@ -21,49 +21,46 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 /**
  * Default implementation of ILocalVariableTypeAttribute.
  */
-public class LocalVariableTypeAttribute
-	extends ClassFileAttribute
-	implements ILocalVariableTypeTableAttribute {
+public class LocalVariableTypeAttribute extends ClassFileAttribute implements ILocalVariableTypeTableAttribute {
 
-	private static final ILocalVariableTypeTableEntry[] NO_ENTRIES = new ILocalVariableTypeTableEntry[0];
-	private final int localVariableTypeTableLength;
-	private ILocalVariableTypeTableEntry[] localVariableTypeTableEntries;
+    private static final ILocalVariableTypeTableEntry[] NO_ENTRIES = new ILocalVariableTypeTableEntry[0];
+    private final int localVariableTypeTableLength;
+    private ILocalVariableTypeTableEntry[] localVariableTypeTableEntries;
 
-	/**
-	 * Constructor for LocalVariableTypeAttribute.
-	 */
-	public LocalVariableTypeAttribute(
-		byte[] classFileBytes,
-		IConstantPool constantPool,
-		int offset)
-		throws ClassFormatException {
-		super(classFileBytes, constantPool, offset);
-		final int length = u2At(classFileBytes, 6, offset);
-		this.localVariableTypeTableLength = length;
-		if (length != 0) {
-			int readOffset = 8;
-			this.localVariableTypeTableEntries = new ILocalVariableTypeTableEntry[length];
-			for (int i = 0; i < length; i++) {
-				this.localVariableTypeTableEntries[i] = new LocalVariableTypeTableEntry(classFileBytes, constantPool, offset + readOffset);
-				readOffset += 10;
-			}
-		} else {
-			this.localVariableTypeTableEntries = NO_ENTRIES;
-		}
-	}
-	/**
-	 * @see ILocalVariableTypeTableAttribute#getLocalVariableTypeTable()
-	 */
-	@Override
-	public ILocalVariableTypeTableEntry[] getLocalVariableTypeTable() {
-		return this.localVariableTypeTableEntries;
-	}
+    /**
+     * Constructor for LocalVariableTypeAttribute.
+     */
+    public LocalVariableTypeAttribute(byte[] classFileBytes, IConstantPool constantPool, int offset)
+        throws ClassFormatException {
+        super(classFileBytes, constantPool, offset);
+        final int length = u2At(classFileBytes, 6, offset);
+        this.localVariableTypeTableLength = length;
+        if (length != 0) {
+            int readOffset = 8;
+            this.localVariableTypeTableEntries = new ILocalVariableTypeTableEntry[length];
+            for (int i = 0; i < length; i++) {
+                this.localVariableTypeTableEntries[i]
+                    = new LocalVariableTypeTableEntry(classFileBytes, constantPool, offset + readOffset);
+                readOffset += 10;
+            }
+        } else {
+            this.localVariableTypeTableEntries = NO_ENTRIES;
+        }
+    }
 
-	/**
-	 * @see ILocalVariableTypeTableAttribute#getLocalVariableTypeTableLength()
-	 */
-	@Override
-	public int getLocalVariableTypeTableLength() {
-		return this.localVariableTypeTableLength;
-	}
+    /**
+     * @see ILocalVariableTypeTableAttribute#getLocalVariableTypeTable()
+     */
+    @Override
+    public ILocalVariableTypeTableEntry[] getLocalVariableTypeTable() {
+        return this.localVariableTypeTableEntries;
+    }
+
+    /**
+     * @see ILocalVariableTypeTableAttribute#getLocalVariableTypeTableLength()
+     */
+    @Override
+    public int getLocalVariableTypeTableLength() {
+        return this.localVariableTypeTableLength;
+    }
 }

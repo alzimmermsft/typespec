@@ -46,12 +46,12 @@ public class IOKitUtil {
      * Gets a pointer to the Mach Master Port.
      *
      * @return The master port.
-     *         <p>
-     *         Multiple calls to {@link #getMasterPort} will not result in leaking
-     *         ports (each call to {@link IOKit#IOMasterPort} adds another send
-     *         right to the port) but it is considered good programming practice to
-     *         deallocate the port when you are finished with it, using
-     *         {@link SystemB#mach_port_deallocate}.
+     * <p>
+     * Multiple calls to {@link #getMasterPort} will not result in leaking
+     * ports (each call to {@link IOKit#IOMasterPort} adds another send
+     * right to the port) but it is considered good programming practice to
+     * deallocate the port when you are finished with it, using
+     * {@link SystemB#mach_port_deallocate}.
      */
     public static int getMasterPort() {
         IntByReference port = new IntByReference();
@@ -63,7 +63,7 @@ public class IOKitUtil {
      * Gets the IO Registry root.
      *
      * @return a handle to the IORoot. Callers should release when finished, using
-     *         {@link IOKit#IOObjectRelease}.
+     * {@link IOKit#IOObjectRelease}.
      */
     public static IORegistryEntry getRoot() {
         int masterPort = getMasterPort();
@@ -76,10 +76,10 @@ public class IOKitUtil {
      * Opens a the first IOService matching a service name.
      *
      * @param serviceName
-     *            The service name to match
+     * The service name to match
      * @return a handle to an IOService if successful, {@code null} if failed.
-     *         Callers should release when finished, using
-     *         {@link IOKit#IOObjectRelease}.
+     * Callers should release when finished, using
+     * {@link IOKit#IOObjectRelease}.
      */
     public static IOService getMatchingService(String serviceName) {
         CFMutableDictionaryRef dict = IO.IOServiceMatching(serviceName);
@@ -93,11 +93,11 @@ public class IOKitUtil {
      * Opens a the first IOService matching a dictionary.
      *
      * @param matchingDictionary
-     *            The dictionary to match. This method will consume a reference to
-     *            the dictionary.
+     * The dictionary to match. This method will consume a reference to
+     * the dictionary.
      * @return a handle to an IOService if successful, {@code null} if failed.
-     *         Callers should release when finished, using
-     *         {@link IOKit#IOObjectRelease}.
+     * Callers should release when finished, using
+     * {@link IOKit#IOObjectRelease}.
      */
     public static IOService getMatchingService(CFDictionaryRef matchingDictionary) {
         int masterPort = getMasterPort();
@@ -110,10 +110,10 @@ public class IOKitUtil {
      * Convenience method to get IOService objects matching a service name.
      *
      * @param serviceName
-     *            The service name to match
+     * The service name to match
      * @return a handle to an IOIterator if successful, {@code null} if failed.
-     *         Callers should release when finished, using
-     *         {@link IOKit#IOObjectRelease}.
+     * Callers should release when finished, using
+     * {@link IOKit#IOObjectRelease}.
      */
     public static IOIterator getMatchingServices(String serviceName) {
         CFMutableDictionaryRef dict = IO.IOServiceMatching(serviceName);
@@ -127,11 +127,11 @@ public class IOKitUtil {
      * Convenience method to get IOService objects matching a dictionary.
      *
      * @param matchingDictionary
-     *            The dictionary to match. This method will consume a reference to
-     *            the dictionary.
+     * The dictionary to match. This method will consume a reference to
+     * the dictionary.
      * @return a handle to an IOIterator if successful, {@code null} if failed.
-     *         Callers should release when finished, using
-     *         {@link IOKit#IOObjectRelease}.
+     * Callers should release when finished, using
+     * {@link IOKit#IOObjectRelease}.
      */
     public static IOIterator getMatchingServices(CFDictionaryRef matchingDictionary) {
         int masterPort = getMasterPort();
@@ -148,9 +148,9 @@ public class IOKitUtil {
      * Convenience method to get the IO dictionary matching a bsd name.
      *
      * @param bsdName
-     *            The bsd name of the registry entry
+     * The bsd name of the registry entry
      * @return The dictionary ref if successful, {@code null} if failed. Callers
-     *         should release when finished, using {@link IOKit#IOObjectRelease}.
+     * should release when finished, using {@link IOKit#IOObjectRelease}.
      */
     public static CFMutableDictionaryRef getBSDNameMatchingDict(String bsdName) {
         int masterPort = getMasterPort();

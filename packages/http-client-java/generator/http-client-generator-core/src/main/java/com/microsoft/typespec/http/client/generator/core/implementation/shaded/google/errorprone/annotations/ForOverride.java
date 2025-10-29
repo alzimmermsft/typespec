@@ -35,8 +35,8 @@ import java.lang.annotation.Target;
  * protected or package-private visibility, although their effective visibility is actually "none".
  */
 @Documented
-@IncompatibleModifiers(
-    modifier = {Modifier.PUBLIC, Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL})
+@IncompatibleModifiers(modifier = { Modifier.PUBLIC, Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL })
 @Retention(CLASS) // Parent source might not be available while compiling subclass
 @Target(METHOD)
-public @interface ForOverride {}
+public @interface ForOverride {
+}

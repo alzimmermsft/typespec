@@ -26,8 +26,6 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.WString;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.*;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.COMUtils;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.Unknown;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Guid.CLSID;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Guid.GUID;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.SAFEARRAY;
@@ -126,25 +124,27 @@ public interface Wbemcli {
         }
 
         public HRESULT Get(WString wszName, int lFlags, VARIANT.ByReference pVal, IntByReference pType,
-                IntByReference plFlavor) {
+            IntByReference plFlavor) {
             // Get is 5th method of IWbemClassObjectVtbl in WbemCli.h
             return (HRESULT) _invokeNativeObject(4,
-                    new Object[] { getPointer(), wszName, lFlags, pVal, pType, plFlavor }, HRESULT.class);
+                new Object[] { getPointer(), wszName, lFlags, pVal, pType, plFlavor }, HRESULT.class);
         }
 
         public HRESULT Get(String wszName, int lFlags, VARIANT.ByReference pVal, IntByReference pType,
-                IntByReference plFlavor) {
+            IntByReference plFlavor) {
             return Get(wszName == null ? null : new WString(wszName), lFlags, pVal, pType, plFlavor);
         }
 
-        public HRESULT GetMethod(String wszName, int lFlags, PointerByReference ppInSignature, PointerByReference ppOutSignature) {
+        public HRESULT GetMethod(String wszName, int lFlags, PointerByReference ppInSignature,
+            PointerByReference ppOutSignature) {
             return GetMethod(wszName == null ? null : new WString(wszName), lFlags, ppInSignature, ppOutSignature);
         }
 
-        public HRESULT GetMethod(WString wszName, int lFlags, PointerByReference ppInSignature, PointerByReference ppOutSignature) {
+        public HRESULT GetMethod(WString wszName, int lFlags, PointerByReference ppInSignature,
+            PointerByReference ppOutSignature) {
             // 20th method in IWbemClassObjectVtbl
             return (HRESULT) _invokeNativeObject(19,
-                new Object[]{ getPointer(), wszName, lFlags, ppInSignature, ppOutSignature}, HRESULT.class);
+                new Object[] { getPointer(), wszName, lFlags, ppInSignature, ppOutSignature }, HRESULT.class);
         }
 
         public IWbemClassObject GetMethod(String wszName) {
@@ -154,14 +154,17 @@ public interface Wbemcli {
             return new IWbemClassObject(ppInSignature.getValue());
         }
 
-        public HRESULT GetNames(String wszQualifierName, int lFlags, VARIANT.ByReference pQualifierVal, PointerByReference pNames) {
-            return GetNames(wszQualifierName == null ? null : new WString(wszQualifierName), lFlags, pQualifierVal, pNames);
+        public HRESULT GetNames(String wszQualifierName, int lFlags, VARIANT.ByReference pQualifierVal,
+            PointerByReference pNames) {
+            return GetNames(wszQualifierName == null ? null : new WString(wszQualifierName), lFlags, pQualifierVal,
+                pNames);
         }
 
-        public HRESULT GetNames(WString wszQualifierName, int lFlags, VARIANT.ByReference pQualifierVal, PointerByReference pNames) {
+        public HRESULT GetNames(WString wszQualifierName, int lFlags, VARIANT.ByReference pQualifierVal,
+            PointerByReference pNames) {
             // 8th method in IWbemClassObjectVtbl
             return (HRESULT) _invokeNativeObject(7,
-                new Object[]{ getPointer(), wszQualifierName, lFlags, pQualifierVal, pNames}, HRESULT.class);
+                new Object[] { getPointer(), wszQualifierName, lFlags, pQualifierVal, pNames }, HRESULT.class);
         }
 
         public String[] GetNames(String wszQualifierName, int lFlags, VARIANT.ByReference pQualifierVal) {
@@ -169,7 +172,7 @@ public interface Wbemcli {
             COMUtils.checkRC(GetNames(wszQualifierName, lFlags, pQualifierVal, pbr));
             Object[] nameObjects = (Object[]) OaIdlUtil.toPrimitiveArray(new SAFEARRAY(pbr.getValue()), true);
             String[] names = new String[nameObjects.length];
-            for(int i = 0; i < nameObjects.length; i++) {
+            for (int i = 0; i < nameObjects.length; i++) {
                 names[i] = (String) nameObjects[i];
             }
             return names;
@@ -177,8 +180,7 @@ public interface Wbemcli {
 
         public HRESULT GetQualifierSet(PointerByReference ppQualSet) {
             // Get is the fourth method of IWbemClassObjectVtbl in WbemCli.h :
-            return (HRESULT) _invokeNativeObject(3,
-                    new Object[] { getPointer(), ppQualSet }, HRESULT.class);
+            return (HRESULT) _invokeNativeObject(3, new Object[] { getPointer(), ppQualSet }, HRESULT.class);
         }
 
         public IWbemQualifierSet GetQualifierSet() {
@@ -191,16 +193,17 @@ public interface Wbemcli {
         }
 
         /*
-        // https://docs.microsoft.com/en-us/windows/win32/api/wbemcli/nf-wbemcli-iwbemclassobject-getpropertyqualifierset
-        HRESULT GetPropertyQualifierSet(
-            [in]  LPCWSTR           wszProperty,
-            [out] IWbemQualifierSet **ppQualSet
-            );
+         * // https://docs.microsoft.com/en-us/windows/win32/api/wbemcli/nf-wbemcli-iwbemclassobject-
+         * getpropertyqualifierset
+         * HRESULT GetPropertyQualifierSet(
+         * [in] LPCWSTR wszProperty,
+         * [out] IWbemQualifierSet **ppQualSet
+         * );
          */
         public HRESULT GetPropertyQualifierSet(WString wszProperty, PointerByReference ppQualSet) {
             // Get is 12th method of IWbemClassObjectVtbl in WbemCli.h :
-            return (HRESULT) _invokeNativeObject(11,
-                    new Object[] { getPointer(), wszProperty, ppQualSet }, HRESULT.class);
+            return (HRESULT) _invokeNativeObject(11, new Object[] { getPointer(), wszProperty, ppQualSet },
+                HRESULT.class);
         }
 
         public IWbemQualifierSet GetPropertyQualifierSet(String strProperty) {
@@ -208,7 +211,7 @@ public interface Wbemcli {
             PointerByReference ppQualSet = new PointerByReference();
 
             COMUtils.checkRC(GetPropertyQualifierSet(wszProperty, ppQualSet));
-            IWbemQualifierSet qualifier  = new IWbemQualifierSet(ppQualSet.getValue());
+            IWbemQualifierSet qualifier = new IWbemQualifierSet(ppQualSet.getValue());
             return qualifier;
         }
 
@@ -218,8 +221,8 @@ public interface Wbemcli {
 
         public HRESULT Put(WString wszName, int lFlags, VARIANT pVal, int Type) {
             // 6th method in IWbemClassObjectVtbl
-            return (HRESULT) _invokeNativeObject(5,
-                new Object[]{ getPointer(), wszName, lFlags, pVal, Type}, HRESULT.class);
+            return (HRESULT) _invokeNativeObject(5, new Object[] { getPointer(), wszName, lFlags, pVal, Type },
+                HRESULT.class);
         }
 
         public void Put(String wszName, String pValue) {
@@ -229,16 +232,15 @@ public interface Wbemcli {
                 aVariant.setValue(Variant.VT_BSTR, strValue);
                 HRESULT res = Put(wszName, 0, aVariant, 0);
                 COMUtils.checkRC(res);
-            }
-            finally {
+            } finally {
                 OleAuto.INSTANCE.VariantClear(aVariant);
             }
         }
 
         public HRESULT SpawnInstance(int lFlags, PointerByReference ppNewInstance) {
             // 16th method in IWbemClassObjectVtbl
-            return (HRESULT) _invokeNativeObject(15,
-                new Object[]{ getPointer(), lFlags, ppNewInstance}, HRESULT.class);
+            return (HRESULT) _invokeNativeObject(15, new Object[] { getPointer(), lFlags, ppNewInstance },
+                HRESULT.class);
         }
 
         public IWbemClassObject SpawnInstance() {
@@ -255,22 +257,23 @@ public interface Wbemcli {
         }
 
         public HRESULT Get(WString wszName, int lFlags, VARIANT.ByReference pVal, IntByReference plFlavor) {
-            return (HRESULT) _invokeNativeObject(3,
-                    new Object[] { getPointer(), wszName, lFlags, pVal, plFlavor }, HRESULT.class);
+            return (HRESULT) _invokeNativeObject(3, new Object[] { getPointer(), wszName, lFlags, pVal, plFlavor },
+                HRESULT.class);
         }
 
         public String Get(String wszName) {
             WString wszNameStr = new WString(wszName);
             VARIANT.ByReference pQualifierVal = new VARIANT.ByReference();
             HRESULT hres = Get(wszNameStr, 0, pQualifierVal, null);
-            if(hres.intValue() == 0x80041002) {
+            if (hres.intValue() == 0x80041002) {
                 // This error for some classes only.
                 return null;
             }
             int qualifierInt = pQualifierVal.getVarType().intValue();
-            switch(qualifierInt) {
+            switch (qualifierInt) {
                 case Wbemcli.CIM_BOOLEAN:
                     return String.valueOf(pQualifierVal.booleanValue());
+
                 case Wbemcli.CIM_STRING:
                     return pQualifierVal.stringValue();
             }
@@ -278,8 +281,7 @@ public interface Wbemcli {
         }
 
         public HRESULT GetNames(int lFlags, PointerByReference pNames) {
-            return (HRESULT) _invokeNativeObject(6,
-                    new Object[] { getPointer(), lFlags, pNames }, HRESULT.class);
+            return (HRESULT) _invokeNativeObject(6, new Object[] { getPointer(), lFlags, pNames }, HRESULT.class);
         }
 
         public String[] GetNames() {
@@ -287,7 +289,7 @@ public interface Wbemcli {
             COMUtils.checkRC(GetNames(0, pbr));
             Object[] nameObjects = (Object[]) OaIdlUtil.toPrimitiveArray(new SAFEARRAY(pbr.getValue()), true);
             String[] qualifierNames = new String[nameObjects.length];
-            for(int i = 0; i < nameObjects.length; i++) {
+            for (int i = 0; i < nameObjects.length; i++) {
                 qualifierNames[i] = (String) nameObjects[i];
             }
             return qualifierNames;
@@ -310,7 +312,7 @@ public interface Wbemcli {
             // Next is 5th method of IEnumWbemClassObjectVtbl in
             // WbemCli.h
             return (HRESULT) _invokeNativeObject(4,
-                    new Object[] { getPointer(), lTimeOut, uCount, ppObjects, puReturned }, HRESULT.class);
+                new Object[] { getPointer(), lTimeOut, uCount, ppObjects, puReturned }, HRESULT.class);
         }
 
         public IWbemClassObject[] Next(int lTimeOut, int uCount) {
@@ -346,7 +348,7 @@ public interface Wbemcli {
             PointerByReference pbr = new PointerByReference();
 
             HRESULT hres = Ole32.INSTANCE.CoCreateInstance(CLSID_WbemLocator, null, WTypes.CLSCTX_INPROC_SERVER,
-                    IID_IWbemLocator, pbr);
+                IID_IWbemLocator, pbr);
             if (COMUtils.FAILED(hres)) {
                 return null;
             }
@@ -357,12 +359,22 @@ public interface Wbemcli {
         public HRESULT ConnectServer(BSTR strNetworkResource, BSTR strUser, BSTR strPassword, BSTR strLocale,
             int lSecurityFlags, BSTR strAuthority, IWbemContext pCtx, PointerByReference ppNamespace) {
             // ConnectServier is 4th method of IWbemLocatorVtbl in WbemCli.h
-            return (HRESULT) _invokeNativeObject(3, new Object[]{getPointer(), strNetworkResource, strUser,
-                strPassword, strLocale, lSecurityFlags, strAuthority, pCtx, ppNamespace}, HRESULT.class);
+            return (HRESULT) _invokeNativeObject(3,
+                new Object[] {
+                    getPointer(),
+                    strNetworkResource,
+                    strUser,
+                    strPassword,
+                    strLocale,
+                    lSecurityFlags,
+                    strAuthority,
+                    pCtx,
+                    ppNamespace },
+                HRESULT.class);
         }
 
         public IWbemServices ConnectServer(String strNetworkResource, String strUser, String strPassword,
-                String strLocale, int lSecurityFlags, String strAuthority, IWbemContext pCtx) {
+            String strLocale, int lSecurityFlags, String strAuthority, IWbemContext pCtx) {
             BSTR strNetworkResourceBSTR = OleAuto.INSTANCE.SysAllocString(strNetworkResource);
             BSTR strUserBSTR = OleAuto.INSTANCE.SysAllocString(strUser);
             BSTR strPasswordBSTR = OleAuto.INSTANCE.SysAllocString(strPassword);
@@ -373,7 +385,7 @@ public interface Wbemcli {
 
             try {
                 HRESULT result = ConnectServer(strNetworkResourceBSTR, strUserBSTR, strPasswordBSTR, strLocaleBSTR,
-                        lSecurityFlags, strAuthorityBSTR, pCtx, pbr);
+                    lSecurityFlags, strAuthorityBSTR, pCtx, pbr);
 
                 COMUtils.checkRC(result);
 
@@ -402,20 +414,30 @@ public interface Wbemcli {
         }
 
         public HRESULT ExecMethod(BSTR strObjectPath, BSTR strMethodName, int lFlags, IWbemContext pCtx,
-                Pointer pInParams, PointerByReference ppOutParams, PointerByReference ppCallResult) {
+            Pointer pInParams, PointerByReference ppOutParams, PointerByReference ppCallResult) {
             // ExecMethod is 25st method of IWbemServicesVtbl in WbemCli.h
             return (HRESULT) _invokeNativeObject(24,
-                    new Object[] { getPointer(), strObjectPath, strMethodName, lFlags, pCtx, pInParams, ppOutParams, ppCallResult }, HRESULT.class);
+                new Object[] {
+                    getPointer(),
+                    strObjectPath,
+                    strMethodName,
+                    lFlags,
+                    pCtx,
+                    pInParams,
+                    ppOutParams,
+                    ppCallResult },
+                HRESULT.class);
         }
 
         public IWbemClassObject ExecMethod(String strObjectPath, String strMethodName, int lFlags, IWbemContext pCtx,
-                IWbemClassObject inParams) {
+            IWbemClassObject inParams) {
             BSTR strObjectPathBSTR = OleAuto.INSTANCE.SysAllocString(strObjectPath);
             BSTR strMethodNameBSTR = OleAuto.INSTANCE.SysAllocString(strMethodName);
             try {
                 PointerByReference ppOutParams = new PointerByReference();
 
-                HRESULT res = ExecMethod(strObjectPathBSTR, strMethodNameBSTR, lFlags, pCtx, inParams.getPointer(), ppOutParams, null);
+                HRESULT res = ExecMethod(strObjectPathBSTR, strMethodNameBSTR, lFlags, pCtx, inParams.getPointer(),
+                    ppOutParams, null);
 
                 COMUtils.checkRC(res);
 
@@ -427,10 +449,10 @@ public interface Wbemcli {
         }
 
         public HRESULT ExecQuery(BSTR strQueryLanguage, BSTR strQuery, int lFlags, IWbemContext pCtx,
-                PointerByReference ppEnum) {
+            PointerByReference ppEnum) {
             // ExecQuery is 21st method of IWbemServicesVtbl in WbemCli.h
             return (HRESULT) _invokeNativeObject(20,
-                    new Object[] { getPointer(), strQueryLanguage, strQuery, lFlags, pCtx, ppEnum }, HRESULT.class);
+                new Object[] { getPointer(), strQueryLanguage, strQuery, lFlags, pCtx, ppEnum }, HRESULT.class);
         }
 
         public IEnumWbemClassObject ExecQuery(String strQueryLanguage, String strQuery, int lFlags, IWbemContext pCtx) {
@@ -450,11 +472,11 @@ public interface Wbemcli {
             }
         }
 
-        public HRESULT GetObject(BSTR strObjectPath, int lFlags, IWbemContext pCtx,
-                                 PointerByReference ppObject, PointerByReference ppCallResult) {
+        public HRESULT GetObject(BSTR strObjectPath, int lFlags, IWbemContext pCtx, PointerByReference ppObject,
+            PointerByReference ppCallResult) {
             // GetObject is the 7th method of IWbemServicesVtbl in WbemCli.h
             return (HRESULT) _invokeNativeObject(6,
-                    new Object[] { getPointer(), strObjectPath, lFlags, pCtx, ppObject, ppCallResult}, HRESULT.class);
+                new Object[] { getPointer(), strObjectPath, lFlags, pCtx, ppObject, ppCallResult }, HRESULT.class);
         }
 
         public IWbemClassObject GetObject(String strObjectPath, int lFlags, IWbemContext pCtx) {
@@ -475,8 +497,8 @@ public interface Wbemcli {
      * providers when submitting IWbemServices calls to WMI
      */
     class IWbemContext extends Unknown {
-        public static final CLSID CLSID_WbemContext  = new CLSID("674B6698-EE92-11D0-AD71-00C04FD8FDFF");
-        public static final GUID IID_IWbemContext  = new GUID("44aca674-e8fc-11d0-a07c-00c04fb68820");
+        public static final CLSID CLSID_WbemContext = new CLSID("674B6698-EE92-11D0-AD71-00C04FD8FDFF");
+        public static final GUID IID_IWbemContext = new GUID("44aca674-e8fc-11d0-a07c-00c04fb68820");
 
         public IWbemContext() {
         }
@@ -485,7 +507,7 @@ public interface Wbemcli {
             PointerByReference pbr = new PointerByReference();
 
             HRESULT hres = Ole32.INSTANCE.CoCreateInstance(CLSID_WbemContext, null, WTypes.CLSCTX_INPROC_SERVER,
-                    IID_IWbemContext, pbr);
+                IID_IWbemContext, pbr);
             if (COMUtils.FAILED(hres)) {
                 return null;
             }
@@ -502,7 +524,7 @@ public interface Wbemcli {
             try {
                 // SetValue is the 9th method of IWbemContextVtbl in WbemCli.h
                 HRESULT res = (HRESULT) _invokeNativeObject(8,
-                        new Object[] { getPointer(), wszNameBSTR, lFlag, pValue}, HRESULT.class);
+                    new Object[] { getPointer(), wszNameBSTR, lFlag, pValue }, HRESULT.class);
                 COMUtils.checkRC(res);
             } finally {
                 OleAuto.INSTANCE.SysFreeString(wszNameBSTR);
@@ -522,8 +544,7 @@ public interface Wbemcli {
             try {
                 aVariant.setValue(Variant.VT_LPSTR, strValue);
                 SetValue(wszName, lFlag, aVariant);
-            }
-            finally {
+            } finally {
                 OleAuto.INSTANCE.SysFreeString(strValue);
             }
         }

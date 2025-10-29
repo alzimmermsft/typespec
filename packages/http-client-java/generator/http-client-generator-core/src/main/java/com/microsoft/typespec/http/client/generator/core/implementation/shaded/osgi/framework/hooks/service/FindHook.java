@@ -16,10 +16,10 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.hooks.service;
 
-import java.util.Collection;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.ConsumerType;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.BundleContext;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.ServiceReference;
+import java.util.Collection;
 
 /**
  * OSGi Framework Service Find Hook Service.
@@ -33,29 +33,30 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 @ConsumerType
 public interface FindHook {
-	/**
-	 * Find hook method. This method is called during the service find operation
-	 * (for example, {@link BundleContext#getServiceReferences(String, String)}
-	 * ). This method can filter the result of the find operation.
-	 * 
-	 * @param context The bundle context of the bundle performing the find
-	 *        operation.
-	 * @param name The class name of the services to find or {@code null} to
-	 *        find all services.
-	 * @param filter The filter criteria of the services to find or {@code null}
-	 *        for no filter criteria.
-	 * @param allServices {@code true} if the find operation is the result of a
-	 *        call to
-	 *        {@link BundleContext#getAllServiceReferences(String, String)}
-	 * @param references A collection of Service References to be returned as a
-	 *        result of the find operation. The implementation of this method
-	 *        may remove service references from the collection to prevent the
-	 *        references from being returned to the bundle performing the find
-	 *        operation. The collection supports all the optional
-	 *        {@code Collection} operations except {@code add} and
-	 *        {@code addAll}. Attempting to add to the collection will result in
-	 *        an {@code UnsupportedOperationException}. The collection is not
-	 *        synchronized.
-	 */
-	void find(BundleContext context, String name, String filter, boolean allServices, Collection<ServiceReference<?>> references);
+    /**
+     * Find hook method. This method is called during the service find operation
+     * (for example, {@link BundleContext#getServiceReferences(String, String)}
+     * ). This method can filter the result of the find operation.
+     * 
+     * @param context The bundle context of the bundle performing the find
+     * operation.
+     * @param name The class name of the services to find or {@code null} to
+     * find all services.
+     * @param filter The filter criteria of the services to find or {@code null}
+     * for no filter criteria.
+     * @param allServices {@code true} if the find operation is the result of a
+     * call to
+     * {@link BundleContext#getAllServiceReferences(String, String)}
+     * @param references A collection of Service References to be returned as a
+     * result of the find operation. The implementation of this method
+     * may remove service references from the collection to prevent the
+     * references from being returned to the bundle performing the find
+     * operation. The collection supports all the optional
+     * {@code Collection} operations except {@code add} and
+     * {@code addAll}. Attempting to add to the collection will result in
+     * an {@code UnsupportedOperationException}. The collection is not
+     * synchronized.
+     */
+    void find(BundleContext context, String name, String filter, boolean allServices,
+        Collection<ServiceReference<?>> references);
 }

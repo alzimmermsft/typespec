@@ -13,14 +13,11 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.projection;
 
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.BadPositionCategoryException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.DefaultPositionUpdater;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.DocumentEvent;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.Position;
-
 
 /**
  * The position updater used to adapt the segments of a projection document to
@@ -33,96 +30,98 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 class SegmentUpdater extends DefaultPositionUpdater {
 
-	private Segment fNextSegment= null;
-	private boolean fIsProjectionChange= false;
+    private Segment fNextSegment = null;
+    private boolean fIsProjectionChange = false;
 
-	/**
-	 * Creates the segment updater for the given category.
-	 *
-	 * @param segmentCategory the position category used for managing the segments of a projection document
-	 */
-	protected SegmentUpdater(String segmentCategory) {
-		super(segmentCategory);
-	}
+    /**
+     * Creates the segment updater for the given category.
+     *
+     * @param segmentCategory the position category used for managing the segments of a projection document
+     */
+    protected SegmentUpdater(String segmentCategory) {
+        super(segmentCategory);
+    }
 
-	@Override
-	public void update(DocumentEvent event) {
+    @Override
+    public void update(DocumentEvent event) {
 
-		Assert.isTrue(event instanceof ProjectionDocumentEvent);
-		fIsProjectionChange= ((ProjectionDocumentEvent) event).getChangeType() == ProjectionDocumentEvent.PROJECTION_CHANGE;
+        Assert.isTrue(event instanceof ProjectionDocumentEvent);
+        fIsProjectionChange
+            = ((ProjectionDocumentEvent) event).getChangeType() == ProjectionDocumentEvent.PROJECTION_CHANGE;
 
-		try {
+        try {
 
-			Position[] category= event.getDocument().getPositions(getCategory());
+            Position[] category = event.getDocument().getPositions(getCategory());
 
-			fOffset= event.getOffset();
-			fLength= event.getLength();
-			fReplaceLength= (event.getText() == null ? 0 : event.getText().length());
-			fDocument= event.getDocument();
+            fOffset = event.getOffset();
+            fLength = event.getLength();
+            fReplaceLength = (event.getText() == null ? 0 : event.getText().length());
+            fDocument = event.getDocument();
 
-			for (int i= 0; i < category.length; i++) {
+            for (int i = 0; i < category.length; i++) {
 
-				fPosition= category[i];
-				Assert.isTrue(fPosition instanceof Segment);
+                fPosition = category[i];
+                Assert.isTrue(fPosition instanceof Segment);
 
-				if (i < category.length - 1)
-					fNextSegment= (Segment) category[i + 1];
-				else
-					fNextSegment= null;
+                if (i < category.length - 1)
+                    fNextSegment = (Segment) category[i + 1];
+                else
+                    fNextSegment = null;
 
-				fOriginalPosition.offset= fPosition.offset;
-				fOriginalPosition.length= fPosition.length;
+                fOriginalPosition.offset = fPosition.offset;
+                fOriginalPosition.length = fPosition.length;
 
-				if (notDeleted())
-					adaptToReplace();
+                if (notDeleted())
+                    adaptToReplace();
 
-			}
+            }
 
-		} catch (BadPositionCategoryException x) {
-			// do nothing
-		}
-	}
+        } catch (BadPositionCategoryException x) {
+            // do nothing
+        }
+    }
 
-	@Override
-	protected void adaptToInsert() {
+    @Override
+    protected void adaptToInsert() {
 
-		Segment segment= (Segment) fPosition;
-		int myStart= segment.offset;
-		int myEnd= segment.offset + segment.length - (segment.isMarkedForStretch || fNextSegment == null || isAffectingReplace() ? 0 : 1);
-		myEnd= Math.max(myStart, myEnd);
-		int yoursStart= fOffset;
+        Segment segment = (Segment) fPosition;
+        int myStart = segment.offset;
+        int myEnd = segment.offset + segment.length
+            - (segment.isMarkedForStretch || fNextSegment == null || isAffectingReplace() ? 0 : 1);
+        myEnd = Math.max(myStart, myEnd);
+        int yoursStart = fOffset;
 
-		try {
+        try {
 
-			if (myEnd < yoursStart)
-				return;
+            if (myEnd < yoursStart)
+                return;
 
-			if (segment.isMarkedForStretch) {
-				Assert.isTrue(fIsProjectionChange);
-				segment.isMarkedForShift= false;
-				if (fNextSegment != null) {
-					fNextSegment.isMarkedForShift= true;
-					fNextSegment.isMarkedForStretch= false;
-				}
-			}
+            if (segment.isMarkedForStretch) {
+                Assert.isTrue(fIsProjectionChange);
+                segment.isMarkedForShift = false;
+                if (fNextSegment != null) {
+                    fNextSegment.isMarkedForShift = true;
+                    fNextSegment.isMarkedForStretch = false;
+                }
+            }
 
-			if (fLength <= 0) {
+            if (fLength <= 0) {
 
-				if (myStart < (yoursStart + (segment.isMarkedForShift ? 0 : 1)))
-					fPosition.length += fReplaceLength;
-				else
-					fPosition.offset += fReplaceLength;
+                if (myStart < (yoursStart + (segment.isMarkedForShift ? 0 : 1)))
+                    fPosition.length += fReplaceLength;
+                else
+                    fPosition.offset += fReplaceLength;
 
-			} else {
+            } else {
 
-				if (myStart <= yoursStart && fOriginalPosition.offset <= yoursStart)
-					fPosition.length += fReplaceLength;
-				else
-					fPosition.offset += fReplaceLength;
-			}
+                if (myStart <= yoursStart && fOriginalPosition.offset <= yoursStart)
+                    fPosition.length += fReplaceLength;
+                else
+                    fPosition.offset += fReplaceLength;
+            }
 
-		} finally {
-			segment.clearMark();
-		}
-	}
+        } finally {
+            segment.clearMark();
+        }
+    }
 }

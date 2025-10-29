@@ -16,10 +16,10 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.wiring.dto;
 
-import java.util.Set;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.dto.DTO;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.wiring.BundleWiring;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.dto.WiringDTO;
+import java.util.Set;
 
 /**
  * Data Transfer Object for a BundleWiring graph.
@@ -35,18 +35,18 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 public class BundleWiringDTO extends DTO {
     /**
-	 * The id of the bundle associated with the bundle wiring graph.
-	 * 
-	 * @see BundleWiring#getBundle()
-	 */
-    public long                   bundle;
+     * The id of the bundle associated with the bundle wiring graph.
+     * 
+     * @see BundleWiring#getBundle()
+     */
+    public long bundle;
 
     /**
      * The identifier of the root wiring node of the bundle wiring graph.
      * 
      * @see WiringDTO#id
      */
-    public int                    root;
+    public int root;
 
     /**
      * The set of wiring nodes referenced by the wiring graph.
@@ -55,7 +55,7 @@ public class BundleWiringDTO extends DTO {
      * All wiring nodes referenced by wiring node identifiers in the wiring
      * graph are contained in this set.
      */
-    public Set<NodeDTO>           nodes;
+    public Set<NodeDTO> nodes;
 
     /**
      * The set of resources referenced by the wiring graph.
@@ -78,20 +78,20 @@ public class BundleWiringDTO extends DTO {
      */
     public static class NodeDTO extends WiringDTO {
         /**
-		 * The bundle wiring's in use setting indicates that the bundle wiring
-		 * is in use.
-		 * 
-		 * @see BundleWiring#isInUse()
-		 */
+         * The bundle wiring's in use setting indicates that the bundle wiring
+         * is in use.
+         * 
+         * @see BundleWiring#isInUse()
+         */
         public boolean inUse;
 
         /**
-		 * The current state of the bundle wiring. The bundle wiring's current
-		 * setting indicates that the bundle wiring is the current bundle wiring
-		 * for the bundle.
-		 * 
-		 * @see BundleWiring#isCurrent()
-		 */
+         * The current state of the bundle wiring. The bundle wiring's current
+         * setting indicates that the bundle wiring is the current bundle wiring
+         * for the bundle.
+         * 
+         * @see BundleWiring#isCurrent()
+         */
         public boolean current;
     }
 }

@@ -13,56 +13,53 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.tool;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.DiagnosticListener;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.JavaFileObject;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CategorizedProblem;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.CompilationResult;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ICompilerRequestor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.batch.Main;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.DiagnosticListener;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.JavaFileObject;
 
 public class EclipseBatchRequestor implements ICompilerRequestor {
 
-	private final Main compiler;
-	private int lineDelta = 0;
-	private final DiagnosticListener<? super JavaFileObject> diagnosticListener;
-	private final DefaultProblemFactory problemFactory;
+    private final Main compiler;
+    private int lineDelta = 0;
+    private final DiagnosticListener<? super JavaFileObject> diagnosticListener;
+    private final DefaultProblemFactory problemFactory;
 
-	public EclipseBatchRequestor(Main compiler,
-			DiagnosticListener<? super JavaFileObject> diagnosticListener,
-			DefaultProblemFactory problemFactory) {
-		this.compiler = compiler;
-		this.diagnosticListener = diagnosticListener;
-		this.problemFactory = problemFactory;
-	}
+    public EclipseBatchRequestor(Main compiler, DiagnosticListener<? super JavaFileObject> diagnosticListener,
+        DefaultProblemFactory problemFactory) {
+        this.compiler = compiler;
+        this.diagnosticListener = diagnosticListener;
+        this.problemFactory = problemFactory;
+    }
 
-	@Override
-	public void acceptResult(CompilationResult compilationResult) {
-		if (compilationResult.lineSeparatorPositions != null) {
-			int unitLineCount = compilationResult.lineSeparatorPositions.length;
-			this.lineDelta += unitLineCount;
-			if (this.compiler.showProgress && this.lineDelta > 2000) {
-				// in -log mode, dump a dot every 2000 lines compiled
-				this.compiler.logger.logProgress();
-				this.lineDelta = 0;
-			}
-		}
-		this.compiler.logger.startLoggingSource(compilationResult);
-		if (compilationResult.hasProblems() || compilationResult.hasTasks()) {
-			this.compiler.logger.logProblems(
-											compilationResult.getAllProblems(),
-											compilationResult.compilationUnit.getContents(),
-											this.compiler);
-			reportProblems(compilationResult);
-		}
-		this.compiler.outputClassFiles(compilationResult);
-		this.compiler.logger.endLoggingSource();
-	}
+    @Override
+    public void acceptResult(CompilationResult compilationResult) {
+        if (compilationResult.lineSeparatorPositions != null) {
+            int unitLineCount = compilationResult.lineSeparatorPositions.length;
+            this.lineDelta += unitLineCount;
+            if (this.compiler.showProgress && this.lineDelta > 2000) {
+                // in -log mode, dump a dot every 2000 lines compiled
+                this.compiler.logger.logProgress();
+                this.lineDelta = 0;
+            }
+        }
+        this.compiler.logger.startLoggingSource(compilationResult);
+        if (compilationResult.hasProblems() || compilationResult.hasTasks()) {
+            this.compiler.logger.logProblems(compilationResult.getAllProblems(),
+                compilationResult.compilationUnit.getContents(), this.compiler);
+            reportProblems(compilationResult);
+        }
+        this.compiler.outputClassFiles(compilationResult);
+        this.compiler.logger.endLoggingSource();
+    }
 
-	private void reportProblems(CompilationResult result) {
-		for (CategorizedProblem problem : result.getAllProblems()) {
-			EclipseDiagnostic diagnostic = EclipseDiagnostic.newInstance(problem, this.problemFactory);
-			this.diagnosticListener.report(diagnostic);
-		}
-	}
+    private void reportProblems(CompilationResult result) {
+        for (CategorizedProblem problem : result.getAllProblems()) {
+            EclipseDiagnostic diagnostic = EclipseDiagnostic.newInstance(problem, this.problemFactory);
+            this.diagnosticListener.report(diagnostic);
+        }
+    }
 }

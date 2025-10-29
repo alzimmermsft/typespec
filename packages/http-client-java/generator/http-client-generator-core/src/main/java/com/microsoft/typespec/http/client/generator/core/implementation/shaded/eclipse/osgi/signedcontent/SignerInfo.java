@@ -26,27 +26,27 @@ import java.security.cert.Certificate;
  */
 public interface SignerInfo {
 
-	/**
-	 * Returns the certificate chain
-	 * 
-	 * @return the certificate chain
-	 */
+    /**
+     * Returns the certificate chain
+     * 
+     * @return the certificate chain
+     */
     Certificate[] getCertificateChain();
 
-	/**
-	 * Returns the certificate trust anchor used to establish authenticity. If
-	 * authenticity cannot be established then <code>null</code> is returned.
-	 * 
-	 * @return the trust anchor
-	 */
+    /**
+     * Returns the certificate trust anchor used to establish authenticity. If
+     * authenticity cannot be established then <code>null</code> is returned.
+     * 
+     * @return the trust anchor
+     */
     Certificate getTrustAnchor();
 
-	/**
-	 * Returns true if the trust anchor has been authenticated. This is a
-	 * convenience method equivalent to calling
-	 * <code>{@link #getTrustAnchor()} != null</code>
-	 * 
-	 * @return true if the the signer info is trusted
-	 */
+    /**
+     * Returns true if the trust anchor has been authenticated. This is a
+     * convenience method equivalent to calling
+     * <code>{@link #getTrustAnchor()} != null</code>
+     * 
+     * @return true if the the signer info is trusted
+     */
     boolean isTrusted();
 }

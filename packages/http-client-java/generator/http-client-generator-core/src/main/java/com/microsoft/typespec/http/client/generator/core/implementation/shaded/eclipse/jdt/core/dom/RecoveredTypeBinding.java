@@ -80,17 +80,7 @@ class RecoveredTypeBinding implements ITypeBinding {
     }
 
     @Override
-    public String getBinaryName() {
-        return null;
-    }
-
-    @Override
     public ITypeBinding getBound() {
-        return null;
-    }
-
-    @Override
-    public ITypeBinding getGenericTypeOfWildcardType() {
         return null;
     }
 
@@ -126,11 +116,6 @@ class RecoveredTypeBinding implements ITypeBinding {
     @Override
     public int getDeclaredModifiers() {
         return 0;
-    }
-
-    @Override
-    public ITypeBinding[] getDeclaredTypes() {
-        return TypeBinding.NO_TYPE_BINDINGS;
     }
 
     @Override
@@ -178,11 +163,6 @@ class RecoveredTypeBinding implements ITypeBinding {
     @Override
     public ITypeBinding getErasure() {
         return this;
-    }
-
-    @Override
-    public IMethodBinding getFunctionalInterfaceMethod() {
-        return null;
     }
 
     @Override
@@ -373,26 +353,8 @@ class RecoveredTypeBinding implements ITypeBinding {
     }
 
     @Override
-    public boolean isAssignmentCompatible(ITypeBinding typeBinding) {
-        if ("java.lang.Object".equals(typeBinding.getQualifiedName())) { //$NON-NLS-1$
-            return true;
-        }
-        // since recovered binding are not unique isEqualTo is required
-        return isEqualTo(typeBinding);
-    }
-
-    @Override
     public boolean isCapture() {
         return false;
-    }
-
-    @Override
-    public boolean isCastCompatible(ITypeBinding typeBinding) {
-        if ("java.lang.Object".equals(typeBinding.getQualifiedName())) { //$NON-NLS-1$
-            return true;
-        }
-        // since recovered binding are not unique isEqualTo is required
-        return isEqualTo(typeBinding);
     }
 
     @Override
@@ -411,22 +373,12 @@ class RecoveredTypeBinding implements ITypeBinding {
     }
 
     @Override
-    public boolean isFromSource() {
-        return false;
-    }
-
-    @Override
     public boolean isGenericType() {
         return false;
     }
 
     @Override
     public boolean isInterface() {
-        return false;
-    }
-
-    @Override
-    public boolean isIntersectionType() {
         return false;
     }
 
@@ -469,20 +421,6 @@ class RecoveredTypeBinding implements ITypeBinding {
     @Override
     public boolean isRawType() {
         return false;
-    }
-
-    @Override
-    public boolean isSubTypeCompatible(ITypeBinding typeBinding) {
-        if ("java.lang.Object".equals(typeBinding.getQualifiedName())) { //$NON-NLS-1$
-            return true;
-        }
-        // since recovered binding are not unique isEqualTo is required
-        return isEqualTo(typeBinding);
-    }
-
-    @Override
-    public boolean isTopLevel() {
-        return true;
     }
 
     @Override
@@ -657,10 +595,5 @@ class RecoveredTypeBinding implements ITypeBinding {
                 }
         }
         return null; // should not happen
-    }
-
-    @Override
-    public IAnnotationBinding[] getTypeAnnotations() {
-        return AnnotationBinding.NoAnnotations;
     }
 }

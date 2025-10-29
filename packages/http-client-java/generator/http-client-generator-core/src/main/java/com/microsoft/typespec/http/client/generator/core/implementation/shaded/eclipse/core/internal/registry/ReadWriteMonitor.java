@@ -47,25 +47,6 @@ public class ReadWriteMonitor {
     }
 
     /**
-     * Only one writer at a time is allowed to perform Blocking only when already
-     * writing or reading.
-     */
-    public synchronized void enterWrite() {
-        if (writeLockowner != Thread.currentThread()) {
-            while (status != 0) {
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    // ignore
-                }
-            }
-//			System.out.println(this + "lockowner:" + Thread.currentThread());
-            writeLockowner = Thread.currentThread();
-        }
-        status--;
-    }
-
-    /**
      * Only notify waiting writer(s) if last reader
      */
     public synchronized void exitRead() {
@@ -73,21 +54,6 @@ public class ReadWriteMonitor {
             return;
         }
         if (--status == 0) {
-            notifyAll();
-        }
-    }
-
-    /**
-     * When writing is over, all readers and possible writers are granted permission
-     * to restart concurrently
-     */
-    public synchronized void exitWrite() {
-        if (writeLockowner != Thread.currentThread()) {
-            throw new IllegalStateException("Current owner is " + writeLockowner); //$NON-NLS-1$
-        }
-        if (++status == 0) {
-            // System.out.println(this + "exitWrite:" + Thread.currentThread());
-            writeLockowner = null;
             notifyAll();
         }
     }

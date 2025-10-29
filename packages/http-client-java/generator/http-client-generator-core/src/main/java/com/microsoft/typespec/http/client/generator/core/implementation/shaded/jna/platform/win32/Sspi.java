@@ -32,6 +32,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 /**
  * Ported from Sspi.h.
  * Microsoft Windows SDK 6.0A.
+ * 
  * @author dblock[at]dblock.org
  */
 public interface Sspi {
@@ -46,8 +47,8 @@ public interface Sspi {
      * and later versions: 48,000 bytes
      *
      * @see <a href=
-     *      "https://docs.microsoft.com/en-us/troubleshoot/windows-server/windows-security/kerberos-authentication-problems-if-user-belongs-to-groups">Problems
-     *      with Kerberos authentication when a user belongs to many groups</a>
+     * "https://docs.microsoft.com/en-us/troubleshoot/windows-server/windows-security/kerberos-authentication-problems-if-user-belongs-to-groups">Problems
+     * with Kerberos authentication when a user belongs to many groups</a>
      */
     int MAX_TOKEN_SIZE = VersionHelpers.IsWindows8OrGreater() ? 48000 : 12000;
 
@@ -65,7 +66,6 @@ public interface Sspi {
      * Allow a local client credential to prepare an outgoing token.
      */
     int SECPKG_CRED_OUTBOUND = 2;
-
 
     // Flags for the TargetDataRep parameter of AcceptSecurityContext and InitializeSecurityContext
 
@@ -360,7 +360,6 @@ public interface Sspi {
     int SECPKG_NEGOTIATION_DIRECT = 3;
     int SECPKG_NEGOTIATION_TRY_MULTICRED = 4;
 
-
     // flags for SecPkgInfo fCapabilities
     // (https://msdn.microsoft.com/en-us/library/windows/desktop/aa380104(v=vs.85).aspx)
     /**
@@ -480,7 +479,7 @@ public interface Sspi {
     /**
      * Security handle.
      */
-    @FieldOrder({"dwLower", "dwUpper"})
+    @FieldOrder({ "dwLower", "dwUpper" })
     public static class SecHandle extends Structure {
 
         public static class ByReference extends SecHandle implements Structure.ByReference {
@@ -498,8 +497,9 @@ public interface Sspi {
 
         /**
          * Returns true if the handle is NULL.
+         * 
          * @return
-         *  True if NULL, False otherwise.
+         * True if NULL, False otherwise.
          */
         public boolean isNull() {
             return dwLower == null && dwUpper == null;
@@ -509,7 +509,7 @@ public interface Sspi {
     /**
      * A pointer to a SecHandle
      */
-    @FieldOrder({"secHandle"})
+    @FieldOrder({ "secHandle" })
     public static class PSecHandle extends Structure {
 
         public static class ByReference extends PSecHandle implements Structure.ByReference {
@@ -546,7 +546,7 @@ public interface Sspi {
      * The SecBuffer structure describes a buffer allocated by a transport application
      * to pass to a security package.
      */
-    @FieldOrder({"cbBuffer", "BufferType", "pvBuffer"})
+    @FieldOrder({ "cbBuffer", "BufferType", "pvBuffer" })
     public static class SecBuffer extends Structure {
 
         /**
@@ -561,10 +561,11 @@ public interface Sspi {
 
             /**
              * Create a SecBuffer of a given type and size.
+             * 
              * @param type
-             *  Buffer type, one of SECBUFFER_EMTPY, etc.
+             * Buffer type, one of SECBUFFER_EMTPY, etc.
              * @param size
-             *  Buffer size, eg. MAX_TOKEN_SIZE.
+             * Buffer size, eg. MAX_TOKEN_SIZE.
              */
             public ByReference(int type, int size) {
                 super(type, size);
@@ -598,10 +599,11 @@ public interface Sspi {
 
         /**
          * Create a SecBuffer of a given type and size.
+         * 
          * @param type
-         *  Buffer type, one of SECBUFFER_EMTPY, etc.
+         * Buffer type, one of SECBUFFER_EMTPY, etc.
          * @param size
-         *  Buffer size, eg. MAX_TOKEN_SIZE.
+         * Buffer size, eg. MAX_TOKEN_SIZE.
          */
         public SecBuffer(int type, int size) {
             cbBuffer = size;
@@ -611,10 +613,11 @@ public interface Sspi {
 
         /**
          * Create a SecBuffer of a given type with initial data.
+         * 
          * @param type
-         *  Buffer type, one of SECBUFFER_EMTPY, etc.
+         * Buffer type, one of SECBUFFER_EMTPY, etc.
          * @param token
-         *  Existing token.
+         * Existing token.
          */
         public SecBuffer(int type, byte[] token) {
             cbBuffer = token.length;
@@ -625,8 +628,9 @@ public interface Sspi {
 
         /**
          * Get buffer bytes.
+         * 
          * @return
-         *  Raw buffer bytes.
+         * Raw buffer bytes.
          */
         public byte[] getBytes() {
             return pvBuffer == null ? null : pvBuffer.getByteArray(0, cbBuffer);
@@ -645,7 +649,7 @@ public interface Sspi {
      * <p>If the SecBufferDesc is managed from the java side, <b>prefer to use
      * {@link SspiUtil.ManagedSecBufferDesc ManagedSecBufferDesc}.</b></p>
      */
-    @FieldOrder({"ulVersion", "cBuffers", "pBuffers"})
+    @FieldOrder({ "ulVersion", "cBuffers", "pBuffers" })
     public static class SecBufferDesc extends Structure {
         /**
          * Version number.
@@ -671,7 +675,7 @@ public interface Sspi {
     /**
      * A security integer.
      */
-    @FieldOrder({"dwLower", "dwUpper"})
+    @FieldOrder({ "dwLower", "dwUpper" })
     public static class SECURITY_INTEGER extends Structure {
         public int dwLower;
         public int dwUpper;
@@ -686,7 +690,7 @@ public interface Sspi {
     /**
      * A pointer to an array of SecPkgInfo structures.
      */
-    @FieldOrder({"pPkgInfo"})
+    @FieldOrder({ "pPkgInfo" })
     public static class PSecPkgInfo extends Structure {
 
         public static class ByReference extends PSecPkgInfo implements Structure.ByReference {
@@ -715,7 +719,7 @@ public interface Sspi {
      * The SecPkgInfo structure provides general information about a security package,
      * such as its name and capabilities.
      */
-    @FieldOrder({"fCapabilities", "wVersion", "wRPCID", "cbMaxToken", "Name", "Comment"})
+    @FieldOrder({ "fCapabilities", "wVersion", "wRPCID", "cbMaxToken", "Name", "Comment" })
     public static class SecPkgInfo extends Structure {
 
         /**
@@ -759,7 +763,7 @@ public interface Sspi {
     /**
      * The SecPkgContext_PackageInfo structure.
      */
-    @FieldOrder({"PackageInfo"})
+    @FieldOrder({ "PackageInfo" })
     public static class SecPkgContext_PackageInfo extends Structure {
         /**
          * A reference pointer to a SecPkgContext_PackageInfo structure.
@@ -787,7 +791,7 @@ public interface Sspi {
      * {@link Secur32#QueryCredentialsAttributes(CredHandle, int, Structure)}
      * function uses this structure.</p>
      */
-    @FieldOrder({"sUserName"})
+    @FieldOrder({ "sUserName" })
     public static class SecPkgCredentials_Names extends Structure {
 
         public static class ByReference extends SecPkgCredentials_Names implements Structure.ByReference {
@@ -839,7 +843,7 @@ public interface Sspi {
      * The {@link Secur32#QueryContextAttributes(CtxtHandle, int, Structure)
      * } function uses this structure.</p>
      */
-    @FieldOrder({"cbMaxToken", "cbMaxSignature", "cbBlockSize", "cbSecurityTrailer"})
+    @FieldOrder({ "cbMaxToken", "cbMaxSignature", "cbBlockSize", "cbSecurityTrailer" })
     public static class SecPkgContext_Sizes extends Structure {
 
         public static class ByReference extends SecPkgContext_Sizes implements Structure.ByReference {
@@ -852,17 +856,20 @@ public interface Sspi {
         public int cbMaxToken;
 
         /**
-         * Specifies the maximum size of the signature created by the MakeSignature function. This member must be zero if integrity services are not requested or available.
+         * Specifies the maximum size of the signature created by the MakeSignature function. This member must be zero
+         * if integrity services are not requested or available.
          */
         public int cbMaxSignature;
 
         /**
-         * Specifies the preferred integral size of the messages. For example, eight indicates that messages should be of size zero mod eight for optimal performance. Messages other than this block size can be padded.
+         * Specifies the preferred integral size of the messages. For example, eight indicates that messages should be
+         * of size zero mod eight for optimal performance. Messages other than this block size can be padded.
          */
         public int cbBlockSize;
 
         /**
-         * Size of the security trailer to be appended to messages. This member should be zero if the relevant services are not requested or available.
+         * Size of the security trailer to be appended to messages. This member should be zero if the relevant services
+         * are not requested or available.
          */
         public int cbSecurityTrailer;
 
@@ -872,14 +879,12 @@ public interface Sspi {
 
         @Override
         public String toString() {
-            return "SecPkgContext_Sizes{" + "cbMaxToken=" + cbMaxToken +
-                    ", cbMaxSignature=" + cbMaxSignature + ", cbBlockSize=" +
-                    cbBlockSize + ", cbSecurityTrailer=" + cbSecurityTrailer +
-                    '}';
+            return "SecPkgContext_Sizes{" + "cbMaxToken=" + cbMaxToken + ", cbMaxSignature=" + cbMaxSignature
+                + ", cbBlockSize=" + cbBlockSize + ", cbSecurityTrailer=" + cbSecurityTrailer + '}';
         }
     }
 
-    @FieldOrder({"SessionKeyLength", "SessionKey"})
+    @FieldOrder({ "SessionKeyLength", "SessionKey" })
     public static class SecPkgContext_SessionKey extends Structure {
 
         public static class ByReference extends SecPkgContext_SessionKey implements Structure.ByReference {
@@ -901,21 +906,26 @@ public interface Sspi {
         }
 
         public byte[] getSessionKey() {
-            if(SessionKey == null) {
+            if (SessionKey == null) {
                 return null;
             }
             return SessionKey.getByteArray(0, SessionKeyLength);
         }
 
         public synchronized void free() {
-            if(SessionKey != null) {
+            if (SessionKey != null) {
                 Secur32.INSTANCE.FreeContextBuffer(SessionKey);
                 SessionKey = null;
             }
         }
     }
 
-    @FieldOrder({"sSignatureAlgorithmName", "sEncryptAlgorithmName","KeySize", "SignatureAlgorithm", "EncryptAlgorithm"})
+    @FieldOrder({
+        "sSignatureAlgorithmName",
+        "sEncryptAlgorithmName",
+        "KeySize",
+        "SignatureAlgorithm",
+        "EncryptAlgorithm" })
     public static class SecPkgContext_KeyInfo extends Structure {
         /**
          * Name, if available, of the algorithm used for generating signatures, for example "MD5" or "SHA-2".
@@ -947,32 +957,36 @@ public interface Sspi {
         }
 
         public synchronized String getSignatureAlgorithmName() {
-            if(sSignatureAlgorithmName == null) {
+            if (sSignatureAlgorithmName == null) {
                 return null;
             }
-            return Boolean.getBoolean("w32.ascii") ? sSignatureAlgorithmName.getString(0) : sSignatureAlgorithmName.getWideString(0);
+            return Boolean.getBoolean("w32.ascii")
+                ? sSignatureAlgorithmName.getString(0)
+                : sSignatureAlgorithmName.getWideString(0);
         }
 
         public synchronized String getEncryptAlgorithmName() {
-            if(sEncryptAlgorithmName == null) {
+            if (sEncryptAlgorithmName == null) {
                 return null;
             }
-            return Boolean.getBoolean("w32.ascii") ? sEncryptAlgorithmName.getString(0) : sEncryptAlgorithmName.getWideString(0);
+            return Boolean.getBoolean("w32.ascii")
+                ? sEncryptAlgorithmName.getString(0)
+                : sEncryptAlgorithmName.getWideString(0);
         }
 
         public synchronized void free() {
-            if(sSignatureAlgorithmName != null) {
+            if (sSignatureAlgorithmName != null) {
                 Secur32.INSTANCE.FreeContextBuffer(sSignatureAlgorithmName);
                 sSignatureAlgorithmName = null;
             }
-            if(sEncryptAlgorithmName != null) {
+            if (sEncryptAlgorithmName != null) {
                 Secur32.INSTANCE.FreeContextBuffer(sEncryptAlgorithmName);
                 sEncryptAlgorithmName = null;
             }
         }
     }
 
-    @FieldOrder({"tsStart", "tsExpiry"})
+    @FieldOrder({ "tsStart", "tsExpiry" })
     public static class SecPkgContext_Lifespan extends Structure {
 
         public static class ByReference extends SecPkgContext_Lifespan implements Structure.ByReference {
@@ -994,7 +1008,7 @@ public interface Sspi {
         }
     }
 
-    @FieldOrder({"PackageInfo", "NegotiationState"})
+    @FieldOrder({ "PackageInfo", "NegotiationState" })
     public static class SecPkgContext_NegotiationInfo extends Structure {
 
         public static class ByReference extends SecPkgContext_NegotiationInfo implements Structure.ByReference {
@@ -1016,14 +1030,14 @@ public interface Sspi {
         }
 
         public synchronized void free() {
-            if(PackageInfo != null) {
+            if (PackageInfo != null) {
                 Secur32.INSTANCE.FreeContextBuffer(PackageInfo.pPkgInfo.getPointer());
                 PackageInfo = null;
             }
         }
     }
 
-    @FieldOrder({"Flags"})
+    @FieldOrder({ "Flags" })
     public static class SecPkgContext_Flags extends Structure {
 
         public static class ByReference extends SecPkgContext_Flags implements Structure.ByReference {
@@ -1051,7 +1065,7 @@ public interface Sspi {
      */
     public static final int SEC_WINNT_AUTH_IDENTITY_UNICODE = 0x2;
 
-    @FieldOrder({"User", "UserLength", "Domain", "DomainLength", "Password", "PasswordLength", "Flags"})
+    @FieldOrder({ "User", "UserLength", "Domain", "DomainLength", "Password", "PasswordLength", "Flags" })
     public static class SEC_WINNT_AUTH_IDENTITY extends Structure {
         /**
          * A string that contains the user name.
@@ -1096,7 +1110,8 @@ public interface Sspi {
          * <table>
          * <tr><th>Value</th><th>Meaning</th></tr>
          * <tr><td>SEC_WINNT_AUTH_IDENTITY_ANSI</td><td>The strings in this structure are in ANSI format.</td></tr>
-         * <tr><td>SEC_WINNT_AUTH_IDENTITY_UNICODE</td><td>The strings in this structure are in Unicode format.</td></tr>
+         * <tr><td>SEC_WINNT_AUTH_IDENTITY_UNICODE</td><td>The strings in this structure are in Unicode
+         * format.</td></tr>
          * </table>
          *
          * <strong>As the string encoding is managed by JNA do not change this

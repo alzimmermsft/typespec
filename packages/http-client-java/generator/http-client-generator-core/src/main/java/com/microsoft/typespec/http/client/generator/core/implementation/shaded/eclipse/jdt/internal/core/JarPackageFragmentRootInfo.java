@@ -17,21 +17,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * The element info for <code>JarPackageFragmentRoot</code>s.
  */
 class JarPackageFragmentRootInfo extends PackageFragmentRootInfo {
-	/** contains .class file names, and non-Java resource names of a package */
-	static record PackageContent(List<String> javaClasses, List<String> resources) {
-		PackageContent() {
-			this(new ArrayList<>(), new ArrayList<>());
-		}
-	}
+    /** contains .class file names, and non-Java resource names of a package */
+    static record PackageContent(List<String> javaClasses, List<String> resources) {
+        PackageContent() {
+            this(new ArrayList<>(), new ArrayList<>());
+        }
+    }
 
-	/**
-	 * Cache for the the jar's entries names. A unmodifiable map from package name to PackageContent
-	 */
-	Map<List<String>, PackageContent> rawPackageInfo;
-	Map<String, String> overriddenClasses;
+    /**
+     * Cache for the the jar's entries names. A unmodifiable map from package name to PackageContent
+     */
+    Map<List<String>, PackageContent> rawPackageInfo;
+    Map<String, String> overriddenClasses;
 }

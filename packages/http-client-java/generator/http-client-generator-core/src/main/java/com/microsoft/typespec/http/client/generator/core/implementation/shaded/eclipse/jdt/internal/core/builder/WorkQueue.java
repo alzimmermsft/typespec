@@ -19,34 +19,34 @@ import java.util.Set;
 
 public class WorkQueue {
 
-private final Set<SourceFile> needsCompileList;
-private final Set<SourceFile> compiledList;
+    private final Set<SourceFile> needsCompileList;
+    private final Set<SourceFile> compiledList;
 
-public WorkQueue() {
-	this.needsCompileList = new HashSet<>();
-	this.compiledList = new HashSet<>();
-}
+    public WorkQueue() {
+        this.needsCompileList = new HashSet<>();
+        this.compiledList = new HashSet<>();
+    }
 
-public void add(SourceFile element) {
-	this.needsCompileList.add(element);
-}
+    public void add(SourceFile element) {
+        this.needsCompileList.add(element);
+    }
 
-public void addAll(SourceFile[] elements) {
-	this.needsCompileList.addAll(Arrays.asList(elements));
-}
+    public void addAll(SourceFile[] elements) {
+        this.needsCompileList.addAll(Arrays.asList(elements));
+    }
 
-public void clear() {
-	this.needsCompileList.clear();
-	this.compiledList.clear();
-}
+    public void clear() {
+        this.needsCompileList.clear();
+        this.compiledList.clear();
+    }
 
-public void finished(SourceFile element) {
-	this.needsCompileList.remove(element);
-	this.compiledList.add(element);
-}
+    public void finished(SourceFile element) {
+        this.needsCompileList.remove(element);
+        this.compiledList.add(element);
+    }
 
     @Override
-public String toString() {
-	return "WorkQueue: " + this.needsCompileList; //$NON-NLS-1$
-}
+    public String toString() {
+        return "WorkQueue: " + this.needsCompileList; //$NON-NLS-1$
+    }
 }

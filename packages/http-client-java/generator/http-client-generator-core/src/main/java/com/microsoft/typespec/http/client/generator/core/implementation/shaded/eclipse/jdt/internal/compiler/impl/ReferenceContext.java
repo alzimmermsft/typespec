@@ -25,13 +25,13 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public interface ReferenceContext {
 
-	void abort(int abortLevel, CategorizedProblem problem);
+    void abort(int abortLevel, CategorizedProblem problem);
 
-	CompilationResult compilationResult();
+    CompilationResult compilationResult();
 
-	CompilationUnitDeclaration getCompilationUnitDeclaration();
+    CompilationUnitDeclaration getCompilationUnitDeclaration();
 
-	boolean hasErrors();
+    boolean hasErrors();
 
-	void tagAsHavingErrors();
+    void tagAsHavingErrors();
 }

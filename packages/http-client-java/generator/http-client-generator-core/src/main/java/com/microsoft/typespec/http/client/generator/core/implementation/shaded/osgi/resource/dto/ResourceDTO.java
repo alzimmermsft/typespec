@@ -16,9 +16,9 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.dto;
 
-import java.util.List;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.dto.DTO;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Resource;
+import java.util.List;
 
 /**
  * Data Transfer Object for a Resource.
@@ -33,19 +33,19 @@ public class ResourceDTO extends DTO {
      * <p>
      * This identifier is transiently assigned and may vary across restarts.
      */
-    public int                  id;
+    public int id;
 
     /**
-	 * The capabilities of the resource.
-	 * 
-	 * @see Resource#getCapabilities(String)
-	 */
-    public List<CapabilityDTO>  capabilities;
+     * The capabilities of the resource.
+     * 
+     * @see Resource#getCapabilities(String)
+     */
+    public List<CapabilityDTO> capabilities;
 
     /**
-	 * The requirements of the resource.
-	 * 
-	 * @see Resource#getRequirements(String)
-	 */
+     * The requirements of the resource.
+     * 
+     * @see Resource#getRequirements(String)
+     */
     public List<RequirementDTO> requirements;
 }

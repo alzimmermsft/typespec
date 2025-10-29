@@ -30,19 +30,24 @@ import java.util.Collection;
  *
  * <p>For example, {@link Collection#contains} would be annotated as follows:
  *
- * <pre>{@code
- * interface Collection<E> {
- *   boolean contains(@CompatibleWith("E") Object o);
+ * <pre>
+ * {
+ *     &#64;code
+ *     interface Collection<E> {
+ *         boolean contains(@CompatibleWith("E") Object o);
+ *     }
  * }
- * }</pre>
+ * </pre>
  *
  * <p>To indicate that invocations of {@link Collection#contains} must be passed an argument whose
  * type is compatible with the generic type argument of the Collection instance:
  *
- * <pre>{@code
+ * <pre>
+ * {@code
  * Collection<String> stringCollection = ...;
  * boolean shouldBeFalse = stringCollection.contains(42); // BUG! int isn't compatible with String
- * }</pre>
+ * }
+ * </pre>
  *
  * <p>Note: currently, this annotation can't be used if the method overrides another method that has
  * {@code @CompatibleWith} already present.
@@ -51,5 +56,5 @@ import java.util.Collection;
 @Retention(RetentionPolicy.CLASS)
 @Target(ElementType.PARAMETER)
 public @interface CompatibleWith {
-  String value();
+    String value();
 }

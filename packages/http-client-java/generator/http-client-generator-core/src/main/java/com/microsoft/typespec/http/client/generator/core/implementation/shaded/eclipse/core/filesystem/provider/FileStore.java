@@ -358,24 +358,6 @@ public abstract class FileStore extends PlatformObject implements IFileStore {
         return null;// can't get here
     }
 
-    /**
-     * The default implementation of {@link IFileStore#move(IFileStore, int, IProgressMonitor)}.
-     * This implementation performs a move by using other primitive methods.
-     * Subclasses may override this method.
-     */
-    @Override
-    public void move(IFileStore destination, int options, IProgressMonitor monitor) throws CoreException {
-        try {
-            SubMonitor subMonitor = SubMonitor.convert(monitor, NLS.bind(Messages.moving, destination.toString()), 100);
-            copy(destination, options & EFS.OVERWRITE, subMonitor.newChild(70));
-            delete(EFS.NONE, subMonitor.newChild(30));
-        } catch (CoreException e) {
-            // throw new error to indicate failure occurred during a move
-            String message = NLS.bind(Messages.couldNotMove, toString());
-            Policy.error(EFS.ERROR_WRITE, message, e);
-        }
-    }
-
     @Override
     public abstract InputStream openInputStream(int options, IProgressMonitor monitor) throws CoreException;
 

@@ -55,12 +55,12 @@ import java.lang.annotation.Target;
  * than or equal to the package's version.
  * 
  * @see <a href= "https://docs.osgi.org/whitepaper/semantic-versioning/" >
- *      Semantic Versioning</a>
+ * Semantic Versioning</a>
  * @author $Id: 007d63295bff57b4d091d65a3b676a9a596b112b $
  */
 @Documented
 @Retention(RetentionPolicy.CLASS)
 @Target(ElementType.TYPE)
 public @interface ConsumerType {
-	// marker annotation
+    // marker annotation
 }

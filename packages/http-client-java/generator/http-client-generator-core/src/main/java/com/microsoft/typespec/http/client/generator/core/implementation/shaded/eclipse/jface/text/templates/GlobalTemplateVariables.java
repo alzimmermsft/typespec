@@ -32,225 +32,227 @@ import java.util.Locale;
  */
 public class GlobalTemplateVariables {
 
-	/** The type of the selection variables. */
-	public static final String SELECTION= "selection"; //$NON-NLS-1$
+    /** The type of the selection variables. */
+    public static final String SELECTION = "selection"; //$NON-NLS-1$
 
-	/**
-	 * The cursor variable determines the cursor placement after template edition.
-	 */
-	public static class Cursor extends SimpleTemplateVariableResolver {
+    /**
+     * The cursor variable determines the cursor placement after template edition.
+     */
+    public static class Cursor extends SimpleTemplateVariableResolver {
 
-		/** Name of the cursor variable, value= {@value} */
-		public static final String NAME= "cursor"; //$NON-NLS-1$
+        /** Name of the cursor variable, value= {@value} */
+        public static final String NAME = "cursor"; //$NON-NLS-1$
 
-		/**
-		 * Creates a new cursor variable
-		 */
-		public Cursor() {
-			super(NAME, TextTemplateMessages.getString("GlobalVariables.variable.description.cursor")); //$NON-NLS-1$
-			setEvaluationString(""); //$NON-NLS-1$
-		}
-	}
+        /**
+         * Creates a new cursor variable
+         */
+        public Cursor() {
+            super(NAME, TextTemplateMessages.getString("GlobalVariables.variable.description.cursor")); //$NON-NLS-1$
+            setEvaluationString(""); //$NON-NLS-1$
+        }
+    }
 
-	/**
-	 * The selection variable determines templates that work on a selection.
-	 *
-	 * @since 3.6
-	 */
-	public static class Selection extends SimpleTemplateVariableResolver {
+    /**
+     * The selection variable determines templates that work on a selection.
+     *
+     * @since 3.6
+     */
+    public static class Selection extends SimpleTemplateVariableResolver {
 
-		/**
-		 * Creates a word selection variable.
-		 *
-		 * @param name the name of the variable
-		 * @param description the description of the variable
-		 */
-		public Selection(String name, String description) {
-			super(name, description);
-		}
+        /**
+         * Creates a word selection variable.
+         *
+         * @param name the name of the variable
+         * @param description the description of the variable
+         */
+        public Selection(String name, String description) {
+            super(name, description);
+        }
 
-		@Override
-		protected String resolve(TemplateContext context) {
-			String selection= context.getVariable(SELECTION);
-			if (selection == null)
-				return ""; //$NON-NLS-1$
-			return selection;
-		}
+        @Override
+        protected String resolve(TemplateContext context) {
+            String selection = context.getVariable(SELECTION);
+            if (selection == null)
+                return ""; //$NON-NLS-1$
+            return selection;
+        }
 
-		@Override
-		public void resolve(TemplateVariable variable, TemplateContext context) {
-			List<String> params= variable.getVariableType().getParams();
-			if (!params.isEmpty() && params.get(0) != null) {
-				resolveWithParams(variable, context, params);
-			} else {
-				// No parameter, use default:
-				super.resolve(variable, context);
-			}
-		}
+        @Override
+        public void resolve(TemplateVariable variable, TemplateContext context) {
+            List<String> params = variable.getVariableType().getParams();
+            if (!params.isEmpty() && params.get(0) != null) {
+                resolveWithParams(variable, context, params);
+            } else {
+                // No parameter, use default:
+                super.resolve(variable, context);
+            }
+        }
 
-		private void resolveWithParams(TemplateVariable variable, TemplateContext context, List<String> params) {
-			String selection= context.getVariable(SELECTION);
-			if (selection != null && !selection.isEmpty()) {
-				variable.setValue(selection);
-			} else {
-				String defaultValue= params.get(0);
-				variable.setValue(defaultValue);
-			}
-			variable.setUnambiguous(true);
-			variable.setResolved(true);
-		}
-	}
+        private void resolveWithParams(TemplateVariable variable, TemplateContext context, List<String> params) {
+            String selection = context.getVariable(SELECTION);
+            if (selection != null && !selection.isEmpty()) {
+                variable.setValue(selection);
+            } else {
+                String defaultValue = params.get(0);
+                variable.setValue(defaultValue);
+            }
+            variable.setUnambiguous(true);
+            variable.setResolved(true);
+        }
+    }
 
-	/**
-	 * The word selection variable determines templates that work on selected words, but not on
-	 * selected lines.
-	 */
-	public static class WordSelection extends Selection {
+    /**
+     * The word selection variable determines templates that work on selected words, but not on
+     * selected lines.
+     */
+    public static class WordSelection extends Selection {
 
-		/** Name of the word selection variable, value= {@value} */
-		public static final String NAME= "word_selection"; //$NON-NLS-1$
+        /** Name of the word selection variable, value= {@value} */
+        public static final String NAME = "word_selection"; //$NON-NLS-1$
 
-		/**
-		 * Creates a new word selection variable
-		 */
-		public WordSelection() {
-			super(NAME, TextTemplateMessages.getString("GlobalVariables.variable.description.selectedWord")); //$NON-NLS-1$
-		}
-	}
+        /**
+         * Creates a new word selection variable
+         */
+        public WordSelection() {
+            super(NAME, TextTemplateMessages.getString("GlobalVariables.variable.description.selectedWord")); //$NON-NLS-1$
+        }
+    }
 
-	/**
-	 * The line selection variable determines templates that work on selected
-	 * lines.
-	 */
-	public static class LineSelection extends Selection {
+    /**
+     * The line selection variable determines templates that work on selected
+     * lines.
+     */
+    public static class LineSelection extends Selection {
 
-		/** Name of the line selection variable, value= {@value} */
-		public static final String NAME= "line_selection"; //$NON-NLS-1$
+        /** Name of the line selection variable, value= {@value} */
+        public static final String NAME = "line_selection"; //$NON-NLS-1$
 
-		/**
-		 * Creates a new line selection variable
-		 */
-		public LineSelection() {
-			super(NAME, TextTemplateMessages.getString("GlobalVariables.variable.description.selectedLines")); //$NON-NLS-1$
-		}
-	}
+        /**
+         * Creates a new line selection variable
+         */
+        public LineSelection() {
+            super(NAME, TextTemplateMessages.getString("GlobalVariables.variable.description.selectedLines")); //$NON-NLS-1$
+        }
+    }
 
-	/**
-	 * The dollar variable inserts an escaped dollar symbol.
-	 */
-	public static class Dollar extends SimpleTemplateVariableResolver {
-		/**
-		 * Creates a new dollar variable
-		 */
-		public Dollar() {
-			super("dollar", TextTemplateMessages.getString("GlobalVariables.variable.description.dollar")); //$NON-NLS-1$ //$NON-NLS-2$
-			setEvaluationString("$"); //$NON-NLS-1$
-		}
-	}
+    /**
+     * The dollar variable inserts an escaped dollar symbol.
+     */
+    public static class Dollar extends SimpleTemplateVariableResolver {
+        /**
+         * Creates a new dollar variable
+         */
+        public Dollar() {
+            super("dollar", TextTemplateMessages.getString("GlobalVariables.variable.description.dollar")); //$NON-NLS-1$ //$NON-NLS-2$
+            setEvaluationString("$"); //$NON-NLS-1$
+        }
+    }
 
-	/**
-	 * The date variable evaluates to the current date. This supports a <code>pattern</code> and a
-	 * <code>locale</code> as optional parameters. <code>pattern</code> is a pattern compatible with
-	 * {@link SimpleDateFormat}. <code>locale</code> is a string representation of the locale
-	 * compatible with the constructor parameter {@link Locale#Locale(String)}.
-	 */
-	public static class Date extends SimpleTemplateVariableResolver {
-		/**
-		 * Creates a new date variable
-		 */
-		public Date() {
-			super("date", TextTemplateMessages.getString("GlobalVariables.variable.description.date")); //$NON-NLS-1$ //$NON-NLS-2$
-		}
+    /**
+     * The date variable evaluates to the current date. This supports a <code>pattern</code> and a
+     * <code>locale</code> as optional parameters. <code>pattern</code> is a pattern compatible with
+     * {@link SimpleDateFormat}. <code>locale</code> is a string representation of the locale
+     * compatible with the constructor parameter {@link Locale#Locale(String)}.
+     */
+    public static class Date extends SimpleTemplateVariableResolver {
+        /**
+         * Creates a new date variable
+         */
+        public Date() {
+            super("date", TextTemplateMessages.getString("GlobalVariables.variable.description.date")); //$NON-NLS-1$ //$NON-NLS-2$
+        }
 
-		@Override
-		public void resolve(TemplateVariable variable, TemplateContext context) {
-			List<String> params= variable.getVariableType().getParams();
-			if (!params.isEmpty() && params.get(0) != null) {
-				resolveWithParams(variable, context, params);
-			} else {
-				// No parameter, use default format:
-				super.resolve(variable, context);
-			}
-		}
+        @Override
+        public void resolve(TemplateVariable variable, TemplateContext context) {
+            List<String> params = variable.getVariableType().getParams();
+            if (!params.isEmpty() && params.get(0) != null) {
+                resolveWithParams(variable, context, params);
+            } else {
+                // No parameter, use default format:
+                super.resolve(variable, context);
+            }
+        }
 
-		private void resolveWithParams(TemplateVariable variable, TemplateContext context, List<String> params) {
-			try {
-				// There is a least one parameter (params.get(0) is not null), set the format depending on second parameter:
-				DateFormat format;
-				if (params.size() >= 2 && params.get(1) != null) {
-					String localeString = params.get(1);
-					if (localeString.contains("_")) { //$NON-NLS-1$
-						String[] localeData= localeString.split("_"); //$NON-NLS-1$
-						format= new SimpleDateFormat(params.get(0), new Locale(localeData[0], localeData[1]));
-					} else {
-						format= new SimpleDateFormat(params.get(0), new Locale(localeString));
-					}
-				} else {
-					format= new SimpleDateFormat(params.get(0));
-				}
+        private void resolveWithParams(TemplateVariable variable, TemplateContext context, List<String> params) {
+            try {
+                // There is a least one parameter (params.get(0) is not null), set the format depending on second
+                // parameter:
+                DateFormat format;
+                if (params.size() >= 2 && params.get(1) != null) {
+                    String localeString = params.get(1);
+                    if (localeString.contains("_")) { //$NON-NLS-1$
+                        String[] localeData = localeString.split("_"); //$NON-NLS-1$
+                        format = new SimpleDateFormat(params.get(0), new Locale(localeData[0], localeData[1]));
+                    } else {
+                        format = new SimpleDateFormat(params.get(0), new Locale(localeString));
+                    }
+                } else {
+                    format = new SimpleDateFormat(params.get(0));
+                }
 
-				variable.setValue(format.format(new java.util.Date()));
-				variable.setUnambiguous(true);
-				variable.setResolved(true);
-			} catch (IllegalArgumentException e) {
-				// Date formating did not work, use default format instead:
-				super.resolve(variable, context);
-			}
-		}
+                variable.setValue(format.format(new java.util.Date()));
+                variable.setUnambiguous(true);
+                variable.setResolved(true);
+            } catch (IllegalArgumentException e) {
+                // Date formating did not work, use default format instead:
+                super.resolve(variable, context);
+            }
+        }
 
-		@Override
-		protected String resolve(TemplateContext context) {
-			return DateFormat.getDateInstance().format(new java.util.Date());
-		}
-	}
+        @Override
+        protected String resolve(TemplateContext context) {
+            return DateFormat.getDateInstance().format(new java.util.Date());
+        }
+    }
 
-	/**
-	 * The year variable evaluates to the current year.
-	 */
-	public static class Year extends SimpleTemplateVariableResolver {
-		/**
-		 * Creates a new year variable
-		 */
-		public Year() {
-			super("year", TextTemplateMessages.getString("GlobalVariables.variable.description.year")); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-		@Override
-		protected String resolve(TemplateContext context) {
-			return Integer.toString(Calendar.getInstance().get(Calendar.YEAR));
-		}
-	}
+    /**
+     * The year variable evaluates to the current year.
+     */
+    public static class Year extends SimpleTemplateVariableResolver {
+        /**
+         * Creates a new year variable
+         */
+        public Year() {
+            super("year", TextTemplateMessages.getString("GlobalVariables.variable.description.year")); //$NON-NLS-1$ //$NON-NLS-2$
+        }
 
-	/**
-	 * The time variable evaluates to the current time.
-	 */
-	public static class Time extends SimpleTemplateVariableResolver {
-		/**
-		 * Creates a new time variable
-		 */
-		public Time() {
-			super("time", TextTemplateMessages.getString("GlobalVariables.variable.description.time")); //$NON-NLS-1$ //$NON-NLS-2$
-		}
+        @Override
+        protected String resolve(TemplateContext context) {
+            return Integer.toString(Calendar.getInstance().get(Calendar.YEAR));
+        }
+    }
 
-		@Override
-		protected String resolve(TemplateContext context) {
-			return DateFormat.getTimeInstance().format(new java.util.Date());
-		}
-	}
+    /**
+     * The time variable evaluates to the current time.
+     */
+    public static class Time extends SimpleTemplateVariableResolver {
+        /**
+         * Creates a new time variable
+         */
+        public Time() {
+            super("time", TextTemplateMessages.getString("GlobalVariables.variable.description.time")); //$NON-NLS-1$ //$NON-NLS-2$
+        }
 
-	/**
-	 * The user variable evaluates to the current user.
-	 */
-	public static class User extends SimpleTemplateVariableResolver {
-		/**
-		 * Creates a new user name variable
-		 */
-		public User() {
-			super("user", TextTemplateMessages.getString("GlobalVariables.variable.description.user")); //$NON-NLS-1$ //$NON-NLS-2$
-		}
+        @Override
+        protected String resolve(TemplateContext context) {
+            return DateFormat.getTimeInstance().format(new java.util.Date());
+        }
+    }
 
-		@Override
-		protected String resolve(TemplateContext context) {
-			return System.getProperty("user.name"); //$NON-NLS-1$
-		}
-	}
+    /**
+     * The user variable evaluates to the current user.
+     */
+    public static class User extends SimpleTemplateVariableResolver {
+        /**
+         * Creates a new user name variable
+         */
+        public User() {
+            super("user", TextTemplateMessages.getString("GlobalVariables.variable.description.user")); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+
+        @Override
+        protected String resolve(TemplateContext context) {
+            return System.getProperty("user.name"); //$NON-NLS-1$
+        }
+    }
 }

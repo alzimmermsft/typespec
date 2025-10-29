@@ -15,7 +15,6 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IBuildConfiguration;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IProject;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.PlatformObject;
 import java.util.Objects;
 
@@ -45,14 +44,6 @@ public class BuildConfiguration extends PlatformObject implements IBuildConfigur
     public BuildConfiguration(IProject project, String configName) {
         this.project = project;
         this.name = configName;
-    }
-
-    /**
-     * @return the concrete build configuration referred to by this IBuildConfiguration
-     * when it's being used as a reference
-     */
-    public IBuildConfiguration getBuildConfig() throws CoreException {
-        return project.getBuildConfig(name);
     }
 
     @Override
@@ -105,14 +96,4 @@ public class BuildConfiguration extends PlatformObject implements IBuildConfigur
         }
         return result.toString();
     }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> T getAdapter(Class<T> adapter) {
-        if (adapter.isInstance(project)) {
-            return (T) project;
-        }
-        return super.getAdapter(adapter);
-    }
-
 }

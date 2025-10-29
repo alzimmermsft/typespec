@@ -18,6 +18,12 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver.util.CandidateSelector;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Capability;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Requirement;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Resource;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.resolver.ResolutionException;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.resolver.ResolveContext;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,17 +37,10 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver.util.CandidateSelector;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Capability;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Requirement;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Resource;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.resolver.ResolutionException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.resolver.ResolveContext;
 
 // Note this class is not thread safe.
 // Only use in the context of a single thread.
-class ResolveSession implements Runnable
-{
+class ResolveSession implements Runnable {
     // Holds the resolve context for this session
     private final ResolveContext m_resolveContext;
     private final Collection<Resource> m_mandatoryResources;
@@ -80,10 +79,9 @@ class ResolveSession implements Runnable
     volatile private CancellationException m_isCancelled = null;
 
     static ResolveSession createSession(ResolveContext resolveContext, Executor executor, Resource dynamicHost,
-            Requirement dynamicReq, List<Capability> dynamicCandidates)
-    {
-        ResolveSession session = new ResolveSession(resolveContext, executor, dynamicHost, dynamicReq,
-                dynamicCandidates);
+        Requirement dynamicReq, List<Capability> dynamicCandidates) {
+        ResolveSession session
+            = new ResolveSession(resolveContext, executor, dynamicHost, dynamicReq, dynamicCandidates);
         // call onCancel first
         session.getContext().onCancel(session);
         // now gather the mandatory and optional resources
@@ -92,8 +90,7 @@ class ResolveSession implements Runnable
     }
 
     private ResolveSession(ResolveContext resolveContext, Executor executor, Resource dynamicHost,
-            Requirement dynamicReq, List<Capability> dynamicCandidates)
-    {
+        Requirement dynamicReq, List<Capability> dynamicCandidates) {
         m_resolveContext = resolveContext;
         m_executor = executor;
         m_dynamicHost = dynamicHost;
@@ -115,13 +112,12 @@ class ResolveSession implements Runnable
             m_optionalResources.addAll(getContext().getOptionalResources());
         }
     }
-    Candidates getMultipleCardCandidates()
-    {
+
+    Candidates getMultipleCardCandidates() {
         return m_multipleCardCandidates;
     }
 
-    ResolveContext getContext()
-    {
+    ResolveContext getContext() {
         return m_resolveContext;
     }
 
@@ -131,8 +127,7 @@ class ResolveSession implements Runnable
 
     void permutateIfNeeded(PermutationType type, Requirement req, Candidates permutation) {
         List<Capability> candidates = permutation.getCandidates(req);
-        if ((candidates != null) && (candidates.size() > 1))
-        {
+        if ((candidates != null) && (candidates.size() > 1)) {
             if ((type == PermutationType.SUBSTITUTE)) {
                 if (!m_sub_mutated.add(req)) {
                     return;
@@ -158,24 +153,26 @@ class ResolveSession implements Runnable
     }
 
     void addPermutation(PermutationType type, Candidates permutation) {
-        if (permutation != null)
-        {
+        if (permutation != null) {
             List<Candidates> typeToAddTo = null;
             try {
                 switch (type) {
-                    case USES :
+                    case USES:
                         typeToAddTo = m_usesPermutations;
                         m_usesPermutations.add(m_usesIndex++, permutation);
                         break;
-                    case IMPORT :
+
+                    case IMPORT:
                         typeToAddTo = m_importPermutations;
                         m_importPermutations.add(m_importIndex++, permutation);
                         break;
-                    case SUBSTITUTE :
+
+                    case SUBSTITUTE:
                         typeToAddTo = m_substPermutations;
                         m_substPermutations.add(m_substituteIndex++, permutation);
                         break;
-                    default :
+
+                    default:
                         throw new IllegalArgumentException("Unknown permutation type: " + type);
                 }
             } catch (IndexOutOfBoundsException e) {
@@ -189,26 +186,19 @@ class ResolveSession implements Runnable
         Candidates next = null;
         PermutationType type;
         do {
-            if (!m_usesPermutations.isEmpty())
-            {
+            if (!m_usesPermutations.isEmpty()) {
                 next = m_usesPermutations.remove(0);
                 type = PermutationType.USES;
-            }
-            else if (!m_importPermutations.isEmpty())
-            {
+            } else if (!m_importPermutations.isEmpty()) {
                 next = m_importPermutations.remove(0);
                 type = PermutationType.IMPORT;
-            }
-            else if (!m_substPermutations.isEmpty())
-            {
+            } else if (!m_substPermutations.isEmpty()) {
                 next = m_substPermutations.remove(0);
                 type = PermutationType.SUBSTITUTE;
-            }
-            else {
+            } else {
                 return null;
             }
-        }
-        while(!m_processedDeltas.add(next.getDelta()));
+        } while (!m_processedDeltas.add(next.getDelta()));
         // Null out each time a new permutation is attempted.
         // We only use this to store a valid permutation which is a
         // delta of the current permutation.
@@ -229,26 +219,21 @@ class ResolveSession implements Runnable
         m_currentError = null;
     }
 
-    boolean checkMultiple(
-            UsedBlames usedBlames,
-            Blame usedBlame,
-            Candidates permutation)
-    {
+    boolean checkMultiple(UsedBlames usedBlames, Blame usedBlame, Candidates permutation) {
         // Check the root requirement to see if it is a multiple cardinality
         // requirement.
         CandidateSelector candidates = null;
         Requirement req = usedBlame.m_reqs.get(0);
-        if (Util.isMultiple(req))
-        {
+        if (Util.isMultiple(req)) {
             // Create a copy of the current permutation so we can remove the
             // candidates causing the blame.
-            if (m_multipleCardCandidates == null)
-            {
+            if (m_multipleCardCandidates == null) {
                 m_multipleCardCandidates = permutation.copy();
             }
             // Get the current candidate list and remove all the offending root
             // cause candidates from a copy of the current permutation.
-            candidates = m_multipleCardCandidates.clearMultipleCardinalityCandidates(req, usedBlames.getRootCauses(req));
+            candidates
+                = m_multipleCardCandidates.clearMultipleCardinalityCandidates(req, usedBlames.getRootCauses(req));
         }
         // We only are successful if there is at least one candidate left
         // for the requirement
@@ -256,7 +241,7 @@ class ResolveSession implements Runnable
     }
 
     long getPermutationCount() {
-        return m_usesPermutations.size() + m_importPermutations.size() + m_substPermutations.size(); 
+        return m_usesPermutations.size() + m_importPermutations.size() + m_substPermutations.size();
     }
 
     Executor getExecutor() {
@@ -297,8 +282,7 @@ class ResolveSession implements Runnable
 
     public boolean isValidRelatedResource(Resource resource) {
         Boolean valid = m_validRelatedResources.get(resource);
-        if (valid == null)
-        {
+        if (valid == null) {
             // Mark this resource as a valid related resource
             m_validRelatedResources.put(resource, Boolean.TRUE);
             valid = Boolean.TRUE;
@@ -308,8 +292,7 @@ class ResolveSession implements Runnable
 
     public boolean invalidateRelatedResource(Resource faultyResource) {
         Boolean valid = m_validRelatedResources.get(faultyResource);
-        if (valid != null && valid)
-        {
+        if (valid != null && valid) {
             // This was related resource.
             // Invalidate it and try again.
             m_validRelatedResources.put(faultyResource, Boolean.FALSE);
@@ -319,8 +302,8 @@ class ResolveSession implements Runnable
     }
 
     public Collection<Resource> getRelatedResources(Resource resource) {
-        Collection<Resource> related =  m_relatedResources.get(resource);
-        return related == null ? Collections.<Resource> emptyList() : related;
+        Collection<Resource> related = m_relatedResources.get(resource);
+        return related == null ? Collections.<Resource>emptyList() : related;
     }
 
     public void setRelatedResources(Resource resource, Collection<Resource> related) {

@@ -33,101 +33,101 @@ import java.nio.ByteOrder;
  */
 @ElementTypesAreNonnullByDefault
 abstract class AbstractByteHasher extends AbstractHasher {
-  private final ByteBuffer scratch = ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN);
+    private final ByteBuffer scratch = ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN);
 
-  /** Updates this hasher with the given byte. */
-  protected abstract void update(byte b);
+    /** Updates this hasher with the given byte. */
+    protected abstract void update(byte b);
 
-  /** Updates this hasher with the given bytes. */
-  protected void update(byte[] b) {
-    update(b, 0, b.length);
-  }
-
-  /** Updates this hasher with {@code len} bytes starting at {@code off} in the given buffer. */
-  protected void update(byte[] b, int off, int len) {
-    for (int i = off; i < off + len; i++) {
-      update(b[i]);
+    /** Updates this hasher with the given bytes. */
+    protected void update(byte[] b) {
+        update(b, 0, b.length);
     }
-  }
 
-  /** Updates this hasher with bytes from the given buffer. */
-  protected void update(ByteBuffer b) {
-    if (b.hasArray()) {
-      update(b.array(), b.arrayOffset() + b.position(), b.remaining());
-      Java8Compatibility.position(b, b.limit());
-    } else {
-      for (int remaining = b.remaining(); remaining > 0; remaining--) {
-        update(b.get());
-      }
+    /** Updates this hasher with {@code len} bytes starting at {@code off} in the given buffer. */
+    protected void update(byte[] b, int off, int len) {
+        for (int i = off; i < off + len; i++) {
+            update(b[i]);
+        }
     }
-  }
 
-  /** Updates the sink with the given number of bytes from the buffer. */
-  @CanIgnoreReturnValue
-  private Hasher update(int bytes) {
-    try {
-      update(scratch.array(), 0, bytes);
-    } finally {
-      Java8Compatibility.clear(scratch);
+    /** Updates this hasher with bytes from the given buffer. */
+    protected void update(ByteBuffer b) {
+        if (b.hasArray()) {
+            update(b.array(), b.arrayOffset() + b.position(), b.remaining());
+            Java8Compatibility.position(b, b.limit());
+        } else {
+            for (int remaining = b.remaining(); remaining > 0; remaining--) {
+                update(b.get());
+            }
+        }
     }
-    return this;
-  }
 
-  @Override
-  @CanIgnoreReturnValue
-  public Hasher putByte(byte b) {
-    update(b);
-    return this;
-  }
+    /** Updates the sink with the given number of bytes from the buffer. */
+    @CanIgnoreReturnValue
+    private Hasher update(int bytes) {
+        try {
+            update(scratch.array(), 0, bytes);
+        } finally {
+            Java8Compatibility.clear(scratch);
+        }
+        return this;
+    }
 
-  @Override
-  @CanIgnoreReturnValue
-  public Hasher putBytes(byte[] bytes) {
-    checkNotNull(bytes);
-    update(bytes);
-    return this;
-  }
+    @Override
+    @CanIgnoreReturnValue
+    public Hasher putByte(byte b) {
+        update(b);
+        return this;
+    }
 
-  @Override
-  @CanIgnoreReturnValue
-  public Hasher putBytes(byte[] bytes, int off, int len) {
-    checkPositionIndexes(off, off + len, bytes.length);
-    update(bytes, off, len);
-    return this;
-  }
+    @Override
+    @CanIgnoreReturnValue
+    public Hasher putBytes(byte[] bytes) {
+        checkNotNull(bytes);
+        update(bytes);
+        return this;
+    }
 
-  @Override
-  @CanIgnoreReturnValue
-  public Hasher putBytes(ByteBuffer bytes) {
-    update(bytes);
-    return this;
-  }
+    @Override
+    @CanIgnoreReturnValue
+    public Hasher putBytes(byte[] bytes, int off, int len) {
+        checkPositionIndexes(off, off + len, bytes.length);
+        update(bytes, off, len);
+        return this;
+    }
 
-  @Override
-  @CanIgnoreReturnValue
-  public Hasher putShort(short s) {
-    scratch.putShort(s);
-    return update(Shorts.BYTES);
-  }
+    @Override
+    @CanIgnoreReturnValue
+    public Hasher putBytes(ByteBuffer bytes) {
+        update(bytes);
+        return this;
+    }
 
-  @Override
-  @CanIgnoreReturnValue
-  public Hasher putInt(int i) {
-    scratch.putInt(i);
-    return update(Ints.BYTES);
-  }
+    @Override
+    @CanIgnoreReturnValue
+    public Hasher putShort(short s) {
+        scratch.putShort(s);
+        return update(Shorts.BYTES);
+    }
 
-  @Override
-  @CanIgnoreReturnValue
-  public Hasher putLong(long l) {
-    scratch.putLong(l);
-    return update(Longs.BYTES);
-  }
+    @Override
+    @CanIgnoreReturnValue
+    public Hasher putInt(int i) {
+        scratch.putInt(i);
+        return update(Ints.BYTES);
+    }
 
-  @Override
-  @CanIgnoreReturnValue
-  public Hasher putChar(char c) {
-    scratch.putChar(c);
-    return update(Chars.BYTES);
-  }
+    @Override
+    @CanIgnoreReturnValue
+    public Hasher putLong(long l) {
+        scratch.putLong(l);
+        return update(Longs.BYTES);
+    }
+
+    @Override
+    @CanIgnoreReturnValue
+    public Hasher putChar(char c) {
+        scratch.putChar(c);
+        return update(Chars.BYTES);
+    }
 }

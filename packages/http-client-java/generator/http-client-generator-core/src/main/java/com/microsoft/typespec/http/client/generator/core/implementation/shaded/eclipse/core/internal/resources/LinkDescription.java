@@ -15,8 +15,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.resources;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -51,15 +49,6 @@ public class LinkDescription implements Comparable<LinkDescription> {
     public LinkDescription() {
         this.path = IPath.EMPTY;
         this.type = -1;
-    }
-
-    public LinkDescription(IResource linkedResource, URI location) {
-        super();
-        Assert.isNotNull(linkedResource);
-        Assert.isNotNull(location);
-        this.type = linkedResource.getType();
-        this.path = linkedResource.getProjectRelativePath();
-        this.localLocation = location;
     }
 
     @Override
@@ -100,10 +89,6 @@ public class LinkDescription implements Comparable<LinkDescription> {
         return type + path.hashCode() + localLocation.hashCode();
     }
 
-    public void setLocationURI(URI location) {
-        this.localLocation = location;
-    }
-
     public void setPath(IPath path) {
         this.path = path;
     }
@@ -115,7 +100,7 @@ public class LinkDescription implements Comparable<LinkDescription> {
     /**
      * Compare link descriptions in a way that sorts them topologically by path.
      * This is important to ensure we process links in topological (breadth-first) order when reconciling
-     * links. See {@link Project#reconcileLinksAndGroups(ProjectDescription)}.
+     * links.
      */
     @Override
     public int compareTo(LinkDescription that) {

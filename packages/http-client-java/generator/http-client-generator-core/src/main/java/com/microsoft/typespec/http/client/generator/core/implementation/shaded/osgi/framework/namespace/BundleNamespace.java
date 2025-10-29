@@ -70,84 +70,84 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 public final class BundleNamespace extends AbstractWiringNamespace {
 
-	/**
-	 * Namespace name for bundle capabilities and requirements.
-	 * 
-	 * <p>
-	 * Also, the capability attribute used to specify the symbolic name of the
-	 * bundle.
-	 */
-	public static final String	BUNDLE_NAMESPACE							= "osgi.wiring.bundle";
+    /**
+     * Namespace name for bundle capabilities and requirements.
+     * 
+     * <p>
+     * Also, the capability attribute used to specify the symbolic name of the
+     * bundle.
+     */
+    public static final String BUNDLE_NAMESPACE = "osgi.wiring.bundle";
 
-	/**
-	 * The capability directive identifying if the resource is a singleton. A
-	 * {@code String} value of &quot;{@code true}&quot; indicates the resource
-	 * is a singleton; any other value or {@code null} indicates the resource is
-	 * not a singleton.
-	 * 
-	 * <p>
-	 * This directive should be examined using the {@link IdentityNamespace
-	 * identity} namespace.
-	 * 
-	 * @see IdentityNamespace#CAPABILITY_SINGLETON_DIRECTIVE
-	 */
-	public static final String	CAPABILITY_SINGLETON_DIRECTIVE				= "singleton";
+    /**
+     * The capability directive identifying if the resource is a singleton. A
+     * {@code String} value of &quot;{@code true}&quot; indicates the resource
+     * is a singleton; any other value or {@code null} indicates the resource is
+     * not a singleton.
+     * 
+     * <p>
+     * This directive should be examined using the {@link IdentityNamespace
+     * identity} namespace.
+     * 
+     * @see IdentityNamespace#CAPABILITY_SINGLETON_DIRECTIVE
+     */
+    public static final String CAPABILITY_SINGLETON_DIRECTIVE = "singleton";
 
-	/**
-	 * The capability directive identifying if and when a fragment may attach to
-	 * a host bundle.
-	 * 
-	 * <p>
-	 * This directive should be examined using the {@link HostNamespace host}
-	 * namespace.
-	 * 
-	 * @see HostNamespace#CAPABILITY_FRAGMENT_ATTACHMENT_DIRECTIVE
-	 */
-	public static final String	CAPABILITY_FRAGMENT_ATTACHMENT_DIRECTIVE	= "fragment-attachment";
+    /**
+     * The capability directive identifying if and when a fragment may attach to
+     * a host bundle.
+     * 
+     * <p>
+     * This directive should be examined using the {@link HostNamespace host}
+     * namespace.
+     * 
+     * @see HostNamespace#CAPABILITY_FRAGMENT_ATTACHMENT_DIRECTIVE
+     */
+    public static final String CAPABILITY_FRAGMENT_ATTACHMENT_DIRECTIVE = "fragment-attachment";
 
-	/**
-	 * The requirement directive used to specify the type of the extension
-	 * fragment.
-	 * 
-	 * <p>
-	 * This directive should be examined using the {@link HostNamespace host}
-	 * namespace.
-	 * 
-	 * @see HostNamespace#REQUIREMENT_EXTENSION_DIRECTIVE
-	 */
-	public final static String	REQUIREMENT_EXTENSION_DIRECTIVE				= "extension";
+    /**
+     * The requirement directive used to specify the type of the extension
+     * fragment.
+     * 
+     * <p>
+     * This directive should be examined using the {@link HostNamespace host}
+     * namespace.
+     * 
+     * @see HostNamespace#REQUIREMENT_EXTENSION_DIRECTIVE
+     */
+    public final static String REQUIREMENT_EXTENSION_DIRECTIVE = "extension";
 
-	/**
-	 * The requirement directive used to specify the visibility type for a
-	 * requirement. The default value is {@link #VISIBILITY_PRIVATE private}.
-	 * 
-	 * @see #VISIBILITY_PRIVATE private
-	 * @see #VISIBILITY_REEXPORT reexport
-	 */
-	public final static String	REQUIREMENT_VISIBILITY_DIRECTIVE			= "visibility";
+    /**
+     * The requirement directive used to specify the visibility type for a
+     * requirement. The default value is {@link #VISIBILITY_PRIVATE private}.
+     * 
+     * @see #VISIBILITY_PRIVATE private
+     * @see #VISIBILITY_REEXPORT reexport
+     */
+    public final static String REQUIREMENT_VISIBILITY_DIRECTIVE = "visibility";
 
-	/**
-	 * The directive value identifying a private
-	 * {@link #REQUIREMENT_VISIBILITY_DIRECTIVE visibility} type. A private
-	 * visibility type indicates that any {@link PackageNamespace packages} that
-	 * are exported by the required bundle are not made visible on the export
-	 * signature of the requiring bundle. .
-	 * 
-	 * @see #REQUIREMENT_VISIBILITY_DIRECTIVE
-	 */
-	public final static String	VISIBILITY_PRIVATE							= "private";
+    /**
+     * The directive value identifying a private
+     * {@link #REQUIREMENT_VISIBILITY_DIRECTIVE visibility} type. A private
+     * visibility type indicates that any {@link PackageNamespace packages} that
+     * are exported by the required bundle are not made visible on the export
+     * signature of the requiring bundle. .
+     * 
+     * @see #REQUIREMENT_VISIBILITY_DIRECTIVE
+     */
+    public final static String VISIBILITY_PRIVATE = "private";
 
-	/**
-	 * The directive value identifying a reexport
-	 * {@link #REQUIREMENT_VISIBILITY_DIRECTIVE visibility} type. A reexport
-	 * visibility type indicates any {@link PackageNamespace packages} that are
-	 * exported by the required bundle are re-exported by the requiring bundle.
-	 * 
-	 * @see #REQUIREMENT_VISIBILITY_DIRECTIVE
-	 */
-	public final static String	VISIBILITY_REEXPORT							= "reexport";
+    /**
+     * The directive value identifying a reexport
+     * {@link #REQUIREMENT_VISIBILITY_DIRECTIVE visibility} type. A reexport
+     * visibility type indicates any {@link PackageNamespace packages} that are
+     * exported by the required bundle are re-exported by the requiring bundle.
+     * 
+     * @see #REQUIREMENT_VISIBILITY_DIRECTIVE
+     */
+    public final static String VISIBILITY_REEXPORT = "reexport";
 
-	private BundleNamespace() {
-		// empty
-	}
+    private BundleNamespace() {
+        // empty
+    }
 }

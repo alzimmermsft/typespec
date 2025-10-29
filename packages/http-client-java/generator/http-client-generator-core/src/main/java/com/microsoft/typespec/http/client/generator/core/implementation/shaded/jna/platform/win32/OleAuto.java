@@ -149,7 +149,7 @@ public interface OleAuto extends StdCallLibrary {
      * @param sz Null-terminated UNICODE string to copy.
      *
      * @return Null if there is insufficient memory or if a null pointer is
-     *         passed in.
+     * passed in.
      */
     BSTR SysAllocString(String sz);
 
@@ -159,8 +159,8 @@ public interface OleAuto extends StdCallLibrary {
      * SysReAllocStringLen.
      *
      * @param bstr Unicode string that was allocated previously, or NULL.
-     *             Setting this parameter to NULL causes the function to simply
-     *             return.
+     * Setting this parameter to NULL causes the function to simply
+     * return.
      */
     void SysFreeString(BSTR bstr);
 
@@ -300,12 +300,13 @@ public interface OleAuto extends StdCallLibrary {
      * Converts a variant from one type to another.
      *
      * @param pvargDest [out] The destination variant. If this is the same as
-     *                  pvarSrc, the variant will be converted in place.
-     * @param pvarSrc   [in] The variant to convert.
-     * @param wFlags    Combination of the following flags
+     * pvarSrc, the variant will be converted in place.
+     * @param pvarSrc [in] The variant to convert.
+     * @param wFlags Combination of the following flags
      * <table>
      * <thead>
-     * <tr><th><!--indent under wFlags comment--><div style="visibility: hidden">wFlags</div></th><th>Value</th><th>Meaning</th></tr>
+     * <tr><th><!--indent under wFlags comment--><div style="visibility:
+     * hidden">wFlags</div></th><th>Value</th><th>Meaning</th></tr>
      * </thead>
      * <tbody valign="top">
      * <tr><th></th><td>{@link #VARIANT_NOVALUEPROP}</td><td>Prevents the
@@ -325,9 +326,9 @@ public interface OleAuto extends StdCallLibrary {
      * computer.</td></tr>
      * </tbody>
      * </table>
-     * @param vt        The type to convert to. If the return code is
-     *                  {@link WinError#S_OK S_OK}, the vt field of the vargDest
-     *                  is guaranteed to be equal to this value.
+     * @param vt The type to convert to. If the return code is
+     * {@link WinError#S_OK S_OK}, the vt field of the vargDest
+     * is guaranteed to be equal to this value.
      *
      * @return This function can return one of these values:
      * <table>
@@ -363,7 +364,8 @@ public interface OleAuto extends StdCallLibrary {
      * ({@link OaIdl#DISPID_VALUE DISPID_VALUE}).
      * </p>
      * Typically, the implementor of
-     * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IDispatch#Invoke IDispatch.Invoke}
+     * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IDispatch#Invoke
+     * IDispatch.Invoke}
      * determines which member is being accessed, and then calls
      * VariantChangeType to get the value of one or more arguments. For example,
      * if the IDispatch call specifies a SetTitle member that takes one string
@@ -374,7 +376,9 @@ public interface OleAuto extends StdCallLibrary {
      * {@link VARIANT._VARIANT.__VARIANT#bstrVal bstrVal} field of the
      * {@link VARIANT VARIANT}. If VariantChangeType returns
      * {@link WinError#DISP_E_TYPEMISMATCH DISP_E_TYPEMISMATCH}, the implementor
-     * would set {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IDispatch#Invoke Invoke}
+     * would set
+     * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IDispatch#Invoke
+     * Invoke}
      * <code> puArgErr</code> parameter referenced value to 0 (indicating the
      * argument in error) and return DISP_E_TYPEMISMATCH from Invoke.
      * </p>
@@ -388,40 +392,52 @@ public interface OleAuto extends StdCallLibrary {
 
     /**
      * Converts a variant from one type to another.
+     * 
      * @param pvargDest [out] The destination variant. If this is the same as
-     *                      pvarSrc, the variant will be converted in place.
+     * pvarSrc, the variant will be converted in place.
      * @param pvarSrc [in] The variant to convert.
      * @param wFlags Combination of the following flags
      * <table>
-     *     <thead>
-     *         <tr><th><!--indent under wFlags comment--><div style="visibility: hidden">wFlags</div></th><th>Value</th><th>Meaning</th></tr>
-     *     </thead>
-     *     <tbody valign="top">
-     *         <tr><th></th><td>{@link #VARIANT_NOVALUEPROP}</td><td>Prevents the function from attempting to coerce an object to a fundamental type by getting the Value property. Applications should set this flag only if necessary, because it makes their behavior inconsistent with other applications.</td></tr>
-     *         <tr><th></th><td>{@link #VARIANT_ALPHABOOL}</td><td>Converts a {@link Variant#VT_BOOL VT_BOOL} value to a string containing either "True" or "False".</td></tr>
-     *         <tr><th></th><td>{@link #VARIANT_NOUSEROVERRIDE}</td><td>For conversions to or from {@link Variant#VT_BSTR VT_BSTR}, passes LOCALE_NOUSEROVERRIDE to the core coercion routines.</td></tr>
-     *         <tr><th></th><td>{@link #VARIANT_LOCALBOOL}</td><td>For conversions from {@link Variant#VT_BOOL VT_BOOL} to {@link Variant#VT_BSTR VT_BSTR} and back, uses the language specified by the locale in use on the local computer.</td></tr>
-     *     </tbody>
+     * <thead>
+     * <tr><th><!--indent under wFlags comment--><div style="visibility:
+     * hidden">wFlags</div></th><th>Value</th><th>Meaning</th></tr>
+     * </thead>
+     * <tbody valign="top">
+     * <tr><th></th><td>{@link #VARIANT_NOVALUEPROP}</td><td>Prevents the function from attempting to coerce an object
+     * to a fundamental type by getting the Value property. Applications should set this flag only if necessary, because
+     * it makes their behavior inconsistent with other applications.</td></tr>
+     * <tr><th></th><td>{@link #VARIANT_ALPHABOOL}</td><td>Converts a {@link Variant#VT_BOOL VT_BOOL} value to a string
+     * containing either "True" or "False".</td></tr>
+     * <tr><th></th><td>{@link #VARIANT_NOUSEROVERRIDE}</td><td>For conversions to or from {@link Variant#VT_BSTR
+     * VT_BSTR}, passes LOCALE_NOUSEROVERRIDE to the core coercion routines.</td></tr>
+     * <tr><th></th><td>{@link #VARIANT_LOCALBOOL}</td><td>For conversions from {@link Variant#VT_BOOL VT_BOOL} to
+     * {@link Variant#VT_BSTR VT_BSTR} and back, uses the language specified by the locale in use on the local
+     * computer.</td></tr>
+     * </tbody>
      * </table>
      * @param vt The type to convert to. If the return code is {@link WinError#S_OK S_OK}, the vt
-     *           field of the vargDest is guaranteed to be equal to this value.
+     * field of the vargDest is guaranteed to be equal to this value.
      * @return This function can return one of these values:
      * <table>
-     *     <thead>
-     *         <tr><th>Return code</th><th>Description</th></tr>
-     *     </thead>
-     *     <tbody valign="top">
-     *         <tr><td>{@link WinError#S_OK S_OK}</td><td>Success.</td></tr>
-     *         <tr><td>{@link WinError#DISP_E_BADVARTYPE DISP_E_BADVARTYPE}</td><td>The variant type is not a valid type of variant.</td></tr>
-     *         <tr><td>{@link WinError#DISP_E_OVERFLOW DISP_E_OVERFLOW}</td><td>The data pointed to by pvarSrc does not fit in the destination type.</td></tr>
-     *         <tr><td>{@link WinError#DISP_E_TYPEMISMATCH DISP_E_TYPEMISMATCH}</td><td>The argument could not be coerced to the specified type.</td></tr>
-     *         <tr><td>{@link WinError#E_INVALIDARG E_INVALIDARG}</td><td>One of the arguments is not valid.</td></tr>
-     *         <tr><td>{@link WinError#E_OUTOFMEMORY E_OUTOFMEMORY}</td><td>Insufficient memory to complete the operation.</td></tr>
-     *     </tbody>
+     * <thead>
+     * <tr><th>Return code</th><th>Description</th></tr>
+     * </thead>
+     * <tbody valign="top">
+     * <tr><td>{@link WinError#S_OK S_OK}</td><td>Success.</td></tr>
+     * <tr><td>{@link WinError#DISP_E_BADVARTYPE DISP_E_BADVARTYPE}</td><td>The variant type is not a valid type of
+     * variant.</td></tr>
+     * <tr><td>{@link WinError#DISP_E_OVERFLOW DISP_E_OVERFLOW}</td><td>The data pointed to by pvarSrc does not fit in
+     * the destination type.</td></tr>
+     * <tr><td>{@link WinError#DISP_E_TYPEMISMATCH DISP_E_TYPEMISMATCH}</td><td>The argument could not be coerced to the
+     * specified type.</td></tr>
+     * <tr><td>{@link WinError#E_INVALIDARG E_INVALIDARG}</td><td>One of the arguments is not valid.</td></tr>
+     * <tr><td>{@link WinError#E_OUTOFMEMORY E_OUTOFMEMORY}</td><td>Insufficient memory to complete the
+     * operation.</td></tr>
+     * </tbody>
      * </table>
-     *</p>
+     * </p>
      * <b>Remarks</b>
-     *</p>
+     * </p>
      * The VariantChangeType function handles coercions between the fundamental
      * types (including numeric-to-string and string-to-numeric coercions). The
      * pvarSrc argument is changed during the conversion process. For example,
@@ -432,9 +448,10 @@ public interface OleAuto extends StdCallLibrary {
      * set is coerced to a value by obtaining the referenced value. An object is
      * coerced to a value by invoking the object's Value property
      * ({@link OaIdl#DISPID_VALUE DISPID_VALUE}).
-     *</p>
+     * </p>
      * Typically, the implementor of
-     * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IDispatch#Invoke IDispatch.Invoke}
+     * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IDispatch#Invoke
+     * IDispatch.Invoke}
      * determines which member is being accessed, and then calls
      * VariantChangeType to get the value of one or more arguments. For example,
      * if the IDispatch call specifies a SetTitle member that takes one string
@@ -445,29 +462,30 @@ public interface OleAuto extends StdCallLibrary {
      * {@link VARIANT._VARIANT.__VARIANT#bstrVal bstrVal} field of the
      * {@link VARIANT VARIANT}. If VariantChangeType returns
      * {@link WinError#DISP_E_TYPEMISMATCH DISP_E_TYPEMISMATCH}, the implementor
-     * would set {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IDispatch#Invoke Invoke}
+     * would set
+     * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IDispatch#Invoke
+     * Invoke}
      * <code> puArgErr</code> parameter referenced value to 0 (indicating the
      * argument in error) and return DISP_E_TYPEMISMATCH from Invoke.
-     *</p>
+     * </p>
      * Arrays of one type cannot be converted to arrays of another type with
      * this function.
-     *</p>
+     * </p>
      * <b>Note</b> The type of a {@link VARIANT VARIANT} should not be
      * changed in the {@link DISPPARAMS#rgvarg rgvarg} array in place.
      */
     HRESULT VariantChangeType(VARIANT.ByReference pvargDest, VARIANT.ByReference pvarSrc, short wFlags, VARTYPE vt);
-
 
     /**
      * Creates a new array descriptor, allocates and initializes the data for
      * the array, and returns a pointer to the new array descriptor.
      *
      * @param vt [in] The base type of the array (the VARTYPE of each
-     *                  element of the array). The VARTYPE is restricted to a
-     *                  subset of the variant types. Neither the VT_ARRAY nor
-     *                  the VT_BYREF flag can be set. VT_EMPTY and VT_NULL are
-     *                  not valid base types for the array. All other types are
-     *                  legal. cDims
+     * element of the array). The VARTYPE is restricted to a
+     * subset of the variant types. Neither the VT_ARRAY nor
+     * the VT_BYREF flag can be set. VT_EMPTY and VT_NULL are
+     * not valid base types for the array. All other types are
+     * legal. cDims
      *
      * @param cDims the number of dims
      * @param rgsabound the rgsabound
@@ -476,8 +494,7 @@ public interface OleAuto extends StdCallLibrary {
      *
      * A safe array descriptor, or null if the array could not be created.
      */
-    SAFEARRAY.ByReference SafeArrayCreate(VARTYPE vt, UINT cDims,
-            SAFEARRAYBOUND[] rgsabound);
+    SAFEARRAY.ByReference SafeArrayCreate(VARTYPE vt, UINT cDims, SAFEARRAYBOUND[] rgsabound);
 
     /**
      * Stores the data element at the specified location in the array.
@@ -485,8 +502,8 @@ public interface OleAuto extends StdCallLibrary {
      * @param psa [in] An array descriptor created by SafeArrayCreate.
      * @param idx the idx
      * @param pv [in] The data to assign to the array. The variant types
-     *            VT_DISPATCH, VT_UNKNOWN, and VT_BSTR are pointers, and do not
-     *            require another level of indirection.
+     * VT_DISPATCH, VT_UNKNOWN, and VT_BSTR are pointers, and do not
+     * require another level of indirection.
      *
      * @return Return value
      *
@@ -549,9 +566,9 @@ public interface OleAuto extends StdCallLibrary {
      *
      * @param psa [in] An array descriptor created by SafeArrayCreate.
      * @param rgIndices [in] A vector of indexes for each dimension of the
-     *                  array. The right-most (least significant) dimension is
-     *                  rgIndices[0]. The left-most dimension is stored at
-     *                  rgIndices[psa-&gt;cDims - 1].
+     * array. The right-most (least significant) dimension is
+     * rgIndices[0]. The left-most dimension is stored at
+     * rgIndices[psa-&gt;cDims - 1].
      * @param pv [out] The element of the array.
      *
      * @return Return value
@@ -576,9 +593,9 @@ public interface OleAuto extends StdCallLibrary {
      *
      * @param psa [in] An array descriptor created by SafeArrayCreate.
      * @param rgIndices [in] A vector of indexes for each dimension of the
-     *                  array. The right-most (least significant) dimension is
-     *                  rgIndices[0]. The left-most dimension is stored at
-     *                  rgIndices[psa-&gt;cDims - 1].
+     * array. The right-most (least significant) dimension is
+     * rgIndices[0]. The left-most dimension is stored at
+     * rgIndices[psa-&gt;cDims - 1].
      * @param ppv [out] The element of the array.
      *
      * @return Return value
@@ -652,7 +669,7 @@ public interface OleAuto extends StdCallLibrary {
      * array.
      *
      * @param psa [in, out] An array descriptor created by
-     *                    SafeArrayCreate.
+     * SafeArrayCreate.
      * @param psaboundNew [in] New bounds for the least significant dimension
      *
      * @return Return value
@@ -742,7 +759,7 @@ public interface OleAuto extends StdCallLibrary {
      * OLE.
      *
      * @param rclsid [in] The class identifier (CLSID) of the active object
-     *                   from the OLE registration database.
+     * from the OLE registration database.
      * @param pvReserved Reserved for future use. Must be null.
      * @param ppunk [out] The requested active object.
      *
@@ -756,14 +773,13 @@ public interface OleAuto extends StdCallLibrary {
     /**
      * The Class DISPPARAMS.
      */
-    @FieldOrder({"rgvarg", "rgdispidNamedArgs", "cArgs", "cNamedArgs"})
+    @FieldOrder({ "rgvarg", "rgdispidNamedArgs", "cArgs", "cNamedArgs" })
     public class DISPPARAMS extends Structure {
 
         /**
          * The Class ByReference.
          */
-        public static class ByReference extends DISPPARAMS implements
-            Structure.ByReference {
+        public static class ByReference extends DISPPARAMS implements Structure.ByReference {
         }
 
         /**
@@ -886,7 +902,7 @@ public interface OleAuto extends StdCallLibrary {
      * Loads and registers a type library.
      *
      * @param szFile The name of the file from which the method should attempt
-     *               to load a type library.
+     * to load a type library.
      *
      * @param pptlib The loaded type library. Return value
      *

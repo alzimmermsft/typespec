@@ -14,10 +14,10 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.util.concurrent;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A callback for accepting the results of a {@link Future} computation
@@ -31,14 +31,14 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
 public interface FutureCallback<V extends @Nullable Object> {
-  /** Invoked with the result of the {@code Future} computation when it is successful. */
-  void onSuccess(@ParametricNullness V result);
+    /** Invoked with the result of the {@code Future} computation when it is successful. */
+    void onSuccess(@ParametricNullness V result);
 
-  /**
-   * Invoked when a {@code Future} computation fails or is canceled.
-   *
-   * <p>If the future's {@link Future#get() get} method throws an {@link ExecutionException}, then
-   * the cause is passed to this method. Any other thrown object is passed unaltered.
-   */
-  void onFailure(Throwable t);
+    /**
+     * Invoked when a {@code Future} computation fails or is canceled.
+     *
+     * <p>If the future's {@link Future#get() get} method throws an {@link ExecutionException}, then
+     * the cause is passed to this method. Any other thrown object is passed unaltered.
+     */
+    void onFailure(Throwable t);
 }

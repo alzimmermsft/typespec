@@ -52,34 +52,34 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 @ConsumerType
 public interface ServiceTrackerCustomizer<S, T> {
-	/**
-	 * A service is being added to the {@code ServiceTracker}.
-	 * 
-	 * <p>
-	 * This method is called before a service which matched the search
-	 * parameters of the {@code ServiceTracker} is added to the
-	 * {@code ServiceTracker}. This method should return the service object to
-	 * be tracked for the specified {@code ServiceReference}. The returned
-	 * service object is stored in the {@code ServiceTracker} and is available
-	 * from the {@code getService} and {@code getServices} methods.
-	 * 
-	 * @param reference The reference to the service being added to the
-	 *        {@code ServiceTracker}.
-	 * @return The service object to be tracked for the specified referenced
-	 *         service or {@code null} if the specified referenced service
-	 *         should not be tracked.
-	 */
+    /**
+     * A service is being added to the {@code ServiceTracker}.
+     * 
+     * <p>
+     * This method is called before a service which matched the search
+     * parameters of the {@code ServiceTracker} is added to the
+     * {@code ServiceTracker}. This method should return the service object to
+     * be tracked for the specified {@code ServiceReference}. The returned
+     * service object is stored in the {@code ServiceTracker} and is available
+     * from the {@code getService} and {@code getServices} methods.
+     * 
+     * @param reference The reference to the service being added to the
+     * {@code ServiceTracker}.
+     * @return The service object to be tracked for the specified referenced
+     * service or {@code null} if the specified referenced service
+     * should not be tracked.
+     */
     T addingService(ServiceReference<S> reference);
 
     /**
-	 * A service tracked by the {@code ServiceTracker} has been removed.
-	 * 
-	 * <p>
-	 * This method is called after a service is no longer being tracked by the
-	 * {@code ServiceTracker}.
-	 * 
-	 * @param reference The reference to the service that has been removed.
-	 * @param service The service object for the specified referenced service.
-	 */
+     * A service tracked by the {@code ServiceTracker} has been removed.
+     * 
+     * <p>
+     * This method is called after a service is no longer being tracked by the
+     * {@code ServiceTracker}.
+     * 
+     * @param reference The reference to the service that has been removed.
+     * @param service The service object for the specified referenced service.
+     */
     void removedService(ServiceReference<S> reference, T service);
 }

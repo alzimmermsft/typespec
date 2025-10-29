@@ -20,11 +20,11 @@ import static com.microsoft.typespec.http.client.generator.core.implementation.s
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.AbstractIterator;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.UnmodifiableIterator;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.util.AbstractSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 
 /**
  * A class to represent the set of edges connecting an (implicit) origin node to a target node.
@@ -38,34 +38,34 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 @ElementTypesAreNonnullByDefault
 abstract class MultiEdgesConnecting<E> extends AbstractSet<E> {
 
-  private final Map<E, ?> outEdgeToNode;
-  private final Object targetNode;
+    private final Map<E, ?> outEdgeToNode;
+    private final Object targetNode;
 
-  MultiEdgesConnecting(Map<E, ?> outEdgeToNode, Object targetNode) {
-    this.outEdgeToNode = checkNotNull(outEdgeToNode);
-    this.targetNode = checkNotNull(targetNode);
-  }
+    MultiEdgesConnecting(Map<E, ?> outEdgeToNode, Object targetNode) {
+        this.outEdgeToNode = checkNotNull(outEdgeToNode);
+        this.targetNode = checkNotNull(targetNode);
+    }
 
-  @Override
-  public UnmodifiableIterator<E> iterator() {
-    Iterator<? extends Entry<E, ?>> entries = outEdgeToNode.entrySet().iterator();
-    return new AbstractIterator<E>() {
-      @Override
-      @CheckForNull
-      protected E computeNext() {
-        while (entries.hasNext()) {
-          Entry<E, ?> entry = entries.next();
-          if (targetNode.equals(entry.getValue())) {
-            return entry.getKey();
-          }
-        }
-        return endOfData();
-      }
-    };
-  }
+    @Override
+    public UnmodifiableIterator<E> iterator() {
+        Iterator<? extends Entry<E, ?>> entries = outEdgeToNode.entrySet().iterator();
+        return new AbstractIterator<E>() {
+            @Override
+            @CheckForNull
+            protected E computeNext() {
+                while (entries.hasNext()) {
+                    Entry<E, ?> entry = entries.next();
+                    if (targetNode.equals(entry.getValue())) {
+                        return entry.getKey();
+                    }
+                }
+                return endOfData();
+            }
+        };
+    }
 
-  @Override
-  public boolean contains(@CheckForNull Object edge) {
-    return targetNode.equals(outEdgeToNode.get(edge));
-  }
+    @Override
+    public boolean contains(@CheckForNull Object edge) {
+        return targetNode.equals(outEdgeToNode.get(edge));
+    }
 }

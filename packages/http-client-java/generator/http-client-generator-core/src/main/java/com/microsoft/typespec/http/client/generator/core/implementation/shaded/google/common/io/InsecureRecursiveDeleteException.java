@@ -19,9 +19,9 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtIncompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.J2ktIncompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.j2objc.annotations.J2ObjCIncompatible;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.nio.file.FileSystemException;
 import java.nio.file.SecureDirectoryStream;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 
 /**
  * Exception indicating that a recursive delete can't be performed because the file system does not
@@ -41,7 +41,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 @ElementTypesAreNonnullByDefault
 public final class InsecureRecursiveDeleteException extends FileSystemException {
 
-  public InsecureRecursiveDeleteException(@CheckForNull String file) {
-    super(file, null, "unable to guarantee security of recursive delete");
-  }
+    public InsecureRecursiveDeleteException(@CheckForNull String file) {
+        super(file, null, "unable to guarantee security of recursive delete");
+    }
 }

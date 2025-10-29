@@ -13,11 +13,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.googlejavaformat.FormatterDiagnostic;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.googlejavaformat.java.FormatterException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.googlejavaformat.java.RemoveUnusedImports;
-import org.slf4j.Logger;
-import org.w3c.dom.NodeList;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,6 +20,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.slf4j.Logger;
+import org.w3c.dom.NodeList;
 
 /**
  * Utility class that handles code formatting.

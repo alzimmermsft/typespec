@@ -112,7 +112,7 @@ public class Cleaner {
 
         @Override
         public void clean() {
-            if(cleaner.remove(this)) {
+            if (cleaner.remove(this)) {
                 cleanupTask.run();
             }
         }
@@ -163,8 +163,9 @@ public class Cleaner {
                                 break;
                             } else if (logger.isLoggable(Level.FINER)) {
                                 StringBuilder registeredCleaners = new StringBuilder();
-                                for(CleanerRef cleanerRef = firstCleanable; cleanerRef != null; cleanerRef = cleanerRef.next) {
-                                    if(registeredCleaners.length() != 0) {
+                                for (CleanerRef cleanerRef = firstCleanable; cleanerRef != null;
+                                    cleanerRef = cleanerRef.next) {
+                                    if (registeredCleaners.length() != 0) {
                                         registeredCleaners.append(", ");
                                     }
                                     registeredCleaners.append(cleanerRef.cleanupTask.toString());

@@ -16,10 +16,10 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Preconditions.checkNotNull;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import java.util.Comparator;
 import java.util.SortedSet;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Utilities for dealing with sorted collections of all types.
@@ -29,34 +29,34 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
 final class SortedIterables {
-  private SortedIterables() {}
-
-  /**
-   * Returns {@code true} if {@code elements} is a sorted collection using an ordering equivalent to
-   * {@code comparator}.
-   */
-  public static boolean hasSameComparator(Comparator<?> comparator, Iterable<?> elements) {
-    checkNotNull(comparator);
-    checkNotNull(elements);
-    Comparator<?> comparator2;
-    if (elements instanceof SortedSet) {
-      comparator2 = comparator((SortedSet<?>) elements);
-    } else if (elements instanceof SortedIterable) {
-      comparator2 = ((SortedIterable<?>) elements).comparator();
-    } else {
-      return false;
+    private SortedIterables() {
     }
-    return comparator.equals(comparator2);
-  }
 
-  @SuppressWarnings("unchecked")
-  // if sortedSet.comparator() is null, the set must be naturally ordered
-  public static <E extends @Nullable Object> Comparator<? super E> comparator(
-      SortedSet<E> sortedSet) {
-    Comparator<? super E> result = sortedSet.comparator();
-    if (result == null) {
-      result = (Comparator<? super E>) Ordering.natural();
+    /**
+     * Returns {@code true} if {@code elements} is a sorted collection using an ordering equivalent to
+     * {@code comparator}.
+     */
+    public static boolean hasSameComparator(Comparator<?> comparator, Iterable<?> elements) {
+        checkNotNull(comparator);
+        checkNotNull(elements);
+        Comparator<?> comparator2;
+        if (elements instanceof SortedSet) {
+            comparator2 = comparator((SortedSet<?>) elements);
+        } else if (elements instanceof SortedIterable) {
+            comparator2 = ((SortedIterable<?>) elements).comparator();
+        } else {
+            return false;
+        }
+        return comparator.equals(comparator2);
     }
-    return result;
-  }
+
+    @SuppressWarnings("unchecked")
+    // if sortedSet.comparator() is null, the set must be naturally ordered
+    public static <E extends @Nullable Object> Comparator<? super E> comparator(SortedSet<E> sortedSet) {
+        Comparator<? super E> result = sortedSet.comparator();
+        if (result == null) {
+            result = (Comparator<? super E>) Ordering.natural();
+        }
+        return result;
+    }
 }

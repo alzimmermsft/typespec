@@ -16,10 +16,10 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.url;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.ConsumerType;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLConnection;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.ConsumerType;
 
 /**
  * Service interface with public versions of the protected
@@ -40,63 +40,63 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 @ConsumerType
 public interface URLStreamHandlerService {
-	/**
-	 * @see "java.net.URLStreamHandler.openConnection"
-	 */
-	@SuppressWarnings("javadoc")
+    /**
+     * @see "java.net.URLStreamHandler.openConnection"
+     */
+    @SuppressWarnings("javadoc")
     URLConnection openConnection(URL u) throws java.io.IOException;
 
-	/**
-	 * Parse a URL. This method is called by the {@code URLStreamHandler} proxy,
-	 * instead of {@code java.net.URLStreamHandler.parseURL}, passing a
-	 * {@code URLStreamHandlerSetter} object.
-	 * 
-	 * @param realHandler The object on which {@code setURL} must be invoked for
-	 *        this URL.
-	 * @see "java.net.URLStreamHandler.parseURL"
-	 */
-	@SuppressWarnings("javadoc")
+    /**
+     * Parse a URL. This method is called by the {@code URLStreamHandler} proxy,
+     * instead of {@code java.net.URLStreamHandler.parseURL}, passing a
+     * {@code URLStreamHandlerSetter} object.
+     * 
+     * @param realHandler The object on which {@code setURL} must be invoked for
+     * this URL.
+     * @see "java.net.URLStreamHandler.parseURL"
+     */
+    @SuppressWarnings("javadoc")
     void parseURL(URLStreamHandlerSetter realHandler, URL u, String spec, int start, int limit);
 
-	/**
-	 * @see "java.net.URLStreamHandler.toExternalForm"
-	 */
-	@SuppressWarnings("javadoc")
+    /**
+     * @see "java.net.URLStreamHandler.toExternalForm"
+     */
+    @SuppressWarnings("javadoc")
     String toExternalForm(URL u);
 
-	/**
-	 * @see "java.net.URLStreamHandler.equals(URL, URL)"
-	 */
-	@SuppressWarnings("javadoc")
+    /**
+     * @see "java.net.URLStreamHandler.equals(URL, URL)"
+     */
+    @SuppressWarnings("javadoc")
     boolean equals(URL u1, URL u2);
 
-	/**
-	 * @see "java.net.URLStreamHandler.getDefaultPort"
-	 */
-	@SuppressWarnings("javadoc")
+    /**
+     * @see "java.net.URLStreamHandler.getDefaultPort"
+     */
+    @SuppressWarnings("javadoc")
     int getDefaultPort();
 
-	/**
-	 * @see "java.net.URLStreamHandler.getHostAddress"
-	 */
-	@SuppressWarnings("javadoc")
+    /**
+     * @see "java.net.URLStreamHandler.getHostAddress"
+     */
+    @SuppressWarnings("javadoc")
     InetAddress getHostAddress(URL u);
 
-	/**
-	 * @see "java.net.URLStreamHandler.hashCode(URL)"
-	 */
-	@SuppressWarnings("javadoc")
+    /**
+     * @see "java.net.URLStreamHandler.hashCode(URL)"
+     */
+    @SuppressWarnings("javadoc")
     int hashCode(URL u);
 
-	/**
-	 * @see "java.net.URLStreamHandler.hostsEqual"
-	 */
-	@SuppressWarnings("javadoc")
+    /**
+     * @see "java.net.URLStreamHandler.hostsEqual"
+     */
+    @SuppressWarnings("javadoc")
     boolean hostsEqual(URL u1, URL u2);
 
-	/**
-	 * @see "java.net.URLStreamHandler.sameFile"
-	 */
-	@SuppressWarnings("javadoc")
+    /**
+     * @see "java.net.URLStreamHandler.sameFile"
+     */
+    @SuppressWarnings("javadoc")
     boolean sameFile(URL u1, URL u2);
 }

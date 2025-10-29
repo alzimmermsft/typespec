@@ -27,7 +27,9 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 
 public interface IErrorHandlingPolicy {
-	boolean proceedOnErrors();
-	boolean stopOnFirstError();
-	boolean ignoreAllErrors();
+    boolean proceedOnErrors();
+
+    boolean stopOnFirstError();
+
+    boolean ignoreAllErrors();
 }

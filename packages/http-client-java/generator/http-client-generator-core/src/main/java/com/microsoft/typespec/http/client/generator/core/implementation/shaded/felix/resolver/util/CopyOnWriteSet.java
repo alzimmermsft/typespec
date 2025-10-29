@@ -39,13 +39,16 @@ public class CopyOnWriteSet<E> implements Set<E>, Cloneable {
     public Iterator<E> iterator() {
         return new Iterator<E>() {
             int idx = 0;
+
             public boolean hasNext() {
                 return idx < data.length;
             }
+
             @SuppressWarnings("unchecked")
             public E next() {
                 return (E) data[idx++];
             }
+
             public void remove() {
                 CopyOnWriteSet.this.remove(--idx);
             }
@@ -59,7 +62,7 @@ public class CopyOnWriteSet<E> implements Set<E>, Cloneable {
     public boolean add(E e) {
         Object[] d = data;
         if (d.length == 0) {
-            data = new Object[] {e};
+            data = new Object[] { e };
         } else {
             for (Object o : d) {
                 if (o == null ? e == null : o.equals(e)) {
@@ -119,8 +122,7 @@ public class CopyOnWriteSet<E> implements Set<E>, Cloneable {
         if (l != o2.length) {
             return false;
         }
-        loop:
-        for (int i = l; i-- > 0;) {
+        loop: for (int i = l; i-- > 0;) {
             Object v1 = o1[i];
             for (int j = l; j-- > 0;) {
                 Object v2 = o2[j];
@@ -152,7 +154,7 @@ public class CopyOnWriteSet<E> implements Set<E>, Cloneable {
         } catch (CloneNotSupportedException exc) {
             InternalError e = new InternalError();
             e.initCause(exc);
-            throw e; //should never happen since we are cloneable
+            throw e; // should never happen since we are cloneable
         }
     }
 
@@ -202,8 +204,7 @@ public class CopyOnWriteSet<E> implements Set<E>, Cloneable {
         // uniquify and compact elements in cs
         for (int i = 0; i < cs.length; ++i) {
             Object e = cs[i];
-            if (indexOf(e, elements, len) < 0 &&
-                    indexOf(e, cs, added) < 0)
+            if (indexOf(e, elements, len) < 0 && indexOf(e, cs, added) < 0)
                 cs[added++] = e;
         }
         if (added > 0) {
@@ -233,7 +234,7 @@ public class CopyOnWriteSet<E> implements Set<E>, Cloneable {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T,U> T[] copyOf(U[] original, int newLength, Class<? extends T[]> newType) {
+    public static <T, U> T[] copyOf(U[] original, int newLength, Class<? extends T[]> newType) {
         T[] copy;
         if ((Object) newType == Object[].class) {
             copy = (T[]) new Object[newLength];

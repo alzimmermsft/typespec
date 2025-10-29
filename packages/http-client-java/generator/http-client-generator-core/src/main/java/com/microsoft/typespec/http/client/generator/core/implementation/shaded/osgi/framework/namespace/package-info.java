@@ -19,7 +19,7 @@
  * 
  * <p>
  * Bundles should not need to import this package at runtime since all
- * the types in this package just contain constants for capability and 
+ * the types in this package just contain constants for capability and
  * requirement namespaces specified by the OSGi Alliance.
  * 
  * @author $Id: 43f3804d39ad166dc082926b3a3679be67962fcc $
@@ -29,4 +29,3 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.namespace;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.Version;
-

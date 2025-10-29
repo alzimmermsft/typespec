@@ -18,46 +18,29 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class AptProblem extends DefaultProblem {
 
-	// The batch compiler does not depend on org.eclipse.jdt.apt.pluggable.core; this
-	// is just an arbitrary string to it, namespace notwithstanding.  However, the IDE
-	// cares about the fact that this string is registered as a marker ID by the
-	// org.eclipse.jdt.apt.pluggable.core plug-in.
-	private static final String MARKER_ID = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.apt.pluggable.core.compileProblem";  //$NON-NLS-1$
+    // The batch compiler does not depend on org.eclipse.jdt.apt.pluggable.core; this
+    // is just an arbitrary string to it, namespace notwithstanding. However, the IDE
+    // cares about the fact that this string is registered as a marker ID by the
+    // org.eclipse.jdt.apt.pluggable.core plug-in.
+    private static final String MARKER_ID
+        = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.apt.pluggable.core.compileProblem";  //$NON-NLS-1$
 
-	/** May be null, if it was not possible to identify problem context */
-	public final ReferenceContext _referenceContext;
+    /** May be null, if it was not possible to identify problem context */
+    public final ReferenceContext _referenceContext;
 
-	public AptProblem(
-			ReferenceContext referenceContext,
-			char[] originatingFileName,
-			String message,
-			int id,
-			String[] stringArguments,
-			int severity,
-			int startPosition,
-			int endPosition,
-			int line,
-			int column)
-	{
-		super(originatingFileName,
-			message,
-			id,
-			stringArguments,
-			severity,
-			startPosition,
-			endPosition,
-			line,
-			column);
-		this._referenceContext = referenceContext;
-	}
+    public AptProblem(ReferenceContext referenceContext, char[] originatingFileName, String message, int id,
+        String[] stringArguments, int severity, int startPosition, int endPosition, int line, int column) {
+        super(originatingFileName, message, id, stringArguments, severity, startPosition, endPosition, line, column);
+        this._referenceContext = referenceContext;
+    }
 
-	@Override
-	public int getCategoryID() {
-		return CAT_UNSPECIFIED;
-	}
+    @Override
+    public int getCategoryID() {
+        return CAT_UNSPECIFIED;
+    }
 
-	@Override
-	public String getMarkerType() {
-		return MARKER_ID;
-	}
+    @Override
+    public String getMarkerType() {
+        return MARKER_ID;
+    }
 }

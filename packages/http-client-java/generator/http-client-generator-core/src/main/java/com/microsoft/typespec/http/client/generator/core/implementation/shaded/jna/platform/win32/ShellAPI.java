@@ -42,6 +42,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 /**
  * Ported from ShellAPI.h.
  * Microsoft Windows SDK 6.0A.
+ * 
  * @author dblock[at]dblock.org
  */
 public interface ShellAPI extends StdCallLibrary {
@@ -58,19 +59,26 @@ public interface ShellAPI extends StdCallLibrary {
     int FOF_CONFIRMMOUSE = 0x0002;
     int FOF_SILENT = 0x0004; // don't display progress UI (confirm prompts may be displayed still)
     int FOF_RENAMEONCOLLISION = 0x0008; // automatically rename the source files to avoid the collisions
-    int FOF_NOCONFIRMATION = 0x0010; // don't display confirmation UI, assume "yes" for cases that can be bypassed, "no" for those that can not
+    int FOF_NOCONFIRMATION = 0x0010; // don't display confirmation UI, assume "yes" for cases that can be bypassed, "no"
+                                     // for those that can not
     int FOF_WANTMAPPINGHANDLE = 0x0020; // Fill in SHFILEOPSTRUCT.hNameMappings
     int FOF_ALLOWUNDO = 0x0040; // enable undo including Recycle behavior for IFileOperation::Delete()
-    int FOF_FILESONLY = 0x0080; // only operate on the files (non folders), both files and folders are assumed without this
+    int FOF_FILESONLY = 0x0080; // only operate on the files (non folders), both files and folders are assumed without
+                                // this
     int FOF_SIMPLEPROGRESS = 0x0100; // means don't show names of files
-    int FOF_NOCONFIRMMKDIR = 0x0200; // don't dispplay confirmatino UI before making any needed directories, assume "Yes" in these cases
+    int FOF_NOCONFIRMMKDIR = 0x0200; // don't dispplay confirmatino UI before making any needed directories, assume
+                                     // "Yes" in these cases
     int FOF_NOERRORUI = 0x0400; // don't put up error UI, other UI may be displayed, progress, confirmations
     int FOF_NOCOPYSECURITYATTRIBS = 0x0800; // dont copy file security attributes (ACLs)
     int FOF_NORECURSION = 0x1000; // don't recurse into directories for operations that would recurse
-    int FOF_NO_CONNECTED_ELEMENTS = 0x2000; // don't operate on connected elements ("xxx_files" folders that go with .htm files)
-    int FOF_WANTNUKEWARNING = 0x4000; // during delete operation, warn if nuking instead of recycling (partially overrides FOF_NOCONFIRMATION)
-    int FOF_NORECURSEREPARSE = 0x8000; // deprecated; the operations engine always does the right thing on FolderLink objects (symlinks, reparse points, folder shortcuts)
-    int FOF_NO_UI = (FOF_SILENT | FOF_NOCONFIRMATION | FOF_NOERRORUI | FOF_NOCONFIRMMKDIR); // don't display any UI at all
+    int FOF_NO_CONNECTED_ELEMENTS = 0x2000; // don't operate on connected elements ("xxx_files" folders that go with
+                                            // .htm files)
+    int FOF_WANTNUKEWARNING = 0x4000; // during delete operation, warn if nuking instead of recycling (partially
+                                      // overrides FOF_NOCONFIRMATION)
+    int FOF_NORECURSEREPARSE = 0x8000; // deprecated; the operations engine always does the right thing on FolderLink
+                                       // objects (symlinks, reparse points, folder shortcuts)
+    int FOF_NO_UI = (FOF_SILENT | FOF_NOCONFIRMATION | FOF_NOERRORUI | FOF_NOCONFIRMMKDIR); // don't display any UI at
+                                                                                            // all
 
     int PO_DELETE = 0x0013; // printer is being deleted
     int PO_RENAME = 0x0014; // printer is being renamed
@@ -80,7 +88,15 @@ public interface ShellAPI extends StdCallLibrary {
     /**
      * Contains information that the SHFileOperation function uses to perform file operations.
      */
-    @FieldOrder({"hwnd", "wFunc", "pFrom", "pTo", "fFlags", "fAnyOperationsAborted", "pNameMappings", "lpszProgressTitle"})
+    @FieldOrder({
+        "hwnd",
+        "wFunc",
+        "pFrom",
+        "pTo",
+        "fFlags",
+        "fAnyOperationsAborted",
+        "pNameMappings",
+        "lpszProgressTitle" })
     public static class SHFILEOPSTRUCT extends Structure {
         /**
          * A window handle to the dialog box to display information about
@@ -121,13 +137,15 @@ public interface ShellAPI extends StdCallLibrary {
          */
         public String lpszProgressTitle;
 
-        /** Use this to encode <code>pFrom/pTo</code> paths.
+        /**
+         * Use this to encode <code>pFrom/pTo</code> paths.
+         * 
          * @param paths Paths to encode
          * @return Encoded paths
          */
         public String encodePaths(String[] paths) {
             String encoded = "";
-            for (int i=0; i < paths.length;i++) {
+            for (int i = 0; i < paths.length; i++) {
                 encoded += paths[i];
                 encoded += "\0";
             }
@@ -145,7 +163,7 @@ public interface ShellAPI extends StdCallLibrary {
      * system should use to send notification messages to the appbar.
      */
     int ABM_REMOVE = 0x00000001;
-    /** Unregisters an appbar, removing the bar from the system's internal list.*/
+    /** Unregisters an appbar, removing the bar from the system's internal list. */
     int ABM_QUERYPOS = 0x00000002;
     /** Requests a size and screen position for an appbar. */
     int ABM_SETPOS = 0x00000003;
@@ -170,7 +188,7 @@ public interface ShellAPI extends StdCallLibrary {
      */
     int ABM_GETAUTOHIDEBAR = 0x00000007;
     /**
-     *  Retrieves the handle to the autohide appbar associated with a particular
+     * Retrieves the handle to the autohide appbar associated with a particular
      * edge of the screen.
      */
     int ABM_SETAUTOHIDEBAR = 0x00000008;
@@ -191,7 +209,7 @@ public interface ShellAPI extends StdCallLibrary {
     /**
      * Contains information about a system appbar message.
      */
-    @FieldOrder({"cbSize", "hWnd", "uCallbackMessage", "uEdge",  "rc", "lParam"})
+    @FieldOrder({ "cbSize", "hWnd", "uCallbackMessage", "uEdge", "rc", "lParam" })
     public static class APPBARDATA extends Structure {
         public static class ByReference extends APPBARDATA implements Structure.ByReference {
         }
@@ -284,19 +302,34 @@ public interface ShellAPI extends StdCallLibrary {
      * enclose each mark in a pair of quotation marks, as in the following
      * example.
      * </p>
-         * <p>
+     * <p>
+     * 
      * <pre>
      * sei.lpParameters = &quot;An example: \&quot;\&quot;\&quot;quoted text\&quot;\&quot;\&quot;&quot;;
      * </pre>
-         * </p>
+     * 
+     * </p>
      * <p>
      * In this case, the application receives three parameters: <em>An</em>,
      * <em>example:</em>, and <em>"quoted text"</em>.
      * </p>
      */
-    @FieldOrder({"cbSize", "fMask", "hwnd", "lpVerb", "lpFile", "lpParameters",
-        "lpDirectory", "nShow", "hInstApp", "lpIDList", "lpClass", "hKeyClass",
-        "dwHotKey", "hMonitor", "hProcess"})
+    @FieldOrder({
+        "cbSize",
+        "fMask",
+        "hwnd",
+        "lpVerb",
+        "lpFile",
+        "lpParameters",
+        "lpDirectory",
+        "nShow",
+        "hInstApp",
+        "lpIDList",
+        "lpClass",
+        "hKeyClass",
+        "dwHotKey",
+        "hMonitor",
+        "hProcess" })
     public class SHELLEXECUTEINFO extends Structure {
         /**
          * <p>

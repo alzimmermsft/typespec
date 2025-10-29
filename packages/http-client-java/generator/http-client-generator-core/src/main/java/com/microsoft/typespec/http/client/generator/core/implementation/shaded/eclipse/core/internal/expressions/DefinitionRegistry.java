@@ -17,12 +17,10 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.expressions.ExpressionConverter;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IConfigurationElement;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IExtensionDelta;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IExtensionRegistry;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IRegistryChangeEvent;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IRegistryChangeListener;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.InvalidRegistryObjectException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Platform;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,7 +29,7 @@ import java.util.Map;
  *
  * @since 3.3
  */
-public class DefinitionRegistry implements IRegistryChangeListener {
+public class DefinitionRegistry {
     private Map<String, Expression> cache = null;
 
     private Map<String, Expression> getCache() {
@@ -42,9 +40,6 @@ public class DefinitionRegistry implements IRegistryChangeListener {
     }
 
     public DefinitionRegistry() {
-        Platform.getExtensionRegistry()
-            .addRegistryChangeListener(this,
-                "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.expressions"); //$NON-NLS-1$
     }
 
     /**
@@ -96,21 +91,4 @@ public class DefinitionRegistry implements IRegistryChangeListener {
         return expr;
     }
 
-    @Override
-    public void registryChanged(IRegistryChangeEvent event) {
-        IExtensionDelta[] extensionDeltas = event.getExtensionDeltas(
-            "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.expressions", //$NON-NLS-1$
-            "definitions"); //$NON-NLS-1$
-        for (IExtensionDelta extensionDelta : extensionDeltas) {
-            if (extensionDelta.getKind() == IExtensionDelta.REMOVED) {
-                IConfigurationElement[] ces = extensionDelta.getExtension().getConfigurationElements();
-                for (IConfigurationElement ce : ces) {
-                    String id = ce.getAttribute("id"); //$NON-NLS-1$
-                    if (id != null) {
-                        getCache().remove(id);
-                    }
-                }
-            }
-        }
-    }
 }

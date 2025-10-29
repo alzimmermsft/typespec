@@ -37,17 +37,15 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.CLASS)
-@Target({
-		ElementType.TYPE, ElementType.PACKAGE
-})
+@Target({ ElementType.TYPE, ElementType.PACKAGE })
 public @interface Referenced {
-	/**
-	 * A list of referenced classes.
-	 * <p>
-	 * Specifying a class in this annotation must be treated by tools as if the
-	 * annotated type has a code reference to the class which may result in an
-	 * import of the package of the class if the bundle does not contain that
-	 * package.
-	 */
-	Class< ? >[] value();
+    /**
+     * A list of referenced classes.
+     * <p>
+     * Specifying a class in this annotation must be treated by tools as if the
+     * annotated type has a code reference to the class which may result in an
+     * import of the package of the class if the bundle does not contain that
+     * package.
+     */
+    Class<?>[] value();
 }

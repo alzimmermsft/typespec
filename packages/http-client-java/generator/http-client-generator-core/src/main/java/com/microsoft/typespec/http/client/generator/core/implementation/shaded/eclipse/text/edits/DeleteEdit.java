@@ -26,45 +26,45 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public final class DeleteEdit extends TextEdit {
 
-	/**
-	 * Constructs a new delete edit.
-	 *
-	 * @param offset the offset of the range to replace
-	 * @param length the length of the range to replace
-	 */
-	public DeleteEdit(int offset, int length) {
-		super(offset, length);
-	}
+    /**
+     * Constructs a new delete edit.
+     *
+     * @param offset the offset of the range to replace
+     * @param length the length of the range to replace
+     */
+    public DeleteEdit(int offset, int length) {
+        super(offset, length);
+    }
 
-	/*
-	 * Copy constructor
-	 */
-	private DeleteEdit(DeleteEdit other) {
-		super(other);
-	}
+    /*
+     * Copy constructor
+     */
+    private DeleteEdit(DeleteEdit other) {
+        super(other);
+    }
 
-	@Override
-	protected TextEdit doCopy() {
-		return new DeleteEdit(this);
-	}
+    @Override
+    protected TextEdit doCopy() {
+        return new DeleteEdit(this);
+    }
 
-	@Override
-	protected void accept0(TextEditVisitor visitor) {
-		boolean visitChildren= visitor.visit(this);
-		if (visitChildren) {
-			acceptChildren(visitor);
-		}
-	}
+    @Override
+    protected void accept0(TextEditVisitor visitor) {
+        boolean visitChildren = visitor.visit(this);
+        if (visitChildren) {
+            acceptChildren(visitor);
+        }
+    }
 
-	@Override
-	int performDocumentUpdating(IDocument document) throws BadLocationException {
-		document.replace(getOffset(), getLength(), ""); //$NON-NLS-1$
-		fDelta= -getLength();
-		return fDelta;
-	}
+    @Override
+    int performDocumentUpdating(IDocument document) throws BadLocationException {
+        document.replace(getOffset(), getLength(), ""); //$NON-NLS-1$
+        fDelta = -getLength();
+        return fDelta;
+    }
 
-	@Override
-	boolean deleteChildren() {
-		return true;
-	}
+    @Override
+    boolean deleteChildren() {
+        return true;
+    }
 }

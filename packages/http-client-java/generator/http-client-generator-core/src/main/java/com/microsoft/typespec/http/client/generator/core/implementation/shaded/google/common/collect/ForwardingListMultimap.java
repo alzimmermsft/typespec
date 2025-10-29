@@ -16,11 +16,11 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.CanIgnoreReturnValue;
-import java.util.List;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
+import java.util.List;
 
 /**
  * A list multimap which forwards all its method calls to another list multimap. Subclasses should
@@ -39,26 +39,27 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 public abstract class ForwardingListMultimap<K extends @Nullable Object, V extends @Nullable Object>
     extends ForwardingMultimap<K, V> implements ListMultimap<K, V> {
 
-  /** Constructor for use by subclasses. */
-  protected ForwardingListMultimap() {}
+    /** Constructor for use by subclasses. */
+    protected ForwardingListMultimap() {
+    }
 
-  @Override
-  protected abstract ListMultimap<K, V> delegate();
+    @Override
+    protected abstract ListMultimap<K, V> delegate();
 
-  @Override
-  public List<V> get(@ParametricNullness K key) {
-    return delegate().get(key);
-  }
+    @Override
+    public List<V> get(@ParametricNullness K key) {
+        return delegate().get(key);
+    }
 
-  @CanIgnoreReturnValue
-  @Override
-  public List<V> removeAll(@CheckForNull Object key) {
-    return delegate().removeAll(key);
-  }
+    @CanIgnoreReturnValue
+    @Override
+    public List<V> removeAll(@CheckForNull Object key) {
+        return delegate().removeAll(key);
+    }
 
-  @CanIgnoreReturnValue
-  @Override
-  public List<V> replaceValues(@ParametricNullness K key, Iterable<? extends V> values) {
-    return delegate().replaceValues(key, values);
-  }
+    @CanIgnoreReturnValue
+    @Override
+    public List<V> replaceValues(@ParametricNullness K key, Iterable<? extends V> values) {
+        return delegate().replaceValues(key, values);
+    }
 }

@@ -23,8 +23,6 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
-import java.util.List;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Memory;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure;
@@ -36,6 +34,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 /**
  * Ported from NTSecApi.h
  * Windows SDK 6.0A.
+ * 
  * @author dblock[at]dblock.org
  */
 public interface NTSecApi {
@@ -44,7 +43,7 @@ public interface NTSecApi {
      * The LSA_UNICODE_STRING structure is used by various Local Security Authority (LSA)
      * functions to specify a Unicode string.
      */
-    @FieldOrder({"Length", "MaximumLength", "Buffer"})
+    @FieldOrder({ "Length", "MaximumLength", "Buffer" })
     public static class LSA_UNICODE_STRING extends Structure {
         public static class ByReference extends LSA_UNICODE_STRING implements Structure.ByReference {
 
@@ -68,8 +67,9 @@ public interface NTSecApi {
 
         /**
          * String representation of the buffer.
+         * 
          * @return
-         *  Unicode string.
+         * Unicode string.
          */
         public String getString() {
             byte[] data = Buffer.getByteArray(0, Length);
@@ -86,8 +86,7 @@ public interface NTSecApi {
      * Pointer to an LSA_UNICODE_STRING.
      */
     public static class PLSA_UNICODE_STRING {
-        public static class ByReference extends PLSA_UNICODE_STRING
-            implements Structure.ByReference {
+        public static class ByReference extends PLSA_UNICODE_STRING implements Structure.ByReference {
 
         }
 
@@ -107,28 +106,28 @@ public interface NTSecApi {
      */
     int ForestTrustDomainInfo = 2;
 
-    @FieldOrder({"Sid", "DnsName", "NetbiosName"})
+    @FieldOrder({ "Sid", "DnsName", "NetbiosName" })
     public static class LSA_FOREST_TRUST_DOMAIN_INFO extends Structure {
         public PSID.ByReference Sid;
         public LSA_UNICODE_STRING DnsName;
         public LSA_UNICODE_STRING NetbiosName;
     }
 
-    @FieldOrder({"Length", "Buffer"})
+    @FieldOrder({ "Length", "Buffer" })
     public static class LSA_FOREST_TRUST_BINARY_DATA extends Structure {
         public int Length;
         public Pointer Buffer;
     }
 
-    @FieldOrder({"Flags", "ForestTrustType", "Time", "u"})
+    @FieldOrder({ "Flags", "ForestTrustType", "Time", "u" })
     public static class LSA_FOREST_TRUST_RECORD extends Structure {
 
-        public static class ByReference extends LSA_FOREST_TRUST_RECORD  implements Structure.ByReference {
+        public static class ByReference extends LSA_FOREST_TRUST_RECORD implements Structure.ByReference {
 
         }
 
         public static class UNION extends Union {
-            public static class ByReference extends UNION  implements Structure.ByReference {
+            public static class ByReference extends UNION implements Structure.ByReference {
 
             }
 
@@ -146,13 +145,13 @@ public interface NTSecApi {
          * LSA_FOREST_TRUST_RECORD_TYPE enumeration that indicates the type of the record.
          * The following table shows the possible values.
          * ForestTrustTopLevelName
-         *  Record contains an included top-level name.
+         * Record contains an included top-level name.
          * ForestTrustTopLevelNameEx
-         *  Record contains an excluded top-level name.
+         * Record contains an excluded top-level name.
          * ForestTrustDomainInfo
-         *  Record contains an LSA_FOREST_TRUST_DOMAIN_INFO structure.
+         * Record contains an LSA_FOREST_TRUST_DOMAIN_INFO structure.
          * ForestTrustRecordTypeLast
-         *  Marks the end of an enumeration.
+         * Marks the end of an enumeration.
          */
         public int ForestTrustType;
         public LARGE_INTEGER Time;
@@ -166,14 +165,16 @@ public interface NTSecApi {
         public void read() {
             super.read();
 
-            switch(ForestTrustType) {
+            switch (ForestTrustType) {
                 case NTSecApi.ForestTrustTopLevelName:
                 case NTSecApi.ForestTrustTopLevelNameEx:
                     u.setType(LSA_UNICODE_STRING.class);
                     break;
+
                 case NTSecApi.ForestTrustDomainInfo:
                     u.setType(LSA_FOREST_TRUST_DOMAIN_INFO.class);
                     break;
+
                 default:
                     u.setType(LSA_FOREST_TRUST_BINARY_DATA.class);
                     break;
@@ -183,7 +184,7 @@ public interface NTSecApi {
         }
     }
 
-    @FieldOrder({"tr"})
+    @FieldOrder({ "tr" })
     public static class PLSA_FOREST_TRUST_RECORD extends Structure {
         public static class ByReference extends PLSA_FOREST_TRUST_RECORD implements Structure.ByReference {
 
@@ -193,7 +194,7 @@ public interface NTSecApi {
 
     }
 
-    @FieldOrder({"RecordCount", "Entries"})
+    @FieldOrder({ "RecordCount", "Entries" })
     public static class LSA_FOREST_TRUST_INFORMATION extends Structure {
 
         public static class ByReference extends LSA_FOREST_TRUST_INFORMATION implements Structure.ByReference {
@@ -213,18 +214,20 @@ public interface NTSecApi {
 
         /**
          * Get an array of LSA_FOREST_TRUST_RECORD entries.
+         * 
          * @return
-         *  An array of forest trust records.
+         * An array of forest trust records.
          */
         public PLSA_FOREST_TRUST_RECORD[] getEntries() {
             return (PLSA_FOREST_TRUST_RECORD[]) Entries.toArray(RecordCount);
         }
     }
+
     /**
      * The LSA_FOREST_TRUST_INFORMATION structure contains Local Security Authority
      * forest trust information.
      */
-    @FieldOrder({"fti"})
+    @FieldOrder({ "fti" })
     public static class PLSA_FOREST_TRUST_INFORMATION extends Structure {
 
         public static class ByReference extends PLSA_FOREST_TRUST_INFORMATION implements Structure.ByReference {

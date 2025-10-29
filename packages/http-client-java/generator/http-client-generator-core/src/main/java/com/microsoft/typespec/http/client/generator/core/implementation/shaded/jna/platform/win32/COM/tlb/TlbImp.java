@@ -23,13 +23,6 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.tlb;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.TYPEKIND;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeLibUtil;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.tlb.imp.TlbBase;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.tlb.imp.TlbCmdlineArgs;
@@ -38,6 +31,12 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.tlb.imp.TlbDispInterface;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.tlb.imp.TlbEnum;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.tlb.imp.TlbInterface;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.TYPEKIND;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -61,7 +60,7 @@ public class TlbImp implements TlbConst {
      * The main method.
      *
      * @param args
-     *            the arguments
+     * the arguments
      */
     public static void main(String[] args) {
         new TlbImp(args);
@@ -72,15 +71,12 @@ public class TlbImp implements TlbConst {
 
         if (this.cmdlineArgs.isTlbId()) {
             String clsid = this.cmdlineArgs.getRequiredParam(CMD_ARG_TYPELIB_ID);
-            int majorVersion = this.cmdlineArgs
-                    .getIntParam(CMD_ARG_TYPELIB_MAJOR_VERSION);
-            int minorVersion = this.cmdlineArgs
-                    .getIntParam(CMD_ARG_TYPELIB_MINOR_VERSION);
+            int majorVersion = this.cmdlineArgs.getIntParam(CMD_ARG_TYPELIB_MAJOR_VERSION);
+            int minorVersion = this.cmdlineArgs.getIntParam(CMD_ARG_TYPELIB_MINOR_VERSION);
 
             // initialize typelib
             // check version numbers with registry entries!!!
-            this.typeLibUtil = new TypeLibUtil(clsid, majorVersion,
-                    minorVersion);
+            this.typeLibUtil = new TypeLibUtil(clsid, majorVersion, minorVersion);
             this.startCOM2Java();
         } else if (this.cmdlineArgs.isTlbFile()) {
             String file = this.cmdlineArgs.getRequiredParam(CMD_ARG_TYPELIB_FILE);
@@ -113,14 +109,11 @@ public class TlbImp implements TlbConst {
                 } else if (typekind.value == TYPEKIND.TKIND_MODULE) {
                     TlbImp.logInfo("'TKIND_MODULE' objects are currently not supported!");
                 } else if (typekind.value == TYPEKIND.TKIND_INTERFACE) {
-                    this.createCOMInterface(i, this.getPackageName(),
-                            typeLibUtil);
+                    this.createCOMInterface(i, this.getPackageName(), typeLibUtil);
                 } else if (typekind.value == TYPEKIND.TKIND_DISPATCH) {
-                    this.createCOMDispInterface(i, this.getPackageName(),
-                            typeLibUtil);
+                    this.createCOMDispInterface(i, this.getPackageName(), typeLibUtil);
                 } else if (typekind.value == TYPEKIND.TKIND_COCLASS) {
-                    this.createCOMCoClass(i, this.getPackageName(),
-                            typeLibUtil, bindingMode);
+                    this.createCOMCoClass(i, this.getPackageName(), typeLibUtil, bindingMode);
                 } else if (typekind.value == TYPEKIND.TKIND_ALIAS) {
                     TlbImp.logInfo("'TKIND_ALIAS' objects are currently not supported!");
                 } else if (typekind.value == TYPEKIND.TKIND_UNION) {
@@ -128,8 +121,7 @@ public class TlbImp implements TlbConst {
                 }
             }
 
-            logInfo(typeInfoCount + " files sucessfully written to: "
-                    + this.comRootDir.toString());
+            logInfo(typeInfoCount + " files sucessfully written to: " + this.comRootDir.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -138,7 +130,7 @@ public class TlbImp implements TlbConst {
     private void createDir() throws FileNotFoundException {
         String _outputDir = this.cmdlineArgs.getParam(CMD_ARG_OUTPUT_DIR);
         String path = "_jnaCOM_" + System.currentTimeMillis() + "\\myPackage\\"
-                + this.typeLibUtil.getName().toLowerCase() + "\\";
+            + this.typeLibUtil.getName().toLowerCase() + "\\";
 
         if (_outputDir != null) {
             this.comRootDir = new File(_outputDir + "\\" + path);
@@ -154,8 +146,7 @@ public class TlbImp implements TlbConst {
             logInfo("Output directory sucessfully created.");
         } else {
             throw new FileNotFoundException(
-                    "Output directory NOT sucessfully created to: "
-                            + this.comRootDir.toString());
+                "Output directory NOT sucessfully created to: " + this.comRootDir.toString());
         }
     }
 
@@ -165,8 +156,7 @@ public class TlbImp implements TlbConst {
 
     private void writeTextFile(String filename, String str) throws IOException {
         String file = this.comRootDir + File.separator + filename;
-        BufferedOutputStream bos = new BufferedOutputStream(
-                new FileOutputStream(file));
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
         bos.write(str.getBytes());
         bos.close();
     }
@@ -180,13 +170,12 @@ public class TlbImp implements TlbConst {
      * Creates the com enum.
      *
      * @param index
-     *            the index
+     * the index
      * @param typeLibUtil
-     *            the type lib util
+     * the type lib util
      * @return the string buffer
      */
-    private void createCOMEnum(int index, String packagename,
-            TypeLibUtil typeLibUtil) throws IOException {
+    private void createCOMEnum(int index, String packagename, TypeLibUtil typeLibUtil) throws IOException {
         TlbEnum tlbEnum = new TlbEnum(index, packagename, typeLibUtil);
         this.writeTlbClass(tlbEnum);
     }
@@ -195,15 +184,13 @@ public class TlbImp implements TlbConst {
      * Creates the com interface.
      *
      * @param index
-     *            the index
+     * the index
      * @param typeLibUtil
-     *            the type lib util
+     * the type lib util
      * @return the string buffer
      */
-    private void createCOMInterface(int index, String packagename,
-            TypeLibUtil typeLibUtil) throws IOException {
-        TlbInterface tlbInterface = new TlbInterface(index, packagename,
-                typeLibUtil);
+    private void createCOMInterface(int index, String packagename, TypeLibUtil typeLibUtil) throws IOException {
+        TlbInterface tlbInterface = new TlbInterface(index, packagename, typeLibUtil);
         this.writeTlbClass(tlbInterface);
     }
 
@@ -211,22 +198,19 @@ public class TlbImp implements TlbConst {
      * Creates the com dispatch.
      *
      * @param index
-     *            the index
+     * the index
      * @param typeLibUtil
-     *            the type lib util
+     * the type lib util
      * @return the string buffer
      */
-    private void createCOMDispInterface(int index, String packagename,
-            TypeLibUtil typeLibUtil) throws IOException {
-        TlbDispInterface tlbDispatch = new TlbDispInterface(index, packagename,
-                typeLibUtil);
+    private void createCOMDispInterface(int index, String packagename, TypeLibUtil typeLibUtil) throws IOException {
+        TlbDispInterface tlbDispatch = new TlbDispInterface(index, packagename, typeLibUtil);
         this.writeTlbClass(tlbDispatch);
     }
 
-    private void createCOMCoClass(int index, String packagename,
-            TypeLibUtil typeLibUtil, String bindingMode) throws IOException {
-        TlbCoClass tlbCoClass = new TlbCoClass(index, this.getPackageName(),
-                typeLibUtil, bindingMode);
+    private void createCOMCoClass(int index, String packagename, TypeLibUtil typeLibUtil, String bindingMode)
+        throws IOException {
+        TlbCoClass tlbCoClass = new TlbCoClass(index, this.getPackageName(), typeLibUtil, bindingMode);
         this.writeTlbClass(tlbCoClass);
     }
 
@@ -234,7 +218,7 @@ public class TlbImp implements TlbConst {
      * Log info.
      *
      * @param msg
-     *            the msg
+     * the msg
      */
     public static void logInfo(String msg) {
         System.out.println(msg);

@@ -26,92 +26,92 @@ import java.util.zip.ZipEntry;
  * class is used for bundles that are installed as a ZipFile on a file system.
  */
 public class ZipBundleEntry extends BundleEntry {
-	/**
-	 * ZipEntry for this entry.
-	 */
-	protected final ZipEntry zipEntry;
+    /**
+     * ZipEntry for this entry.
+     */
+    protected final ZipEntry zipEntry;
 
-	/**
-	 * The BundleFile for this entry.
-	 */
-	protected final ZipBundleFile bundleFile;
+    /**
+     * The BundleFile for this entry.
+     */
+    protected final ZipBundleFile bundleFile;
 
-	/**
-	 * Constructs the BundleEntry using a ZipEntry.
-	 * 
-	 * @param bundleFile BundleFile object this entry is a member of
-	 * @param zipEntry   ZipEntry object of this entry
-	 */
-	ZipBundleEntry(ZipEntry zipEntry, ZipBundleFile bundleFile) {
-		this.zipEntry = zipEntry;
-		this.bundleFile = bundleFile;
-	}
+    /**
+     * Constructs the BundleEntry using a ZipEntry.
+     * 
+     * @param bundleFile BundleFile object this entry is a member of
+     * @param zipEntry ZipEntry object of this entry
+     */
+    ZipBundleEntry(ZipEntry zipEntry, ZipBundleFile bundleFile) {
+        this.zipEntry = zipEntry;
+        this.bundleFile = bundleFile;
+    }
 
-	/**
-	 * Return an InputStream for the entry.
-	 *
-	 * @return InputStream for the entry
-	 * @exception IOException
-	 */
-	@Override
-	public InputStream getInputStream() throws IOException {
-		return bundleFile.getInputStream(zipEntry);
-	}
+    /**
+     * Return an InputStream for the entry.
+     *
+     * @return InputStream for the entry
+     * @exception IOException
+     */
+    @Override
+    public InputStream getInputStream() throws IOException {
+        return bundleFile.getInputStream(zipEntry);
+    }
 
-	/**
-	 * Return size of the uncompressed entry.
-	 *
-	 * @return size of entry
-	 */
-	@Override
-	public long getSize() {
-		return zipEntry.getSize();
-	}
+    /**
+     * Return size of the uncompressed entry.
+     *
+     * @return size of entry
+     */
+    @Override
+    public long getSize() {
+        return zipEntry.getSize();
+    }
 
-	/**
-	 * Return name of the entry.
-	 *
-	 * @return name of entry
-	 */
-	@Override
-	public String getName() {
-		return zipEntry.getName();
-	}
+    /**
+     * Return name of the entry.
+     *
+     * @return name of entry
+     */
+    @Override
+    public String getName() {
+        return zipEntry.getName();
+    }
 
-	/**
-	 * Get the modification time for this BundleEntry.
-	 * <p>
-	 * If the modification time has not been set, this method will return
-	 * <code>-1</code>.
-	 *
-	 * @return last modification time.
-	 */
-	@Override
-	public long getTime() {
-		return zipEntry.getTime();
-	}
+    /**
+     * Get the modification time for this BundleEntry.
+     * <p>
+     * If the modification time has not been set, this method will return
+     * <code>-1</code>.
+     *
+     * @return last modification time.
+     */
+    @Override
+    public long getTime() {
+        return zipEntry.getTime();
+    }
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public URL getLocalURL() {
-		try {
-			return new URL("jar:" + bundleFile.basefile.toURL() + "!/" + zipEntry.getName()); //$NON-NLS-1$//$NON-NLS-2$
-		} catch (MalformedURLException e) {
-			// This can not happen.
-			return null;
-		}
-	}
+    @SuppressWarnings("deprecation")
+    @Override
+    public URL getLocalURL() {
+        try {
+            return new URL("jar:" + bundleFile.basefile.toURL() + "!/" + zipEntry.getName()); //$NON-NLS-1$//$NON-NLS-2$
+        } catch (MalformedURLException e) {
+            // This can not happen.
+            return null;
+        }
+    }
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public URL getFileURL() {
-		try {
-			File file = bundleFile.getFile(zipEntry.getName(), false);
-			if (file != null)
-				return file.toURL();
-		} catch (MalformedURLException e) {
-			// This can not happen.
-		}
-		return null;
-	}
+    @SuppressWarnings("deprecation")
+    @Override
+    public URL getFileURL() {
+        try {
+            File file = bundleFile.getFile(zipEntry.getName(), false);
+            if (file != null)
+                return file.toURL();
+        } catch (MalformedURLException e) {
+            // This can not happen.
+        }
+        return null;
+    }
 }

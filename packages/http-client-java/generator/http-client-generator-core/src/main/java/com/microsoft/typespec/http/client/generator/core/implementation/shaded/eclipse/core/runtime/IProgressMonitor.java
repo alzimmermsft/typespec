@@ -103,7 +103,7 @@ public interface IProgressMonitor {
     /**
      * Constant indicating an unknown amount of work.
      */
-    public final static int UNKNOWN = -1;
+    int UNKNOWN = -1;
 
     /**
      * Notifies that the main task is beginning. This must only be called once on a
@@ -115,14 +115,14 @@ public interface IProgressMonitor {
      * implementation is free to indicate progress in a way which
      * doesn't require the total number of work units in advance.
      */
-    public void beginTask(String name, int totalWork);
+    void beginTask(String name, int totalWork);
 
     /**
      * Notifies that the work is done; that is, either the main task is completed or
      * the user canceled it. This method may be called more than once
      * (implementations should be prepared to handle this case).
      */
-    public void done();
+    void done();
 
     /**
      * Internal method to handle scaling correctly. This method must not be called
@@ -130,7 +130,7 @@ public interface IProgressMonitor {
      *
      * @param work the amount of work done
      */
-    public void internalWorked(double work);
+    void internalWorked(double work);
 
     /**
      * Returns whether cancelation of current operation has been requested.
@@ -140,7 +140,7 @@ public interface IProgressMonitor {
      * <code>false</code> otherwise
      * @see #setCanceled(boolean)
      */
-    public boolean isCanceled();
+    boolean isCanceled();
 
     /**
      * Sets the cancel state to the given value.
@@ -150,7 +150,7 @@ public interface IProgressMonitor {
      * this flag
      * @see #isCanceled()
      */
-    public void setCanceled(boolean value);
+    void setCanceled(boolean value);
 
     /**
      * Sets the task name to the given value. This method is used to restore the
@@ -160,7 +160,7 @@ public interface IProgressMonitor {
      * @param name the name (or description) of the main task
      * @see #beginTask(String, int)
      */
-    public void setTaskName(String name);
+    void setTaskName(String name);
 
     /**
      * Notifies that a subtask of the main task is beginning. Subtasks are optional;
@@ -168,7 +168,7 @@ public interface IProgressMonitor {
      *
      * @param name the name (or description) of the subtask
      */
-    public void subTask(String name);
+    void subTask(String name);
 
     /**
      * Notifies that a given number of work unit of the main task has been
@@ -177,7 +177,7 @@ public interface IProgressMonitor {
      *
      * @param work a non-negative number of work units just completed
      */
-    public void worked(int work);
+    void worked(int work);
 
     /**
      * Indicates that this operation is blocked by some background activity. If a
@@ -196,7 +196,7 @@ public interface IProgressMonitor {
      * @see #clearBlocked()
      * @since 3.13
      */
-    public default void setBlocked(IStatus reason) {
+    default void setBlocked(IStatus reason) {
         // default implementation does nothing
     }
 
@@ -208,49 +208,8 @@ public interface IProgressMonitor {
      * @see #setBlocked(IStatus)
      * @since 3.13
      */
-    public default void clearBlocked() {
+    default void clearBlocked() {
         // default implementation does nothing
-    }
-
-    /**
-     * This method creates a slice out of this monitor. The slice behaves as if a
-     * new monitor instance is created that simply reports work back to its parent
-     * monitor. Even though it is safe to pass the sliced instance to another
-     * thread, instance itself might not be thread-safe and each slice should
-     * therefore only be used by one thread at once. To account for this, if sliced
-     * instances are passed to another thread, only sliced instances should be used
-     * like in this example:
-     *
-     * <pre>
-     * IProgressMonitor monitor = ...
-     *
-     * processAsync(monitor.slice(70));
-     * monitor = monitor.slice(30); // get a local slice so we can use the monitor
-     * 								// without interference with the async processing
-     * monitor.beginTask("Working on private slice", 1);
-     * ...
-     * monitor.worked(1);           // this is now safe to be called further on
-     * ...
-     * monitor.done();				// mark our part as done,
-     * 								// the other slice will be finished by processAsync(...)
-     * 								// ... and the original monitor by the caller of this method
-     *
-     * </pre>
-     *
-     * The caller of this method (or the Thread that gets this instance passed) is
-     * responsible to make sure that {@link #done()} is called once the monitor is
-     * no longer needed.
-     *
-     * @param work the amount of work for this {@link IProgressMonitor} to slice
-     * @return a {@link IProgressMonitor} slice for the given amount, the default
-     * implementation suppress any strings passed to
-     * {@link #setTaskName(String)}, {@link #subTask(String)} and
-     * {@link #beginTask(String, int)}, and does not propagate
-     * {@link #setCanceled(boolean)} (but reports cancelation of the parent
-     * @since 3.14
-     */
-    public default IProgressMonitor slice(int work) {
-        return new SlicedProgressMonitor(this, work);
     }
 
     /**

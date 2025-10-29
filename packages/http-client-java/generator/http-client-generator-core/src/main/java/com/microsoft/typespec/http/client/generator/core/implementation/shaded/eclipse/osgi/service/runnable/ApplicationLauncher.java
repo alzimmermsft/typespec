@@ -29,20 +29,21 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface ApplicationLauncher {
-	/**
-	 * Launches the specified runnable using the main thread.
-	 * @param runnable a ParameterizedRunnalbe to run on the main thread.
-	 * @param context the context to launch the runnable with
-	 */
-	void launch(ParameterizedRunnable runnable, Object context);
+    /**
+     * Launches the specified runnable using the main thread.
+     * 
+     * @param runnable a ParameterizedRunnalbe to run on the main thread.
+     * @param context the context to launch the runnable with
+     */
+    void launch(ParameterizedRunnable runnable, Object context);
 
-	/**
-	 * Forces the current runnable which is running to be stopped.
-	 * This method will return after the currently running ParameterizedRunnable
-	 * has completely stopped.
-	 * <p>
-	 * After this method returns this ApplicationLauncher will no longer allow
-	 * applications to be launched.
-	 */
-	void shutdown();
+    /**
+     * Forces the current runnable which is running to be stopped.
+     * This method will return after the currently running ParameterizedRunnable
+     * has completely stopped.
+     * <p>
+     * After this method returns this ApplicationLauncher will no longer allow
+     * applications to be launched.
+     */
+    void shutdown();
 }

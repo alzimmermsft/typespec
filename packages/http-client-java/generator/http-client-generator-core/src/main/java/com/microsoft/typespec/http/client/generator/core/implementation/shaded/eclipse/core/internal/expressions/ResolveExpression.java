@@ -19,7 +19,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.expressions.Expression;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.expressions.ExpressionInfo;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.expressions.IEvaluationContext;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IConfigurationElement;
 import java.util.Arrays;
@@ -48,12 +47,6 @@ public class ResolveExpression extends CompositeExpression {
         fVariable = element.getAttribute(ATT_VARIABLE);
         Expressions.checkAttribute(ATT_VARIABLE, fVariable.isEmpty() ? null : fVariable);
         fArgs = Expressions.getArguments(element, ATT_ARGS);
-    }
-
-    public ResolveExpression(String variable, Object[] args) {
-        Assert.isNotNull(variable);
-        fVariable = variable;
-        fArgs = args;
     }
 
     @Override

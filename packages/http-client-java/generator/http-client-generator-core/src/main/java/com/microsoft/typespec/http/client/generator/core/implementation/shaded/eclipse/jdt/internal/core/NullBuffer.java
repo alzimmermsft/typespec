@@ -21,10 +21,10 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * that has no source attached.
  */
 public class NullBuffer extends Buffer {
-	/**
-	 * Creates a new null buffer on an underlying resource.
-	 */
-	public NullBuffer(IFile file, IOpenable owner, boolean readOnly) {
-		super(file, owner, readOnly);
-	}
+    /**
+     * Creates a new null buffer on an underlying resource.
+     */
+    public NullBuffer(IFile file, IOpenable owner, boolean readOnly) {
+        super(file, owner, readOnly);
+    }
 }

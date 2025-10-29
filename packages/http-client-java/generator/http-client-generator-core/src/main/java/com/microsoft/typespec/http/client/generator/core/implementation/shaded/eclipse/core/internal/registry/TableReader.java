@@ -52,7 +52,6 @@ public class TableReader {
 
     // The contributions file
     static final String CONTRIBUTIONS = ".contributions"; //$NON-NLS-1$
-    File contributionsFile;
 
     // The contributor file
     static final String CONTRIBUTORS = ".contributors"; //$NON-NLS-1$
@@ -64,7 +63,6 @@ public class TableReader {
 
     // The orphan file
     static final String ORPHANS = ".orphans"; //$NON-NLS-1$
-    File orphansFile;
 
     // Status code
     private static final byte fileError = 0;
@@ -153,36 +151,6 @@ public class TableReader {
         return result;
     }
 
-    public KeyedHashSet loadContributions() {
-        DataInputStream namespaceInput = null;
-        try {
-            synchronized (contributionsFile) {
-                namespaceInput = new DataInputStream(new BufferedInputStream(new FileInputStream(contributionsFile)));
-                int size = namespaceInput.readInt();
-                KeyedHashSet result = new KeyedHashSet(size);
-                for (int i = 0; i < size; i++) {
-                    String contributorId = readStringOrNull(namespaceInput);
-                    Contribution n = getObjectFactory().createContribution(contributorId, true);
-                    n.setRawChildren(readArray(namespaceInput));
-                    result.add(n);
-                }
-                return result;
-            }
-        } catch (IOException e) {
-            String message = NLS.bind(RegistryMessages.meta_regCacheIOExceptionReading, contributionsFile);
-            log(new Status(IStatus.ERROR, RegistryMessages.OWNER_NAME, fileError, message, e));
-            return null;
-        } finally {
-            if (namespaceInput != null) {
-                try {
-                    namespaceInput.close();
-                } catch (IOException e1) {
-                    // Ignore
-                }
-            }
-        }
-    }
-
     final static float contributorsLoadFactor = 1.2f; // allocate more memory to avoid resizing
 
     public HashMap<String, RegistryContributor> loadContributors() {
@@ -248,39 +216,8 @@ public class TableReader {
         }
     }
 
-    public HashMap<String, int[]> loadOrphans() {
-        DataInputStream orphanInput = null;
-        try {
-            synchronized (orphansFile) {
-                orphanInput = new DataInputStream(new BufferedInputStream(new FileInputStream(orphansFile)));
-                int size = orphanInput.readInt();
-                HashMap<String, int[]> result = new HashMap<>(size);
-                for (int i = 0; i < size; i++) {
-                    String key = readUTF(orphanInput, OBJECT);
-                    int[] value = readArray(orphanInput);
-                    result.put(key, value);
-                }
-                return result;
-            }
-        } catch (IOException e) {
-            return null;
-        } finally {
-            if (orphanInput != null) {
-                try {
-                    orphanInput.close();
-                } catch (IOException e1) {
-                    // ignore
-                }
-            }
-        }
-    }
-
     private void log(Status status) {
         registry.log(status);
-    }
-
-    private RegistryObjectFactory getObjectFactory() {
-        return registry.getElementFactory();
     }
 
     public void close() {

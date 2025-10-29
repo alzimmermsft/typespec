@@ -21,35 +21,35 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class TrackedNodePosition implements ITrackedNodePosition {
 
-	private final TextEditGroup group;
-	private final ASTNode node;
+    private final TextEditGroup group;
+    private final ASTNode node;
 
-	public TrackedNodePosition(TextEditGroup group, ASTNode node) {
-		this.group= group;
-		this.node= node;
-	}
+    public TrackedNodePosition(TextEditGroup group, ASTNode node) {
+        this.group = group;
+        this.node = node;
+    }
 
-	@Override
-	public int getStartPosition() {
-		if (this.group.isEmpty()) {
-			return this.node.getStartPosition();
-		}
-		IRegion coverage= TextEdit.getCoverage(this.group.getTextEdits());
-		if (coverage == null) {
-			return this.node.getStartPosition();
-		}
-		return coverage.getOffset();
-	}
+    @Override
+    public int getStartPosition() {
+        if (this.group.isEmpty()) {
+            return this.node.getStartPosition();
+        }
+        IRegion coverage = TextEdit.getCoverage(this.group.getTextEdits());
+        if (coverage == null) {
+            return this.node.getStartPosition();
+        }
+        return coverage.getOffset();
+    }
 
-	@Override
-	public int getLength() {
-		if (this.group.isEmpty()) {
-			return this.node.getLength();
-		}
-		IRegion coverage= TextEdit.getCoverage(this.group.getTextEdits());
-		if (coverage == null) {
-			return this.node.getLength();
-		}
-		return coverage.getLength();
-	}
+    @Override
+    public int getLength() {
+        if (this.group.isEmpty()) {
+            return this.node.getLength();
+        }
+        IRegion coverage = TextEdit.getCoverage(this.group.getTextEdits());
+        if (coverage == null) {
+            return this.node.getLength();
+        }
+        return coverage.getLength();
+    }
 }

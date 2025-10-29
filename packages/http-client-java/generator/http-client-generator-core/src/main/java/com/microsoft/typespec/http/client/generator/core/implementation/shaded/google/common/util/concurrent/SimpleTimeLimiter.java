@@ -18,11 +18,13 @@ import static com.microsoft.typespec.http.client.generator.core.implementation.s
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Preconditions.checkNotNull;
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.util.concurrent.Uninterruptibles.getUninterruptibly;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtIncompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.J2ktIncompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.ObjectArrays;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.Sets;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -35,8 +37,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A TimeLimiter that runs method calls in the background using an {@link ExecutorService}. If the
@@ -51,237 +51,228 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @ElementTypesAreNonnullByDefault
 public final class SimpleTimeLimiter implements TimeLimiter {
 
-  private final ExecutorService executor;
+    private final ExecutorService executor;
 
-  private SimpleTimeLimiter(ExecutorService executor) {
-    this.executor = checkNotNull(executor);
-  }
+    private SimpleTimeLimiter(ExecutorService executor) {
+        this.executor = checkNotNull(executor);
+    }
 
-  /**
-   * Creates a TimeLimiter instance using the given executor service to execute method calls.
-   *
-   * <p><b>Warning:</b> using a bounded executor may be counterproductive! If the thread pool fills
-   * up, any time callers spend waiting for a thread may count toward their time limit, and in this
-   * case the call may even time out before the target method is ever invoked.
-   *
-   * @param executor the ExecutorService that will execute the method calls on the target objects;
-   *     for example, a {@link Executors#newCachedThreadPool()}.
-   * @since 22.0
-   */
-  public static SimpleTimeLimiter create(ExecutorService executor) {
-    return new SimpleTimeLimiter(executor);
-  }
+    /**
+     * Creates a TimeLimiter instance using the given executor service to execute method calls.
+     *
+     * <p><b>Warning:</b> using a bounded executor may be counterproductive! If the thread pool fills
+     * up, any time callers spend waiting for a thread may count toward their time limit, and in this
+     * case the call may even time out before the target method is ever invoked.
+     *
+     * @param executor the ExecutorService that will execute the method calls on the target objects;
+     * for example, a {@link Executors#newCachedThreadPool()}.
+     * @since 22.0
+     */
+    public static SimpleTimeLimiter create(ExecutorService executor) {
+        return new SimpleTimeLimiter(executor);
+    }
 
-  @Override
-  public <T> T newProxy(
-      T target, Class<T> interfaceType, long timeoutDuration, TimeUnit timeoutUnit) {
-    checkNotNull(target);
-    checkNotNull(interfaceType);
-    checkNotNull(timeoutUnit);
-    checkPositiveTimeout(timeoutDuration);
-    checkArgument(interfaceType.isInterface(), "interfaceType must be an interface type");
+    @Override
+    public <T> T newProxy(T target, Class<T> interfaceType, long timeoutDuration, TimeUnit timeoutUnit) {
+        checkNotNull(target);
+        checkNotNull(interfaceType);
+        checkNotNull(timeoutUnit);
+        checkPositiveTimeout(timeoutDuration);
+        checkArgument(interfaceType.isInterface(), "interfaceType must be an interface type");
 
-    Set<Method> interruptibleMethods = findInterruptibleMethods(interfaceType);
+        Set<Method> interruptibleMethods = findInterruptibleMethods(interfaceType);
 
-    InvocationHandler handler =
-        new InvocationHandler() {
-          @Override
-          @CheckForNull
-          public Object invoke(Object obj, Method method, @CheckForNull @Nullable Object[] args)
-              throws Throwable {
-            Callable<@Nullable Object> callable =
-                () -> {
-                  try {
-                    return method.invoke(target, args);
-                  } catch (InvocationTargetException e) {
-                    throw throwCause(e, false /* combineStackTraces */);
-                  }
+        InvocationHandler handler = new InvocationHandler() {
+            @Override
+            @CheckForNull
+            public Object invoke(Object obj, Method method, @CheckForNull @Nullable Object[] args) throws Throwable {
+                Callable<@Nullable Object> callable = () -> {
+                    try {
+                        return method.invoke(target, args);
+                    } catch (InvocationTargetException e) {
+                        throw throwCause(e, false /* combineStackTraces */);
+                    }
                 };
-            return callWithTimeout(
-                callable, timeoutDuration, timeoutUnit, interruptibleMethods.contains(method));
-          }
+                return callWithTimeout(callable, timeoutDuration, timeoutUnit, interruptibleMethods.contains(method));
+            }
         };
-    return newProxy(interfaceType, handler);
-  }
-
-  // TODO: replace with version in common.reflect if and when it's open-sourced
-  private static <T> T newProxy(Class<T> interfaceType, InvocationHandler handler) {
-    Object object =
-        Proxy.newProxyInstance(
-            interfaceType.getClassLoader(), new Class<?>[] {interfaceType}, handler);
-    return interfaceType.cast(object);
-  }
-
-  @ParametricNullness
-  private <T extends @Nullable Object> T callWithTimeout(
-      Callable<T> callable, long timeoutDuration, TimeUnit timeoutUnit, boolean amInterruptible)
-      throws Exception {
-    checkNotNull(callable);
-    checkNotNull(timeoutUnit);
-    checkPositiveTimeout(timeoutDuration);
-
-    Future<T> future = executor.submit(callable);
-
-    try {
-      return amInterruptible
-          ? future.get(timeoutDuration, timeoutUnit)
-          : getUninterruptibly(future, timeoutDuration, timeoutUnit);
-    } catch (InterruptedException e) {
-      future.cancel(true);
-      throw e;
-    } catch (ExecutionException e) {
-      throw throwCause(e, true /* combineStackTraces */);
-    } catch (TimeoutException e) {
-      future.cancel(true);
-      throw new UncheckedTimeoutException(e);
+        return newProxy(interfaceType, handler);
     }
-  }
 
-  @CanIgnoreReturnValue
-  @Override
-  @ParametricNullness
-  public <T extends @Nullable Object> T callWithTimeout(
-      Callable<T> callable, long timeoutDuration, TimeUnit timeoutUnit)
-      throws TimeoutException, InterruptedException, ExecutionException {
-    checkNotNull(callable);
-    checkNotNull(timeoutUnit);
-    checkPositiveTimeout(timeoutDuration);
-
-    Future<T> future = executor.submit(callable);
-
-    try {
-      return future.get(timeoutDuration, timeoutUnit);
-    } catch (InterruptedException | TimeoutException e) {
-      future.cancel(true /* mayInterruptIfRunning */);
-      throw e;
-    } catch (ExecutionException e) {
-      wrapAndThrowExecutionExceptionOrError(e.getCause());
-      throw new AssertionError();
+    // TODO: replace with version in common.reflect if and when it's open-sourced
+    private static <T> T newProxy(Class<T> interfaceType, InvocationHandler handler) {
+        Object object
+            = Proxy.newProxyInstance(interfaceType.getClassLoader(), new Class<?>[] { interfaceType }, handler);
+        return interfaceType.cast(object);
     }
-  }
 
-  @CanIgnoreReturnValue
-  @Override
-  @ParametricNullness
-  public <T extends @Nullable Object> T callUninterruptiblyWithTimeout(
-      Callable<T> callable, long timeoutDuration, TimeUnit timeoutUnit)
-      throws TimeoutException, ExecutionException {
-    checkNotNull(callable);
-    checkNotNull(timeoutUnit);
-    checkPositiveTimeout(timeoutDuration);
+    @ParametricNullness
+    private <T extends @Nullable Object> T callWithTimeout(Callable<T> callable, long timeoutDuration,
+        TimeUnit timeoutUnit, boolean amInterruptible) throws Exception {
+        checkNotNull(callable);
+        checkNotNull(timeoutUnit);
+        checkPositiveTimeout(timeoutDuration);
 
-    Future<T> future = executor.submit(callable);
+        Future<T> future = executor.submit(callable);
 
-    try {
-      return getUninterruptibly(future, timeoutDuration, timeoutUnit);
-    } catch (TimeoutException e) {
-      future.cancel(true /* mayInterruptIfRunning */);
-      throw e;
-    } catch (ExecutionException e) {
-      wrapAndThrowExecutionExceptionOrError(e.getCause());
-      throw new AssertionError();
+        try {
+            return amInterruptible
+                ? future.get(timeoutDuration, timeoutUnit)
+                : getUninterruptibly(future, timeoutDuration, timeoutUnit);
+        } catch (InterruptedException e) {
+            future.cancel(true);
+            throw e;
+        } catch (ExecutionException e) {
+            throw throwCause(e, true /* combineStackTraces */);
+        } catch (TimeoutException e) {
+            future.cancel(true);
+            throw new UncheckedTimeoutException(e);
+        }
     }
-  }
 
-  @Override
-  public void runWithTimeout(Runnable runnable, long timeoutDuration, TimeUnit timeoutUnit)
-      throws TimeoutException, InterruptedException {
-    checkNotNull(runnable);
-    checkNotNull(timeoutUnit);
-    checkPositiveTimeout(timeoutDuration);
+    @CanIgnoreReturnValue
+    @Override
+    @ParametricNullness
+    public <T extends @Nullable Object> T callWithTimeout(Callable<T> callable, long timeoutDuration,
+        TimeUnit timeoutUnit) throws TimeoutException, InterruptedException, ExecutionException {
+        checkNotNull(callable);
+        checkNotNull(timeoutUnit);
+        checkPositiveTimeout(timeoutDuration);
 
-    Future<?> future = executor.submit(runnable);
+        Future<T> future = executor.submit(callable);
 
-    try {
-      future.get(timeoutDuration, timeoutUnit);
-    } catch (InterruptedException | TimeoutException e) {
-      future.cancel(true /* mayInterruptIfRunning */);
-      throw e;
-    } catch (ExecutionException e) {
-      wrapAndThrowRuntimeExecutionExceptionOrError(e.getCause());
-      throw new AssertionError();
+        try {
+            return future.get(timeoutDuration, timeoutUnit);
+        } catch (InterruptedException | TimeoutException e) {
+            future.cancel(true /* mayInterruptIfRunning */);
+            throw e;
+        } catch (ExecutionException e) {
+            wrapAndThrowExecutionExceptionOrError(e.getCause());
+            throw new AssertionError();
+        }
     }
-  }
 
-  @Override
-  public void runUninterruptiblyWithTimeout(
-      Runnable runnable, long timeoutDuration, TimeUnit timeoutUnit) throws TimeoutException {
-    checkNotNull(runnable);
-    checkNotNull(timeoutUnit);
-    checkPositiveTimeout(timeoutDuration);
+    @CanIgnoreReturnValue
+    @Override
+    @ParametricNullness
+    public <T extends @Nullable Object> T callUninterruptiblyWithTimeout(Callable<T> callable, long timeoutDuration,
+        TimeUnit timeoutUnit) throws TimeoutException, ExecutionException {
+        checkNotNull(callable);
+        checkNotNull(timeoutUnit);
+        checkPositiveTimeout(timeoutDuration);
 
-    Future<?> future = executor.submit(runnable);
+        Future<T> future = executor.submit(callable);
 
-    try {
-      getUninterruptibly(future, timeoutDuration, timeoutUnit);
-    } catch (TimeoutException e) {
-      future.cancel(true /* mayInterruptIfRunning */);
-      throw e;
-    } catch (ExecutionException e) {
-      wrapAndThrowRuntimeExecutionExceptionOrError(e.getCause());
-      throw new AssertionError();
+        try {
+            return getUninterruptibly(future, timeoutDuration, timeoutUnit);
+        } catch (TimeoutException e) {
+            future.cancel(true /* mayInterruptIfRunning */);
+            throw e;
+        } catch (ExecutionException e) {
+            wrapAndThrowExecutionExceptionOrError(e.getCause());
+            throw new AssertionError();
+        }
     }
-  }
 
-  private static Exception throwCause(Exception e, boolean combineStackTraces) throws Exception {
-    Throwable cause = e.getCause();
-    if (cause == null) {
-      throw e;
-    }
-    if (combineStackTraces) {
-      StackTraceElement[] combined =
-          ObjectArrays.concat(cause.getStackTrace(), e.getStackTrace(), StackTraceElement.class);
-      cause.setStackTrace(combined);
-    }
-    if (cause instanceof Exception) {
-      throw (Exception) cause;
-    }
-    if (cause instanceof Error) {
-      throw (Error) cause;
-    }
-    // The cause is a weird kind of Throwable, so throw the outer exception.
-    throw e;
-  }
+    @Override
+    public void runWithTimeout(Runnable runnable, long timeoutDuration, TimeUnit timeoutUnit)
+        throws TimeoutException, InterruptedException {
+        checkNotNull(runnable);
+        checkNotNull(timeoutUnit);
+        checkPositiveTimeout(timeoutDuration);
 
-  private static Set<Method> findInterruptibleMethods(Class<?> interfaceType) {
-    Set<Method> set = Sets.newHashSet();
-    for (Method m : interfaceType.getMethods()) {
-      if (declaresInterruptedEx(m)) {
-        set.add(m);
-      }
-    }
-    return set;
-  }
+        Future<?> future = executor.submit(runnable);
 
-  private static boolean declaresInterruptedEx(Method method) {
-    for (Class<?> exType : method.getExceptionTypes()) {
-      // debate: == or isAssignableFrom?
-      if (exType == InterruptedException.class) {
-        return true;
-      }
+        try {
+            future.get(timeoutDuration, timeoutUnit);
+        } catch (InterruptedException | TimeoutException e) {
+            future.cancel(true /* mayInterruptIfRunning */);
+            throw e;
+        } catch (ExecutionException e) {
+            wrapAndThrowRuntimeExecutionExceptionOrError(e.getCause());
+            throw new AssertionError();
+        }
     }
-    return false;
-  }
 
-  private void wrapAndThrowExecutionExceptionOrError(Throwable cause) throws ExecutionException {
-    if (cause instanceof Error) {
-      throw new ExecutionError((Error) cause);
-    } else if (cause instanceof RuntimeException) {
-      throw new UncheckedExecutionException(cause);
-    } else {
-      throw new ExecutionException(cause);
+    @Override
+    public void runUninterruptiblyWithTimeout(Runnable runnable, long timeoutDuration, TimeUnit timeoutUnit)
+        throws TimeoutException {
+        checkNotNull(runnable);
+        checkNotNull(timeoutUnit);
+        checkPositiveTimeout(timeoutDuration);
+
+        Future<?> future = executor.submit(runnable);
+
+        try {
+            getUninterruptibly(future, timeoutDuration, timeoutUnit);
+        } catch (TimeoutException e) {
+            future.cancel(true /* mayInterruptIfRunning */);
+            throw e;
+        } catch (ExecutionException e) {
+            wrapAndThrowRuntimeExecutionExceptionOrError(e.getCause());
+            throw new AssertionError();
+        }
     }
-  }
 
-  private void wrapAndThrowRuntimeExecutionExceptionOrError(Throwable cause) {
-    if (cause instanceof Error) {
-      throw new ExecutionError((Error) cause);
-    } else {
-      throw new UncheckedExecutionException(cause);
+    private static Exception throwCause(Exception e, boolean combineStackTraces) throws Exception {
+        Throwable cause = e.getCause();
+        if (cause == null) {
+            throw e;
+        }
+        if (combineStackTraces) {
+            StackTraceElement[] combined
+                = ObjectArrays.concat(cause.getStackTrace(), e.getStackTrace(), StackTraceElement.class);
+            cause.setStackTrace(combined);
+        }
+        if (cause instanceof Exception) {
+            throw (Exception) cause;
+        }
+        if (cause instanceof Error) {
+            throw (Error) cause;
+        }
+        // The cause is a weird kind of Throwable, so throw the outer exception.
+        throw e;
     }
-  }
 
-  private static void checkPositiveTimeout(long timeoutDuration) {
-    checkArgument(timeoutDuration > 0, "timeout must be positive: %s", timeoutDuration);
-  }
+    private static Set<Method> findInterruptibleMethods(Class<?> interfaceType) {
+        Set<Method> set = Sets.newHashSet();
+        for (Method m : interfaceType.getMethods()) {
+            if (declaresInterruptedEx(m)) {
+                set.add(m);
+            }
+        }
+        return set;
+    }
+
+    private static boolean declaresInterruptedEx(Method method) {
+        for (Class<?> exType : method.getExceptionTypes()) {
+            // debate: == or isAssignableFrom?
+            if (exType == InterruptedException.class) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void wrapAndThrowExecutionExceptionOrError(Throwable cause) throws ExecutionException {
+        if (cause instanceof Error) {
+            throw new ExecutionError((Error) cause);
+        } else if (cause instanceof RuntimeException) {
+            throw new UncheckedExecutionException(cause);
+        } else {
+            throw new ExecutionException(cause);
+        }
+    }
+
+    private void wrapAndThrowRuntimeExecutionExceptionOrError(Throwable cause) {
+        if (cause instanceof Error) {
+            throw new ExecutionError((Error) cause);
+        } else {
+            throw new UncheckedExecutionException(cause);
+        }
+    }
+
+    private static void checkPositiveTimeout(long timeoutDuration) {
+        checkArgument(timeoutDuration > 0, "timeout must be positive: %s", timeoutDuration);
+    }
 }

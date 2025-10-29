@@ -47,26 +47,33 @@ public class CallbackThreadInitializer {
     private boolean detach;
     private String name;
     private ThreadGroup group;
-    /** The default initializer causes the callback thread to remain attached
-        as a daemon thread, using the default thread name and group.
-    */
+
+    /**
+     * The default initializer causes the callback thread to remain attached
+     * as a daemon thread, using the default thread name and group.
+     */
     public CallbackThreadInitializer() {
         this(true);
     }
-    /** Keep the callback thread attached, with the given daemon state,
-        using the default thread name and group.
-    */
+
+    /**
+     * Keep the callback thread attached, with the given daemon state,
+     * using the default thread name and group.
+     */
     public CallbackThreadInitializer(boolean daemon) {
         this(daemon, false);
     }
+
     /** Uses the default thread name and group. */
     public CallbackThreadInitializer(boolean daemon, boolean detach) {
         this(daemon, detach, null);
     }
+
     /** Uses the default thread group. */
     public CallbackThreadInitializer(boolean daemon, boolean detach, String name) {
         this(daemon, detach, name, null);
     }
+
     /** Specify all aspects of how the callback thread should be initialized. */
     public CallbackThreadInitializer(boolean daemon, boolean detach, String name, ThreadGroup group) {
         this.daemon = daemon;
@@ -76,13 +83,25 @@ public class CallbackThreadInitializer {
     }
 
     /** Returns the desired name for this thread, or null for the default. */
-    public String getName(Callback cb) { return name; }
+    public String getName(Callback cb) {
+        return name;
+    }
+
     /** Returns the desired ThreadGroup for thread, or null for the default. */
-    public ThreadGroup getThreadGroup(Callback cb) { return group; }
+    public ThreadGroup getThreadGroup(Callback cb) {
+        return group;
+    }
+
     /** Returns whether the callback thread should be a daemon thread. */
-    public boolean isDaemon(Callback cb) { return daemon; }
-    /** Returns whether the Thread should be detached from the VM after the
-        callback exits, if the thread was not already attached to begin with.
-    */
-    public boolean detach(Callback cb) { return detach; }
+    public boolean isDaemon(Callback cb) {
+        return daemon;
+    }
+
+    /**
+     * Returns whether the Thread should be detached from the VM after the
+     * callback exits, if the thread was not already attached to begin with.
+     */
+    public boolean detach(Callback cb) {
+        return detach;
+    }
 }

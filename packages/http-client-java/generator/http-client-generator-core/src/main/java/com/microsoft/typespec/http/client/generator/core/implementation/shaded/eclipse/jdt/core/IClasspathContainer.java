@@ -14,7 +14,6 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaModelManager;
 
 /**
  * Interface of a classpath container.
@@ -61,59 +60,6 @@ public interface IClasspathContainer {
     int K_SYSTEM = 2;
 
     /**
-     * Kind for a container mapping to a default system library, implicitly contributed by the runtime
-     */
-    int K_DEFAULT_SYSTEM = 3;
-
-    /**
-     * Answers the set of classpath entries this container is mapping to.
-     * <p>
-     * The set of entries associated with a classpath container may contain any of the following:
-     * <ul>
-     * <li> library entries (<code>CPE_LIBRARY</code>) </li>
-     * <li> project entries (<code>CPE_PROJECT</code>) </li>
-     * </ul>
-     * A classpath container can neither reference further classpath containers
-     * or classpath variables.
-     * <p>
-     * A library entry can reference other libraries through the Class-Path section of the JAR's MANIFEST.MF file. If
-     * the container wants such referenced entries to be part of the classpath, the container must explicitly add them
-     * to the result.
-     * <p>
-     * This method is called by the Java model when it needs to resolve this
-     * classpath container entry into a list of library and project entries.
-     * The method is typically called exactly once for a given Java project,
-     * and the resulting list of entries cached internally by the Java model.
-     * This method must not be called by other clients.
-     * <p>
-     * There are a wide variety of conditions under which this method may be
-     * invoked. To ensure that the implementation does not interfere with
-     * correct functioning of the Java model, the implementation should use
-     * only the following Java model APIs:
-     * <ul>
-     * <li>{@link JavaCore#newLibraryEntry(IPath, IPath, IPath, boolean)} and variants</li>
-     * <li>{@link JavaCore#newProjectEntry(IPath, boolean)} and variants</li>
-     * <li>{@link JavaCore#create(com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IWorkspaceRoot)}</li>
-     * <li>{@link JavaCore#create(com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IProject)}</li>
-     * <li>{@link JavaCore#getReferencedClasspathEntries(IClasspathEntry, IJavaProject)} with <code>null</code> as
-     * project</li>
-     * <li>{@link IJavaModel#getJavaProjects()}</li>
-     * <li>{@link IJavaProject#getRawClasspath()}</li>
-     * <li>{@link IJavaProject#readRawClasspath()}</li>
-     * <li>{@link IJavaProject#getOutputLocation()}</li>
-     * <li>{@link IJavaProject#readOutputLocation()}</li>
-     * <li>Java element operations marked as "handle-only"</li>
-     * </ul>
-     * <p>
-     * The effects of using other Java model APIs are unspecified.
-     * </p>
-     *
-     * @return IClasspathEntry[] - the classpath entries this container represents
-     * @see IClasspathEntry
-     */
-    IClasspathEntry[] getClasspathEntries();
-
-    /**
      * Answers a readable description of this container
      *
      * @return String - a string description of the container
@@ -150,15 +96,4 @@ public interface IClasspathContainer {
      */
     IPath getPath();
 
-    /**
-     * Answer the IDs of all registered classpath containers (extensions at extension point
-     * {@link JavaModelManager#CPCONTAINER_INITIALIZER_EXTPOINT_ID}).
-     * 
-     * @return array of strings as extracted from the "id" attribute from all registered
-     * classpath containers.
-     * @since 3.32
-     */
-    public static String[] getRegisteredContainerIds() {
-        return JavaModelManager.getRegisteredContainerIDs();
-    }
 }

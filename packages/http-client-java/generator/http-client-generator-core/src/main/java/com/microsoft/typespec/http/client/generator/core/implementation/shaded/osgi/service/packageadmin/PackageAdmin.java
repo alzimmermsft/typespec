@@ -31,178 +31,178 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  * @noimplement
  * @author $Id: 1de8679fcf7df57b019a93219f6b82222eb1525e $
  * @deprecated This service has been replaced by the
- *             <code>com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.wiring</code> package.
+ * <code>com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.wiring</code> package.
  * @see org.osgi.service.packageadmin.ExportedPackage
  * @see org.osgi.service.packageadmin.RequiredBundle
  */
 public interface PackageAdmin {
-	/**
-	 * Gets the exported packages for the specified bundle.
-	 * 
-	 * @param bundle The bundle whose exported packages are to be returned, or
-	 *        {@code null} if all exported packages are to be returned. If
-	 *        the specified bundle is the system bundle (that is, the bundle
-	 *        with id zero), this method returns all the packages known to be
-	 *        exported by the system bundle. This will include the package
-	 *        specified by the {@code org.osgi.framework.system.packages}
-	 *        system property as well as any other package exported by the
-	 *        framework implementation.
-	 * 
-	 * @return An array of exported packages, or {@code null} if the
-	 *         specified bundle has no exported packages.
-	 * @throws IllegalArgumentException If the specified {@code Bundle} was
-	 *         not created by the same framework instance that registered this
-	 *         {@code PackageAdmin} service.
-	 * @deprecated
-	 */
-	public ExportedPackage[] getExportedPackages(Bundle bundle);
-
-	/**
-	 * Gets the exported packages for the specified package name.
-	 * 
-	 * @param name The name of the exported packages to be returned.
-	 * 
-	 * @return An array of the exported packages, or {@code null} if no
-	 *         exported packages with the specified name exists.
-	 * @since 1.2
-	 * @deprecated
-	 */
-	public ExportedPackage[] getExportedPackages(String name);
-
-	/**
-	 * Gets the exported package for the specified package name.
-	 * 
-	 * <p>
-	 * If there are multiple exported packages with specified name, the exported
-	 * package with the highest version will be returned.
-	 * 
-	 * @param name The name of the exported package to be returned.
-	 * 
-	 * @return The exported package, or {@code null} if no exported
-	 *         package with the specified name exists.
-	 * @see #getExportedPackages(String)
-	 * @deprecated
-	 */
-	public ExportedPackage getExportedPackage(String name);
+    /**
+     * Gets the exported packages for the specified bundle.
+     * 
+     * @param bundle The bundle whose exported packages are to be returned, or
+     * {@code null} if all exported packages are to be returned. If
+     * the specified bundle is the system bundle (that is, the bundle
+     * with id zero), this method returns all the packages known to be
+     * exported by the system bundle. This will include the package
+     * specified by the {@code org.osgi.framework.system.packages}
+     * system property as well as any other package exported by the
+     * framework implementation.
+     * 
+     * @return An array of exported packages, or {@code null} if the
+     * specified bundle has no exported packages.
+     * @throws IllegalArgumentException If the specified {@code Bundle} was
+     * not created by the same framework instance that registered this
+     * {@code PackageAdmin} service.
+     * @deprecated
+     */
+    public ExportedPackage[] getExportedPackages(Bundle bundle);
 
     /**
-	 * Returns an array of required bundles having the specified symbolic name.
-	 * 
-	 * <p>
-	 * If {@code null} is specified, then all required bundles will be
-	 * returned.
-	 * 
-	 * @param symbolicName The bundle symbolic name or {@code null} for
-	 *        all required bundles.
-	 * @return An array of required bundles or {@code null} if no
-	 *         required bundles exist for the specified symbolic name.
-	 * @since 1.2
-	 * @deprecated
-	 */
-	public RequiredBundle[] getRequiredBundles(String symbolicName);
+     * Gets the exported packages for the specified package name.
+     * 
+     * @param name The name of the exported packages to be returned.
+     * 
+     * @return An array of the exported packages, or {@code null} if no
+     * exported packages with the specified name exists.
+     * @since 1.2
+     * @deprecated
+     */
+    public ExportedPackage[] getExportedPackages(String name);
 
-	/**
-	 * Returns the bundles with the specified symbolic name whose bundle version
-	 * is within the specified version range. If no bundles are installed that
-	 * have the specified symbolic name, then {@code null} is returned.
-	 * If a version range is specified, then only the bundles that have the
-	 * specified symbolic name and whose bundle versions belong to the specified
-	 * version range are returned. The returned bundles are ordered by version
-	 * in descending version order so that the first element of the array
-	 * contains the bundle with the highest version.
-	 * 
-	 * @see org.osgi.framework.Constants#BUNDLE_VERSION_ATTRIBUTE
-	 * @param symbolicName The symbolic name of the desired bundles.
-	 * @param versionRange The version range of the desired bundles, or
-	 *        {@code null} if all versions are desired.
-	 * @return An array of bundles with the specified name belonging to the
-	 *         specified version range ordered in descending version order, or
-	 *         {@code null} if no bundles are found.
-	 * @since 1.2
-	 */
-	public Bundle[] getBundles(String symbolicName, String versionRange);
+    /**
+     * Gets the exported package for the specified package name.
+     * 
+     * <p>
+     * If there are multiple exported packages with specified name, the exported
+     * package with the highest version will be returned.
+     * 
+     * @param name The name of the exported package to be returned.
+     * 
+     * @return The exported package, or {@code null} if no exported
+     * package with the specified name exists.
+     * @see #getExportedPackages(String)
+     * @deprecated
+     */
+    public ExportedPackage getExportedPackage(String name);
 
-	/**
-	 * Returns an array of attached fragment bundles for the specified bundle.
-	 * If the specified bundle is a fragment then {@code null} is returned.
-	 * If no fragments are attached to the specified bundle then
-	 * {@code null} is returned.
-	 * <p>
-	 * This method does not attempt to resolve the specified bundle. If the
-	 * specified bundle is not resolved then {@code null} is returned.
-	 * 
-	 * @param bundle The bundle whose attached fragment bundles are to be
-	 *        returned.
-	 * @return An array of fragment bundles or {@code null} if the bundle
-	 *         does not have any attached fragment bundles or the bundle is not
-	 *         resolved.
-	 * @throws IllegalArgumentException If the specified {@code Bundle} was
-	 *         not created by the same framework instance that registered this
-	 *         {@code PackageAdmin} service.
-	 * @since 1.2
-	 */
-	public Bundle[] getFragments(Bundle bundle);
+    /**
+     * Returns an array of required bundles having the specified symbolic name.
+     * 
+     * <p>
+     * If {@code null} is specified, then all required bundles will be
+     * returned.
+     * 
+     * @param symbolicName The bundle symbolic name or {@code null} for
+     * all required bundles.
+     * @return An array of required bundles or {@code null} if no
+     * required bundles exist for the specified symbolic name.
+     * @since 1.2
+     * @deprecated
+     */
+    public RequiredBundle[] getRequiredBundles(String symbolicName);
 
-	/**
-	 * Returns the host bundles to which the specified fragment bundle is
-	 * attached.
-	 * 
-	 * @param bundle The fragment bundle whose host bundles are to be returned.
-	 * @return An array containing the host bundles to which the specified
-	 *         fragment is attached or {@code null} if the specified bundle
-	 *         is not a fragment or is not attached to any host bundles.
-	 * @throws IllegalArgumentException If the specified {@code Bundle} was
-	 *         not created by the same framework instance that registered this
-	 *         {@code PackageAdmin} service.
-	 * @since 1.2
-	 */
-	public Bundle[] getHosts(Bundle bundle);
+    /**
+     * Returns the bundles with the specified symbolic name whose bundle version
+     * is within the specified version range. If no bundles are installed that
+     * have the specified symbolic name, then {@code null} is returned.
+     * If a version range is specified, then only the bundles that have the
+     * specified symbolic name and whose bundle versions belong to the specified
+     * version range are returned. The returned bundles are ordered by version
+     * in descending version order so that the first element of the array
+     * contains the bundle with the highest version.
+     * 
+     * @see org.osgi.framework.Constants#BUNDLE_VERSION_ATTRIBUTE
+     * @param symbolicName The symbolic name of the desired bundles.
+     * @param versionRange The version range of the desired bundles, or
+     * {@code null} if all versions are desired.
+     * @return An array of bundles with the specified name belonging to the
+     * specified version range ordered in descending version order, or
+     * {@code null} if no bundles are found.
+     * @since 1.2
+     */
+    public Bundle[] getBundles(String symbolicName, String versionRange);
 
-	/**
-	 * Returns the bundle from which the specified class is loaded. The class
-	 * loader of the returned bundle must have been used to load the specified
-	 * class. If the class was not loaded by a bundle class loader then
-	 * {@code null} is returned.
-	 * 
-	 * @param clazz The class object from which to locate the bundle.
-	 * @return The bundle from which the specified class is loaded or
-	 *         {@code null} if the class was not loaded by a bundle class
-	 *         loader created by the same framework instance that registered
-	 *         this {@code PackageAdmin} service.
-	 * @since 1.2
-	 */
-	public Bundle getBundle(Class<?> clazz);
+    /**
+     * Returns an array of attached fragment bundles for the specified bundle.
+     * If the specified bundle is a fragment then {@code null} is returned.
+     * If no fragments are attached to the specified bundle then
+     * {@code null} is returned.
+     * <p>
+     * This method does not attempt to resolve the specified bundle. If the
+     * specified bundle is not resolved then {@code null} is returned.
+     * 
+     * @param bundle The bundle whose attached fragment bundles are to be
+     * returned.
+     * @return An array of fragment bundles or {@code null} if the bundle
+     * does not have any attached fragment bundles or the bundle is not
+     * resolved.
+     * @throws IllegalArgumentException If the specified {@code Bundle} was
+     * not created by the same framework instance that registered this
+     * {@code PackageAdmin} service.
+     * @since 1.2
+     */
+    public Bundle[] getFragments(Bundle bundle);
 
-	/**
-	 * Bundle type indicating the bundle is a fragment bundle.
-	 * 
-	 * <p>
-	 * The value of {@code BUNDLE_TYPE_FRAGMENT} is 0x00000001.
-	 * 
-	 * @since 1.2
-	 */
-	public static final int	BUNDLE_TYPE_FRAGMENT	= 0x00000001;
+    /**
+     * Returns the host bundles to which the specified fragment bundle is
+     * attached.
+     * 
+     * @param bundle The fragment bundle whose host bundles are to be returned.
+     * @return An array containing the host bundles to which the specified
+     * fragment is attached or {@code null} if the specified bundle
+     * is not a fragment or is not attached to any host bundles.
+     * @throws IllegalArgumentException If the specified {@code Bundle} was
+     * not created by the same framework instance that registered this
+     * {@code PackageAdmin} service.
+     * @since 1.2
+     */
+    public Bundle[] getHosts(Bundle bundle);
 
-	/**
-	 * Returns the special type of the specified bundle. The bundle type values
-	 * are:
-	 * <ul>
-	 * <li>{@link #BUNDLE_TYPE_FRAGMENT}</li>
-	 * </ul>
-	 * 
-	 * A bundle may be more than one type at a time. A type code is used to
-	 * identify the bundle type for future extendability.
-	 * 
-	 * <p>
-	 * If a bundle is not one or more of the defined types then 0x00000000 is
-	 * returned.
-	 * 
-	 * @param bundle The bundle for which to return the special type.
-	 * @return The special type of the bundle.
-	 * @throws IllegalArgumentException If the specified {@code Bundle} was
-	 *         not created by the same framework instance that registered this
-	 *         {@code PackageAdmin} service.
-	 * @since 1.2
-	 */
-	public int getBundleType(Bundle bundle);
+    /**
+     * Returns the bundle from which the specified class is loaded. The class
+     * loader of the returned bundle must have been used to load the specified
+     * class. If the class was not loaded by a bundle class loader then
+     * {@code null} is returned.
+     * 
+     * @param clazz The class object from which to locate the bundle.
+     * @return The bundle from which the specified class is loaded or
+     * {@code null} if the class was not loaded by a bundle class
+     * loader created by the same framework instance that registered
+     * this {@code PackageAdmin} service.
+     * @since 1.2
+     */
+    public Bundle getBundle(Class<?> clazz);
+
+    /**
+     * Bundle type indicating the bundle is a fragment bundle.
+     * 
+     * <p>
+     * The value of {@code BUNDLE_TYPE_FRAGMENT} is 0x00000001.
+     * 
+     * @since 1.2
+     */
+    public static final int BUNDLE_TYPE_FRAGMENT = 0x00000001;
+
+    /**
+     * Returns the special type of the specified bundle. The bundle type values
+     * are:
+     * <ul>
+     * <li>{@link #BUNDLE_TYPE_FRAGMENT}</li>
+     * </ul>
+     * 
+     * A bundle may be more than one type at a time. A type code is used to
+     * identify the bundle type for future extendability.
+     * 
+     * <p>
+     * If a bundle is not one or more of the defined types then 0x00000000 is
+     * returned.
+     * 
+     * @param bundle The bundle for which to return the special type.
+     * @return The special type of the bundle.
+     * @throws IllegalArgumentException If the specified {@code Bundle} was
+     * not created by the same framework instance that registered this
+     * {@code PackageAdmin} service.
+     * @since 1.2
+     */
+    public int getBundleType(Bundle bundle);
 }

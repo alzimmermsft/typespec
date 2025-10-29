@@ -13,370 +13,365 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.apt.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Set;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.SourceVersion;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.*;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.type.TypeKind;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.type.TypeMirror;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CharOperation;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.FieldDeclaration;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.*;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.SourceVersion;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.*;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.type.TypeKind;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.type.TypeMirror;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Set;
 
 public class TypeElementImpl extends ElementImpl implements TypeElement {
 
-	/**
-	 * Compares Element instances possibly returned by
-	 * {@link TypeElement#getEnclosedElements()} based on their source location, if available.
-	 */
-	private static final class SourceLocationComparator implements Comparator<Element> {
-		private final IdentityHashMap<ElementImpl, Integer> sourceStartCache = new IdentityHashMap<>();
+    /**
+     * Compares Element instances possibly returned by
+     * {@link TypeElement#getEnclosedElements()} based on their source location, if available.
+     */
+    private static final class SourceLocationComparator implements Comparator<Element> {
+        private final IdentityHashMap<ElementImpl, Integer> sourceStartCache = new IdentityHashMap<>();
 
-		@Override
-		public int compare(Element o1, Element o2) {
-			ElementImpl e1 = (ElementImpl) o1;
-			ElementImpl e2 = (ElementImpl) o2;
+        @Override
+        public int compare(Element o1, Element o2) {
+            ElementImpl e1 = (ElementImpl) o1;
+            ElementImpl e2 = (ElementImpl) o2;
 
-			return getSourceStart(e1) - getSourceStart(e2);
-		}
+            return getSourceStart(e1) - getSourceStart(e2);
+        }
 
-		private int getSourceStart(ElementImpl e) {
-			Integer value = this.sourceStartCache.get(e);
+        private int getSourceStart(ElementImpl e) {
+            Integer value = this.sourceStartCache.get(e);
 
-			if (value == null) {
-				value = determineSourceStart(e);
-				this.sourceStartCache.put(e, value);
-			}
+            if (value == null) {
+                value = determineSourceStart(e);
+                this.sourceStartCache.put(e, value);
+            }
 
-			return value;
-		}
+            return value;
+        }
 
-		private int determineSourceStart(ElementImpl e) {
-			switch(e.getKind()) {
-				case ANNOTATION_TYPE :
-				case INTERFACE :
-				case CLASS :
-				case ENUM :
-				case RECORD :
-					TypeElementImpl typeElementImpl = (TypeElementImpl) e;
-					Binding typeBinding = typeElementImpl._binding;
-					if (typeBinding instanceof SourceTypeBinding) {
-						SourceTypeBinding sourceTypeBinding = (SourceTypeBinding) typeBinding;
-						TypeDeclaration typeDeclaration = (TypeDeclaration) sourceTypeBinding.scope.referenceContext();
-						return typeDeclaration.sourceStart;
-					}
-					break;
-				case CONSTRUCTOR :
-				case METHOD :
-					ExecutableElementImpl executableElementImpl = (ExecutableElementImpl) e;
-					Binding binding = executableElementImpl._binding;
-					if (binding instanceof MethodBinding) {
-						MethodBinding methodBinding = (MethodBinding) binding;
-						return methodBinding.sourceStart();
-					}
-					break;
-				case ENUM_CONSTANT :
-				case FIELD :
-				case RECORD_COMPONENT :
-					VariableElementImpl variableElementImpl = (VariableElementImpl) e;
-					binding = variableElementImpl._binding;
-					if (binding instanceof FieldBinding) {
-						FieldBinding fieldBinding = (FieldBinding) binding;
-						FieldDeclaration fieldDeclaration = fieldBinding.sourceField();
-						if (fieldDeclaration != null) {
-							return fieldDeclaration.sourceStart;
-						}
-					}
-					break;
-				default:
-					break;
-			}
+        private int determineSourceStart(ElementImpl e) {
+            switch (e.getKind()) {
+                case ANNOTATION_TYPE:
+                case INTERFACE:
+                case CLASS:
+                case ENUM:
+                case RECORD:
+                    TypeElementImpl typeElementImpl = (TypeElementImpl) e;
+                    Binding typeBinding = typeElementImpl._binding;
+                    if (typeBinding instanceof SourceTypeBinding) {
+                        SourceTypeBinding sourceTypeBinding = (SourceTypeBinding) typeBinding;
+                        TypeDeclaration typeDeclaration = (TypeDeclaration) sourceTypeBinding.scope.referenceContext();
+                        return typeDeclaration.sourceStart;
+                    }
+                    break;
 
-			return -1;
-		}
-	}
+                case CONSTRUCTOR:
+                case METHOD:
+                    ExecutableElementImpl executableElementImpl = (ExecutableElementImpl) e;
+                    Binding binding = executableElementImpl._binding;
+                    if (binding instanceof MethodBinding) {
+                        MethodBinding methodBinding = (MethodBinding) binding;
+                        return methodBinding.sourceStart();
+                    }
+                    break;
 
-	private final ElementKind _kindHint;
+                case ENUM_CONSTANT:
+                case FIELD:
+                case RECORD_COMPONENT:
+                    VariableElementImpl variableElementImpl = (VariableElementImpl) e;
+                    binding = variableElementImpl._binding;
+                    if (binding instanceof FieldBinding) {
+                        FieldBinding fieldBinding = (FieldBinding) binding;
+                        FieldDeclaration fieldDeclaration = fieldBinding.sourceField();
+                        if (fieldDeclaration != null) {
+                            return fieldDeclaration.sourceStart;
+                        }
+                    }
+                    break;
 
-	/**
-	 * In general, clients should call {@link Factory#newElement(Binding)}
-	 * to create new instances.
-	 */
-	TypeElementImpl(BaseProcessingEnvImpl env, ReferenceBinding binding, ElementKind kindHint) {
-		super(env, binding);
-		this._kindHint = kindHint;
-	}
+                default:
+                    break;
+            }
 
-	@Override
-	public <R, P> R accept(ElementVisitor<R, P> v, P p)
-	{
-		return v.visitType(this, p);
-	}
+            return -1;
+        }
+    }
 
-	@Override
-	protected AnnotationBinding[] getAnnotationBindings()
-	{
-		return ((ReferenceBinding)this._binding).getAnnotations();
-	}
+    private final ElementKind _kindHint;
 
-	@Override
-	public List<? extends Element> getEnclosedElements() {
-		ReferenceBinding binding = (ReferenceBinding)this._binding;
-		List<Element> enclosed = new ArrayList<>(binding.fieldCount() + binding.methods().length + binding.memberTypes().length);
-		for (MethodBinding method : binding.methods()) {
-			ExecutableElement executable = new ExecutableElementImpl(this._env, method);
-			enclosed.add(executable);
-		}
-		for (FieldBinding field : binding.fields()) {
-			// TODO no field should be excluded according to the JLS
-			if (!field.isSynthetic()) {
-				 VariableElement variable = new VariableElementImpl(this._env, field);
-				 enclosed.add(variable);
-			}
-		}
-		if (binding.isRecord()) {
-			RecordComponentBinding[] components = binding.components();
-			for (RecordComponentBinding comp : components) {
-				RecordComponentElement rec = new RecordComponentElementImpl(this._env, comp);
-				enclosed.add(rec);
-			}
-		}
-		for (ReferenceBinding memberType : binding.memberTypes()) {
-			TypeElement type = new TypeElementImpl(this._env, memberType, null);
-			enclosed.add(type);
-		}
-		Collections.sort(enclosed, new SourceLocationComparator());
-		return Collections.unmodifiableList(enclosed);
-	}
+    /**
+     * In general, clients should call {@link Factory#newElement(Binding)}
+     * to create new instances.
+     */
+    TypeElementImpl(BaseProcessingEnvImpl env, ReferenceBinding binding, ElementKind kindHint) {
+        super(env, binding);
+        this._kindHint = kindHint;
+    }
 
-	@Override
+    @Override
+    public <R, P> R accept(ElementVisitor<R, P> v, P p) {
+        return v.visitType(this, p);
+    }
+
+    @Override
+    protected AnnotationBinding[] getAnnotationBindings() {
+        return ((ReferenceBinding) this._binding).getAnnotations();
+    }
+
+    @Override
+    public List<? extends Element> getEnclosedElements() {
+        ReferenceBinding binding = (ReferenceBinding) this._binding;
+        List<Element> enclosed
+            = new ArrayList<>(binding.fieldCount() + binding.methods().length + binding.memberTypes().length);
+        for (MethodBinding method : binding.methods()) {
+            ExecutableElement executable = new ExecutableElementImpl(this._env, method);
+            enclosed.add(executable);
+        }
+        for (FieldBinding field : binding.fields()) {
+            // TODO no field should be excluded according to the JLS
+            if (!field.isSynthetic()) {
+                VariableElement variable = new VariableElementImpl(this._env, field);
+                enclosed.add(variable);
+            }
+        }
+        if (binding.isRecord()) {
+            RecordComponentBinding[] components = binding.components();
+            for (RecordComponentBinding comp : components) {
+                RecordComponentElement rec = new RecordComponentElementImpl(this._env, comp);
+                enclosed.add(rec);
+            }
+        }
+        for (ReferenceBinding memberType : binding.memberTypes()) {
+            TypeElement type = new TypeElementImpl(this._env, memberType, null);
+            enclosed.add(type);
+        }
+        Collections.sort(enclosed, new SourceLocationComparator());
+        return Collections.unmodifiableList(enclosed);
+    }
+
+    @Override
     public List<? extends RecordComponentElement> getRecordComponents() {
-		if (this._binding instanceof ReferenceBinding) {
-			ReferenceBinding binding = (ReferenceBinding) this._binding;
-			List<RecordComponentElement> enclosed = new ArrayList<>();
-			for (RecordComponentBinding comp : binding.components()) {
-				RecordComponentElement variable = new RecordComponentElementImpl(this._env, comp);
-				enclosed.add(variable);
-			}
-			Collections.sort(enclosed, new SourceLocationComparator());
-			return Collections.unmodifiableList(enclosed);
-		}
-		return Collections.emptyList();
+        if (this._binding instanceof ReferenceBinding) {
+            ReferenceBinding binding = (ReferenceBinding) this._binding;
+            List<RecordComponentElement> enclosed = new ArrayList<>();
+            for (RecordComponentBinding comp : binding.components()) {
+                RecordComponentElement variable = new RecordComponentElementImpl(this._env, comp);
+                enclosed.add(variable);
+            }
+            Collections.sort(enclosed, new SourceLocationComparator());
+            return Collections.unmodifiableList(enclosed);
+        }
+        return Collections.emptyList();
     }
 
-	@Override
-	public List<? extends TypeMirror> getPermittedSubclasses() {
-		ReferenceBinding binding = (ReferenceBinding)this._binding;
-		if (binding.isSealed()) {
-			List<TypeMirror> permitted = new ArrayList<>();
-			for (ReferenceBinding type : binding.permittedTypes()) {
-				TypeMirror typeMirror = this._env.getFactory().newTypeMirror(type);
-				permitted.add(typeMirror);
-			}
-			return Collections.unmodifiableList(permitted);
-		}
-		return Collections.emptyList();
+    @Override
+    public List<? extends TypeMirror> getPermittedSubclasses() {
+        ReferenceBinding binding = (ReferenceBinding) this._binding;
+        if (binding.isSealed()) {
+            List<TypeMirror> permitted = new ArrayList<>();
+            for (ReferenceBinding type : binding.permittedTypes()) {
+                TypeMirror typeMirror = this._env.getFactory().newTypeMirror(type);
+                permitted.add(typeMirror);
+            }
+            return Collections.unmodifiableList(permitted);
+        }
+        return Collections.emptyList();
     }
-	@Override
-	public Element getEnclosingElement() {
-		ReferenceBinding binding = (ReferenceBinding)this._binding;
-		if (binding instanceof LocalTypeBinding local && this.getKind() == ElementKind.ENUM) {
-			TypeDeclaration typeDecl = local.scope.referenceContext;
-			if (typeDecl.allocation != null && typeDecl.allocation.enumConstant != null) {
-				FieldBinding fBinding = typeDecl.allocation.enumConstant.binding;
-				if (fBinding != null)
-					return this._env.getFactory().newElement(fBinding);
-			}
-		}
-		ReferenceBinding enclosingType = binding.enclosingType();
-		if (null == enclosingType) {
-			// this is a top level type; get its package
-			return this._env.getFactory().newPackageElement(binding.fPackage);
-		}
-		else {
-			return this._env.getFactory().newElement(binding.enclosingType());
-		}
-	}
 
-	@Override
-	public String getFileName() {
-		char[] name = ((ReferenceBinding)this._binding).getFileName();
-		if (name == null)
-			return null;
-		return new String(name);
-	}
+    @Override
+    public Element getEnclosingElement() {
+        ReferenceBinding binding = (ReferenceBinding) this._binding;
+        if (binding instanceof LocalTypeBinding local && this.getKind() == ElementKind.ENUM) {
+            TypeDeclaration typeDecl = local.scope.referenceContext;
+            if (typeDecl.allocation != null && typeDecl.allocation.enumConstant != null) {
+                FieldBinding fBinding = typeDecl.allocation.enumConstant.binding;
+                if (fBinding != null)
+                    return this._env.getFactory().newElement(fBinding);
+            }
+        }
+        ReferenceBinding enclosingType = binding.enclosingType();
+        if (null == enclosingType) {
+            // this is a top level type; get its package
+            return this._env.getFactory().newPackageElement(binding.fPackage);
+        } else {
+            return this._env.getFactory().newElement(binding.enclosingType());
+        }
+    }
 
-	@Override
-	public List<? extends TypeMirror> getInterfaces() {
-		ReferenceBinding binding = (ReferenceBinding)this._binding;
-		if (null == binding.superInterfaces() || binding.superInterfaces().length == 0) {
-			return Collections.emptyList();
-		}
-		List<TypeMirror> interfaces = new ArrayList<>(binding.superInterfaces().length);
-		for (ReferenceBinding interfaceBinding : binding.superInterfaces()) {
-			TypeMirror interfaceType = this._env.getFactory().newTypeMirror(interfaceBinding);
-			if (interfaceType.getKind() == TypeKind.ERROR) {
-				if (this._env.getSourceVersion().compareTo(SourceVersion.RELEASE_6) > 0) {
-					// for jdk 7 and above, add error types
-					interfaces.add(interfaceType);
-				}
-			} else {
-				interfaces.add(interfaceType);
-			}
-		}
-		return Collections.unmodifiableList(interfaces);
-	}
+    @Override
+    public String getFileName() {
+        char[] name = ((ReferenceBinding) this._binding).getFileName();
+        if (name == null)
+            return null;
+        return new String(name);
+    }
 
-	@Override
-	public ElementKind getKind() {
-		if (null != this._kindHint) {
-			return this._kindHint;
-		}
-		ReferenceBinding refBinding = (ReferenceBinding)this._binding;
-		// The order of these comparisons is important: e.g., enum is subset of class
-		if (refBinding.isEnum()) {
-			return ElementKind.ENUM;
-		}
-		else if (refBinding.isRecord()) {
-			return ElementKind.RECORD;
-		}
-		else if (refBinding.isAnnotationType()) {
-			return ElementKind.ANNOTATION_TYPE;
-		}
-		else if (refBinding.isInterface()) {
-			return ElementKind.INTERFACE;
-		}
-		else if (refBinding.isClass()) {
-			return ElementKind.CLASS;
-		}
-		else {
-			throw new IllegalArgumentException("TypeElement " + new String(refBinding.shortReadableName()) +  //$NON-NLS-1$
-					" has unexpected attributes " + refBinding.modifiers); //$NON-NLS-1$
-		}
-	}
+    @Override
+    public List<? extends TypeMirror> getInterfaces() {
+        ReferenceBinding binding = (ReferenceBinding) this._binding;
+        if (null == binding.superInterfaces() || binding.superInterfaces().length == 0) {
+            return Collections.emptyList();
+        }
+        List<TypeMirror> interfaces = new ArrayList<>(binding.superInterfaces().length);
+        for (ReferenceBinding interfaceBinding : binding.superInterfaces()) {
+            TypeMirror interfaceType = this._env.getFactory().newTypeMirror(interfaceBinding);
+            if (interfaceType.getKind() == TypeKind.ERROR) {
+                if (this._env.getSourceVersion().compareTo(SourceVersion.RELEASE_6) > 0) {
+                    // for jdk 7 and above, add error types
+                    interfaces.add(interfaceType);
+                }
+            } else {
+                interfaces.add(interfaceType);
+            }
+        }
+        return Collections.unmodifiableList(interfaces);
+    }
 
-	@Override
-	public Set<Modifier> getModifiers()
-	{
-		ReferenceBinding refBinding = (ReferenceBinding)this._binding;
-		int modifiers = refBinding.modifiers;
-		if (refBinding.isInterface() && refBinding.isNestedType()) {
-			modifiers |= ClassFileConstants.AccStatic;
-		}
+    @Override
+    public ElementKind getKind() {
+        if (null != this._kindHint) {
+            return this._kindHint;
+        }
+        ReferenceBinding refBinding = (ReferenceBinding) this._binding;
+        // The order of these comparisons is important: e.g., enum is subset of class
+        if (refBinding.isEnum()) {
+            return ElementKind.ENUM;
+        } else if (refBinding.isRecord()) {
+            return ElementKind.RECORD;
+        } else if (refBinding.isAnnotationType()) {
+            return ElementKind.ANNOTATION_TYPE;
+        } else if (refBinding.isInterface()) {
+            return ElementKind.INTERFACE;
+        } else if (refBinding.isClass()) {
+            return ElementKind.CLASS;
+        } else {
+            throw new IllegalArgumentException("TypeElement " + new String(refBinding.shortReadableName()) +  //$NON-NLS-1$
+                " has unexpected attributes " + refBinding.modifiers); //$NON-NLS-1$
+        }
+    }
 
-		return Factory.getModifiers(modifiers, getKind(), refBinding.isBinaryBinding());
-	}
+    @Override
+    public Set<Modifier> getModifiers() {
+        ReferenceBinding refBinding = (ReferenceBinding) this._binding;
+        int modifiers = refBinding.modifiers;
+        if (refBinding.isInterface() && refBinding.isNestedType()) {
+            modifiers |= ClassFileConstants.AccStatic;
+        }
 
-	@Override
-	public NestingKind getNestingKind() {
-		ReferenceBinding refBinding = (ReferenceBinding)this._binding;
-		if (refBinding.isAnonymousType()) {
-			return NestingKind.ANONYMOUS;
-		} else if (refBinding.isLocalType()) {
-			return NestingKind.LOCAL;
-		} else if (refBinding.isMemberType()) {
-			return NestingKind.MEMBER;
-		}
-		return NestingKind.TOP_LEVEL;
-	}
+        return Factory.getModifiers(modifiers, getKind(), refBinding.isBinaryBinding());
+    }
 
-	@Override
-	PackageElement getPackage()
-	{
-		ReferenceBinding binding = (ReferenceBinding)this._binding;
-		return this._env.getFactory().newPackageElement(binding.fPackage);
-	}
+    @Override
+    public NestingKind getNestingKind() {
+        ReferenceBinding refBinding = (ReferenceBinding) this._binding;
+        if (refBinding.isAnonymousType()) {
+            return NestingKind.ANONYMOUS;
+        } else if (refBinding.isLocalType()) {
+            return NestingKind.LOCAL;
+        } else if (refBinding.isMemberType()) {
+            return NestingKind.MEMBER;
+        }
+        return NestingKind.TOP_LEVEL;
+    }
 
-	@Override
-	public Name getQualifiedName() {
-		ReferenceBinding binding = (ReferenceBinding)this._binding;
-		char[] qName;
-		if (binding.isMemberType()) {
-			qName = CharOperation.concatWith(binding.enclosingType().compoundName, binding.sourceName, '.');
-			CharOperation.replace(qName, '$', '.');
-		} else {
-			qName = CharOperation.concatWith(binding.compoundName, '.');
-		}
-		return new NameImpl(qName);
-	}
+    @Override
+    PackageElement getPackage() {
+        ReferenceBinding binding = (ReferenceBinding) this._binding;
+        return this._env.getFactory().newPackageElement(binding.fPackage);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.jdt.internal.compiler.apt.model.ElementImpl#getSimpleName()
-	 * @return last segment of name, e.g. for pa.pb.X.Y return Y.
-	 */
-	@Override
-	public Name getSimpleName()
-	{
-		ReferenceBinding binding = (ReferenceBinding)this._binding;
-		return new NameImpl(binding.sourceName());
-	}
+    @Override
+    public Name getQualifiedName() {
+        ReferenceBinding binding = (ReferenceBinding) this._binding;
+        char[] qName;
+        if (binding.isMemberType()) {
+            qName = CharOperation.concatWith(binding.enclosingType().compoundName, binding.sourceName, '.');
+            CharOperation.replace(qName, '$', '.');
+        } else {
+            qName = CharOperation.concatWith(binding.compoundName, '.');
+        }
+        return new NameImpl(qName);
+    }
 
-	@Override
-	public TypeMirror getSuperclass() {
-		ReferenceBinding binding = (ReferenceBinding)this._binding;
-		ReferenceBinding superBinding = binding.superclass();
-		if (null == superBinding || binding.isInterface()) {
-			return this._env.getFactory().getNoType(TypeKind.NONE);
-		}
-		// superclass of a type must be a DeclaredType
-		return this._env.getFactory().newTypeMirror(superBinding);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jdt.internal.compiler.apt.model.ElementImpl#getSimpleName()
+     * 
+     * @return last segment of name, e.g. for pa.pb.X.Y return Y.
+     */
+    @Override
+    public Name getSimpleName() {
+        ReferenceBinding binding = (ReferenceBinding) this._binding;
+        return new NameImpl(binding.sourceName());
+    }
 
-	@Override
-	public List<? extends TypeParameterElement> getTypeParameters() {
-		ReferenceBinding binding = (ReferenceBinding)this._binding;
-		TypeVariableBinding[] variables = binding.typeVariables();
-		if (variables.length == 0) {
-			return Collections.emptyList();
-		}
-		List<TypeParameterElement> params = new ArrayList<>(variables.length);
-		for (TypeVariableBinding variable : variables) {
-			params.add(this._env.getFactory().newTypeParameterElement(variable, this));
-		}
-		return Collections.unmodifiableList(params);
-	}
+    @Override
+    public TypeMirror getSuperclass() {
+        ReferenceBinding binding = (ReferenceBinding) this._binding;
+        ReferenceBinding superBinding = binding.superclass();
+        if (null == superBinding || binding.isInterface()) {
+            return this._env.getFactory().getNoType(TypeKind.NONE);
+        }
+        // superclass of a type must be a DeclaredType
+        return this._env.getFactory().newTypeMirror(superBinding);
+    }
 
-	@Override
-	public boolean hides(Element hidden)
-	{
-		if (!(hidden instanceof TypeElementImpl)) {
-			return false;
-		}
-		ReferenceBinding hiddenBinding = (ReferenceBinding)((TypeElementImpl)hidden)._binding;
-		if (hiddenBinding.isPrivate()) {
-			return false;
-		}
-		ReferenceBinding hiderBinding = (ReferenceBinding)this._binding;
-		if (TypeBinding.equalsEquals(hiddenBinding, hiderBinding)) {
-			return false;
-		}
-		if (!hiddenBinding.isMemberType() || !hiderBinding.isMemberType()) {
-			return false;
-		}
-		if (!CharOperation.equals(hiddenBinding.sourceName, hiderBinding.sourceName)) {
-			return false;
-		}
-		return null != hiderBinding.enclosingType().findSuperTypeOriginatingFrom(hiddenBinding.enclosingType());
-	}
+    @Override
+    public List<? extends TypeParameterElement> getTypeParameters() {
+        ReferenceBinding binding = (ReferenceBinding) this._binding;
+        TypeVariableBinding[] variables = binding.typeVariables();
+        if (variables.length == 0) {
+            return Collections.emptyList();
+        }
+        List<TypeParameterElement> params = new ArrayList<>(variables.length);
+        for (TypeVariableBinding variable : variables) {
+            params.add(this._env.getFactory().newTypeParameterElement(variable, this));
+        }
+        return Collections.unmodifiableList(params);
+    }
 
-	@Override
-	public String toString() {
-		ReferenceBinding binding = (ReferenceBinding) this._binding;
-		char[] concatWith = CharOperation.concatWith(binding.compoundName, '.');
-		if (binding.isNestedType()) {
-			CharOperation.replace(concatWith, '$', '.');
-			return new String(concatWith);
-		}
-		return new String(concatWith);
+    @Override
+    public boolean hides(Element hidden) {
+        if (!(hidden instanceof TypeElementImpl)) {
+            return false;
+        }
+        ReferenceBinding hiddenBinding = (ReferenceBinding) ((TypeElementImpl) hidden)._binding;
+        if (hiddenBinding.isPrivate()) {
+            return false;
+        }
+        ReferenceBinding hiderBinding = (ReferenceBinding) this._binding;
+        if (TypeBinding.equalsEquals(hiddenBinding, hiderBinding)) {
+            return false;
+        }
+        if (!hiddenBinding.isMemberType() || !hiderBinding.isMemberType()) {
+            return false;
+        }
+        if (!CharOperation.equals(hiddenBinding.sourceName, hiderBinding.sourceName)) {
+            return false;
+        }
+        return null != hiderBinding.enclosingType().findSuperTypeOriginatingFrom(hiddenBinding.enclosingType());
+    }
 
-	}
+    @Override
+    public String toString() {
+        ReferenceBinding binding = (ReferenceBinding) this._binding;
+        char[] concatWith = CharOperation.concatWith(binding.compoundName, '.');
+        if (binding.isNestedType()) {
+            CharOperation.replace(concatWith, '$', '.');
+            return new String(concatWith);
+        }
+        return new String(concatWith);
+
+    }
 
 }

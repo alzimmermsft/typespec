@@ -20,61 +20,62 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.util.IProvidesInfo;
 
 public class ProvidesInfo extends ClassFileStruct implements IProvidesInfo {
-	private final int index;
-	private final char[] serviceName;
-	private final int implementationsCount;
-	private int[] implementationIndices;
-	private char[][] implementationNames;
+    private final int index;
+    private final char[] serviceName;
+    private final int implementationsCount;
+    private int[] implementationIndices;
+    private char[][] implementationNames;
 
-	public ProvidesInfo(byte[] classFileBytes, IConstantPool constantPool, int offset) throws ClassFormatException {
-		int readOffset = 0;
-		this.index = u2At(classFileBytes, readOffset, offset);
-		readOffset += 2;
-		IConstantPoolEntry constantPoolEntry = constantPool.decodeEntry(this.index);
-		if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Class) {
-			throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
-		}
-		this.serviceName = constantPoolEntry.getClassInfoName();
-		this.implementationsCount = u2At(classFileBytes, readOffset, offset);
-		readOffset += 2;
+    public ProvidesInfo(byte[] classFileBytes, IConstantPool constantPool, int offset) throws ClassFormatException {
+        int readOffset = 0;
+        this.index = u2At(classFileBytes, readOffset, offset);
+        readOffset += 2;
+        IConstantPoolEntry constantPoolEntry = constantPool.decodeEntry(this.index);
+        if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Class) {
+            throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
+        }
+        this.serviceName = constantPoolEntry.getClassInfoName();
+        this.implementationsCount = u2At(classFileBytes, readOffset, offset);
+        readOffset += 2;
 
-		if (this.implementationsCount != 0) {
-			this.implementationIndices = new int[this.implementationsCount];
-			this.implementationNames = new char[this.implementationsCount][];
-			for (int i = 0; i < this.implementationsCount; i++) {
-				this.implementationIndices[i] = u2At(classFileBytes, readOffset, offset);
-				readOffset += 2;
-				constantPoolEntry = constantPool.decodeEntry(this.implementationIndices[i]);
-				if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Class) {
-					throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
-				}
-				this.implementationNames[i] = constantPoolEntry.getClassInfoName();
-			}
-		}
-	}
-	@Override
-	public int getIndex() {
-		return this.index;
-	}
+        if (this.implementationsCount != 0) {
+            this.implementationIndices = new int[this.implementationsCount];
+            this.implementationNames = new char[this.implementationsCount][];
+            for (int i = 0; i < this.implementationsCount; i++) {
+                this.implementationIndices[i] = u2At(classFileBytes, readOffset, offset);
+                readOffset += 2;
+                constantPoolEntry = constantPool.decodeEntry(this.implementationIndices[i]);
+                if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Class) {
+                    throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
+                }
+                this.implementationNames[i] = constantPoolEntry.getClassInfoName();
+            }
+        }
+    }
 
-	@Override
-	public char[] getServiceName() {
-		return this.serviceName;
-	}
+    @Override
+    public int getIndex() {
+        return this.index;
+    }
 
-	@Override
-	public int getImplementationsCount() {
-		return this.implementationsCount;
-	}
+    @Override
+    public char[] getServiceName() {
+        return this.serviceName;
+    }
 
-	@Override
-	public int[] getImplementationIndices() {
-		return this.implementationIndices;
-	}
+    @Override
+    public int getImplementationsCount() {
+        return this.implementationsCount;
+    }
 
-	@Override
-	public char[][] getImplementationNames() {
-		return this.implementationNames;
-	}
+    @Override
+    public int[] getImplementationIndices() {
+        return this.implementationIndices;
+    }
+
+    @Override
+    public char[][] getImplementationNames() {
+        return this.implementationNames;
+    }
 
 }

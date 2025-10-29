@@ -19,267 +19,289 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.Util;
 
 public class DefaultProblem extends CategorizedProblem {
-	private char[] fileName;
-	private final int id;
-	private int startPosition;
-	private int endPosition;
-	private int line;
-	public int column;
-	public int severity;
-	private final String[] arguments;
-	private final String message;
+    private char[] fileName;
+    private final int id;
+    private int startPosition;
+    private int endPosition;
+    private int line;
+    public int column;
+    public int severity;
+    private final String[] arguments;
+    private final String message;
 
-	// cannot directly point to IJavaModelMarker constants from within batch compiler
-	private static final String MARKER_TYPE_PROBLEM = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.problem"; //$NON-NLS-1$
-	private static final String MARKER_TYPE_TASK = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.task"; //$NON-NLS-1$
+    // cannot directly point to IJavaModelMarker constants from within batch compiler
+    private static final String MARKER_TYPE_PROBLEM
+        = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.problem"; //$NON-NLS-1$
+    private static final String MARKER_TYPE_TASK
+        = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.task"; //$NON-NLS-1$
 
-	public static final Object[] EMPTY_VALUES = {};
+    public static final Object[] EMPTY_VALUES = { };
 
-public DefaultProblem(
-	char[] originatingFileName,
-	String message,
-	int id,
-	String[] stringArguments,
-	int severity,
-	int startPosition,
-	int endPosition,
-	int line,
-	int column) {
+    public DefaultProblem(char[] originatingFileName, String message, int id, String[] stringArguments, int severity,
+        int startPosition, int endPosition, int line, int column) {
 
-	this.fileName = originatingFileName;
-	this.message = message;
-	this.id = id;
-	this.arguments = stringArguments;
-	this.severity = severity;
-	this.startPosition = startPosition;
-	this.endPosition = endPosition;
-	this.line = line;
-	this.column = column;
-}
-public void reportError() {
-	// Do nothing by default
-}
+        this.fileName = originatingFileName;
+        this.message = message;
+        this.id = id;
+        this.arguments = stringArguments;
+        this.severity = severity;
+        this.startPosition = startPosition;
+        this.endPosition = endPosition;
+        this.line = line;
+        this.column = column;
+    }
 
-public String errorReportSource(char[] unitSource) {
-	//extra from the source the innacurate     token
-	//and "highlight" it using some underneath ^^^^^
-	//put some context around too.
+    public void reportError() {
+        // Do nothing by default
+    }
 
-	//this code assumes that the font used in the console is fixed size
+    public String errorReportSource(char[] unitSource) {
+        // extra from the source the innacurate token
+        // and "highlight" it using some underneath ^^^^^
+        // put some context around too.
 
-	//sanity .....
-	if ((this.startPosition > this.endPosition)
-		|| ((this.startPosition < 0) && (this.endPosition < 0))
-		|| unitSource.length == 0)
-		return Messages.problem_noSourceInformation;
+        // this code assumes that the font used in the console is fixed size
 
-	StringBuilder errorBuffer = new StringBuilder();
-	errorBuffer.append(' ').append(Messages.bind(Messages.problem_atLine, String.valueOf(this.line)));
-	errorBuffer.append(Util.LINE_SEPARATOR);
-	errorBuffer.append('\t');
+        // sanity .....
+        if ((this.startPosition > this.endPosition)
+            || ((this.startPosition < 0) && (this.endPosition < 0))
+            || unitSource.length == 0)
+            return Messages.problem_noSourceInformation;
 
-	char c;
-	final char SPACE = '\u0020';
-	final char MARK = '^';
-	final char TAB = '\t';
-	//the next code tries to underline the token.....
-	//it assumes (for a good display) that token source does not
-	//contain any \r \n. This is false on statements !
-	//(the code still works but the display is not optimal !)
+        StringBuilder errorBuffer = new StringBuilder();
+        errorBuffer.append(' ').append(Messages.bind(Messages.problem_atLine, String.valueOf(this.line)));
+        errorBuffer.append(Util.LINE_SEPARATOR);
+        errorBuffer.append('\t');
 
-	// expand to line limits
-	int length = unitSource.length, begin, end;
-	for (begin = this.startPosition >= length ? length - 1 : this.startPosition; begin > 0; begin--) {
-		if ((c = unitSource[begin - 1]) == '\n' || c == '\r') break;
-	}
-	for (end = this.endPosition >= length ? length - 1 : this.endPosition ; end+1 < length; end++) {
-		if ((c = unitSource[end + 1]) == '\r' || c == '\n') break;
-	}
+        char c;
+        final char SPACE = '\u0020';
+        final char MARK = '^';
+        final char TAB = '\t';
+        // the next code tries to underline the token.....
+        // it assumes (for a good display) that token source does not
+        // contain any \r \n. This is false on statements !
+        // (the code still works but the display is not optimal !)
 
-	// trim left and right spaces/tabs
-	while ((c = unitSource[begin]) == ' ' || c == '\t') begin++;
-	//while ((c = unitSource[end]) == ' ' || c == '\t') end--; TODO (philippe) should also trim right, but all tests are to be updated
+        // expand to line limits
+        int length = unitSource.length, begin, end;
+        for (begin = this.startPosition >= length ? length - 1 : this.startPosition; begin > 0; begin--) {
+            if ((c = unitSource[begin - 1]) == '\n' || c == '\r')
+                break;
+        }
+        for (end = this.endPosition >= length ? length - 1 : this.endPosition; end + 1 < length; end++) {
+            if ((c = unitSource[end + 1]) == '\r' || c == '\n')
+                break;
+        }
 
-	// copy source
-	errorBuffer.append(unitSource, begin, end-begin+1);
-	errorBuffer.append(Util.LINE_SEPARATOR).append("\t"); //$NON-NLS-1$
+        // trim left and right spaces/tabs
+        while ((c = unitSource[begin]) == ' ' || c == '\t')
+            begin++;
+        // while ((c = unitSource[end]) == ' ' || c == '\t') end--; TODO (philippe) should also trim right, but all
+        // tests are to be updated
 
-	// compute underline
-	for (int i = begin; i <this.startPosition; i++) {
-		errorBuffer.append((unitSource[i] == TAB) ? TAB : SPACE);
-	}
-	for (int i = this.startPosition; i <= (this.endPosition >= length ? length - 1 : this.endPosition); i++) {
-		errorBuffer.append(MARK);
-	}
-	return errorBuffer.toString();
-}
+        // copy source
+        errorBuffer.append(unitSource, begin, end - begin + 1);
+        errorBuffer.append(Util.LINE_SEPARATOR).append("\t"); //$NON-NLS-1$
 
-@Override
-public String[] getArguments() {
-	return this.arguments;
-}
-/**
- * @see org.eclipse.jdt.core.compiler.CategorizedProblem#getCategoryID()
- */
-@Override
-public int getCategoryID() {
-	return ProblemReporter.getProblemCategory(this.severity, this.id);
-}
+        // compute underline
+        for (int i = begin; i < this.startPosition; i++) {
+            errorBuffer.append((unitSource[i] == TAB) ? TAB : SPACE);
+        }
+        for (int i = this.startPosition; i <= (this.endPosition >= length ? length - 1 : this.endPosition); i++) {
+            errorBuffer.append(MARK);
+        }
+        return errorBuffer.toString();
+    }
 
-/**
- * Answer the type of problem.
- * @see org.eclipse.jdt.core.compiler.IProblem#getID()
- * @return int
- */
-@Override
-public int getID() {
-	return this.id;
-}
+    @Override
+    public String[] getArguments() {
+        return this.arguments;
+    }
 
-/**
- * Answers a readable name for the category which this problem belongs to,
- * or null if none could be found.
- * FOR TESTING PURPOSE
- * @return java.lang.String
- */
-public String getInternalCategoryMessage() {
-	switch(getCategoryID()) {
-		case CAT_UNSPECIFIED:
-			return "unspecified"; //$NON-NLS-1$
-		case CAT_BUILDPATH:
-			return "buildpath"; //$NON-NLS-1$
-		case CAT_SYNTAX:
-			return "syntax"; //$NON-NLS-1$
-		case CAT_IMPORT:
-			return "import"; //$NON-NLS-1$
-		case CAT_TYPE:
-			return "type"; //$NON-NLS-1$
-		case CAT_MEMBER:
-			return "member"; //$NON-NLS-1$
-		case CAT_INTERNAL:
-			return "internal"; //$NON-NLS-1$
-		case CAT_JAVADOC:
-			return "javadoc"; //$NON-NLS-1$
-		case CAT_CODE_STYLE:
-			return "code style"; //$NON-NLS-1$
-		case CAT_POTENTIAL_PROGRAMMING_PROBLEM:
-			return "potential programming problem"; //$NON-NLS-1$
-		case CAT_NAME_SHADOWING_CONFLICT:
-			return "name shadowing conflict"; //$NON-NLS-1$
-		case CAT_DEPRECATION:
-			return "deprecation"; //$NON-NLS-1$
-		case CAT_UNNECESSARY_CODE:
-			return "unnecessary code"; //$NON-NLS-1$
-		case CAT_UNCHECKED_RAW:
-			return "unchecked/raw"; //$NON-NLS-1$
-		case CAT_NLS:
-			return "nls"; //$NON-NLS-1$
-		case CAT_RESTRICTION:
-			return "restriction"; //$NON-NLS-1$
-		case CAT_MODULE:
-			return "module"; //$NON-NLS-1$
-		case CAT_PREVIEW_RELATED:
-			return "preview related"; //$NON-NLS-1$
-	}
-	return null;
-}
+    /**
+     * @see org.eclipse.jdt.core.compiler.CategorizedProblem#getCategoryID()
+     */
+    @Override
+    public int getCategoryID() {
+        return ProblemReporter.getProblemCategory(this.severity, this.id);
+    }
 
-/**
- * Returns the marker type associated to this problem.
- * @see org.eclipse.jdt.core.compiler.CategorizedProblem#getMarkerType()
- */
-@Override
-public String getMarkerType() {
-	return this.id == IProblem.Task
-		? MARKER_TYPE_TASK
-		: MARKER_TYPE_PROBLEM;
-}
+    /**
+     * Answer the type of problem.
+     * 
+     * @see org.eclipse.jdt.core.compiler.IProblem#getID()
+     * @return int
+     */
+    @Override
+    public int getID() {
+        return this.id;
+    }
 
-@Override
-public String getMessage() {
-	return this.message;
-}
+    /**
+     * Answers a readable name for the category which this problem belongs to,
+     * or null if none could be found.
+     * FOR TESTING PURPOSE
+     * 
+     * @return java.lang.String
+     */
+    public String getInternalCategoryMessage() {
+        switch (getCategoryID()) {
+            case CAT_UNSPECIFIED:
+                return "unspecified"; //$NON-NLS-1$
 
-@Override
-public char[] getOriginatingFileName() {
-	return this.fileName;
-}
+            case CAT_BUILDPATH:
+                return "buildpath"; //$NON-NLS-1$
 
-@Override
-public int getSourceEnd() {
-	return this.endPosition;
-}
-/**
- * Answer the line number in source where the problem begins.
- * @return int
- */
-public int getSourceColumnNumber() {
-	return this.column;
-}
+            case CAT_SYNTAX:
+                return "syntax"; //$NON-NLS-1$
 
-@Override
-public int getSourceLineNumber() {
-	return this.line;
-}
+            case CAT_IMPORT:
+                return "import"; //$NON-NLS-1$
 
-@Override
-public int getSourceStart() {
-	return this.startPosition;
-}
+            case CAT_TYPE:
+                return "type"; //$NON-NLS-1$
 
-/*
- * Helper method: checks the severity to see if the Error bit is set.
- * @return boolean
- */
-@Override
-public boolean isError() {
-	return (this.severity & ProblemSeverities.Error) != 0;
-}
+            case CAT_MEMBER:
+                return "member"; //$NON-NLS-1$
 
-/*
- * Helper method: checks the severity to see if the Error bit is not set.
- * @return boolean
- */
-@Override
-public boolean isWarning() {
-	return (this.severity & ProblemSeverities.Error) == 0
-			&& (this.severity & ProblemSeverities.Info) == 0;
-}
-@Override
-public boolean isInfo() {
-	return (this.severity & ProblemSeverities.Info) != 0;
-}
+            case CAT_INTERNAL:
+                return "internal"; //$NON-NLS-1$
 
-public void setOriginatingFileName(char[] fileName) {
-	this.fileName = fileName;
-}
+            case CAT_JAVADOC:
+                return "javadoc"; //$NON-NLS-1$
 
-@Override
-public void setSourceEnd(int sourceEnd) {
-	this.endPosition = sourceEnd;
-}
+            case CAT_CODE_STYLE:
+                return "code style"; //$NON-NLS-1$
 
-@Override
-public void setSourceLineNumber(int lineNumber) {
+            case CAT_POTENTIAL_PROGRAMMING_PROBLEM:
+                return "potential programming problem"; //$NON-NLS-1$
 
-	this.line = lineNumber;
-}
+            case CAT_NAME_SHADOWING_CONFLICT:
+                return "name shadowing conflict"; //$NON-NLS-1$
 
-@Override
-public void setSourceStart(int sourceStart) {
-	this.startPosition = sourceStart;
-}
+            case CAT_DEPRECATION:
+                return "deprecation"; //$NON-NLS-1$
 
-@Override
-public String toString() {
-	String s = "Pb(" + (this.id & IProblem.IgnoreCategoriesMask) + ") "; //$NON-NLS-1$ //$NON-NLS-2$
-	if (this.message != null) {
-		s += this.message;
-	} else {
-		if (this.arguments != null)
-			for (String argument : this.arguments)
-				s += " " + argument; //$NON-NLS-1$
-	}
-	return s;
-}
+            case CAT_UNNECESSARY_CODE:
+                return "unnecessary code"; //$NON-NLS-1$
+
+            case CAT_UNCHECKED_RAW:
+                return "unchecked/raw"; //$NON-NLS-1$
+
+            case CAT_NLS:
+                return "nls"; //$NON-NLS-1$
+
+            case CAT_RESTRICTION:
+                return "restriction"; //$NON-NLS-1$
+
+            case CAT_MODULE:
+                return "module"; //$NON-NLS-1$
+
+            case CAT_PREVIEW_RELATED:
+                return "preview related"; //$NON-NLS-1$
+        }
+        return null;
+    }
+
+    /**
+     * Returns the marker type associated to this problem.
+     * 
+     * @see org.eclipse.jdt.core.compiler.CategorizedProblem#getMarkerType()
+     */
+    @Override
+    public String getMarkerType() {
+        return this.id == IProblem.Task ? MARKER_TYPE_TASK : MARKER_TYPE_PROBLEM;
+    }
+
+    @Override
+    public String getMessage() {
+        return this.message;
+    }
+
+    @Override
+    public char[] getOriginatingFileName() {
+        return this.fileName;
+    }
+
+    @Override
+    public int getSourceEnd() {
+        return this.endPosition;
+    }
+
+    /**
+     * Answer the line number in source where the problem begins.
+     * 
+     * @return int
+     */
+    public int getSourceColumnNumber() {
+        return this.column;
+    }
+
+    @Override
+    public int getSourceLineNumber() {
+        return this.line;
+    }
+
+    @Override
+    public int getSourceStart() {
+        return this.startPosition;
+    }
+
+    /*
+     * Helper method: checks the severity to see if the Error bit is set.
+     * 
+     * @return boolean
+     */
+    @Override
+    public boolean isError() {
+        return (this.severity & ProblemSeverities.Error) != 0;
+    }
+
+    /*
+     * Helper method: checks the severity to see if the Error bit is not set.
+     * 
+     * @return boolean
+     */
+    @Override
+    public boolean isWarning() {
+        return (this.severity & ProblemSeverities.Error) == 0 && (this.severity & ProblemSeverities.Info) == 0;
+    }
+
+    @Override
+    public boolean isInfo() {
+        return (this.severity & ProblemSeverities.Info) != 0;
+    }
+
+    public void setOriginatingFileName(char[] fileName) {
+        this.fileName = fileName;
+    }
+
+    @Override
+    public void setSourceEnd(int sourceEnd) {
+        this.endPosition = sourceEnd;
+    }
+
+    @Override
+    public void setSourceLineNumber(int lineNumber) {
+
+        this.line = lineNumber;
+    }
+
+    @Override
+    public void setSourceStart(int sourceStart) {
+        this.startPosition = sourceStart;
+    }
+
+    @Override
+    public String toString() {
+        String s = "Pb(" + (this.id & IProblem.IgnoreCategoriesMask) + ") "; //$NON-NLS-1$ //$NON-NLS-2$
+        if (this.message != null) {
+            s += this.message;
+        } else {
+            if (this.arguments != null)
+                for (String argument : this.arguments)
+                    s += " " + argument; //$NON-NLS-1$
+        }
+        return s;
+    }
 }

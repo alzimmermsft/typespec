@@ -27,9 +27,9 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.g
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.UnmodifiableIterator;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.math.IntMath;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.primitives.Ints;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.util.AbstractSet;
 import java.util.Set;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 
 /**
  * This class provides a skeletal implementation of {@link BaseGraph}.
@@ -43,145 +43,141 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 @ElementTypesAreNonnullByDefault
 abstract class AbstractBaseGraph<N> implements BaseGraph<N> {
 
-  /**
-   * Returns the number of edges in this graph; used to calculate the size of {@link Graph#edges()}.
-   * This implementation requires O(|N|) time. Classes extending this one may manually keep track of
-   * the number of edges as the graph is updated, and override this method for better performance.
-   */
-  protected long edgeCount() {
-    long degreeSum = 0L;
-    for (N node : nodes()) {
-      degreeSum += degree(node);
-    }
-    // According to the degree sum formula, this is equal to twice the number of edges.
-    checkState((degreeSum & 1) == 0);
-    return degreeSum >>> 1;
-  }
-
-  /**
-   * An implementation of {@link BaseGraph#edges()} defined in terms of {@link Graph#nodes()} and
-   * {@link #successors(Object)}.
-   */
-  @Override
-  public Set<EndpointPair<N>> edges() {
-    return new AbstractSet<EndpointPair<N>>() {
-      @Override
-      public UnmodifiableIterator<EndpointPair<N>> iterator() {
-        return EndpointPairIterator.of(AbstractBaseGraph.this);
-      }
-
-      @Override
-      public int size() {
-        return Ints.saturatedCast(edgeCount());
-      }
-
-      @Override
-      public boolean remove(@CheckForNull Object o) {
-        throw new UnsupportedOperationException();
-      }
-
-      // Mostly safe: We check contains(u) before calling successors(u), so we perform unsafe
-      // operations only in weird cases like checking for an EndpointPair<ArrayList> in a
-      // Graph<LinkedList>.
-      @SuppressWarnings("unchecked")
-      @Override
-      public boolean contains(@CheckForNull Object obj) {
-        if (!(obj instanceof EndpointPair)) {
-          return false;
+    /**
+     * Returns the number of edges in this graph; used to calculate the size of {@link Graph#edges()}.
+     * This implementation requires O(|N|) time. Classes extending this one may manually keep track of
+     * the number of edges as the graph is updated, and override this method for better performance.
+     */
+    protected long edgeCount() {
+        long degreeSum = 0L;
+        for (N node : nodes()) {
+            degreeSum += degree(node);
         }
-        EndpointPair<?> endpointPair = (EndpointPair<?>) obj;
-        return isOrderingCompatible(endpointPair)
-            && nodes().contains(endpointPair.nodeU())
-            && successors((N) endpointPair.nodeU()).contains(endpointPair.nodeV());
-      }
-    };
-  }
+        // According to the degree sum formula, this is equal to twice the number of edges.
+        checkState((degreeSum & 1) == 0);
+        return degreeSum >>> 1;
+    }
 
-  @Override
-  public ElementOrder<N> incidentEdgeOrder() {
-    return ElementOrder.unordered();
-  }
+    /**
+     * An implementation of {@link BaseGraph#edges()} defined in terms of {@link Graph#nodes()} and
+     * {@link #successors(Object)}.
+     */
+    @Override
+    public Set<EndpointPair<N>> edges() {
+        return new AbstractSet<EndpointPair<N>>() {
+            @Override
+            public UnmodifiableIterator<EndpointPair<N>> iterator() {
+                return EndpointPairIterator.of(AbstractBaseGraph.this);
+            }
 
-  @Override
-  public Set<EndpointPair<N>> incidentEdges(N node) {
-    checkNotNull(node);
-    checkArgument(nodes().contains(node), "Node %s is not an element of this graph.", node);
-    return new IncidentEdgeSet<N>(this, node) {
-      @Override
-      public UnmodifiableIterator<EndpointPair<N>> iterator() {
-        if (graph.isDirected()) {
-          return Iterators.unmodifiableIterator(
-              Iterators.concat(
-                  Iterators.transform(
-                      graph.predecessors(node).iterator(),
-                      (N predecessor) -> EndpointPair.ordered(predecessor, node)),
-                  Iterators.transform(
-                      // filter out 'node' from successors (already covered by predecessors, above)
-                      Sets.difference(graph.successors(node), ImmutableSet.of(node)).iterator(),
-                      (N successor) -> EndpointPair.ordered(node, successor))));
+            @Override
+            public int size() {
+                return Ints.saturatedCast(edgeCount());
+            }
+
+            @Override
+            public boolean remove(@CheckForNull Object o) {
+                throw new UnsupportedOperationException();
+            }
+
+            // Mostly safe: We check contains(u) before calling successors(u), so we perform unsafe
+            // operations only in weird cases like checking for an EndpointPair<ArrayList> in a
+            // Graph<LinkedList>.
+            @SuppressWarnings("unchecked")
+            @Override
+            public boolean contains(@CheckForNull Object obj) {
+                if (!(obj instanceof EndpointPair)) {
+                    return false;
+                }
+                EndpointPair<?> endpointPair = (EndpointPair<?>) obj;
+                return isOrderingCompatible(endpointPair)
+                    && nodes().contains(endpointPair.nodeU())
+                    && successors((N) endpointPair.nodeU()).contains(endpointPair.nodeV());
+            }
+        };
+    }
+
+    @Override
+    public ElementOrder<N> incidentEdgeOrder() {
+        return ElementOrder.unordered();
+    }
+
+    @Override
+    public Set<EndpointPair<N>> incidentEdges(N node) {
+        checkNotNull(node);
+        checkArgument(nodes().contains(node), "Node %s is not an element of this graph.", node);
+        return new IncidentEdgeSet<N>(this, node) {
+            @Override
+            public UnmodifiableIterator<EndpointPair<N>> iterator() {
+                if (graph.isDirected()) {
+                    return Iterators.unmodifiableIterator(Iterators.concat(
+                        Iterators.transform(graph.predecessors(node).iterator(),
+                            (N predecessor) -> EndpointPair.ordered(predecessor, node)),
+                        Iterators.transform(
+                            // filter out 'node' from successors (already covered by predecessors, above)
+                            Sets.difference(graph.successors(node), ImmutableSet.of(node)).iterator(),
+                            (N successor) -> EndpointPair.ordered(node, successor))));
+                } else {
+                    return Iterators.unmodifiableIterator(Iterators.transform(graph.adjacentNodes(node).iterator(),
+                        (N adjacentNode) -> EndpointPair.unordered(node, adjacentNode)));
+                }
+            }
+        };
+    }
+
+    @Override
+    public int degree(N node) {
+        if (isDirected()) {
+            return IntMath.saturatedAdd(predecessors(node).size(), successors(node).size());
         } else {
-          return Iterators.unmodifiableIterator(
-              Iterators.transform(
-                  graph.adjacentNodes(node).iterator(),
-                  (N adjacentNode) -> EndpointPair.unordered(node, adjacentNode)));
+            Set<N> neighbors = adjacentNodes(node);
+            int selfLoopCount = (allowsSelfLoops() && neighbors.contains(node)) ? 1 : 0;
+            return IntMath.saturatedAdd(neighbors.size(), selfLoopCount);
         }
-      }
-    };
-  }
-
-  @Override
-  public int degree(N node) {
-    if (isDirected()) {
-      return IntMath.saturatedAdd(predecessors(node).size(), successors(node).size());
-    } else {
-      Set<N> neighbors = adjacentNodes(node);
-      int selfLoopCount = (allowsSelfLoops() && neighbors.contains(node)) ? 1 : 0;
-      return IntMath.saturatedAdd(neighbors.size(), selfLoopCount);
     }
-  }
 
-  @Override
-  public int inDegree(N node) {
-    return isDirected() ? predecessors(node).size() : degree(node);
-  }
-
-  @Override
-  public int outDegree(N node) {
-    return isDirected() ? successors(node).size() : degree(node);
-  }
-
-  @Override
-  public boolean hasEdgeConnecting(N nodeU, N nodeV) {
-    checkNotNull(nodeU);
-    checkNotNull(nodeV);
-    return nodes().contains(nodeU) && successors(nodeU).contains(nodeV);
-  }
-
-  @Override
-  public boolean hasEdgeConnecting(EndpointPair<N> endpoints) {
-    checkNotNull(endpoints);
-    if (!isOrderingCompatible(endpoints)) {
-      return false;
+    @Override
+    public int inDegree(N node) {
+        return isDirected() ? predecessors(node).size() : degree(node);
     }
-    N nodeU = endpoints.nodeU();
-    N nodeV = endpoints.nodeV();
-    return nodes().contains(nodeU) && successors(nodeU).contains(nodeV);
-  }
 
-  /**
-   * Throws {@code IllegalArgumentException} if the ordering of {@code endpoints} is not compatible
-   * with the directionality of this graph.
-   */
-  protected final void validateEndpoints(EndpointPair<?> endpoints) {
-    checkNotNull(endpoints);
-    checkArgument(isOrderingCompatible(endpoints), ENDPOINTS_MISMATCH);
-  }
+    @Override
+    public int outDegree(N node) {
+        return isDirected() ? successors(node).size() : degree(node);
+    }
 
-  /**
-   * Returns {@code true} iff {@code endpoints}' ordering is compatible with the directionality of
-   * this graph.
-   */
-  protected final boolean isOrderingCompatible(EndpointPair<?> endpoints) {
-    return endpoints.isOrdered() == this.isDirected();
-  }
+    @Override
+    public boolean hasEdgeConnecting(N nodeU, N nodeV) {
+        checkNotNull(nodeU);
+        checkNotNull(nodeV);
+        return nodes().contains(nodeU) && successors(nodeU).contains(nodeV);
+    }
+
+    @Override
+    public boolean hasEdgeConnecting(EndpointPair<N> endpoints) {
+        checkNotNull(endpoints);
+        if (!isOrderingCompatible(endpoints)) {
+            return false;
+        }
+        N nodeU = endpoints.nodeU();
+        N nodeV = endpoints.nodeV();
+        return nodes().contains(nodeU) && successors(nodeU).contains(nodeV);
+    }
+
+    /**
+     * Throws {@code IllegalArgumentException} if the ordering of {@code endpoints} is not compatible
+     * with the directionality of this graph.
+     */
+    protected final void validateEndpoints(EndpointPair<?> endpoints) {
+        checkNotNull(endpoints);
+        checkArgument(isOrderingCompatible(endpoints), ENDPOINTS_MISMATCH);
+    }
+
+    /**
+     * Returns {@code true} iff {@code endpoints}' ordering is compatible with the directionality of
+     * this graph.
+     */
+    protected final boolean isOrderingCompatible(EndpointPair<?> endpoints) {
+        return endpoints.isOrdered() == this.isDirected();
+    }
 }

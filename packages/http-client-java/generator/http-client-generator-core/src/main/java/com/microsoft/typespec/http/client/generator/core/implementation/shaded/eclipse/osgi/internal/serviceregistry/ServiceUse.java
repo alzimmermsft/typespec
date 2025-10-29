@@ -19,7 +19,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.internal.messages.Msg;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.util.NLS;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.ServiceException;
-
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
@@ -38,312 +37,316 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class ServiceUse<S> {
 
-	/**
-	 * Custom ServiceException type to indicate a deadlock occurred during service
-	 * registration.
-	 */
-	public static final int DEADLOCK = 1001;
+    /**
+     * Custom ServiceException type to indicate a deadlock occurred during service
+     * registration.
+     */
+    public static final int DEADLOCK = 1001;
 
-	/** BundleContext associated with this service use */
-	final BundleContextImpl context;
-	/** ServiceDescription of the registered service */
-	final ServiceRegistrationImpl<S> registration;
+    /** BundleContext associated with this service use */
+    final BundleContextImpl context;
+    /** ServiceDescription of the registered service */
+    final ServiceRegistrationImpl<S> registration;
 
-	/** bundle's use count for this service */
-	/* @GuardedBy("getLock()") */
-	private int useCount;
+    /** bundle's use count for this service */
+    /* @GuardedBy("getLock()") */
+    private int useCount;
 
-	/**
-	 * ServiceUseLock for this service use. Use the @{@link #lock()} method to lock
-	 * the lock and obtain an {@link AutoCloseable} object which is used to unlock
-	 * the lock.
-	 */
-	private final ServiceUseLock lock = new ServiceUseLock();
+    /**
+     * ServiceUseLock for this service use. Use the @{@link #lock()} method to lock
+     * the lock and obtain an {@link AutoCloseable} object which is used to unlock
+     * the lock.
+     */
+    private final ServiceUseLock lock = new ServiceUseLock();
 
-	/**
-	 * Constructs a service use encapsulating the service object.
-	 *
-	 * @param context      bundle getting the service
-	 * @param registration ServiceRegistration of the service
-	 */
-	ServiceUse(BundleContextImpl context, ServiceRegistrationImpl<S> registration) {
-		this.useCount = 0;
-		this.registration = registration;
-		this.context = context;
-	}
+    /**
+     * Constructs a service use encapsulating the service object.
+     *
+     * @param context bundle getting the service
+     * @param registration ServiceRegistration of the service
+     */
+    ServiceUse(BundleContextImpl context, ServiceRegistrationImpl<S> registration) {
+        this.useCount = 0;
+        this.registration = registration;
+        this.context = context;
+    }
 
-	/**
-	 * Get a service's service object and increment the use count.
-	 *
-	 * @return The service object.
-	 */
-	/* @GuardedBy("getLock()") */
-	S getService() {
-		assert isLocked();
-		incrementUse();
-		return registration.getServiceObject();
-	}
+    /**
+     * Get a service's service object and increment the use count.
+     *
+     * @return The service object.
+     */
+    /* @GuardedBy("getLock()") */
+    S getService() {
+        assert isLocked();
+        incrementUse();
+        return registration.getServiceObject();
+    }
 
-	/**
-	 * Unget a service's service object.
-	 *
-	 * <p>
-	 * Decrements the use count if the service was being used.
-	 *
-	 * @return true if the service was ungotten; otherwise false.
-	 */
-	/* @GuardedBy("getLock()") */
-	boolean ungetService() {
-		assert isLocked();
-		if (!inUse()) {
-			return false;
-		}
-		decrementUse();
-		return true;
-	}
+    /**
+     * Unget a service's service object.
+     *
+     * <p>
+     * Decrements the use count if the service was being used.
+     *
+     * @return true if the service was ungotten; otherwise false.
+     */
+    /* @GuardedBy("getLock()") */
+    boolean ungetService() {
+        assert isLocked();
+        if (!inUse()) {
+            return false;
+        }
+        decrementUse();
+        return true;
+    }
 
-	/**
-	 * Return the service object for this service use.
-	 *
-	 * @return The service object.
-	 */
-	/* @GuardedBy("getLock()") */
-	S getCachedService() {
-		return registration.getServiceObject();
-	}
+    /**
+     * Return the service object for this service use.
+     *
+     * @return The service object.
+     */
+    /* @GuardedBy("getLock()") */
+    S getCachedService() {
+        return registration.getServiceObject();
+    }
 
-	/**
-	 * Get a new service object for the service.
-	 *
-	 * <p>
-	 * By default, this returns the result of {@link #getService()}.
-	 *
-	 * @return The service object.
-	 */
-	/* @GuardedBy("getLock()") */
-	S newServiceObject() {
-		return getService();
-	}
+    /**
+     * Get a new service object for the service.
+     *
+     * <p>
+     * By default, this returns the result of {@link #getService()}.
+     *
+     * @return The service object.
+     */
+    /* @GuardedBy("getLock()") */
+    S newServiceObject() {
+        return getService();
+    }
 
-	/**
-	 * Release a service object for the service.
-	 *
-	 * <p>
-	 * By default, this returns the result of {@link #ungetService()}.
-	 *
-	 * @param service The service object to release.
-	 * @return true if the service was released; otherwise false.
-	 * @throws IllegalArgumentException If the specified service was not provided by
-	 *                                  this object.
-	 */
-	/* @GuardedBy("getLock()") */
-	boolean releaseServiceObject(final S service) {
-		if ((service == null) || (service != getCachedService()) && context.isValid()) {
-			throw new IllegalArgumentException(Msg.SERVICE_OBJECTS_UNGET_ARGUMENT_EXCEPTION);
-		}
-		return ungetService();
-	}
+    /**
+     * Release a service object for the service.
+     *
+     * <p>
+     * By default, this returns the result of {@link #ungetService()}.
+     *
+     * @param service The service object to release.
+     * @return true if the service was released; otherwise false.
+     * @throws IllegalArgumentException If the specified service was not provided by
+     * this object.
+     */
+    /* @GuardedBy("getLock()") */
+    boolean releaseServiceObject(final S service) {
+        if ((service == null) || (service != getCachedService()) && context.isValid()) {
+            throw new IllegalArgumentException(Msg.SERVICE_OBJECTS_UNGET_ARGUMENT_EXCEPTION);
+        }
+        return ungetService();
+    }
 
-	/**
-	 * Release all uses of the service and reset the use count to zero.
-	 */
-	/* @GuardedBy("getLock()") */
-	void release() {
-		assert isLocked();
-		resetUse();
-	}
+    /**
+     * Release all uses of the service and reset the use count to zero.
+     */
+    /* @GuardedBy("getLock()") */
+    void release() {
+        assert isLocked();
+        resetUse();
+    }
 
-	/**
-	 * Is this service use using any services?
-	 *
-	 * @return true if no services are being used and this service use can be
-	 *         discarded.
-	 */
-	/* @GuardedBy("getLock()") */
-	boolean isEmpty() {
-		assert isLocked();
-		return !inUse();
-	}
+    /**
+     * Is this service use using any services?
+     *
+     * @return true if no services are being used and this service use can be
+     * discarded.
+     */
+    /* @GuardedBy("getLock()") */
+    boolean isEmpty() {
+        assert isLocked();
+        return !inUse();
+    }
 
-	/**
-	 * Is the use count non zero?
-	 *
-	 * @return true if the use count is greater than zero.
-	 */
-	/* @GuardedBy("getLock()") */
-	boolean inUse() {
-		return useCount > 0;
-	}
+    /**
+     * Is the use count non zero?
+     *
+     * @return true if the use count is greater than zero.
+     */
+    /* @GuardedBy("getLock()") */
+    boolean inUse() {
+        return useCount > 0;
+    }
 
-	/**
-	 * Incrementing the use count.
-	 */
-	/* @GuardedBy("getLock()") */
-	void incrementUse() {
-		if (useCount == Integer.MAX_VALUE) {
-			throw new ServiceException(Msg.SERVICE_USE_OVERFLOW);
-		}
-		useCount++;
-	}
+    /**
+     * Incrementing the use count.
+     */
+    /* @GuardedBy("getLock()") */
+    void incrementUse() {
+        if (useCount == Integer.MAX_VALUE) {
+            throw new ServiceException(Msg.SERVICE_USE_OVERFLOW);
+        }
+        useCount++;
+    }
 
-	/**
-	 * Decrementing the use count.
-	 */
-	/* @GuardedBy("getLock()") */
-	void decrementUse() {
-		assert inUse();
-		useCount--;
-	}
+    /**
+     * Decrementing the use count.
+     */
+    /* @GuardedBy("getLock()") */
+    void decrementUse() {
+        assert inUse();
+        useCount--;
+    }
 
-	/**
-	 * Reset the use count to zero.
-	 */
-	/* @GuardedBy("getLock()") */
-	void resetUse() {
-		useCount = 0;
-	}
+    /**
+     * Reset the use count to zero.
+     */
+    /* @GuardedBy("getLock()") */
+    void resetUse() {
+        useCount = 0;
+    }
 
-	/**
-	 * The ServiceUseLock for managing access to this ServiceUse.
-	 * <p>
-	 * Use {@link #lock()} to lock the ServiceUseLock in a try-with-resources
-	 * statement.
-	 * 
-	 * @return The ServiceUseLock for this ServiceUse.
-	 */
-	ServiceUseLock getLock() {
-		return lock;
-	}
+    /**
+     * The ServiceUseLock for managing access to this ServiceUse.
+     * <p>
+     * Use {@link #lock()} to lock the ServiceUseLock in a try-with-resources
+     * statement.
+     * 
+     * @return The ServiceUseLock for this ServiceUse.
+     */
+    ServiceUseLock getLock() {
+        return lock;
+    }
 
-	protected boolean isLocked() {
-		return getLock().isHeldByCurrentThread();
-	}
+    protected boolean isLocked() {
+        return getLock().isHeldByCurrentThread();
+    }
 
-	/**
-	 * Acquires the {@link ServiceUseLock} of this ServiceUse.
-	 * 
-	 * If this ServiceUse is locked by another thread then the current thread lies
-	 * dormant until the lock has been acquired.
-	 * 
-	 * @return The unlocker, which is {@link AutoCloseable}, to unlock the
-	 *         ServiceUseLock of this ServiceUse.
-	 * @throws ServiceException If a deadlock with another ServiceUseLock is
-	 *                          detected.
-	 */
-	ServiceUseLock lock() {
-		Thread awaitingThread = null;
-		boolean interrupted = false;
-		try {
-			final ServiceUseLock useLock = getLock(); // local var to avoid multiple getfields
-			while (true) {
-				try {
-					if (useLock.tryLock(100_000_000L, TimeUnit.NANOSECONDS)) { // 100ms (but prevent conversion)
-						return useLock;
-					}
-					awaitingThread = Thread.currentThread();
-					checkDeadLock(awaitingThread, useLock);
-				} catch (InterruptedException e) {
-					interrupted = true;
-					// Clear interrupted status and try again to lock, just like a plain
-					// synchronized. Re-interrupted before returning to the caller.
-				}
-			}
-		} finally {
-			if (awaitingThread != null) {
-				registration.getAwaitedUseLocks().remove(awaitingThread);
-			}
-			if (interrupted) {
-				Thread.currentThread().interrupt();
-			}
-		}
-	}
+    /**
+     * Acquires the {@link ServiceUseLock} of this ServiceUse.
+     * 
+     * If this ServiceUse is locked by another thread then the current thread lies
+     * dormant until the lock has been acquired.
+     * 
+     * @return The unlocker, which is {@link AutoCloseable}, to unlock the
+     * ServiceUseLock of this ServiceUse.
+     * @throws ServiceException If a deadlock with another ServiceUseLock is
+     * detected.
+     */
+    ServiceUseLock lock() {
+        Thread awaitingThread = null;
+        boolean interrupted = false;
+        try {
+            final ServiceUseLock useLock = getLock(); // local var to avoid multiple getfields
+            while (true) {
+                try {
+                    if (useLock.tryLock(100_000_000L, TimeUnit.NANOSECONDS)) { // 100ms (but prevent conversion)
+                        return useLock;
+                    }
+                    awaitingThread = Thread.currentThread();
+                    checkDeadLock(awaitingThread, useLock);
+                } catch (InterruptedException e) {
+                    interrupted = true;
+                    // Clear interrupted status and try again to lock, just like a plain
+                    // synchronized. Re-interrupted before returning to the caller.
+                }
+            }
+        } finally {
+            if (awaitingThread != null) {
+                registration.getAwaitedUseLocks().remove(awaitingThread);
+            }
+            if (interrupted) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
 
-	private void checkDeadLock(final Thread currentThread, final ServiceUseLock currentLock) {
-		final ConcurrentMap<Thread, ServiceUseLock> awaitedUseLocks = registration.getAwaitedUseLocks();
-		awaitedUseLocks.put(currentThread, currentLock);
-		ServiceUseLock useLock = currentLock;
-		// Check if current thread is in the cycle of mutually awaiting thread-lock
-		// pairs, but prevent infinite loop if current thread awaits a dead-locked lock
-		// but is itself not in the cycle.
-		int maxLocks = awaitedUseLocks.size();
-		for (int i = 0; i < maxLocks; i++) {
-			Thread owner = useLock.getOwner();
-			if (owner == currentThread) {
-				throw new ServiceException(NLS.bind(Msg.SERVICE_USE_DEADLOCK, currentLock), DEADLOCK);
-			}
-			if (owner == null || (useLock = awaitedUseLocks.get(owner)) == null) {
-				break; // lock could be released in the meantime
-			}
-		}
-		// Not (yet) a dead-lock. Lock was probably regularly hold by another thread.
-		// Race conditions are not an issue here. A deadlock is a static situation and
-		// if we closely missed the other thread putting its awaited lock it will be
-		// noticed in the next loop-pass.
-	}
+    private void checkDeadLock(final Thread currentThread, final ServiceUseLock currentLock) {
+        final ConcurrentMap<Thread, ServiceUseLock> awaitedUseLocks = registration.getAwaitedUseLocks();
+        awaitedUseLocks.put(currentThread, currentLock);
+        ServiceUseLock useLock = currentLock;
+        // Check if current thread is in the cycle of mutually awaiting thread-lock
+        // pairs, but prevent infinite loop if current thread awaits a dead-locked lock
+        // but is itself not in the cycle.
+        int maxLocks = awaitedUseLocks.size();
+        for (int i = 0; i < maxLocks; i++) {
+            Thread owner = useLock.getOwner();
+            if (owner == currentThread) {
+                throw new ServiceException(NLS.bind(Msg.SERVICE_USE_DEADLOCK, currentLock), DEADLOCK);
+            }
+            if (owner == null || (useLock = awaitedUseLocks.get(owner)) == null) {
+                break; // lock could be released in the meantime
+            }
+        }
+        // Not (yet) a dead-lock. Lock was probably regularly hold by another thread.
+        // Race conditions are not an issue here. A deadlock is a static situation and
+        // if we closely missed the other thread putting its awaited lock it will be
+        // noticed in the next loop-pass.
+    }
 
-	/**
-	 * ReentrantLock subclass that allows for {@link AutoCloseable} unlocking.
-	 * <p>
-	 * This lock is unlocked if its {@code close()} method is invoked.
-	 * ServiceUseLock objects can therefore can be used as a resource in a
-	 * try-with-resources statement.
-	 * <p>
-	 * Also exposes {@link #getOwner()} and has an enhanced {@link #toString()}.
-	 * 
-	 * @see ServiceUse#lock()
-	 */
-	static class ServiceUseLock extends ReentrantLock implements AutoCloseable {
-		private static final long serialVersionUID = 1L;
+    /**
+     * ReentrantLock subclass that allows for {@link AutoCloseable} unlocking.
+     * <p>
+     * This lock is unlocked if its {@code close()} method is invoked.
+     * ServiceUseLock objects can therefore can be used as a resource in a
+     * try-with-resources statement.
+     * <p>
+     * Also exposes {@link #getOwner()} and has an enhanced {@link #toString()}.
+     * 
+     * @see ServiceUse#lock()
+     */
+    static class ServiceUseLock extends ReentrantLock implements AutoCloseable {
+        private static final long serialVersionUID = 1L;
 
-		/**
-		 * Unlock this lock.
-		 * <p>
-		 * This method is not idempotent and should be called only once for each lock
-		 * acquisition.
-		 * </p>
-		 * 
-		 * @see #unlock()
-		 */
-		@Override
-		public void close() {
-			unlock();
-		}
+        /**
+         * Unlock this lock.
+         * <p>
+         * This method is not idempotent and should be called only once for each lock
+         * acquisition.
+         * </p>
+         * 
+         * @see #unlock()
+         */
+        @Override
+        public void close() {
+            unlock();
+        }
 
-		@Override
-		protected Thread getOwner() {
-			return super.getOwner();
-		}
+        @Override
+        protected Thread getOwner() {
+            return super.getOwner();
+        }
 
-		/**
-		 * Returns a lock state description for this lock. This adds additional
-		 * information over the default implementation when the lock is held.
-		 *
-		 * @return The lock state description.
-		 */
-		@SuppressWarnings("nls")
-		@Override
-		public String toString() {
-			Thread o = getOwner();
-			if (o != null) {
-				try {
-					ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
-					ThreadInfo threadInfo = threadMXBean.getThreadInfo(o.getId(), Integer.MAX_VALUE);
-					StackTraceElement[] trace = threadInfo.getStackTrace();
-					StringBuilder sb = new StringBuilder(super.toString()).append(", Details:\n");
-					if (o.isDaemon()) {
-						sb.append("daemon ");
-					}
-					sb.append("prio=").append(o.getPriority()).append(" id=").append(o.getId()).append(" ")
-							.append(o.getState());
-					for (StackTraceElement traceElement : trace) {
-						sb.append("\tat ").append(traceElement).append("\n");
-					}
-					return sb.toString();
-				} catch (Exception e) {
-					// do nothing and fall back to just the default, thread might be gone
-				}
-			}
-			return super.toString();
-		}
-	}
+        /**
+         * Returns a lock state description for this lock. This adds additional
+         * information over the default implementation when the lock is held.
+         *
+         * @return The lock state description.
+         */
+        @SuppressWarnings("nls")
+        @Override
+        public String toString() {
+            Thread o = getOwner();
+            if (o != null) {
+                try {
+                    ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
+                    ThreadInfo threadInfo = threadMXBean.getThreadInfo(o.getId(), Integer.MAX_VALUE);
+                    StackTraceElement[] trace = threadInfo.getStackTrace();
+                    StringBuilder sb = new StringBuilder(super.toString()).append(", Details:\n");
+                    if (o.isDaemon()) {
+                        sb.append("daemon ");
+                    }
+                    sb.append("prio=")
+                        .append(o.getPriority())
+                        .append(" id=")
+                        .append(o.getId())
+                        .append(" ")
+                        .append(o.getState());
+                    for (StackTraceElement traceElement : trace) {
+                        sb.append("\tat ").append(traceElement).append("\n");
+                    }
+                    return sb.toString();
+                } catch (Exception e) {
+                    // do nothing and fall back to just the default, thread might be gone
+                }
+            }
+            return super.toString();
+        }
+    }
 }

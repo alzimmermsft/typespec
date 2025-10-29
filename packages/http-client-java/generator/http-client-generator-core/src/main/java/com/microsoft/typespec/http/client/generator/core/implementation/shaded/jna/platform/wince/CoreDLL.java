@@ -28,8 +28,9 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.win32.W32APIOptions;
 
-/** Definition <code>coredll.dll</code>.
-    Add other win32 interface mappings as needed.
+/**
+ * Definition <code>coredll.dll</code>.
+ * Add other win32 interface mappings as needed.
  */
 public interface CoreDLL extends WinNT, Library {
 

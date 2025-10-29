@@ -15,9 +15,9 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.apt.dispatch;
 
-import java.util.List;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.processing.Processor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CompilationProgress;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.processing.Processor;
+import java.util.List;
 
 /**
  * Implementors know how to discover annotation processors, and maintain a list of processors that
@@ -25,27 +25,28 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public interface IProcessorProvider {
 
-	/**
-	 * Return the next processor that can be discovered, according to the order and discovery rules
-	 *         of the provider (see, for instance, {@link Processor}.
-	 * @return a ProcessorInfo wrapping an initialized Processor, or <code>null</code> if there are
-	 * no more processors to be discovered.
-	 */
-	ProcessorInfo discoverNextProcessor();
+    /**
+     * Return the next processor that can be discovered, according to the order and discovery rules
+     * of the provider (see, for instance, {@link Processor}.
+     * 
+     * @return a ProcessorInfo wrapping an initialized Processor, or <code>null</code> if there are
+     * no more processors to be discovered.
+     */
+    ProcessorInfo discoverNextProcessor();
 
-	/**
-	 * @return the list of all processors that have been discovered so far. This list will grow when
-	 *         {@link #discoverNextProcessor()} is called.
-	 */
-	List<ProcessorInfo> getDiscoveredProcessors();
+    /**
+     * @return the list of all processors that have been discovered so far. This list will grow when
+     * {@link #discoverNextProcessor()} is called.
+     */
+    List<ProcessorInfo> getDiscoveredProcessors();
 
-	/**
-	 * Called when a processor throws an exception.  This may abort compilation, throw an
-	 * unchecked exception, etc; the caller should not assume that this method will return.
-	 *
-	 * @param p the processor, if known, or null if not.
-	 */
-	void reportProcessorException(Processor p, Exception e);
+    /**
+     * Called when a processor throws an exception. This may abort compilation, throw an
+     * unchecked exception, etc; the caller should not assume that this method will return.
+     *
+     * @param p the processor, if known, or null if not.
+     */
+    void reportProcessorException(Processor p, Exception e);
 
-	CompilationProgress getCompilationProgress();
+    CompilationProgress getCompilationProgress();
 }

@@ -27,32 +27,32 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 public class WireDTO extends DTO {
     /**
-	 * Reference to the Capability for the wire.
-	 * 
-	 * @see Wire#getCapability()
-	 */
-    public CapabilityRefDTO  capability;
+     * Reference to the Capability for the wire.
+     * 
+     * @see Wire#getCapability()
+     */
+    public CapabilityRefDTO capability;
 
     /**
-	 * Reference to the Requirement for the wire.
-	 * 
-	 * @see Wire#getRequirement()
-	 */
+     * Reference to the Requirement for the wire.
+     * 
+     * @see Wire#getRequirement()
+     */
     public RequirementRefDTO requirement;
 
     /**
-	 * The identifier of the provider resource for the wire.
-	 * 
-	 * @see ResourceDTO#id
-	 * @see Wire#getProvider()
-	 */
-    public int               provider;
+     * The identifier of the provider resource for the wire.
+     * 
+     * @see ResourceDTO#id
+     * @see Wire#getProvider()
+     */
+    public int provider;
 
     /**
-	 * The identifier of the requiring resource for the wire.
-	 * 
-	 * @see ResourceDTO#id
-	 * @see Wire#getRequirer()
-	 */
-    public int               requirer;
+     * The identifier of the requiring resource for the wire.
+     * 
+     * @see ResourceDTO#id
+     * @see Wire#getRequirer()
+     */
+    public int requirer;
 }

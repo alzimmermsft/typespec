@@ -22,13 +22,13 @@ import static com.microsoft.typespec.http.client.generator.core.implementation.s
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.ImmutableMap;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.Iterators;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 
 /**
  * An implementation of {@link GraphConnections} for undirected graphs.
@@ -39,78 +39,77 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
  */
 @ElementTypesAreNonnullByDefault
 final class UndirectedGraphConnections<N, V> implements GraphConnections<N, V> {
-  private final Map<N, V> adjacentNodeValues;
+    private final Map<N, V> adjacentNodeValues;
 
-  private UndirectedGraphConnections(Map<N, V> adjacentNodeValues) {
-    this.adjacentNodeValues = checkNotNull(adjacentNodeValues);
-  }
-
-  static <N, V> UndirectedGraphConnections<N, V> of(ElementOrder<N> incidentEdgeOrder) {
-    switch (incidentEdgeOrder.type()) {
-      case UNORDERED:
-        return new UndirectedGraphConnections<>(
-            new HashMap<N, V>(INNER_CAPACITY, INNER_LOAD_FACTOR));
-      case STABLE:
-        return new UndirectedGraphConnections<>(
-            new LinkedHashMap<N, V>(INNER_CAPACITY, INNER_LOAD_FACTOR));
-      default:
-        throw new AssertionError(incidentEdgeOrder.type());
+    private UndirectedGraphConnections(Map<N, V> adjacentNodeValues) {
+        this.adjacentNodeValues = checkNotNull(adjacentNodeValues);
     }
-  }
 
-  static <N, V> UndirectedGraphConnections<N, V> ofImmutable(Map<N, V> adjacentNodeValues) {
-    return new UndirectedGraphConnections<>(ImmutableMap.copyOf(adjacentNodeValues));
-  }
+    static <N, V> UndirectedGraphConnections<N, V> of(ElementOrder<N> incidentEdgeOrder) {
+        switch (incidentEdgeOrder.type()) {
+            case UNORDERED:
+                return new UndirectedGraphConnections<>(new HashMap<N, V>(INNER_CAPACITY, INNER_LOAD_FACTOR));
 
-  @Override
-  public Set<N> adjacentNodes() {
-    return Collections.unmodifiableSet(adjacentNodeValues.keySet());
-  }
+            case STABLE:
+                return new UndirectedGraphConnections<>(new LinkedHashMap<N, V>(INNER_CAPACITY, INNER_LOAD_FACTOR));
 
-  @Override
-  public Set<N> predecessors() {
-    return adjacentNodes();
-  }
+            default:
+                throw new AssertionError(incidentEdgeOrder.type());
+        }
+    }
 
-  @Override
-  public Set<N> successors() {
-    return adjacentNodes();
-  }
+    static <N, V> UndirectedGraphConnections<N, V> ofImmutable(Map<N, V> adjacentNodeValues) {
+        return new UndirectedGraphConnections<>(ImmutableMap.copyOf(adjacentNodeValues));
+    }
 
-  @Override
-  public Iterator<EndpointPair<N>> incidentEdgeIterator(N thisNode) {
-    return Iterators.transform(
-        adjacentNodeValues.keySet().iterator(),
-        (N incidentNode) -> EndpointPair.unordered(thisNode, incidentNode));
-  }
+    @Override
+    public Set<N> adjacentNodes() {
+        return Collections.unmodifiableSet(adjacentNodeValues.keySet());
+    }
 
-  @Override
-  @CheckForNull
-  public V value(N node) {
-    return adjacentNodeValues.get(node);
-  }
+    @Override
+    public Set<N> predecessors() {
+        return adjacentNodes();
+    }
 
-  @Override
-  public void removePredecessor(N node) {
-    @SuppressWarnings("unused")
-    V unused = removeSuccessor(node);
-  }
+    @Override
+    public Set<N> successors() {
+        return adjacentNodes();
+    }
 
-  @Override
-  @CheckForNull
-  public V removeSuccessor(N node) {
-    return adjacentNodeValues.remove(node);
-  }
+    @Override
+    public Iterator<EndpointPair<N>> incidentEdgeIterator(N thisNode) {
+        return Iterators.transform(adjacentNodeValues.keySet().iterator(),
+            (N incidentNode) -> EndpointPair.unordered(thisNode, incidentNode));
+    }
 
-  @Override
-  public void addPredecessor(N node, V value) {
-    @SuppressWarnings("unused")
-    V unused = addSuccessor(node, value);
-  }
+    @Override
+    @CheckForNull
+    public V value(N node) {
+        return adjacentNodeValues.get(node);
+    }
 
-  @Override
-  @CheckForNull
-  public V addSuccessor(N node, V value) {
-    return adjacentNodeValues.put(node, value);
-  }
+    @Override
+    public void removePredecessor(N node) {
+        @SuppressWarnings("unused")
+        V unused = removeSuccessor(node);
+    }
+
+    @Override
+    @CheckForNull
+    public V removeSuccessor(N node) {
+        return adjacentNodeValues.remove(node);
+    }
+
+    @Override
+    public void addPredecessor(N node, V value) {
+        @SuppressWarnings("unused")
+        V unused = addSuccessor(node, value);
+    }
+
+    @Override
+    @CheckForNull
+    public V addSuccessor(N node, V value) {
+        return adjacentNodeValues.put(node, value);
+    }
 }

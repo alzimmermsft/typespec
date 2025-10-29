@@ -36,413 +36,434 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class ParameterizedSingleTypeReference extends ArrayTypeReference {
 
-	public static final TypeBinding[] DIAMOND_TYPE_ARGUMENTS = new TypeBinding[0];
+    public static final TypeBinding[] DIAMOND_TYPE_ARGUMENTS = new TypeBinding[0];
 
-	public TypeReference[] typeArguments;
+    public TypeReference[] typeArguments;
 
-	public ParameterizedSingleTypeReference(char[] name, TypeReference[] typeArguments, int dim, long pos){
-		super(name, dim, pos);
-		this.originalSourceEnd = this.sourceEnd;
-		this.typeArguments = typeArguments;
-		for (TypeReference typeArgument : typeArguments) {
-			if ((typeArgument.bits & ASTNode.HasTypeAnnotations) != 0) {
-				this.bits |= ASTNode.HasTypeAnnotations;
-				break;
-			}
-		}
-	}
-	public ParameterizedSingleTypeReference(char[] name, TypeReference[] typeArguments, int dim, Annotation[][] annotationsOnDimensions, long pos) {
-		this(name, typeArguments, dim, pos);
-		setAnnotationsOnDimensions(annotationsOnDimensions);
-		if (annotationsOnDimensions != null) {
-			this.bits |= ASTNode.HasTypeAnnotations;
-		}
-	}
-	@Override
-	public void checkBounds(Scope scope) {
-		if (this.resolvedType == null) return;
+    public ParameterizedSingleTypeReference(char[] name, TypeReference[] typeArguments, int dim, long pos) {
+        super(name, dim, pos);
+        this.originalSourceEnd = this.sourceEnd;
+        this.typeArguments = typeArguments;
+        for (TypeReference typeArgument : typeArguments) {
+            if ((typeArgument.bits & ASTNode.HasTypeAnnotations) != 0) {
+                this.bits |= ASTNode.HasTypeAnnotations;
+                break;
+            }
+        }
+    }
 
-		if (this.resolvedType.leafComponentType() instanceof ParameterizedTypeBinding) {
-			ParameterizedTypeBinding parameterizedType = (ParameterizedTypeBinding) this.resolvedType.leafComponentType();
-			TypeBinding[] argTypes = parameterizedType.arguments;
-			if (argTypes != null) { // may be null in error cases
-				parameterizedType.boundCheck(scope, this.typeArguments);
-			}
-		}
-	}
+    public ParameterizedSingleTypeReference(char[] name, TypeReference[] typeArguments, int dim,
+        Annotation[][] annotationsOnDimensions, long pos) {
+        this(name, typeArguments, dim, pos);
+        setAnnotationsOnDimensions(annotationsOnDimensions);
+        if (annotationsOnDimensions != null) {
+            this.bits |= ASTNode.HasTypeAnnotations;
+        }
+    }
 
-	@Override
-	public TypeReference augmentTypeWithAdditionalDimensions(int additionalDimensions, Annotation [][] additionalAnnotations, boolean isVarargs) {
-		int totalDimensions = this.dimensions() + additionalDimensions;
-		Annotation [][] allAnnotations = getMergedAnnotationsOnDimensions(additionalDimensions, additionalAnnotations);
-		ParameterizedSingleTypeReference parameterizedSingleTypeReference = new ParameterizedSingleTypeReference(this.token, this.typeArguments, totalDimensions, allAnnotations, (((long) this.sourceStart) << 32) + this.sourceEnd);
-		parameterizedSingleTypeReference.annotations = this.annotations;
-		parameterizedSingleTypeReference.bits |= (this.bits & ASTNode.HasTypeAnnotations);
-		if (!isVarargs)
-			parameterizedSingleTypeReference.extendedDimensions = additionalDimensions;
-		return parameterizedSingleTypeReference;
-	}
+    @Override
+    public void checkBounds(Scope scope) {
+        if (this.resolvedType == null)
+            return;
 
-	/**
-	 * @return char[][]
-	 */
-	@Override
-	public char [][] getParameterizedTypeName(){
-		StringBuilder buffer = new StringBuilder(5);
-		buffer.append(this.token).append('<');
-		for (int i = 0, length = this.typeArguments.length; i < length; i++) {
-			if (i > 0) buffer.append(',');
-			buffer.append(CharOperation.concatWith(this.typeArguments[i].getParameterizedTypeName(), '.'));
-		}
-		buffer.append('>');
-		int nameLength = buffer.length();
-		char[] name = new char[nameLength];
-		buffer.getChars(0, nameLength, name, 0);
-		int dim = this.dimensions;
-		if (dim > 0) {
-			char[] dimChars = new char[dim*2];
-			for (int i = 0; i < dim; i++) {
-				int index = i*2;
-				dimChars[index] = '[';
-				dimChars[index+1] = ']';
-			}
-			name = CharOperation.concat(name, dimChars);
-		}
-		return new char[][]{ name };
-	}
+        if (this.resolvedType.leafComponentType() instanceof ParameterizedTypeBinding) {
+            ParameterizedTypeBinding parameterizedType
+                = (ParameterizedTypeBinding) this.resolvedType.leafComponentType();
+            TypeBinding[] argTypes = parameterizedType.arguments;
+            if (argTypes != null) { // may be null in error cases
+                parameterizedType.boundCheck(scope, this.typeArguments);
+            }
+        }
+    }
 
-	@Override
-	public TypeReference[][] getTypeArguments() {
-		return new TypeReference[][] { this.typeArguments };
-	}
+    @Override
+    public TypeReference augmentTypeWithAdditionalDimensions(int additionalDimensions,
+        Annotation[][] additionalAnnotations, boolean isVarargs) {
+        int totalDimensions = this.dimensions() + additionalDimensions;
+        Annotation[][] allAnnotations = getMergedAnnotationsOnDimensions(additionalDimensions, additionalAnnotations);
+        ParameterizedSingleTypeReference parameterizedSingleTypeReference
+            = new ParameterizedSingleTypeReference(this.token, this.typeArguments, totalDimensions, allAnnotations,
+                (((long) this.sourceStart) << 32) + this.sourceEnd);
+        parameterizedSingleTypeReference.annotations = this.annotations;
+        parameterizedSingleTypeReference.bits |= (this.bits & ASTNode.HasTypeAnnotations);
+        if (!isVarargs)
+            parameterizedSingleTypeReference.extendedDimensions = additionalDimensions;
+        return parameterizedSingleTypeReference;
+    }
 
-	/**
+    /**
+     * @return char[][]
+     */
+    @Override
+    public char[][] getParameterizedTypeName() {
+        StringBuilder buffer = new StringBuilder(5);
+        buffer.append(this.token).append('<');
+        for (int i = 0, length = this.typeArguments.length; i < length; i++) {
+            if (i > 0)
+                buffer.append(',');
+            buffer.append(CharOperation.concatWith(this.typeArguments[i].getParameterizedTypeName(), '.'));
+        }
+        buffer.append('>');
+        int nameLength = buffer.length();
+        char[] name = new char[nameLength];
+        buffer.getChars(0, nameLength, name, 0);
+        int dim = this.dimensions;
+        if (dim > 0) {
+            char[] dimChars = new char[dim * 2];
+            for (int i = 0; i < dim; i++) {
+                int index = i * 2;
+                dimChars[index] = '[';
+                dimChars[index + 1] = ']';
+            }
+            name = CharOperation.concat(name, dimChars);
+        }
+        return new char[][] { name };
+    }
+
+    @Override
+    public TypeReference[][] getTypeArguments() {
+        return new TypeReference[][] { this.typeArguments };
+    }
+
+    /**
      * @see org.eclipse.jdt.internal.compiler.ast.ArrayQualifiedTypeReference#getTypeBinding(Scope)
      */
     @Override
-	protected TypeBinding getTypeBinding(Scope scope) {
+    protected TypeBinding getTypeBinding(Scope scope) {
         return null; // not supported here - combined with resolveType(...)
     }
 
     @Override
-	public boolean isParameterizedTypeReference() {
-    	return true;
+    public boolean isParameterizedTypeReference() {
+        return true;
     }
 
     @Override
     public boolean hasNullTypeAnnotation(AnnotationPosition position) {
-		if (super.hasNullTypeAnnotation(position))
-			return true;
-		if (position == AnnotationPosition.ANY) {
-	    	if (this.resolvedType != null && !this.resolvedType.hasNullTypeAnnotations())
-	    		return false; // shortcut
-	    	if (this.typeArguments != null) {
-	    		for (TypeReference typeArgument : this.typeArguments) {
-					if (typeArgument.hasNullTypeAnnotation(position))
-						return true;
-				}
-	    	}
-		}
-    	return false;
+        if (super.hasNullTypeAnnotation(position))
+            return true;
+        if (position == AnnotationPosition.ANY) {
+            if (this.resolvedType != null && !this.resolvedType.hasNullTypeAnnotations())
+                return false; // shortcut
+            if (this.typeArguments != null) {
+                for (TypeReference typeArgument : this.typeArguments) {
+                    if (typeArgument.hasNullTypeAnnotation(position))
+                        return true;
+                }
+            }
+        }
+        return false;
     }
 
     /*
      * No need to check for reference to raw type per construction
      */
-	private TypeBinding internalResolveType(Scope scope, ReferenceBinding enclosingType, boolean checkBounds, int location) {
-		// handle the error here
-		this.constant = Constant.NotAConstant;
-		if ((this.bits & ASTNode.DidResolve) != 0) { // is a shared type reference which was already resolved
-			if (this.resolvedType != null) { // is a shared type reference which was already resolved
-				if (this.resolvedType.isValidBinding()) {
-					return this.resolvedType;
-				} else {
-					switch (this.resolvedType.problemId()) {
-						case ProblemReasons.NotFound :
-						case ProblemReasons.NotVisible :
-						case ProblemReasons.InheritedNameHidesEnclosingName :
-							TypeBinding type = this.resolvedType.closestMatch();
-							return type;
-						default :
-							return null;
-					}
-				}
-			}
-		}
-		this.bits |= ASTNode.DidResolve;
-		TypeBinding type = internalResolveLeafType(scope, enclosingType, checkBounds);
+    private TypeBinding internalResolveType(Scope scope, ReferenceBinding enclosingType, boolean checkBounds,
+        int location) {
+        // handle the error here
+        this.constant = Constant.NotAConstant;
+        if ((this.bits & ASTNode.DidResolve) != 0) { // is a shared type reference which was already resolved
+            if (this.resolvedType != null) { // is a shared type reference which was already resolved
+                if (this.resolvedType.isValidBinding()) {
+                    return this.resolvedType;
+                } else {
+                    switch (this.resolvedType.problemId()) {
+                        case ProblemReasons.NotFound:
+                        case ProblemReasons.NotVisible:
+                        case ProblemReasons.InheritedNameHidesEnclosingName:
+                            TypeBinding type = this.resolvedType.closestMatch();
+                            return type;
 
-		// handle three different outcomes:
-		if (type == null) {
-			this.resolvedType = createArrayType(scope, this.resolvedType);
-			resolveAnnotations(scope, 0); // no defaultNullness for buggy type
-			return null;							// (1) no useful type, but still captured dimensions into this.resolvedType
-		} else {
-			type = createArrayType(scope, type);
-			if (!this.resolvedType.isValidBinding() && this.resolvedType.dimensions() == type.dimensions()) {
-				resolveAnnotations(scope, 0); // no defaultNullness for buggy type
-				return type;						// (2) found some error, but could recover useful type (like closestMatch)
-			} else {
-				this.resolvedType = type; 			// (3) no complaint, keep fully resolved type (incl. dimensions)
-				resolveAnnotations(scope, location);
-				if(this.dimensions > 0) {
-					this.resolvedType = ArrayTypeReference.maybeMarkArrayContentsNonNull(scope, this.resolvedType, this.sourceStart, this.dimensions,
-																leafType -> this.leafComponentTypeWithoutDefaultNullness = leafType);
-				}
-				return this.resolvedType; // pick up any annotated type.
-			}
-		}
-	}
-	private TypeBinding internalResolveLeafType(Scope scope, ReferenceBinding enclosingType, boolean checkBounds) {
-		ReferenceBinding currentType;
-		if (enclosingType == null) {
-			this.resolvedType = scope.getType(this.token);
-			if (this.resolvedType.isValidBinding()) {
-				currentType = (ReferenceBinding) this.resolvedType;
-			} else {
-				reportInvalidType(scope);
-				switch (this.resolvedType.problemId()) {
-					case ProblemReasons.NotFound :
-					case ProblemReasons.NotVisible :
-					case ProblemReasons.InheritedNameHidesEnclosingName :
-						TypeBinding type = this.resolvedType.closestMatch();
-						if (type instanceof ReferenceBinding) {
-							currentType = (ReferenceBinding) type;
-							break;
-						}
-						//$FALL-THROUGH$ - unable to complete type binding, but still resolve type arguments
-					default :
-						boolean isClassScope = scope.kind == Scope.CLASS_SCOPE;
-					int argLength = this.typeArguments.length;
-					for (int i = 0; i < argLength; i++) {
-						TypeReference typeArgument = this.typeArguments[i];
-						if (isClassScope) {
-							typeArgument.resolveType((ClassScope) scope);
-						} else {
-							typeArgument.resolveType((BlockScope) scope, checkBounds);
-						}
-					}
-					return null;
-				}
-				// be resilient, still attempt resolving arguments
-			}
-			enclosingType = currentType.enclosingType(); // if member type
-			if (enclosingType != null && currentType.hasEnclosingInstanceContext()) {
-				enclosingType = scope.environment().convertToParameterizedType(enclosingType);
-			}
-		} else { // resolving member type (relatively to enclosingType)
-			this.resolvedType = currentType = scope.getMemberType(this.token, enclosingType);
-			if (!this.resolvedType.isValidBinding()) {
-				scope.problemReporter().invalidEnclosingType(this, currentType, enclosingType);
-				return null;
-			}
-			if (isTypeUseDeprecated(currentType, scope))
-				scope.problemReporter().deprecatedType(currentType, this);
-			ReferenceBinding currentEnclosing = currentType.enclosingType();
-			if (currentEnclosing != null && TypeBinding.notEquals(currentEnclosing.erasure(), enclosingType.erasure())) {
-				enclosingType = currentEnclosing; // inherited member type, leave it associated with its enclosing rather than subtype
-			}
-		}
+                        default:
+                            return null;
+                    }
+                }
+            }
+        }
+        this.bits |= ASTNode.DidResolve;
+        TypeBinding type = internalResolveLeafType(scope, enclosingType, checkBounds);
 
-		// check generic and arity
-	    boolean isClassScope = scope.kind == Scope.CLASS_SCOPE;
-	    TypeReference keep = null;
-	    if (isClassScope) {
-	    	keep = ((ClassScope) scope).superTypeReference;
-	    	((ClassScope) scope).superTypeReference = null;
-	    }
-	    final boolean isDiamond = (this.bits & ASTNode.IsDiamond) != 0;
-		int argLength = this.typeArguments.length;
-		TypeBinding[] argTypes = new TypeBinding[argLength];
-		boolean argHasError = false;
-		ReferenceBinding currentOriginal = (ReferenceBinding)currentType.original();
-		for (int i = 0; i < argLength; i++) {
-		    TypeReference typeArgument = this.typeArguments[i];
-		    TypeBinding argType = isClassScope
-				? typeArgument.resolveTypeArgument((ClassScope) scope, currentOriginal, i)
-				: typeArgument.resolveTypeArgument((BlockScope) scope, currentOriginal, i);
-			this.bits |= (typeArgument.bits & ASTNode.HasTypeAnnotations);
-		     if (argType == null) {
-		         argHasError = true;
-		     } else {
-		    	 argTypes[i] = argType;
-		     }
-		}
-		if (argHasError) {
-			return null;
-		}
-		if (isClassScope) {
-	    	((ClassScope) scope).superTypeReference = keep;
-			if (((ClassScope) scope).detectHierarchyCycle(currentOriginal, this))
-				return null;
-		}
+        // handle three different outcomes:
+        if (type == null) {
+            this.resolvedType = createArrayType(scope, this.resolvedType);
+            resolveAnnotations(scope, 0); // no defaultNullness for buggy type
+            return null;							// (1) no useful type, but still captured dimensions into
+                        							// this.resolvedType
+        } else {
+            type = createArrayType(scope, type);
+            if (!this.resolvedType.isValidBinding() && this.resolvedType.dimensions() == type.dimensions()) {
+                resolveAnnotations(scope, 0); // no defaultNullness for buggy type
+                return type;						// (2) found some error, but could recover useful type (like
+                            						// closestMatch)
+            } else {
+                this.resolvedType = type; 			// (3) no complaint, keep fully resolved type (incl. dimensions)
+                resolveAnnotations(scope, location);
+                if (this.dimensions > 0) {
+                    this.resolvedType
+                        = ArrayTypeReference.maybeMarkArrayContentsNonNull(scope, this.resolvedType, this.sourceStart,
+                            this.dimensions, leafType -> this.leafComponentTypeWithoutDefaultNullness = leafType);
+                }
+                return this.resolvedType; // pick up any annotated type.
+            }
+        }
+    }
 
-		TypeVariableBinding[] typeVariables = currentOriginal.typeVariables();
-		if (typeVariables == Binding.NO_TYPE_VARIABLES) { // non generic invoked with arguments
-			if ((currentOriginal.tagBits & TagBits.HasMissingType) == 0) {
-				this.resolvedType = currentType;
-				scope.problemReporter().nonGenericTypeCannotBeParameterized(0, this, currentType, argTypes);
-				return null;
-			}
-			// if missing generic type, and compliance >= 1.5, then will rebuild a parameterized binding
-		} else if (argLength != typeVariables.length) {
-			if (!isDiamond) { // check arity, IsDiamond never set for 1.6-
-				scope.problemReporter().incorrectArityForParameterizedType(this, currentType, argTypes);
-				return null;
-			}
-		} else if (!currentType.isStatic()) {
-			ReferenceBinding actualEnclosing = currentType.enclosingType();
-			if (actualEnclosing != null && actualEnclosing.isRawType()){
-				scope.problemReporter().rawMemberTypeCannotBeParameterized(
-						this, scope.environment().createRawType(currentOriginal, actualEnclosing), argTypes);
-				return null;
-			}
-		}
+    private TypeBinding internalResolveLeafType(Scope scope, ReferenceBinding enclosingType, boolean checkBounds) {
+        ReferenceBinding currentType;
+        if (enclosingType == null) {
+            this.resolvedType = scope.getType(this.token);
+            if (this.resolvedType.isValidBinding()) {
+                currentType = (ReferenceBinding) this.resolvedType;
+            } else {
+                reportInvalidType(scope);
+                switch (this.resolvedType.problemId()) {
+                    case ProblemReasons.NotFound:
+                    case ProblemReasons.NotVisible:
+                    case ProblemReasons.InheritedNameHidesEnclosingName:
+                        TypeBinding type = this.resolvedType.closestMatch();
+                        if (type instanceof ReferenceBinding) {
+                            currentType = (ReferenceBinding) type;
+                            break;
+                        }
+                        //$FALL-THROUGH$ - unable to complete type binding, but still resolve type arguments
+                    default:
+                        boolean isClassScope = scope.kind == Scope.CLASS_SCOPE;
+                        int argLength = this.typeArguments.length;
+                        for (int i = 0; i < argLength; i++) {
+                            TypeReference typeArgument = this.typeArguments[i];
+                            if (isClassScope) {
+                                typeArgument.resolveType((ClassScope) scope);
+                            } else {
+                                typeArgument.resolveType((BlockScope) scope, checkBounds);
+                            }
+                        }
+                        return null;
+                }
+                // be resilient, still attempt resolving arguments
+            }
+            enclosingType = currentType.enclosingType(); // if member type
+            if (enclosingType != null && currentType.hasEnclosingInstanceContext()) {
+                enclosingType = scope.environment().convertToParameterizedType(enclosingType);
+            }
+        } else { // resolving member type (relatively to enclosingType)
+            this.resolvedType = currentType = scope.getMemberType(this.token, enclosingType);
+            if (!this.resolvedType.isValidBinding()) {
+                scope.problemReporter().invalidEnclosingType(this, currentType, enclosingType);
+                return null;
+            }
+            if (isTypeUseDeprecated(currentType, scope))
+                scope.problemReporter().deprecatedType(currentType, this);
+            ReferenceBinding currentEnclosing = currentType.enclosingType();
+            if (currentEnclosing != null
+                && TypeBinding.notEquals(currentEnclosing.erasure(), enclosingType.erasure())) {
+                enclosingType = currentEnclosing; // inherited member type, leave it associated with its enclosing
+                                                  // rather than subtype
+            }
+        }
 
-    	ParameterizedTypeBinding parameterizedType = scope.environment().createParameterizedType(currentOriginal, argTypes, enclosingType);
-		// check argument type compatibility for non <> cases - <> case needs no bounds check, we will scream foul if needed during inference.
-    	if (!isDiamond) {
-    		if (checkBounds) // otherwise will do it in Scope.connectTypeVariables() or generic method resolution
-    			parameterizedType.boundCheck(scope, this.typeArguments);
-    		else
-    			scope.deferBoundCheck(this);
-    	} else {
-    		parameterizedType.arguments = DIAMOND_TYPE_ARGUMENTS;
-    	}
-		if (isTypeUseDeprecated(parameterizedType, scope))
-			reportDeprecatedType(parameterizedType, scope);
+        // check generic and arity
+        boolean isClassScope = scope.kind == Scope.CLASS_SCOPE;
+        TypeReference keep = null;
+        if (isClassScope) {
+            keep = ((ClassScope) scope).superTypeReference;
+            ((ClassScope) scope).superTypeReference = null;
+        }
+        final boolean isDiamond = (this.bits & ASTNode.IsDiamond) != 0;
+        int argLength = this.typeArguments.length;
+        TypeBinding[] argTypes = new TypeBinding[argLength];
+        boolean argHasError = false;
+        ReferenceBinding currentOriginal = (ReferenceBinding) currentType.original();
+        for (int i = 0; i < argLength; i++) {
+            TypeReference typeArgument = this.typeArguments[i];
+            TypeBinding argType = isClassScope
+                ? typeArgument.resolveTypeArgument((ClassScope) scope, currentOriginal, i)
+                : typeArgument.resolveTypeArgument((BlockScope) scope, currentOriginal, i);
+            this.bits |= (typeArgument.bits & ASTNode.HasTypeAnnotations);
+            if (argType == null) {
+                argHasError = true;
+            } else {
+                argTypes[i] = argType;
+            }
+        }
+        if (argHasError) {
+            return null;
+        }
+        if (isClassScope) {
+            ((ClassScope) scope).superTypeReference = keep;
+            if (((ClassScope) scope).detectHierarchyCycle(currentOriginal, this))
+                return null;
+        }
 
-		checkIllegalNullAnnotations(scope, this.typeArguments);
+        TypeVariableBinding[] typeVariables = currentOriginal.typeVariables();
+        if (typeVariables == Binding.NO_TYPE_VARIABLES) { // non generic invoked with arguments
+            if ((currentOriginal.tagBits & TagBits.HasMissingType) == 0) {
+                this.resolvedType = currentType;
+                scope.problemReporter().nonGenericTypeCannotBeParameterized(0, this, currentType, argTypes);
+                return null;
+            }
+            // if missing generic type, and compliance >= 1.5, then will rebuild a parameterized binding
+        } else if (argLength != typeVariables.length) {
+            if (!isDiamond) { // check arity, IsDiamond never set for 1.6-
+                scope.problemReporter().incorrectArityForParameterizedType(this, currentType, argTypes);
+                return null;
+            }
+        } else if (!currentType.isStatic()) {
+            ReferenceBinding actualEnclosing = currentType.enclosingType();
+            if (actualEnclosing != null && actualEnclosing.isRawType()) {
+                scope.problemReporter()
+                    .rawMemberTypeCannotBeParameterized(this,
+                        scope.environment().createRawType(currentOriginal, actualEnclosing), argTypes);
+                return null;
+            }
+        }
 
-		if (!this.resolvedType.isValidBinding()) {
-			return parameterizedType;
-		}
-		return this.resolvedType = parameterizedType;
-	}
-	private TypeBinding createArrayType(Scope scope, TypeBinding type) {
-		if (this.dimensions > 0) {
-			if (this.dimensions > 255)
-				scope.problemReporter().tooManyDimensions(this);
-			return scope.createArrayType(type, this.dimensions);
-		}
-		return type;
-	}
+        ParameterizedTypeBinding parameterizedType
+            = scope.environment().createParameterizedType(currentOriginal, argTypes, enclosingType);
+        // check argument type compatibility for non <> cases - <> case needs no bounds check, we will scream foul if
+        // needed during inference.
+        if (!isDiamond) {
+            if (checkBounds) // otherwise will do it in Scope.connectTypeVariables() or generic method resolution
+                parameterizedType.boundCheck(scope, this.typeArguments);
+            else
+                scope.deferBoundCheck(this);
+        } else {
+            parameterizedType.arguments = DIAMOND_TYPE_ARGUMENTS;
+        }
+        if (isTypeUseDeprecated(parameterizedType, scope))
+            reportDeprecatedType(parameterizedType, scope);
 
-	@Override
-	public StringBuilder printExpression(int indent, StringBuilder output){
-		if (this.annotations != null && this.annotations[0] != null) {
-			printAnnotations(this.annotations[0], output);
-			output.append(' ');
-		}
-		output.append(this.token);
-		output.append("<"); //$NON-NLS-1$
-		int length = this.typeArguments.length;
-		if (length > 0) {
-			int max = length - 1;
-			for (int i= 0; i < max; i++) {
-				this.typeArguments[i].print(0, output);
-				output.append(", ");//$NON-NLS-1$
-			}
-			this.typeArguments[max].print(0, output);
-		}
-		output.append(">"); //$NON-NLS-1$
-		Annotation [][] annotationsOnDimensions = getAnnotationsOnDimensions();
-		if ((this.bits & IsVarArgs) != 0) {
-			for (int i= 0 ; i < this.dimensions - 1; i++) {
-				if (annotationsOnDimensions != null && annotationsOnDimensions[i] != null) {
-					output.append(" "); //$NON-NLS-1$
-					printAnnotations(annotationsOnDimensions[i], output);
-					output.append(" "); //$NON-NLS-1$
-				}
-				output.append("[]"); //$NON-NLS-1$
-			}
-			if (annotationsOnDimensions != null && annotationsOnDimensions[this.dimensions - 1] != null) {
-				output.append(" "); //$NON-NLS-1$
-				printAnnotations(annotationsOnDimensions[this.dimensions - 1], output);
-				output.append(" "); //$NON-NLS-1$
-			}
-			output.append("..."); //$NON-NLS-1$
-		} else {
-			for (int i= 0 ; i < this.dimensions; i++) {
-				if (annotationsOnDimensions != null && annotationsOnDimensions[i] != null) {
-					output.append(" "); //$NON-NLS-1$
-					printAnnotations(annotationsOnDimensions[i], output);
-					output.append(" "); //$NON-NLS-1$
-				}
-				output.append("[]"); //$NON-NLS-1$
-			}
-		}
-		return output;
-	}
+        checkIllegalNullAnnotations(scope, this.typeArguments);
 
-	@Override
-	public void updateWithAnnotations(Scope scope, int location) {
-		this.resolvedType = updateParameterizedTypeWithAnnotations(scope, this.resolvedType, this.typeArguments);
-		resolveAnnotations(scope, location); // see comment in super TypeReference.updateWithAnnotations()
-	}
+        if (!this.resolvedType.isValidBinding()) {
+            return parameterizedType;
+        }
+        return this.resolvedType = parameterizedType;
+    }
 
-	@Override
-	public TypeBinding resolveType(BlockScope scope, boolean checkBounds, int location) {
-	    return internalResolveType(scope, null, checkBounds, location);
-	}
+    private TypeBinding createArrayType(Scope scope, TypeBinding type) {
+        if (this.dimensions > 0) {
+            if (this.dimensions > 255)
+                scope.problemReporter().tooManyDimensions(this);
+            return scope.createArrayType(type, this.dimensions);
+        }
+        return type;
+    }
 
-	@Override
-	public TypeBinding resolveType(ClassScope scope, int location) {
-	    return internalResolveType(scope, null, false /*no bounds check in classScope*/, location);
-	}
+    @Override
+    public StringBuilder printExpression(int indent, StringBuilder output) {
+        if (this.annotations != null && this.annotations[0] != null) {
+            printAnnotations(this.annotations[0], output);
+            output.append(' ');
+        }
+        output.append(this.token);
+        output.append("<"); //$NON-NLS-1$
+        int length = this.typeArguments.length;
+        if (length > 0) {
+            int max = length - 1;
+            for (int i = 0; i < max; i++) {
+                this.typeArguments[i].print(0, output);
+                output.append(", ");//$NON-NLS-1$
+            }
+            this.typeArguments[max].print(0, output);
+        }
+        output.append(">"); //$NON-NLS-1$
+        Annotation[][] annotationsOnDimensions = getAnnotationsOnDimensions();
+        if ((this.bits & IsVarArgs) != 0) {
+            for (int i = 0; i < this.dimensions - 1; i++) {
+                if (annotationsOnDimensions != null && annotationsOnDimensions[i] != null) {
+                    output.append(" "); //$NON-NLS-1$
+                    printAnnotations(annotationsOnDimensions[i], output);
+                    output.append(" "); //$NON-NLS-1$
+                }
+                output.append("[]"); //$NON-NLS-1$
+            }
+            if (annotationsOnDimensions != null && annotationsOnDimensions[this.dimensions - 1] != null) {
+                output.append(" "); //$NON-NLS-1$
+                printAnnotations(annotationsOnDimensions[this.dimensions - 1], output);
+                output.append(" "); //$NON-NLS-1$
+            }
+            output.append("..."); //$NON-NLS-1$
+        } else {
+            for (int i = 0; i < this.dimensions; i++) {
+                if (annotationsOnDimensions != null && annotationsOnDimensions[i] != null) {
+                    output.append(" "); //$NON-NLS-1$
+                    printAnnotations(annotationsOnDimensions[i], output);
+                    output.append(" "); //$NON-NLS-1$
+                }
+                output.append("[]"); //$NON-NLS-1$
+            }
+        }
+        return output;
+    }
 
-	@Override
-	public TypeBinding resolveTypeEnclosing(BlockScope scope, ReferenceBinding enclosingType) {
-	    return internalResolveType(scope, enclosingType, true/*check bounds*/, 0);
-	}
+    @Override
+    public void updateWithAnnotations(Scope scope, int location) {
+        this.resolvedType = updateParameterizedTypeWithAnnotations(scope, this.resolvedType, this.typeArguments);
+        resolveAnnotations(scope, location); // see comment in super TypeReference.updateWithAnnotations()
+    }
 
-	@Override
-	public void traverse(ASTVisitor visitor, BlockScope scope) {
-		if (visitor.visit(this, scope)) {
-			if (this.annotations != null) {
-				Annotation [] typeAnnotations = this.annotations[0];
-				for (int i = 0, length = typeAnnotations == null ? 0 : typeAnnotations.length; i < length; i++) {
-					typeAnnotations[i].traverse(visitor, scope);
-				}
-			}
-			Annotation [][] annotationsOnDimensions = getAnnotationsOnDimensions(true);
-			if (annotationsOnDimensions != null) {
-				for (Annotation[] annotationsOnDimension : annotationsOnDimensions) {
-					if (annotationsOnDimension != null) {
-						for (Annotation annotation : annotationsOnDimension) {
-							annotation.traverse(visitor, scope);
-						}
-					}
-				}
-			}
-			for (TypeReference typeArgument : this.typeArguments) {
-				typeArgument.traverse(visitor, scope);
-			}
-		}
-		visitor.endVisit(this, scope);
-	}
+    @Override
+    public TypeBinding resolveType(BlockScope scope, boolean checkBounds, int location) {
+        return internalResolveType(scope, null, checkBounds, location);
+    }
 
-	@Override
-	public void traverse(ASTVisitor visitor, ClassScope scope) {
-		if (visitor.visit(this, scope)) {
-			if (this.annotations != null) {
-				Annotation [] typeAnnotations = this.annotations[0];
-				for (int i = 0, length = typeAnnotations == null ? 0 : typeAnnotations.length; i < length; i++) {
-					typeAnnotations[i].traverse(visitor, scope);
-				}
-			}
-			Annotation [][] annotationsOnDimensions = getAnnotationsOnDimensions(true);
-			if (annotationsOnDimensions != null) {
-				for (Annotation[] annotationsOnDimension : annotationsOnDimensions) {
-					for (Annotation annotation : annotationsOnDimension) {
-						annotation.traverse(visitor, scope);
-					}
-				}
-			}
-			for (TypeReference typeArgument : this.typeArguments) {
-				typeArgument.traverse(visitor, scope);
-			}
-		}
-		visitor.endVisit(this, scope);
-	}
+    @Override
+    public TypeBinding resolveType(ClassScope scope, int location) {
+        return internalResolveType(scope, null, false /* no bounds check in classScope */, location);
+    }
+
+    @Override
+    public TypeBinding resolveTypeEnclosing(BlockScope scope, ReferenceBinding enclosingType) {
+        return internalResolveType(scope, enclosingType, true/* check bounds */, 0);
+    }
+
+    @Override
+    public void traverse(ASTVisitor visitor, BlockScope scope) {
+        if (visitor.visit(this, scope)) {
+            if (this.annotations != null) {
+                Annotation[] typeAnnotations = this.annotations[0];
+                for (int i = 0, length = typeAnnotations == null ? 0 : typeAnnotations.length; i < length; i++) {
+                    typeAnnotations[i].traverse(visitor, scope);
+                }
+            }
+            Annotation[][] annotationsOnDimensions = getAnnotationsOnDimensions(true);
+            if (annotationsOnDimensions != null) {
+                for (Annotation[] annotationsOnDimension : annotationsOnDimensions) {
+                    if (annotationsOnDimension != null) {
+                        for (Annotation annotation : annotationsOnDimension) {
+                            annotation.traverse(visitor, scope);
+                        }
+                    }
+                }
+            }
+            for (TypeReference typeArgument : this.typeArguments) {
+                typeArgument.traverse(visitor, scope);
+            }
+        }
+        visitor.endVisit(this, scope);
+    }
+
+    @Override
+    public void traverse(ASTVisitor visitor, ClassScope scope) {
+        if (visitor.visit(this, scope)) {
+            if (this.annotations != null) {
+                Annotation[] typeAnnotations = this.annotations[0];
+                for (int i = 0, length = typeAnnotations == null ? 0 : typeAnnotations.length; i < length; i++) {
+                    typeAnnotations[i].traverse(visitor, scope);
+                }
+            }
+            Annotation[][] annotationsOnDimensions = getAnnotationsOnDimensions(true);
+            if (annotationsOnDimensions != null) {
+                for (Annotation[] annotationsOnDimension : annotationsOnDimensions) {
+                    for (Annotation annotation : annotationsOnDimension) {
+                        annotation.traverse(visitor, scope);
+                    }
+                }
+            }
+            for (TypeReference typeArgument : this.typeArguments) {
+                typeArgument.traverse(visitor, scope);
+            }
+        }
+        visitor.endVisit(this, scope);
+    }
 }

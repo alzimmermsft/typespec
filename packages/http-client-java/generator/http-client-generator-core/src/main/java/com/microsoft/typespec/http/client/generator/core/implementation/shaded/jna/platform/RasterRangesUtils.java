@@ -46,19 +46,18 @@ import java.util.TreeSet;
  * <li>if the raster has an alpha layer, occupied means with alpha not null</li>
  * <li>if the raster doesn't have any alpha layer, occupied means not completely black</li>
  * </ul>
+ * 
  * @author Olivier Chafik
  */
 public class RasterRangesUtils {
     /// Masks used to isolate the current column in a set of 8 binary columns packed in a byte
-    private static final int[] subColMasks = new int[] {
-        0x0080, 0x0040, 0x0020, 0x0010,
-        0x0008, 0x0004, 0x0002, 0x0001
-    };
+    private static final int[] subColMasks
+        = new int[] { 0x0080, 0x0040, 0x0020, 0x0010, 0x0008, 0x0004, 0x0002, 0x0001 };
 
     private static final Comparator<Object> COMPARATOR = new Comparator<Object>() {
         @Override
         public int compare(Object o1, Object o2) {
-            return ((Rectangle)o1).x - ((Rectangle)o2).x;
+            return ((Rectangle) o1).x - ((Rectangle) o2).x;
         }
     };
 
@@ -68,6 +67,7 @@ public class RasterRangesUtils {
     public static interface RangesOutput {
         /**
          * Output a rectangular range.
+         * 
          * @param x x coordinate of the top-left corner of the range
          * @param y y coordinate of the top-left corner of the range
          * @param w width of the range
@@ -81,6 +81,7 @@ public class RasterRangesUtils {
      * Outputs ranges of occupied pixels.
      * In a raster that has an alpha layer, a pixel is occupied if its alpha value is not null.
      * In a raster without alpha layer, a pixel is occupied if it is not completely black.
+     * 
      * @param raster image to be segmented in non black or non-transparent ranges
      * @param out destination of the non null ranges
      * @return true if the output succeeded, false otherwise
@@ -99,15 +100,17 @@ public class RasterRangesUtils {
                 // There is always a single bank for all BufferedImage types, except maybe TYPE_CUSTOM
 
                 if (sampleModel instanceof MultiPixelPackedSampleModel) {
-                    MultiPixelPackedSampleModel packedSampleModel = (MultiPixelPackedSampleModel)sampleModel;
+                    MultiPixelPackedSampleModel packedSampleModel = (MultiPixelPackedSampleModel) sampleModel;
                     if (packedSampleModel.getPixelBitStride() == 1) {
                         // TYPE_BYTE_BINARY
-                        return outputOccupiedRangesOfBinaryPixels(((DataBufferByte)data).getData(), bounds.width, bounds.height, out);
+                        return outputOccupiedRangesOfBinaryPixels(((DataBufferByte) data).getData(), bounds.width,
+                            bounds.height, out);
                     }
                 } else if (sampleModel instanceof SinglePixelPackedSampleModel) {
                     if (sampleModel.getDataType() == DataBuffer.TYPE_INT) {
                         // TYPE_INT_ARGB, TYPE_INT_ARGB_PRE, TYPE_INT_BGR or TYPE_INT_RGB
-                        return outputOccupiedRanges(((DataBufferInt)data).getData(), bounds.width, bounds.height, hasAlpha ? 0xff000000 : 0xffffff, out);
+                        return outputOccupiedRanges(((DataBufferInt) data).getData(), bounds.width, bounds.height,
+                            hasAlpha ? 0xff000000 : 0xffffff, out);
                     }
                     // TODO could easily handle cases of TYPE_USHORT_GRAY and TYPE_BYTE_GRAY.
                 }
@@ -115,12 +118,13 @@ public class RasterRangesUtils {
         }
 
         // Fallback behaviour : copy pixels of raster
-        int[] pixels = raster.getPixels(0, 0, bounds.width, bounds.height, (int[])null);
+        int[] pixels = raster.getPixels(0, 0, bounds.width, bounds.height, (int[]) null);
         return outputOccupiedRanges(pixels, bounds.width, bounds.height, hasAlpha ? 0xff000000 : 0xffffff, out);
     }
 
     /**
      * Output the non-null values of a binary image as ranges of contiguous values.
+     * 
      * @param binaryBits byte-packed binary bits of an image
      * @param w width of the image (in pixels)
      * @param h height of the image
@@ -181,7 +185,7 @@ public class RasterRangesUtils {
         }
         // Add anything left over
         rects.addAll(prevLine);
-        for (Iterator<Rectangle> i=rects.iterator();i.hasNext();) {
+        for (Iterator<Rectangle> i = rects.iterator(); i.hasNext();) {
             Rectangle r = i.next();
             if (!out.outputRange(r.x, r.y, r.width, r.height)) {
                 return false;
@@ -192,11 +196,14 @@ public class RasterRangesUtils {
 
     /**
      * Output the occupied values of an integer-pixels image as ranges of contiguous values.
-     * A pixel is considered occupied if the bitwise AND of its integer value with the provided occupationMask is not null.
+     * A pixel is considered occupied if the bitwise AND of its integer value with the provided occupationMask is not
+     * null.
+     * 
      * @param pixels integer values of the pixels of an image
      * @param w width of the image (in pixels)
      * @param h height of the image
-     * @param occupationMask mask used to select which bits are used in a pixel to check its occupied status. 0xff000000 would only take the alpha layer into account, for instance.
+     * @param occupationMask mask used to select which bits are used in a pixel to check its occupied status. 0xff000000
+     * would only take the alpha layer into account, for instance.
      * @param out where to output all the contiguous ranges of non occupied pixels
      * @return true if the output succeeded, false otherwise
      */
@@ -216,14 +223,14 @@ public class RasterRangesUtils {
                 } else {
                     if (startCol >= 0) {
                         // end of current region
-                        curLine.add(new Rectangle(startCol, row, col-startCol, 1));
+                        curLine.add(new Rectangle(startCol, row, col - startCol, 1));
                         startCol = -1;
                     }
                 }
             }
             if (startCol >= 0) {
                 // end of last region of current row
-                curLine.add(new Rectangle(startCol, row, w-startCol, 1));
+                curLine.add(new Rectangle(startCol, row, w - startCol, 1));
             }
             Set<Rectangle> unmerged = mergeRects(prevLine, curLine);
             rects.addAll(unmerged);
@@ -231,7 +238,7 @@ public class RasterRangesUtils {
         }
         // Add anything left over
         rects.addAll(prevLine);
-        for (Iterator<Rectangle> i=rects.iterator();i.hasNext();) {
+        for (Iterator<Rectangle> i = rects.iterator(); i.hasNext();) {
             Rectangle r = i.next();
             if (!out.outputRange(r.x, r.y, r.width, r.height)) {
                 return false;
@@ -258,8 +265,7 @@ public class RasterRangesUtils {
                     cr[icr].y = pr[ipr].y;
                     cr[icr].height = pr[ipr].height + 1;
                     ++icr;
-                }
-                else {
+                } else {
                     ++ipr;
                 }
             }

@@ -17,15 +17,15 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class SourceConstructorWithChildrenInfo extends SourceConstructorInfo {
 
-	protected IJavaElement[] children;
+    protected IJavaElement[] children;
 
-	public SourceConstructorWithChildrenInfo(IJavaElement[] children) {
-		this.children = children;
-	}
+    public SourceConstructorWithChildrenInfo(IJavaElement[] children) {
+        this.children = children;
+    }
 
-	@Override
-	public IJavaElement[] getChildren() {
-		return this.children;
-	}
+    @Override
+    public IJavaElement[] getChildren() {
+        return this.children;
+    }
 
 }

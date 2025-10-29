@@ -147,22 +147,6 @@ public interface IJobManager {
     IProgressMonitor createProgressGroup();
 
     /**
-     * Returns the scheduling rule currently held by this thread, or <code>null</code>
-     * if the current thread does not hold any scheduling rule.
-     * <p>
-     * If this method is called from within the scope of a running job with a non-null
-     * scheduling rule, then this method is equivalent to calling <code>currentJob().getRule()</code>.
-     * Otherwise, this method will return the first scheduling rule obtained by this
-     * thread via {@link #beginRule(ISchedulingRule, IProgressMonitor)} that has not
-     * yet had a corresponding call to {@link #endRule(ISchedulingRule)}.
-     * </p>
-     *
-     * @return the current rule or <code>null</code>
-     * @since 3.5
-     */
-    ISchedulingRule currentRule();
-
-    /**
      * Returns the job that is currently running in this thread, or <code>null</code> if there
      * is no currently running job.
      *
@@ -421,12 +405,4 @@ public interface IJobManager {
      */
     void transferRule(ISchedulingRule rule, Thread destinationThread);
 
-    /**
-     * Resumes scheduling of all sleeping jobs in the given family. This method
-     * has no effect on jobs in the family that are not currently sleeping.
-     *
-     * @param family the job family to wake up, or <code>null</code> to wake up all jobs
-     * @see Job#belongsTo(Object)
-     */
-    void wakeUp(Object family);
 }

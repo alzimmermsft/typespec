@@ -203,13 +203,6 @@ public class WorkManager {
     }
 
     /**
-     * Returns the work manager's lock
-     */
-    ILock getLock() {
-        return lock;
-    }
-
-    /**
      * This method can only be safely called from inside a workspace
      * operation. Should NOT be called from outside a
      * prepareOperation/endOperation block.
@@ -244,26 +237,6 @@ public class WorkManager {
      */
     boolean isBalanced() {
         return nestedOperations == preparedOperations;
-    }
-
-    /**
-     * Returns true if the workspace lock has already been acquired by this
-     * thread, and false otherwise.
-     */
-    public boolean isLockAlreadyAcquired() {
-        boolean result = false;
-        try {
-            boolean success = lock.acquire(0L);
-            if (success) {
-                // if lock depth is greater than one, then we already owned it
-                // before
-                result = lock.getDepth() > 1;
-                lock.release();
-            }
-        } catch (InterruptedException e) {
-            // ignore
-        }
-        return result;
     }
 
     /**

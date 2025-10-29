@@ -15,14 +15,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.builder;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.zip.ZipFile;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IContainer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IFile;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
@@ -44,220 +36,258 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.ModuleBinding;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.JRTUtil;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.Util;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.zip.ZipFile;
 
 public abstract class ClasspathLocation {
 
-	protected IModule module;
-	protected IUpdatableModule.UpdatesByKind updates;
-	protected Set<String> limitModuleNames = null;
-	protected String patchModuleName = null;
-	protected String externalAnnotationPath;
-	private Collection<ClasspathLocation> allLocationsForEEA; // when configured to search all classpath locations for external annotations (eea) this is where to look
-	protected ZipFile annotationZipFile;
-	protected AccessRuleSet accessRuleSet;
+    protected IModule module;
+    protected IUpdatableModule.UpdatesByKind updates;
+    protected Set<String> limitModuleNames = null;
+    protected String patchModuleName = null;
+    protected String externalAnnotationPath;
+    private Collection<ClasspathLocation> allLocationsForEEA; // when configured to search all classpath locations for
+                                                              // external annotations (eea) this is where to look
+    protected ZipFile annotationZipFile;
+    protected AccessRuleSet accessRuleSet;
 
-	// In the following signatures, passing a null moduleName signals "don't care":
-	abstract public NameEnvironmentAnswer findClass(String typeName, String qualifiedPackageName, String moduleName, String qualifiedBinaryFileName);
-	abstract public NameEnvironmentAnswer findClass(String typeName, String qualifiedPackageName, String moduleName, String qualifiedBinaryFileName,
-													boolean asBinaryOnly, Predicate<String> moduleNameFilter);
-	abstract public boolean isPackage(String qualifiedPackageName, String moduleName);
-	public char[][] getModulesDeclaringPackage(String qualifiedPackageName, String moduleName) {
-		return singletonModuleNameIf(isPackage(qualifiedPackageName, moduleName));
-	}
-	public boolean hasModule() { return getModule() != null; }
-	abstract public boolean hasCompilationUnit(String pkgName, String moduleName);
+    // In the following signatures, passing a null moduleName signals "don't care":
+    abstract public NameEnvironmentAnswer findClass(String typeName, String qualifiedPackageName, String moduleName,
+        String qualifiedBinaryFileName);
 
-	public NameEnvironmentAnswer findClass(char[] typeName, String qualifiedPackageName, String moduleName, String qualifiedBinaryFileName,
-											boolean asBinaryOnly, Predicate<String> moduleNameFilter) {
-		String fileName = new String(typeName);
-		return findClass(fileName, qualifiedPackageName, moduleName, qualifiedBinaryFileName, asBinaryOnly, moduleNameFilter);
-	}
-	public void setModule (IModule mod) {
-		this.module = mod;
-	}
-	public IModule getModule() {
-		return this.module;
-	}
-	protected boolean areAllModuleOptionsEqual(ClasspathLocation other) {
-		if (this.patchModuleName != null) {
-			if (other.patchModuleName == null)
-				return false;
-			if (!this.patchModuleName.equals(other.patchModuleName))
-				return false;
-		} else {
-			if (other.patchModuleName != null)
-				return false;
-		}
-		if (this.limitModuleNames != null) {
-			if (other.limitModuleNames == null)
-				return false;
-			if (other.limitModuleNames.size() != this.limitModuleNames.size())
-				return false;
-			if (!this.limitModuleNames.containsAll(other.limitModuleNames))
-				return false;
-		} else {
-			if (other.limitModuleNames != null)
-				return false;
-		}
-		if (this.updates != null) {
-			if (other.updates == null)
-				return false;
-			List<Consumer<IUpdatableModule>> packageUpdates = this.updates.getList(UpdateKind.PACKAGE, false);
-			List<Consumer<IUpdatableModule>> otherPackageUpdates = other.updates.getList(UpdateKind.PACKAGE, false);
-			if (packageUpdates != null) {
-				if (otherPackageUpdates == null)
-					return false;
-				if (packageUpdates.size() != otherPackageUpdates.size())
-					return false;
-				if (!packageUpdates.containsAll(otherPackageUpdates))
-					return false;
-			} else {
-				if (otherPackageUpdates != null)
-					return false;
-			}
-			List<Consumer<IUpdatableModule>> moduleUpdates = this.updates.getList(UpdateKind.MODULE, false);
-			List<Consumer<IUpdatableModule>> otherModuleUpdates = other.updates.getList(UpdateKind.MODULE, false);
-			if (moduleUpdates != null) {
-				if (otherModuleUpdates == null)
-					return false;
-				if (moduleUpdates.size() != otherModuleUpdates.size())
-					return false;
-                return moduleUpdates.containsAll(otherModuleUpdates);
-			} else {
-                return otherModuleUpdates == null;
-			}
-		} else {
-            return other.updates == null;
-		}
+    abstract public NameEnvironmentAnswer findClass(String typeName, String qualifiedPackageName, String moduleName,
+        String qualifiedBinaryFileName, boolean asBinaryOnly, Predicate<String> moduleNameFilter);
+
+    abstract public boolean isPackage(String qualifiedPackageName, String moduleName);
+
+    public char[][] getModulesDeclaringPackage(String qualifiedPackageName, String moduleName) {
+        return singletonModuleNameIf(isPackage(qualifiedPackageName, moduleName));
     }
-	static ClasspathLocation forSourceFolder(IContainer sourceFolder, IContainer outputFolder,
-			char[][] inclusionPatterns, char[][] exclusionPatterns, boolean ignoreOptionalProblems, IPath externalAnnotationPath, int release) {
-		return new ClasspathMultiDirectory(sourceFolder, outputFolder, inclusionPatterns, exclusionPatterns, ignoreOptionalProblems, externalAnnotationPath, release);
-	}
-public static ClasspathLocation forBinaryFolder(IContainer binaryFolder, boolean isOutputFolder, AccessRuleSet accessRuleSet, IPath externalAnnotationPath, boolean autoModule) {
-	return new ClasspathDirectory(binaryFolder, isOutputFolder, accessRuleSet, externalAnnotationPath, autoModule);
-}
 
-static ClasspathLocation forLibrary(String libraryPathname,
-										long lastModified,
-										AccessRuleSet accessRuleSet,
-										IPath annotationsPath,
-										boolean isOnModulePath,
-										String compliance) {
-	return Util.archiveFormat(libraryPathname) == Util.JMOD_FILE ?
-					new ClasspathJMod(libraryPathname, lastModified, accessRuleSet, annotationsPath) :
-						(compliance == null || (CompilerOptions.versionToJdkLevel(compliance) < ClassFileConstants.JDK9) ?
-			new ClasspathJar(libraryPathname, lastModified, accessRuleSet, annotationsPath, isOnModulePath) :
-				new ClasspathMultiReleaseJar(libraryPathname, lastModified, accessRuleSet, annotationsPath, isOnModulePath, compliance));
+    public boolean hasModule() {
+        return getModule() != null;
+    }
 
-}
+    abstract public boolean hasCompilationUnit(String pkgName, String moduleName);
 
-public static ClasspathJrt forJrtSystem(String jrtPath, AccessRuleSet accessRuleSet, IPath annotationsPath, String release) throws CoreException {
-	boolean useRelease = release != null && !release.isEmpty();
-	if(useRelease) {
-		String jrtVersion;
-		try {
-			jrtVersion = JRTUtil.getJdkRelease(new File(jrtPath));
-		} catch (IOException e) {
-			throw new CoreException(new Status(IStatus.ERROR, ClasspathLocation.class, "Failed to detect JDK release for: " + jrtPath, e)); //$NON-NLS-1$
-		}
-		boolean sameRelease = JavaCore.compareJavaVersions(jrtVersion, release) == 0;
-		if(sameRelease) {
-			useRelease = false;
-		}
-	}
-	return useRelease ? new ClasspathJrtWithReleaseOption(jrtPath, accessRuleSet, annotationsPath, release)
-			: new ClasspathJrt(jrtPath, accessRuleSet, annotationsPath);
-}
+    public NameEnvironmentAnswer findClass(char[] typeName, String qualifiedPackageName, String moduleName,
+        String qualifiedBinaryFileName, boolean asBinaryOnly, Predicate<String> moduleNameFilter) {
+        String fileName = new String(typeName);
+        return findClass(fileName, qualifiedPackageName, moduleName, qualifiedBinaryFileName, asBinaryOnly,
+            moduleNameFilter);
+    }
 
-public static ClasspathLocation forLibrary(String libraryPathname, AccessRuleSet accessRuleSet, IPath annotationsPath,
-											boolean isOnModulePath, String compliance) {
-	return forLibrary(libraryPathname, 0, accessRuleSet, annotationsPath, isOnModulePath, compliance);
-}
+    public void setModule(IModule mod) {
+        this.module = mod;
+    }
 
-public static ClasspathLocation forLibrary(IFile library, AccessRuleSet accessRuleSet, IPath annotationsPath,
-										boolean isOnModulePath, String compliance) {
-	IPath location = library.getLocation();
-	String libraryPathname = location == null? library.getFullPath().toPortableString() : location.toOSString();
-	if (Util.archiveFormat(libraryPathname) == Util.JMOD_FILE) {
-		return new ClasspathJMod(libraryPathname, 0, accessRuleSet, annotationsPath);
-	}
-	return (CompilerOptions.versionToJdkLevel(compliance) < ClassFileConstants.JDK9) ?
-			new ClasspathJar(library, accessRuleSet, annotationsPath, isOnModulePath) :
-				new ClasspathMultiReleaseJar(library, accessRuleSet, annotationsPath, isOnModulePath, compliance);
-}
-public static ClasspathLocation forLibrary(ZipFile zipFile, AccessRuleSet accessRuleSet, boolean isOnModulePath, String compliance) {
-	return (CompilerOptions.versionToJdkLevel(compliance) < ClassFileConstants.JDK9) ?
-			new ClasspathJar(zipFile, accessRuleSet, isOnModulePath) :
-				new ClasspathMultiReleaseJar(zipFile, accessRuleSet, isOnModulePath, compliance);
-}
+    public IModule getModule() {
+        return this.module;
+    }
 
-public abstract IPath getProjectRelativePath();
+    protected boolean areAllModuleOptionsEqual(ClasspathLocation other) {
+        if (this.patchModuleName != null) {
+            if (other.patchModuleName == null)
+                return false;
+            if (!this.patchModuleName.equals(other.patchModuleName))
+                return false;
+        } else {
+            if (other.patchModuleName != null)
+                return false;
+        }
+        if (this.limitModuleNames != null) {
+            if (other.limitModuleNames == null)
+                return false;
+            if (other.limitModuleNames.size() != this.limitModuleNames.size())
+                return false;
+            if (!this.limitModuleNames.containsAll(other.limitModuleNames))
+                return false;
+        } else {
+            if (other.limitModuleNames != null)
+                return false;
+        }
+        if (this.updates != null) {
+            if (other.updates == null)
+                return false;
+            List<Consumer<IUpdatableModule>> packageUpdates = this.updates.getList(UpdateKind.PACKAGE, false);
+            List<Consumer<IUpdatableModule>> otherPackageUpdates = other.updates.getList(UpdateKind.PACKAGE, false);
+            if (packageUpdates != null) {
+                if (otherPackageUpdates == null)
+                    return false;
+                if (packageUpdates.size() != otherPackageUpdates.size())
+                    return false;
+                if (!packageUpdates.containsAll(otherPackageUpdates))
+                    return false;
+            } else {
+                if (otherPackageUpdates != null)
+                    return false;
+            }
+            List<Consumer<IUpdatableModule>> moduleUpdates = this.updates.getList(UpdateKind.MODULE, false);
+            List<Consumer<IUpdatableModule>> otherModuleUpdates = other.updates.getList(UpdateKind.MODULE, false);
+            if (moduleUpdates != null) {
+                if (otherModuleUpdates == null)
+                    return false;
+                if (moduleUpdates.size() != otherModuleUpdates.size())
+                    return false;
+                return moduleUpdates.containsAll(otherModuleUpdates);
+            } else {
+                return otherModuleUpdates == null;
+            }
+        } else {
+            return other.updates == null;
+        }
+    }
+
+    static ClasspathLocation forSourceFolder(IContainer sourceFolder, IContainer outputFolder,
+        char[][] inclusionPatterns, char[][] exclusionPatterns, boolean ignoreOptionalProblems,
+        IPath externalAnnotationPath, int release) {
+        return new ClasspathMultiDirectory(sourceFolder, outputFolder, inclusionPatterns, exclusionPatterns,
+            ignoreOptionalProblems, externalAnnotationPath, release);
+    }
+
+    public static ClasspathLocation forBinaryFolder(IContainer binaryFolder, boolean isOutputFolder,
+        AccessRuleSet accessRuleSet, IPath externalAnnotationPath, boolean autoModule) {
+        return new ClasspathDirectory(binaryFolder, isOutputFolder, accessRuleSet, externalAnnotationPath, autoModule);
+    }
+
+    static ClasspathLocation forLibrary(String libraryPathname, long lastModified, AccessRuleSet accessRuleSet,
+        IPath annotationsPath, boolean isOnModulePath, String compliance) {
+        return Util.archiveFormat(libraryPathname) == Util.JMOD_FILE
+            ? new ClasspathJMod(libraryPathname, lastModified, accessRuleSet, annotationsPath)
+            : (compliance == null || (CompilerOptions.versionToJdkLevel(compliance) < ClassFileConstants.JDK9)
+                ? new ClasspathJar(libraryPathname, lastModified, accessRuleSet, annotationsPath, isOnModulePath)
+                : new ClasspathMultiReleaseJar(libraryPathname, lastModified, accessRuleSet, annotationsPath,
+                    isOnModulePath, compliance));
+
+    }
+
+    public static ClasspathJrt forJrtSystem(String jrtPath, AccessRuleSet accessRuleSet, IPath annotationsPath,
+        String release) throws CoreException {
+        boolean useRelease = release != null && !release.isEmpty();
+        if (useRelease) {
+            String jrtVersion;
+            try {
+                jrtVersion = JRTUtil.getJdkRelease(new File(jrtPath));
+            } catch (IOException e) {
+                throw new CoreException(new Status(IStatus.ERROR, ClasspathLocation.class,
+                    "Failed to detect JDK release for: " + jrtPath, e)); //$NON-NLS-1$
+            }
+            boolean sameRelease = JavaCore.compareJavaVersions(jrtVersion, release) == 0;
+            if (sameRelease) {
+                useRelease = false;
+            }
+        }
+        return useRelease
+            ? new ClasspathJrtWithReleaseOption(jrtPath, accessRuleSet, annotationsPath, release)
+            : new ClasspathJrt(jrtPath, accessRuleSet, annotationsPath);
+    }
+
+    public static ClasspathLocation forLibrary(String libraryPathname, AccessRuleSet accessRuleSet,
+        IPath annotationsPath, boolean isOnModulePath, String compliance) {
+        return forLibrary(libraryPathname, 0, accessRuleSet, annotationsPath, isOnModulePath, compliance);
+    }
+
+    public static ClasspathLocation forLibrary(IFile library, AccessRuleSet accessRuleSet, IPath annotationsPath,
+        boolean isOnModulePath, String compliance) {
+        IPath location = library.getLocation();
+        String libraryPathname = location == null ? library.getFullPath().toPortableString() : location.toOSString();
+        if (Util.archiveFormat(libraryPathname) == Util.JMOD_FILE) {
+            return new ClasspathJMod(libraryPathname, 0, accessRuleSet, annotationsPath);
+        }
+        return (CompilerOptions.versionToJdkLevel(compliance) < ClassFileConstants.JDK9)
+            ? new ClasspathJar(library, accessRuleSet, annotationsPath, isOnModulePath)
+            : new ClasspathMultiReleaseJar(library, accessRuleSet, annotationsPath, isOnModulePath, compliance);
+    }
+
+    public static ClasspathLocation forLibrary(ZipFile zipFile, AccessRuleSet accessRuleSet, boolean isOnModulePath,
+        String compliance) {
+        return (CompilerOptions.versionToJdkLevel(compliance) < ClassFileConstants.JDK9)
+            ? new ClasspathJar(zipFile, accessRuleSet, isOnModulePath)
+            : new ClasspathMultiReleaseJar(zipFile, accessRuleSet, isOnModulePath, compliance);
+    }
+
+    public abstract IPath getProjectRelativePath();
 
     public void cleanup() {
-	// free anything which is not required when the state is saved
-}
-public void reset() {
-	// reset any internal caches before another compile loop starts
-}
+        // free anything which is not required when the state is saved
+    }
+
+    public void reset() {
+        // reset any internal caches before another compile loop starts
+    }
 
     public char[][] singletonModuleNameIf(boolean condition) {
-	if (!condition)
-		return null;
-	if (this.module != null)
-		return new char[][] { this.module.name() };
-	return new char[][] { ModuleBinding.UNNAMED };
-}
-public char[][] listPackages() {
-	return CharOperation.NO_CHAR_CHAR;
-}
-/**
- * Search within this classpath location for an .eea file describing the given binary type.
- * If .eea is found return a eea-decorated binary type (of type ExternalAnnotationDecorator), else return the original type unchanged.
- * This method is used only when the project is configured to search all locations for .eea.
- */
-protected IBinaryType decorateWithExternalAnnotations(IBinaryType reader, String fileNameWithoutExtension) {
-	return reader; // default: don't decorate. Subclasses to override.
-}
+        if (!condition)
+            return null;
+        if (this.module != null)
+            return new char[][] { this.module.name() };
+        return new char[][] { ModuleBinding.UNNAMED };
+    }
 
-protected NameEnvironmentAnswer createAnswer(String fileNameWithoutExtension, IBinaryType reader, char[] moduleName) {
-	if (this.externalAnnotationPath != null) {
-		try {
-			if (this.annotationZipFile == null) {
-				this.annotationZipFile = ExternalAnnotationDecorator.getAnnotationZipFile(this.externalAnnotationPath, null);
-			}
-			reader = ExternalAnnotationDecorator.create(reader, this.externalAnnotationPath, fileNameWithoutExtension, this.annotationZipFile);
-			if (reader.getExternalAnnotationStatus() == ExternalAnnotationStatus.NOT_EEA_CONFIGURED) {
-				// ensure a reader that answers NO_EEA_FILE
-				reader = new ExternalAnnotationDecorator(reader, null);
-			}
-		} catch (IOException e) {
-			// don't let error on annotations fail class reading
-		}
-	} else if (this.allLocationsForEEA != null) {
-		boolean isAnnotated = false;
-		for (ClasspathLocation annotationLocation : this.allLocationsForEEA) {
-			reader = annotationLocation.decorateWithExternalAnnotations(reader, fileNameWithoutExtension);
-			if (reader.getExternalAnnotationStatus() == ExternalAnnotationStatus.TYPE_IS_ANNOTATED) {
-				isAnnotated = true;
-				break; // if merging of eea at method granularity should be supported, remove this break
-			}
-		}
-		if (!isAnnotated) {
-			// project is configured to globally consider external annotations, but no .eea found => decorate in order to answer NO_EEA_FILE:
-			reader = new ExternalAnnotationDecorator(reader, null);
-		}
-	}
+    public char[][] listPackages() {
+        return CharOperation.NO_CHAR_CHAR;
+    }
 
-	if (this.accessRuleSet == null)
-		return this.module == null ? new NameEnvironmentAnswer(reader, null) : new NameEnvironmentAnswer(reader, null, moduleName);
-	return new NameEnvironmentAnswer(reader,
-			this.accessRuleSet.getViolatedRestriction(fileNameWithoutExtension.toCharArray()),
-			moduleName);
-}
-public void connectAllLocationsForEEA(Collection<ClasspathLocation> allLocations, boolean add) {
-	this.allLocationsForEEA = allLocations; // shared within the project, may be updated after setting
-	if (add)
-		allLocations.add(this);
-}
+    /**
+     * Search within this classpath location for an .eea file describing the given binary type.
+     * If .eea is found return a eea-decorated binary type (of type ExternalAnnotationDecorator), else return the
+     * original type unchanged.
+     * This method is used only when the project is configured to search all locations for .eea.
+     */
+    protected IBinaryType decorateWithExternalAnnotations(IBinaryType reader, String fileNameWithoutExtension) {
+        return reader; // default: don't decorate. Subclasses to override.
+    }
+
+    protected NameEnvironmentAnswer createAnswer(String fileNameWithoutExtension, IBinaryType reader,
+        char[] moduleName) {
+        if (this.externalAnnotationPath != null) {
+            try {
+                if (this.annotationZipFile == null) {
+                    this.annotationZipFile
+                        = ExternalAnnotationDecorator.getAnnotationZipFile(this.externalAnnotationPath, null);
+                }
+                reader = ExternalAnnotationDecorator.create(reader, this.externalAnnotationPath,
+                    fileNameWithoutExtension, this.annotationZipFile);
+                if (reader.getExternalAnnotationStatus() == ExternalAnnotationStatus.NOT_EEA_CONFIGURED) {
+                    // ensure a reader that answers NO_EEA_FILE
+                    reader = new ExternalAnnotationDecorator(reader, null);
+                }
+            } catch (IOException e) {
+                // don't let error on annotations fail class reading
+            }
+        } else if (this.allLocationsForEEA != null) {
+            boolean isAnnotated = false;
+            for (ClasspathLocation annotationLocation : this.allLocationsForEEA) {
+                reader = annotationLocation.decorateWithExternalAnnotations(reader, fileNameWithoutExtension);
+                if (reader.getExternalAnnotationStatus() == ExternalAnnotationStatus.TYPE_IS_ANNOTATED) {
+                    isAnnotated = true;
+                    break; // if merging of eea at method granularity should be supported, remove this break
+                }
+            }
+            if (!isAnnotated) {
+                // project is configured to globally consider external annotations, but no .eea found => decorate in
+                // order to answer NO_EEA_FILE:
+                reader = new ExternalAnnotationDecorator(reader, null);
+            }
+        }
+
+        if (this.accessRuleSet == null)
+            return this.module == null
+                ? new NameEnvironmentAnswer(reader, null)
+                : new NameEnvironmentAnswer(reader, null, moduleName);
+        return new NameEnvironmentAnswer(reader,
+            this.accessRuleSet.getViolatedRestriction(fileNameWithoutExtension.toCharArray()), moduleName);
+    }
+
+    public void connectAllLocationsForEEA(Collection<ClasspathLocation> allLocations, boolean add) {
+        this.allLocationsForEEA = allLocations; // shared within the project, may be updated after setting
+        if (add)
+            allLocations.add(this);
+    }
 }

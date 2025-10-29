@@ -33,7 +33,8 @@ import java.util.Iterator;
 /**
  * Wrapper for an EnumVariant Iteration. The usecase is a for-loop in the style:
  *
- * <pre>{@code
+ * <pre>
+ * {@code
  * // Aquire an IDispatch, that has a new NewEnum Property (DISPID_NEWENUM)
  * for(VARIANT v: IComEnumVariantIterator.wrap(dispatch)) {
  *      // Work with the acquired Variant
@@ -41,7 +42,8 @@ import java.util.Iterator;
  *      // Finally free it
  *      OleAuto.INSTANCE.VariantClear(v);
  * }
- * }</pre>
+ * }
+ * </pre>
  *
  * <p>The {@code IComEnumVariantIterator} iterator closes the enumeration it
  * wraps after the enumeration is exhausted or when the iterator is GCed,
@@ -50,7 +52,8 @@ import java.util.Iterator;
 public class IComEnumVariantIterator implements Iterable<Variant.VARIANT>, Iterator<Variant.VARIANT>, Closeable {
 
     /**
-     * Helper to get new enumeration from an {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.util.IDispatch}.
+     * Helper to get new enumeration from an
+     * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.util.IDispatch}.
      *
      * <p>This expects, that the supplied IDispatch has a property identified by
      * a {@link OaIdl.DISPID} of {@link OaIdl#DISPID_NEWENUM}</p>
@@ -58,7 +61,8 @@ public class IComEnumVariantIterator implements Iterable<Variant.VARIANT>, Itera
      * @param dispatch IDispatch to be analysed
      * @return IComEnumVariantIterator wrapping the enumeration queried from the supplied object
      */
-    public static IComEnumVariantIterator wrap(com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.util.IDispatch dispatch) {
+    public static IComEnumVariantIterator wrap(
+        com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.util.IDispatch dispatch) {
         PointerByReference pbr = new PointerByReference();
         IUnknown unknwn = dispatch.getProperty(IUnknown.class, OaIdl.DISPID_NEWENUM);
         unknwn.QueryInterface(EnumVariant.REFIID, pbr);
@@ -98,7 +102,7 @@ public class IComEnumVariantIterator implements Iterable<Variant.VARIANT>, Itera
     }
 
     private void retrieveNext() {
-        if(backingIteration == null) {
+        if (backingIteration == null) {
             return;
         }
         Variant.VARIANT[] variants = backingIteration.Next(1);

@@ -22,98 +22,88 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class ConstantPoolEntry2 extends ConstantPoolEntry implements IConstantPoolEntry3 {
 
-	private int descriptorIndex;
-	private int referenceKind;
-	private int referenceIndex;
-	private int bootstrapMethodAttributeIndex;
+    private int descriptorIndex;
+    private int referenceKind;
+    private int referenceIndex;
+    private int bootstrapMethodAttributeIndex;
 
-	private int moduleIndex;
-	private char[] moduleName;
-	private int packageIndex;
-	private char[] packageName;
+    private int moduleIndex;
+    private char[] moduleName;
+    private int packageIndex;
+    private char[] packageName;
 
-	@Override
-	public int getDescriptorIndex() {
-		return this.descriptorIndex;
-	}
+    @Override
+    public int getDescriptorIndex() {
+        return this.descriptorIndex;
+    }
 
-	@Override
-	public int getReferenceKind() {
-		return this.referenceKind;
-	}
+    @Override
+    public int getReferenceKind() {
+        return this.referenceKind;
+    }
 
-	@Override
-	public int getReferenceIndex() {
-		return this.referenceIndex;
-	}
+    @Override
+    public int getReferenceIndex() {
+        return this.referenceIndex;
+    }
 
-	@Override
-	public int getBootstrapMethodAttributeIndex() {
-		return this.bootstrapMethodAttributeIndex;
-	}
+    @Override
+    public int getBootstrapMethodAttributeIndex() {
+        return this.bootstrapMethodAttributeIndex;
+    }
 
-	@Override
-	public int getModuleIndex() {
-		return this.moduleIndex;
-	}
+    @Override
+    public char[] getModuleName() {
+        return this.moduleName;
+    }
 
-	@Override
-	public char[] getModuleName() {
-		return this.moduleName;
-	}
+    @Override
+    public char[] getPackageName() {
+        return this.packageName;
+    }
 
-	@Override
-	public int getPackageIndex() {
-		return this.packageIndex;
-	}
+    public void setDescriptorIndex(int descriptorIndex) {
+        this.descriptorIndex = descriptorIndex;
+    }
 
-	@Override
-	public char[] getPackageName() {
-		return this.packageName;
-	}
+    public void setReferenceKind(int referenceKind) {
+        this.referenceKind = referenceKind;
+    }
 
-	public void setDescriptorIndex(int descriptorIndex) {
-		this.descriptorIndex = descriptorIndex;
-	}
+    public void setReferenceIndex(int referenceIndex) {
+        this.referenceIndex = referenceIndex;
+    }
 
-	public void setReferenceKind(int referenceKind) {
-		this.referenceKind = referenceKind;
-	}
+    public void setBootstrapMethodAttributeIndex(int bootstrapMethodAttributeIndex) {
+        this.bootstrapMethodAttributeIndex = bootstrapMethodAttributeIndex;
+    }
 
-	public void setReferenceIndex(int referenceIndex) {
-		this.referenceIndex = referenceIndex;
-	}
+    public void setModuleIndex(int moduleIndex) {
+        this.moduleIndex = moduleIndex;
+    }
 
-	public void setBootstrapMethodAttributeIndex(int bootstrapMethodAttributeIndex) {
-		this.bootstrapMethodAttributeIndex = bootstrapMethodAttributeIndex;
-	}
+    public void setModuleName(char[] moduleName) {
+        this.moduleName = moduleName;
+    }
 
-	public void setModuleIndex(int moduleIndex) {
-		this.moduleIndex = moduleIndex;
-	}
+    public void setPackageIndex(int packageIndex) {
+        this.packageIndex = packageIndex;
+    }
 
-	public void setModuleName(char[] moduleName) {
-		this.moduleName = moduleName;
-	}
+    public void setPackageName(char[] packageName) {
+        this.packageName = packageName;
+    }
 
-	public void setPackageIndex(int packageIndex) {
-		this.packageIndex = packageIndex;
-	}
-
-	public void setPackageName(char[] packageName) {
-		this.packageName = packageName;
-	}
-
-	@Override
-	public void reset() {
-		super.reset();
-		this.descriptorIndex = 0;
-		this.referenceKind = 0;
-		this.referenceIndex = 0;
-		this.bootstrapMethodAttributeIndex = 0;
-		this.moduleIndex = 0;
-		this.moduleName = null;
-		this.packageIndex = 0;
-		this.packageName = null;
-	}
+    @Override
+    public void reset() {
+        super.reset();
+        this.descriptorIndex = 0;
+        this.referenceKind = 0;
+        this.referenceIndex = 0;
+        this.bootstrapMethodAttributeIndex = 0;
+        this.moduleIndex = 0;
+        this.moduleName = null;
+        this.packageIndex = 0;
+        this.packageName = null;
+    }
 }

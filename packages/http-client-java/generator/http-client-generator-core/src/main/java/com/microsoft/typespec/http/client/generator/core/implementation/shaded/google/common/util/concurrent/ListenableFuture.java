@@ -14,11 +14,11 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.util.concurrent;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.DoNotMock;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A {@link Future} that accepts completion listeners. Each listener has an associated executor, and
@@ -36,14 +36,16 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  *
  * <p>The main purpose of {@code ListenableFuture} is to help you chain together a graph of
  * asynchronous operations. You can chain them together manually with calls to methods like {@link
- * Futures#transform(ListenableFuture, com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Function, Executor) Futures.transform}
- * (or {@link FluentFuture#transform(com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Function, Executor)
+ * Futures#transform(ListenableFuture, com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Function, Executor)
+ * Futures.transform}
+ * (or
+ * {@link FluentFuture#transform(com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Function, Executor)
  * FluentFuture.transform}), but you will often find it easier to use a framework. Frameworks
  * automate the process, often adding features like monitoring, debugging, and cancellation.
  * Examples of frameworks include:
  *
  * <ul>
- *   <li><a href="https://dagger.dev/producers.html">Dagger Producers</a>
+ * <li><a href="https://dagger.dev/producers.html">Dagger Producers</a>
  * </ul>
  *
  * <p>The main purpose of {@link #addListener addListener} is to support this chaining. You will
@@ -51,7 +53,8 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  * result. (If you want such access, you may prefer {@link Futures#addCallback
  * Futures.addCallback}.) Still, direct {@code addListener} calls are occasionally useful:
  *
- * <pre>{@code
+ * <pre>
+ * {@code
  * final String name = ...;
  * inFlight.add(name);
  * ListenableFuture<Result> future = service.query(name);
@@ -63,7 +66,8 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  *     logger.info("Done with {0}", name);
  *   }
  * }, executor);
- * }</pre>
+ * }
+ * </pre>
  *
  * <h3>How to get an instance</h3>
  *
@@ -73,13 +77,13 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  * instances:
  *
  * <ul>
- *   <li>If you receive them from an {@code java.util.concurrent.ExecutorService}, convert that
- *       service to a {@link ListeningExecutorService}, usually by calling {@link
- *       MoreExecutors#listeningDecorator(java.util.concurrent.ExecutorService)
- *       MoreExecutors.listeningDecorator}.
- *   <li>If you manually call {@link java.util.concurrent.FutureTask#set} or a similar method,
- *       create a {@link SettableFuture} instead. (If your needs are more complex, you may prefer
- *       {@link AbstractFuture}.)
+ * <li>If you receive them from an {@code java.util.concurrent.ExecutorService}, convert that
+ * service to a {@link ListeningExecutorService}, usually by calling {@link
+ * MoreExecutors#listeningDecorator(java.util.concurrent.ExecutorService)
+ * MoreExecutors.listeningDecorator}.
+ * <li>If you manually call {@link java.util.concurrent.FutureTask#set} or a similar method,
+ * create a {@link SettableFuture} instead. (If your needs are more complex, you may prefer
+ * {@link AbstractFuture}.)
  * </ul>
  *
  * <p><b>Test doubles</b>: If you need a {@code ListenableFuture} for your test, try a {@link
@@ -119,39 +123,39 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @DoNotMock("Use the methods in Futures (like immediateFuture) or SettableFuture")
 @ElementTypesAreNonnullByDefault
 public interface ListenableFuture<V extends @Nullable Object> extends Future<V> {
-  /**
-   * Registers a listener to be {@linkplain Executor#execute(Runnable) run} on the given executor.
-   * The listener will run when the {@code Future}'s computation is {@linkplain Future#isDone()
-   * complete} or, if the computation is already complete, immediately.
-   *
-   * <p>There is no guaranteed ordering of execution of listeners, but any listener added through
-   * this method is guaranteed to be called once the computation is complete.
-   *
-   * <p>Exceptions thrown by a listener will be propagated up to the executor. Any exception thrown
-   * during {@code Executor.execute} (e.g., a {@code RejectedExecutionException} or an exception
-   * thrown by {@linkplain MoreExecutors#directExecutor direct execution}) will be caught and
-   * logged.
-   *
-   * <p>Note: If your listener is lightweight -- and will not cause stack overflow by completing
-   * more futures or adding more {@code directExecutor()} listeners inline -- consider {@link
-   * MoreExecutors#directExecutor}. Otherwise, avoid it: See the warnings on the docs for {@code
-   * directExecutor}.
-   *
-   * <p>This is the most general listener interface. For common operations performed using
-   * listeners, see {@link Futures}. For a simplified but general listener interface, see {@link
-   * Futures#addCallback addCallback()}.
-   *
-   * <p>Memory consistency effects: Actions in a thread prior to adding a listener <a
-   * href="https://docs.oracle.com/javase/specs/jls/se7/html/jls-17.html#jls-17.4.5">
-   * <i>happen-before</i></a> its execution begins, perhaps in another thread.
-   *
-   * <p>Guava implementations of {@code ListenableFuture} promptly release references to listeners
-   * after executing them.
-   *
-   * @param listener the listener to run when the computation is complete
-   * @param executor the executor to run the listener in
-   * @throws RejectedExecutionException if we tried to execute the listener immediately but the
-   *     executor rejected it.
-   */
-  void addListener(Runnable listener, Executor executor);
+    /**
+     * Registers a listener to be {@linkplain Executor#execute(Runnable) run} on the given executor.
+     * The listener will run when the {@code Future}'s computation is {@linkplain Future#isDone()
+     * complete} or, if the computation is already complete, immediately.
+     *
+     * <p>There is no guaranteed ordering of execution of listeners, but any listener added through
+     * this method is guaranteed to be called once the computation is complete.
+     *
+     * <p>Exceptions thrown by a listener will be propagated up to the executor. Any exception thrown
+     * during {@code Executor.execute} (e.g., a {@code RejectedExecutionException} or an exception
+     * thrown by {@linkplain MoreExecutors#directExecutor direct execution}) will be caught and
+     * logged.
+     *
+     * <p>Note: If your listener is lightweight -- and will not cause stack overflow by completing
+     * more futures or adding more {@code directExecutor()} listeners inline -- consider {@link
+     * MoreExecutors#directExecutor}. Otherwise, avoid it: See the warnings on the docs for {@code
+     * directExecutor}.
+     *
+     * <p>This is the most general listener interface. For common operations performed using
+     * listeners, see {@link Futures}. For a simplified but general listener interface, see {@link
+     * Futures#addCallback addCallback()}.
+     *
+     * <p>Memory consistency effects: Actions in a thread prior to adding a listener <a
+     * href="https://docs.oracle.com/javase/specs/jls/se7/html/jls-17.html#jls-17.4.5">
+     * <i>happen-before</i></a> its execution begins, perhaps in another thread.
+     *
+     * <p>Guava implementations of {@code ListenableFuture} promptly release references to listeners
+     * after executing them.
+     *
+     * @param listener the listener to run when the computation is complete
+     * @param executor the executor to run the listener in
+     * @throws RejectedExecutionException if we tried to execute the listener immediately but the
+     * executor rejected it.
+     */
+    void addListener(Runnable listener, Executor executor);
 }

@@ -20,38 +20,37 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 /**
  * Default implementation of {@link IBootstrapMethodsEntry}
  */
-public class BootstrapMethodsEntry
-	extends ClassFileStruct
-	implements IBootstrapMethodsEntry {
+public class BootstrapMethodsEntry extends ClassFileStruct implements IBootstrapMethodsEntry {
 
-	private final int bootstrapMethodReference;
-	private final int[] bootstrapArguments;
+    private final int bootstrapMethodReference;
+    private final int[] bootstrapArguments;
 
-	public BootstrapMethodsEntry(byte classFileBytes[], IConstantPool constantPool, int offset) throws ClassFormatException {
-		this.bootstrapMethodReference = u2At(classFileBytes, 0, offset);
-		int length = u2At(classFileBytes, 2, offset);
-		int[] arguments = new int[length];
-		int position = 4;
-		for (int i = 0; i < length; i++) {
-			arguments[i] = u2At(classFileBytes, position, offset);
-			position += 2;
-		}
-		this.bootstrapArguments = arguments;
-	}
+    public BootstrapMethodsEntry(byte classFileBytes[], IConstantPool constantPool, int offset)
+        throws ClassFormatException {
+        this.bootstrapMethodReference = u2At(classFileBytes, 0, offset);
+        int length = u2At(classFileBytes, 2, offset);
+        int[] arguments = new int[length];
+        int position = 4;
+        for (int i = 0; i < length; i++) {
+            arguments[i] = u2At(classFileBytes, position, offset);
+            position += 2;
+        }
+        this.bootstrapArguments = arguments;
+    }
 
-	/**
-	 * @see IBootstrapMethodsEntry#getBootstrapArguments()
-	 */
-	@Override
-	public int[] getBootstrapArguments() {
-		return this.bootstrapArguments;
-	}
+    /**
+     * @see IBootstrapMethodsEntry#getBootstrapArguments()
+     */
+    @Override
+    public int[] getBootstrapArguments() {
+        return this.bootstrapArguments;
+    }
 
-	/**
-	 * @see IBootstrapMethodsEntry#getBootstrapMethodReference()
-	 */
-	@Override
-	public int getBootstrapMethodReference() {
-		return this.bootstrapMethodReference;
-	}
+    /**
+     * @see IBootstrapMethodsEntry#getBootstrapMethodReference()
+     */
+    @Override
+    public int getBootstrapMethodReference() {
+        return this.bootstrapMethodReference;
+    }
 }

@@ -81,8 +81,16 @@ public interface WinUser extends WinDef {
     int LR_COPYFROMRESOURCE = 0x4000;
     int LR_SHARED = 0x8000;
 
-    @FieldOrder({"cbSize", "flags", "hwndActive", "hwndFocus", "hwndCapture",
-        "hwndMenuOwner", "hwndMoveSize", "hwndCaret", "rcCaret"})
+    @FieldOrder({
+        "cbSize",
+        "flags",
+        "hwndActive",
+        "hwndFocus",
+        "hwndCapture",
+        "hwndMenuOwner",
+        "hwndMoveSize",
+        "hwndCaret",
+        "rcCaret" })
     public class GUITHREADINFO extends Structure {
         public int cbSize = size();
         public int flags;
@@ -95,9 +103,17 @@ public interface WinUser extends WinDef {
         public RECT rcCaret;
     }
 
-    @FieldOrder({"cbSize", "rcWindow", "rcClient", "dwStyle", "dwExStyle",
-        "dwWindowStatus", "cxWindowBorders", "cyWindowBorders", "atomWindowType",
-        "wCreatorVersion"})
+    @FieldOrder({
+        "cbSize",
+        "rcWindow",
+        "rcClient",
+        "dwStyle",
+        "dwExStyle",
+        "dwWindowStatus",
+        "cxWindowBorders",
+        "cyWindowBorders",
+        "atomWindowType",
+        "wCreatorVersion" })
     public class WINDOWINFO extends Structure {
         public int cbSize = size();
         public RECT rcWindow;
@@ -114,14 +130,15 @@ public interface WinUser extends WinDef {
     /**
      * Contains information about the placement of a window on the screen.
      */
-    @FieldOrder({"length","flags","showCmd","ptMinPosition","ptMaxPosition", "rcNormalPosition"})
+    @FieldOrder({ "length", "flags", "showCmd", "ptMinPosition", "ptMaxPosition", "rcNormalPosition" })
     public class WINDOWPLACEMENT extends Structure {
         /**
          * The coordinates of the minimized window may be specified.
          */
         public static final int WPF_SETMINPOSITION = 0x1;
 
-        /**The restored window will be maximized, regardless of whether it was maximized before it
+        /**
+         * The restored window will be maximized, regardless of whether it was maximized before it
          * was minimized. This setting is only valid the next time the window is restored. It does not
          * change the default restoration behavior.
          *
@@ -135,8 +152,6 @@ public interface WinUser extends WinDef {
          * the calling thread from blocking its execution while other threads process the request.
          */
         public static final int WPF_ASYNCWINDOWPLACEMENT = 0x4;
-
-
 
         /**
          * The length of the structure, in bytes.
@@ -184,45 +199,56 @@ public interface WinUser extends WinDef {
 
     int DWL_DLGPROC = Native.POINTER_SIZE;
     int DWL_MSGRESULT = 0;
-    int DWL_USER = 2*Native.POINTER_SIZE;
+    int DWL_USER = 2 * Native.POINTER_SIZE;
 
     /* Window Styles */
 
     /** The window has a thin-line border. */
-    int WS_BORDER    = 0x800000;
+    int WS_BORDER = 0x800000;
 
     /** The window has a title bar (includes the WS_BORDER style). */
-    int WS_CAPTION    = 0xc00000;
+    int WS_CAPTION = 0xc00000;
 
-    /** The window is a child window. A window with this style cannot have a
-     * menu bar. This style cannot be used with the WS_POPUP style. */
-    int WS_CHILD    = 0x40000000;
+    /**
+     * The window is a child window. A window with this style cannot have a
+     * menu bar. This style cannot be used with the WS_POPUP style.
+     */
+    int WS_CHILD = 0x40000000;
 
     /** Same as the WS_CHILD style. */
-    int WS_CHILDWINDOW    = 0x40000000;
+    int WS_CHILDWINDOW = 0x40000000;
 
-    /** Excludes the area occupied by child windows when drawing occurs within
-     * the parent window. This style is used when creating the parent window. */
+    /**
+     * Excludes the area occupied by child windows when drawing occurs within
+     * the parent window. This style is used when creating the parent window.
+     */
     int WS_CLIPCHILDREN = 0x2000000;
 
-    /** Clips child windows relative to each other; that is, when a particular
+    /**
+     * Clips child windows relative to each other; that is, when a particular
      * child window receives a WM_PAINT message, the WS_CLIPSIBLINGS style clips
      * all other overlapping child windows out of the region of the child window
      * to be updated. If WS_CLIPSIBLINGS is not specified and child windows
      * overlap, it is possible, when drawing within the client area of a child
-     * window, to draw within the client area of a neighboring child window. */
+     * window, to draw within the client area of a neighboring child window.
+     */
     int WS_CLIPSIBLINGS = 0x4000000;
 
-    /** The window is initially disabled. A disabled window cannot receive input
+    /**
+     * The window is initially disabled. A disabled window cannot receive input
      * from the user. To change this after a window has been created, use the
-     * EnableWindow function. */
-    int WS_DISABLED    = 0x8000000;
+     * EnableWindow function.
+     */
+    int WS_DISABLED = 0x8000000;
 
-    /** The window has a border of a style typically used with dialog boxes. A
-     * window with this style cannot have a title bar. */
-    int WS_DLGFRAME    = 0x400000;
+    /**
+     * The window has a border of a style typically used with dialog boxes. A
+     * window with this style cannot have a title bar.
+     */
+    int WS_DLGFRAME = 0x400000;
 
-    /** The window is the first control of a group of controls. The group
+    /**
+     * The window is the first control of a group of controls. The group
      * consists of this first control and all controls defined after it, up to
      * the next control with the WS_GROUP style. The first control in each group
      * usually has the WS_TABSTOP style so that the user can move from group to
@@ -233,53 +259,62 @@ public interface WinUser extends WinDef {
      * change this style after a window has been created, use the SetWindowLong
      * function.
      */
-    int WS_GROUP    = 0x20000;
+    int WS_GROUP = 0x20000;
 
     /** The window has a horizontal scroll bar. */
-    int WS_HSCROLL    = 0x100000;
+    int WS_HSCROLL = 0x100000;
 
     /** The window is initially minimized. Same as the WS_MINIMIZE style. */
-    int WS_ICONIC    = 0x20000000;
+    int WS_ICONIC = 0x20000000;
 
     /** The window is initially maximized. */
-    int WS_MAXIMIZE    = 0x1000000;
+    int WS_MAXIMIZE = 0x1000000;
 
-    /** The window has a maximize button. Cannot be combined with the
-     * WS_EX_CONTEXTHELP style. The WS_SYSMENU style must also be specified.  */
-    int WS_MAXIMIZEBOX    = 0x10000;
+    /**
+     * The window has a maximize button. Cannot be combined with the
+     * WS_EX_CONTEXTHELP style. The WS_SYSMENU style must also be specified.
+     */
+    int WS_MAXIMIZEBOX = 0x10000;
 
     /** The window is initially minimized. Same as the WS_ICONIC style. */
-    int WS_MINIMIZE    = 0x20000000;
+    int WS_MINIMIZE = 0x20000000;
 
-    /** The window has a minimize button. Cannot be combined with the
-     * WS_EX_CONTEXTHELP style. The WS_SYSMENU style must also be specified. */
-    int WS_MINIMIZEBOX    = 0x20000;
+    /**
+     * The window has a minimize button. Cannot be combined with the
+     * WS_EX_CONTEXTHELP style. The WS_SYSMENU style must also be specified.
+     */
+    int WS_MINIMIZEBOX = 0x20000;
 
-    /** The window style overlapped. The window is an overlapped window. An
-     * overlapped window has a title bar and a border. Same as the WS_TILED style. */
+    /**
+     * The window style overlapped. The window is an overlapped window. An
+     * overlapped window has a title bar and a border. Same as the WS_TILED style.
+     */
     int WS_OVERLAPPED = 0x00000000;
 
     /** The windows is a pop-up window. This style cannot be used with the WS_CHILD style. */
-    int WS_POPUP    = 0x80000000;
+    int WS_POPUP = 0x80000000;
 
     /** The window has a window menu on its title bar. The WS_CAPTION style must also be specified. */
-    int WS_SYSMENU    = 0x80000;
+    int WS_SYSMENU = 0x80000;
 
     /** The window has a sizing border. Same as the WS_SIZEBOX style. */
-    int WS_THICKFRAME    = 0x40000;
+    int WS_THICKFRAME = 0x40000;
 
-    /** The window is a pop-up window. The WS_CAPTION and WS_POPUPWINDOW styles
-     * must be combined to make the window menu visible. */
-    int WS_POPUPWINDOW    = (WS_POPUP | WS_BORDER | WS_SYSMENU);
+    /**
+     * The window is a pop-up window. The WS_CAPTION and WS_POPUPWINDOW styles
+     * must be combined to make the window menu visible.
+     */
+    int WS_POPUPWINDOW = (WS_POPUP | WS_BORDER | WS_SYSMENU);
 
-    /** The window is an overlapped window. Same as the WS_TILEDWINDOW style.  */
-    int WS_OVERLAPPEDWINDOW    = (WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU |
-            WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX);
+    /** The window is an overlapped window. Same as the WS_TILEDWINDOW style. */
+    int WS_OVERLAPPEDWINDOW
+        = (WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX);
 
     /** The window has a sizing border. Same as the WS_THICKFRAME style. */
-    int WS_SIZEBOX    = 0x40000;
+    int WS_SIZEBOX = 0x40000;
 
-    /** The window is a control that can receive the keyboard focus when the
+    /**
+     * The window is a control that can receive the keyboard focus when the
      * user presses the TAB key. Pressing the TAB key changes the keyboard focus
      * to the next control with the WS_TABSTOP style.
      *
@@ -288,22 +323,25 @@ public interface WinUser extends WinDef {
      * function. For user-created windows and modeless dialogs to work with tab
      * stops, alter the message loop to call the IsDialogMessage function.
      */
-    int WS_TABSTOP    = 0x10000;
+    int WS_TABSTOP = 0x10000;
 
-    /** The window is an overlapped window. An overlapped window has a
-     * title bar and a border. Same as the WS_OVERLAPPED style. */
-    int WS_TILED    = 0;
+    /**
+     * The window is an overlapped window. An overlapped window has a
+     * title bar and a border. Same as the WS_OVERLAPPED style.
+     */
+    int WS_TILED = 0;
 
     /** The window is an overlapped window. Same as the WS_OVERLAPPEDWINDOW style. */
-    int WS_TILEDWINDOW    = (WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU |
-            WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX);
+    int WS_TILEDWINDOW = (WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX);
 
-    /** The window is initially visible. This style can be turned on and off
-     * by using the ShowWindow or SetWindowPos function. */
-    int WS_VISIBLE    = 0x10000000;
+    /**
+     * The window is initially visible. This style can be turned on and off
+     * by using the ShowWindow or SetWindowPos function.
+     */
+    int WS_VISIBLE = 0x10000000;
 
     /** The window has a vertical scroll bar. */
-    int WS_VSCROLL    = 0x200000;
+    int WS_VSCROLL = 0x200000;
 
     /* Extended Window Styles */
     int WS_EX_COMPOSITED = 0x20000000;
@@ -319,7 +357,7 @@ public interface WinUser extends WinDef {
     int ULW_ALPHA = 2;
     int ULW_OPAQUE = 4;
 
-    @FieldOrder({"hWnd", "message", "wParam", "lParam", "time", "pt"})
+    @FieldOrder({ "hWnd", "message", "wParam", "lParam", "time", "pt" })
     public class MSG extends Structure {
         public HWND hWnd;
         public int message;
@@ -332,7 +370,7 @@ public interface WinUser extends WinDef {
     /**
      * Contains data to be passed to another application by the WM_COPYDATA message.
      */
-    @FieldOrder({"dwData", "cbData", "lpData"})
+    @FieldOrder({ "dwData", "cbData", "lpData" })
     public class COPYDATASTRUCT extends Structure {
 
         public COPYDATASTRUCT() {
@@ -341,7 +379,7 @@ public interface WinUser extends WinDef {
 
         public COPYDATASTRUCT(Pointer p) {
             super(p);
-            //Receiving data and read it from native memory to fill the structure.
+            // Receiving data and read it from native memory to fill the structure.
             read();
         }
 
@@ -350,7 +388,7 @@ public interface WinUser extends WinDef {
         public Pointer lpData;
     }
 
-    @FieldOrder({"cbSize", "hWnd", "dwFlags", "uCount", "dwTimeout"})
+    @FieldOrder({ "cbSize", "hWnd", "dwFlags", "uCount", "dwTimeout" })
     public class FLASHWINFO extends Structure {
         public int cbSize = size();
         public HANDLE hWnd;
@@ -360,7 +398,9 @@ public interface WinUser extends WinDef {
     }
 
     public interface WNDENUMPROC extends StdCallCallback {
-        /** Return whether to continue enumeration.
+        /**
+         * Return whether to continue enumeration.
+         * 
          * @param hWnd window handle
          * @param data callback data
          * @return FIXME
@@ -388,48 +428,48 @@ public interface WinUser extends WinDef {
     public static interface WinEventProc extends Callback {
         /**
          * @param hWinEventHook
-         *            Type: HWINEVENTHOOK<br>
-         *            Handle to an event hook function.<br>
-         *            This value is returned by SetWinEventHook when the hook
-         *            function is installed and is specific to each instance of
-         *            the hook function.
+         * Type: HWINEVENTHOOK<br>
+         * Handle to an event hook function.<br>
+         * This value is returned by SetWinEventHook when the hook
+         * function is installed and is specific to each instance of
+         * the hook function.
          * @param event
-         *            Type: DWORD<br>
-         *            Specifies the event that occurred.<br>
-         *            This value is one of the event constants.
+         * Type: DWORD<br>
+         * Specifies the event that occurred.<br>
+         * This value is one of the event constants.
          * @param hwnd
-         *            Type: HWND<br>
-         *            Handle to the window that generates the event, or NULL if
-         *            no window is associated with the event.<br>
-         *            For example, the mouse pointer is not associated with a
-         *            window.
+         * Type: HWND<br>
+         * Handle to the window that generates the event, or NULL if
+         * no window is associated with the event.<br>
+         * For example, the mouse pointer is not associated with a
+         * window.
          * @param idObject
-         *            Type: LONG<br>
-         *            Identifies the object associated with the event.<br>
-         *            This is one of the object identifiers or a custom object
-         *            ID.
+         * Type: LONG<br>
+         * Identifies the object associated with the event.<br>
+         * This is one of the object identifiers or a custom object
+         * ID.
          * @param idChild
-         *            Type: LONG<br>
-         *            Identifies whether the event was triggered by an object or
-         *            a child element of the object.<br>
-         *            If this value is CHILDID_SELF, the event was triggered by
-         *            the object; otherwise, this value is the child ID of the
-         *            element that triggered the event.
+         * Type: LONG<br>
+         * Identifies whether the event was triggered by an object or
+         * a child element of the object.<br>
+         * If this value is CHILDID_SELF, the event was triggered by
+         * the object; otherwise, this value is the child ID of the
+         * element that triggered the event.
          * @param dwEventThread
-         *            Type: DWORD<br>
-         *            Identifies the thread that generated the event, or the
-         *            thread that owns the current window.
+         * Type: DWORD<br>
+         * Identifies the thread that generated the event, or the
+         * thread that owns the current window.
          * @param dwmsEventTime
-         *            Type: DWORD<br>
-         *            Specifies the time, in milliseconds, that the event was
-         *            generated.
+         * Type: DWORD<br>
+         * Specifies the time, in milliseconds, that the event was
+         * generated.
          */
         void callback(HANDLE hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread,
-                DWORD dwmsEventTime);
+            DWORD dwmsEventTime);
     }
 
     /** Specifies the width and height of a rectangle. */
-    @FieldOrder({"cx", "cy"})
+    @FieldOrder({ "cx", "cy" })
     public class SIZE extends Structure {
         public int cx, cy;
 
@@ -447,7 +487,7 @@ public interface WinUser extends WinDef {
     int AC_SRC_NO_PREMULT_ALPHA = 0x01;
     int AC_SRC_NO_ALPHA = 0x02;
 
-    @FieldOrder({"BlendOp", "BlendFlags", "SourceConstantAlpha", "AlphaFormat"})
+    @FieldOrder({ "BlendOp", "BlendFlags", "SourceConstantAlpha", "AlphaFormat" })
     public class BLENDFUNCTION extends Structure {
         public byte BlendOp = AC_SRC_OVER; // only valid value
         public byte BlendFlags = 0; // only valid value
@@ -477,14 +517,16 @@ public interface WinUser extends WinDef {
     int WH_KEYBOARD_LL = 13;
     int WH_MOUSE_LL = 14;
 
-    public class HHOOK extends HANDLE { }
+    public class HHOOK extends HANDLE {
+    }
 
-    public interface HOOKPROC extends StdCallCallback { }
+    public interface HOOKPROC extends StdCallCallback {
+    }
 
     /**
      * Defines the message parameters passed to a WH_CALLWNDPROC hook procedure, CallWndProc.
      */
-    @FieldOrder({"lParam", "wParam", "message", "hwnd"})
+    @FieldOrder({ "lParam", "wParam", "message", "hwnd" })
     public class CWPSTRUCT extends Structure {
 
         public CWPSTRUCT() {
@@ -493,7 +535,7 @@ public interface WinUser extends WinDef {
 
         public CWPSTRUCT(Pointer p) {
             super(p);
-            //Receiving data and read it from native memory to fill the structure.
+            // Receiving data and read it from native memory to fill the structure.
             read();
         }
 
@@ -613,7 +655,7 @@ public interface WinUser extends WinDef {
      */
     int ICON_SMALL2 = 2;
 
-    @FieldOrder({"pt", "mouseData", "flags", "time", "dwExtraInfo"})
+    @FieldOrder({ "pt", "mouseData", "flags", "time", "dwExtraInfo" })
     public class MSLLHOOKSTRUCT extends Structure {
         public POINT pt;
         public int mouseData;
@@ -622,7 +664,7 @@ public interface WinUser extends WinDef {
         public ULONG_PTR dwExtraInfo;
     }
 
-    @FieldOrder({"vkCode", "scanCode", "flags", "time", "dwExtraInfo"})
+    @FieldOrder({ "vkCode", "scanCode", "flags", "time", "dwExtraInfo" })
     public class KBDLLHOOKSTRUCT extends Structure {
         public int vkCode;
         public int scanCode;
@@ -883,11 +925,11 @@ public interface WinUser extends WinDef {
 
     /**
      * Does not redraw changes. If this flag is set, no repainting of any kind
-     *  occurs. This applies to the client area, the nonclient area (including
-     *   the title bar and scroll bars), and any part of the parent window
-     *   uncovered as a result of the window being moved. When this flag is
-     *   set, the application must explicitly invalidate or redraw any parts
-     *   of the window and parent window that need redrawing.
+     * occurs. This applies to the client area, the nonclient area (including
+     * the title bar and scroll bars), and any part of the parent window
+     * uncovered as a result of the window being moved. When this flag is
+     * set, the application must explicitly invalidate or redraw any parts
+     * of the window and parent window that need redrawing.
      */
     int SWP_NOREDRAW = 0x0008;
 
@@ -931,7 +973,7 @@ public interface WinUser extends WinDef {
      * Creates a push button that posts a WM_COMMAND message to the owner window
      * when the user selects the button.
      */
-    int BS_PUSHBUTTON                  = 0x00000000;
+    int BS_PUSHBUTTON = 0x00000000;
 
     /**
      * Creates a push button that behaves like a BS_PUSHBUTTON style button, but
@@ -942,7 +984,7 @@ public interface WinUser extends WinDef {
      * This style is useful for enabling the user to quickly select the most
      * likely (default) option.
      */
-    int BS_DEFPUSHBUTTON               = 0x00000001;
+    int BS_DEFPUSHBUTTON = 0x00000001;
 
     /**
      * Creates a small, empty check box with text. By default, the text is
@@ -950,14 +992,14 @@ public interface WinUser extends WinDef {
      * To display the text to the left of the check box, combine this flag with
      * the BS_LEFTTEXT style (or with the equivalent BS_RIGHTBUTTON style).
      */
-    int BS_CHECKBOX                    = 0x00000002;
+    int BS_CHECKBOX = 0x00000002;
 
     /**
      * Creates a button that is the same as a check box, except that the check
      * state automatically toggles between checked and cleared each time the
      * user selects the check box.
      */
-    int BS_AUTOCHECKBOX                = 0x00000003;
+    int BS_AUTOCHECKBOX = 0x00000003;
 
     /**
      * Creates a small circle with text. By default, the text is displayed to
@@ -966,7 +1008,7 @@ public interface WinUser extends WinDef {
      * BS_LEFTTEXT style (or with the equivalent BS_RIGHTBUTTON style).<br>
      * Use radio buttons for groups of related, but mutually exclusive choices.
      */
-    int BS_RADIOBUTTON                 = 0x00000004;
+    int BS_RADIOBUTTON = 0x00000004;
 
     /**
      * Creates a button that is the same as a check box, except that the box can
@@ -974,27 +1016,27 @@ public interface WinUser extends WinDef {
      * Use the grayed state to show that the state of the check box is not
      * determined.
      */
-    int BS_3STATE                      = 0x00000005;
+    int BS_3STATE = 0x00000005;
 
     /**
      * Creates a button that is the same as a three-state check box, except that
      * the box changes its state when the user selects it.<br>
      * The state cycles through checked, indeterminate, and cleared.
      */
-    int BS_AUTO3STATE                  = 0x00000006;
+    int BS_AUTO3STATE = 0x00000006;
 
     /**
      * Creates a rectangle in which other controls can be grouped. Any text
      * associated with this style is displayed in the rectangle's upper left
      * corner.
      */
-    int BS_GROUPBOX                    = 0x00000007;
+    int BS_GROUPBOX = 0x00000007;
 
     /**
      * Obsolete, but provided for compatibility with 16-bit versions of Windows.
      * Applications should use BS_OWNERDRAW instead.
      */
-    int BS_USERBUTTON                  = 0x00000008;
+    int BS_USERBUTTON = 0x00000008;
 
     /**
      * Creates a button that is the same as a radio button, except that when the
@@ -1003,12 +1045,12 @@ public interface WinUser extends WinDef {
      * automatically sets the check state for all other buttons in the same
      * group to cleared.
      */
-    int BS_AUTORADIOBUTTON             = 0x00000009;
+    int BS_AUTORADIOBUTTON = 0x00000009;
 
     /**
      * A button that only shows the text
      */
-    int BS_PUSHBOX                     = 0x0000000A;
+    int BS_PUSHBOX = 0x0000000A;
 
     /**
      * Creates an owner-drawn button.<br>
@@ -1016,7 +1058,7 @@ public interface WinUser extends WinDef {
      * the button has changed.<br>
      * Do not combine the BS_OWNERDRAW style with any other button styles.
      */
-    int BS_OWNERDRAW                   = 0x0000000B;
+    int BS_OWNERDRAW = 0x0000000B;
 
     /**
      * Do not use this style.<br>
@@ -1030,25 +1072,23 @@ public interface WinUser extends WinDef {
      * However, it makes basic GetWindowLong work when trying to test for a
      * button style for basic button controls.
      */
-    int BS_TYPEMASK                    = 0x0000000F;
+    int BS_TYPEMASK = 0x0000000F;
 
     /**
      * Places text on the left side of the radio button or check box when
      * combined with a radio button or check box style. Same as the
      * BS_RIGHTBUTTON style.
      */
-    int BS_LEFTTEXT                    = 0x00000020;
-
+    int BS_LEFTTEXT = 0x00000020;
 
     /**
      * Contains information about a simulated message generated by an input
      * device other than a keyboard or mouse.
      */
-    @FieldOrder({"uMsg", "wParamL", "wParamH"})
+    @FieldOrder({ "uMsg", "wParamL", "wParamH" })
     public static class HARDWAREINPUT extends Structure {
 
-        public static class ByReference extends HARDWAREINPUT implements
-                                                                  Structure.ByReference {
+        public static class ByReference extends HARDWAREINPUT implements Structure.ByReference {
             public ByReference() {
             }
 
@@ -1074,15 +1114,14 @@ public interface WinUser extends WinDef {
      * Used by SendInput to store information for synthesizing input events such
      * as keystrokes, mouse movement, and mouse clicks.
      */
-    @FieldOrder({"type", "input"})
+    @FieldOrder({ "type", "input" })
     public static class INPUT extends Structure {
 
         public static final int INPUT_MOUSE = 0;
         public static final int INPUT_KEYBOARD = 1;
         public static final int INPUT_HARDWARE = 2;
 
-        public static class ByReference extends INPUT implements
-                                                          Structure.ByReference {
+        public static class ByReference extends INPUT implements Structure.ByReference {
             public ByReference() {
             }
 
@@ -1121,7 +1160,7 @@ public interface WinUser extends WinDef {
     /**
      * Contains information about a simulated keyboard event.
      */
-    @FieldOrder({"wVk", "wScan", "dwFlags", "time", "dwExtraInfo"})
+    @FieldOrder({ "wVk", "wScan", "dwFlags", "time", "dwExtraInfo" })
     public static class KEYBDINPUT extends Structure {
 
         /**
@@ -1148,8 +1187,7 @@ public interface WinUser extends WinDef {
          */
         public static final int KEYEVENTF_SCANCODE = 0x0008;
 
-        public static class ByReference extends KEYBDINPUT implements
-                                                               Structure.ByReference {
+        public static class ByReference extends KEYBDINPUT implements Structure.ByReference {
             public ByReference() {
             }
 
@@ -1201,11 +1239,10 @@ public interface WinUser extends WinDef {
     /**
      * Contains information about a simulated mouse event.
      */
-    @FieldOrder({"dx", "dy", "mouseData", "dwFlags", "time", "dwExtraInfo"})
+    @FieldOrder({ "dx", "dy", "mouseData", "dwFlags", "time", "dwExtraInfo" })
     public static class MOUSEINPUT extends Structure {
 
-        public static class ByReference extends MOUSEINPUT implements
-                                                               Structure.ByReference {
+        public static class ByReference extends MOUSEINPUT implements Structure.ByReference {
             public ByReference() {
             }
 
@@ -1233,7 +1270,7 @@ public interface WinUser extends WinDef {
     /**
      * Contains the time of the last input.
      */
-    @FieldOrder({"cbSize", "dwTime"})
+    @FieldOrder({ "cbSize", "dwTime" })
     public static class LASTINPUTINFO extends Structure {
         public int cbSize = size();
 
@@ -1250,16 +1287,25 @@ public interface WinUser extends WinDef {
      * the size of the structure, and the hIconSm member, which contains a
      * handle to a small icon associated with the window class.
      */
-    @FieldOrder({"cbSize", "style", "lpfnWndProc", "cbClsExtra", "cbWndExtra",
-        "hInstance", "hIcon", "hCursor", "hbrBackground", "lpszMenuName",
-        "lpszClassName", "hIconSm"})
+    @FieldOrder({
+        "cbSize",
+        "style",
+        "lpfnWndProc",
+        "cbClsExtra",
+        "cbWndExtra",
+        "hInstance",
+        "hIcon",
+        "hCursor",
+        "hbrBackground",
+        "lpszMenuName",
+        "lpszClassName",
+        "hIconSm" })
     public class WNDCLASSEX extends Structure {
 
         /**
          * The Class ByReference.
          */
-        public static class ByReference extends WNDCLASSEX implements
-                                                               Structure.ByReference {
+        public static class ByReference extends WNDCLASSEX implements Structure.ByReference {
         }
 
         /**
@@ -1273,7 +1319,7 @@ public interface WinUser extends WinDef {
          * Instantiates a new wndclassex.
          *
          * @param memory
-         *            the memory
+         * the memory
          */
         public WNDCLASSEX(Pointer memory) {
             super(memory, Structure.ALIGN_DEFAULT, W32APITypeMapper.DEFAULT);
@@ -1327,29 +1373,29 @@ public interface WinUser extends WinDef {
 
         /**
          * @param hwnd
-         *            [in] Type: HWND
+         * [in] Type: HWND
          *
-         *            A handle to the window.
+         * A handle to the window.
          *
          * @param uMsg
-         *            [in] Type: UINT
+         * [in] Type: UINT
          *
-         *            The message.
+         * The message.
          *
-         *            For lists of the system-provided messages, see
-         *            System-Defined Messages.
+         * For lists of the system-provided messages, see
+         * System-Defined Messages.
          *
          * @param wParam
-         *            [in] Type: WPARAM
+         * [in] Type: WPARAM
          *
-         *            Additional message information. The contents of this
-         *            parameter depend on the value of the uMsg parameter.
+         * Additional message information. The contents of this
+         * parameter depend on the value of the uMsg parameter.
          *
          * @param lParam
-         *            [in] Type: LPARAM
+         * [in] Type: LPARAM
          *
-         *            Additional message information. The contents of this
-         *            parameter depend on the value of the uMsg parameter.
+         * Additional message information. The contents of this
+         * parameter depend on the value of the uMsg parameter.
          *
          * @return the lresult
          */
@@ -1366,45 +1412,43 @@ public interface WinUser extends WinDef {
         /**
          * Instantiates a new HMONITOR.
          */
-        public HMONITOR()
-        {
+        public HMONITOR() {
         }
 
         /**
          * Instantiates a new HMONITOR.
+         * 
          * @param p the pointer
          */
-        public HMONITOR(Pointer p)
-        {
+        public HMONITOR(Pointer p) {
             super(p);
         }
     }
 
-
     /**
      * Returns NULL.
      */
-    final int MONITOR_DEFAULTTONULL =        0x00000000;
+    final int MONITOR_DEFAULTTONULL = 0x00000000;
 
     /**
      * Returns a handle to the primary display monitor.
      */
-    final int MONITOR_DEFAULTTOPRIMARY =     0x00000001;
+    final int MONITOR_DEFAULTTOPRIMARY = 0x00000001;
 
     /**
      * Returns a handle to the display monitor that is nearest to the window.
      */
-    final int MONITOR_DEFAULTTONEAREST =     0x00000002;
+    final int MONITOR_DEFAULTTONEAREST = 0x00000002;
 
     /**
      * This is the primary display monitor.
      */
-    final int MONITORINFOF_PRIMARY =         0x00000001;
+    final int MONITORINFOF_PRIMARY = 0x00000001;
 
     /**
      * Length of the device name in MONITORINFOEX
      */
-    final int CCHDEVICENAME =  32;
+    final int CCHDEVICENAME = 32;
 
     /**
      * <p>The MONITORINFO structure contains information about a display monitor.</p><p>
@@ -1412,19 +1456,19 @@ public interface WinUser extends WinDef {
      * information into a MONITORINFO structure</p>
      * The MONITORINFO structure is a subset of the MONITORINFOEX structure.
      */
-    @FieldOrder({"cbSize", "rcMonitor", "rcWork", "dwFlags"})
+    @FieldOrder({ "cbSize", "rcMonitor", "rcWork", "dwFlags" })
     public class MONITORINFO extends Structure {
         /**
          * The size, in bytes, of the structure.
          */
-        public int     cbSize = size();
+        public int cbSize = size();
 
         /**
          * Specifies the display monitor rectangle, expressed in virtual-screen coordinates.
          * Note that if the monitor is not the primary display monitor, some of the
          * rectangle's coordinates may be negative values.
          */
-        public RECT    rcMonitor;
+        public RECT rcMonitor;
 
         /**
          * Specifies the work area rectangle of the display monitor that can be used by
@@ -1434,13 +1478,13 @@ public interface WinUser extends WinDef {
          * monitor is not the primary display monitor, some of the rectangle's coordinates
          * may be negative values.
          */
-        public RECT    rcWork;
+        public RECT rcWork;
 
         /**
          * The attributes of the display monitor. This member can be the following value.
          * <ul><li>MONITORINFOF_PRIMARY</li></ul>
          */
-        public int     dwFlags;
+        public int dwFlags;
     }
 
     /**
@@ -1450,19 +1494,19 @@ public interface WinUser extends WinDef {
      * The MONITORINFOEX structure is a superset of the MONITORINFO structure.
      * The MONITORINFOEX structure adds a string member to contain a name for the display monitor.
      */
-    @FieldOrder({"cbSize", "rcMonitor", "rcWork", "dwFlags", "szDevice"})
+    @FieldOrder({ "cbSize", "rcMonitor", "rcWork", "dwFlags", "szDevice" })
     public class MONITORINFOEX extends Structure {
         /**
          * The size, in bytes, of the structure.
          */
-        public int     cbSize;
+        public int cbSize;
 
         /**
          * Specifies the display monitor rectangle, expressed in virtual-screen coordinates.
          * Note that if the monitor is not the primary display monitor, some of the
          * rectangle's coordinates may be negative values.
          */
-        public RECT    rcMonitor;
+        public RECT rcMonitor;
 
         /**
          * Specifies the work area rectangle of the display monitor that can be used by
@@ -1472,20 +1516,20 @@ public interface WinUser extends WinDef {
          * monitor is not the primary display monitor, some of the rectangle's coordinates
          * may be negative values.
          */
-        public RECT    rcWork;
+        public RECT rcWork;
 
         /**
          * The attributes of the display monitor. This member can be the following value.
          * <ul><li>MONITORINFOF_PRIMARY</li></ul>
          */
-        public int     dwFlags;
+        public int dwFlags;
 
         /**
          * A string that specifies the device name of the monitor being used. Most
          * applications have no use for a display monitor name, and so can save some bytes
          * by using a MONITORINFO structure.
          */
-        public char[]  szDevice;
+        public char[] szDevice;
 
         public MONITORINFOEX() {
             szDevice = new char[CCHDEVICENAME];
@@ -1511,22 +1555,21 @@ public interface WinUser extends WinDef {
      * display monitor. You can then paint into the device context in a manner that is optimal for the
      * display monitor.
      */
-    public interface MONITORENUMPROC extends StdCallCallback
-    {
+    public interface MONITORENUMPROC extends StdCallCallback {
         /**
          * @param hMonitor A handle to the display monitor. This value will always be non-NULL.
          * @param hdcMonitor A handle to a device context. The device context has color attributes that are
-         *        appropriate for the display monitor identified by hMonitor. The clipping area of the device
-         *        context is set to the intersection of the visible region of the device context identified
-         *        by the hdc parameter of EnumDisplayMonitors, the rectangle pointed to by the lprcClip
-         *        parameter of EnumDisplayMonitors, and the display monitor rectangle.
+         * appropriate for the display monitor identified by hMonitor. The clipping area of the device
+         * context is set to the intersection of the visible region of the device context identified
+         * by the hdc parameter of EnumDisplayMonitors, the rectangle pointed to by the lprcClip
+         * parameter of EnumDisplayMonitors, and the display monitor rectangle.
          * @param lprcMonitor A pointer to a RECT structure. If hdcMonitor is non-NULL, this rectangle is the
-         *        intersection of the clipping area of the device context identified by hdcMonitor and the
-         *        display monitor rectangle. The rectangle coordinates are device-context coordinates.
-         *        If hdcMonitor is NULL, this rectangle is the display monitor rectangle. The rectangle
-         *        coordinates are virtual-screen coordinates.
+         * intersection of the clipping area of the device context identified by hdcMonitor and the
+         * display monitor rectangle. The rectangle coordinates are device-context coordinates.
+         * If hdcMonitor is NULL, this rectangle is the display monitor rectangle. The rectangle
+         * coordinates are virtual-screen coordinates.
          * @param dwData Application-defined data that EnumDisplayMonitors passes directly to the enumeration
-         *        function.
+         * function.
          * @return To continue the enumeration, return TRUE. To stop the enumeration, return FALSE.
          */
         public int apply(HMONITOR hMonitor, HDC hdcMonitor, RECT lprcMonitor, LPARAM dwData);
@@ -1534,44 +1577,60 @@ public interface WinUser extends WinDef {
 
     /* Extendend Exit Windows flags */
 
-    /** Beginning with Windows 8:  You can prepare the system for a faster startup by
-     * combining the EWX_HYBRID_SHUTDOWN flag with the EWX_SHUTDOWN flag. */
+    /**
+     * Beginning with Windows 8: You can prepare the system for a faster startup by
+     * combining the EWX_HYBRID_SHUTDOWN flag with the EWX_SHUTDOWN flag.
+     */
     int EWX_HYBRID_SHUTDOWN = 0x00400000;
 
-    /** Shuts down all processes running in the logon session of the process that called the ExitWindowsEx function.
-     * Then it logs the user off. This flag can be used only by processes running in an interactive user's logon session. */
+    /**
+     * Shuts down all processes running in the logon session of the process that called the ExitWindowsEx function.
+     * Then it logs the user off. This flag can be used only by processes running in an interactive user's logon
+     * session.
+     */
     int EWX_LOGOFF = 0;
 
-    /** Shuts down the system and turns off the power. The system must support the power-off feature. The calling
-     * process must have the SE_SHUTDOWN_NAME privilege. For more information, see {@link User32#ExitWindowsEx}. */
+    /**
+     * Shuts down the system and turns off the power. The system must support the power-off feature. The calling
+     * process must have the SE_SHUTDOWN_NAME privilege. For more information, see {@link User32#ExitWindowsEx}.
+     */
     int EWX_POWEROFF = 0x00000008;
 
-    /** Shuts down the system and then restarts the system. The calling process must have the SE_SHUTDOWN_NAME
-     * privilege. For more information, see {@link User32#ExitWindowsEx}. */
+    /**
+     * Shuts down the system and then restarts the system. The calling process must have the SE_SHUTDOWN_NAME
+     * privilege. For more information, see {@link User32#ExitWindowsEx}.
+     */
     int EWX_REBOOT = 0x00000002;
 
-    /** Shuts down the system and then restarts it, as well as any applications that have been registered for
+    /**
+     * Shuts down the system and then restarts it, as well as any applications that have been registered for
      * restart using the RegisterApplicationRestart function. These application receive the WM_QUERYENDSESSION
-     * message with lParam set to the ENDSESSION_CLOSEAPP value. For more information, see Guidelines for Applications. */
+     * message with lParam set to the ENDSESSION_CLOSEAPP value. For more information, see Guidelines for Applications.
+     */
     int EWX_RESTARTAPPS = 0x00000040;
 
-    /** Shuts down the system to a point at which it is safe to turn off the power. All file buffers
+    /**
+     * Shuts down the system to a point at which it is safe to turn off the power. All file buffers
      * have been flushed to disk, and all running processes have stopped. The calling process must have
      * the SE_SHUTDOWN_NAME privilege. For more information, see {@link User32#ExitWindowsEx}. Specifying
      * this flag will not turn off the power even if the system supports the power-off feature. You must
      * specify EWX_POWEROFF to do this.
      *
-     * Windows XP with SP1:  If the system supports the power-off feature, specifying this flag turns off the power.
+     * Windows XP with SP1: If the system supports the power-off feature, specifying this flag turns off the power.
      */
     int EWX_SHUTDOWN = 0x00000001;
 
-    /** This flag has no effect if terminal services is enabled. Otherwise, the system does not send the
+    /**
+     * This flag has no effect if terminal services is enabled. Otherwise, the system does not send the
      * WM_QUERYENDSESSION message. This can cause applications to lose data. Therefore, you should only
-     * use this flag in an emergency. */
+     * use this flag in an emergency.
+     */
     int EWX_FORCE = 0x00000004;
 
-    /** Forces processes to terminate if they do not respond to the WM_QUERYENDSESSION or WM_ENDSESSION
-     * message within the timeout interval. For more information, see {@link User32#ExitWindowsEx}. */
+    /**
+     * Forces processes to terminate if they do not respond to the WM_QUERYENDSESSION or WM_ENDSESSION
+     * message within the timeout interval. For more information, see {@link User32#ExitWindowsEx}.
+     */
     int EWX_FORCEIFHUNG = 0x00000010;
 
     /* GetAncestor properties */
@@ -1702,7 +1761,7 @@ public interface WinUser extends WinDef {
      * The function should return 0 if the receiving window is destroyed or its
      * owning thread dies while the message is being processed.
      */
-    int SMTO_ERRORONEXIT=0x0020;
+    int SMTO_ERRORONEXIT = 0x0020;
 
     /* GetIconInfo properties */
 
@@ -1806,9 +1865,9 @@ public interface WinUser extends WinDef {
      */
     int IDI_WINLOGO = 32517;
 
-        /* Types of devices in RAWINPUTDEVICELIST */
+    /* Types of devices in RAWINPUTDEVICELIST */
     /** The device is a mouse. */
-    int RIM_TYPEMOUSE =  0;
+    int RIM_TYPEMOUSE = 0;
 
     /** The device is a keyboard. */
     int RIM_TYPEKEYBOARD = 1;
@@ -1818,9 +1877,10 @@ public interface WinUser extends WinDef {
 
     /**
      * Contains information about a raw input device.
+     * 
      * @see <A HREF="https://msdn.microsoft.com/en-us/library/windows/desktop/ms645568(v=vs.85).aspx"></A>
      */
-    @FieldOrder({"hDevice", "dwType"})
+    @FieldOrder({ "hDevice", "dwType" })
     public class RAWINPUTDEVICELIST extends Structure {
         public HANDLE hDevice;
         public int dwType;
@@ -1962,7 +2022,7 @@ public interface WinUser extends WinDef {
      * format, the application should use the SelectPalette and RealizePalette
      * functions to realize (compare) any other data in the clipboard against
      * that logical palette.</p>
-     *<p>
+     * <p>
      * When displaying clipboard data, the clipboard always uses as its current
      * palette any object on the clipboard that is in the CF_PALETTE format.</p>
      */
@@ -2011,7 +2071,6 @@ public interface WinUser extends WinDef {
      * or 22 kHz PCM.
      */
     public int CF_WAVE = 12;
-
 
     // WINVER >= 0x0400
     /**
@@ -2099,34 +2158,32 @@ public interface WinUser extends WinDef {
 
     /**
      * Registers the application to receive power setting notifications for the specific power setting event.
+     * 
      * @param hRecipient Handle indicating where the power setting notifications are to be sent.
-     *                   For interactive applications, the Flags parameter should be DEVICE_NOTIFY_WINDOW_HANDLE,
-     *                   and the hRecipient parameter should be a window handle.
-     *                   For services, the Flags parameter should be DEVICE_NOTIFY_SERVICE_HANDLE, and the hRecipient
-     *                   parameter should be a SERVICE_STATUS_HANDLE as returned from RegisterServiceCtrlHandlerEx.
+     * For interactive applications, the Flags parameter should be DEVICE_NOTIFY_WINDOW_HANDLE,
+     * and the hRecipient parameter should be a window handle.
+     * For services, the Flags parameter should be DEVICE_NOTIFY_SERVICE_HANDLE, and the hRecipient
+     * parameter should be a SERVICE_STATUS_HANDLE as returned from RegisterServiceCtrlHandlerEx.
      * @param PowerSettingGuid The GUID of the power setting for which notifications are to be sent.
      * @param Flags
-     *   <li>DEVICE_NOTIFY_WINDOW_HANDLE - Notifications are sent using WM_POWERBROADCAST messages
-     *   with a wParam parameter of PBT_POWERSETTINGCHANGE.
-     *   <li>DEVICE_NOTIFY_SERVICE_HANDLE - Notifications are sent to the HandlerEx callback function with a dwControl
-     *   parameter of SERVICE_CONTROL_POWEREVENT and a dwEventType of PBT_POWERSETTINGCHANGE.
+     * <li>DEVICE_NOTIFY_WINDOW_HANDLE - Notifications are sent using WM_POWERBROADCAST messages
+     * with a wParam parameter of PBT_POWERSETTINGCHANGE.
+     * <li>DEVICE_NOTIFY_SERVICE_HANDLE - Notifications are sent to the HandlerEx callback function with a dwControl
+     * parameter of SERVICE_CONTROL_POWEREVENT and a dwEventType of PBT_POWERSETTINGCHANGE.
      * @return a notification handle for unregistering for power notifications. If the function fails, the return
      * value is NULL. To get extended error information, call GetLastError.
      */
-    HPOWERNOTIFY RegisterPowerSettingNotification(
-            /*[in]*/ HANDLE hRecipient,
-            /*[in]*/ Guid.GUID PowerSettingGuid,
-            /*[in]*/ int Flags);
+    HPOWERNOTIFY RegisterPowerSettingNotification(/* [in] */ HANDLE hRecipient, /* [in] */ Guid.GUID PowerSettingGuid,
+        /* [in] */ int Flags);
 
     /**
      * Unregisters the power setting notification.
+     * 
      * @param Handle The handle returned from the RegisterPowerSettingNotification function.
      * @return If the function succeeds, the return value is nonzero.
      * If the function fails, the return value is zero. To get extended error information, call GetLastError.
      */
-    BOOL UnregisterPowerSettingNotification(
-            /*[in]*/ HPOWERNOTIFY Handle
-    );
+    BOOL UnregisterPowerSettingNotification(/* [in] */ HPOWERNOTIFY Handle);
 
     int WM_POWERBROADCAST = 0x0218;
 
@@ -2145,7 +2202,7 @@ public interface WinUser extends WinDef {
     int PBT_APMRESUMEAUTOMATIC = 0x0012;
     int PBT_POWERSETTINGCHANGE = 0x8013;
 
-    @FieldOrder({"PowerSetting", "DataLength", "Data"})
+    @FieldOrder({ "PowerSetting", "DataLength", "Data" })
     class POWERBROADCAST_SETTING extends Structure {
         public Guid.GUID PowerSetting;
         public int DataLength;

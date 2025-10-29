@@ -26,25 +26,25 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 
 public class WeavingException extends RuntimeException {
-	private static final long	serialVersionUID	= 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Creates a {@code WeavingException} with the specified message and
-	 * exception cause.
-	 * 
-	 * @param msg The associated message.
-	 * @param cause The cause of this exception.
-	 */
-	public WeavingException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+    /**
+     * Creates a {@code WeavingException} with the specified message and
+     * exception cause.
+     * 
+     * @param msg The associated message.
+     * @param cause The cause of this exception.
+     */
+    public WeavingException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 
-	/**
-	 * Creates a {@code WeavingException} with the specified message.
-	 * 
-	 * @param msg The message.
-	 */
-	public WeavingException(String msg) {
-		super(msg);
-	}
+    /**
+     * Creates a {@code WeavingException} with the specified message.
+     * 
+     * @param msg The message.
+     */
+    public WeavingException(String msg) {
+        super(msg);
+    }
 }

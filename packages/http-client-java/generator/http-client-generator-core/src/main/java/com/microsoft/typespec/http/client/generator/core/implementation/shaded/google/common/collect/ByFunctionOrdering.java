@@ -18,12 +18,12 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Preconditions.checkNotNull;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Function;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Objects;
-import java.io.Serializable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
+import java.io.Serializable;
 
 /**
  * An ordering that orders elements by applying an order to the result of a function on those
@@ -31,42 +31,42 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @GwtCompatible(serializable = true)
 @ElementTypesAreNonnullByDefault
-final class ByFunctionOrdering<F extends @Nullable Object, T extends @Nullable Object>
-    extends Ordering<F> implements Serializable {
-  final Function<F, ? extends T> function;
-  final Ordering<T> ordering;
+final class ByFunctionOrdering<F extends @Nullable Object, T extends @Nullable Object> extends Ordering<F>
+    implements Serializable {
+    final Function<F, ? extends T> function;
+    final Ordering<T> ordering;
 
-  ByFunctionOrdering(Function<F, ? extends T> function, Ordering<T> ordering) {
-    this.function = checkNotNull(function);
-    this.ordering = checkNotNull(ordering);
-  }
-
-  @Override
-  public int compare(@ParametricNullness F left, @ParametricNullness F right) {
-    return ordering.compare(function.apply(left), function.apply(right));
-  }
-
-  @Override
-  public boolean equals(@CheckForNull Object object) {
-    if (object == this) {
-      return true;
+    ByFunctionOrdering(Function<F, ? extends T> function, Ordering<T> ordering) {
+        this.function = checkNotNull(function);
+        this.ordering = checkNotNull(ordering);
     }
-    if (object instanceof ByFunctionOrdering) {
-      ByFunctionOrdering<?, ?> that = (ByFunctionOrdering<?, ?>) object;
-      return this.function.equals(that.function) && this.ordering.equals(that.ordering);
+
+    @Override
+    public int compare(@ParametricNullness F left, @ParametricNullness F right) {
+        return ordering.compare(function.apply(left), function.apply(right));
     }
-    return false;
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(function, ordering);
-  }
+    @Override
+    public boolean equals(@CheckForNull Object object) {
+        if (object == this) {
+            return true;
+        }
+        if (object instanceof ByFunctionOrdering) {
+            ByFunctionOrdering<?, ?> that = (ByFunctionOrdering<?, ?>) object;
+            return this.function.equals(that.function) && this.ordering.equals(that.ordering);
+        }
+        return false;
+    }
 
-  @Override
-  public String toString() {
-    return ordering + ".onResultOf(" + function + ")";
-  }
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(function, ordering);
+    }
 
-  private static final long serialVersionUID = 0;
+    @Override
+    public String toString() {
+        return ordering + ".onResultOf(" + function + ")";
+    }
+
+    private static final long serialVersionUID = 0;
 }

@@ -13,6 +13,7 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.tool;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.JRTUtil;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -26,121 +27,121 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.JRTUtil;
 
 /**
  * Used as a zip file cache.
  */
 public class Archive implements Closeable {
 
-	public static final Archive UNKNOWN_ARCHIVE = new Archive();
+    public static final Archive UNKNOWN_ARCHIVE = new Archive();
 
-	ZipFile zipFile;
-	File file;
+    ZipFile zipFile;
+    File file;
 
-	protected Hashtable<String, ArrayList<String[]>> packagesCache;
+    protected Hashtable<String, ArrayList<String[]>> packagesCache;
 
-	protected Archive() {
-		// used to construct UNKNOWN_ARCHIVE
-	}
+    protected Archive() {
+        // used to construct UNKNOWN_ARCHIVE
+    }
 
-	public Archive(File file) throws ZipException, IOException {
-		this.file = file;
-		this.zipFile = new ZipFile(file);
-		initialize();
-	}
+    public Archive(File file) throws ZipException, IOException {
+        this.file = file;
+        this.zipFile = new ZipFile(file);
+        initialize();
+    }
 
-	private void initialize() {
-		// initialize packages
-		this.packagesCache = new Hashtable<>();
-		for (Enumeration<? extends ZipEntry> e = this.zipFile.entries(); e.hasMoreElements(); ) {
-			String fileName = e.nextElement().getName();
+    private void initialize() {
+        // initialize packages
+        this.packagesCache = new Hashtable<>();
+        for (Enumeration<? extends ZipEntry> e = this.zipFile.entries(); e.hasMoreElements();) {
+            String fileName = e.nextElement().getName();
 
-			// add the package name & all of its parent packages
-			int last = fileName.lastIndexOf('/');
-			// extract the package name
-			String packageName = fileName.substring(0, last + 1);
-			String typeName = fileName.substring(last + 1);
-			// might be empty if this is a directory entry
-			if (typeName.length() == 0) {
-				continue;
-			}
-			cacheTypes(packageName, typeName);
-		}
-	}
+            // add the package name & all of its parent packages
+            int last = fileName.lastIndexOf('/');
+            // extract the package name
+            String packageName = fileName.substring(0, last + 1);
+            String typeName = fileName.substring(last + 1);
+            // might be empty if this is a directory entry
+            if (typeName.length() == 0) {
+                continue;
+            }
+            cacheTypes(packageName, typeName);
+        }
+    }
 
-	protected void cacheTypes(String packageName, String typeName) {
-		ArrayList<String[]> types = this.packagesCache.get(packageName);
-		if (typeName == null) return;
-		if (types == null) {
+    protected void cacheTypes(String packageName, String typeName) {
+        ArrayList<String[]> types = this.packagesCache.get(packageName);
+        if (typeName == null)
+            return;
+        if (types == null) {
 
-			types = new ArrayList<>();
-			types.add(new String[]{typeName, null});
-			this.packagesCache.put(packageName, types);
-		} else {
-			types.add(new String[]{typeName, null});
-		}
-	}
+            types = new ArrayList<>();
+            types.add(new String[] { typeName, null });
+            this.packagesCache.put(packageName, types);
+        } else {
+            types.add(new String[] { typeName, null });
+        }
+    }
 
-	public ArchiveFileObject getArchiveFileObject(String fileName, String module, Charset charset) {
-		return new ArchiveFileObject(this.file, fileName, charset);
-	}
+    public ArchiveFileObject getArchiveFileObject(String fileName, String module, Charset charset) {
+        return new ArchiveFileObject(this.file, fileName, charset);
+    }
 
-	public boolean contains(String entryName) {
-		return this.zipFile.getEntry(entryName) != null;
-	}
+    public boolean contains(String entryName) {
+        return this.zipFile.getEntry(entryName) != null;
+    }
 
-	public Set<String> allPackages() {
-		if (this.packagesCache == null) {
-			this.initialize();
-		}
-		return this.packagesCache.keySet();
-	}
+    public Set<String> allPackages() {
+        if (this.packagesCache == null) {
+            this.initialize();
+        }
+        return this.packagesCache.keySet();
+    }
 
-	/**
-	 * Returns an array of String - the array contains exactly two elements. The first element
-	 * is the name of the type and the second being the module that contains the type. For a regular
-	 * Jar archive, the module element will be null. This is applicable only to Jimage files
-	 * where types are contained by multiple modules.
-	 */
-	public List<String[]> getTypes(String packageName) {
-		// package name is expected to ends with '/'
-		if (this.packagesCache == null) {
-			try {
-				this.zipFile = new ZipFile(this.file);
-			} catch(IOException e) {
-				String error = "Failed to read types from archive " + this.file; //$NON-NLS-1$
-				if (JRTUtil.PROPAGATE_IO_ERRORS) {
-					throw new IllegalStateException(error, e);
-				} else {
-					System.err.println(error);
-					e.printStackTrace();
-				}
-				return Collections.<String[]>emptyList();
-			}
-			this.initialize();
-		}
-		return this.packagesCache.get(packageName);
-	}
+    /**
+     * Returns an array of String - the array contains exactly two elements. The first element
+     * is the name of the type and the second being the module that contains the type. For a regular
+     * Jar archive, the module element will be null. This is applicable only to Jimage files
+     * where types are contained by multiple modules.
+     */
+    public List<String[]> getTypes(String packageName) {
+        // package name is expected to ends with '/'
+        if (this.packagesCache == null) {
+            try {
+                this.zipFile = new ZipFile(this.file);
+            } catch (IOException e) {
+                String error = "Failed to read types from archive " + this.file; //$NON-NLS-1$
+                if (JRTUtil.PROPAGATE_IO_ERRORS) {
+                    throw new IllegalStateException(error, e);
+                } else {
+                    System.err.println(error);
+                    e.printStackTrace();
+                }
+                return Collections.<String[]>emptyList();
+            }
+            this.initialize();
+        }
+        return this.packagesCache.get(packageName);
+    }
 
-	public void flush() {
-		this.packagesCache = null;
-	}
+    public void flush() {
+        this.packagesCache = null;
+    }
 
-	@Override
-	public void close() {
-		this.packagesCache = null;
-		try {
-			if (this.zipFile != null) {
-				this.zipFile.close();
-			}
-		} catch (IOException e) {
-			// ignore
-		}
-	}
+    @Override
+    public void close() {
+        this.packagesCache = null;
+        try {
+            if (this.zipFile != null) {
+                this.zipFile.close();
+            }
+        } catch (IOException e) {
+            // ignore
+        }
+    }
 
-	@Override
-	public String toString() {
-		return "Archive: " + (this.file == null ? "UNKNOWN_ARCHIVE" : this.file.getAbsolutePath()); //$NON-NLS-1$ //$NON-NLS-2$
-	}
+    @Override
+    public String toString() {
+        return "Archive: " + (this.file == null ? "UNKNOWN_ARCHIVE" : this.file.getAbsolutePath()); //$NON-NLS-1$ //$NON-NLS-2$
+    }
 }

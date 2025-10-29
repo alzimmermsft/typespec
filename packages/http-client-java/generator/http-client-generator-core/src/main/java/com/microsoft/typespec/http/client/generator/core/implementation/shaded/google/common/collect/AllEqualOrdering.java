@@ -16,11 +16,11 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.io.Serializable;
 import java.util.List;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An ordering that treats all references as equals, even nulls.
@@ -30,37 +30,37 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @GwtCompatible(serializable = true)
 @ElementTypesAreNonnullByDefault
 final class AllEqualOrdering extends Ordering<@Nullable Object> implements Serializable {
-  static final AllEqualOrdering INSTANCE = new AllEqualOrdering();
+    static final AllEqualOrdering INSTANCE = new AllEqualOrdering();
 
-  @Override
-  public int compare(@CheckForNull Object left, @CheckForNull Object right) {
-    return 0;
-  }
+    @Override
+    public int compare(@CheckForNull Object left, @CheckForNull Object right) {
+        return 0;
+    }
 
-  @Override
-  public <E extends @Nullable Object> List<E> sortedCopy(Iterable<E> iterable) {
-    return Lists.newArrayList(iterable);
-  }
+    @Override
+    public <E extends @Nullable Object> List<E> sortedCopy(Iterable<E> iterable) {
+        return Lists.newArrayList(iterable);
+    }
 
-  @Override
-  public <E> ImmutableList<E> immutableSortedCopy(Iterable<E> iterable) {
-    return ImmutableList.copyOf(iterable);
-  }
+    @Override
+    public <E> ImmutableList<E> immutableSortedCopy(Iterable<E> iterable) {
+        return ImmutableList.copyOf(iterable);
+    }
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public <S extends @Nullable Object> Ordering<S> reverse() {
-    return (Ordering<S>) this;
-  }
+    @SuppressWarnings("unchecked")
+    @Override
+    public <S extends @Nullable Object> Ordering<S> reverse() {
+        return (Ordering<S>) this;
+    }
 
-  private Object readResolve() {
-    return INSTANCE;
-  }
+    private Object readResolve() {
+        return INSTANCE;
+    }
 
-  @Override
-  public String toString() {
-    return "Ordering.allEqual()";
-  }
+    @Override
+    public String toString() {
+        return "Ordering.allEqual()";
+    }
 
-  private static final long serialVersionUID = 0;
+    private static final long serialVersionUID = 0;
 }

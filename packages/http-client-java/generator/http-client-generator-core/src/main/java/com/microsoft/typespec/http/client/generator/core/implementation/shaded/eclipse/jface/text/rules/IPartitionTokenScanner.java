@@ -14,9 +14,7 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.rules;
 
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.IDocument;
-
 
 /**
  * A partition token scanner returns tokens that represent partitions. For that reason,
@@ -29,19 +27,19 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  *
  * @since 3.14
  */
-public interface IPartitionTokenScanner  extends ITokenScanner {
+public interface IPartitionTokenScanner extends ITokenScanner {
 
-	/**
-	 * Configures the scanner by providing access to the document range that should be scanned. The
-	 * range may not only contain complete partitions but starts at the beginning of a line in the
-	 * middle of a partition of the given content type. This requires that a partition delimiter can
-	 * not contain a line delimiter.
-	 *
-	 * @param document the document to scan
-	 * @param offset the offset of the document range to scan
-	 * @param length the length of the document range to scan
-	 * @param contentType the content type at the given offset
-	 * @param partitionOffset the offset at which the partition of the given offset starts
-	 */
-	void setPartialRange(IDocument document, int offset, int length, String contentType, int partitionOffset);
+    /**
+     * Configures the scanner by providing access to the document range that should be scanned. The
+     * range may not only contain complete partitions but starts at the beginning of a line in the
+     * middle of a partition of the given content type. This requires that a partition delimiter can
+     * not contain a line delimiter.
+     *
+     * @param document the document to scan
+     * @param offset the offset of the document range to scan
+     * @param length the length of the document range to scan
+     * @param contentType the content type at the given offset
+     * @param partitionOffset the offset at which the partition of the given offset starts
+     */
+    void setPartialRange(IDocument document, int offset, int length, String contentType, int partitionOffset);
 }

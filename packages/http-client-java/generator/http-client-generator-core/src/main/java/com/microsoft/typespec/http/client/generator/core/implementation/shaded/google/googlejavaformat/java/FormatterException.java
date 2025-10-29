@@ -21,59 +21,57 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.g
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.ImmutableList;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.Iterables;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.googlejavaformat.FormatterDiagnostic;
-import java.util.List;
-import java.util.regex.Pattern;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.Diagnostic;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.JavaFileObject;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /** Checked exception class for formatter errors. */
 public final class FormatterException extends Exception {
 
-  private final ImmutableList<FormatterDiagnostic> diagnostics;
+    private final ImmutableList<FormatterDiagnostic> diagnostics;
 
-  public FormatterException(String message) {
-    this(FormatterDiagnostic.create(message));
-  }
-
-  public FormatterException(FormatterDiagnostic diagnostic) {
-    this(ImmutableList.of(diagnostic));
-  }
-
-  public FormatterException(Iterable<FormatterDiagnostic> diagnostics) {
-    super(diagnostics.iterator().next().toString());
-    this.diagnostics = ImmutableList.copyOf(diagnostics);
-  }
-
-  public List<FormatterDiagnostic> diagnostics() {
-    return diagnostics;
-  }
-
-  public static FormatterException fromJavacDiagnostics(
-      Iterable<Diagnostic<? extends JavaFileObject>> diagnostics) {
-    return new FormatterException(
-        Iterables.transform(diagnostics, FormatterException::toFormatterDiagnostic));
-  }
-
-  private static FormatterDiagnostic toFormatterDiagnostic(Diagnostic<?> input) {
-    return FormatterDiagnostic.create(
-        (int) input.getLineNumber(), (int) input.getColumnNumber(), input.getMessage(ENGLISH));
-  }
-
-  public String formatDiagnostics(String path, String input) {
-    List<String> lines = Splitter.on(NEWLINE_PATTERN).splitToList(input);
-    StringBuilder sb = new StringBuilder();
-    for (FormatterDiagnostic diagnostic : diagnostics()) {
-      sb.append(path).append(":").append(diagnostic).append(System.lineSeparator());
-      int line = diagnostic.line();
-      int column = diagnostic.column();
-      if (line != -1 && column != -1) {
-        sb.append(CharMatcher.breakingWhitespace().trimTrailingFrom(lines.get(line - 1)))
-            .append(System.lineSeparator());
-        sb.append(" ".repeat(column - 1)).append('^').append(System.lineSeparator());
-      }
+    public FormatterException(String message) {
+        this(FormatterDiagnostic.create(message));
     }
-    return sb.toString();
-  }
 
-  private static final Pattern NEWLINE_PATTERN = Pattern.compile("\\R");
+    public FormatterException(FormatterDiagnostic diagnostic) {
+        this(ImmutableList.of(diagnostic));
+    }
+
+    public FormatterException(Iterable<FormatterDiagnostic> diagnostics) {
+        super(diagnostics.iterator().next().toString());
+        this.diagnostics = ImmutableList.copyOf(diagnostics);
+    }
+
+    public List<FormatterDiagnostic> diagnostics() {
+        return diagnostics;
+    }
+
+    public static FormatterException fromJavacDiagnostics(Iterable<Diagnostic<? extends JavaFileObject>> diagnostics) {
+        return new FormatterException(Iterables.transform(diagnostics, FormatterException::toFormatterDiagnostic));
+    }
+
+    private static FormatterDiagnostic toFormatterDiagnostic(Diagnostic<?> input) {
+        return FormatterDiagnostic.create((int) input.getLineNumber(), (int) input.getColumnNumber(),
+            input.getMessage(ENGLISH));
+    }
+
+    public String formatDiagnostics(String path, String input) {
+        List<String> lines = Splitter.on(NEWLINE_PATTERN).splitToList(input);
+        StringBuilder sb = new StringBuilder();
+        for (FormatterDiagnostic diagnostic : diagnostics()) {
+            sb.append(path).append(":").append(diagnostic).append(System.lineSeparator());
+            int line = diagnostic.line();
+            int column = diagnostic.column();
+            if (line != -1 && column != -1) {
+                sb.append(CharMatcher.breakingWhitespace().trimTrailingFrom(lines.get(line - 1)))
+                    .append(System.lineSeparator());
+                sb.append(" ".repeat(column - 1)).append('^').append(System.lineSeparator());
+            }
+        }
+        return sb.toString();
+    }
+
+    private static final Pattern NEWLINE_PATTERN = Pattern.compile("\\R");
 }

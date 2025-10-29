@@ -41,7 +41,7 @@ public class IOReturnException extends RuntimeException {
      * New exception from {@code kern_return_t}
      *
      * @param kr
-     *            The return value
+     * The return value
      */
     public IOReturnException(int kr) {
         this(kr, formatMessage(kr));
@@ -51,9 +51,9 @@ public class IOReturnException extends RuntimeException {
      * New exception from {@code kern_return_t} with specified message
      *
      * @param kr
-     *            The return value
+     * The return value
      * @param msg
-     *            The exception message
+     * The exception message
      */
     protected IOReturnException(int kr, String msg) {
         super(msg);
@@ -71,7 +71,7 @@ public class IOReturnException extends RuntimeException {
      * The high 6 bits of the return value encode the system.
      *
      * @param kr
-     *            The return value
+     * The return value
      * @return the system value
      */
     public static int getSystem(int kr) {
@@ -82,7 +82,7 @@ public class IOReturnException extends RuntimeException {
      * The middle 12 bits of the return value encode the subsystem.
      *
      * @param kr
-     *            The return value
+     * The return value
      * @return the subsystem value
      */
     public static int getSubSystem(int kr) {
@@ -93,7 +93,7 @@ public class IOReturnException extends RuntimeException {
      * The low 14 bits of the return value encode the return code.
      *
      * @param kr
-     *            The return value
+     * The return value
      * @return the return code
      */
     public static int getCode(int kr) {
@@ -102,6 +102,6 @@ public class IOReturnException extends RuntimeException {
 
     private static String formatMessage(int kr) {
         return "IOReturn error code: " + kr + " (system=" + getSystem(kr) + ", subSystem=" + getSubSystem(kr)
-                + ", code=" + getCode(kr) + ")";
+            + ", code=" + getCode(kr) + ")";
     }
 }

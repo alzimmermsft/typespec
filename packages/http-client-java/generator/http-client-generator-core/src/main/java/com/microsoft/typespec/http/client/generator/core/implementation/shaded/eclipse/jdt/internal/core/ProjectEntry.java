@@ -29,61 +29,64 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class ProjectEntry implements IModulePathEntry {
 
-	static boolean representsProject(IModulePathEntry entry, IJavaProject otherProject) {
-		if (entry instanceof ProjectEntry) {
-			return ((ProjectEntry) entry).project.equals(otherProject);
-		}
-		return false;
-	}
+    static boolean representsProject(IModulePathEntry entry, IJavaProject otherProject) {
+        if (entry instanceof ProjectEntry) {
+            return ((ProjectEntry) entry).project.equals(otherProject);
+        }
+        return false;
+    }
 
-	final JavaProject project;
+    final JavaProject project;
 
-	public ProjectEntry(JavaProject project) {
-		//
-		this.project = project;
-	}
-	@Override
-	public IModule getModule() {
-		try {
-			IModuleDescription module = this.project.getModuleDescription();
-			if (module != null) {
-				return (IModule) ((JavaElement) module) .getElementInfo();
-			}
-		} catch (JavaModelException e) {
-			// Proceed with null;
-		}
-		return null;
-	}
+    public ProjectEntry(JavaProject project) {
+        //
+        this.project = project;
+    }
 
     @Override
-	public char[][] getModulesDeclaringPackage(String qualifiedPackageName, String moduleName) {
-		// TODO(SHMOD): verify (is unnamed handled correctly?)
-		IModule mod = getModule();
-		if (mod == null) {
-			if (moduleName != null)
-				return null;
-		} else if (!String.valueOf(mod.name()).equals(moduleName)) {
-			return null;
-		}
-		try {
-			IJavaElement element = this.project.findElement(new Path(qualifiedPackageName.replace('.', '/')));
-			if (element instanceof IPackageFragment)
-				return mod != null ? new char[][] { mod.name() } : CharOperation.NO_CHAR_CHAR;
-		} catch (JavaModelException e) {
-			return null;
-		}
-		return null;
-	}
-	@Override
-	public boolean hasCompilationUnit(String qualifiedPackageName, String moduleName) {
-		try {
-			for (IPackageFragmentRoot root : this.project.getPackageFragmentRoots()) {
-				if (root instanceof PackageFragmentRoot && ((PackageFragmentRoot) root).hasCompilationUnit(qualifiedPackageName, moduleName))
-					return true;
-			}
-		} catch (JavaModelException e) {
-			// silent
-		}
-		return false;
-	}
+    public IModule getModule() {
+        try {
+            IModuleDescription module = this.project.getModuleDescription();
+            if (module != null) {
+                return (IModule) ((JavaElement) module).getElementInfo();
+            }
+        } catch (JavaModelException e) {
+            // Proceed with null;
+        }
+        return null;
+    }
+
+    @Override
+    public char[][] getModulesDeclaringPackage(String qualifiedPackageName, String moduleName) {
+        // TODO(SHMOD): verify (is unnamed handled correctly?)
+        IModule mod = getModule();
+        if (mod == null) {
+            if (moduleName != null)
+                return null;
+        } else if (!String.valueOf(mod.name()).equals(moduleName)) {
+            return null;
+        }
+        try {
+            IJavaElement element = this.project.findElement(new Path(qualifiedPackageName.replace('.', '/')));
+            if (element instanceof IPackageFragment)
+                return mod != null ? new char[][] { mod.name() } : CharOperation.NO_CHAR_CHAR;
+        } catch (JavaModelException e) {
+            return null;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean hasCompilationUnit(String qualifiedPackageName, String moduleName) {
+        try {
+            for (IPackageFragmentRoot root : this.project.getPackageFragmentRoots()) {
+                if (root instanceof PackageFragmentRoot
+                    && ((PackageFragmentRoot) root).hasCompilationUnit(qualifiedPackageName, moduleName))
+                    return true;
+            }
+        } catch (JavaModelException e) {
+            // silent
+        }
+        return false;
+    }
 }

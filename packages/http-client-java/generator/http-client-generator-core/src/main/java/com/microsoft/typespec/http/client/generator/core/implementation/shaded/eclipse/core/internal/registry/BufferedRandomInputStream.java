@@ -36,10 +36,6 @@ public class BufferedRandomInputStream extends InputStream {
 
     private byte buffer[];
 
-    public BufferedRandomInputStream(File file) throws IOException {
-        this(file, 2048); // default buffer size
-    }
-
     public BufferedRandomInputStream(File file, int bufferSize) throws IOException {
         filePath = file.getCanonicalPath();
         inputFile = new RandomAccessFile(file, "r"); //$NON-NLS-1$

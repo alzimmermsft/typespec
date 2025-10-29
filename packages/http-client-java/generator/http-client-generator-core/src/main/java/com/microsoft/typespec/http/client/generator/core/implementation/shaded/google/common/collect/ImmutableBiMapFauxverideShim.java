@@ -16,12 +16,12 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtIncompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.DoNotCall;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collector;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * "Overrides" the {@link ImmutableMap} static methods that lack {@link ImmutableBiMap} equivalents
@@ -33,38 +33,34 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @GwtIncompatible
 @ElementTypesAreNonnullByDefault
 abstract class ImmutableBiMapFauxverideShim<K, V> extends ImmutableMap<K, V> {
-  /**
-   * Not supported. Use {@link ImmutableBiMap#toImmutableBiMap} instead. This method exists only to
-   * hide {@link ImmutableMap#toImmutableMap(Function, Function)} from consumers of {@code
-   * ImmutableBiMap}.
-   *
-   * @throws UnsupportedOperationException always
-   * @deprecated Use {@link ImmutableBiMap#toImmutableBiMap}.
-   */
-  @Deprecated
-  @DoNotCall("Use toImmutableBiMap")
-  public static <T extends @Nullable Object, K, V>
-      Collector<T, ?, ImmutableMap<K, V>> toImmutableMap(
-          Function<? super T, ? extends K> keyFunction,
-          Function<? super T, ? extends V> valueFunction) {
-    throw new UnsupportedOperationException();
-  }
+    /**
+     * Not supported. Use {@link ImmutableBiMap#toImmutableBiMap} instead. This method exists only to
+     * hide {@link ImmutableMap#toImmutableMap(Function, Function)} from consumers of {@code
+     * ImmutableBiMap}.
+     *
+     * @throws UnsupportedOperationException always
+     * @deprecated Use {@link ImmutableBiMap#toImmutableBiMap}.
+     */
+    @Deprecated
+    @DoNotCall("Use toImmutableBiMap")
+    public static <T extends @Nullable Object, K, V> Collector<T, ?, ImmutableMap<K, V>>
+        toImmutableMap(Function<? super T, ? extends K> keyFunction, Function<? super T, ? extends V> valueFunction) {
+        throw new UnsupportedOperationException();
+    }
 
-  /**
-   * Not supported. This method does not make sense for {@code BiMap}. This method exists only to
-   * hide {@link ImmutableMap#toImmutableMap(Function, Function, BinaryOperator)} from consumers of
-   * {@code ImmutableBiMap}.
-   *
-   * @throws UnsupportedOperationException always
-   * @deprecated
-   */
-  @Deprecated
-  @DoNotCall("Use toImmutableBiMap")
-  public static <T extends @Nullable Object, K, V>
-      Collector<T, ?, ImmutableMap<K, V>> toImmutableMap(
-          Function<? super T, ? extends K> keyFunction,
-          Function<? super T, ? extends V> valueFunction,
-          BinaryOperator<V> mergeFunction) {
-    throw new UnsupportedOperationException();
-  }
+    /**
+     * Not supported. This method does not make sense for {@code BiMap}. This method exists only to
+     * hide {@link ImmutableMap#toImmutableMap(Function, Function, BinaryOperator)} from consumers of
+     * {@code ImmutableBiMap}.
+     *
+     * @throws UnsupportedOperationException always
+     * @deprecated
+     */
+    @Deprecated
+    @DoNotCall("Use toImmutableBiMap")
+    public static <T extends @Nullable Object, K, V> Collector<T, ?, ImmutableMap<K, V>> toImmutableMap(
+        Function<? super T, ? extends K> keyFunction, Function<? super T, ? extends V> valueFunction,
+        BinaryOperator<V> mergeFunction) {
+        throw new UnsupportedOperationException();
+    }
 }

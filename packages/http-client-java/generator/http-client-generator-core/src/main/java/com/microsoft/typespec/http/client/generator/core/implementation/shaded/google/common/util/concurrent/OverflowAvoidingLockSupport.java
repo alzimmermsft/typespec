@@ -17,8 +17,8 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import static java.lang.Math.min;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.J2ktIncompatible;
-import java.util.concurrent.locks.LockSupport;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
+import java.util.concurrent.locks.LockSupport;
 
 /**
  * Works around an android bug, where parking for more than INT_MAX seconds can produce an abort
@@ -27,14 +27,15 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 @J2ktIncompatible
 @ElementTypesAreNonnullByDefault
 final class OverflowAvoidingLockSupport {
-  // Represents the max nanoseconds representable on a linux timespec with a 32 bit tv_sec
-  static final long MAX_NANOSECONDS_THRESHOLD = (1L + Integer.MAX_VALUE) * 1_000_000_000L - 1L;
+    // Represents the max nanoseconds representable on a linux timespec with a 32 bit tv_sec
+    static final long MAX_NANOSECONDS_THRESHOLD = (1L + Integer.MAX_VALUE) * 1_000_000_000L - 1L;
 
-  private OverflowAvoidingLockSupport() {}
+    private OverflowAvoidingLockSupport() {
+    }
 
-  static void parkNanos(@CheckForNull Object blocker, long nanos) {
-    // Even in the extremely unlikely event that a thread unblocks itself early after only 68 years,
-    // this is indistinguishable from a spurious wakeup, which LockSupport allows.
-    LockSupport.parkNanos(blocker, min(nanos, MAX_NANOSECONDS_THRESHOLD));
-  }
+    static void parkNanos(@CheckForNull Object blocker, long nanos) {
+        // Even in the extremely unlikely event that a thread unblocks itself early after only 68 years,
+        // this is indistinguishable from a spurious wakeup, which LockSupport allows.
+        LockSupport.parkNanos(blocker, min(nanos, MAX_NANOSECONDS_THRESHOLD));
+    }
 }

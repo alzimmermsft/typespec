@@ -16,10 +16,10 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.DoNotCall;
 import java.util.Iterator;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An iterator that does not support {@link #remove}.
@@ -34,19 +34,20 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
 public abstract class UnmodifiableIterator<E extends @Nullable Object> implements Iterator<E> {
-  /** Constructor for use by subclasses. */
-  protected UnmodifiableIterator() {}
+    /** Constructor for use by subclasses. */
+    protected UnmodifiableIterator() {
+    }
 
-  /**
-   * Guaranteed to throw an exception and leave the underlying data unmodified.
-   *
-   * @throws UnsupportedOperationException always
-   * @deprecated Unsupported operation.
-   */
-  @Deprecated
-  @Override
-  @DoNotCall("Always throws UnsupportedOperationException")
-  public final void remove() {
-    throw new UnsupportedOperationException();
-  }
+    /**
+     * Guaranteed to throw an exception and leave the underlying data unmodified.
+     *
+     * @throws UnsupportedOperationException always
+     * @deprecated Unsupported operation.
+     */
+    @Deprecated
+    @Override
+    @DoNotCall("Always throws UnsupportedOperationException")
+    public final void remove() {
+        throw new UnsupportedOperationException();
+    }
 }

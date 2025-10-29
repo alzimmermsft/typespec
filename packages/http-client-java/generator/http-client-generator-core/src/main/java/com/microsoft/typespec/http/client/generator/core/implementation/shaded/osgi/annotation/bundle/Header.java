@@ -33,6 +33,7 @@ import java.lang.annotation.Target;
  * <pre>
  * &#64;Header(name=Constants.BUNDLE_CATEGORY, value="osgi")
  * </pre>
+ * 
  * <p>
  * This annotation is not retained at runtime. It is for use by tools to
  * generate bundle manifests.
@@ -41,19 +42,17 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.CLASS)
-@Target({
-		ElementType.TYPE, ElementType.PACKAGE
-})
+@Target({ ElementType.TYPE, ElementType.PACKAGE })
 @Repeatable(Headers.class)
 public @interface Header {
 
-	/**
-	 * The name of this header.
-	 */
-	String name();
+    /**
+     * The name of this header.
+     */
+    String name();
 
-	/**
-	 * The value of this header.
-	 */
-	String value();
+    /**
+     * The value of this header.
+     */
+    String value();
 }

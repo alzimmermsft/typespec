@@ -16,9 +16,9 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtIncompatible;
 import java.util.SortedSet;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Superinterface of {@link SortedMultiset} to introduce a bridge method for {@code elementSet()},
@@ -30,6 +30,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @GwtIncompatible
 @ElementTypesAreNonnullByDefault
 interface SortedMultisetBridge<E extends @Nullable Object> extends Multiset<E> {
-  @Override
-  SortedSet<E> elementSet();
+    @Override
+    SortedSet<E> elementSet();
 }

@@ -27,11 +27,11 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.g
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.Sets;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.UnmodifiableIterator;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.math.IntMath;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.util.AbstractSet;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 
 /**
  * A base implementation of {@link NetworkConnections} for directed networks.
@@ -42,103 +42,102 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
  */
 @ElementTypesAreNonnullByDefault
 abstract class AbstractDirectedNetworkConnections<N, E> implements NetworkConnections<N, E> {
-  /** Keys are edges incoming to the origin node, values are the source node. */
-  final Map<E, N> inEdgeMap;
+    /** Keys are edges incoming to the origin node, values are the source node. */
+    final Map<E, N> inEdgeMap;
 
-  /** Keys are edges outgoing from the origin node, values are the target node. */
-  final Map<E, N> outEdgeMap;
+    /** Keys are edges outgoing from the origin node, values are the target node. */
+    final Map<E, N> outEdgeMap;
 
-  private int selfLoopCount;
+    private int selfLoopCount;
 
-  AbstractDirectedNetworkConnections(Map<E, N> inEdgeMap, Map<E, N> outEdgeMap, int selfLoopCount) {
-    this.inEdgeMap = checkNotNull(inEdgeMap);
-    this.outEdgeMap = checkNotNull(outEdgeMap);
-    this.selfLoopCount = checkNonNegative(selfLoopCount);
-    checkState(selfLoopCount <= inEdgeMap.size() && selfLoopCount <= outEdgeMap.size());
-  }
-
-  @Override
-  public Set<N> adjacentNodes() {
-    return Sets.union(predecessors(), successors());
-  }
-
-  @Override
-  public Set<E> incidentEdges() {
-    return new AbstractSet<E>() {
-      @Override
-      public UnmodifiableIterator<E> iterator() {
-        Iterable<E> incidentEdges =
-            (selfLoopCount == 0)
-                ? Iterables.concat(inEdgeMap.keySet(), outEdgeMap.keySet())
-                : Sets.union(inEdgeMap.keySet(), outEdgeMap.keySet());
-        return Iterators.unmodifiableIterator(incidentEdges.iterator());
-      }
-
-      @Override
-      public int size() {
-        return IntMath.saturatedAdd(inEdgeMap.size(), outEdgeMap.size() - selfLoopCount);
-      }
-
-      @Override
-      public boolean contains(@CheckForNull Object obj) {
-        return inEdgeMap.containsKey(obj) || outEdgeMap.containsKey(obj);
-      }
-    };
-  }
-
-  @Override
-  public Set<E> inEdges() {
-    return Collections.unmodifiableSet(inEdgeMap.keySet());
-  }
-
-  @Override
-  public Set<E> outEdges() {
-    return Collections.unmodifiableSet(outEdgeMap.keySet());
-  }
-
-  @Override
-  public N adjacentNode(E edge) {
-    // Since the reference node is defined to be 'source' for directed graphs,
-    // we can assume this edge lives in the set of outgoing edges.
-    // (We're relying on callers to call this method only with an edge that's in the graph.)
-    return requireNonNull(outEdgeMap.get(edge));
-  }
-
-  @Override
-  public N removeInEdge(E edge, boolean isSelfLoop) {
-    if (isSelfLoop) {
-      checkNonNegative(--selfLoopCount);
+    AbstractDirectedNetworkConnections(Map<E, N> inEdgeMap, Map<E, N> outEdgeMap, int selfLoopCount) {
+        this.inEdgeMap = checkNotNull(inEdgeMap);
+        this.outEdgeMap = checkNotNull(outEdgeMap);
+        this.selfLoopCount = checkNonNegative(selfLoopCount);
+        checkState(selfLoopCount <= inEdgeMap.size() && selfLoopCount <= outEdgeMap.size());
     }
-    N previousNode = inEdgeMap.remove(edge);
-    // We're relying on callers to call this method only with an edge that's in the graph.
-    return requireNonNull(previousNode);
-  }
 
-  @Override
-  public N removeOutEdge(E edge) {
-    N previousNode = outEdgeMap.remove(edge);
-    // We're relying on callers to call this method only with an edge that's in the graph.
-    return requireNonNull(previousNode);
-  }
-
-  @Override
-  public void addInEdge(E edge, N node, boolean isSelfLoop) {
-    checkNotNull(edge);
-    checkNotNull(node);
-
-    if (isSelfLoop) {
-      checkPositive(++selfLoopCount);
+    @Override
+    public Set<N> adjacentNodes() {
+        return Sets.union(predecessors(), successors());
     }
-    N previousNode = inEdgeMap.put(edge, node);
-    checkState(previousNode == null);
-  }
 
-  @Override
-  public void addOutEdge(E edge, N node) {
-    checkNotNull(edge);
-    checkNotNull(node);
+    @Override
+    public Set<E> incidentEdges() {
+        return new AbstractSet<E>() {
+            @Override
+            public UnmodifiableIterator<E> iterator() {
+                Iterable<E> incidentEdges = (selfLoopCount == 0)
+                    ? Iterables.concat(inEdgeMap.keySet(), outEdgeMap.keySet())
+                    : Sets.union(inEdgeMap.keySet(), outEdgeMap.keySet());
+                return Iterators.unmodifiableIterator(incidentEdges.iterator());
+            }
 
-    N previousNode = outEdgeMap.put(edge, node);
-    checkState(previousNode == null);
-  }
+            @Override
+            public int size() {
+                return IntMath.saturatedAdd(inEdgeMap.size(), outEdgeMap.size() - selfLoopCount);
+            }
+
+            @Override
+            public boolean contains(@CheckForNull Object obj) {
+                return inEdgeMap.containsKey(obj) || outEdgeMap.containsKey(obj);
+            }
+        };
+    }
+
+    @Override
+    public Set<E> inEdges() {
+        return Collections.unmodifiableSet(inEdgeMap.keySet());
+    }
+
+    @Override
+    public Set<E> outEdges() {
+        return Collections.unmodifiableSet(outEdgeMap.keySet());
+    }
+
+    @Override
+    public N adjacentNode(E edge) {
+        // Since the reference node is defined to be 'source' for directed graphs,
+        // we can assume this edge lives in the set of outgoing edges.
+        // (We're relying on callers to call this method only with an edge that's in the graph.)
+        return requireNonNull(outEdgeMap.get(edge));
+    }
+
+    @Override
+    public N removeInEdge(E edge, boolean isSelfLoop) {
+        if (isSelfLoop) {
+            checkNonNegative(--selfLoopCount);
+        }
+        N previousNode = inEdgeMap.remove(edge);
+        // We're relying on callers to call this method only with an edge that's in the graph.
+        return requireNonNull(previousNode);
+    }
+
+    @Override
+    public N removeOutEdge(E edge) {
+        N previousNode = outEdgeMap.remove(edge);
+        // We're relying on callers to call this method only with an edge that's in the graph.
+        return requireNonNull(previousNode);
+    }
+
+    @Override
+    public void addInEdge(E edge, N node, boolean isSelfLoop) {
+        checkNotNull(edge);
+        checkNotNull(node);
+
+        if (isSelfLoop) {
+            checkPositive(++selfLoopCount);
+        }
+        N previousNode = inEdgeMap.put(edge, node);
+        checkState(previousNode == null);
+    }
+
+    @Override
+    public void addOutEdge(E edge, N node) {
+        checkNotNull(edge);
+        checkNotNull(node);
+
+        N previousNode = outEdgeMap.put(edge, node);
+        checkState(previousNode == null);
+    }
 }

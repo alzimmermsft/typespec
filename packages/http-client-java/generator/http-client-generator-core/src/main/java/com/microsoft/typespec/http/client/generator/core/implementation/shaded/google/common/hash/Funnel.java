@@ -14,10 +14,10 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.hash;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.Beta;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.DoNotMock;
 import java.io.Serializable;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An object which can send data from an object of type {@code T} into a {@code PrimitiveSink}.
@@ -28,16 +28,20 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  * single-element enum to maintain serialization guarantees. See Effective Java (2nd Edition), Item
  * 3: "Enforce the singleton property with a private constructor or an enum type". For example:
  *
- * <pre>{@code
- * public enum PersonFunnel implements Funnel<Person> {
- *   INSTANCE;
- *   public void funnel(Person person, PrimitiveSink into) {
- *     into.putUnencodedChars(person.getFirstName())
- *         .putUnencodedChars(person.getLastName())
- *         .putInt(person.getAge());
- *   }
+ * <pre>
+ * {
+ *     &#64;code
+ *     public enum PersonFunnel implements Funnel<Person> {
+ *         INSTANCE;
+ * 
+ *         public void funnel(Person person, PrimitiveSink into) {
+ *             into.putUnencodedChars(person.getFirstName())
+ *                 .putUnencodedChars(person.getLastName())
+ *                 .putInt(person.getAge());
+ *         }
+ *     }
  * }
- * }</pre>
+ * </pre>
  *
  * @author Dimitris Andreou
  * @since 11.0
@@ -47,11 +51,11 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @ElementTypesAreNonnullByDefault
 public interface Funnel<T extends @Nullable Object> extends Serializable {
 
-  /**
-   * Sends a stream of data from the {@code from} object into the sink {@code into}. There is no
-   * requirement that this data be complete enough to fully reconstitute the object later.
-   *
-   * @since 12.0 (in Guava 11.0, {@code PrimitiveSink} was named {@code Sink})
-   */
-  void funnel(@ParametricNullness T from, PrimitiveSink into);
+    /**
+     * Sends a stream of data from the {@code from} object into the sink {@code into}. There is no
+     * requirement that this data be complete enough to fully reconstitute the object later.
+     *
+     * @since 12.0 (in Guava 11.0, {@code PrimitiveSink} was named {@code Sink})
+     */
+    void funnel(@ParametricNullness T from, PrimitiveSink into);
 }

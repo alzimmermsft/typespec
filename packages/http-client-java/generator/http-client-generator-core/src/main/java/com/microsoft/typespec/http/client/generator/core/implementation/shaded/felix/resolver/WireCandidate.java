@@ -21,13 +21,11 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Capability;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Requirement;
 
-final class WireCandidate
-{
+final class WireCandidate {
     public final Requirement requirement;
     public final Capability capability;
 
-    public WireCandidate(Requirement requirement, Capability capability)
-    {
+    public WireCandidate(Requirement requirement, Capability capability) {
         this.requirement = requirement;
         this.capability = capability;
     }

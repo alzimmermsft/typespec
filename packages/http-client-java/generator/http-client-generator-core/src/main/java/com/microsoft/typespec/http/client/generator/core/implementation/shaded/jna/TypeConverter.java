@@ -23,10 +23,10 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna;
 
-
 /**
  * Convenience interface for bidirectional conversion.
  *
  * @author Wayne Meissner
  */
-public interface TypeConverter extends FromNativeConverter, ToNativeConverter {}
+public interface TypeConverter extends FromNativeConverter, ToNativeConverter {
+}

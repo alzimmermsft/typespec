@@ -14,9 +14,7 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.rules;
 
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.IDocument;
-
 
 /**
  * A token scanner scans a range of a document and reports about the token it finds.
@@ -30,34 +28,34 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public interface ITokenScanner {
 
-	/**
-	 * Configures the scanner by providing access to the document range that should
-	 * be scanned.
-	 *
-	 * @param document the document to scan
-	 * @param offset the offset of the document range to scan
-	 * @param length the length of the document range to scan
-	 */
-	void setRange(IDocument document, int offset, int length);
+    /**
+     * Configures the scanner by providing access to the document range that should
+     * be scanned.
+     *
+     * @param document the document to scan
+     * @param offset the offset of the document range to scan
+     * @param length the length of the document range to scan
+     */
+    void setRange(IDocument document, int offset, int length);
 
-	/**
-	 * Returns the next token in the document.
-	 *
-	 * @return the next token in the document
-	 */
-	IToken nextToken();
+    /**
+     * Returns the next token in the document.
+     *
+     * @return the next token in the document
+     */
+    IToken nextToken();
 
-	/**
-	 * Returns the offset of the last token read by this scanner.
-	 *
-	 * @return the offset of the last token read by this scanner
-	 */
-	int getTokenOffset();
+    /**
+     * Returns the offset of the last token read by this scanner.
+     *
+     * @return the offset of the last token read by this scanner
+     */
+    int getTokenOffset();
 
-	/**
-	 * Returns the length of the last token read by this scanner.
-	 *
-	 * @return the length of the last token read by this scanner
-	 */
-	int getTokenLength();
+    /**
+     * Returns the length of the last token read by this scanner.
+     *
+     * @return the length of the last token read by this scanner
+     */
+    int getTokenLength();
 }

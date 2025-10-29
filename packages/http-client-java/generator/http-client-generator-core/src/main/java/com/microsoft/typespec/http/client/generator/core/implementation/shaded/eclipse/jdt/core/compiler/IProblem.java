@@ -251,8 +251,8 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * their ID (attribute "id") is set to one of the IDs defined on this interface.
  *
  * @since 2.0
- * &#064;noimplement  This interface is not intended to be implemented by clients.
- * &#064;noextend  This interface is not intended to be extended by clients.
+ * &#064;noimplement This interface is not intended to be implemented by clients.
+ * &#064;noextend This interface is not intended to be extended by clients.
  */
 public interface IProblem {
 
@@ -711,7 +711,7 @@ public interface IProblem {
 
     /**
      * @since 3.22
-     * &#064;noreference  preview feature error
+     * &#064;noreference preview feature error
      */
     int UnsafeCast = TypeRelated + 212;
 
@@ -2221,7 +2221,7 @@ public interface IProblem {
     int ModifierOnRequiresJavaBase = ModuleRelated + 1321;
     /**
      * @since 3.42
-     * &#064;noreference  related to preview feature module imports
+     * &#064;noreference related to preview feature module imports
      */
     int ModifierOnRequiresJavaBasePreview = ModuleRelated + 1322;
 
@@ -2422,67 +2422,67 @@ public interface IProblem {
     /**
      * @since 3.18
      * @deprecated preview related error - will be removed
-     * &#064;noreference  preview related error
+     * &#064;noreference preview related error
      */
     int SwitchExpressionsIncompatibleResultExpressionTypes = TypeRelated + 1600;
     /**
      * @since 3.18
      * @deprecated preview related error - will be removed
-     * &#064;noreference  preview related error
+     * &#064;noreference preview related error
      */
     int SwitchExpressionsEmptySwitchBlock = Internal + 1601;
     /**
      * @since 3.18
      * @deprecated preview related error - will be removed
-     * &#064;noreference  preview related error
+     * &#064;noreference preview related error
      */
     int SwitchExpressionsNoResultExpression = TypeRelated + 1602;
     /**
      * @since 3.18
      * @deprecated preview related error - will be removed
-     * &#064;noreference  preview related error
+     * &#064;noreference preview related error
      */
     int SwitchExpressionSwitchLabeledBlockCompletesNormally = Internal + 1603;
     /**
      * @since 3.18
      * @deprecated preview related error - will be removed
-     * &#064;noreference  preview related error
+     * &#064;noreference preview related error
      */
     int SwitchExpressionLastStatementCompletesNormally = Internal + 1604;
     /**
      * @since 3.18
      * @deprecated preview related error - will be removed
-     * &#064;noreference  preview related error
+     * &#064;noreference preview related error
      */
     int SwitchExpressionTrailingSwitchLabels = Internal + 1605;
     /**
      * @since 3.18
      * @deprecated preview related error - will be removed
-     * &#064;noreference  preview related error
+     * &#064;noreference preview related error
      */
     int switchMixedCase = Syntax + 1606;
     /**
      * @since 3.18
      * @deprecated preview related error - will be removed
-     * &#064;noreference  preview related error
+     * &#064;noreference preview related error
      */
     int SwitchExpressionMissingDefaultCase = Internal + 1607;
     /**
      * @since 3.18
      * @deprecated preview related error - will be removed
-     * &#064;noreference  preview related error
+     * &#064;noreference preview related error
      */
     int SwitchExpressionBreakMissingValue = Internal + 1610;
     /**
      * @since 3.18
      * @deprecated preview related error - will be removed
-     * &#064;noreference  preview related error
+     * &#064;noreference preview related error
      */
     int SwitchExpressionMissingEnumConstantCase = Internal + 1611;
     /**
      * @since 3.18
      * @deprecated preview related error - will be removed
-     * &#064;noreference  preview related error
+     * &#064;noreference preview related error
      */
     int SwitchExpressionIllegalLastStatement = Internal + 1612;
 
@@ -2813,93 +2813,93 @@ public interface IProblem {
 
     /**
      * @since 3.28
-     * &#064;noreference  preview feature error
+     * &#064;noreference preview feature error
      */
     int LocalReferencedInGuardMustBeEffectivelyFinal = PreviewRelated + 1900;
     /**
      * @since 3.28
-     * &#064;noreference  preview feature error
+     * &#064;noreference preview feature error
      */
     int ConstantWithPatternIncompatible = PreviewRelated + 1901;
     /**
      * @since 3.28
-     * &#064;noreference  preview feature error
+     * &#064;noreference preview feature error
      */
     int IllegalFallthroughToPattern = PreviewRelated + 1902;
 
     /**
      * @since 3.28
-     * &#064;noreference  preview feature error
+     * &#064;noreference preview feature error
      */
     int PatternDominated = PreviewRelated + 1906;
     /**
      * @since 3.28
-     * &#064;noreference  preview feature error
+     * &#064;noreference preview feature error
      */
     int IllegalTotalPatternWithDefault = PreviewRelated + 1907;
     /**
      * @since 3.28
-     * &#064;noreference  preview feature error
+     * &#064;noreference preview feature error
      */
     int EnhancedSwitchMissingDefault = PreviewRelated + 1908;
 
     /**
      * @since 3.34
-     * &#064;noreference  preview feature error
+     * &#064;noreference preview feature error
      */
     int PatternSwitchNullOnlyOrFirstWithDefault = PreviewRelated + 1920;
 
     /**
      * @since 3.34
-     * &#064;noreference  preview feature error
+     * &#064;noreference preview feature error
      */
     int PatternSwitchCaseDefaultOnlyAsSecond = PreviewRelated + 1921;
 
     /**
      * @since 3.34
-     * &#064;noreference  preview feature error
+     * &#064;noreference preview feature error
      */
     int IllegalFallthroughFromAPattern = PreviewRelated + 1922;
 
     /**
      * @since 3.28
-     * &#064;noreference  preview feature error
+     * &#064;noreference preview feature error
      */
     int UnnecessaryNullCaseInSwitchOverNonNull = PreviewRelated + 1910;
     /**
      * @since 3.28
-     * &#064;noreference  preview feature error
+     * &#064;noreference preview feature error
      */
     int UnexpectedTypeinSwitchPattern = PreviewRelated + 1911;
     /**
      * @since 3.32
-     * &#064;noreference  preview feature
+     * &#064;noreference preview feature
      */
     int UnexpectedTypeinRecordPattern = PreviewRelated + 1912;
     /**
      * @since 3.32
-     * &#064;noreference  preview feature
+     * &#064;noreference preview feature
      */
     int RecordPatternMismatch = PreviewRelated + 1913;
     /**
      * @since 3.32
-     * &#064;noreference  preview feature
+     * &#064;noreference preview feature
      */
     int PatternTypeMismatch = PreviewRelated + 1914;
     /**
      * @since 3.32
-     * &#064;noreference  preview feature
+     * &#064;noreference preview feature
      * @deprecated
      */
     int RawTypeInRecordPattern = PreviewRelated + 1915;
     /**
      * @since 3.36
-     * &#064;noreference  preview feature
+     * &#064;noreference preview feature
      */
     int FalseConstantInGuard = PreviewRelated + 1916;
     /**
      * @since 3.34
-     * &#064;noreference  preview feature
+     * &#064;noreference preview feature
      */
     int CannotInferRecordPatternTypes = PreviewRelated + 1940;
 
@@ -2925,72 +2925,72 @@ public interface IProblem {
 
     /**
      * @since 3.38
-     * &#064;noreference  preview feature
+     * &#064;noreference preview feature
      */
     int UnderscoreCannotBeUsedHere = PreviewRelated + 2000;
     /**
      * @since 3.38
-     * &#064;noreference  preview feature
+     * &#064;noreference preview feature
      */
     int UnnamedVariableMustHaveInitializer = PreviewRelated + 2001;
 
     /**
      * @since 3.40
-     * &#064;noreference  preview feature
+     * &#064;noreference preview feature
      */
     int ExpressionInEarlyConstructionContext = PreviewRelated + 2022;
 
     /**
      * @since 3.40
-     * &#064;noreference  preview feature
+     * &#064;noreference preview feature
      */
     int DisallowedStatementInEarlyConstructionContext = PreviewRelated + 2023;
 
     /**
      * @since 3.40
-     * &#064;noreference  preview feature
+     * &#064;noreference preview feature
      */
     int FieldReadInEarlyConstructionContext = PreviewRelated + 2024;
 
     /**
      * @since 3.40
-     * &#064;noreference  preview feature
+     * &#064;noreference preview feature
      */
     int ThisInEarlyConstructionContext = PreviewRelated + 2025;
 
     /**
      * @since 3.40
-     * &#064;noreference  preview feature
+     * &#064;noreference preview feature
      */
     int AllocationInEarlyConstructionContext = PreviewRelated + 2026;
 
     /**
      * @since 3.40
-     * &#064;noreference  preview feature
+     * &#064;noreference preview feature
      */
     int MessageSendInEarlyConstructionContext = PreviewRelated + 2027;
 
     /**
      * @since 3.40
-     * &#064;noreference  preview feature
+     * &#064;noreference preview feature
      */
     int DuplicateExplicitConstructorCall = PreviewRelated + 2028;
 
     /**
      * @since 3.40
-     * &#064;noreference  preview feature
+     * &#064;noreference preview feature
      */
     int SuperFieldAssignInEarlyConstructionContext = PreviewRelated + 2029;
 
     /**
      * @since 3.40
-     * &#064;noreference  preview feature
+     * &#064;noreference preview feature
      */
     int AssignFieldWithInitializerInEarlyConstructionContext = PreviewRelated + 2030;
 
     /**
      * @since 3.40
-     * &#064;noreference  preview feature
+     * &#064;noreference preview feature
      */
     int ConstructorCallNotAllowedHere = PreviewRelated + 2031;
 
@@ -3001,25 +3001,25 @@ public interface IProblem {
 
     /**
      * @since 3.42
-     * &#064;noreference  preview feature
+     * &#064;noreference preview feature
      */
     int SuperFieldAssignInEarlyConstructionContextLambda = PreviewRelated + 2033;
 
     /**
      * @since 3.40
-     * &#064;noreference  preview feature
+     * &#064;noreference preview feature
      */
     int WrongCaseType = PreviewRelated + 2100;
 
     /**
      * @since 3.40
-     * &#064;noreference  preview feature
+     * &#064;noreference preview feature
      */
     int IncompatibleCaseType = PreviewRelated + 2101;
 
     /**
      * @since 3.40
-     * &#064;noreference  preview feature
+     * &#064;noreference preview feature
      */
     int DefaultTrueAndFalseCases = PreviewRelated + 2102;
 

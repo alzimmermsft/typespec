@@ -18,6 +18,7 @@ import static com.microsoft.typespec.http.client.generator.core.implementation.s
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Throwables.throwIfUnchecked;
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.util.concurrent.Platform.restoreInterruptIfIsInterruptedException;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtIncompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.J2ktIncompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.ImmutableList;
@@ -31,7 +32,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An abstract {@code ExecutorService} that allows subclasses to {@linkplain #wrapTask(Callable)
@@ -47,122 +47,118 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @GwtIncompatible
 @ElementTypesAreNonnullByDefault
 abstract class WrappingExecutorService implements ExecutorService {
-  private final ExecutorService delegate;
+    private final ExecutorService delegate;
 
-  protected WrappingExecutorService(ExecutorService delegate) {
-    this.delegate = checkNotNull(delegate);
-  }
-
-  /**
-   * Wraps a {@code Callable} for submission to the underlying executor. This method is also applied
-   * to any {@code Runnable} passed to the default implementation of {@link #wrapTask(Runnable)}.
-   */
-  protected abstract <T extends @Nullable Object> Callable<T> wrapTask(Callable<T> callable);
-
-  /**
-   * Wraps a {@code Runnable} for submission to the underlying executor. The default implementation
-   * delegates to {@link #wrapTask(Callable)}.
-   */
-  protected Runnable wrapTask(Runnable command) {
-    Callable<Object> wrapped = wrapTask(Executors.callable(command, null));
-    return () -> {
-      try {
-        wrapped.call();
-      } catch (Exception e) {
-        restoreInterruptIfIsInterruptedException(e);
-        throwIfUnchecked(e);
-        throw new RuntimeException(e);
-      }
-    };
-  }
-
-  /**
-   * Wraps a collection of tasks.
-   *
-   * @throws NullPointerException if any element of {@code tasks} is null
-   */
-  private <T extends @Nullable Object> ImmutableList<Callable<T>> wrapTasks(
-      Collection<? extends Callable<T>> tasks) {
-    ImmutableList.Builder<Callable<T>> builder = ImmutableList.builder();
-    for (Callable<T> task : tasks) {
-      builder.add(wrapTask(task));
+    protected WrappingExecutorService(ExecutorService delegate) {
+        this.delegate = checkNotNull(delegate);
     }
-    return builder.build();
-  }
 
-  // These methods wrap before delegating.
-  @Override
-  public final void execute(Runnable command) {
-    delegate.execute(wrapTask(command));
-  }
+    /**
+     * Wraps a {@code Callable} for submission to the underlying executor. This method is also applied
+     * to any {@code Runnable} passed to the default implementation of {@link #wrapTask(Runnable)}.
+     */
+    protected abstract <T extends @Nullable Object> Callable<T> wrapTask(Callable<T> callable);
 
-  @Override
-  public final <T extends @Nullable Object> Future<T> submit(Callable<T> task) {
-    return delegate.submit(wrapTask(checkNotNull(task)));
-  }
+    /**
+     * Wraps a {@code Runnable} for submission to the underlying executor. The default implementation
+     * delegates to {@link #wrapTask(Callable)}.
+     */
+    protected Runnable wrapTask(Runnable command) {
+        Callable<Object> wrapped = wrapTask(Executors.callable(command, null));
+        return () -> {
+            try {
+                wrapped.call();
+            } catch (Exception e) {
+                restoreInterruptIfIsInterruptedException(e);
+                throwIfUnchecked(e);
+                throw new RuntimeException(e);
+            }
+        };
+    }
 
-  @Override
-  public final Future<?> submit(Runnable task) {
-    return delegate.submit(wrapTask(task));
-  }
+    /**
+     * Wraps a collection of tasks.
+     *
+     * @throws NullPointerException if any element of {@code tasks} is null
+     */
+    private <T extends @Nullable Object> ImmutableList<Callable<T>> wrapTasks(Collection<? extends Callable<T>> tasks) {
+        ImmutableList.Builder<Callable<T>> builder = ImmutableList.builder();
+        for (Callable<T> task : tasks) {
+            builder.add(wrapTask(task));
+        }
+        return builder.build();
+    }
 
-  @Override
-  public final <T extends @Nullable Object> Future<T> submit(
-      Runnable task, @ParametricNullness T result) {
-    return delegate.submit(wrapTask(task), result);
-  }
+    // These methods wrap before delegating.
+    @Override
+    public final void execute(Runnable command) {
+        delegate.execute(wrapTask(command));
+    }
 
-  @Override
-  public final <T extends @Nullable Object> List<Future<T>> invokeAll(
-      Collection<? extends Callable<T>> tasks) throws InterruptedException {
-    return delegate.invokeAll(wrapTasks(tasks));
-  }
+    @Override
+    public final <T extends @Nullable Object> Future<T> submit(Callable<T> task) {
+        return delegate.submit(wrapTask(checkNotNull(task)));
+    }
 
-  @Override
-  public final <T extends @Nullable Object> List<Future<T>> invokeAll(
-      Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit)
-      throws InterruptedException {
-    return delegate.invokeAll(wrapTasks(tasks), timeout, unit);
-  }
+    @Override
+    public final Future<?> submit(Runnable task) {
+        return delegate.submit(wrapTask(task));
+    }
 
-  @Override
-  public final <T extends @Nullable Object> T invokeAny(Collection<? extends Callable<T>> tasks)
-      throws InterruptedException, ExecutionException {
-    return delegate.invokeAny(wrapTasks(tasks));
-  }
+    @Override
+    public final <T extends @Nullable Object> Future<T> submit(Runnable task, @ParametricNullness T result) {
+        return delegate.submit(wrapTask(task), result);
+    }
 
-  @Override
-  public final <T extends @Nullable Object> T invokeAny(
-      Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit)
-      throws InterruptedException, ExecutionException, TimeoutException {
-    return delegate.invokeAny(wrapTasks(tasks), timeout, unit);
-  }
+    @Override
+    public final <T extends @Nullable Object> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks)
+        throws InterruptedException {
+        return delegate.invokeAll(wrapTasks(tasks));
+    }
 
-  // The remaining methods just delegate.
+    @Override
+    public final <T extends @Nullable Object> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks,
+        long timeout, TimeUnit unit) throws InterruptedException {
+        return delegate.invokeAll(wrapTasks(tasks), timeout, unit);
+    }
 
-  @Override
-  public final void shutdown() {
-    delegate.shutdown();
-  }
+    @Override
+    public final <T extends @Nullable Object> T invokeAny(Collection<? extends Callable<T>> tasks)
+        throws InterruptedException, ExecutionException {
+        return delegate.invokeAny(wrapTasks(tasks));
+    }
 
-  @Override
-  @CanIgnoreReturnValue
-  public final List<Runnable> shutdownNow() {
-    return delegate.shutdownNow();
-  }
+    @Override
+    public final <T extends @Nullable Object> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout,
+        TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+        return delegate.invokeAny(wrapTasks(tasks), timeout, unit);
+    }
 
-  @Override
-  public final boolean isShutdown() {
-    return delegate.isShutdown();
-  }
+    // The remaining methods just delegate.
 
-  @Override
-  public final boolean isTerminated() {
-    return delegate.isTerminated();
-  }
+    @Override
+    public final void shutdown() {
+        delegate.shutdown();
+    }
 
-  @Override
-  public final boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
-    return delegate.awaitTermination(timeout, unit);
-  }
+    @Override
+    @CanIgnoreReturnValue
+    public final List<Runnable> shutdownNow() {
+        return delegate.shutdownNow();
+    }
+
+    @Override
+    public final boolean isShutdown() {
+        return delegate.isShutdown();
+    }
+
+    @Override
+    public final boolean isTerminated() {
+        return delegate.isTerminated();
+    }
+
+    @Override
+    public final boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
+        return delegate.awaitTermination(timeout, unit);
+    }
 }

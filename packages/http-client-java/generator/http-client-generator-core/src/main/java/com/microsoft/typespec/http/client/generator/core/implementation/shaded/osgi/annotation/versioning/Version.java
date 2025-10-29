@@ -31,18 +31,18 @@ import java.lang.annotation.Target;
  * generate bundle manifests or otherwise process the version of a package.
  * 
  * @see <a href= "https://docs.osgi.org/whitepaper/semantic-versioning/" >
- *      Semantic Versioning</a>
+ * Semantic Versioning</a>
  * @author $Id: 6e4361486f9f41adbfadba45e4f07f83ea81864e $
  */
 @Documented
 @Retention(RetentionPolicy.CLASS)
 @Target(ElementType.PACKAGE)
 public @interface Version {
-	/**
-	 * The version of the annotated package.
-	 * 
-	 * <p>
-	 * The version must be a valid OSGi version string.
-	 */
-	String value();
+    /**
+     * The version of the annotated package.
+     * 
+     * <p>
+     * The version must be a valid OSGi version string.
+     */
+    String value();
 }

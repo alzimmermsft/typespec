@@ -23,17 +23,16 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.linux;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Library;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.NativeLong;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure.FieldOrder;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.unix.LibCAPI;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * LibC structures and functions unique to Linux
@@ -42,8 +41,20 @@ public interface LibC extends LibCAPI, Library {
     String NAME = "c";
     LibC INSTANCE = Native.load(NAME, LibC.class);
 
-    @FieldOrder({ "uptime", "loads", "totalram", "freeram", "sharedram", "bufferram", "totalswap", "freeswap", "procs",
-            "totalhigh", "freehigh", "mem_unit", "_f" })
+    @FieldOrder({
+        "uptime",
+        "loads",
+        "totalram",
+        "freeram",
+        "sharedram",
+        "bufferram",
+        "totalswap",
+        "freeswap",
+        "procs",
+        "totalhigh",
+        "freehigh",
+        "mem_unit",
+        "_f" })
     class Sysinfo extends Structure {
         private static final int PADDING_SIZE = 20 - 2 * NativeLong.SIZE - 4;
 
@@ -96,9 +107,20 @@ public interface LibC extends LibCAPI, Library {
         }
     }
 
-    @FieldOrder({ "f_bsize", "f_frsize", "f_blocks", "f_bfree", "f_bavail",
-            "f_files", "f_ffree", "f_favail", "f_fsid", "_f_unused", "f_flag",
-            "f_namemax", "_f_spare" })
+    @FieldOrder({
+        "f_bsize",
+        "f_frsize",
+        "f_blocks",
+        "f_bfree",
+        "f_bavail",
+        "f_files",
+        "f_ffree",
+        "f_favail",
+        "f_fsid",
+        "_f_unused",
+        "f_flag",
+        "f_namemax",
+        "_f_spare" })
     class Statvfs extends Structure {
         public NativeLong f_bsize;
         public NativeLong f_frsize;
@@ -150,9 +172,9 @@ public interface LibC extends LibCAPI, Library {
      * This is more portable than reading /dev/kmem.
      *
      * @param info
-     *            A Sysinfo structure which will be populated
+     * A Sysinfo structure which will be populated
      * @return On success, zero is returned. On error, -1 is returned, and errno
-     *         is set appropriately.
+     * is set appropriately.
      */
     int sysinfo(Sysinfo info);
 
@@ -160,11 +182,11 @@ public interface LibC extends LibCAPI, Library {
      * The function statvfs() returns information about a mounted filesystem.
      *
      * @param path
-     *            the pathname of any file within the mounted filesystem.
+     * the pathname of any file within the mounted filesystem.
      * @param buf
-     *            a pointer to a statvfs structure
+     * a pointer to a statvfs structure
      * @return On success, zero is returned. On error, -1 is returned, and errno
-     *         is set appropriately.
+     * is set appropriately.
      */
     int statvfs(String path, Statvfs buf);
 }

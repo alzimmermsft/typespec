@@ -24,39 +24,40 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class JavaModelInfo extends OpenableElementInfo {
 
-/**
- * Compute the non-java resources contained in this java project.
- */
-private Object[] computeNonJavaResources() {
-	IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-	int length = projects.length;
-	Object[] resources = null;
-	int index = 0;
-	for (int i = 0; i < length; i++) {
-		IProject project = projects[i];
-		if (!JavaProject.hasJavaNature(project)) {
-			if (resources == null) {
-				resources = new Object[length];
-			}
-			resources[index++] = project;
-		}
-	}
-	if (index == 0) return NO_NON_JAVA_RESOURCES;
-	if (index < length) {
-		System.arraycopy(resources, 0, resources = new Object[index], 0, index);
-	}
-	return resources;
-}
+    /**
+     * Compute the non-java resources contained in this java project.
+     */
+    private Object[] computeNonJavaResources() {
+        IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+        int length = projects.length;
+        Object[] resources = null;
+        int index = 0;
+        for (int i = 0; i < length; i++) {
+            IProject project = projects[i];
+            if (!JavaProject.hasJavaNature(project)) {
+                if (resources == null) {
+                    resources = new Object[length];
+                }
+                resources[index++] = project;
+            }
+        }
+        if (index == 0)
+            return NO_NON_JAVA_RESOURCES;
+        if (index < length) {
+            System.arraycopy(resources, 0, resources = new Object[index], 0, index);
+        }
+        return resources;
+    }
 
-/**
- * Returns an array of non-java resources contained in the receiver.
- */
-Object[] getNonJavaResources() {
-	Object[] resources = this.nonJavaResources;
-	if (resources == null) {
-		resources = computeNonJavaResources();
-		this.nonJavaResources = resources;
-	}
-	return resources;
-}
+    /**
+     * Returns an array of non-java resources contained in the receiver.
+     */
+    Object[] getNonJavaResources() {
+        Object[] resources = this.nonJavaResources;
+        if (resources == null) {
+            resources = computeNonJavaResources();
+            this.nonJavaResources = resources;
+        }
+        return resources;
+    }
 }

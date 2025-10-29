@@ -92,9 +92,9 @@ public interface IOKit extends Library {
          * Convenience method for {@link IOKit#IOObjectConformsTo} on this object.
          *
          * @param className
-         *            The name of the class.
+         * The name of the class.
          * @return If the object handle is valid, and represents an object in the kernel
-         *         that dynamic casts to the class true is returned, otherwise false.
+         * that dynamic casts to the class true is returned, otherwise false.
          */
         public boolean conformsTo(String className) {
             return INSTANCE.IOObjectConformsTo(this, className);
@@ -126,8 +126,8 @@ public interface IOKit extends Library {
          * Convenience method for {@link IOKit#IOIteratorNext} on this object.
          *
          * @return If the iterator handle is valid, the next element in the iteration is
-         *         returned, otherwise {@code null} is returned. The element should be
-         *         released by the caller when it is finished.
+         * returned, otherwise {@code null} is returned. The element should be
+         * released by the caller when it is finished.
          */
         public IORegistryEntry next() {
             return INSTANCE.IOIteratorNext(this);
@@ -152,7 +152,7 @@ public interface IOKit extends Library {
          *
          * @return the ID.
          * @throws IOReturnException
-         *             if the ID could not be retrieved.
+         * if the ID could not be retrieved.
          */
         public long getRegistryEntryID() {
             LongByReference id = new LongByReference();
@@ -169,7 +169,7 @@ public interface IOKit extends Library {
          *
          * @return The name
          * @throws IOReturnException
-         *             if the name could not be retrieved.
+         * if the name could not be retrieved.
          */
         public String getName() {
             Memory name = new Memory(128);
@@ -186,12 +186,12 @@ public interface IOKit extends Library {
          * plane.
          *
          * @param plane
-         *            The name of an existing registry plane. Plane names are
-         *            defined in {@code IOKitKeys.h}, for example,
-         *            {@code kIOServicePlane}.
+         * The name of an existing registry plane. Plane names are
+         * defined in {@code IOKitKeys.h}, for example,
+         * {@code kIOServicePlane}.
          * @return The iterator
          * @throws IOReturnException
-         *             if the iterator could not be retrieved.
+         * if the iterator could not be retrieved.
          */
         public IOIterator getChildIterator(String plane) {
             PointerByReference iter = new PointerByReference();
@@ -207,10 +207,10 @@ public interface IOKit extends Library {
          * return the first child of this registry entry in a plane.
          *
          * @param plane
-         *            The name of an existing registry plane.
+         * The name of an existing registry plane.
          * @return The child registry entry, if a child exists, null otherwise
          * @throws IOReturnException
-         *             if the entry exists but could not be retrieved.
+         * if the entry exists but could not be retrieved.
          */
         public IORegistryEntry getChildEntry(String plane) {
             PointerByReference child = new PointerByReference();
@@ -228,10 +228,10 @@ public interface IOKit extends Library {
          * return the first parent of this registry entry in a plane.
          *
          * @param plane
-         *            The name of an existing registry plane.
+         * The name of an existing registry plane.
          * @return The parent registry entry, if a parent exists, null otherwise
          * @throws IOReturnException
-         *             if the entry exists but could not be retrieved.
+         * if the entry exists but could not be retrieved.
          */
         public IORegistryEntry getParentEntry(String plane) {
             PointerByReference parent = new PointerByReference();
@@ -249,14 +249,14 @@ public interface IOKit extends Library {
          * CF representation of this registry entry's property.
          *
          * @param key
-         *            A {@code CFString} specifying the property name.
+         * A {@code CFString} specifying the property name.
          * @return A CF container is created and returned the caller on success.
-         *         <p>
-         *         The caller should release with {@link CoreFoundation#CFRelease}.
+         * <p>
+         * The caller should release with {@link CoreFoundation#CFRelease}.
          */
         public CFTypeRef createCFProperty(CFStringRef key) {
             return INSTANCE.IORegistryEntryCreateCFProperty(this, key, CoreFoundation.INSTANCE.CFAllocatorGetDefault(),
-                    0);
+                0);
         }
 
         /**
@@ -265,16 +265,16 @@ public interface IOKit extends Library {
          * property table.
          *
          * @return The property table.
-         *         <p>
-         *         The caller should release with
-         *         {@link CoreFoundation#CFRelease}.
+         * <p>
+         * The caller should release with
+         * {@link CoreFoundation#CFRelease}.
          * @throws IOReturnException
-         *             if the entry could not be retrieved.
+         * if the entry could not be retrieved.
          */
         public CFMutableDictionaryRef createCFProperties() {
             PointerByReference properties = new PointerByReference();
             int kr = INSTANCE.IORegistryEntryCreateCFProperties(this, properties,
-                    CoreFoundation.INSTANCE.CFAllocatorGetDefault(), 0);
+                CoreFoundation.INSTANCE.CFAllocatorGetDefault(), 0);
             if (kr != 0) {
                 throw new IOReturnException(kr);
             }
@@ -286,23 +286,23 @@ public interface IOKit extends Library {
          * CF representation of a registry entry's property searched from this object.
          *
          * @param plane
-         *            The name of an existing registry plane. Plane names are defined in
-         *            {@code IOKitKeys.h}, for example, {@code kIOServicePlane}.
+         * The name of an existing registry plane. Plane names are defined in
+         * {@code IOKitKeys.h}, for example, {@code kIOServicePlane}.
          * @param key
-         *            A {@code CFString} specifying the property name.
+         * A {@code CFString} specifying the property name.
          * @param options
-         *            {@link #kIORegistryIterateRecursively} may be set to recurse
-         *            automatically into the registry hierarchy. Without this option,
-         *            this method degenerates into the standard
-         *            {@link #IORegistryEntryCreateCFProperty} call.
-         *            {@link #kIORegistryIterateParents} may be set to iterate the
-         *            parents of the entry, in place of the children.
+         * {@link #kIORegistryIterateRecursively} may be set to recurse
+         * automatically into the registry hierarchy. Without this option,
+         * this method degenerates into the standard
+         * {@link #IORegistryEntryCreateCFProperty} call.
+         * {@link #kIORegistryIterateParents} may be set to iterate the
+         * parents of the entry, in place of the children.
          * @return A CF container is created and returned the caller on success. The
-         *         caller should release with CFRelease.
+         * caller should release with CFRelease.
          */
         CFTypeRef searchCFProperty(String plane, CFStringRef key, int options) {
             return INSTANCE.IORegistryEntrySearchCFProperty(this, plane, key,
-                    CoreFoundation.INSTANCE.CFAllocatorGetDefault(), options);
+                CoreFoundation.INSTANCE.CFAllocatorGetDefault(), options);
         }
 
         /**
@@ -310,7 +310,7 @@ public interface IOKit extends Library {
          * Registry Entry.
          *
          * @param key
-         *            The string name of the key to retrieve
+         * The string name of the key to retrieve
          * @return The value of the registry entry if it exists; {@code null} otherwise
          */
         public String getStringProperty(String key) {
@@ -331,13 +331,13 @@ public interface IOKit extends Library {
          * Registry Entry.
          *
          * @param key
-         *            The string name of the key to retrieve
+         * The string name of the key to retrieve
          * @return The value of the registry entry if it exists; {@code null} otherwise
-         *         <p>
-         *         This method assumes a 64-bit integer is stored and does not do type
-         *         checking. If this object's type differs from the return type, and the
-         *         conversion is lossy or the return value is out of range, then this
-         *         method returns an approximate value.
+         * <p>
+         * This method assumes a 64-bit integer is stored and does not do type
+         * checking. If this object's type differs from the return type, and the
+         * conversion is lossy or the return value is out of range, then this
+         * method returns an approximate value.
          */
         public Long getLongProperty(String key) {
             Long value = null;
@@ -357,13 +357,13 @@ public interface IOKit extends Library {
          * Registry Entry.
          *
          * @param key
-         *            The string name of the key to retrieve
+         * The string name of the key to retrieve
          * @return The value of the registry entry if it exists; {@code null} otherwise
-         *         <p>
-         *         This method assumes a 32-bit integer is stored and does not do type
-         *         checking. If this object's type differs from the return type, and the
-         *         conversion is lossy or the return value is out of range, then this
-         *         method returns an approximate value.
+         * <p>
+         * This method assumes a 32-bit integer is stored and does not do type
+         * checking. If this object's type differs from the return type, and the
+         * conversion is lossy or the return value is out of range, then this
+         * method returns an approximate value.
          */
         public Integer getIntegerProperty(String key) {
             Integer value = null;
@@ -383,13 +383,13 @@ public interface IOKit extends Library {
          * Registry Entry.
          *
          * @param key
-         *            The string name of the key to retrieve
+         * The string name of the key to retrieve
          * @return The value of the registry entry if it exists; {@code null} otherwise
-         *         <p>
-         *         This method assumes a floating point value is stored and does not do
-         *         type checking. If this object's type differs from the return type,
-         *         and the conversion is lossy or the return value is out of range, then
-         *         this method returns an approximate value.
+         * <p>
+         * This method assumes a floating point value is stored and does not do
+         * type checking. If this object's type differs from the return type,
+         * and the conversion is lossy or the return value is out of range, then
+         * this method returns an approximate value.
          */
         public Double getDoubleProperty(String key) {
             Double value = null;
@@ -409,7 +409,7 @@ public interface IOKit extends Library {
          * Registry Entry.
          *
          * @param key
-         *            The string name of the key to retrieve
+         * The string name of the key to retrieve
          * @return The value of the registry entry if it exists; {@code null} otherwise
          */
         public Boolean getBooleanProperty(String key) {
@@ -430,7 +430,7 @@ public interface IOKit extends Library {
          * Entry.
          *
          * @param key
-         *            The string name of the key to retrieve
+         * The string name of the key to retrieve
          * @return The value of the registry entry if it exists; {@code null} otherwise
          */
         public byte[] getByteArrayProperty(String key) {
@@ -481,14 +481,14 @@ public interface IOKit extends Library {
      * Returns the mach port used to initiate communication with IOKit.
      *
      * @param bootstrapPort
-     *            Pass 0 for the default.
+     * Pass 0 for the default.
      * @param port
-     *            A pointer to the master port is returned. Multiple calls to
-     *            IOMasterPort will not result in leaking ports (each call to
-     *            IOMasterPort adds another send right to the port) but it is
-     *            considered good programming practice to deallocate the port when
-     *            you are finished with it using
-     *            {@link SystemB#mach_port_deallocate}.
+     * A pointer to the master port is returned. Multiple calls to
+     * IOMasterPort will not result in leaking ports (each call to
+     * IOMasterPort adds another send right to the port) but it is
+     * considered good programming practice to deallocate the port when
+     * you are finished with it using
+     * {@link SystemB#mach_port_deallocate}.
      * @return 0 if successful, otherwise a {@code kern_return_t} error code.
      */
     int IOMasterPort(int bootstrapPort, IntByReference port);
@@ -497,15 +497,15 @@ public interface IOKit extends Library {
      * Create a matching dictionary that specifies an {@code IOService} class match.
      *
      * @param name
-     *            The class name. Class matching is successful on {@code IOService}s
-     *            of this class or any subclass.
+     * The class name. Class matching is successful on {@code IOService}s
+     * of this class or any subclass.
      * @return The matching dictionary created, is returned on success, or
-     *         {@code null} on failure.
-     *         <p>
-     *         The dictionary is commonly passed to
-     *         {@link #IOServiceGetMatchingServices} which will consume a reference,
-     *         otherwise it should be released with {@link CoreFoundation#CFRelease}
-     *         by the caller.
+     * {@code null} on failure.
+     * <p>
+     * The dictionary is commonly passed to
+     * {@link #IOServiceGetMatchingServices} which will consume a reference,
+     * otherwise it should be released with {@link CoreFoundation#CFRelease}
+     * by the caller.
      */
     CFMutableDictionaryRef IOServiceMatching(String name);
 
@@ -513,14 +513,14 @@ public interface IOKit extends Library {
      * Create a matching dictionary that specifies an {@code IOService} name match.
      *
      * @param name
-     *            The {@code IOService} name.
+     * The {@code IOService} name.
      * @return The matching dictionary created, is returned on success, or
-     *         {@code null} on failure.
-     *         <p>
-     *         The dictionary is commonly passed to
-     *         {@link #IOServiceGetMatchingServices} which will consume a reference,
-     *         otherwise it should be released with {@link CoreFoundation#CFRelease}
-     *         by the caller.
+     * {@code null} on failure.
+     * <p>
+     * The dictionary is commonly passed to
+     * {@link #IOServiceGetMatchingServices} which will consume a reference,
+     * otherwise it should be released with {@link CoreFoundation#CFRelease}
+     * by the caller.
      */
     CFMutableDictionaryRef IOServiceNameMatching(String name);
 
@@ -529,18 +529,18 @@ public interface IOKit extends Library {
      * on BSD device name.
      *
      * @param masterPort
-     *            The master port obtained from {@link #IOMasterPort}.
+     * The master port obtained from {@link #IOMasterPort}.
      * @param options
-     *            No options are currently defined.
+     * No options are currently defined.
      * @param bsdName
-     *            The BSD name.
+     * The BSD name.
      * @return The matching dictionary created, is returned on success, or
-     *         {@code null} on failure.
-     *         <p>
-     *         The dictionary is commonly passed to
-     *         {@link #IOServiceGetMatchingServices} which will consume a reference,
-     *         otherwise it should be released with {@link CoreFoundation#CFRelease}
-     *         by the caller.
+     * {@code null} on failure.
+     * <p>
+     * The dictionary is commonly passed to
+     * {@link #IOServiceGetMatchingServices} which will consume a reference,
+     * otherwise it should be released with {@link CoreFoundation#CFRelease}
+     * by the caller.
      */
     CFMutableDictionaryRef IOBSDNameMatching(int masterPort, int options, String bsdName);
 
@@ -548,16 +548,16 @@ public interface IOKit extends Library {
      * Look up a registered IOService object that matches a matching dictionary.
      *
      * @param masterPort
-     *            The master port obtained from {@link #IOMasterPort}.
+     * The master port obtained from {@link #IOMasterPort}.
      * @param matchingDictionary
-     *            A CF dictionary containing matching information, of which one
-     *            reference is always consumed by this function. IOKitLib can
-     *            construct matching dictionaries for common criteria with helper
-     *            functions such as {@link #IOServiceMatching},
-     *            {@link #IOServiceNameMatching}, and {@link #IOBSDNameMatching}.
+     * A CF dictionary containing matching information, of which one
+     * reference is always consumed by this function. IOKitLib can
+     * construct matching dictionaries for common criteria with helper
+     * functions such as {@link #IOServiceMatching},
+     * {@link #IOServiceNameMatching}, and {@link #IOBSDNameMatching}.
      * @return The first service matched is returned on success.
-     *         <p>
-     *         The service must be released by the caller.
+     * <p>
+     * The service must be released by the caller.
      */
     IOService IOServiceGetMatchingService(int masterPort, CFDictionaryRef matchingDictionary);
 
@@ -565,16 +565,16 @@ public interface IOKit extends Library {
      * Look up registered IOService objects that match a matching dictionary.
      *
      * @param masterPort
-     *            The master port obtained from {@link #IOMasterPort}.
+     * The master port obtained from {@link #IOMasterPort}.
      * @param matchingDictionary
-     *            A CF dictionary containing matching information, of which one
-     *            reference is always consumed by this function. IOKitLib can
-     *            construct matching dictionaries for common criteria with helper
-     *            functions such as {@link #IOServiceMatching},
-     *            {@link #IOServiceNameMatching}, and {@link #IOBSDNameMatching}.
+     * A CF dictionary containing matching information, of which one
+     * reference is always consumed by this function. IOKitLib can
+     * construct matching dictionaries for common criteria with helper
+     * functions such as {@link #IOServiceMatching},
+     * {@link #IOServiceNameMatching}, and {@link #IOBSDNameMatching}.
      * @param iterator
-     *            An iterator handle is returned on success, and should be released
-     *            by the caller when the iteration is finished.
+     * An iterator handle is returned on success, and should be released
+     * by the caller when the iteration is finished.
      * @return 0 if successful, otherwise a {@code kern_return_t} error code.
      */
     int IOServiceGetMatchingServices(int masterPort, CFDictionaryRef matchingDictionary, PointerByReference iterator);
@@ -583,10 +583,10 @@ public interface IOKit extends Library {
      * Returns the next object in an iteration.
      *
      * @param iterator
-     *            An IOKit iterator handle.
+     * An IOKit iterator handle.
      * @return If the iterator handle is valid, the next element in the iteration is
-     *         returned, otherwise zero is returned. The element should be released
-     *         by the caller when it is finished.
+     * returned, otherwise zero is returned. The element should be released
+     * by the caller when it is finished.
      */
     IORegistryEntry IOIteratorNext(IOIterator iterator);
 
@@ -594,69 +594,69 @@ public interface IOKit extends Library {
      * Create a CF representation of a registry entry's property.
      *
      * @param entry
-     *            The registry entry handle whose property to copy.
+     * The registry entry handle whose property to copy.
      * @param key
-     *            A {@code CFString} specifying the property name.
+     * A {@code CFString} specifying the property name.
      * @param allocator
-     *            The CF allocator to use when creating the CF container.
+     * The CF allocator to use when creating the CF container.
      * @param options
-     *            No options are currently defined.
+     * No options are currently defined.
      * @return A CF container is created and returned the caller on success.
-     *         <p>
-     *         The caller should release with {@link CoreFoundation#CFRelease}.
+     * <p>
+     * The caller should release with {@link CoreFoundation#CFRelease}.
      */
     CFTypeRef IORegistryEntryCreateCFProperty(IORegistryEntry entry, CFStringRef key, CFAllocatorRef allocator,
-            int options);
+        int options);
 
     /**
      * Create a CF dictionary representation of a registry entry's property table.
      *
      * @param entry
-     *            The registry entry handle whose property table to copy.
+     * The registry entry handle whose property table to copy.
      * @param properties
-     *            A CFDictionary is created and returned the caller on success. The
-     *            caller should release with CFRelease.
+     * A CFDictionary is created and returned the caller on success. The
+     * caller should release with CFRelease.
      * @param allocator
-     *            The CF allocator to use when creating the CF containers.
+     * The CF allocator to use when creating the CF containers.
      * @param options
-     *            No options are currently defined.
+     * No options are currently defined.
      * @return 0 if successful, otherwise a {@code kern_return_t} error code.
      */
     int IORegistryEntryCreateCFProperties(IORegistryEntry entry, PointerByReference properties,
-            CFAllocatorRef allocator, int options);
+        CFAllocatorRef allocator, int options);
 
     /**
      * Create a CF representation of a registry entry's property.
      *
      * @param entry
-     *            The registry entry at which to start the search.
+     * The registry entry at which to start the search.
      * @param plane
-     *            The name of an existing registry plane. Plane names are defined in
-     *            {@code IOKitKeys.h}, for example, {@code kIOServicePlane}.
+     * The name of an existing registry plane. Plane names are defined in
+     * {@code IOKitKeys.h}, for example, {@code kIOServicePlane}.
      * @param key
-     *            A {@code CFString} specifying the property name.
+     * A {@code CFString} specifying the property name.
      * @param allocator
-     *            The CF allocator to use when creating the CF container.
+     * The CF allocator to use when creating the CF container.
      * @param options
-     *            {@link #kIORegistryIterateRecursively} may be set to recurse
-     *            automatically into the registry hierarchy. Without this option,
-     *            this method degenerates into the standard
-     *            {@link #IORegistryEntryCreateCFProperty} call.
-     *            {@link #kIORegistryIterateParents} may be set to iterate the
-     *            parents of the entry, in place of the children.
+     * {@link #kIORegistryIterateRecursively} may be set to recurse
+     * automatically into the registry hierarchy. Without this option,
+     * this method degenerates into the standard
+     * {@link #IORegistryEntryCreateCFProperty} call.
+     * {@link #kIORegistryIterateParents} may be set to iterate the
+     * parents of the entry, in place of the children.
      * @return A CF container is created and returned the caller on success. The
-     *         caller should release with CFRelease.
+     * caller should release with CFRelease.
      */
     CFTypeRef IORegistryEntrySearchCFProperty(IORegistryEntry entry, String plane, CFStringRef key,
-            CFAllocatorRef allocator, int options);
+        CFAllocatorRef allocator, int options);
 
     /**
      * Returns an ID for the registry entry that is global to all tasks.
      *
      * @param entry
-     *            The registry entry handle whose ID to look up.
+     * The registry entry handle whose ID to look up.
      * @param id
-     *            The resulting ID.
+     * The resulting ID.
      * @return 0 if successful, otherwise a {@code kern_return_t} error code.
      */
     int IORegistryEntryGetRegistryEntryID(IORegistryEntry entry, LongByReference id);
@@ -665,10 +665,10 @@ public interface IOKit extends Library {
      * Returns a name assigned to a registry entry.
      *
      * @param entry
-     *            The registry entry handle whose name to look up.
+     * The registry entry handle whose name to look up.
      * @param name
-     *            The caller's buffer to receive the name. This must be a 128-byte
-     *            buffer.
+     * The caller's buffer to receive the name. This must be a 128-byte
+     * buffer.
      * @return 0 if successful, otherwise a {@code kern_return_t} error code.
      */
     int IORegistryEntryGetName(IORegistryEntry entry, Pointer name);
@@ -677,13 +677,13 @@ public interface IOKit extends Library {
      * Returns an iterator over a registry entry’s child entries in a plane.
      *
      * @param entry
-     *            The registry entry whose children to iterate over.
+     * The registry entry whose children to iterate over.
      * @param plane
-     *            The name of an existing registry plane. Plane names are defined in
-     *            {@code IOKitKeys.h}, for example, {@code kIOServicePlane}.
+     * The name of an existing registry plane. Plane names are defined in
+     * {@code IOKitKeys.h}, for example, {@code kIOServicePlane}.
      * @param iter
-     *            The created iterator over the children of the entry, on success.
-     *            The iterator must be released when the iteration is finished.
+     * The created iterator over the children of the entry, on success.
+     * The iterator must be released when the iteration is finished.
      * @return 0 if successful, otherwise a {@code kern_return_t} error code.
      */
     int IORegistryEntryGetChildIterator(IORegistryEntry entry, String plane, PointerByReference iter);
@@ -692,13 +692,13 @@ public interface IOKit extends Library {
      * Returns the first child of a registry entry in a plane.
      *
      * @param entry
-     *            The registry entry whose child to look up.
+     * The registry entry whose child to look up.
      * @param plane
-     *            The name of an existing registry plane. Plane names are defined in
-     *            {@code IOKitKeys.h}, for example, {@code kIOServicePlane}.
+     * The name of an existing registry plane. Plane names are defined in
+     * {@code IOKitKeys.h}, for example, {@code kIOServicePlane}.
      * @param child
-     *            The first child of the registry entry, on success. The child must
-     *            be released by the caller.
+     * The first child of the registry entry, on success. The child must
+     * be released by the caller.
      * @return 0 if successful, otherwise a {@code kern_return_t} error code.
      */
     int IORegistryEntryGetChildEntry(IORegistryEntry entry, String plane, PointerByReference child);
@@ -707,13 +707,13 @@ public interface IOKit extends Library {
      * Returns the first parent of a registry entry in a plane.
      *
      * @param entry
-     *            The registry entry whose parent to look up.
+     * The registry entry whose parent to look up.
      * @param plane
-     *            The name of an existing registry plane. Plane names are defined in
-     *            {@code IOKitKeys.h}, for example, {@code kIOServicePlane}.
+     * The name of an existing registry plane. Plane names are defined in
+     * {@code IOKitKeys.h}, for example, {@code kIOServicePlane}.
      * @param parent
-     *            The first parent of the registry entry, on success. The parent
-     *            must be released by the caller.
+     * The first parent of the registry entry, on success. The parent
+     * must be released by the caller.
      * @return 0 if successful, otherwise a {@code kern_return_t} error code.
      */
     int IORegistryEntryGetParentEntry(IORegistryEntry entry, String plane, PointerByReference parent);
@@ -722,9 +722,9 @@ public interface IOKit extends Library {
      * Return a handle to the registry root.
      *
      * @param masterPort
-     *            The master port obtained from {@link #IOMasterPort}.
+     * The master port obtained from {@link #IOMasterPort}.
      * @return A handle to the IORegistryEntry root instance, to be released with
-     *         {@link #IOObjectRelease} by the caller, or 0 on failure.
+     * {@link #IOObjectRelease} by the caller, or 0 on failure.
      */
     IORegistryEntry IORegistryGetRootEntry(int masterPort);
 
@@ -732,11 +732,11 @@ public interface IOKit extends Library {
      * Performs an OSDynamicCast operation on an IOKit object.
      *
      * @param object
-     *            An IOKit object.
+     * An IOKit object.
      * @param className
-     *            The name of the class.
+     * The name of the class.
      * @return If the object handle is valid, and represents an object in the kernel
-     *         that dynamic casts to the class true is returned, otherwise false.
+     * that dynamic casts to the class true is returned, otherwise false.
      */
     boolean IOObjectConformsTo(IOObject object, String className);
 
@@ -744,7 +744,7 @@ public interface IOKit extends Library {
      * Releases an object handle previously returned by {@code IOKitLib}.
      *
      * @param object
-     *            The IOKit object to release.
+     * The IOKit object to release.
      * @return 0 if successful, otherwise a {@code kern_return_t} error code.
      */
     int IOObjectRelease(IOObject object);
@@ -753,17 +753,17 @@ public interface IOKit extends Library {
      * A request to create a connection to an IOService.
      *
      * @param service
-     *            The IOService object to open a connection to, usually obtained via
-     *            the {@link #IOServiceGetMatchingServices} API.
+     * The IOService object to open a connection to, usually obtained via
+     * the {@link #IOServiceGetMatchingServices} API.
      * @param owningTask
-     *            The mach task requesting the connection.
+     * The mach task requesting the connection.
      * @param type
-     *            A constant specifying the type of connection to be created,
-     *            interpreted only by the IOService's family.
+     * A constant specifying the type of connection to be created,
+     * interpreted only by the IOService's family.
      * @param connect
-     *            An {@code io_connect_t} handle is returned on success, to be used
-     *            with the IOConnectXXX APIs. It should be destroyed with
-     *            {@link #IOServiceClose}.
+     * An {@code io_connect_t} handle is returned on success, to be used
+     * with the IOConnectXXX APIs. It should be destroyed with
+     * {@link #IOServiceClose}.
      * @return A return code generated by {@code IOService::newUserClient}.
      */
     int IOServiceOpen(IOService service, int owningTask, int type, PointerByReference connect);
@@ -772,9 +772,9 @@ public interface IOKit extends Library {
      * Returns the busyState of an IOService.
      *
      * @param service
-     *            The IOService whose busyState to return.
+     * The IOService whose busyState to return.
      * @param busyState
-     *            The busyState count is returned.
+     * The busyState count is returned.
      * @return 0 if successful, otherwise a {@code kern_return_t} error code.
      */
     int IOServiceGetBusyState(IOService service, IntByReference busyState);
@@ -783,8 +783,8 @@ public interface IOKit extends Library {
      * Close a connection to an IOService and destroy the connect handle.
      *
      * @param connect
-     *            The connect handle created by IOServiceOpen. It will be destroyed
-     *            by this function, and should not be released with IOObjectRelease.
+     * The connect handle created by IOServiceOpen. It will be destroyed
+     * by this function, and should not be released with IOObjectRelease.
      * @return 0 if successful, otherwise a {@code kern_return_t} error code.
      */
     int IOServiceClose(IOConnect connect);
@@ -793,10 +793,10 @@ public interface IOKit extends Library {
      * Returns a blob of Power Source information in an opaque CFTypeRef.
      *
      * @return {@code null} if errors were encountered, a {@link CFTypeRef}
-     *         otherwise.
-     *         <p>
-     *         Caller must {@link CoreFoundation#CFRelease} the return value when
-     *         done accessing it.
+     * otherwise.
+     * <p>
+     * Caller must {@link CoreFoundation#CFRelease} the return value when
+     * done accessing it.
      */
     CFTypeRef IOPSCopyPowerSourcesInfo();
 
@@ -804,13 +804,13 @@ public interface IOKit extends Library {
      * Returns a CFArray of Power Source handles, each of type CFTypeRef.
      *
      * @param blob
-     *            Takes the {@link CFTypeRef} returned by
-     *            {@link #IOPSCopyPowerSourcesInfo}
+     * Takes the {@link CFTypeRef} returned by
+     * {@link #IOPSCopyPowerSourcesInfo}
      * @return {@code null} if errors were encountered, otherwise a CFArray of
-     *         {@link CFTypeRef}s.
-     *         <p>
-     *         Caller must {@link CoreFoundation#CFRelease} the returned
-     *         {@link CFArrayRef}.
+     * {@link CFTypeRef}s.
+     * <p>
+     * Caller must {@link CoreFoundation#CFRelease} the returned
+     * {@link CFArrayRef}.
      */
     CFArrayRef IOPSCopyPowerSourcesList(CFTypeRef blob);
 
@@ -819,16 +819,16 @@ public interface IOKit extends Library {
      * source.
      *
      * @param blob
-     *            the {@link CFTypeRef} returned by
-     *            {@link #IOPSCopyPowerSourcesInfo}
+     * the {@link CFTypeRef} returned by
+     * {@link #IOPSCopyPowerSourcesInfo}
      * @param ps
-     *            One of the {@link CFTypeRef}s in the CFArray returned by
-     *            {@link #IOPSCopyPowerSourcesList}.
+     * One of the {@link CFTypeRef}s in the CFArray returned by
+     * {@link #IOPSCopyPowerSourcesList}.
      * @return {@code null} if an error was encountered, otherwise a CFDictionary.
-     *         <p>
-     *         Caller should NOT release the returned CFDictionary - it will be
-     *         released as part of the {@link CFTypeRef} returned by
-     *         {@link #IOPSCopyPowerSourcesInfo}.
+     * <p>
+     * Caller should NOT release the returned CFDictionary - it will be
+     * released as part of the {@link CFTypeRef} returned by
+     * {@link #IOPSCopyPowerSourcesInfo}.
      */
     CFDictionaryRef IOPSGetPowerSourceDescription(CFTypeRef blob, CFTypeRef ps);
 
@@ -837,13 +837,13 @@ public interface IOKit extends Library {
      * and/or UPS's) are empty.
      *
      * @return Returns {@link #kIOPSTimeRemainingUnknown} if the OS cannot determine
-     *         the time remaining.
-     *         <p>
-     *         Returns {@link #kIOPSTimeRemainingUnlimited} if the system has an
-     *         unlimited power source.
-     *         <p>
-     *         Otherwise returns a positive number indicating the time remaining in
-     *         seconds until all power sources are depleted.
+     * the time remaining.
+     * <p>
+     * Returns {@link #kIOPSTimeRemainingUnlimited} if the system has an
+     * unlimited power source.
+     * <p>
+     * Otherwise returns a positive number indicating the time remaining in
+     * seconds until all power sources are depleted.
      */
     double IOPSGetTimeRemainingEstimate();
 }

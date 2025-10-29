@@ -37,130 +37,149 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * of returning it.
  */
 public class CodeSnippetReturnStatement extends ReturnStatement implements InvocationSite, EvaluationConstants {
-	MethodBinding setResultMethod;
-public CodeSnippetReturnStatement(Expression expr, int s, int e) {
-	super(expr, s, e);
-}
+    MethodBinding setResultMethod;
 
-@Override
-public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
-	FlowInfo info = super.analyseCode(currentScope, flowContext, flowInfo);
-	// we need to remove this optimization in order to prevent the inlining of the return bytecode
-	// 1GH0AU7: ITPJCORE:ALL - Eval - VerifyError in scrapbook page
-	this.expression.bits &= ~IsReturnedValue;
-	return info;
-}
+    public CodeSnippetReturnStatement(Expression expr, int s, int e) {
+        super(expr, s, e);
+    }
 
-/**
- * Dump the suitable return bytecode for a return statement
- */
-@Override
-public void generateReturnBytecode(CodeStream codeStream) {
+    @Override
+    public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
+        FlowInfo info = super.analyseCode(currentScope, flowContext, flowInfo);
+        // we need to remove this optimization in order to prevent the inlining of the return bytecode
+        // 1GH0AU7: ITPJCORE:ALL - Eval - VerifyError in scrapbook page
+        this.expression.bits &= ~IsReturnedValue;
+        return info;
+    }
 
-	// output the return bytecode
-	codeStream.return_();
-}
-@Override
-public void generateStoreSaveValueIfNecessary(Scope scope, CodeStream codeStream){
+    /**
+     * Dump the suitable return bytecode for a return statement
+     */
+    @Override
+    public void generateReturnBytecode(CodeStream codeStream) {
 
-	// push receiver
-	codeStream.aload_0();
+        // output the return bytecode
+        codeStream.return_();
+    }
 
-	// push the 2 parameters of "setResult(Object, Class)"
-	if (this.expression == null || this.expression.resolvedType == TypeBinding.VOID) { // expressionType == VoidBinding if code snippet is the expression "System.out.println()"
-		// push null
-		codeStream.aconst_null();
+    @Override
+    public void generateStoreSaveValueIfNecessary(Scope scope, CodeStream codeStream) {
 
-		// void.class
-		codeStream.generateClassLiteralAccessForType(scope, TypeBinding.VOID);
-	} else {
-		// swap with expression
-		int valueTypeID = this.expression.resolvedType.id;
-		if (valueTypeID == T_long || valueTypeID == T_double) {
-			codeStream.dup_x2();
-			codeStream.pop();
-		} else {
-			codeStream.swap();
-		}
+        // push receiver
+        codeStream.aload_0();
 
-		// generate wrapper if needed
-		if (this.expression.resolvedType.isBaseType() && this.expression.resolvedType != TypeBinding.NULL) {
-			codeStream.generateBoxingConversion(this.expression.resolvedType.id);
-		}
+        // push the 2 parameters of "setResult(Object, Class)"
+        if (this.expression == null || this.expression.resolvedType == TypeBinding.VOID) { // expressionType ==
+                                                                                           // VoidBinding if code
+                                                                                           // snippet is the expression
+                                                                                           // "System.out.println()"
+            // push null
+            codeStream.aconst_null();
 
-		// generate the expression type
-		codeStream.generateClassLiteralAccessForType(scope, this.expression.resolvedType);
-	}
+            // void.class
+            codeStream.generateClassLiteralAccessForType(scope, TypeBinding.VOID);
+        } else {
+            // swap with expression
+            int valueTypeID = this.expression.resolvedType.id;
+            if (valueTypeID == T_long || valueTypeID == T_double) {
+                codeStream.dup_x2();
+                codeStream.pop();
+            } else {
+                codeStream.swap();
+            }
 
-	// generate the invoke virtual to "setResult(Object,Class)"
-	codeStream.invoke(Opcodes.OPC_invokevirtual, this.setResultMethod, null /* default declaringClass */);
-}
-/**
- * @see org.eclipse.jdt.internal.compiler.lookup.InvocationSite#genericTypeArguments()
- */
-@Override
-public TypeBinding[] genericTypeArguments() {
-	return null;
-}
-@Override
-public InferenceContext18 freshInferenceContext(Scope scope) {
-	return null;
-}
-@Override
-public boolean isSuperAccess() {
-	return false;
-}
-@Override
-public boolean isTypeAccess() {
-	return false;
-}
-@Override
-public boolean needValue(){
-	return true;
-}
-@Override
-public void prepareSaveValueLocation(TryStatement targetTryStatement){
+            // generate wrapper if needed
+            if (this.expression.resolvedType.isBaseType() && this.expression.resolvedType != TypeBinding.NULL) {
+                codeStream.generateBoxingConversion(this.expression.resolvedType.id);
+            }
 
-	// do nothing: no storage is necessary for snippets
-}
-@Override
-public void resolve(BlockScope scope) {
-	if (this.expression != null) {
-		if (this.expression.resolveType(scope) != null) {
-			TypeBinding javaLangClass = scope.getJavaLangClass();
-			if (!javaLangClass.isValidBinding()) {
-				scope.problemReporter().codeSnippetMissingClass("java.lang.Class", this.sourceStart, this.sourceEnd); //$NON-NLS-1$
-				return;
-			}
-			TypeBinding javaLangObject = scope.getJavaLangObject();
-			if (!javaLangObject.isValidBinding()) {
-				scope.problemReporter().codeSnippetMissingClass("java.lang.Object", this.sourceStart, this.sourceEnd); //$NON-NLS-1$
-				return;
-			}
-			TypeBinding[] argumentTypes = new TypeBinding[] {javaLangObject, javaLangClass};
-			this.setResultMethod = scope.getImplicitMethod(SETRESULT_SELECTOR, argumentTypes, this);
-			if (!this.setResultMethod.isValidBinding()) {
-				scope.problemReporter().codeSnippetMissingMethod(ROOT_FULL_CLASS_NAME, new String(SETRESULT_SELECTOR), new String(SETRESULT_ARGUMENTS), this.sourceStart, this.sourceEnd);
-				return;
-			}
-			// in constant case, the implicit conversion cannot be left uninitialized
-			if (this.expression.constant != Constant.NotAConstant) {
-				// fake 'no implicit conversion' (the return type is always void)
-				this.expression.implicitConversion = this.expression.constant.typeID() << 4;
-			}
-		}
-	}
-}
-@Override
-public void setActualReceiverType(ReferenceBinding receiverType) {
-	// ignored
-}
-@Override
-public void setDepth(int depth) {
-	// ignored
-}
-@Override
-public void setFieldIndex(int depth) {
-	// ignored
-}
+            // generate the expression type
+            codeStream.generateClassLiteralAccessForType(scope, this.expression.resolvedType);
+        }
+
+        // generate the invoke virtual to "setResult(Object,Class)"
+        codeStream.invoke(Opcodes.OPC_invokevirtual, this.setResultMethod, null /* default declaringClass */);
+    }
+
+    /**
+     * @see org.eclipse.jdt.internal.compiler.lookup.InvocationSite#genericTypeArguments()
+     */
+    @Override
+    public TypeBinding[] genericTypeArguments() {
+        return null;
+    }
+
+    @Override
+    public InferenceContext18 freshInferenceContext(Scope scope) {
+        return null;
+    }
+
+    @Override
+    public boolean isSuperAccess() {
+        return false;
+    }
+
+    @Override
+    public boolean isTypeAccess() {
+        return false;
+    }
+
+    @Override
+    public boolean needValue() {
+        return true;
+    }
+
+    @Override
+    public void prepareSaveValueLocation(TryStatement targetTryStatement) {
+
+        // do nothing: no storage is necessary for snippets
+    }
+
+    @Override
+    public void resolve(BlockScope scope) {
+        if (this.expression != null) {
+            if (this.expression.resolveType(scope) != null) {
+                TypeBinding javaLangClass = scope.getJavaLangClass();
+                if (!javaLangClass.isValidBinding()) {
+                    scope.problemReporter()
+                        .codeSnippetMissingClass("java.lang.Class", this.sourceStart, this.sourceEnd); //$NON-NLS-1$
+                    return;
+                }
+                TypeBinding javaLangObject = scope.getJavaLangObject();
+                if (!javaLangObject.isValidBinding()) {
+                    scope.problemReporter()
+                        .codeSnippetMissingClass("java.lang.Object", this.sourceStart, this.sourceEnd); //$NON-NLS-1$
+                    return;
+                }
+                TypeBinding[] argumentTypes = new TypeBinding[] { javaLangObject, javaLangClass };
+                this.setResultMethod = scope.getImplicitMethod(SETRESULT_SELECTOR, argumentTypes, this);
+                if (!this.setResultMethod.isValidBinding()) {
+                    scope.problemReporter()
+                        .codeSnippetMissingMethod(ROOT_FULL_CLASS_NAME, new String(SETRESULT_SELECTOR),
+                            new String(SETRESULT_ARGUMENTS), this.sourceStart, this.sourceEnd);
+                    return;
+                }
+                // in constant case, the implicit conversion cannot be left uninitialized
+                if (this.expression.constant != Constant.NotAConstant) {
+                    // fake 'no implicit conversion' (the return type is always void)
+                    this.expression.implicitConversion = this.expression.constant.typeID() << 4;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void setActualReceiverType(ReferenceBinding receiverType) {
+        // ignored
+    }
+
+    @Override
+    public void setDepth(int depth) {
+        // ignored
+    }
+
+    @Override
+    public void setFieldIndex(int depth) {
+        // ignored
+    }
 }

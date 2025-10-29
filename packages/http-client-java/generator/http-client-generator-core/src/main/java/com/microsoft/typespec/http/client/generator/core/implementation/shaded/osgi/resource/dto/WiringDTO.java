@@ -16,9 +16,9 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.dto;
 
-import java.util.List;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.dto.DTO;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Wiring;
+import java.util.List;
 
 /**
  * Data Transfer Object for a Wiring node.
@@ -33,41 +33,41 @@ public class WiringDTO extends DTO {
      * <p>
      * This identifier is transiently assigned and may vary across restarts.
      */
-    public int                     id;
+    public int id;
 
     /**
-	 * The references to the capabilities for the wiring node.
-	 * 
-	 * @see Wiring#getResourceCapabilities(String)
-	 */
-    public List<CapabilityRefDTO>  capabilities;
+     * The references to the capabilities for the wiring node.
+     * 
+     * @see Wiring#getResourceCapabilities(String)
+     */
+    public List<CapabilityRefDTO> capabilities;
 
     /**
-	 * The references to the requirements for the wiring node.
-	 * 
-	 * @see Wiring#getResourceRequirements(String)
-	 */
+     * The references to the requirements for the wiring node.
+     * 
+     * @see Wiring#getResourceRequirements(String)
+     */
     public List<RequirementRefDTO> requirements;
 
     /**
-	 * The provided wires for the wiring node.
-	 * 
-	 * @see Wiring#getProvidedResourceWires(String)
-	 */
-    public List<WireDTO>           providedWires;
+     * The provided wires for the wiring node.
+     * 
+     * @see Wiring#getProvidedResourceWires(String)
+     */
+    public List<WireDTO> providedWires;
 
     /**
-	 * The required wires for the wiring node.
-	 * 
-	 * @see Wiring#getRequiredResourceWires(String)
-	 */
-    public List<WireDTO>           requiredWires;
+     * The required wires for the wiring node.
+     * 
+     * @see Wiring#getRequiredResourceWires(String)
+     */
+    public List<WireDTO> requiredWires;
 
     /**
-	 * The identifier of the resource associated with the wiring node.
-	 * 
-	 * @see ResourceDTO#id
-	 * @see Wiring#getResource()
-	 */
-    public int                     resource;
+     * The identifier of the resource associated with the wiring node.
+     * 
+     * @see ResourceDTO#id
+     * @see Wiring#getResource()
+     */
+    public int resource;
 }

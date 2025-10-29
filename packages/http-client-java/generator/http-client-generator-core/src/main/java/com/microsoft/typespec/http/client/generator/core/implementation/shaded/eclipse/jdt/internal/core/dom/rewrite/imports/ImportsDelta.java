@@ -22,19 +22,17 @@ import java.util.Set;
  * Encapsulates a set of imports to add and a set of imports to remove.
  */
 final class ImportsDelta {
-	final Set<ImportName> importsToAdd;
-	final Set<ImportName> importsToRemove;
+    final Set<ImportName> importsToAdd;
+    final Set<ImportName> importsToRemove;
 
-	ImportsDelta(Collection<ImportName> importsToAdd, Collection<ImportName> importsToRemove) {
-		this.importsToAdd = Collections.unmodifiableSet(new HashSet<>(importsToAdd));
-		this.importsToRemove = Collections.unmodifiableSet(new HashSet<>(importsToRemove));
-	}
+    ImportsDelta(Collection<ImportName> importsToAdd, Collection<ImportName> importsToRemove) {
+        this.importsToAdd = Collections.unmodifiableSet(new HashSet<>(importsToAdd));
+        this.importsToRemove = Collections.unmodifiableSet(new HashSet<>(importsToRemove));
+    }
 
-	@Override
-	public String toString() {
-		return String.format(
-				"(additions: %s, removals: %s)", //$NON-NLS-1$
-				this.importsToAdd,
-				this.importsToRemove);
-	}
+    @Override
+    public String toString() {
+        return String.format("(additions: %s, removals: %s)", //$NON-NLS-1$
+            this.importsToAdd, this.importsToRemove);
+    }
 }

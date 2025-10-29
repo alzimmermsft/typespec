@@ -21,25 +21,25 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class ImageBuilderInternalException extends RuntimeException {
 
-private static final long serialVersionUID = 28252254530437336L; // backward compatible
-protected CoreException coreException;
+    private static final long serialVersionUID = 28252254530437336L; // backward compatible
+    protected CoreException coreException;
 
-public ImageBuilderInternalException(CoreException e) {
-	this.coreException = e;
-}
+    public ImageBuilderInternalException(CoreException e) {
+        this.coreException = e;
+    }
 
-public CoreException getThrowable() {
-	return this.coreException;
-}
+    public CoreException getThrowable() {
+        return this.coreException;
+    }
 
-@Override
-public void printStackTrace() {
-	if (this.coreException != null) {
-		System.err.println(this);
-		System.err.println("Stack trace of embedded core exception:"); //$NON-NLS-1$
-		this.coreException.printStackTrace();
-	} else {
-		super.printStackTrace();
-	}
-}
+    @Override
+    public void printStackTrace() {
+        if (this.coreException != null) {
+            System.err.println(this);
+            System.err.println("Stack trace of embedded core exception:"); //$NON-NLS-1$
+            this.coreException.printStackTrace();
+        } else {
+            super.printStackTrace();
+        }
+    }
 }

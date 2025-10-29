@@ -35,7 +35,7 @@ public interface ISafeRunnable {
      * @exception Exception if a problem occurred while running this method
      * @see SafeRunner#run(ISafeRunnable)
      */
-    public void run() throws Exception;
+    void run() throws Exception;
 
     /**
      * Handles an exception thrown by this runnable's {@link #run} method. The
@@ -52,7 +52,7 @@ public interface ISafeRunnable {
      * this runnable (i.e., in {@link #run})
      * @see SafeRunner#run(ISafeRunnable)
      */
-    public default void handleException(Throwable exception) {
+    default void handleException(Throwable exception) {
         // The exception has already been logged by the caller.
     }
 }

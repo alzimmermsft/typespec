@@ -17,11 +17,11 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class ImportContainerInfo extends JavaElementInfo {
 
-	protected IJavaElement[] children = JavaElement.NO_ELEMENTS;
+    protected IJavaElement[] children = JavaElement.NO_ELEMENTS;
 
-	@Override
-	public IJavaElement[] getChildren() {
-		return this.children;
-	}
+    @Override
+    public IJavaElement[] getChildren() {
+        return this.children;
+    }
 
 }

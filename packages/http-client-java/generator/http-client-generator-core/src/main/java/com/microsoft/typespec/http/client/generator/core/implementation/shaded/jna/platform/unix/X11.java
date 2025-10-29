@@ -44,228 +44,446 @@ public interface X11 extends Library {
     class VisualID extends NativeLong {
         private static final long serialVersionUID = 1L;
         public static final VisualID None = null;
-        public VisualID() { this(0); }
-        public VisualID(long value) { super(value, true); }
-        protected boolean isNone(Object o) {
-            return o == null
-                || (o instanceof Number
-                    && ((Number)o).longValue() == X11.None);
+
+        public VisualID() {
+            this(0);
         }
+
+        public VisualID(long value) {
+            super(value, true);
+        }
+
+        protected boolean isNone(Object o) {
+            return o == null || (o instanceof Number && ((Number) o).longValue() == X11.None);
+        }
+
         @Override
         public Object fromNative(Object nativeValue, FromNativeContext context) {
             if (isNone(nativeValue))
                 return None;
-            return new VisualID(((Number)nativeValue).longValue());
+            return new VisualID(((Number) nativeValue).longValue());
         }
     }
 
     class XID extends NativeLong {
         private static final long serialVersionUID = 1L;
         public static final XID None = null;
-        public XID() { this(0); }
-        public XID(long id) { super(id, true); }
-        protected boolean isNone(Object o) {
-            return o == null
-                || (o instanceof Number
-                    && ((Number)o).longValue() == X11.None);
+
+        public XID() {
+            this(0);
         }
+
+        public XID(long id) {
+            super(id, true);
+        }
+
+        protected boolean isNone(Object o) {
+            return o == null || (o instanceof Number && ((Number) o).longValue() == X11.None);
+        }
+
         @Override
         public Object fromNative(Object nativeValue, FromNativeContext context) {
             if (isNone(nativeValue))
                 return None;
-            return new XID(((Number)nativeValue).longValue());
+            return new XID(((Number) nativeValue).longValue());
         }
+
         @Override
         public String toString() {
             return "0x" + Long.toHexString(longValue());
         }
     }
+
     class Atom extends XID {
         private static final long serialVersionUID = 1L;
         public static final Atom None = null;
-        public Atom() { }
-        public Atom(long id) { super(id); }
+
+        public Atom() {
+        }
+
+        public Atom(long id) {
+            super(id);
+        }
+
         /** Return constants for predefined <code>Atom</code> values. */
         @Override
         public Object fromNative(Object nativeValue, FromNativeContext context) {
-            long value = ((Number)nativeValue).longValue();
+            long value = ((Number) nativeValue).longValue();
             if (value <= Integer.MAX_VALUE) {
-                switch((int)value) {
-                    case 0: return None;
-                    case 1: return XA_PRIMARY;
-                    case 2: return XA_SECONDARY;
-                    case 3: return XA_ARC;
-                    case 4: return XA_ATOM;
-                    case 5: return XA_BITMAP;
-                    case 6: return XA_CARDINAL;
-                    case 7: return XA_COLORMAP;
-                    case 8: return XA_CURSOR;
-                    case 9: return XA_CUT_BUFFER0;
-                    case 10: return XA_CUT_BUFFER1;
-                    case 11: return XA_CUT_BUFFER2;
-                    case 12: return XA_CUT_BUFFER3;
-                    case 13: return XA_CUT_BUFFER4;
-                    case 14: return XA_CUT_BUFFER5;
-                    case 15: return XA_CUT_BUFFER6;
-                    case 16: return XA_CUT_BUFFER7;
-                    case 17: return XA_DRAWABLE;
-                    case 18: return XA_FONT;
-                    case 19: return XA_INTEGER;
-                    case 20: return XA_PIXMAP;
-                    case 21: return XA_POINT;
-                    case 22: return XA_RECTANGLE;
-                    case 23: return XA_RESOURCE_MANAGER;
-                    case 24: return XA_RGB_COLOR_MAP;
-                    case 25: return XA_RGB_BEST_MAP;
-                    case 26: return XA_RGB_BLUE_MAP;
-                    case 27: return XA_RGB_DEFAULT_MAP;
-                    case 28: return XA_RGB_GRAY_MAP;
-                    case 29: return XA_RGB_GREEN_MAP;
-                    case 30: return XA_RGB_RED_MAP;
-                    case 31: return XA_STRING;
-                    case 32: return XA_VISUALID;
-                    case 33: return XA_WINDOW;
-                    case 34: return XA_WM_COMMAND;
-                    case 35: return XA_WM_HINTS;
-                    case 36: return XA_WM_CLIENT_MACHINE;
-                    case 37: return XA_WM_ICON_NAME;
-                    case 38: return XA_WM_ICON_SIZE;
-                    case 39: return XA_WM_NAME;
-                    case 40: return XA_WM_NORMAL_HINTS;
-                    case 41: return XA_WM_SIZE_HINTS;
-                    case 42: return XA_WM_ZOOM_HINTS;
-                    case 43: return XA_MIN_SPACE;
-                    case 44: return XA_NORM_SPACE;
-                    case 45: return XA_MAX_SPACE;
-                    case 46: return XA_END_SPACE;
-                    case 47: return XA_SUPERSCRIPT_X;
-                    case 48: return XA_SUPERSCRIPT_Y;
-                    case 49: return XA_SUBSCRIPT_X;
-                    case 50: return XA_SUBSCRIPT_Y;
-                    case 51: return XA_UNDERLINE_POSITION;
-                    case 52: return XA_UNDERLINE_THICKNESS;
-                    case 53: return XA_STRIKEOUT_ASCENT;
-                    case 54: return XA_STRIKEOUT_DESCENT;
-                    case 55: return XA_ITALIC_ANGLE;
-                    case 56: return XA_X_HEIGHT;
-                    case 57: return XA_QUAD_WIDTH;
-                    case 58: return XA_WEIGHT;
-                    case 59: return XA_POINT_SIZE;
-                    case 60: return XA_RESOLUTION;
-                    case 61: return XA_COPYRIGHT;
-                    case 62: return XA_NOTICE;
-                    case 63: return XA_FONT_NAME;
-                    case 64: return XA_FAMILY_NAME;
-                    case 65: return XA_FULL_NAME;
-                    case 66: return XA_CAP_HEIGHT;
-                    case 67: return XA_WM_CLASS;
-                    case 68: return XA_WM_TRANSIENT_FOR;
+                switch ((int) value) {
+                    case 0:
+                        return None;
+
+                    case 1:
+                        return XA_PRIMARY;
+
+                    case 2:
+                        return XA_SECONDARY;
+
+                    case 3:
+                        return XA_ARC;
+
+                    case 4:
+                        return XA_ATOM;
+
+                    case 5:
+                        return XA_BITMAP;
+
+                    case 6:
+                        return XA_CARDINAL;
+
+                    case 7:
+                        return XA_COLORMAP;
+
+                    case 8:
+                        return XA_CURSOR;
+
+                    case 9:
+                        return XA_CUT_BUFFER0;
+
+                    case 10:
+                        return XA_CUT_BUFFER1;
+
+                    case 11:
+                        return XA_CUT_BUFFER2;
+
+                    case 12:
+                        return XA_CUT_BUFFER3;
+
+                    case 13:
+                        return XA_CUT_BUFFER4;
+
+                    case 14:
+                        return XA_CUT_BUFFER5;
+
+                    case 15:
+                        return XA_CUT_BUFFER6;
+
+                    case 16:
+                        return XA_CUT_BUFFER7;
+
+                    case 17:
+                        return XA_DRAWABLE;
+
+                    case 18:
+                        return XA_FONT;
+
+                    case 19:
+                        return XA_INTEGER;
+
+                    case 20:
+                        return XA_PIXMAP;
+
+                    case 21:
+                        return XA_POINT;
+
+                    case 22:
+                        return XA_RECTANGLE;
+
+                    case 23:
+                        return XA_RESOURCE_MANAGER;
+
+                    case 24:
+                        return XA_RGB_COLOR_MAP;
+
+                    case 25:
+                        return XA_RGB_BEST_MAP;
+
+                    case 26:
+                        return XA_RGB_BLUE_MAP;
+
+                    case 27:
+                        return XA_RGB_DEFAULT_MAP;
+
+                    case 28:
+                        return XA_RGB_GRAY_MAP;
+
+                    case 29:
+                        return XA_RGB_GREEN_MAP;
+
+                    case 30:
+                        return XA_RGB_RED_MAP;
+
+                    case 31:
+                        return XA_STRING;
+
+                    case 32:
+                        return XA_VISUALID;
+
+                    case 33:
+                        return XA_WINDOW;
+
+                    case 34:
+                        return XA_WM_COMMAND;
+
+                    case 35:
+                        return XA_WM_HINTS;
+
+                    case 36:
+                        return XA_WM_CLIENT_MACHINE;
+
+                    case 37:
+                        return XA_WM_ICON_NAME;
+
+                    case 38:
+                        return XA_WM_ICON_SIZE;
+
+                    case 39:
+                        return XA_WM_NAME;
+
+                    case 40:
+                        return XA_WM_NORMAL_HINTS;
+
+                    case 41:
+                        return XA_WM_SIZE_HINTS;
+
+                    case 42:
+                        return XA_WM_ZOOM_HINTS;
+
+                    case 43:
+                        return XA_MIN_SPACE;
+
+                    case 44:
+                        return XA_NORM_SPACE;
+
+                    case 45:
+                        return XA_MAX_SPACE;
+
+                    case 46:
+                        return XA_END_SPACE;
+
+                    case 47:
+                        return XA_SUPERSCRIPT_X;
+
+                    case 48:
+                        return XA_SUPERSCRIPT_Y;
+
+                    case 49:
+                        return XA_SUBSCRIPT_X;
+
+                    case 50:
+                        return XA_SUBSCRIPT_Y;
+
+                    case 51:
+                        return XA_UNDERLINE_POSITION;
+
+                    case 52:
+                        return XA_UNDERLINE_THICKNESS;
+
+                    case 53:
+                        return XA_STRIKEOUT_ASCENT;
+
+                    case 54:
+                        return XA_STRIKEOUT_DESCENT;
+
+                    case 55:
+                        return XA_ITALIC_ANGLE;
+
+                    case 56:
+                        return XA_X_HEIGHT;
+
+                    case 57:
+                        return XA_QUAD_WIDTH;
+
+                    case 58:
+                        return XA_WEIGHT;
+
+                    case 59:
+                        return XA_POINT_SIZE;
+
+                    case 60:
+                        return XA_RESOLUTION;
+
+                    case 61:
+                        return XA_COPYRIGHT;
+
+                    case 62:
+                        return XA_NOTICE;
+
+                    case 63:
+                        return XA_FONT_NAME;
+
+                    case 64:
+                        return XA_FAMILY_NAME;
+
+                    case 65:
+                        return XA_FULL_NAME;
+
+                    case 66:
+                        return XA_CAP_HEIGHT;
+
+                    case 67:
+                        return XA_WM_CLASS;
+
+                    case 68:
+                        return XA_WM_TRANSIENT_FOR;
+
                     default:
                 }
             }
             return new Atom(value);
         }
     }
+
     class AtomByReference extends ByReference {
-        public AtomByReference() { super(XID.SIZE); }
+        public AtomByReference() {
+            super(XID.SIZE);
+        }
+
         public Atom getValue() {
             NativeLong value = getPointer().getNativeLong(0);
-            return (Atom)new Atom().fromNative(value, null);
+            return (Atom) new Atom().fromNative(value, null);
         }
     }
+
     class Colormap extends XID {
         private static final long serialVersionUID = 1L;
         public static final Colormap None = null;
-        public Colormap() { }
-        public Colormap(long id) { super(id); }
+
+        public Colormap() {
+        }
+
+        public Colormap(long id) {
+            super(id);
+        }
+
         @Override
         public Object fromNative(Object nativeValue, FromNativeContext context) {
             if (isNone(nativeValue))
                 return None;
-            return new Colormap(((Number)nativeValue).longValue());
+            return new Colormap(((Number) nativeValue).longValue());
         }
     }
+
     class Font extends XID {
         private static final long serialVersionUID = 1L;
         public static final Font None = null;
-        public Font() { }
-        public Font(long id) { super(id); }
+
+        public Font() {
+        }
+
+        public Font(long id) {
+            super(id);
+        }
+
         @Override
         public Object fromNative(Object nativeValue, FromNativeContext context) {
             if (isNone(nativeValue))
                 return None;
-            return new Font(((Number)nativeValue).longValue());
+            return new Font(((Number) nativeValue).longValue());
         }
     }
+
     class Cursor extends XID {
         private static final long serialVersionUID = 1L;
         public static final Cursor None = null;
-        public Cursor() { }
-        public Cursor(long id) { super(id); }
+
+        public Cursor() {
+        }
+
+        public Cursor(long id) {
+            super(id);
+        }
+
         @Override
         public Object fromNative(Object nativeValue, FromNativeContext context) {
             if (isNone(nativeValue))
                 return None;
-            return new Cursor(((Number)nativeValue).longValue());
+            return new Cursor(((Number) nativeValue).longValue());
         }
     }
+
     class KeySym extends XID {
         private static final long serialVersionUID = 1L;
         public static final KeySym None = null;
-        public KeySym() { }
-        public KeySym(long id) { super(id); }
+
+        public KeySym() {
+        }
+
+        public KeySym(long id) {
+            super(id);
+        }
+
         @Override
         public Object fromNative(Object nativeValue, FromNativeContext context) {
             if (isNone(nativeValue))
                 return None;
-            return new KeySym(((Number)nativeValue).longValue());
+            return new KeySym(((Number) nativeValue).longValue());
         }
     }
+
     class Drawable extends XID {
         private static final long serialVersionUID = 1L;
         public static final Drawable None = null;
-        public Drawable() { }
-        public Drawable(long id) { super(id); }
+
+        public Drawable() {
+        }
+
+        public Drawable(long id) {
+            super(id);
+        }
+
         @Override
         public Object fromNative(Object nativeValue, FromNativeContext context) {
             if (isNone(nativeValue))
                 return None;
-            return new Drawable(((Number)nativeValue).longValue());
+            return new Drawable(((Number) nativeValue).longValue());
         }
     }
+
     class Window extends Drawable {
         private static final long serialVersionUID = 1L;
         public static final Window None = null;
-        public Window() { }
-        public Window(long id) { super(id); }
+
+        public Window() {
+        }
+
+        public Window(long id) {
+            super(id);
+        }
+
         @Override
         public Object fromNative(Object nativeValue, FromNativeContext context) {
             if (isNone(nativeValue))
                 return None;
-            return new Window(((Number)nativeValue).longValue());
+            return new Window(((Number) nativeValue).longValue());
         }
     }
+
     class WindowByReference extends ByReference {
-        public WindowByReference() { super(XID.SIZE); }
+        public WindowByReference() {
+            super(XID.SIZE);
+        }
+
         public Window getValue() {
             NativeLong value = getPointer().getNativeLong(0);
             return value.longValue() == X11.None ? Window.None : new Window(value.longValue());
         }
     }
+
     class Pixmap extends Drawable {
         private static final long serialVersionUID = 1L;
         public static final Pixmap None = null;
-        public Pixmap() { }
-        public Pixmap(long id) { super(id); }
+
+        public Pixmap() {
+        }
+
+        public Pixmap(long id) {
+            super(id);
+        }
+
         @Override
         public Object fromNative(Object nativeValue, FromNativeContext context) {
             if (isNone(nativeValue))
                 return None;
-            return new Pixmap(((Number)nativeValue).longValue());
+            return new Pixmap(((Number) nativeValue).longValue());
         }
     }
+
     // TODO: define structure
-    class Display extends PointerType { }
+    class Display extends PointerType {
+    }
+
     // TODO: define structure
     class Visual extends PointerType {
         public VisualID getVisualID() {
@@ -273,20 +491,28 @@ public interface X11 extends Library {
                 return new VisualID(getPointer().getNativeLong(Native.POINTER_SIZE).longValue());
             throw new IllegalStateException("Attempting to retrieve VisualID from a null Visual");
         }
+
         @Override
         public String toString() {
             return "Visual: VisualID=0x" + Long.toHexString(getVisualID().longValue());
         }
     }
+
     // TODO: define structure
-    class Screen extends PointerType { }
+    class Screen extends PointerType {
+    }
+
     // TODO: define structure
-    class GC extends PointerType { }
+    class GC extends PointerType {
+    }
+
     // TODO: define structure
-    class XImage extends PointerType { }
+    class XImage extends PointerType {
+    }
 
     /**
      * The XQueryExtension function determines if the named extension is present.
+     * 
      * @param display Specifies the connection to the X server.
      * @param name Specifies the extension name.
      * @param major_opcode_return Returns the major opcode.
@@ -294,7 +520,8 @@ public interface X11 extends Library {
      * @param first_error_return Returns the first error code, if any.
      * @return if present
      */
-    boolean XQueryExtension(Display display, String name, IntByReference major_opcode_return, IntByReference first_event_return, IntByReference first_error_return);
+    boolean XQueryExtension(Display display, String name, IntByReference major_opcode_return,
+        IntByReference first_event_return, IntByReference first_error_return);
 
     /** Definition (incomplete) of the Xext library. */
     interface Xext extends Library {
@@ -310,15 +537,14 @@ public interface X11 extends Library {
         int ShapeSubtract = 3;
         int ShapeInvert = 4;
 
-        void XShapeCombineMask(Display display, Window window, int dest_kind,
-                               int x_off, int y_off, Pixmap src, int op);
+        void XShapeCombineMask(Display display, Window window, int dest_kind, int x_off, int y_off, Pixmap src, int op);
     }
 
     /** Definition (incomplete) of the Xrender library. */
     interface Xrender extends Library {
         Xrender INSTANCE = Native.load("Xrender", Xrender.class);
 
-        @FieldOrder({"red", "redMask", "green", "greenMask", "blue", "blueMask", "alpha", "alphaMask"})
+        @FieldOrder({ "red", "redMask", "green", "greenMask", "blue", "blueMask", "alpha", "alphaMask" })
         class XRenderDirectFormat extends Structure {
             public short red, redMask;
             public short green, greenMask;
@@ -329,17 +555,24 @@ public interface X11 extends Library {
         class PictFormat extends XID {
             private static final long serialVersionUID = 1L;
             public static final PictFormat None = null;
-            public PictFormat(long value) { super(value); }
-            public PictFormat() { this(0); }
+
+            public PictFormat(long value) {
+                super(value);
+            }
+
+            public PictFormat() {
+                this(0);
+            }
+
             @Override
             public Object fromNative(Object nativeValue, FromNativeContext context) {
                 if (isNone(nativeValue))
                     return None;
-                return new PictFormat(((Number)nativeValue).longValue());
+                return new PictFormat(((Number) nativeValue).longValue());
             }
         }
 
-        @FieldOrder({"id", "type", "depth", "direct", "colormap"})
+        @FieldOrder({ "id", "type", "depth", "direct", "colormap" })
         class XRenderPictFormat extends Structure {
             public PictFormat id;
             public int type;
@@ -347,57 +580,86 @@ public interface X11 extends Library {
             public XRenderDirectFormat direct;
             public Colormap colormap;
         }
+
         int PictTypeIndexed = 0x0;
         int PictTypeDirect = 0x1;
+
         XRenderPictFormat XRenderFindVisualFormat(Display display, Visual visual);
     }
 
     /** Definition of the Xevie library. */
     interface Xevie extends Library {
-        /** Instance of Xevie. Note: This extension has been removed from xorg/xserver on Oct 22, 2008 because it is broken and maintainerless. */
+        /**
+         * Instance of Xevie. Note: This extension has been removed from xorg/xserver on Oct 22, 2008 because it is
+         * broken and maintainerless.
+         */
         Xevie INSTANCE = Native.load("Xevie", Xevie.class);
         int XEVIE_UNMODIFIED = 0;
-        int XEVIE_MODIFIED   = 1;
+        int XEVIE_MODIFIED = 1;
+
         // Bool XevieQueryVersion (Display* display, int* major_version, int* minor_version);
-        boolean XevieQueryVersion (Display display, IntByReference major_version, IntByReference minor_version);
+        boolean XevieQueryVersion(Display display, IntByReference major_version, IntByReference minor_version);
+
         // Status XevieStart (Display* display);
-        int XevieStart (Display display);
+        int XevieStart(Display display);
+
         // Status XevieEnd (Display* display);
-        int XevieEnd (Display display);
+        int XevieEnd(Display display);
+
         // Status XevieSendEvent (Display* display, XEvent* event, int data_type);
-        int XevieSendEvent (Display display, XEvent event, int data_type);
+        int XevieSendEvent(Display display, XEvent event, int data_type);
+
         // Status XevieSelectInput (Display* display, NativeLong event_mask);
-        int XevieSelectInput (Display display, NativeLong event_mask);
+        int XevieSelectInput(Display display, NativeLong event_mask);
     }
 
     /** Definition of the XTest library. */
     interface XTest extends Library {
-        XTest INSTANCE = Native.load("Xtst", XTest.class);///usr/lib/libxcb-xtest.so.0
-        boolean XTestQueryExtension(Display display, IntByReference event_basep, IntByReference error_basep, IntByReference majorp, IntByReference minorp);
+        XTest INSTANCE = Native.load("Xtst", XTest.class);/// usr/lib/libxcb-xtest.so.0
+
+        boolean XTestQueryExtension(Display display, IntByReference event_basep, IntByReference error_basep,
+            IntByReference majorp, IntByReference minorp);
+
         boolean XTestCompareCursorWithWindow(Display display, Window window, Cursor cursor);
+
         boolean XTestCompareCurrentCursorWithWindow(Display display, Window window);
+
         // extern int XTestFakeKeyEvent(Display* display, unsigned int keycode, Bool is_press, unsigned long delay);
         int XTestFakeKeyEvent(Display display, int keycode, boolean is_press, NativeLong delay);
+
         int XTestFakeButtonEvent(Display display, int button, boolean is_press, NativeLong delay);
+
         int XTestFakeMotionEvent(Display display, int screen, int x, int y, NativeLong delay);
+
         int XTestFakeRelativeMotionEvent(Display display, int x, int y, NativeLong delay);
-        int XTestFakeDeviceKeyEvent(Display display, XDeviceByReference dev, int keycode, boolean is_press, IntByReference axes, int n_axes, NativeLong delay);
-        int XTestFakeDeviceButtonEvent(Display display, XDeviceByReference dev, int button, boolean is_press, IntByReference axes, int n_axes, NativeLong delay);
-        int XTestFakeProximityEvent(Display display, XDeviceByReference dev, boolean in_prox, IntByReference axes, int n_axes, NativeLong delay);
-        int XTestFakeDeviceMotionEvent(Display display, XDeviceByReference dev, boolean is_relative, int first_axis, IntByReference axes, int n_axes, NativeLong delay);
+
+        int XTestFakeDeviceKeyEvent(Display display, XDeviceByReference dev, int keycode, boolean is_press,
+            IntByReference axes, int n_axes, NativeLong delay);
+
+        int XTestFakeDeviceButtonEvent(Display display, XDeviceByReference dev, int button, boolean is_press,
+            IntByReference axes, int n_axes, NativeLong delay);
+
+        int XTestFakeProximityEvent(Display display, XDeviceByReference dev, boolean in_prox, IntByReference axes,
+            int n_axes, NativeLong delay);
+
+        int XTestFakeDeviceMotionEvent(Display display, XDeviceByReference dev, boolean is_relative, int first_axis,
+            IntByReference axes, int n_axes, NativeLong delay);
+
         int XTestGrabControl(Display display, boolean impervious);
-        //void XTestSetGContextOfGC(GC gc, GContext gid);
+
+        // void XTestSetGContextOfGC(GC gc, GContext gid);
         void XTestSetVisualIDOfVisual(Visual visual, VisualID visualid);
+
         int XTestDiscard(Display display);
     }
 
-    @FieldOrder({"input_class", "event_type_base"})
+    @FieldOrder({ "input_class", "event_type_base" })
     class XInputClassInfoByReference extends Structure implements Structure.ByReference {
         public byte input_class;
         public byte event_type_base;
     }
 
-    @FieldOrder({"device_id", "num_classes", "classes"})
+    @FieldOrder({ "device_id", "num_classes", "classes" })
     class XDeviceByReference extends Structure implements Structure.ByReference {
         public XID device_id;
         public int num_classes;
@@ -407,20 +669,29 @@ public interface X11 extends Library {
     X11 INSTANCE = Native.load("X11", X11.class);
 
     /*
-      typedef struct {
-        long flags;     // marks which fields in this structure are defined
-        Bool input;     // does this application rely on the window manager to
-                        // get keyboard input?
-        int initial_state;      // see below
-        Pixmap icon_pixmap;     // pixmap to be used as icon
-        Window icon_window;     // window to be used as icon
-        int icon_x, icon_y;     // initial position of icon
-        Pixmap icon_mask;       // icon mask bitmap
-        XID window_group;       // id of related window group
-        // this structure may be extended in the future
-      } XWMHints;
-    */
-    @FieldOrder({"flags", "input", "initial_state", "icon_pixmap", "icon_window", "icon_x", "icon_y", "icon_mask", "window_group"})
+     * typedef struct {
+     * long flags; // marks which fields in this structure are defined
+     * Bool input; // does this application rely on the window manager to
+     * // get keyboard input?
+     * int initial_state; // see below
+     * Pixmap icon_pixmap; // pixmap to be used as icon
+     * Window icon_window; // window to be used as icon
+     * int icon_x, icon_y; // initial position of icon
+     * Pixmap icon_mask; // icon mask bitmap
+     * XID window_group; // id of related window group
+     * // this structure may be extended in the future
+     * } XWMHints;
+     */
+    @FieldOrder({
+        "flags",
+        "input",
+        "initial_state",
+        "icon_pixmap",
+        "icon_window",
+        "icon_x",
+        "icon_y",
+        "icon_mask",
+        "window_group" })
     class XWMHints extends Structure {
         public NativeLong flags;
         public boolean input;
@@ -433,14 +704,14 @@ public interface X11 extends Library {
     }
 
     /*
-      typedef struct {
-        unsigned char *value;   // same as Property routines
-        Atom encoding;          // prop type
-        int format;             // prop data format: 8, 16, or 32
-        unsigned long nitems;   // number of data items in value
-      } XTextProperty;
-    */
-    @FieldOrder({"value", "encoding", "format", "nitems"})
+     * typedef struct {
+     * unsigned char *value; // same as Property routines
+     * Atom encoding; // prop type
+     * int format; // prop data format: 8, 16, or 32
+     * unsigned long nitems; // number of data items in value
+     * } XTextProperty;
+     */
+    @FieldOrder({ "value", "encoding", "format", "nitems" })
     class XTextProperty extends Structure {
         public String value;
         public Atom encoding;
@@ -449,32 +720,40 @@ public interface X11 extends Library {
     }
 
     /*
-      typedef struct {
-        long flags;     // marks which fields in this structure are defined
-        int x, y;       // obsolete for new window mgrs, but clients
-        int width, height;      /// should set so old wm's don't mess up
-        int min_width, min_height;
-        int max_width, max_height;
-        int width_inc, height_inc;
-        struct {
-          int x;        // numerator
-          int y;        // denominator
-        } min_aspect, max_aspect;
-        int base_width, base_height;            // added by ICCCM version 1
-        int win_gravity;                        // added by ICCCM version 1
-      } XSizeHints;
+     * typedef struct {
+     * long flags; // marks which fields in this structure are defined
+     * int x, y; // obsolete for new window mgrs, but clients
+     * int width, height; /// should set so old wm's don't mess up
+     * int min_width, min_height;
+     * int max_width, max_height;
+     * int width_inc, height_inc;
+     * struct {
+     * int x; // numerator
+     * int y; // denominator
+     * } min_aspect, max_aspect;
+     * int base_width, base_height; // added by ICCCM version 1
+     * int win_gravity; // added by ICCCM version 1
+     * } XSizeHints;
      */
-    @FieldOrder({"flags",
-                "x", "y",
-                "width", "height",
-                "min_width", "min_height",
-                "max_width", "max_height",
-                "width_inc", "height_inc",
-                "min_aspect", "max_aspect",
-                "base_width", "base_height",
-                "win_gravity"})
+    @FieldOrder({
+        "flags",
+        "x",
+        "y",
+        "width",
+        "height",
+        "min_width",
+        "min_height",
+        "max_width",
+        "max_height",
+        "width_inc",
+        "height_inc",
+        "min_aspect",
+        "max_aspect",
+        "base_width",
+        "base_height",
+        "win_gravity" })
     class XSizeHints extends Structure {
-        @FieldOrder({"x", "y"})
+        @FieldOrder({ "x", "y" })
         public static class Aspect extends Structure {
             public int x; // numerator
             public int y; // denominator
@@ -493,44 +772,58 @@ public interface X11 extends Library {
     }
 
     /*
-      typedef struct {
-        int x, y;               // location of window
-        int width, height;      // width and height of window
-        int border_width;       // border width of window
-        int depth;              // depth of window
-        Visual *visual;         // the associated visual structure
-        Window root;            // root of screen containing window
-#if defined(__cplusplus) || defined(c_plusplus)
-        int c_class;            // C++ InputOutput, InputOnly
-#else
-        int class;              // InputOutput, InputOnly
-#endif
-        int bit_gravity;        // one of bit gravity values
-        int win_gravity;        // one of the window gravity values
-        int backing_store;      // NotUseful, WhenMapped, Always
-        unsigned long backing_planes;// planes to be preserved if possible
-        unsigned long backing_pixel;// value to be used when restoring planes
-        Bool save_under;        // boolean, should bits under be saved?
-        Colormap colormap;      // color map to be associated with window
-        Bool map_installed;     // boolean, is color map currently installed
-        int map_state;          // IsUnmapped, IsUnviewable, IsViewable
-        long all_event_masks;   // set of events all people have interest in
-        long your_event_mask;   // my event mask
-        long do_not_propagate_mask; // set of events that should not propagate
-        Bool override_redirect; // boolean value for override-redirect
-        Screen *screen;         // back pointer to correct screen
-      } XWindowAttributes;
+     * typedef struct {
+     * int x, y; // location of window
+     * int width, height; // width and height of window
+     * int border_width; // border width of window
+     * int depth; // depth of window
+     * Visual *visual; // the associated visual structure
+     * Window root; // root of screen containing window
+     * #if defined(__cplusplus) || defined(c_plusplus)
+     * int c_class; // C++ InputOutput, InputOnly
+     * #else
+     * int class; // InputOutput, InputOnly
+     * #endif
+     * int bit_gravity; // one of bit gravity values
+     * int win_gravity; // one of the window gravity values
+     * int backing_store; // NotUseful, WhenMapped, Always
+     * unsigned long backing_planes;// planes to be preserved if possible
+     * unsigned long backing_pixel;// value to be used when restoring planes
+     * Bool save_under; // boolean, should bits under be saved?
+     * Colormap colormap; // color map to be associated with window
+     * Bool map_installed; // boolean, is color map currently installed
+     * int map_state; // IsUnmapped, IsUnviewable, IsViewable
+     * long all_event_masks; // set of events all people have interest in
+     * long your_event_mask; // my event mask
+     * long do_not_propagate_mask; // set of events that should not propagate
+     * Bool override_redirect; // boolean value for override-redirect
+     * Screen *screen; // back pointer to correct screen
+     * } XWindowAttributes;
      */
-    @FieldOrder({"x", "y",
-                "width", "height",
-                "border_width",
-                "depth", "visual", "root", "c_class",
-                "bit_gravity", "win_gravity",
-                "backing_store", "backing_planes", "backing_pixel",
-                "save_under", "colormap",
-                "map_installed", "map_state",
-                "all_event_masks", "your_event_mask", "do_not_propagate_mask",
-                "override_redirect", "screen"})
+    @FieldOrder({
+        "x",
+        "y",
+        "width",
+        "height",
+        "border_width",
+        "depth",
+        "visual",
+        "root",
+        "c_class",
+        "bit_gravity",
+        "win_gravity",
+        "backing_store",
+        "backing_planes",
+        "backing_pixel",
+        "save_under",
+        "colormap",
+        "map_installed",
+        "map_state",
+        "all_event_masks",
+        "your_event_mask",
+        "do_not_propagate_mask",
+        "override_redirect",
+        "screen" })
     class XWindowAttributes extends Structure {
         public int x, y;
         public int width, height;
@@ -556,31 +849,40 @@ public interface X11 extends Library {
     }
 
     /*
-      typedef struct {
-        Pixmap background_pixmap;       // background or None or ParentRelative
-        unsigned long background_pixel; // background pixel
-        Pixmap border_pixmap;   // border of the window
-        unsigned long border_pixel;     // border pixel value
-        int bit_gravity;                // one of bit gravity values
-        int win_gravity;                // one of the window gravity values
-        int backing_store;              // NotUseful, WhenMapped, Always
-        unsigned long backing_planes;// planes to be preseved if possible
-        unsigned long backing_pixel;// value to use in restoring planes
-        Bool save_under;                // should bits under be saved? (popups)
-        long event_mask;                // set of events that should be saved
-        long do_not_propagate_mask;     // set of events that should not propagate
-        Bool override_redirect; // boolean value for override-redirect
-        Colormap colormap;              // color map to be associated with window
-        Cursor cursor;          // cursor to be displayed (or None)
-      } XSetWindowAttributes;
+     * typedef struct {
+     * Pixmap background_pixmap; // background or None or ParentRelative
+     * unsigned long background_pixel; // background pixel
+     * Pixmap border_pixmap; // border of the window
+     * unsigned long border_pixel; // border pixel value
+     * int bit_gravity; // one of bit gravity values
+     * int win_gravity; // one of the window gravity values
+     * int backing_store; // NotUseful, WhenMapped, Always
+     * unsigned long backing_planes;// planes to be preseved if possible
+     * unsigned long backing_pixel;// value to use in restoring planes
+     * Bool save_under; // should bits under be saved? (popups)
+     * long event_mask; // set of events that should be saved
+     * long do_not_propagate_mask; // set of events that should not propagate
+     * Bool override_redirect; // boolean value for override-redirect
+     * Colormap colormap; // color map to be associated with window
+     * Cursor cursor; // cursor to be displayed (or None)
+     * } XSetWindowAttributes;
      */
-    @FieldOrder({"background_pixmap", "background_pixel",
-                "border_pixmap", "border_pixel",
-                "bit_gravity", "win_gravity",
-                "backing_store", "backing_planes", "backing_pixel",
-                "save_under",
-                "event_mask", "do_not_propagate_mask",
-                "override_redirect", "colormap", "cursor"})
+    @FieldOrder({
+        "background_pixmap",
+        "background_pixel",
+        "border_pixmap",
+        "border_pixel",
+        "bit_gravity",
+        "win_gravity",
+        "backing_store",
+        "backing_planes",
+        "backing_pixel",
+        "save_under",
+        "event_mask",
+        "do_not_propagate_mask",
+        "override_redirect",
+        "colormap",
+        "cursor" })
     class XSetWindowAttributes extends Structure {
         public Pixmap background_pixmap;
         public NativeLong background_pixel;
@@ -628,7 +930,17 @@ public interface X11 extends Library {
     int VisualBitsPerRGBMask = 0x100;
     int VisualAllMask = 0x1FF;
 
-    @FieldOrder({"visual", "visualid", "screen", "depth", "c_class", "red_mask", "green_mask", "blue_mask", "colormap_size", "bits_per_rgb"})
+    @FieldOrder({
+        "visual",
+        "visualid",
+        "screen",
+        "depth",
+        "c_class",
+        "red_mask",
+        "green_mask",
+        "blue_mask",
+        "colormap_size",
+        "bits_per_rgb" })
     class XVisualInfo extends Structure {
         public Visual visual;
         public VisualID visualid;
@@ -642,26 +954,34 @@ public interface X11 extends Library {
         public int bits_per_rgb;
     }
 
-    @FieldOrder({"x", "y"})
+    @FieldOrder({ "x", "y" })
     class XPoint extends Structure {
         public short x, y;
 
-        public XPoint() { this((short)0, (short)0); }
+        public XPoint() {
+            this((short) 0, (short) 0);
+        }
+
         public XPoint(short x, short y) {
             this.x = x;
             this.y = y;
         }
     }
 
-    @FieldOrder({"x", "y", "width", "height"})
+    @FieldOrder({ "x", "y", "width", "height" })
     class XRectangle extends Structure {
         public short x, y;
         public short width, height;
 
-        public XRectangle() { this((short)0, (short)0, (short)0, (short)0); }
+        public XRectangle() {
+            this((short) 0, (short) 0, (short) 0, (short) 0);
+        }
+
         public XRectangle(short x, short y, short width, short height) {
-            this.x = x; this.y = y;
-            this.width = width; this.height = height;
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
         }
     }
 
@@ -736,45 +1056,63 @@ public interface X11 extends Library {
     Atom XA_LAST_PREDEFINED = XA_WM_TRANSIENT_FOR;
 
     Display XOpenDisplay(String name);
+
     int XGetErrorText(Display display, int code, byte[] buffer, int len);
+
     int XDefaultScreen(Display display);
+
     Screen DefaultScreenOfDisplay(Display display);
+
     Visual XDefaultVisual(Display display, int screen);
+
     Colormap XDefaultColormap(Display display, int screen);
+
     int XDisplayWidth(Display display, int screen);
+
     int XDisplayHeight(Display display, int screen);
+
     Window XDefaultRootWindow(Display display);
+
     Window XRootWindow(Display display, int screen);
-    int XAllocNamedColor(Display display, int colormap, String color_name,
-                         Pointer screen_def_return, Pointer exact_def_return);
+
+    int XAllocNamedColor(Display display, int colormap, String color_name, Pointer screen_def_return,
+        Pointer exact_def_return);
+
     XSizeHints XAllocSizeHints();
-    void XSetWMProperties(Display display, Window window, String window_name,
-                          String icon_name, String[] argv, int argc,
-                          XSizeHints normal_hints, Pointer wm_hints,
-                          Pointer class_hints);
+
+    void XSetWMProperties(Display display, Window window, String window_name, String icon_name, String[] argv, int argc,
+        XSizeHints normal_hints, Pointer wm_hints, Pointer class_hints);
 
     int XSetWMProtocols(Display display, Window window, Atom[] atom, int count);
+
     int XGetWMProtocols(Display display, Window w, PointerByReference protocols_return, IntByReference count_return);
 
     int XFree(Pointer data);
-    Window XCreateSimpleWindow(Display display, Window parent, int x, int y,
-                               int width, int height, int border_width,
-                               int border, int background);
-    Pixmap XCreateBitmapFromData(Display display, Window window, Pointer data,
-                                 int width, int height);
+
+    Window XCreateSimpleWindow(Display display, Window parent, int x, int y, int width, int height, int border_width,
+        int border, int background);
+
+    Pixmap XCreateBitmapFromData(Display display, Window window, Pointer data, int width, int height);
+
     int XMapWindow(Display display, Window window);
+
     int XMapRaised(Display display, Window window);
+
     int XMapSubwindows(Display display, Window window);
 
-    /** Flushes the output buffer. Most client applications need not use this
+    /**
+     * Flushes the output buffer. Most client applications need not use this
      * function because the output buffer is automatically flushed as needed
      * by calls to XPending, XNextEvent, and XWindowEvent. Events generated by
      * the server may be enqueued into the library's event queue.
+     * 
      * @param display target Display
      * @return status
      */
     int XFlush(Display display);
-    /** <p>Flushes the output buffer and then waits until all requests have been
+
+    /**
+     * <p>Flushes the output buffer and then waits until all requests have been
      * received and processed by the X server. Any errors generated must be
      * handled by the error handler. For each protocol error received by Xlib,
      * XSync calls the client application's error handling routine (see
@@ -785,12 +1123,15 @@ public interface X11 extends Library {
      * all events in the queue, including those events that were on the queue
      * before XSync was called. Client applications seldom need to call
      * XSync.
+     * 
      * @param display target Display
      * @param discard whether to discard events
      * @return status
      */
     int XSync(Display display, boolean discard);
-    /** <p>If mode is QueuedAlready, XEventsQueued returns the number of events
+
+    /**
+     * <p>If mode is QueuedAlready, XEventsQueued returns the number of events
      * already in the event queue (and never performs a system call). If mode
      * is QueuedAfterFlush, XEventsQueued returns the number of events already
      * in the queue if the number is nonzero. If there are no events in the
@@ -806,162 +1147,204 @@ public interface X11 extends Library {
      * with mode QueuedAfterFlush is identical in behavior to
      * XPending. XEventsQueued with mode QueuedAlready is identical to the
      * XQLength function.
+     * 
      * @param display target Display
      * @param mode QueuedAlready, QueuedAfterFlush, or QueuedAfterReading
      * @return status
      */
     int XEventsQueued(Display display, int mode);
-    /** Returns the number of events that have been received from the X server
-     * but have not been removed from the event queue. XPending  is identical
+
+    /**
+     * Returns the number of events that have been received from the X server
+     * but have not been removed from the event queue. XPending is identical
      * to XEventsQueued with the mode QueuedAfterFlush specified.
+     * 
      * @param display target Display
      * @return status
      */
     int XPending(Display display);
 
     int XUnmapWindow(Display display, Window window);
+
     int XDestroyWindow(Display display, Window window);
+
     int XCloseDisplay(Display display);
+
     int XClearWindow(Display display, Window window);
+
     int XClearArea(Display display, Window window, int x, int y, int w, int h, int exposures);
+
     Pixmap XCreatePixmap(Display display, Drawable drawable, int width, int height, int depth);
+
     int XFreePixmap(Display display, Pixmap pixmap);
 
-    @FieldOrder({"function", "plane_mask",
-                "foreground", "background",
-                "line_width", "line_style",
-                "cap_style", "join_style",
-                "fill_style", "fill_rule",
-                "arc_mode", "tile", "stipple",
-                "ts_x_origin", "ts_y_origin",
-                "font", "subwindow_mode", "graphics_exposures",
-                "clip_x_origin", "clip_y_origin", "clip_mask",
-                "dash_offset", "dashes"})
+    @FieldOrder({
+        "function",
+        "plane_mask",
+        "foreground",
+        "background",
+        "line_width",
+        "line_style",
+        "cap_style",
+        "join_style",
+        "fill_style",
+        "fill_rule",
+        "arc_mode",
+        "tile",
+        "stipple",
+        "ts_x_origin",
+        "ts_y_origin",
+        "font",
+        "subwindow_mode",
+        "graphics_exposures",
+        "clip_x_origin",
+        "clip_y_origin",
+        "clip_mask",
+        "dash_offset",
+        "dashes" })
     class XGCValues extends Structure {
-        public int function;            /* logical operation */
+        public int function; /* logical operation */
         public NativeLong plane_mask;/* plane mask */
         public NativeLong foreground;/* foreground pixel */
         public NativeLong background;/* background pixel */
-        public int line_width;          /* line width (in pixels) */
-        public int line_style;          /* LineSolid, LineOnOffDash, LineDoubleDash*/
-        public int cap_style;           /* CapNotLast, CapButt, CapRound, CapProjecting */
-        public int join_style;          /* JoinMiter, JoinRound, JoinBevel */
-        public int fill_style;          /* FillSolid, FillTiled, FillStippled FillOpaqueStippled*/
-        public int fill_rule;           /* EvenOddRule, WindingRule */
-        public int arc_mode;            /* ArcChord, ArcPieSlice */
-        public Pixmap tile;             /* tile pixmap for tiling operations */
-        public Pixmap stipple;          /* stipple 1 plane pixmap for stippling */
-        public int ts_x_origin;         /* offset for tile or stipple operations */
+        public int line_width; /* line width (in pixels) */
+        public int line_style; /* LineSolid, LineOnOffDash, LineDoubleDash */
+        public int cap_style; /* CapNotLast, CapButt, CapRound, CapProjecting */
+        public int join_style; /* JoinMiter, JoinRound, JoinBevel */
+        public int fill_style; /* FillSolid, FillTiled, FillStippled FillOpaqueStippled */
+        public int fill_rule; /* EvenOddRule, WindingRule */
+        public int arc_mode; /* ArcChord, ArcPieSlice */
+        public Pixmap tile; /* tile pixmap for tiling operations */
+        public Pixmap stipple; /* stipple 1 plane pixmap for stippling */
+        public int ts_x_origin; /* offset for tile or stipple operations */
         public int ts_y_origin;
-        public Font font;               /* default text font for text operations */
-        public int subwindow_mode;      /* ClipByChildren, IncludeInferiors */
+        public Font font; /* default text font for text operations */
+        public int subwindow_mode; /* ClipByChildren, IncludeInferiors */
         public boolean graphics_exposures; /* boolean, should exposures be generated */
-        public int clip_x_origin;       /* origin for clipping */
+        public int clip_x_origin; /* origin for clipping */
         public int clip_y_origin;
-        public Pixmap clip_mask;        /* bitmap clipping; other calls for rects */
-        public int dash_offset;         /* patterned/dashed line information */
+        public Pixmap clip_mask; /* bitmap clipping; other calls for rects */
+        public int dash_offset; /* patterned/dashed line information */
         public byte dashes;
     }
+
     GC XCreateGC(Display display, Drawable drawable, NativeLong mask, XGCValues values);
+
     int XSetFillRule(Display display, GC gc, int fill_rule);
+
     int XFreeGC(Display display, GC gc);
+
     int XDrawPoint(Display display, Drawable drawable, GC gc, int x, int y);
-    int XDrawPoints(Display display, Drawable drawable, GC gc,
-                    XPoint[] points, int npoints, int mode);
-    int XFillRectangle(Display display, Drawable drawable, GC gc,
-                       int x, int y, int width, int height);
-    int XFillRectangles(Display display, Drawable drawable, GC gc,
-                        XRectangle[] rectangles, int nrectangles);
+
+    int XDrawPoints(Display display, Drawable drawable, GC gc, XPoint[] points, int npoints, int mode);
+
+    int XFillRectangle(Display display, Drawable drawable, GC gc, int x, int y, int width, int height);
+
+    int XFillRectangles(Display display, Drawable drawable, GC gc, XRectangle[] rectangles, int nrectangles);
+
     int XSetForeground(Display display, GC gc, NativeLong color);
+
     int XSetBackground(Display display, GC gc, NativeLong color);
-    int XFillArc(Display display, Drawable drawable, GC gc, int x, int y,
-                 int width, int height, int angle1, int angle2);
-    int XFillPolygon(Display dpy, Drawable drawable, GC gc, XPoint[] points,
-                     int npoints, int shape, int mode);
-    int XQueryTree(Display display, Window window, WindowByReference root,
-                   WindowByReference parent, PointerByReference children,
-                   IntByReference childCount);
-    boolean XQueryPointer(Display display, Window window,
-                          WindowByReference root_return,
-                          WindowByReference child_return,
-                          IntByReference root_x_return,
-                          IntByReference root_y_return,
-                          IntByReference win_x_return,
-                          IntByReference win_y_return,
-                          IntByReference mask_return);
+
+    int XFillArc(Display display, Drawable drawable, GC gc, int x, int y, int width, int height, int angle1,
+        int angle2);
+
+    int XFillPolygon(Display dpy, Drawable drawable, GC gc, XPoint[] points, int npoints, int shape, int mode);
+
+    int XQueryTree(Display display, Window window, WindowByReference root, WindowByReference parent,
+        PointerByReference children, IntByReference childCount);
+
+    boolean XQueryPointer(Display display, Window window, WindowByReference root_return, WindowByReference child_return,
+        IntByReference root_x_return, IntByReference root_y_return, IntByReference win_x_return,
+        IntByReference win_y_return, IntByReference mask_return);
+
     int XGetWindowAttributes(Display display, Window window, XWindowAttributes attributes);
+
     int XChangeWindowAttributes(Display display, Window window, NativeLong valuemask, XSetWindowAttributes attributes);
-    // Status XGetGeometry(Display *display, Drawable d, Window *root_return, int *x_return, int *y_return, unsigned int *width_return,
-    //                     unsigned int *height_return, unsigned int *border_width_return, unsigned int *depth_return);
-    int XGetGeometry(Display display, Drawable d, WindowByReference w, IntByReference x, IntByReference y, IntByReference width,
-                     IntByReference heigth, IntByReference border_width, IntByReference depth);
+
+    // Status XGetGeometry(Display *display, Drawable d, Window *root_return, int *x_return, int *y_return, unsigned int
+    // *width_return,
+    // unsigned int *height_return, unsigned int *border_width_return, unsigned int *depth_return);
+    int XGetGeometry(Display display, Drawable d, WindowByReference w, IntByReference x, IntByReference y,
+        IntByReference width, IntByReference heigth, IntByReference border_width, IntByReference depth);
+
     // Bool XTranslateCoordinates(Display *display, Window src_w, dest_w, int src_x, int src_y,
-    //                            int *dest_x_return, int *dest_y_return, Window *child_return);
+    // int *dest_x_return, int *dest_y_return, Window *child_return);
     boolean XTranslateCoordinates(Display display, Window src_w, Window dest_w, int src_x, int src_y,
-                                  IntByReference dest_x_return, IntByReference dest_y_return, WindowByReference child_return);
+        IntByReference dest_x_return, IntByReference dest_y_return, WindowByReference child_return);
 
     int XMoveWindow(Display display, Window w, int x, int y);
+
     int XResizeWindow(Display display, Window w, int width, int height);
+
     int XMoveResizeWindow(Display display, Window w, int x, int y, int width, int height);
+
     int XRaiseWindow(Display display, Window w);
+
     int XLowerWindow(Display display, Window w);
 
     /*****************************************************************
      * RESERVED RESOURCE AND CONSTANT DEFINITIONS
      *****************************************************************/
 
-    int None = 0;        /* universal null resource or null atom */
-    int ParentRelative = 1;        /* background pixmap in CreateWindow and ChangeWindowAttributes */
-    int CopyFromParent = 0;            /* border pixmap in CreateWindow
-                                          and ChangeWindowAttributes
-                                          special VisualID and special window
-                                          class passed to CreateWindow */
-    int PointerWindow = 0;    /* destination window in SendEvent */
-    int InputFocus = 1;    /* destination window in SendEvent */
-    int PointerRoot = 1;    /* focus window in SetInputFocus */
-    int AnyPropertyType = 0;    /* special Atom, passed to GetProperty */
-    int AnyKey = 0;        /* special Key Code, passed to GrabKey */
-    int AnyButton = 0;    /* special Button Code, passed to GrabButton */
-    int AllTemporary = 0;    /* special Resource ID passed to KillClient */
-    int CurrentTime = 0;    /* special Time */
-    int NoSymbol = 0;        /* special KeySym */
+    int None = 0; /* universal null resource or null atom */
+    int ParentRelative = 1; /* background pixmap in CreateWindow and ChangeWindowAttributes */
+    int CopyFromParent = 0; /*
+                             * border pixmap in CreateWindow
+                             * and ChangeWindowAttributes
+                             * special VisualID and special window
+                             * class passed to CreateWindow
+                             */
+    int PointerWindow = 0; /* destination window in SendEvent */
+    int InputFocus = 1; /* destination window in SendEvent */
+    int PointerRoot = 1; /* focus window in SetInputFocus */
+    int AnyPropertyType = 0; /* special Atom, passed to GetProperty */
+    int AnyKey = 0; /* special Key Code, passed to GrabKey */
+    int AnyButton = 0; /* special Button Code, passed to GrabButton */
+    int AllTemporary = 0; /* special Resource ID passed to KillClient */
+    int CurrentTime = 0; /* special Time */
+    int NoSymbol = 0; /* special KeySym */
 
     /*****************************************************************
      * EVENT DEFINITIONS
      *****************************************************************/
 
-    /* Input Event Masks. Used as event-mask window attribute and as arguments
-       to Grab requests.  Not to be confused with event names.  */
+    /*
+     * Input Event Masks. Used as event-mask window attribute and as arguments
+     * to Grab requests. Not to be confused with event names.
+     */
     int NoEventMask = 0;
-    int KeyPressMask = (1<<0);
-    int KeyReleaseMask = (1<<1);
-    int ButtonPressMask = (1<<2);
-    int ButtonReleaseMask = (1<<3);
-    int EnterWindowMask = (1<<4);
-    int LeaveWindowMask = (1<<5);
-    int PointerMotionMask = (1<<6);
-    int PointerMotionHintMask = (1<<7);
-    int Button1MotionMask = (1<<8);
-    int Button2MotionMask = (1<<9);
-    int Button3MotionMask = (1<<10);
-    int Button4MotionMask = (1<<11);
-    int Button5MotionMask = (1<<12);
-    int ButtonMotionMask = (1<<13);
-    int KeymapStateMask = (1<<14);
-    int ExposureMask = (1<<15);
-    int VisibilityChangeMask = (1<<16);
-    int StructureNotifyMask = (1<<17);
-    int ResizeRedirectMask = (1<<18);
-    int SubstructureNotifyMask = (1<<19);
-    int SubstructureRedirectMask = (1<<20);
-    int FocusChangeMask = (1<<21);
-    int PropertyChangeMask = (1<<22);
-    int ColormapChangeMask = (1<<23);
-    int OwnerGrabButtonMask = (1<<24);
+    int KeyPressMask = (1 << 0);
+    int KeyReleaseMask = (1 << 1);
+    int ButtonPressMask = (1 << 2);
+    int ButtonReleaseMask = (1 << 3);
+    int EnterWindowMask = (1 << 4);
+    int LeaveWindowMask = (1 << 5);
+    int PointerMotionMask = (1 << 6);
+    int PointerMotionHintMask = (1 << 7);
+    int Button1MotionMask = (1 << 8);
+    int Button2MotionMask = (1 << 9);
+    int Button3MotionMask = (1 << 10);
+    int Button4MotionMask = (1 << 11);
+    int Button5MotionMask = (1 << 12);
+    int ButtonMotionMask = (1 << 13);
+    int KeymapStateMask = (1 << 14);
+    int ExposureMask = (1 << 15);
+    int VisibilityChangeMask = (1 << 16);
+    int StructureNotifyMask = (1 << 17);
+    int ResizeRedirectMask = (1 << 18);
+    int SubstructureNotifyMask = (1 << 19);
+    int SubstructureRedirectMask = (1 << 20);
+    int FocusChangeMask = (1 << 21);
+    int PropertyChangeMask = (1 << 22);
+    int ColormapChangeMask = (1 << 23);
+    int OwnerGrabButtonMask = (1 << 24);
 
-    /* Event names.  Used in "type" field in XEvent structures.  Not to be
-       confused with event masks above.  They start from 2 because 0 and 1
-       are reserved in the protocol for errors and replies. */
+    /*
+     * Event names. Used in "type" field in XEvent structures. Not to be
+     * confused with event masks above. They start from 2 because 0 and 1
+     * are reserved in the protocol for errors and replies.
+     */
     int KeyPress = 2;
     int KeyRelease = 3;
     int ButtonPress = 4;
@@ -998,8 +1381,10 @@ public interface X11 extends Library {
     int GenericEvent = 35;
     int LASTEvent = 36;   // must be bigger than any event #
 
-    /* Key masks. Used as modifiers to GrabButton and GrabKey, results of QueryPointer,
-       state in various key-, mouse-, and button-related events. */
+    /*
+     * Key masks. Used as modifiers to GrabButton and GrabKey, results of QueryPointer,
+     * state in various key-, mouse-, and button-related events.
+     */
     int ShiftMask = (1 << 0);
     int LockMask = (1 << 1);
     int ControlMask = (1 << 2);
@@ -1009,9 +1394,11 @@ public interface X11 extends Library {
     int Mod4Mask = (1 << 6);
     int Mod5Mask = (1 << 7);
 
-    /* modifier names.  Used to build a SetModifierMapping request or
-       to read a GetModifierMapping request.  These correspond to the
-       masks defined above. */
+    /*
+     * modifier names. Used to build a SetModifierMapping request or
+     * to read a GetModifierMapping request. These correspond to the
+     * masks defined above.
+     */
     int ShiftMapIndex = 0;
     int LockMapIndex = 1;
     int ControlMapIndex = 2;
@@ -1021,19 +1408,23 @@ public interface X11 extends Library {
     int Mod4MapIndex = 6;
     int Mod5MapIndex = 7;
 
-    /* button masks.  Used in same manner as Key masks above. Not to be confused
-       with button names below. */
+    /*
+     * button masks. Used in same manner as Key masks above. Not to be confused
+     * with button names below.
+     */
     int Button1Mask = (1 << 8);
     int Button2Mask = (1 << 9);
     int Button3Mask = (1 << 10);
     int Button4Mask = (1 << 11);
     int Button5Mask = (1 << 12);
 
-    int AnyModifier = (1 << 15);  /* used in GrabButton, GrabKey */
+    int AnyModifier = (1 << 15); /* used in GrabButton, GrabKey */
 
-    /* button names. Used as arguments to GrabButton and as detail in ButtonPress
-       and ButtonRelease events.  Not to be confused with button masks above.
-       Note that 0 is already defined above as "AnyButton".  */
+    /*
+     * button names. Used as arguments to GrabButton and as detail in ButtonPress
+     * and ButtonRelease events. Not to be confused with button masks above.
+     * Note that 0 is already defined above as "AnyButton".
+     */
     int Button1 = 1;
     int Button2 = 2;
     int Button3 = 3;
@@ -1046,7 +1437,7 @@ public interface X11 extends Library {
     int NotifyUngrab = 2;
     int NotifyWhileGrabbed = 3;
 
-    int NotifyHint = 1;    /* for MotionNotify events */
+    int NotifyHint = 1; /* for MotionNotify events */
 
     /* Notify detail */
     int NotifyAncestor = 0;
@@ -1068,10 +1459,10 @@ public interface X11 extends Library {
     int PlaceOnBottom = 1;
 
     /* protocol families */
-    int FamilyInternet = 0;    /* IPv4 */
+    int FamilyInternet = 0; /* IPv4 */
     int FamilyDECnet = 1;
     int FamilyChaos = 2;
-    int FamilyInternet6 = 6;    /* IPv6 */
+    int FamilyInternet6 = 6; /* IPv6 */
 
     /* authentication families not tied to a specific protocol */
     int FamilyServerInterpreted = 5;
@@ -1114,32 +1505,33 @@ public interface X11 extends Library {
      * ERROR CODES
      *****************************************************************/
 
-    int Success = 0;    /* everything's okay */
-    int BadRequest = 1;    /* bad request code */
-    int BadValue = 2;    /* int parameter out of range */
-    int BadWindow = 3;    /* parameter not a Window */
-    int BadPixmap = 4;    /* parameter not a Pixmap */
-    int BadAtom = 5;    /* parameter not an Atom */
-    int BadCursor = 6;    /* parameter not a Cursor */
-    int BadFont = 7;    /* parameter not a Font */
-    int BadMatch = 8;    /* parameter mismatch */
-    int BadDrawable = 9;    /* parameter not a Pixmap or Window */
-    int BadAccess = 10;    /* depending on context:
-                     - key/button already grabbed
-                     - attempt to free an illegal
-                       cmap entry
-                     - attempt to store into a read-only
-                       color map entry.
-                     - attempt to modify the access control
-                       list from other than the local host.
-                    */
-    int BadAlloc = 11;    /* insufficient resources */
-    int BadColor = 12;    /* no such colormap */
-    int BadGC = 13;    /* parameter not a GC */
-    int BadIDChoice = 14;    /* choice not in range or already used */
-    int BadName = 15;    /* font or color name doesn't exist */
-    int BadLength = 16;    /* Request length incorrect */
-    int BadImplementation = 17;    /* server is defective */
+    int Success = 0; /* everything's okay */
+    int BadRequest = 1; /* bad request code */
+    int BadValue = 2; /* int parameter out of range */
+    int BadWindow = 3; /* parameter not a Window */
+    int BadPixmap = 4; /* parameter not a Pixmap */
+    int BadAtom = 5; /* parameter not an Atom */
+    int BadCursor = 6; /* parameter not a Cursor */
+    int BadFont = 7; /* parameter not a Font */
+    int BadMatch = 8; /* parameter mismatch */
+    int BadDrawable = 9; /* parameter not a Pixmap or Window */
+    int BadAccess = 10; /*
+                         * depending on context:
+                         * - key/button already grabbed
+                         * - attempt to free an illegal
+                         * cmap entry
+                         * - attempt to store into a read-only
+                         * color map entry.
+                         * - attempt to modify the access control
+                         * list from other than the local host.
+                         */
+    int BadAlloc = 11; /* insufficient resources */
+    int BadColor = 12; /* no such colormap */
+    int BadGC = 13; /* parameter not a GC */
+    int BadIDChoice = 14; /* choice not in range or already used */
+    int BadName = 15; /* font or color name doesn't exist */
+    int BadLength = 16; /* Request length incorrect */
+    int BadImplementation = 17; /* server is defective */
 
     int FirstExtensionError = 128;
     int LastExtensionError = 255;
@@ -1154,31 +1546,30 @@ public interface X11 extends Library {
     int InputOnly = 2;
 
     /* Window attributes for CreateWindow and ChangeWindowAttributes */
-    int CWBackPixmap = (1<<0);
-    int CWBackPixel = (1<<1);
-    int CWBorderPixmap = (1<<2);
-    int CWBorderPixel = (1<<3);
-    int CWBitGravity = (1<<4);
-    int CWWinGravity = (1<<5);
-    int CWBackingStore = (1<<6);
-    int CWBackingPlanes = (1<<7);
-    int CWBackingPixel = (1<<8);
-    int CWOverrideRedirect = (1<<9);
-    int CWSaveUnder = (1<<10);
-    int CWEventMask = (1<<11);
-    int CWDontPropagate = (1<<12);
-    int CWColormap = (1<<13);
-    int CWCursor = (1<<14);
+    int CWBackPixmap = (1 << 0);
+    int CWBackPixel = (1 << 1);
+    int CWBorderPixmap = (1 << 2);
+    int CWBorderPixel = (1 << 3);
+    int CWBitGravity = (1 << 4);
+    int CWWinGravity = (1 << 5);
+    int CWBackingStore = (1 << 6);
+    int CWBackingPlanes = (1 << 7);
+    int CWBackingPixel = (1 << 8);
+    int CWOverrideRedirect = (1 << 9);
+    int CWSaveUnder = (1 << 10);
+    int CWEventMask = (1 << 11);
+    int CWDontPropagate = (1 << 12);
+    int CWColormap = (1 << 13);
+    int CWCursor = (1 << 14);
 
     /* ConfigureWindow structure */
-    int CWX = (1<<0);
-    int CWY = (1<<1);
-    int CWWidth = (1<<2);
-    int CWHeight = (1<<3);
-    int CWBorderWidth = (1<<4);
-    int CWSibling = (1<<5);
-    int CWStackMode = (1<<6);
-
+    int CWX = (1 << 0);
+    int CWY = (1 << 1);
+    int CWWidth = (1 << 2);
+    int CWHeight = (1 << 3);
+    int CWBorderWidth = (1 << 4);
+    int CWSibling = (1 << 5);
+    int CWStackMode = (1 << 6);
 
     /* Bit Gravity */
     int ForgetGravity = 0;
@@ -1236,22 +1627,22 @@ public interface X11 extends Library {
      *****************************************************************/
 
     /* graphics functions, as in GC.alu */
-    int GXclear = 0x0;        /* 0 */
-    int GXand = 0x1;        /* src AND dst */
-    int GXandReverse = 0x2;        /* src AND NOT dst */
-    int GXcopy = 0x3;        /* src */
-    int GXandInverted = 0x4;        /* NOT src AND dst */
-    int GXnoop = 0x5;        /* dst */
-    int GXxor = 0x6;        /* src XOR dst */
-    int GXor = 0x7;        /* src OR dst */
-    int GXnor = 0x8;        /* NOT src AND NOT dst */
-    int GXequiv = 0x9;        /* NOT src XOR dst */
-    int GXinvert = 0xa;        /* NOT dst */
-    int GXorReverse = 0xb;        /* src OR NOT dst */
-    int GXcopyInverted = 0xc;        /* NOT src */
-    int GXorInverted = 0xd;        /* NOT src OR dst */
-    int GXnand = 0xe;        /* NOT src OR NOT dst */
-    int GXset = 0xf;        /* 1 */
+    int GXclear = 0x0; /* 0 */
+    int GXand = 0x1; /* src AND dst */
+    int GXandReverse = 0x2; /* src AND NOT dst */
+    int GXcopy = 0x3; /* src */
+    int GXandInverted = 0x4; /* NOT src AND dst */
+    int GXnoop = 0x5; /* dst */
+    int GXxor = 0x6; /* src XOR dst */
+    int GXor = 0x7; /* src OR dst */
+    int GXnor = 0x8; /* NOT src AND NOT dst */
+    int GXequiv = 0x9; /* NOT src XOR dst */
+    int GXinvert = 0xa; /* NOT dst */
+    int GXorReverse = 0xb; /* src OR NOT dst */
+    int GXcopyInverted = 0xc; /* NOT src */
+    int GXorInverted = 0xd; /* NOT src OR dst */
+    int GXnand = 0xe; /* NOT src OR NOT dst */
+    int GXset = 0xf; /* 1 */
 
     /* LineStyle */
     int LineSolid = 0;
@@ -1290,43 +1681,45 @@ public interface X11 extends Library {
     int YXBanded = 3;
 
     /* CoordinateMode for drawing routines */
-    int CoordModeOrigin = 0;    /* relative to the origin */
-    int CoordModePrevious = 1;    /* relative to previous point */
+    int CoordModeOrigin = 0; /* relative to the origin */
+    int CoordModePrevious = 1; /* relative to previous point */
 
     /* Polygon shapes */
-    int Complex = 0;    /* paths may intersect */
-    int Nonconvex = 1;    /* no paths intersect, but not convex */
-    int Convex = 2;    /* wholly convex */
+    int Complex = 0; /* paths may intersect */
+    int Nonconvex = 1; /* no paths intersect, but not convex */
+    int Convex = 2; /* wholly convex */
 
     /* Arc modes for PolyFillArc */
-    int ArcChord = 0;    /* join endpoints of arc */
-    int ArcPieSlice = 1;    /* join endpoints to center of arc */
+    int ArcChord = 0; /* join endpoints of arc */
+    int ArcPieSlice = 1; /* join endpoints to center of arc */
 
-    /* GC components: masks used in CreateGC, CopyGC, ChangeGC, OR'ed into
-       GC.stateChanges */
-    int GCFunction = (1<<0);
-    int GCPlaneMask = (1<<1);
-    int GCForeground = (1<<2);
-    int GCBackground = (1<<3);
-    int GCLineWidth = (1<<4);
-    int GCLineStyle = (1<<5);
-    int GCCapStyle = (1<<6);
-    int GCJoinStyle = (1<<7);
-    int GCFillStyle = (1<<8);
-    int GCFillRule = (1<<9);
-    int GCTile = (1<<10);
-    int GCStipple = (1<<11);
-    int GCTileStipXOrigin = (1<<12);
-    int GCTileStipYOrigin = (1<<13);
-    int GCFont = (1<<14);
-    int GCSubwindowMode = (1<<15);
-    int GCGraphicsExposures = (1<<16);
-    int GCClipXOrigin = (1<<17);
-    int GCClipYOrigin = (1<<18);
-    int GCClipMask = (1<<19);
-    int GCDashOffset = (1<<20);
-    int GCDashList = (1<<21);
-    int GCArcMode = (1<<22);
+    /*
+     * GC components: masks used in CreateGC, CopyGC, ChangeGC, OR'ed into
+     * GC.stateChanges
+     */
+    int GCFunction = (1 << 0);
+    int GCPlaneMask = (1 << 1);
+    int GCForeground = (1 << 2);
+    int GCBackground = (1 << 3);
+    int GCLineWidth = (1 << 4);
+    int GCLineStyle = (1 << 5);
+    int GCCapStyle = (1 << 6);
+    int GCJoinStyle = (1 << 7);
+    int GCFillStyle = (1 << 8);
+    int GCFillRule = (1 << 9);
+    int GCTile = (1 << 10);
+    int GCStipple = (1 << 11);
+    int GCTileStipXOrigin = (1 << 12);
+    int GCTileStipYOrigin = (1 << 13);
+    int GCFont = (1 << 14);
+    int GCSubwindowMode = (1 << 15);
+    int GCGraphicsExposures = (1 << 16);
+    int GCClipXOrigin = (1 << 17);
+    int GCClipYOrigin = (1 << 18);
+    int GCClipMask = (1 << 19);
+    int GCDashOffset = (1 << 20);
+    int GCDashList = (1 << 21);
+    int GCArcMode = (1 << 22);
 
     int GCLastBit = 22;
     /*****************************************************************
@@ -1340,36 +1733,35 @@ public interface X11 extends Library {
     int FontChange = 255;
 
     /*****************************************************************
-     *  IMAGING
+     * IMAGING
      *****************************************************************/
 
     /* ImageFormat -- PutImage, GetImage */
-    int XYBitmap = 0;    /* depth 1, XYFormat */
-    int XYPixmap = 1;    /* depth == drawable depth */
-    int ZPixmap = 2;    /* depth == drawable depth */
+    int XYBitmap = 0; /* depth 1, XYFormat */
+    int XYPixmap = 1; /* depth == drawable depth */
+    int ZPixmap = 2; /* depth == drawable depth */
 
     /*****************************************************************
-     *  COLOR MAP STUFF
+     * COLOR MAP STUFF
      *****************************************************************/
 
     /* For CreateColormap */
-    int AllocNone = 0;    /* create map with no entries */
-    int AllocAll = 1;    /* allocate entire map writeable */
-
+    int AllocNone = 0; /* create map with no entries */
+    int AllocAll = 1; /* allocate entire map writeable */
 
     /* Flags used in StoreNamedColor, StoreColors */
-    int DoRed = (1<<0);
-    int DoGreen = (1<<1);
-    int DoBlue = (1<<2);
+    int DoRed = (1 << 0);
+    int DoGreen = (1 << 1);
+    int DoBlue = (1 << 2);
 
     /*****************************************************************
      * CURSOR STUFF
      *****************************************************************/
 
     /* QueryBestSize Class */
-    int CursorShape = 0;    /* largest size that can be displayed */
-    int TileShape = 1;    /* size tiled fastest */
-    int StippleShape = 2;    /* size stippled fastest */
+    int CursorShape = 0; /* largest size that can be displayed */
+    int TileShape = 1; /* size tiled fastest */
+    int StippleShape = 2; /* size stippled fastest */
 
     /*****************************************************************
      * KEYBOARD/POINTER STUFF
@@ -1383,14 +1775,14 @@ public interface X11 extends Library {
     int LedModeOn = 1;
 
     /* masks for ChangeKeyboardControl */
-    int KBKeyClickPercent = (1<<0);
-    int KBBellPercent = (1<<1);
-    int KBBellPitch = (1<<2);
-    int KBBellDuration = (1<<3);
-    int KBLed = (1<<4);
-    int KBLedMode = (1<<5);
-    int KBKey = (1<<6);
-    int KBAutoRepeatMode = (1<<7);
+    int KBKeyClickPercent = (1 << 0);
+    int KBBellPercent = (1 << 1);
+    int KBBellPitch = (1 << 2);
+    int KBBellDuration = (1 << 3);
+    int KBLed = (1 << 4);
+    int KBLedMode = (1 << 5);
+    int KBKey = (1 << 6);
+    int KBAutoRepeatMode = (1 << 7);
 
     int MappingSuccess = 0;
     int MappingBusy = 1;
@@ -1431,9 +1823,11 @@ public interface X11 extends Library {
     int EnableAccess = 1;
     int DisableAccess = 0;
 
-    /* Display classes  used in opening the connection
+    /*
+     * Display classes used in opening the connection
      * Note that the statically allocated ones are even numbered and the
-     * dynamically changeable ones are odd numbered */
+     * dynamically changeable ones are odd numbered
+     */
     int StaticGray = 0;
     int GrayScale = 1;
     int StaticColor = 2;
@@ -1441,11 +1835,9 @@ public interface X11 extends Library {
     int TrueColor = 4;
     int DirectColor = 5;
 
-    /* Byte order  used in imageByteOrder and bitmapBitOrder */
+    /* Byte order used in imageByteOrder and bitmapBitOrder */
     int LSBFirst = 0;
     int MSBFirst = 1;
-
-
 
     /*****************************************************************
      * DEFINITIONS OF SPECIFIC EVENTS
@@ -1489,7 +1881,7 @@ public interface X11 extends Library {
         public NativeLong[] pad = new NativeLong[24];
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "window"})
+    @FieldOrder({ "type", "serial", "send_event", "display", "window" })
     public static class XAnyEvent extends Structure {
         public int type;
         public NativeLong serial;   // # of last request processed by server
@@ -1498,7 +1890,22 @@ public interface X11 extends Library {
         public Window window;       // window on which event was requested in event mask
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "window", "root", "subwindow", "time", "x", "y", "x_root", "y_root", "state", "keycode", "same_screen"})
+    @FieldOrder({
+        "type",
+        "serial",
+        "send_event",
+        "display",
+        "window",
+        "root",
+        "subwindow",
+        "time",
+        "x",
+        "y",
+        "x_root",
+        "y_root",
+        "state",
+        "keycode",
+        "same_screen" })
     class XKeyEvent extends Structure {
         public int type;            // of event
         public NativeLong serial;   // # of last request processed by server
@@ -1515,7 +1922,22 @@ public interface X11 extends Library {
         public int same_screen;     // same screen flag
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "window", "root", "subwindow", "time", "x", "y", "x_root", "y_root", "state", "button", "same_screen"})
+    @FieldOrder({
+        "type",
+        "serial",
+        "send_event",
+        "display",
+        "window",
+        "root",
+        "subwindow",
+        "time",
+        "x",
+        "y",
+        "x_root",
+        "y_root",
+        "state",
+        "button",
+        "same_screen" })
     class XButtonEvent extends Structure {
         public int type;            // of event
         public NativeLong serial;   // # of last request processed by server
@@ -1538,7 +1960,7 @@ public interface X11 extends Library {
     class XButtonReleasedEvent extends XButtonEvent {
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "window", "message_type", "format", "data"})
+    @FieldOrder({ "type", "serial", "send_event", "display", "window", "message_type", "format", "data" })
     public static class XClientMessageEvent extends Structure {
         public int type;                // ClientMessage
         public NativeLong serial;       // # of last request processed by server
@@ -1556,7 +1978,22 @@ public interface X11 extends Library {
         }
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "window", "root", "subwindow", "time", "x", "y", "x_root", "y_root", "state", "is_hint", "same_screen"})
+    @FieldOrder({
+        "type",
+        "serial",
+        "send_event",
+        "display",
+        "window",
+        "root",
+        "subwindow",
+        "time",
+        "x",
+        "y",
+        "x_root",
+        "y_root",
+        "state",
+        "is_hint",
+        "same_screen" })
     class XMotionEvent extends Structure {
         public int type;            // of event
         public NativeLong serial;   // # of last request processed by server
@@ -1576,7 +2013,24 @@ public interface X11 extends Library {
     class XPointerMovedEvent extends XMotionEvent {
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "window", "root", "subwindow", "time", "x", "y", "x_root", "y_root", "mode", "detail", "same_screen", "focus", "state"})
+    @FieldOrder({
+        "type",
+        "serial",
+        "send_event",
+        "display",
+        "window",
+        "root",
+        "subwindow",
+        "time",
+        "x",
+        "y",
+        "x_root",
+        "y_root",
+        "mode",
+        "detail",
+        "same_screen",
+        "focus",
+        "state" })
     class XCrossingEvent extends Structure {
         public int type;            // of event
         public NativeLong serial;   // # of last request processed by server
@@ -1591,9 +2045,9 @@ public interface X11 extends Library {
         public int mode;            // NotifyNormal, NotifyGrab, NotifyUngrab
         public int detail;
         /*
-        * NotifyAncestor, NotifyVirtual, NotifyInferior,
-        * NotifyNonlinear,NotifyNonlinearVirtual
-        */
+         * NotifyAncestor, NotifyVirtual, NotifyInferior,
+         * NotifyNonlinear,NotifyNonlinearVirtual
+         */
         public int same_screen;     // same screen flag
         public int focus;           // boolean focus
         public int state;           // key or button mask
@@ -1605,7 +2059,7 @@ public interface X11 extends Library {
     class XLeaveWindowEvent extends XCrossingEvent {
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "window", "mode", "detail"})
+    @FieldOrder({ "type", "serial", "send_event", "display", "window", "mode", "detail" })
     class XFocusChangeEvent extends Structure {
         public int type;            // FocusIn or FocusOut
         public NativeLong serial;   // # of last request processed by server
@@ -1615,10 +2069,10 @@ public interface X11 extends Library {
         public int mode;            // NotifyNormal, NotifyWhileGrabbed, NotifyGrab, NotifyUngrab
         public int detail;
         /*
-        * NotifyAncestor, NotifyVirtual, NotifyInferior,
-        * NotifyNonlinear,NotifyNonlinearVirtual, NotifyPointer,
-        * NotifyPointerRoot, NotifyDetailNone
-        */
+         * NotifyAncestor, NotifyVirtual, NotifyInferior,
+         * NotifyNonlinear,NotifyNonlinearVirtual, NotifyPointer,
+         * NotifyPointerRoot, NotifyDetailNone
+         */
     }
 
     class XFocusInEvent extends XFocusChangeEvent {
@@ -1627,7 +2081,7 @@ public interface X11 extends Library {
     class XFocusOutEvent extends XFocusChangeEvent {
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "window", "x", "y", "width", "height", "count"})
+    @FieldOrder({ "type", "serial", "send_event", "display", "window", "x", "y", "width", "height", "count" })
     class XExposeEvent extends Structure {
         public int type;
         public NativeLong serial;   // # of last request processed by server
@@ -1639,7 +2093,19 @@ public interface X11 extends Library {
         public int count;           // if non-zero, at least this many more
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "drawable", "x", "y", "width", "height", "count", "major_code", "minor_code"})
+    @FieldOrder({
+        "type",
+        "serial",
+        "send_event",
+        "display",
+        "drawable",
+        "x",
+        "y",
+        "width",
+        "height",
+        "count",
+        "major_code",
+        "minor_code" })
     class XGraphicsExposeEvent extends Structure {
         public int type;
         public NativeLong serial;   // # of last request processed by server
@@ -1653,7 +2119,7 @@ public interface X11 extends Library {
         public int minor_code;      // not defined in the core
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "drawable", "major_code", "minor_code"})
+    @FieldOrder({ "type", "serial", "send_event", "display", "drawable", "major_code", "minor_code" })
     class XNoExposeEvent extends Structure {
         public int type;
         public NativeLong serial;   // # of last request processed by server
@@ -1664,7 +2130,7 @@ public interface X11 extends Library {
         public int minor_code;      // not defined in the core
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "window", "state"})
+    @FieldOrder({ "type", "serial", "send_event", "display", "window", "state" })
     class XVisibilityEvent extends Structure {
         public int type;
         public NativeLong serial;   // # of last request processed by server
@@ -1674,7 +2140,19 @@ public interface X11 extends Library {
         public int state;           // Visibility state
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "parent", "window", "x", "y", "width", "height", "border_width", "override_redirect"})
+    @FieldOrder({
+        "type",
+        "serial",
+        "send_event",
+        "display",
+        "parent",
+        "window",
+        "x",
+        "y",
+        "width",
+        "height",
+        "border_width",
+        "override_redirect" })
     class XCreateWindowEvent extends Structure {
         public int type;
         public NativeLong serial;   // # of last request processed by server
@@ -1688,7 +2166,7 @@ public interface X11 extends Library {
         public int override_redirect; // creation should be overridden
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "event", "window"})
+    @FieldOrder({ "type", "serial", "send_event", "display", "event", "window" })
     class XDestroyWindowEvent extends Structure {
         public int type;
         public NativeLong serial;   // # of last request processed by server
@@ -1698,7 +2176,7 @@ public interface X11 extends Library {
         public Window window;
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "event", "window", "from_configure"})
+    @FieldOrder({ "type", "serial", "send_event", "display", "event", "window", "from_configure" })
     class XUnmapEvent extends Structure {
         public int type;
         public NativeLong serial;   // # of last request processed by server
@@ -1709,7 +2187,7 @@ public interface X11 extends Library {
         public int from_configure;
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "event", "window", "override_redirect"})
+    @FieldOrder({ "type", "serial", "send_event", "display", "event", "window", "override_redirect" })
     class XMapEvent extends Structure {
         public int type;
         public NativeLong serial;   // # of last request processed by server
@@ -1720,7 +2198,7 @@ public interface X11 extends Library {
         public int override_redirect; // boolean, is override set...
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "parent", "window"})
+    @FieldOrder({ "type", "serial", "send_event", "display", "parent", "window" })
     class XMapRequestEvent extends Structure {
         public int type;
         public NativeLong serial;   // # of last request processed by server
@@ -1730,7 +2208,17 @@ public interface X11 extends Library {
         public Window window;
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "event", "window", "parent", "x", "y", "override_redirect"})
+    @FieldOrder({
+        "type",
+        "serial",
+        "send_event",
+        "display",
+        "event",
+        "window",
+        "parent",
+        "x",
+        "y",
+        "override_redirect" })
     class XReparentEvent extends Structure {
         public int type;
         public NativeLong serial;   // # of last request processed by server
@@ -1743,7 +2231,20 @@ public interface X11 extends Library {
         public int override_redirect;
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "event", "window", "x", "y", "width", "height", "border_width", "above", "override_redirect"})
+    @FieldOrder({
+        "type",
+        "serial",
+        "send_event",
+        "display",
+        "event",
+        "window",
+        "x",
+        "y",
+        "width",
+        "height",
+        "border_width",
+        "above",
+        "override_redirect" })
     class XConfigureEvent extends Structure {
         public int type;
         public NativeLong serial;   // # of last request processed by server
@@ -1758,7 +2259,7 @@ public interface X11 extends Library {
         public int override_redirect;
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "event", "window", "x", "y"})
+    @FieldOrder({ "type", "serial", "send_event", "display", "event", "window", "x", "y" })
     class XGravityEvent extends Structure {
         public int type;
         public NativeLong serial;   // # of last request processed by server
@@ -1769,7 +2270,7 @@ public interface X11 extends Library {
         public int x, y;
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "window", "width", "height"})
+    @FieldOrder({ "type", "serial", "send_event", "display", "window", "width", "height" })
     class XResizeRequestEvent extends Structure {
         public int type;
         public NativeLong serial;   // # of last request processed by server
@@ -1779,7 +2280,21 @@ public interface X11 extends Library {
         public int width, height;
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "parent", "window", "x", "y", "width", "height", "border_width", "above", "detail", "value_mask"})
+    @FieldOrder({
+        "type",
+        "serial",
+        "send_event",
+        "display",
+        "parent",
+        "window",
+        "x",
+        "y",
+        "width",
+        "height",
+        "border_width",
+        "above",
+        "detail",
+        "value_mask" })
     class XConfigureRequestEvent extends Structure {
         public int type;
         public NativeLong serial;   // # of last request processed by server
@@ -1795,7 +2310,7 @@ public interface X11 extends Library {
         public NativeLong value_mask;
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "event", "window", "place"})
+    @FieldOrder({ "type", "serial", "send_event", "display", "event", "window", "place" })
     class XCirculateEvent extends Structure {
         public int type;
         public NativeLong serial;   // # of last request processed by server
@@ -1806,7 +2321,7 @@ public interface X11 extends Library {
         public int place;           // PlaceOnTop, PlaceOnBottom
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "parent", "window", "place"})
+    @FieldOrder({ "type", "serial", "send_event", "display", "parent", "window", "place" })
     class XCirculateRequestEvent extends Structure {
         public int type;
         public NativeLong serial;   // # of last request processed by server
@@ -1817,7 +2332,7 @@ public interface X11 extends Library {
         public int place;           // PlaceOnTop, PlaceOnBottom
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "window", "atom", "time", "state"})
+    @FieldOrder({ "type", "serial", "send_event", "display", "window", "atom", "time", "state" })
     class XPropertyEvent extends Structure {
         public int type;
         public NativeLong serial;   // # of last request processed by server
@@ -1829,7 +2344,7 @@ public interface X11 extends Library {
         public int state;           // NewValue, Deleted
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "window", "selection", "time"})
+    @FieldOrder({ "type", "serial", "send_event", "display", "window", "selection", "time" })
     class XSelectionClearEvent extends Structure {
         public int type;
         public NativeLong serial;   // # of last request processed by server
@@ -1840,7 +2355,17 @@ public interface X11 extends Library {
         public NativeLong time;
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "owner", "requestor", "selection", "target", "property", "time"})
+    @FieldOrder({
+        "type",
+        "serial",
+        "send_event",
+        "display",
+        "owner",
+        "requestor",
+        "selection",
+        "target",
+        "property",
+        "time" })
     class XSelectionRequestEvent extends Structure {
         public int type;
         public NativeLong serial;   // # of last request processed by server
@@ -1854,7 +2379,7 @@ public interface X11 extends Library {
         public NativeLong time;
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "requestor", "selection", "target", "property", "time"})
+    @FieldOrder({ "type", "serial", "send_event", "display", "requestor", "selection", "target", "property", "time" })
     class XSelectionEvent extends Structure {
         public int type;
         public NativeLong serial;   // # of last request processed by server
@@ -1867,7 +2392,7 @@ public interface X11 extends Library {
         public NativeLong time;
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "window", "colormap", "c_new", "state" })
+    @FieldOrder({ "type", "serial", "send_event", "display", "window", "colormap", "c_new", "state" })
     class XColormapEvent extends Structure {
         public int type;
         public NativeLong serial;   // # of last request processed by server
@@ -1879,7 +2404,7 @@ public interface X11 extends Library {
         public int state;           // ColormapInstalled, ColormapUninstalled
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "window", "request", "first_keycode", "count"})
+    @FieldOrder({ "type", "serial", "send_event", "display", "window", "request", "first_keycode", "count" })
     class XMappingEvent extends Structure {
         public int type;
         public NativeLong serial;   // # of last request processed by server
@@ -1891,7 +2416,7 @@ public interface X11 extends Library {
         public int count;           // defines range of change w. first_keycode*/
     }
 
-    @FieldOrder({"type", "display", "serial", "error_code", "request_code", "minor_code", "resourceid"})
+    @FieldOrder({ "type", "display", "serial", "error_code", "request_code", "minor_code", "resourceid" })
     class XErrorEvent extends Structure {
         public int type;
         public Display display;     // Display the event was read from
@@ -1902,8 +2427,8 @@ public interface X11 extends Library {
         public XID resourceid;      // resource id
     }
 
-    // generated on EnterWindow and FocusIn  when KeyMapState selected
-    @FieldOrder({"type", "serial", "send_event", "display", "window", "key_vector"})
+    // generated on EnterWindow and FocusIn when KeyMapState selected
+    @FieldOrder({ "type", "serial", "send_event", "display", "window", "key_vector" })
     class XKeymapEvent extends Structure {
         public int type;
         public NativeLong serial;   // # of last request processed by server
@@ -1916,7 +2441,7 @@ public interface X11 extends Library {
     /**
      * This event is the standard event for all newer extensions.
      */
-    @FieldOrder({"type", "serial", "send_event", "display", "extension", "evtype"})
+    @FieldOrder({ "type", "serial", "send_event", "display", "extension", "evtype" })
     class XGenericEvent extends Structure {
         public int type;            // of event. Always GenericEvent
         public NativeLong serial;   // # of last request processed by server
@@ -1926,7 +2451,7 @@ public interface X11 extends Library {
         public int evtype;          // actual event type
     }
 
-    @FieldOrder({"type", "serial", "send_event", "display", "extension", "evtype", "cookie", "data"})
+    @FieldOrder({ "type", "serial", "send_event", "display", "extension", "evtype", "cookie", "data" })
     class XGenericEventCookie extends Structure {
         public int type;            // of event. Always GenericEvent
         public NativeLong serial;   // # of last request processed by server
@@ -1939,67 +2464,80 @@ public interface X11 extends Library {
     }
 
     int XSelectInput(Display display, Window window, NativeLong eventMask);
+
     int XSendEvent(Display display, Window w, int propagate, NativeLong event_mask, XEvent event_send);
 
     int XNextEvent(Display display, XEvent event_return);
 
     int XPeekEvent(Display display, XEvent event_return);
+
     int XWindowEvent(Display display, Window w, NativeLong event_mask, XEvent event_return);
+
     boolean XCheckWindowEvent(Display display, Window w, NativeLong event_mask, XEvent event_return);
+
     int XMaskEvent(Display display, NativeLong event_mask, XEvent event_return);
+
     boolean XCheckMaskEvent(Display display, NativeLong event_mask, XEvent event_return);
+
     boolean XCheckTypedEvent(Display display, int event_type, XEvent event_return);
+
     boolean XCheckTypedWindowEvent(Display display, Window w, int event_type, XEvent event_return);
 
     boolean XGetEventData(Display display, XGenericEventCookie cookie);
+
     void XFreeEventData(Display display, XGenericEventCookie cookie);
 
-    /** Returns an {@link XWMHints} which must be freed by {@link #XFree}.
+    /**
+     * Returns an {@link XWMHints} which must be freed by {@link #XFree}.
+     * 
      * @param display target Display
      * @param window target Window
      * @return XWMHints structure for the requested window
      */
     XWMHints XGetWMHints(Display display, Window window);
-    int XGetWMName(Display display, Window window,
-                   XTextProperty text_property_return);
-    /** Returns an array of {@link XVisualInfo} which must be freed by {@link #XFree}.
+
+    int XGetWMName(Display display, Window window, XTextProperty text_property_return);
+
+    /**
+     * Returns an array of {@link XVisualInfo} which must be freed by {@link #XFree}.
      * Use {@link XVisualInfo#toArray(int)
      * toArray(nitems_return.getValue()} to obtain the array.
+     * 
      * @param display target Display
      * @param vinfo_mask mask of data to retrieve
      * @param vinfo_template template struct to use as basis for returned data
      * @param nitems_return number size of returned array
      * @return returned array
      */
-    XVisualInfo XGetVisualInfo(Display display, NativeLong vinfo_mask,
-                               XVisualInfo vinfo_template,
-                               IntByReference nitems_return);
+    XVisualInfo XGetVisualInfo(Display display, NativeLong vinfo_mask, XVisualInfo vinfo_template,
+        IntByReference nitems_return);
+
     Colormap XCreateColormap(Display display, Window w, Visual visual, int alloc);
-    int XGetWindowProperty(Display display, Window w, Atom property,
-                           NativeLong long_offset,
-                           NativeLong long_length, boolean delete,
-                           Atom reg_type,
-                           AtomByReference actual_type_return,
-                           IntByReference actual_format_return,
-                           NativeLongByReference nitems_return,
-                           NativeLongByReference bytes_after_return,
-                           PointerByReference prop_return);
-    int XChangeProperty(Display display, Window w, Atom property, Atom type,
-                        int format, int mode, Pointer data, int nelements);
+
+    int XGetWindowProperty(Display display, Window w, Atom property, NativeLong long_offset, NativeLong long_length,
+        boolean delete, Atom reg_type, AtomByReference actual_type_return, IntByReference actual_format_return,
+        NativeLongByReference nitems_return, NativeLongByReference bytes_after_return, PointerByReference prop_return);
+
+    int XChangeProperty(Display display, Window w, Atom property, Atom type, int format, int mode, Pointer data,
+        int nelements);
+
     int XDeleteProperty(Display display, Window w, Atom property);
+
     // Atom XInternAtom(Display *display, char *atom_name, Bool only_if_exists);
     Atom XInternAtom(Display display, String name, boolean only_if_exists);
+
     // char *XGetAtomName(Display *display, Atom atom);
     String XGetAtomName(Display display, Atom atom);
-    int XCopyArea(Display dpy, Drawable src, Drawable dst, GC gc,
-                  int src_x, int src_y, int w, int h, int dst_x, int dst_y);
 
-    XImage XCreateImage(Display dpy, Visual visual, int depth, int format,
-                        int offset, Pointer data, int width, int height,
-                        int bitmap_pad, int bytes_per_line);
-    int XPutImage(Display dpy, Drawable d, GC gc, XImage image,
-                  int src_x, int src_y, int dest_x, int dest_y,
-                  int width, int height);
+    int XCopyArea(Display dpy, Drawable src, Drawable dst, GC gc, int src_x, int src_y, int w, int h, int dst_x,
+        int dst_y);
+
+    XImage XCreateImage(Display dpy, Visual visual, int depth, int format, int offset, Pointer data, int width,
+        int height, int bitmap_pad, int bytes_per_line);
+
+    int XPutImage(Display dpy, Drawable d, GC gc, XImage image, int src_x, int src_y, int dest_x, int dest_y, int width,
+        int height);
+
     int XDestroyImage(XImage image);
 
     /**
@@ -2014,14 +2552,16 @@ public interface X11 extends Library {
         public int apply(Display display, XErrorEvent errorEvent);
     }
 
-
     /*
      * KeySyms, Keycodes, Keymaps
      */
 
     String XKeysymToString(KeySym keysym);
+
     KeySym XStringToKeysym(String string);
+
     byte XKeysymToKeycode(Display display, KeySym keysym);
+
     KeySym XKeycodeToKeysym(Display display, byte keycode, int index);
 
     /**
@@ -2030,14 +2570,18 @@ public interface X11 extends Library {
      * @param display Specifies the connection to the X server.
      * @param keyCode Specifies the KeyCode or {@link #AnyKey}.
      * @param modifiers Specifies the set of keymasks or {@link #AnyModifier}.
-     *      The mask is the bitwise inclusive OR of the valid keymask bits.
+     * The mask is the bitwise inclusive OR of the valid keymask bits.
      * @param grab_window Specifies the grab window.
-     * @param ownerEvents Specifies a Boolean value that indicates whether the keyboard events are to be reported as usual.
-     * @param pointerMode Specifies further processing of pointer events. You can pass {@link #GrabModeSync} or {@link #GrabModeAsync}.
-     * @param keyBoardMode Specifies further processing of keyboard events. You can pass {@link #GrabModeSync} or {@link #GrabModeAsync}.
+     * @param ownerEvents Specifies a Boolean value that indicates whether the keyboard events are to be reported as
+     * usual.
+     * @param pointerMode Specifies further processing of pointer events. You can pass {@link #GrabModeSync} or
+     * {@link #GrabModeAsync}.
+     * @param keyBoardMode Specifies further processing of keyboard events. You can pass {@link #GrabModeSync} or
+     * {@link #GrabModeAsync}.
      * @return nothing
      */
-    int XGrabKey(Display display, int keyCode, int modifiers, Window grab_window, int ownerEvents, int pointerMode, int keyBoardMode);
+    int XGrabKey(Display display, int keyCode, int modifiers, Window grab_window, int ownerEvents, int pointerMode,
+        int keyBoardMode);
 
     /**
      * The XUngrabKey() function releases the key combination on the specified window if it was grabbed by this client.
@@ -2045,7 +2589,7 @@ public interface X11 extends Library {
      * @param display Specifies the connection to the X server.
      * @param keyCode Specifies the KeyCode or {@link #AnyKey}.
      * @param modifiers Specifies the set of keymasks or {@link #AnyModifier}.
-     *      The mask is the bitwise inclusive OR of the valid keymask bits
+     * The mask is the bitwise inclusive OR of the valid keymask bits
      * @param grab_window Specifies the grab window.
      * @return nothing
      */
@@ -2056,16 +2600,20 @@ public interface X11 extends Library {
      *
      * @param display Specifies the connection to the X server.
      * @param grab_window Specifies the grab window.
-     * @param owner_events Specifies a Boolean value that indicates whether the keyboard events are to be reported as usual.
+     * @param owner_events Specifies a Boolean value that indicates whether the keyboard events are to be reported as
+     * usual.
      * @param pointer_mode Specifies further processing of pointer events. You can pass GrabModeSync or GrabModeAsync.
      * @param keyboard_mode Specifies further processing of keyboard events. You can pass GrabModeSync or GrabModeAsync.
      * @param time Specifies the time. You can pass either a timestamp or CurrentTime.
      * @return nothing
      */
-    int XGrabKeyboard(Display display, Window grab_window, int owner_events, int pointer_mode, int keyboard_mode, NativeLong time);
+    int XGrabKeyboard(Display display, Window grab_window, int owner_events, int pointer_mode, int keyboard_mode,
+        NativeLong time);
 
     /**
-     * Releases the keyboard and any queued events if this client has it actively grabbed from either XGrabKeyboard() or XGrabKey().
+     * Releases the keyboard and any queued events if this client has it actively grabbed from either XGrabKeyboard() or
+     * XGrabKey().
+     * 
      * @param display Specifies the connection to the X server.
      * @param time Specifies the time. You can pass either a timestamp or CurrentTime.
      * @return nothing
@@ -2074,10 +2622,14 @@ public interface X11 extends Library {
 
     /**
      * The XFetchName() function returns the name of the specified window. If it succeeds, it returns a nonzero status;
-     * otherwise, no name has been set for the window, and it returns zero. If the WM_NAME property has not been set for this
-     * window, XFetchName() sets window_name_return to NULL. If the data returned by the server is in the Latin Portable Character
-     * Encoding, then the returned string is in the Host Portable Character Encoding. Otherwise, the result is implementation
+     * otherwise, no name has been set for the window, and it returns zero. If the WM_NAME property has not been set for
+     * this
+     * window, XFetchName() sets window_name_return to NULL. If the data returned by the server is in the Latin Portable
+     * Character
+     * Encoding, then the returned string is in the Host Portable Character Encoding. Otherwise, the result is
+     * implementation
      * dependent. When finished with it, a client must free the window name string using XFree().
+     * 
      * @param display Specifies the connection to the X server.
      * @param window Specifies the window.
      * @param window_name_return Returns the window name, which is a null-terminated string.
@@ -2085,8 +2637,10 @@ public interface X11 extends Library {
      */
     int XFetchName(Display display, Window window, PointerByReference window_name_return);
 
-    //int XChangeKeyboardMapping(Display display, int first_keycode, int keysyms_per_keycode, KeySym *keysyms, int num_codes);
-    /** Defines the symbols for the specified number of KeyCodes starting with
+    // int XChangeKeyboardMapping(Display display, int first_keycode, int keysyms_per_keycode, KeySym *keysyms, int
+    // num_codes);
+    /**
+     * Defines the symbols for the specified number of KeyCodes starting with
      * first_keycode. The symbols for KeyCodes outside this range remain
      * unchanged. The number of elements in keysyms must be: num_codes *
      * keysyms_per_keycode. The specified first_keycode must be greater than
@@ -2094,6 +2648,7 @@ public interface X11 extends Library {
      * error results. In addition, the following expression must be less than
      * or equal to max_keycode as returned by XDisplayKeycodes, or a BadValue
      * error results: first_keycode + num_codes - 1.
+     * 
      * @param display target Display
      * @param first_keycode first keycode
      * @param keysyms_per_keycode number of syms per keycode
@@ -2101,11 +2656,14 @@ public interface X11 extends Library {
      * @param num_codes number of keycodes to be changed
      * @return status
      */
-    int XChangeKeyboardMapping(Display display, int first_keycode, int keysyms_per_keycode, KeySym[] keysyms, int num_codes);
-    /** Returns the symbols for the specified number of KeyCodes starting with
+    int XChangeKeyboardMapping(Display display, int first_keycode, int keysyms_per_keycode, KeySym[] keysyms,
+        int num_codes);
+
+    /**
+     * Returns the symbols for the specified number of KeyCodes starting with
      * first_keycode. The value specified in first_keycode must be greater
      * than or equal to min_keycode as returned by XDisplayKeycodes, or a
-     * BadValue  error results. In addition, the following expression must be
+     * BadValue error results. In addition, the following expression must be
      * less than or equal to max_keycode as returned by XDisplayKeycodes:
      * first_keycode + keycode_count - 1. If this is not the case, a BadValue
      * error results. The number of elements in the KeySyms list is:
@@ -2116,98 +2674,134 @@ public interface X11 extends Library {
      * enough to report all requested symbols. A special KeySym value of
      * NoSymbol is used to fill in unused elements for individual KeyCodes. To
      * free the storage returned by XGetKeyboardMapping, use XFree.
+     * 
      * @param display target Display
      * @param first_keycode first keycode to be changed or returned
      * @param keycode_count how many
      * @param keysyms_per_keycode_return number of syms per keycode
      * @return KeySym for the requested code
      */
-    KeySym XGetKeyboardMapping(Display display, byte first_keycode, int keycode_count, IntByReference keysyms_per_keycode_return);
-    /** Returns the min-keycodes and max-keycodes supported by the specified
+    KeySym XGetKeyboardMapping(Display display, byte first_keycode, int keycode_count,
+        IntByReference keysyms_per_keycode_return);
+
+    /**
+     * Returns the min-keycodes and max-keycodes supported by the specified
      * display. The minimum number of KeyCodes returned is never less than 8,
      * and the maximum number of KeyCodes returned is never greater than
      * 255. Not all KeyCodes in this range are required to have corresponding
      * keys.
+     * 
      * @param display target Display
      * @param min_keycodes_return smallest keycode
      * @param max_keycodes_return largest keycode
      * @return status
      */
     int XDisplayKeycodes(Display display, IntByReference min_keycodes_return, IntByReference max_keycodes_return);
-    /** Specifies the KeyCodes of the keys (if any) that are to be used as
+
+    /**
+     * Specifies the KeyCodes of the keys (if any) that are to be used as
      * modifiers. If it succeeds, the X server generates a MappingNotify
      * event, and XSetModifierMapping returns MappingSuccess. X permits at
      * most 8 modifier keys. If more than 8 are specified in the
-     * XModifierKeymap  structure, a BadLength error results.
+     * XModifierKeymap structure, a BadLength error results.
+     * 
      * @param display target Display
      * @param modmap modifier specification
      * @return status
      */
     int XSetModifierMapping(Display display, XModifierKeymapRef modmap);
-    /** The XGetModifierMapping  function returns a pointer to a newly created
+
+    /**
+     * The XGetModifierMapping function returns a pointer to a newly created
      * XModifierKeymap structure that contains the keys being used as
      * modifiers. The structure should be freed after use by calling
      * XFreeModifiermap. If only zero values appear in the set for any
      * modifier, that modifier is disabled.
+     * 
      * @param display target Display
      * @return modifier specification
      */
     XModifierKeymapRef XGetModifierMapping(Display display);
-    /** Returns a pointer to XModifierKeymap structure for later use.
+
+    /**
+     * Returns a pointer to XModifierKeymap structure for later use.
+     * 
      * @param max_keys_per_mod number of keys to include in the mapping
      * @return modifier specification struct
      */
     XModifierKeymapRef XNewModifiermap(int max_keys_per_mod);
-    /** Adds the specified KeyCode to the set that controls the specified
-     * modifier and returns the resulting XModifierKeymap  structure (expanded
+
+    /**
+     * Adds the specified KeyCode to the set that controls the specified
+     * modifier and returns the resulting XModifierKeymap structure (expanded
      * as needed).
+     * 
      * @param modmap modifier map
      * @param keycode_entry keycode entry
      * @param modifier modifier
      * @return modifier specification struct
      */
     XModifierKeymapRef XInsertModifiermapEntry(XModifierKeymapRef modmap, byte keycode_entry, int modifier);
-    /** Deletes the specified KeyCode from the set that controls the specified
+
+    /**
+     * Deletes the specified KeyCode from the set that controls the specified
      * modifier and returns a pointer to the resulting XModifierKeymap
      * structure.
+     * 
      * @param modmap modifier map
      * @param keycode_entry keycode entry
      * @param modifier modifier
      * @return modifier specification struct
      */
     XModifierKeymapRef XDeleteModifiermapEntry(XModifierKeymapRef modmap, byte keycode_entry, int modifier);
-    /** Frees the specified XModifierKeymap structure.
+
+    /**
+     * Frees the specified XModifierKeymap structure.
+     * 
      * @param modmap modifier map to be freed
      * @return status
      */
     int XFreeModifiermap(XModifierKeymapRef modmap);
 
-
-    /** Changes the keyboard control state.
+    /**
+     * Changes the keyboard control state.
+     * 
      * @param display display
-     * @param value_mask disjunction of KBKeyClickPercent, KBBellPercent, KBBellPitch, KBBellDuration, KBLed, KBLedMode, KBKey, KBAutoRepeatMode
+     * @param value_mask disjunction of KBKeyClickPercent, KBBellPercent, KBBellPitch, KBBellDuration, KBLed, KBLedMode,
+     * KBKey, KBAutoRepeatMode
      * @param values control ref values
      * @return status
      */
     int XChangeKeyboardControl(Display display, NativeLong value_mask, XKeyboardControlRef values);
-    /** Returns the current control values for the keyboard to the
+
+    /**
+     * Returns the current control values for the keyboard to the
      * XKeyboardState structure.
+     * 
      * @param display display
      * @param values_return keyboard state structure
      * @return status
      */
     int XGetKeyboardControl(Display display, XKeyboardStateRef values_return);
-    /** Turns on auto-repeat for the keyboard on the specified display.
+
+    /**
+     * Turns on auto-repeat for the keyboard on the specified display.
+     * 
      * @param display display
      * @return status
      */
     int XAutoRepeatOn(Display display);
-    /** Turns off auto-repeat for the keyboard on the specified display.
+
+    /**
+     * Turns off auto-repeat for the keyboard on the specified display.
+     * 
      * @param display display
      * @return status
      */
     int XAutoRepeatOff(Display display);
-    /** Rings the bell on the keyboard on the specified display, if
+
+    /**
+     * Rings the bell on the keyboard on the specified display, if
      * possible. The specified volume is relative to the base volume for the
      * keyboard. If the value for the percent argument is not in the range
      * -100 to 100 inclusive, a BadValue error results. The volume at which
@@ -2216,25 +2810,30 @@ public interface X11 extends Library {
      * when the percent argument is negative is: base + [(base * percent) /
      * 100]. To change the base volume of the bell, use
      * XChangeKeyboardControl.
+     * 
      * @param display display
      * @param percent value to set
      * @return status
      */
     int XBell(Display display, int percent);
-    /** Returns a bit vector for the logical state of the keyboard, where each
+
+    /**
+     * Returns a bit vector for the logical state of the keyboard, where each
      * bit set to 1 indicates that the corresponding key is currently pressed
      * down. The vector is represented as 32 bytes. Byte N (from 0) contains
      * the bits for keys 8N to 8N + 7 with the least significant bit in the
      * byte representing key 8N. Note that the logical state of a device (as
      * seen by client applications) may lag the physical state if device event
      * processing is frozen.
+     * 
      * @param display display
      * @param keys_return keymap
      * @return status
      */
     int XQueryKeymap(Display display, byte[] keys_return);
 
-    /** The modifiermap member of the XModifierKeymap structure contains 8
+    /**
+     * The modifiermap member of the XModifierKeymap structure contains 8
      * sets of max_keypermod KeyCodes, one for each modifier in the order
      * Shift, Lock, Control, Mod1, Mod2, Mod3, Mod4, and Mod5. Only nonzero
      * KeyCodes have meaning in each set, and zero KeyCodes are ignored. In
@@ -2242,17 +2841,31 @@ public interface X11 extends Library {
      * min_keycode and max_keycode in the Display structure, or a BadValue
      * error results.
      */
-    @FieldOrder({"max_keypermod", "modifiermap"})
-    class XModifierKeymapRef extends Structure implements Structure.ByReference{
-        public int max_keypermod;   /* The server's max # of keys per modifier */
-        public Pointer modifiermap;   /* An 8 by max_keypermod array of modifiers */
+    @FieldOrder({ "max_keypermod", "modifiermap" })
+    class XModifierKeymapRef extends Structure implements Structure.ByReference {
+        public int max_keypermod; /* The server's max # of keys per modifier */
+        public Pointer modifiermap; /* An 8 by max_keypermod array of modifiers */
     }
 
-    @FieldOrder({"key_click_percent", "bell_percent", "bell_pitch", "bell_duration", "led", "led_mode", "key", "auto_repeat_mode"})
+    @FieldOrder({
+        "key_click_percent",
+        "bell_percent",
+        "bell_pitch",
+        "bell_duration",
+        "led",
+        "led_mode",
+        "key",
+        "auto_repeat_mode" })
     class XKeyboardControlRef extends Structure implements Structure.ByReference {
-        /** Volume for key clicks between 0 (off) and 100 (loud) inclusive, if possible. A setting of -1 restores the default. */
+        /**
+         * Volume for key clicks between 0 (off) and 100 (loud) inclusive, if possible. A setting of -1 restores the
+         * default.
+         */
         public int key_click_percent;
-        /** Base volume for the bell between 0 (off) and 100 (loud) inclusive, if possible. A setting of -1 restores the default. */
+        /**
+         * Base volume for the bell between 0 (off) and 100 (loud) inclusive, if possible. A setting of -1 restores the
+         * default.
+         */
         public int bell_percent;
         /** Pitch (specified in Hz) of the bell, if possible. A setting of -1 restores the default. */
         public int bell_pitch;
@@ -2269,20 +2882,20 @@ public interface X11 extends Library {
 
         @Override
         public String toString() {
-            return "XKeyboardControlByReference{" +
-                    "key_click_percent=" + key_click_percent +
-                    ", bell_percent=" + bell_percent +
-                    ", bell_pitch=" + bell_pitch +
-                    ", bell_duration=" + bell_duration +
-                    ", led=" + led +
-                    ", led_mode=" + led_mode +
-                    ", key=" + key +
-                    ", auto_repeat_mode=" + auto_repeat_mode +
-                    '}';
+            return "XKeyboardControlByReference{" + "key_click_percent=" + key_click_percent + ", bell_percent="
+                + bell_percent + ", bell_pitch=" + bell_pitch + ", bell_duration=" + bell_duration + ", led=" + led
+                + ", led_mode=" + led_mode + ", key=" + key + ", auto_repeat_mode=" + auto_repeat_mode + '}';
         }
     }
 
-    @FieldOrder({"key_click_percent", "bell_percent", "bell_pitch", "bell_duration", "led_mask", "global_auto_repeat", "auto_repeats"})
+    @FieldOrder({
+        "key_click_percent",
+        "bell_percent",
+        "bell_pitch",
+        "bell_duration",
+        "led_mask",
+        "global_auto_repeat",
+        "auto_repeats" })
     class XKeyboardStateRef extends Structure implements Structure.ByReference {
         /** Volume for key clicks between 0 (off) and 100 (loud) inclusive, if possible. */
         public int key_click_percent;
@@ -2296,20 +2909,18 @@ public interface X11 extends Library {
         public NativeLong led_mask;
         /** Global auto repeat mode: AutoRepeatModeOff or AutoRepeatModeOn. */
         public int global_auto_repeat;
-        /** Bit vector. Each bit set to 1 indicates that auto-repeat is enabled for the corresponding key. The vector is represented as 32 bytes. Byte N (from 0) contains the bits for keys 8N to 8N + 7 with the least significant bit in the byte representing key 8N. */
+        /**
+         * Bit vector. Each bit set to 1 indicates that auto-repeat is enabled for the corresponding key. The vector is
+         * represented as 32 bytes. Byte N (from 0) contains the bits for keys 8N to 8N + 7 with the least significant
+         * bit in the byte representing key 8N.
+         */
         public byte auto_repeats[] = new byte[32];
 
         @Override
         public String toString() {
-            return "XKeyboardStateByReference{" +
-                    "key_click_percent=" + key_click_percent +
-                    ", bell_percent=" + bell_percent +
-                    ", bell_pitch=" + bell_pitch +
-                    ", bell_duration=" + bell_duration +
-                    ", led_mask=" + led_mask +
-                    ", global_auto_repeat=" + global_auto_repeat +
-                    ", auto_repeats=" + auto_repeats +
-                    '}';
+            return "XKeyboardStateByReference{" + "key_click_percent=" + key_click_percent + ", bell_percent="
+                + bell_percent + ", bell_pitch=" + bell_pitch + ", bell_duration=" + bell_duration + ", led_mask="
+                + led_mask + ", global_auto_repeat=" + global_auto_repeat + ", auto_repeats=" + auto_repeats + '}';
         }
     }
 }

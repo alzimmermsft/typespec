@@ -21,8 +21,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * <p>
  * Clients may implement this interface.
  * </p>
- * 
- * @see IWorkspace#run(ICoreRunnable, IProgressMonitor)
  */
 public interface IWorkspaceRunnable extends ICoreRunnable {
     /**

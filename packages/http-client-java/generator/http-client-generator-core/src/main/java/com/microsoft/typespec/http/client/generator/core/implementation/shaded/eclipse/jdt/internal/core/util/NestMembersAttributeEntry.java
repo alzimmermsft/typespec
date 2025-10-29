@@ -18,35 +18,34 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class NestMembersAttributeEntry extends ClassFileStruct implements INestMemberAttributeEntry {
 
-	private final int memberClassNameIndex;
-	private char[] memberClassName;
+    private final int memberClassNameIndex;
+    private char[] memberClassName;
 
-	public NestMembersAttributeEntry(byte[] classFileBytes, IConstantPool constantPool, int offset)
-			throws ClassFormatException {
-		this.memberClassNameIndex = u2At(classFileBytes, 0, offset);
-		if (this.memberClassNameIndex != 0) {
-			IConstantPoolEntry constantPoolEntry;
-			constantPoolEntry = constantPool.decodeEntry(this.memberClassNameIndex);
-			if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Class) {
-				throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
-			}
-			this.memberClassName = constantPoolEntry.getClassInfoName();
-		}
-	}
+    public NestMembersAttributeEntry(byte[] classFileBytes, IConstantPool constantPool, int offset)
+        throws ClassFormatException {
+        this.memberClassNameIndex = u2At(classFileBytes, 0, offset);
+        if (this.memberClassNameIndex != 0) {
+            IConstantPoolEntry constantPoolEntry;
+            constantPoolEntry = constantPool.decodeEntry(this.memberClassNameIndex);
+            if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Class) {
+                throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
+            }
+            this.memberClassName = constantPoolEntry.getClassInfoName();
+        }
+    }
 
-	@Override
-	public char[] getNestMemberName() {
-		return this.memberClassName;
-	}
+    @Override
+    public char[] getNestMemberName() {
+        return this.memberClassName;
+    }
 
-	@Override
-	public int getNestMemberIndex() {
-		return this.memberClassNameIndex;
-	}
+    @Override
+    public int getNestMemberIndex() {
+        return this.memberClassNameIndex;
+    }
 
-	@Override
-	public String toString() {
-		return new String(this.memberClassName);
-	}
+    @Override
+    public String toString() {
+        return new String(this.memberClassName);
+    }
 }
-

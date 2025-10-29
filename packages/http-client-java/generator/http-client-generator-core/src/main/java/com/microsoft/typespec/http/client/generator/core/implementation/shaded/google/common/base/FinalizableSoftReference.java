@@ -16,9 +16,9 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtIncompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.J2ktIncompatible;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 
 /**
  * Soft reference with a {@code finalizeReferent()} method which a background thread invokes after
@@ -31,16 +31,15 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 @J2ktIncompatible
 @GwtIncompatible
 @ElementTypesAreNonnullByDefault
-public abstract class FinalizableSoftReference<T> extends SoftReference<T>
-    implements FinalizableReference {
-  /**
-   * Constructs a new finalizable soft reference.
-   *
-   * @param referent to softly reference
-   * @param queue that should finalize the referent
-   */
-  protected FinalizableSoftReference(@CheckForNull T referent, FinalizableReferenceQueue queue) {
-    super(referent, queue.queue);
-    queue.cleanUp();
-  }
+public abstract class FinalizableSoftReference<T> extends SoftReference<T> implements FinalizableReference {
+    /**
+     * Constructs a new finalizable soft reference.
+     *
+     * @param referent to softly reference
+     * @param queue that should finalize the referent
+     */
+    protected FinalizableSoftReference(@CheckForNull T referent, FinalizableReferenceQueue queue) {
+        super(referent, queue.queue);
+        queue.cleanUp();
+    }
 }

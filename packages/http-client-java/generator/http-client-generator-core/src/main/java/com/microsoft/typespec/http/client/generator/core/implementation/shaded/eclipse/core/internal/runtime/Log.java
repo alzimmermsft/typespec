@@ -22,13 +22,14 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.SafeRunner;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.equinox.log.LogFilter;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.equinox.log.Logger;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.equinox.log.SynchronousLogListener;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Bundle;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.log.LogEntry;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.log.LogListener;
+
 import java.util.HashSet;
 import java.util.Set;
 
-public class Log implements ILog, SynchronousLogListener, LogFilter {
+public class Log implements ILog, LogListener, LogFilter {
     final Bundle bundle;
     private final Logger logger;
     private final Set<ILogListener> logListeners = new HashSet<>(5);

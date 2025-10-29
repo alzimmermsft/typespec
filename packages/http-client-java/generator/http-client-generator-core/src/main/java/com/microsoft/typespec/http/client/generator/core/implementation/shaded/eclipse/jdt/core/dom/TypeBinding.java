@@ -21,13 +21,24 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaElement;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaCore;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CharOperation;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.StringLiteral;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.Wildcard;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.*;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.ArrayBinding;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.BaseTypeBinding;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.Binding;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.CaptureBinding;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.CaptureBinding18;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.FieldBinding;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.IntersectionTypeBinding18;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.MethodBinding;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.PackageBinding;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.problem.AbortCompilation;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.ParameterizedTypeBinding;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TagBits;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeConstants;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeIds;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeVariableBinding;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.WildcardBinding;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.SuffixConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaElement;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.PackageFragment;
@@ -36,7 +47,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * Internal implementation of type bindings.
  */
 class TypeBinding implements ITypeBinding {
-    private static final StringLiteral EXPRESSION = new org.eclipse.jdt.internal.compiler.ast.StringLiteral(0, 0);
 
     protected static final IMethodBinding[] NO_METHOD_BINDINGS = new IMethodBinding[0];
 
@@ -49,14 +59,11 @@ class TypeBinding implements ITypeBinding {
             | Modifier.STRICTFP | Modifier.SEALED | Modifier.NON_SEALED;
 
     com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding binding;
-    private TypeBinding prototype = null;
+    private final TypeBinding prototype;
     private String key;
     protected BindingResolver resolver;
     private IVariableBinding[] fields;
-    private IAnnotationBinding[] annotations;
-    private IAnnotationBinding[] typeAnnotations;
     private IMethodBinding[] methods;
-    private ITypeBinding[] members;
     private ITypeBinding[] interfaces;
     private ITypeBinding[] typeArguments;
     private ITypeBinding[] bounds;
@@ -92,77 +99,6 @@ class TypeBinding implements ITypeBinding {
         return this.resolver.resolveArrayType(this, dimension);
     }
 
-    private IAnnotationBinding[] resolveAnnotationBindings(
-        com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.AnnotationBinding[] internalAnnotations,
-        boolean isTypeUse) {
-        int length = internalAnnotations == null ? 0 : internalAnnotations.length;
-        if (length != 0) {
-            IAnnotationBinding[] tempAnnotations = new IAnnotationBinding[length];
-            int convertedAnnotationCount = 0;
-            for (int i = 0; i < length; i++) {
-                com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.AnnotationBinding internalAnnotation
-                    = internalAnnotations[i];
-                if (isTypeUse && internalAnnotation == null) {
-                    break;
-                }
-                IAnnotationBinding annotationInstance = this.resolver.getAnnotationInstance(internalAnnotation);
-                if (annotationInstance == null) {
-                    continue;
-                }
-                tempAnnotations[convertedAnnotationCount++] = annotationInstance;
-            }
-            if (convertedAnnotationCount != length) {
-                if (convertedAnnotationCount == 0) {
-                    return this.annotations = AnnotationBinding.NoAnnotations;
-                }
-                System.arraycopy(tempAnnotations, 0,
-                    (tempAnnotations = new IAnnotationBinding[convertedAnnotationCount]), 0, convertedAnnotationCount);
-            }
-            return tempAnnotations;
-        }
-        return AnnotationBinding.NoAnnotations;
-    }
-
-    @Override
-    public String getBinaryName() {
-        if (this.binding.isCapture()) {
-            return null; // no binary name for capture binding
-        } else if (this.binding.isTypeVariable()) {
-            TypeVariableBinding typeVariableBinding = (TypeVariableBinding) this.binding;
-            Binding declaring = typeVariableBinding.declaringElement;
-            StringBuilder binaryName = new StringBuilder();
-            switch (declaring.kind()) {
-                case org.eclipse.jdt.internal.compiler.lookup.Binding.METHOD:
-                    MethodBinding methodBinding = (MethodBinding) declaring;
-                    char[] constantPoolName = methodBinding.declaringClass.constantPoolName();
-                    if (constantPoolName == null)
-                        return null;
-                    binaryName.append(CharOperation.replaceOnCopy(constantPoolName, '/', '.'))
-                        .append('$')
-                        .append(methodBinding.signature())
-                        .append('$')
-                        .append(typeVariableBinding.sourceName);
-                    break;
-
-                default:
-                    org.eclipse.jdt.internal.compiler.lookup.TypeBinding typeBinding
-                        = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding) declaring;
-                    constantPoolName = typeBinding.constantPoolName();
-                    if (constantPoolName == null)
-                        return null;
-                    binaryName.append(CharOperation.replaceOnCopy(constantPoolName, '/', '.'))
-                        .append('$')
-                        .append(typeVariableBinding.sourceName);
-            }
-            return String.valueOf(binaryName);
-        }
-        char[] constantPoolName = this.binding.constantPoolName();
-        if (constantPoolName == null)
-            return null;
-        char[] dotSeparated = CharOperation.replaceOnCopy(constantPoolName, '/', '.');
-        return new String(dotSeparated);
-    }
-
     @Override
     public ITypeBinding getBound() {
         switch (this.binding.kind()) {
@@ -178,29 +114,14 @@ class TypeBinding implements ITypeBinding {
     }
 
     @Override
-    public ITypeBinding getGenericTypeOfWildcardType() {
-        switch (this.binding.kind()) {
-            case Binding.WILDCARD_TYPE:
-                WildcardBinding wildcardBinding = (WildcardBinding) this.binding;
-                if (wildcardBinding.genericType != null) {
-                    return this.resolver.getTypeBinding(wildcardBinding.genericType);
-                }
-                break;
-        }
-        return null;
-    }
-
-    @Override
     public int getRank() {
-        switch (this.binding.kind()) {
-            case Binding.WILDCARD_TYPE:
-            case Binding.INTERSECTION_TYPE:
+        return switch (this.binding.kind()) {
+            case Binding.WILDCARD_TYPE, Binding.INTERSECTION_TYPE -> {
                 WildcardBinding wildcardBinding = (WildcardBinding) this.binding;
-                return wildcardBinding.rank;
-
-            default:
-                return -1;
-        }
+                yield wildcardBinding.rank;
+            }
+            default -> -1;
+        };
     }
 
     @Override
@@ -228,8 +149,7 @@ class TypeBinding implements ITypeBinding {
                 if (length != 0) {
                     int convertedFieldCount = 0;
                     IVariableBinding[] newFields = new IVariableBinding[length];
-                    for (int i = 0; i < length; i++) {
-                        FieldBinding fieldBinding = fieldBindings[i];
+                    for (FieldBinding fieldBinding : fieldBindings) {
                         IVariableBinding variableBinding = this.resolver.getVariableBinding(fieldBinding);
                         if (variableBinding != null) {
                             newFields[convertedFieldCount++] = variableBinding;
@@ -275,11 +195,9 @@ class TypeBinding implements ITypeBinding {
                 if (length != 0) {
                     int convertedMethodCount = 0;
                     IMethodBinding[] newMethods = new IMethodBinding[length];
-                    for (int i = 0; i < length; i++) {
-                        MethodBinding methodBinding = internalMethods[i];
-                        if (methodBinding.isDefaultAbstract()
-                            || methodBinding.isSynthetic()
-                            || (methodBinding.isConstructor() && isInterface())) {
+                    for (MethodBinding methodBinding : internalMethods) {
+                        if (methodBinding.isDefaultAbstract() || methodBinding.isSynthetic() || (
+                            methodBinding.isConstructor() && isInterface())) {
                             continue;
                         }
                         IMethodBinding methodBinding2 = this.resolver.getMethodBinding(methodBinding);
@@ -321,45 +239,8 @@ class TypeBinding implements ITypeBinding {
     }
 
     @Override
-    public synchronized ITypeBinding[] getDeclaredTypes() { // should not deflect to prototype.
-        if (this.members != null) {
-            return this.members;
-        }
-        try {
-            if (isClass() || isInterface() || isEnum()) {
-                ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
-                ReferenceBinding[] internalMembers = referenceBinding.memberTypes();
-                int length = internalMembers.length;
-                if (length != 0) {
-                    ITypeBinding[] newMembers = new ITypeBinding[length];
-                    for (int i = 0; i < length; i++) {
-                        ITypeBinding typeBinding = this.resolver.getTypeBinding(internalMembers[i]);
-                        if (typeBinding == null) {
-                            return this.members = NO_TYPE_BINDINGS;
-                        }
-                        newMembers[i] = typeBinding;
-                    }
-                    return this.members = newMembers;
-                }
-            }
-        } catch (RuntimeException e) {
-            /*
-             * in case a method cannot be resolvable due to missing jars on the classpath
-             * see https://bugs.eclipse.org/bugs/show_bug.cgi?id=57871
-             * https://bugs.eclipse.org/bugs/show_bug.cgi?id=63550
-             * https://bugs.eclipse.org/bugs/show_bug.cgi?id=64299
-             */
-            com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Util
-                .log(e, "Could not retrieve declared methods"); //$NON-NLS-1$
-        }
-        return this.members = NO_TYPE_BINDINGS;
-    }
-
-    @Override
     public synchronized IMethodBinding getDeclaringMethod() {
-        if (this.binding instanceof org.eclipse.jdt.internal.compiler.lookup.LocalTypeBinding) {
-            com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.LocalTypeBinding localTypeBinding
-                = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.LocalTypeBinding) this.binding;
+        if (this.binding instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.LocalTypeBinding localTypeBinding) {
             MethodBinding methodBinding = localTypeBinding.enclosingMethod;
             if (methodBinding != null) {
                 try {
@@ -441,7 +322,7 @@ class TypeBinding implements ITypeBinding {
     public IModuleBinding getModule() {
         if (this.binding instanceof ReferenceBinding && !this.binding.isTypeVariable()) {
             IPackageBinding packageBinding
-                = this.resolver.getPackageBinding(((ReferenceBinding) this.binding).getPackage());
+                = this.resolver.getPackageBinding(this.binding.getPackage());
             return packageBinding != null ? packageBinding.getModule() : null;
         }
         return null;
@@ -480,17 +361,6 @@ class TypeBinding implements ITypeBinding {
     @Override
     public ITypeBinding getErasure() {
         return this.resolver.getTypeBinding(this.binding.erasure());
-    }
-
-    @Override
-    public IMethodBinding getFunctionalInterfaceMethod() {
-        Scope scope = this.resolver.scope();
-        if (this.binding == null || scope == null)
-            return null;
-        MethodBinding sam = this.binding.getSingleAbstractMethod(scope, true);
-        if (sam == null || !sam.isValidBinding())
-            return null;
-        return this.resolver.getMethodBinding(sam);
     }
 
     @Override
@@ -543,7 +413,7 @@ class TypeBinding implements ITypeBinding {
     }
 
     private ITypeBinding[] getIntersectingTypes() {
-        ITypeBinding[] intersectionBindings = TypeBinding.NO_TYPE_BINDINGS;
+        ITypeBinding[] intersectionBindings;
         ReferenceBinding[] intersectingTypes = this.binding.getIntersectingTypes();
         int l = intersectingTypes.length;
         intersectionBindings = new ITypeBinding[l];
@@ -584,11 +454,10 @@ class TypeBinding implements ITypeBinding {
         if (JavaCore.getPlugin() == null) {
             return null;
         }
-        if (this.resolver instanceof DefaultBindingResolver) {
-            DefaultBindingResolver defaultBindingResolver = (DefaultBindingResolver) this.resolver;
+        if (this.resolver instanceof DefaultBindingResolver defaultBindingResolver) {
             if (!defaultBindingResolver.fromJavaProject)
                 return null;
-            return org.eclipse.jdt.internal.core.util.Util.getUnresolvedJavaElement(typeBinding,
+            return com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Util.getUnresolvedJavaElement(typeBinding,
                 defaultBindingResolver.workingCopyOwner, defaultBindingResolver.getBindingsToNodesMap());
         }
         return null;
@@ -720,7 +589,7 @@ class TypeBinding implements ITypeBinding {
 
             case Binding.INTERSECTION_TYPE18:
                 // just use the first bound for now (same kludge as in IntersectionTypeBinding18#constantPoolName())
-                return new String(((IntersectionTypeBinding18) this.binding).getIntersectingTypes()[0].sourceName());
+                return new String(this.binding.getIntersectingTypes()[0].sourceName());
 
             default:
                 if (isPrimitive() || isNullType()) {
@@ -877,9 +746,9 @@ class TypeBinding implements ITypeBinding {
                 if (this.binding.isInterface())
                     return null;
         }
-        ReferenceBinding superclass = null;
+        ReferenceBinding superclass;
         try {
-            superclass = ((ReferenceBinding) this.binding).superclass();
+            superclass = this.binding.superclass();
         } catch (OperationCanceledException e) {
             throw e; // https://github.com/eclipse-jdt/eclipse.jdt.core/issues/1925
         } catch (RuntimeException e) {
@@ -936,8 +805,7 @@ class TypeBinding implements ITypeBinding {
         TypeVariableBinding typeVariableBinding = null;
         if (this.binding instanceof TypeVariableBinding) {
             typeVariableBinding = (TypeVariableBinding) this.binding;
-        } else if (this.binding instanceof WildcardBinding) {
-            WildcardBinding wildcardBinding = (WildcardBinding) this.binding;
+        } else if (this.binding instanceof WildcardBinding wildcardBinding) {
             typeVariableBinding = wildcardBinding.typeVariable();
             if (typeVariableBinding == null) {
                 com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding allBounds
@@ -1034,8 +902,7 @@ class TypeBinding implements ITypeBinding {
 
     @Override
     public ITypeBinding getWildcard() {
-        if (this.binding instanceof CaptureBinding) {
-            CaptureBinding captureBinding = (CaptureBinding) this.binding;
+        if (this.binding instanceof CaptureBinding captureBinding) {
             return this.resolver.getTypeBinding(captureBinding.wildcard);
         }
         return null;
@@ -1071,58 +938,16 @@ class TypeBinding implements ITypeBinding {
     }
 
     @Override
-    public boolean isAssignmentCompatible(ITypeBinding type) {
-        try {
-            if (this == type) return true; //$IDENTITY-COMPARISON$
-            if (!(type instanceof TypeBinding))
-                return false;
-            TypeBinding other = (TypeBinding) type;
-            Scope scope = this.resolver.scope();
-            if (scope == null)
-                return false;
-            return this.binding.isCompatibleWith(other.binding)
-                || scope.isBoxingCompatibleWith(this.binding, other.binding);
-        } catch (AbortCompilation e) {
-            // don't surface internal exception to clients
-            // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=143013
-            return false;
-        }
-    }
-
-    @Override
     public boolean isCapture() {
         return this.binding.isCapture() && !(this.binding instanceof CaptureBinding18);
     }
 
     @Override
-    public boolean isCastCompatible(ITypeBinding type) {
-        try {
-            Scope scope = this.resolver.scope();
-            if (scope == null)
-                return false;
-            if (!(type instanceof TypeBinding))
-                return false;
-            com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding expressionType
-                = ((TypeBinding) type).binding;
-            // simulate capture in case checked binding did not properly get extracted from a reference
-            expressionType = expressionType.capture(scope, 0, 0);
-            return TypeBinding.EXPRESSION.checkCastTypesCompatibility(scope, this.binding, expressionType, null, true);
-        } catch (AbortCompilation e) {
-            // don't surface internal exception to clients
-            // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=143013
-            return false;
-        }
-    }
-
-    @Override
     public boolean isClass() {
-        switch (this.binding.kind()) {
-            case Binding.TYPE_PARAMETER:
-            case Binding.WILDCARD_TYPE:
-            case Binding.INTERSECTION_TYPE:
-                return false;
-        }
-        return this.binding.isClass();
+        return switch (this.binding.kind()) {
+            case Binding.TYPE_PARAMETER, Binding.WILDCARD_TYPE, Binding.INTERSECTION_TYPE -> false;
+            default -> this.binding.isClass();
+        };
     }
 
     @Override
@@ -1168,65 +993,11 @@ class TypeBinding implements ITypeBinding {
     }
 
     @Override
-    public boolean isFromSource() {
-        if (isClass() || isInterface() || isEnum()) {
-            ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
-            if (referenceBinding.isRawType()) {
-                return !((RawTypeBinding) referenceBinding).genericType().isBinaryBinding();
-            } else if (referenceBinding.isParameterizedType()) {
-                ParameterizedTypeBinding parameterizedTypeBinding = (ParameterizedTypeBinding) referenceBinding;
-                com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding erasure
-                    = parameterizedTypeBinding.erasure();
-                if (erasure instanceof ReferenceBinding) {
-                    return !((ReferenceBinding) erasure).isBinaryBinding();
-                }
-                return false;
-            } else {
-                return !referenceBinding.isBinaryBinding();
-            }
-        } else if (isTypeVariable()) {
-            final TypeVariableBinding typeVariableBinding = (TypeVariableBinding) this.binding;
-            final Binding declaringElement = typeVariableBinding.declaringElement;
-            if (declaringElement instanceof MethodBinding) {
-                MethodBinding methodBinding = (MethodBinding) declaringElement;
-                return !methodBinding.declaringClass.isBinaryBinding();
-            } else {
-                final com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding typeBinding
-                    = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding) declaringElement;
-                if (typeBinding instanceof ReferenceBinding) {
-                    return !((ReferenceBinding) typeBinding).isBinaryBinding();
-                } else if (typeBinding instanceof ArrayBinding) {
-                    final ArrayBinding arrayBinding = (ArrayBinding) typeBinding;
-                    final com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding leafComponentType
-                        = arrayBinding.leafComponentType;
-                    if (leafComponentType instanceof ReferenceBinding) {
-                        return !((ReferenceBinding) leafComponentType).isBinaryBinding();
-                    }
-                }
-            }
-
-        } else if (isCapture()) {
-            CaptureBinding captureBinding = (CaptureBinding) this.binding;
-            return !captureBinding.sourceType.isBinaryBinding();
-        }
-        return false;
-    }
-
-    @Override
     public boolean isInterface() {
-        switch (this.binding.kind()) {
-            case Binding.TYPE_PARAMETER:
-            case Binding.WILDCARD_TYPE:
-            case Binding.INTERSECTION_TYPE:
-                return false;
-        }
-        return this.binding.isInterface();
-    }
-
-    @Override
-    public boolean isIntersectionType() {
-        int kind = this.binding.kind();
-        return kind == Binding.INTERSECTION_TYPE18 || kind == Binding.INTERSECTION_TYPE;
+        return switch (this.binding.kind()) {
+            case Binding.TYPE_PARAMETER, Binding.WILDCARD_TYPE, Binding.INTERSECTION_TYPE -> false;
+            default -> this.binding.isInterface();
+        };
     }
 
     @Override
@@ -1285,39 +1056,11 @@ class TypeBinding implements ITypeBinding {
         return (this.binding.tagBits & TagBits.HasMissingType) != 0;
     }
 
-    @Override
-    public boolean isSubTypeCompatible(ITypeBinding type) {
-        try {
-            if (this == type) return true; //$IDENTITY-COMPARISON$
-            if (this.binding.isBaseType())
-                return false;
-            if (!(type instanceof TypeBinding))
-                return false;
-            TypeBinding other = (TypeBinding) type;
-            if (other.binding.isBaseType())
-                return false;
-            return this.binding.isCompatibleWith(other.binding);
-        } catch (AbortCompilation e) {
-            // don't surface internal exception to clients
-            // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=143013
-            return false;
-        }
-    }
-
     /**
      * @see IBinding#isSynthetic()
      */
     @Override
     public boolean isSynthetic() {
-        return false;
-    }
-
-    @Override
-    public boolean isTopLevel() {
-        if (isClass() || isInterface() || isEnum()) {
-            ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
-            return !referenceBinding.isNestedType();
-        }
         return false;
     }
 
@@ -1328,25 +1071,21 @@ class TypeBinding implements ITypeBinding {
 
     @Override
     public boolean isUpperbound() {
-        switch (this.binding.kind()) {
-            case Binding.WILDCARD_TYPE:
-                return ((WildcardBinding) this.binding).boundKind == Wildcard.EXTENDS;
-
-            case Binding.INTERSECTION_TYPE:
-                return true;
-
-            case Binding.TYPE_PARAMETER:
-                if (this.binding instanceof CaptureBinding18) {
-                    CaptureBinding18 captureBinding18 = (CaptureBinding18) this.binding;
-                    com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding upperBound
-                        = captureBinding18.upperBound();
+        return switch (this.binding.kind()) {
+            case Binding.WILDCARD_TYPE -> ((WildcardBinding) this.binding).boundKind == Wildcard.EXTENDS;
+            case Binding.INTERSECTION_TYPE -> true;
+            case Binding.TYPE_PARAMETER -> {
+                if (this.binding instanceof CaptureBinding18 captureBinding18) {
+                    com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding
+                        upperBound = captureBinding18.upperBound();
                     if (upperBound != null && upperBound.id != TypeIds.T_JavaLangObject) {
-                        return true;
+                        yield true;
                     }
                 }
-                return false;
-        }
-        return false;
+                yield false;
+            }
+            default -> false;
+        };
     }
 
     @Override
@@ -1362,15 +1101,6 @@ class TypeBinding implements ITypeBinding {
     @Override
     public String toString() {
         return this.binding.toString();
-    }
-
-    @Override
-    public IAnnotationBinding[] getTypeAnnotations() {
-        if (this.typeAnnotations != null) {
-            return this.typeAnnotations;
-        }
-        this.typeAnnotations = resolveAnnotationBindings(this.binding.getTypeAnnotations(), true);
-        return this.typeAnnotations;
     }
 
     static class LocalTypeBinding extends TypeBinding {

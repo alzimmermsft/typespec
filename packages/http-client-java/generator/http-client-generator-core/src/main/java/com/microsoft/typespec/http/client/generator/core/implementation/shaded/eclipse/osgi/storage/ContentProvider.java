@@ -13,8 +13,8 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.storage;
 
-import java.io.File;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.BundleException;
+import java.io.File;
 
 /**
  * A content provider is a marker interface that is used but the framework
@@ -24,25 +24,25 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 public interface ContentProvider {
 
-	/**
-	 * The type of the provided content
-	 */
-	public enum Type {
-		REFERENCE, CONNECT, DEFAULT;
-	}
+    /**
+     * The type of the provided content
+     */
+    public enum Type {
+        REFERENCE, CONNECT, DEFAULT;
+    }
 
-	/**
-	 * A file of the content, may be {@code null}
-	 * 
-	 * @return the file, may be {@code null}
-	 * @throws BundleException
-	 */
-	File getContent() throws BundleException;
+    /**
+     * A file of the content, may be {@code null}
+     * 
+     * @return the file, may be {@code null}
+     * @throws BundleException
+     */
+    File getContent() throws BundleException;
 
-	/**
-	 * The type of content
-	 * 
-	 * @return the type of content
-	 */
-	Type getType();
+    /**
+     * The type of content
+     * 
+     * @return the type of content
+     */
+    Type getType();
 }

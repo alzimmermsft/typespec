@@ -31,10 +31,10 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 public class EclipsePlatformNamespace extends Namespace {
 
-	/**
-	 * Namespace name for the eclipse platform. Unlike typical name spaces this
-	 * namespace is not intended to be used as an attribute.
-	 */
-	public static final String ECLIPSE_PLATFORM_NAMESPACE = "eclipse.platform"; //$NON-NLS-1$
+    /**
+     * Namespace name for the eclipse platform. Unlike typical name spaces this
+     * namespace is not intended to be used as an attribute.
+     */
+    public static final String ECLIPSE_PLATFORM_NAMESPACE = "eclipse.platform"; //$NON-NLS-1$
 
 }

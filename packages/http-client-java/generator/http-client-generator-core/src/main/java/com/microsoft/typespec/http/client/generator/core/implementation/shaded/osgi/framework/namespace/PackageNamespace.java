@@ -63,50 +63,50 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 public final class PackageNamespace extends AbstractWiringNamespace {
 
-	/**
-	 * Namespace name for package capabilities and requirements.
-	 * 
-	 * <p>
-	 * Also, the capability attribute used to specify the name of the package.
-	 */
-	public static final String	PACKAGE_NAMESPACE							= "osgi.wiring.package";
+    /**
+     * Namespace name for package capabilities and requirements.
+     * 
+     * <p>
+     * Also, the capability attribute used to specify the name of the package.
+     */
+    public static final String PACKAGE_NAMESPACE = "osgi.wiring.package";
 
-	/**
-	 * The capability directive used to specify the comma separated list of
-	 * classes which must be allowed to be exported.
-	 */
-	public final static String	CAPABILITY_INCLUDE_DIRECTIVE				= "include";
+    /**
+     * The capability directive used to specify the comma separated list of
+     * classes which must be allowed to be exported.
+     */
+    public final static String CAPABILITY_INCLUDE_DIRECTIVE = "include";
 
-	/**
-	 * The capability directive used to specify the comma separated list of
-	 * classes which must not be allowed to be exported.
-	 */
-	public final static String	CAPABILITY_EXCLUDE_DIRECTIVE				= "exclude";
+    /**
+     * The capability directive used to specify the comma separated list of
+     * classes which must not be allowed to be exported.
+     */
+    public final static String CAPABILITY_EXCLUDE_DIRECTIVE = "exclude";
 
-	/**
-	 * The capability attribute contains the {@code Version} of the package if
-	 * one is specified or {@code 0.0.0} if not specified. The value of this
-	 * attribute must be of type {@code Version}.
-	 */
-	public final static String	CAPABILITY_VERSION_ATTRIBUTE				= "version";
+    /**
+     * The capability attribute contains the {@code Version} of the package if
+     * one is specified or {@code 0.0.0} if not specified. The value of this
+     * attribute must be of type {@code Version}.
+     */
+    public final static String CAPABILITY_VERSION_ATTRIBUTE = "version";
 
-	/**
-	 * The capability attribute contains the symbolic name of the resource
-	 * providing the package.
-	 */
-	public final static String	CAPABILITY_BUNDLE_SYMBOLICNAME_ATTRIBUTE	= "bundle-symbolic-name";
+    /**
+     * The capability attribute contains the symbolic name of the resource
+     * providing the package.
+     */
+    public final static String CAPABILITY_BUNDLE_SYMBOLICNAME_ATTRIBUTE = "bundle-symbolic-name";
 
-	/**
-	 * The directive value identifying a dynamic requirement resolution type. A
-	 * dynamic resolution type indicates that the requirement is resolved
-	 * dynamically at runtime (such as a dynamically imported package) and the
-	 * resource will be resolved without the requirement being resolved.
-	 * 
-	 * @see Namespace#REQUIREMENT_RESOLUTION_DIRECTIVE
-	 */
-	public final static String	RESOLUTION_DYNAMIC							= "dynamic";
+    /**
+     * The directive value identifying a dynamic requirement resolution type. A
+     * dynamic resolution type indicates that the requirement is resolved
+     * dynamically at runtime (such as a dynamically imported package) and the
+     * resource will be resolved without the requirement being resolved.
+     * 
+     * @see Namespace#REQUIREMENT_RESOLUTION_DIRECTIVE
+     */
+    public final static String RESOLUTION_DYNAMIC = "dynamic";
 
-	private PackageNamespace() {
-		// empty
-	}
+    private PackageNamespace() {
+        // empty
+    }
 }

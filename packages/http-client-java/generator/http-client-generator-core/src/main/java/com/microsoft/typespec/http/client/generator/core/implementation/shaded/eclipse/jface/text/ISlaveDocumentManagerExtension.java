@@ -23,12 +23,12 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface ISlaveDocumentManagerExtension {
 
-	/**
-	 * Returns the list of slave documents for the given master document or
-	 * <code>null</code> if there are no such slave document.
-	 *
-	 * @param master the master document
-	 * @return the list of slave documents or <code>null</code>
-	 */
-	IDocument[] getSlaveDocuments(IDocument master);
+    /**
+     * Returns the list of slave documents for the given master document or
+     * <code>null</code> if there are no such slave document.
+     *
+     * @param master the master document
+     * @return the list of slave documents or <code>null</code>
+     */
+    IDocument[] getSlaveDocuments(IDocument master);
 }

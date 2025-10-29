@@ -225,9 +225,23 @@ public interface Wtsapi32 extends StdCallLibrary {
     /**
      * Contains information about a Remote Desktop Services session.
      */
-    @FieldOrder({ "State", "SessionId", "IncomingBytes", "OutgoingBytes", "IncomingFrames", "OutgoingFrames",
-            "IncomingCompressedBytes", "OutgoingCompressedBytes", "WinStationName", "Domain", "UserName", "ConnectTime",
-            "DisconnectTime", "LastInputTime", "LogonTime", "CurrentTime" })
+    @FieldOrder({
+        "State",
+        "SessionId",
+        "IncomingBytes",
+        "OutgoingBytes",
+        "IncomingFrames",
+        "OutgoingFrames",
+        "IncomingCompressedBytes",
+        "OutgoingCompressedBytes",
+        "WinStationName",
+        "Domain",
+        "UserName",
+        "ConnectTime",
+        "DisconnectTime",
+        "LastInputTime",
+        "LogonTime",
+        "CurrentTime" })
     class WTSINFO extends Structure {
         private static final int CHAR_WIDTH = Boolean.getBoolean("w32.ascii") ? 1 : 2;
 
@@ -301,12 +315,23 @@ public interface Wtsapi32 extends StdCallLibrary {
      * WTSEnumerateProcessesEx function when you set the pLevel parameter to one.
      *
      * @see <A HREF=
-     *      "https://docs.microsoft.com/en-us/windows/desktop/api/wtsapi32/ns-wtsapi32-_wts_process_info_exa">WTS_PROCESS_INFO_EXA</A>
+     * "https://docs.microsoft.com/en-us/windows/desktop/api/wtsapi32/ns-wtsapi32-_wts_process_info_exa">WTS_PROCESS_INFO_EXA</A>
      * @see <A HREF=
-     *      "https://docs.microsoft.com/en-us/windows/desktop/api/wtsapi32/ns-wtsapi32-_wts_process_info_exw">WTS_PROCESS_INFO_EXW</A>
+     * "https://docs.microsoft.com/en-us/windows/desktop/api/wtsapi32/ns-wtsapi32-_wts_process_info_exw">WTS_PROCESS_INFO_EXW</A>
      */
-    @FieldOrder({ "SessionId", "ProcessId", "pProcessName", "pUserSid", "NumberOfThreads", "HandleCount",
-            "PagefileUsage", "PeakPagefileUsage", "WorkingSetSize", "PeakWorkingSetSize", "UserTime", "KernelTime" })
+    @FieldOrder({
+        "SessionId",
+        "ProcessId",
+        "pProcessName",
+        "pUserSid",
+        "NumberOfThreads",
+        "HandleCount",
+        "PagefileUsage",
+        "PeakPagefileUsage",
+        "WorkingSetSize",
+        "PeakWorkingSetSize",
+        "UserTime",
+        "KernelTime" })
     class WTS_PROCESS_INFO_EX extends Structure {
         public int SessionId;
         public int ProcessId;
@@ -336,31 +361,31 @@ public interface Wtsapi32 extends StdCallLibrary {
      * Host) server.
      *
      * @param hServer
-     *            A handle to the RD Session Host server.
-     *            <p>
-     *            You can use the {@code WTSOpenServer} or {@code WTSOpenServerEx}
-     *            functions to retrieve a handle to a specific server, or
-     *            {@link #WTS_CURRENT_SERVER_HANDLE} to use the RD Session Host
-     *            server that hosts your application.
+     * A handle to the RD Session Host server.
+     * <p>
+     * You can use the {@code WTSOpenServer} or {@code WTSOpenServerEx}
+     * functions to retrieve a handle to a specific server, or
+     * {@link #WTS_CURRENT_SERVER_HANDLE} to use the RD Session Host
+     * server that hosts your application.
      * @param Reserved
-     *            This parameter is reserved. It must be zero.
+     * This parameter is reserved. It must be zero.
      * @param Version
-     *            The version of the enumeration request. This parameter must be 1.
+     * The version of the enumeration request. This parameter must be 1.
      * @param ppSessionInfo
-     *            A pointer to an array of {@link WTS_SESSION_INFO} structures that
-     *            represent the retrieved sessions. To free the returned buffer,
-     *            call the {@link Wtsapi32#WTSFreeMemory} function.
+     * A pointer to an array of {@link WTS_SESSION_INFO} structures that
+     * represent the retrieved sessions. To free the returned buffer,
+     * call the {@link Wtsapi32#WTSFreeMemory} function.
      * @param pCount
-     *            A pointer to the number of {@code WTS_SESSION_INFO} structures
-     *            returned in the {@code ppSessionInfo} parameter.
+     * A pointer to the number of {@code WTS_SESSION_INFO} structures
+     * returned in the {@code ppSessionInfo} parameter.
      * @return Returns {@code false} if this function fails. If this function
-     *         succeeds, returns {@code true}.
-     *         <p>
-     *         To get extended error information, call
-     *         {@link Kernel32#GetLastError()}.
+     * succeeds, returns {@code true}.
+     * <p>
+     * To get extended error information, call
+     * {@link Kernel32#GetLastError()}.
      */
     boolean WTSEnumerateSessions(HANDLE hServer, int Reserved, int Version, PointerByReference ppSessionInfo,
-            IntByReference pCount);
+        IntByReference pCount);
 
     /**
      * Retrieves session information for the specified session on the specified
@@ -368,52 +393,52 @@ public interface Wtsapi32 extends StdCallLibrary {
      * session information on local and remote RD Session Host servers.
      *
      * @param hServer
-     *            A handle to an RD Session Host server. Specify a handle opened by
-     *            the {@code WTSOpenServer} function, or specify
-     *            {@link #WTS_CURRENT_SERVER_HANDLE} to indicate the RD Session Host
-     *            server on which your application is running.
+     * A handle to an RD Session Host server. Specify a handle opened by
+     * the {@code WTSOpenServer} function, or specify
+     * {@link #WTS_CURRENT_SERVER_HANDLE} to indicate the RD Session Host
+     * server on which your application is running.
      * @param SessionId
-     *            A Remote Desktop Services session identifier. To indicate the
-     *            session in which the calling application is running (or the
-     *            current session) specify {@link #WTS_CURRENT_SESSION}. Only
-     *            specify {@code WTS_CURRENT_SESSION} when obtaining session
-     *            information on the local server. If {@code WTS_CURRENT_SESSION} is
-     *            specified when querying session information on a remote server,
-     *            the returned session information will be inconsistent. Do not use
-     *            the returned data.
-     *            <p>
-     *            You can use the {@code WTSEnumerateSessionsEx} function to
-     *            retrieve the identifiers of all sessions on a specified RD Session
-     *            Host server.
-     *            <p>
-     *            To query information for another user's session, you must have
-     *            Query Information permission.
+     * A Remote Desktop Services session identifier. To indicate the
+     * session in which the calling application is running (or the
+     * current session) specify {@link #WTS_CURRENT_SESSION}. Only
+     * specify {@code WTS_CURRENT_SESSION} when obtaining session
+     * information on the local server. If {@code WTS_CURRENT_SESSION} is
+     * specified when querying session information on a remote server,
+     * the returned session information will be inconsistent. Do not use
+     * the returned data.
+     * <p>
+     * You can use the {@code WTSEnumerateSessionsEx} function to
+     * retrieve the identifiers of all sessions on a specified RD Session
+     * Host server.
+     * <p>
+     * To query information for another user's session, you must have
+     * Query Information permission.
      * @param WTSInfoClass
-     *            A value of the {@link WTS_INFO_CLASS} enumeration that indicates
-     *            the type of session information to retrieve in a call to the
-     *            {@code WTSQuerySessionInformation} function.
+     * A value of the {@link WTS_INFO_CLASS} enumeration that indicates
+     * the type of session information to retrieve in a call to the
+     * {@code WTSQuerySessionInformation} function.
      * @param ppBuffer
-     *            A pointer to a variable that receives a pointer to the requested
-     *            information. The format and contents of the data depend on the
-     *            information class specified in the {@code WTSInfoClass} parameter.
-     *            To free the returned buffer, call the {@link #WTSFreeMemory}
-     *            function.
+     * A pointer to a variable that receives a pointer to the requested
+     * information. The format and contents of the data depend on the
+     * information class specified in the {@code WTSInfoClass} parameter.
+     * To free the returned buffer, call the {@link #WTSFreeMemory}
+     * function.
      * @param pBytesReturned
-     *            A pointer to a variable that receives the size, in bytes, of the
-     *            data returned in ppBuffer.
+     * A pointer to a variable that receives the size, in bytes, of the
+     * data returned in ppBuffer.
      * @return If the function succeeds, returns {@code true}.
-     *         <p>
-     *         If the function fails, returns {@code false}. To get extended error
-     *         information, call {@link Kernel32#GetLastError()}.
+     * <p>
+     * If the function fails, returns {@code false}. To get extended error
+     * information, call {@link Kernel32#GetLastError()}.
      */
     boolean WTSQuerySessionInformation(HANDLE hServer, int SessionId, int WTSInfoClass, PointerByReference ppBuffer,
-            IntByReference pBytesReturned);
+        IntByReference pBytesReturned);
 
     /**
      * Frees memory allocated by a Remote Desktop Services function.
      *
      * @param pMemory
-     *            Pointer to the memory to free.
+     * Pointer to the memory to free.
      */
     void WTSFreeMemory(Pointer pMemory);
 
@@ -421,15 +446,15 @@ public interface Wtsapi32 extends StdCallLibrary {
      * Registers the specified window to receive session change notifications.
      *
      * @param hWnd
-     *            [in] Handle of the window to receive session change
-     *            notifications.
+     * [in] Handle of the window to receive session change
+     * notifications.
      *
      * @param dwFlags
-     *            [in] Specifies which session notifications are to be received.
-     *            This parameter can be one of the following values.
+     * [in] Specifies which session notifications are to be received.
+     * This parameter can be one of the following values.
      *
      * @return If the function succeeds, the return value is TRUE. Otherwise, it
-     *         is FALSE. To get extended error information, call GetLastError.
+     * is FALSE. To get extended error information, call GetLastError.
      */
     boolean WTSRegisterSessionNotification(HWND hWnd, int dwFlags);
 
@@ -438,11 +463,11 @@ public interface Wtsapi32 extends StdCallLibrary {
      * change notifications.
      *
      * @param hWnd
-     *            [in] Handle of the window to be unregistered from receiving
-     *            session notifications.
+     * [in] Handle of the window to be unregistered from receiving
+     * session notifications.
      *
      * @return If the function succeeds, the return value is TRUE. Otherwise, it
-     *         is FALSE. To get extended error information, call GetLastError.
+     * is FALSE. To get extended error information, call GetLastError.
      */
     boolean WTSUnRegisterSessionNotification(HWND hWnd);
 
@@ -452,58 +477,58 @@ public interface Wtsapi32 extends StdCallLibrary {
      * Virtualization Host (RD Virtualization Host) server.
      *
      * @param hServer
-     *            A handle to an RD Session Host server. Specify a handle opened
-     *            by the WTSOpenServer function, or specify
-     *            WTS_CURRENT_SERVER_HANDLE to indicate the server on which your
-     *            application is running.
+     * A handle to an RD Session Host server. Specify a handle opened
+     * by the WTSOpenServer function, or specify
+     * WTS_CURRENT_SERVER_HANDLE to indicate the server on which your
+     * application is running.
      * @param pLevel
-     *            A pointer to a DWORD variable that, on input, specifies the
-     *            type of information to return. To return an array of
-     *            WTS_PROCESS_INFO structures, specify zero. To return an array
-     *            of WTS_PROCESS_INFO_EX structures, specify one. If you do not
-     *            specify a valid value for this parameter, on output,
-     *            WTSEnumerateProcessesEx sets this parameter to one and returns
-     *            an error. Otherwise, on output, WTSEnumerateProcessesEx does
-     *            not change the value of this parameter.
+     * A pointer to a DWORD variable that, on input, specifies the
+     * type of information to return. To return an array of
+     * WTS_PROCESS_INFO structures, specify zero. To return an array
+     * of WTS_PROCESS_INFO_EX structures, specify one. If you do not
+     * specify a valid value for this parameter, on output,
+     * WTSEnumerateProcessesEx sets this parameter to one and returns
+     * an error. Otherwise, on output, WTSEnumerateProcessesEx does
+     * not change the value of this parameter.
      * @param SessionID
-     *            The session for which to enumerate processes. To enumerate
-     *            processes for all sessions on the server, specify
-     *            WTS_ANY_SESSION.
+     * The session for which to enumerate processes. To enumerate
+     * processes for all sessions on the server, specify
+     * WTS_ANY_SESSION.
      * @param ppProcessInfo
-     *            A pointer to a variable that receives a pointer to an array of
-     *            WTS_PROCESS_INFO or WTS_PROCESS_INFO_EX structures. The type
-     *            of structure is determined by the value passed to the pLevel
-     *            parameter. Each structure in the array contains information
-     *            about an active process. When you have finished using the
-     *            array, free it by calling the WTSFreeMemoryEx function. You
-     *            should also set the pointer to NULL.
+     * A pointer to a variable that receives a pointer to an array of
+     * WTS_PROCESS_INFO or WTS_PROCESS_INFO_EX structures. The type
+     * of structure is determined by the value passed to the pLevel
+     * parameter. Each structure in the array contains information
+     * about an active process. When you have finished using the
+     * array, free it by calling the WTSFreeMemoryEx function. You
+     * should also set the pointer to NULL.
      * @param pCount
-     *            A pointer to a variable that receives the number of structures
-     *            returned in the buffer referenced by the ppProcessInfo
-     *            parameter.
+     * A pointer to a variable that receives the number of structures
+     * returned in the buffer referenced by the ppProcessInfo
+     * parameter.
      * @return If the function succeeds, the return value is a nonzero value. If
-     *         the function fails, the return value is zero. To get extended
-     *         error information, call the GetLastError function.
+     * the function fails, the return value is zero. To get extended
+     * error information, call the GetLastError function.
      */
     boolean WTSEnumerateProcessesEx(HANDLE hServer, IntByReference pLevel, int SessionID,
-            PointerByReference ppProcessInfo, IntByReference pCount);
+        PointerByReference ppProcessInfo, IntByReference pCount);
 
     /**
      * Frees memory that contains WTS_PROCESS_INFO_EX or WTS_SESSION_INFO_1
      * structures allocated by a Remote Desktop Services function.
      *
      * @param WTSTypeClass
-     *            A value of the WTS_TYPE_CLASS enumeration type that specifies
-     *            the type of structures contained in the buffer referenced by
-     *            the pMemory parameter.
+     * A value of the WTS_TYPE_CLASS enumeration type that specifies
+     * the type of structures contained in the buffer referenced by
+     * the pMemory parameter.
      * @param pMemory
-     *            A pointer to the buffer to free.
+     * A pointer to the buffer to free.
      * @param NumberOfEntries
-     *            The number of elements in the buffer referenced by the pMemory
-     *            parameter.
+     * The number of elements in the buffer referenced by the pMemory
+     * parameter.
      * @return If the function succeeds, the return value is a nonzero value. If
-     *         the function fails, the return value is zero. To get extended
-     *         error information, call the GetLastError function.
+     * the function fails, the return value is zero. To get extended
+     * error information, call the GetLastError function.
      */
     boolean WTSFreeMemoryEx(int WTSTypeClass, Pointer pMemory, int NumberOfEntries);
 }

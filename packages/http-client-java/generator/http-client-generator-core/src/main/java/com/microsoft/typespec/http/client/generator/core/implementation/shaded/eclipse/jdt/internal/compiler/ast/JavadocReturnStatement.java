@@ -20,54 +20,64 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.MethodScope;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 
-
 public class JavadocReturnStatement extends ReturnStatement {
 
-	public JavadocReturnStatement(int s, int e) {
-		super(null, s, e);
-		this.bits |= (ASTNode.InsideJavadoc | ASTNode.Empty);
-	}
+    public JavadocReturnStatement(int s, int e) {
+        super(null, s, e);
+        this.bits |= (ASTNode.InsideJavadoc | ASTNode.Empty);
+    }
 
-	@Override
-	public void resolve(BlockScope scope) {
-		MethodScope methodScope = scope.methodScope();
-		MethodBinding methodBinding = null;
-		TypeBinding methodType =
-			(methodScope.referenceContext instanceof AbstractMethodDeclaration)
-				? ((methodBinding = ((AbstractMethodDeclaration) methodScope.referenceContext).binding) == null
-					? null
-					: methodBinding.returnType)
-				: TypeBinding.VOID;
-		if (methodType == null || methodType == TypeBinding.VOID) {
-			scope.problemReporter().javadocUnexpectedTag(this.sourceStart, this.sourceEnd);
-		} else if ((this.bits & ASTNode.Empty) != 0) {
-			scope.problemReporter().javadocEmptyReturnTag(this.sourceStart, this.sourceEnd, scope.getDeclarationModifiers());
-		}
-	}
+    @Override
+    public void resolve(BlockScope scope) {
+        MethodScope methodScope = scope.methodScope();
+        MethodBinding methodBinding = null;
+        TypeBinding methodType = (methodScope.referenceContext instanceof AbstractMethodDeclaration)
+            ? ((methodBinding = ((AbstractMethodDeclaration) methodScope.referenceContext).binding) == null
+                ? null
+                : methodBinding.returnType)
+            : TypeBinding.VOID;
+        if (methodType == null || methodType == TypeBinding.VOID) {
+            scope.problemReporter().javadocUnexpectedTag(this.sourceStart, this.sourceEnd);
+        } else if ((this.bits & ASTNode.Empty) != 0) {
+            scope.problemReporter()
+                .javadocEmptyReturnTag(this.sourceStart, this.sourceEnd, scope.getDeclarationModifiers());
+        }
+    }
 
-	@Override
-	public StringBuilder printStatement(int tab, StringBuilder output) {
-		printIndent(tab, output).append("return"); //$NON-NLS-1$
-		if ((this.bits & ASTNode.Empty) == 0)
-			output.append(' ').append(" <not empty>"); //$NON-NLS-1$
-		return output;
-	}
+    @Override
+    public StringBuilder printStatement(int tab, StringBuilder output) {
+        printIndent(tab, output).append("return"); //$NON-NLS-1$
+        if ((this.bits & ASTNode.Empty) == 0)
+            output.append(' ').append(" <not empty>"); //$NON-NLS-1$
+        return output;
+    }
 
-	/* (non-Javadoc)
-	 * Redefine to capture javadoc specific signatures
-	 * @see org.eclipse.jdt.internal.compiler.ast.ASTNode#traverse(com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ASTVisitor, com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.BlockScope)
-	 */
-	@Override
-	public void traverse(ASTVisitor visitor, BlockScope scope) {
-		visitor.visit(this, scope);
-		visitor.endVisit(this, scope);
-	}
-	/* (non-Javadoc)
-	 * Redefine to capture javadoc specific signatures
-	 * @see org.eclipse.jdt.internal.compiler.ast.ASTNode#traverse(com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ASTVisitor, com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.BlockScope)
-	 */
-	public void traverse(ASTVisitor visitor, ClassScope scope) {
-		visitor.visit(this, scope);
-		visitor.endVisit(this, scope);
-	}
+    /*
+     * (non-Javadoc)
+     * Redefine to capture javadoc specific signatures
+     * 
+     * @see org.eclipse.jdt.internal.compiler.ast.ASTNode#traverse(com.microsoft.typespec.http.client.generator.core.
+     * implementation.shaded.eclipse.jdt.internal.compiler.ASTVisitor,
+     * com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.
+     * BlockScope)
+     */
+    @Override
+    public void traverse(ASTVisitor visitor, BlockScope scope) {
+        visitor.visit(this, scope);
+        visitor.endVisit(this, scope);
+    }
+
+    /*
+     * (non-Javadoc)
+     * Redefine to capture javadoc specific signatures
+     * 
+     * @see org.eclipse.jdt.internal.compiler.ast.ASTNode#traverse(com.microsoft.typespec.http.client.generator.core.
+     * implementation.shaded.eclipse.jdt.internal.compiler.ASTVisitor,
+     * com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.
+     * BlockScope)
+     */
+    public void traverse(ASTVisitor visitor, ClassScope scope) {
+        visitor.visit(this, scope);
+        visitor.endVisit(this, scope);
+    }
 }

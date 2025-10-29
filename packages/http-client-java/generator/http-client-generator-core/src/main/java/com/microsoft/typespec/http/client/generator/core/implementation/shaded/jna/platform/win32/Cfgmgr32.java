@@ -150,25 +150,25 @@ public interface Cfgmgr32 extends Library {
      * local machine.
      *
      * @param pdnDevInst
-     *            A pointer to a device instance handle that CM_Locate_DevNode
-     *            retrieves. The retrieved handle is bound to the local machine.
+     * A pointer to a device instance handle that CM_Locate_DevNode
+     * retrieves. The retrieved handle is bound to the local machine.
      * @param pDeviceID
-     *            A pointer to a NULL-terminated string representing a device
-     *            instance ID. If this value is NULL, or if it points to a
-     *            zero-length string, the function retrieves a device instance
-     *            handle to the device at the root of the device tree. *
+     * A pointer to a NULL-terminated string representing a device
+     * instance ID. If this value is NULL, or if it points to a
+     * zero-length string, the function retrieves a device instance
+     * handle to the device at the root of the device tree. *
      * @param ulFlags
-     *            A variable of ULONG type that supplies one of the following
-     *            flag values that apply if the caller supplies a device
-     *            instance identifier: CM_LOCATE_DEVNODE_NORMAL,
-     *            CM_LOCATE_DEVNODE_PHANTOM, CM_LOCATE_DEVNODE_CANCELREMOVE, or
-     *            CM_LOCATE_DEVNODE_NOVALIDATION
+     * A variable of ULONG type that supplies one of the following
+     * flag values that apply if the caller supplies a device
+     * instance identifier: CM_LOCATE_DEVNODE_NORMAL,
+     * CM_LOCATE_DEVNODE_PHANTOM, CM_LOCATE_DEVNODE_CANCELREMOVE, or
+     * CM_LOCATE_DEVNODE_NOVALIDATION
      * @return If the operation succeeds, CM_Locate_DevNode returns CR_SUCCESS.
-     *         Otherwise, the function returns one of the CR_Xxx error codes
-     *         that are defined in Cfgmgr32.h.
+     * Otherwise, the function returns one of the CR_Xxx error codes
+     * that are defined in Cfgmgr32.h.
      * @see <A HREF=
-     *      "https://docs.microsoft.com/en-us/windows/desktop/api/cfgmgr32/nf-cfgmgr32-cm_locate_devnodea">
-     *      CM_Locate_DevNode</A>
+     * "https://docs.microsoft.com/en-us/windows/desktop/api/cfgmgr32/nf-cfgmgr32-cm_locate_devnodea">
+     * CM_Locate_DevNode</A>
      */
     int CM_Locate_DevNode(IntByReference pdnDevInst, String pDeviceID, int ulFlags);
 
@@ -178,20 +178,20 @@ public interface Cfgmgr32 extends Library {
      * tree.
      *
      * @param pdnDevInst
-     *            Caller-supplied pointer to the device instance handle to the
-     *            parent node that this function retrieves. The retrieved handle
-     *            is bound to the local machine.
+     * Caller-supplied pointer to the device instance handle to the
+     * parent node that this function retrieves. The retrieved handle
+     * is bound to the local machine.
      * @param dnDevInst
-     *            Caller-supplied device instance handle that is bound to the
-     *            local machine.
+     * Caller-supplied device instance handle that is bound to the
+     * local machine.
      * @param ulFlags
-     *            Not used, must be zero.
+     * Not used, must be zero.
      * @return If the operation succeeds, the function returns CR_SUCCESS.
-     *         Otherwise, it returns one of the CR_-prefixed error codes defined
-     *         in Cfgmgr32.h.
+     * Otherwise, it returns one of the CR_-prefixed error codes defined
+     * in Cfgmgr32.h.
      * @see <A HREF=
-     *      "https://docs.microsoft.com/en-us/windows/desktop/api/cfgmgr32/nf-cfgmgr32-cm_get_parent">
-     *      CM_Get_Parent</A>
+     * "https://docs.microsoft.com/en-us/windows/desktop/api/cfgmgr32/nf-cfgmgr32-cm_get_parent">
+     * CM_Get_Parent</A>
      */
     int CM_Get_Parent(IntByReference pdnDevInst, int dnDevInst, int ulFlags);
 
@@ -201,20 +201,20 @@ public interface Cfgmgr32 extends Library {
      * machine's device tree.
      *
      * @param pdnDevInst
-     *            Caller-supplied pointer to the device instance handle to the
-     *            child node that this function retrieves. The retrieved handle
-     *            is bound to the local machine.
+     * Caller-supplied pointer to the device instance handle to the
+     * child node that this function retrieves. The retrieved handle
+     * is bound to the local machine.
      * @param dnDevInst
-     *            Caller-supplied device instance handle that is bound to the
-     *            local machine.
+     * Caller-supplied device instance handle that is bound to the
+     * local machine.
      * @param ulFlags
-     *            Not used, must be zero.
+     * Not used, must be zero.
      * @return If the operation succeeds, the function returns CR_SUCCESS.
-     *         Otherwise, it returns one of the CR_-prefixed error codes defined
-     *         in Cfgmgr32.h.
+     * Otherwise, it returns one of the CR_-prefixed error codes defined
+     * in Cfgmgr32.h.
      * @see <A HREF=
-     *      "https://docs.microsoft.com/en-us/windows/desktop/api/cfgmgr32/nf-cfgmgr32-cm_get_child">
-     *      CM_Get_Child</A>
+     * "https://docs.microsoft.com/en-us/windows/desktop/api/cfgmgr32/nf-cfgmgr32-cm_get_child">
+     * CM_Get_Child</A>
      */
     int CM_Get_Child(IntByReference pdnDevInst, int dnDevInst, int ulFlags);
 
@@ -224,20 +224,20 @@ public interface Cfgmgr32 extends Library {
      * device tree.
      *
      * @param pdnDevInst
-     *            Caller-supplied pointer to the device instance handle to the
-     *            sibling node that this function retrieves. The retrieved
-     *            handle is bound to the local machine.
+     * Caller-supplied pointer to the device instance handle to the
+     * sibling node that this function retrieves. The retrieved
+     * handle is bound to the local machine.
      * @param dnDevInst
-     *            Caller-supplied device instance handle that is bound to the
-     *            local machine.
+     * Caller-supplied device instance handle that is bound to the
+     * local machine.
      * @param ulFlags
-     *            Not used, must be zero.
+     * Not used, must be zero.
      * @return If the operation succeeds, the function returns CR_SUCCESS.
-     *         Otherwise, it returns one of the CR_-prefixed error codes defined
-     *         in Cfgmgr32.h.
+     * Otherwise, it returns one of the CR_-prefixed error codes defined
+     * in Cfgmgr32.h.
      * @see <A HREF=
-     *      "https://docs.microsoft.com/en-us/windows/desktop/api/cfgmgr32/nf-cfgmgr32-cm_get_sibling">
-     *      CM_Get_Sibling</A>
+     * "https://docs.microsoft.com/en-us/windows/desktop/api/cfgmgr32/nf-cfgmgr32-cm_get_sibling">
+     * CM_Get_Sibling</A>
      */
     int CM_Get_Sibling(IntByReference pdnDevInst, int dnDevInst, int ulFlags);
 
@@ -246,24 +246,24 @@ public interface Cfgmgr32 extends Library {
      * specified device instance on the local machine.
      *
      * @param devInst
-     *            Caller-supplied device instance handle that is bound to the
-     *            local machine.
+     * Caller-supplied device instance handle that is bound to the
+     * local machine.
      * @param Buffer
-     *            Address of a buffer to receive a device instance ID string.
-     *            The required buffer size can be obtained by calling
-     *            CM_Get_Device_ID_Size, then incrementing the received value to
-     *            allow room for the string's terminating NULL.
+     * Address of a buffer to receive a device instance ID string.
+     * The required buffer size can be obtained by calling
+     * CM_Get_Device_ID_Size, then incrementing the received value to
+     * allow room for the string's terminating NULL.
      * @param BufferLen
-     *            Caller-supplied length, in characters, of the buffer specified
-     *            by Buffer.
+     * Caller-supplied length, in characters, of the buffer specified
+     * by Buffer.
      * @param ulFlags
-     *            Not used, must be zero.
+     * Not used, must be zero.
      * @return If the operation succeeds, the function returns CR_SUCCESS.
-     *         Otherwise, it returns one of the CR_-prefixed error codes defined
-     *         in Cfgmgr32.h.
+     * Otherwise, it returns one of the CR_-prefixed error codes defined
+     * in Cfgmgr32.h.
      * @see <A HREF=
-     *      "https://docs.microsoft.com/en-us/windows/desktop/api/cfgmgr32/nf-cfgmgr32-cm_get_device_idw">
-     *      CM_Get_Device_ID</A>
+     * "https://docs.microsoft.com/en-us/windows/desktop/api/cfgmgr32/nf-cfgmgr32-cm_get_device_idw">
+     * CM_Get_Device_ID</A>
      */
     int CM_Get_Device_ID(int devInst, Pointer Buffer, int BufferLen, int ulFlags);
 
@@ -272,19 +272,19 @@ public interface Cfgmgr32 extends Library {
      * hold a device instance ID for a device instance on the local machine.
      *
      * @param pulLen
-     *            Receives a value representing the required buffer size, in
-     *            characters.
+     * Receives a value representing the required buffer size, in
+     * characters.
      * @param dnDevInst
-     *            Caller-supplied device instance handle that is bound to the
-     *            local machine.
+     * Caller-supplied device instance handle that is bound to the
+     * local machine.
      * @param ulFlags
-     *            Not used, must be zero.
+     * Not used, must be zero.
      * @return If the operation succeeds, the function returns CR_SUCCESS.
-     *         Otherwise, it returns one of the CR_-prefixed error codes defined
-     *         in Cfgmgr32.h.
+     * Otherwise, it returns one of the CR_-prefixed error codes defined
+     * in Cfgmgr32.h.
      * @see <A HREF=
-     *      "https://docs.microsoft.com/en-us/windows/desktop/api/cfgmgr32/nf-cfgmgr32-cm_get_device_id_size">
-     *      CM_Get_Device_ID_Size</A>
+     * "https://docs.microsoft.com/en-us/windows/desktop/api/cfgmgr32/nf-cfgmgr32-cm_get_device_id_size">
+     * CM_Get_Device_ID_Size</A>
      */
     int CM_Get_Device_ID_Size(IntByReference pulLen, int dnDevInst, int ulFlags);
 
@@ -293,37 +293,37 @@ public interface Cfgmgr32 extends Library {
      * property from the registry.
      *
      * @param dnDevInst
-     *            A caller-supplied device instance handle that is bound to the
-     *            local machine.
+     * A caller-supplied device instance handle that is bound to the
+     * local machine.
      * @param ulProperty
-     *            A {@code CM_DRP_}-prefixed constant value that identifies the
-     *            device property to be obtained from the registry. These constants
-     *            are defined in Cfgmgr32.h.
+     * A {@code CM_DRP_}-prefixed constant value that identifies the
+     * device property to be obtained from the registry. These constants
+     * are defined in Cfgmgr32.h.
      * @param pulRegDataType
-     *            Optional, can be {@code null}. A pointer to a location that
-     *            receives the registry data type, specified as a
-     *            {@code REG_}-prefixed constant defined in Winnt.h.
+     * Optional, can be {@code null}. A pointer to a location that
+     * receives the registry data type, specified as a
+     * {@code REG_}-prefixed constant defined in Winnt.h.
      * @param buffer
-     *            Optional, can be {@code null}. A pointer to a caller-supplied
-     *            buffer that receives the requested device property. If this value
-     *            is {@code null}, the function supplies only the length of the
-     *            requested data in the address pointed to by {@code pulLength}.
+     * Optional, can be {@code null}. A pointer to a caller-supplied
+     * buffer that receives the requested device property. If this value
+     * is {@code null}, the function supplies only the length of the
+     * requested data in the address pointed to by {@code pulLength}.
      * @param pulLength
-     *            A pointer to a {@code ULONG} variable into which the function
-     *            stores the length, in bytes, of the requested device property.
-     *            <p>
-     *            If the Buffer parameter is set to {@code null}, the ULONG variable
-     *            must be set to zero.
-     *            <p>
-     *            If the Buffer parameter is not set to {@code null}, the
-     *            {@code ULONG} variable must be set to the length, in bytes, of the
-     *            caller-supplied buffer.
+     * A pointer to a {@code ULONG} variable into which the function
+     * stores the length, in bytes, of the requested device property.
+     * <p>
+     * If the Buffer parameter is set to {@code null}, the ULONG variable
+     * must be set to zero.
+     * <p>
+     * If the Buffer parameter is not set to {@code null}, the
+     * {@code ULONG} variable must be set to the length, in bytes, of the
+     * caller-supplied buffer.
      * @param ulFlags
-     *            Not used, must be zero.
+     * Not used, must be zero.
      * @return If the operation succeeds, the function returns {@code CR_SUCCESS}.
-     *         Otherwise, it returns one of the {@code CR_}-prefixed error codes
-     *         that are defined in Cfgmgr32.h.
+     * Otherwise, it returns one of the {@code CR_}-prefixed error codes
+     * that are defined in Cfgmgr32.h.
      */
     int CM_Get_DevNode_Registry_Property(int dnDevInst, int ulProperty, IntByReference pulRegDataType, Pointer buffer,
-            IntByReference pulLength, int ulFlags);
+        IntByReference pulLength, int ulFlags);
 }

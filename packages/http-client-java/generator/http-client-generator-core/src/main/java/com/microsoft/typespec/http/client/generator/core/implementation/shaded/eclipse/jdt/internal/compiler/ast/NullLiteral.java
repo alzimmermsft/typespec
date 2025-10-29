@@ -25,53 +25,54 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class NullLiteral extends MagicLiteral {
 
-	static final char[] source = {'n' , 'u' , 'l' , 'l'};
+    static final char[] source = { 'n', 'u', 'l', 'l' };
 
-	public NullLiteral(int s , int e) {
+    public NullLiteral(int s, int e) {
 
-		super(s,e);
-	}
+        super(s, e);
+    }
 
-	@Override
-	public void computeConstant() {
+    @Override
+    public void computeConstant() {
 
-		this.constant = Constant.NotAConstant;
-	}
+        this.constant = Constant.NotAConstant;
+    }
 
-	/**
-	 * Code generation for the null literal
-	 *
-	 * @param currentScope org.eclipse.jdt.internal.compiler.lookup.BlockScope
-	 * @param codeStream org.eclipse.jdt.internal.compiler.codegen.CodeStream
-	 * @param valueRequired boolean
-	 */
-	@Override
-	public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
-		int pc = codeStream.position;
-		if (valueRequired) {
-			codeStream.aconst_null();
-			codeStream.generateImplicitConversion(this.implicitConversion);
-		}
-		codeStream.recordPositionsFrom(pc, this.sourceStart);
-	}
-	@Override
-	public TypeBinding literalType(BlockScope scope) {
-		return TypeBinding.NULL;
-	}
+    /**
+     * Code generation for the null literal
+     *
+     * @param currentScope org.eclipse.jdt.internal.compiler.lookup.BlockScope
+     * @param codeStream org.eclipse.jdt.internal.compiler.codegen.CodeStream
+     * @param valueRequired boolean
+     */
+    @Override
+    public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
+        int pc = codeStream.position;
+        if (valueRequired) {
+            codeStream.aconst_null();
+            codeStream.generateImplicitConversion(this.implicitConversion);
+        }
+        codeStream.recordPositionsFrom(pc, this.sourceStart);
+    }
 
-	@Override
-	public int nullStatus(FlowInfo flowInfo, FlowContext flowContext) {
-		return FlowInfo.NULL;
-	}
+    @Override
+    public TypeBinding literalType(BlockScope scope) {
+        return TypeBinding.NULL;
+    }
 
-	@Override
-	public char[] source() {
-		return source;
-	}
+    @Override
+    public int nullStatus(FlowInfo flowInfo, FlowContext flowContext) {
+        return FlowInfo.NULL;
+    }
 
-	@Override
-	public void traverse(ASTVisitor visitor, BlockScope scope) {
-		visitor.visit(this, scope);
-		visitor.endVisit(this, scope);
-	}
+    @Override
+    public char[] source() {
+        return source;
+    }
+
+    @Override
+    public void traverse(ASTVisitor visitor, BlockScope scope) {
+        visitor.visit(this, scope);
+        visitor.endVisit(this, scope);
+    }
 }

@@ -18,22 +18,22 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 // Give it an identity of its own to discriminate the fact that this type is not annotatable and so is a singleton.
 public class VoidTypeBinding extends BaseTypeBinding {
 
-	VoidTypeBinding() {
-		super(TypeIds.T_void, TypeConstants.VOID, new char[] { 'V' });
-	}
+    VoidTypeBinding() {
+        super(TypeIds.T_void, TypeConstants.VOID, new char[] { 'V' });
+    }
 
-	@Override
-	public TypeBinding clone(TypeBinding enclosingType) {
-		return this;  // enforce solitude.
-	}
+    @Override
+    public TypeBinding clone(TypeBinding enclosingType) {
+        return this;  // enforce solitude.
+    }
 
-	@Override
-	public void setTypeAnnotations(AnnotationBinding[] annotations, boolean evalNullAnnotations) {
-		return; // reject misguided attempt.
-	}
+    @Override
+    public void setTypeAnnotations(AnnotationBinding[] annotations, boolean evalNullAnnotations) {
+        return; // reject misguided attempt.
+    }
 
-	@Override
-	public TypeBinding unannotated() {
-		return this;
-	}
+    @Override
+    public TypeBinding unannotated() {
+        return this;
+    }
 }

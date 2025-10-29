@@ -44,121 +44,117 @@ import java.util.Map;
 @J2ktIncompatible
 @ElementTypesAreNonnullByDefault
 public final class EnumBiMap<K extends Enum<K>, V extends Enum<V>> extends AbstractBiMap<K, V> {
-  /*
-   * J2CL's EnumMap does not need the Class instance, so we can use Object.class instead. (Or we
-   * could use null, but that messes with our nullness checking, including under J2KT. We could
-   * probably work around it by changing how we annotate the J2CL EnumMap, but that's probably more
-   * trouble than just using Object.class.)
-   *
-   * Then we declare the getters for these fields as @GwtIncompatible so that no one can try to use
-   * them under J2CL—or, as an unfortunate side effect, under GWT. We do still give the fields
-   * themselves their proper values under GWT, since GWT's EnumMap does need the Class instance.
-   *
-   * Note that sometimes these fields *do* have correct values under J2CL: They will if the caller
-   * calls `create(Foo.class)`, rather than `create(map)`. That's fine; we just shouldn't rely on
-   * it.
-   */
-  transient Class<K> keyTypeOrObjectUnderJ2cl;
-  transient Class<V> valueTypeOrObjectUnderJ2cl;
+    /*
+     * J2CL's EnumMap does not need the Class instance, so we can use Object.class instead. (Or we
+     * could use null, but that messes with our nullness checking, including under J2KT. We could
+     * probably work around it by changing how we annotate the J2CL EnumMap, but that's probably more
+     * trouble than just using Object.class.)
+     *
+     * Then we declare the getters for these fields as @GwtIncompatible so that no one can try to use
+     * them under J2CL—or, as an unfortunate side effect, under GWT. We do still give the fields
+     * themselves their proper values under GWT, since GWT's EnumMap does need the Class instance.
+     *
+     * Note that sometimes these fields *do* have correct values under J2CL: They will if the caller
+     * calls `create(Foo.class)`, rather than `create(map)`. That's fine; we just shouldn't rely on
+     * it.
+     */
+    transient Class<K> keyTypeOrObjectUnderJ2cl;
+    transient Class<V> valueTypeOrObjectUnderJ2cl;
 
-  /**
-   * Returns a new, empty {@code EnumBiMap} using the specified key and value types.
-   *
-   * @param keyType the key type
-   * @param valueType the value type
-   */
-  public static <K extends Enum<K>, V extends Enum<V>> EnumBiMap<K, V> create(
-      Class<K> keyType, Class<V> valueType) {
-    return new EnumBiMap<>(keyType, valueType);
-  }
-
-  /**
-   * Returns a new bimap with the same mappings as the specified map. If the specified map is an
-   * {@code EnumBiMap}, the new bimap has the same types as the provided map. Otherwise, the
-   * specified map must contain at least one mapping, in order to determine the key and value types.
-   *
-   * @param map the map whose mappings are to be placed in this map
-   * @throws IllegalArgumentException if map is not an {@code EnumBiMap} instance and contains no
-   *     mappings
-   */
-  public static <K extends Enum<K>, V extends Enum<V>> EnumBiMap<K, V> create(Map<K, V> map) {
-    EnumBiMap<K, V> bimap =
-        create(inferKeyTypeOrObjectUnderJ2cl(map), inferValueTypeOrObjectUnderJ2cl(map));
-    bimap.putAll(map);
-    return bimap;
-  }
-
-  private EnumBiMap(Class<K> keyTypeOrObjectUnderJ2cl, Class<V> valueTypeOrObjectUnderJ2cl) {
-    super(
-        new EnumMap<K, V>(keyTypeOrObjectUnderJ2cl), new EnumMap<V, K>(valueTypeOrObjectUnderJ2cl));
-    this.keyTypeOrObjectUnderJ2cl = keyTypeOrObjectUnderJ2cl;
-    this.valueTypeOrObjectUnderJ2cl = valueTypeOrObjectUnderJ2cl;
-  }
-
-  static <K extends Enum<K>> Class<K> inferKeyTypeOrObjectUnderJ2cl(Map<K, ?> map) {
-    if (map instanceof EnumBiMap) {
-      return ((EnumBiMap<K, ?>) map).keyTypeOrObjectUnderJ2cl;
+    /**
+     * Returns a new, empty {@code EnumBiMap} using the specified key and value types.
+     *
+     * @param keyType the key type
+     * @param valueType the value type
+     */
+    public static <K extends Enum<K>, V extends Enum<V>> EnumBiMap<K, V> create(Class<K> keyType, Class<V> valueType) {
+        return new EnumBiMap<>(keyType, valueType);
     }
-    if (map instanceof EnumHashBiMap) {
-      return ((EnumHashBiMap<K, ?>) map).keyTypeOrObjectUnderJ2cl;
+
+    /**
+     * Returns a new bimap with the same mappings as the specified map. If the specified map is an
+     * {@code EnumBiMap}, the new bimap has the same types as the provided map. Otherwise, the
+     * specified map must contain at least one mapping, in order to determine the key and value types.
+     *
+     * @param map the map whose mappings are to be placed in this map
+     * @throws IllegalArgumentException if map is not an {@code EnumBiMap} instance and contains no
+     * mappings
+     */
+    public static <K extends Enum<K>, V extends Enum<V>> EnumBiMap<K, V> create(Map<K, V> map) {
+        EnumBiMap<K, V> bimap = create(inferKeyTypeOrObjectUnderJ2cl(map), inferValueTypeOrObjectUnderJ2cl(map));
+        bimap.putAll(map);
+        return bimap;
     }
-    checkArgument(!map.isEmpty());
-    return getDeclaringClassOrObjectForJ2cl(map.keySet().iterator().next());
-  }
 
-  private static <V extends Enum<V>> Class<V> inferValueTypeOrObjectUnderJ2cl(Map<?, V> map) {
-    if (map instanceof EnumBiMap) {
-      return ((EnumBiMap<?, V>) map).valueTypeOrObjectUnderJ2cl;
+    private EnumBiMap(Class<K> keyTypeOrObjectUnderJ2cl, Class<V> valueTypeOrObjectUnderJ2cl) {
+        super(new EnumMap<K, V>(keyTypeOrObjectUnderJ2cl), new EnumMap<V, K>(valueTypeOrObjectUnderJ2cl));
+        this.keyTypeOrObjectUnderJ2cl = keyTypeOrObjectUnderJ2cl;
+        this.valueTypeOrObjectUnderJ2cl = valueTypeOrObjectUnderJ2cl;
     }
-    checkArgument(!map.isEmpty());
-    return getDeclaringClassOrObjectForJ2cl(map.values().iterator().next());
-  }
 
-  /** Returns the associated key type. */
-  @GwtIncompatible
-  public Class<K> keyType() {
-    return keyTypeOrObjectUnderJ2cl;
-  }
+    static <K extends Enum<K>> Class<K> inferKeyTypeOrObjectUnderJ2cl(Map<K, ?> map) {
+        if (map instanceof EnumBiMap) {
+            return ((EnumBiMap<K, ?>) map).keyTypeOrObjectUnderJ2cl;
+        }
+        if (map instanceof EnumHashBiMap) {
+            return ((EnumHashBiMap<K, ?>) map).keyTypeOrObjectUnderJ2cl;
+        }
+        checkArgument(!map.isEmpty());
+        return getDeclaringClassOrObjectForJ2cl(map.keySet().iterator().next());
+    }
 
-  /** Returns the associated value type. */
-  @GwtIncompatible
-  public Class<V> valueType() {
-    return valueTypeOrObjectUnderJ2cl;
-  }
+    private static <V extends Enum<V>> Class<V> inferValueTypeOrObjectUnderJ2cl(Map<?, V> map) {
+        if (map instanceof EnumBiMap) {
+            return ((EnumBiMap<?, V>) map).valueTypeOrObjectUnderJ2cl;
+        }
+        checkArgument(!map.isEmpty());
+        return getDeclaringClassOrObjectForJ2cl(map.values().iterator().next());
+    }
 
-  @Override
-  K checkKey(K key) {
-    return checkNotNull(key);
-  }
+    /** Returns the associated key type. */
+    @GwtIncompatible
+    public Class<K> keyType() {
+        return keyTypeOrObjectUnderJ2cl;
+    }
 
-  @Override
-  V checkValue(V value) {
-    return checkNotNull(value);
-  }
+    /** Returns the associated value type. */
+    @GwtIncompatible
+    public Class<V> valueType() {
+        return valueTypeOrObjectUnderJ2cl;
+    }
 
-  /**
-   * @serialData the key class, value class, number of entries, first key, first value, second key,
-   *     second value, and so on.
-   */
-  @GwtIncompatible // java.io.ObjectOutputStream
-  private void writeObject(ObjectOutputStream stream) throws IOException {
-    stream.defaultWriteObject();
-    stream.writeObject(keyTypeOrObjectUnderJ2cl);
-    stream.writeObject(valueTypeOrObjectUnderJ2cl);
-    Serialization.writeMap(this, stream);
-  }
+    @Override
+    K checkKey(K key) {
+        return checkNotNull(key);
+    }
 
-  @SuppressWarnings("unchecked") // reading fields populated by writeObject
-  @GwtIncompatible // java.io.ObjectInputStream
-  private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-    stream.defaultReadObject();
-    keyTypeOrObjectUnderJ2cl = (Class<K>) requireNonNull(stream.readObject());
-    valueTypeOrObjectUnderJ2cl = (Class<V>) requireNonNull(stream.readObject());
-    setDelegates(
-        new EnumMap<K, V>(keyTypeOrObjectUnderJ2cl), new EnumMap<V, K>(valueTypeOrObjectUnderJ2cl));
-    Serialization.populateMap(this, stream);
-  }
+    @Override
+    V checkValue(V value) {
+        return checkNotNull(value);
+    }
 
-  @GwtIncompatible // not needed in emulated source.
-  private static final long serialVersionUID = 0;
+    /**
+     * @serialData the key class, value class, number of entries, first key, first value, second key,
+     * second value, and so on.
+     */
+    @GwtIncompatible // java.io.ObjectOutputStream
+    private void writeObject(ObjectOutputStream stream) throws IOException {
+        stream.defaultWriteObject();
+        stream.writeObject(keyTypeOrObjectUnderJ2cl);
+        stream.writeObject(valueTypeOrObjectUnderJ2cl);
+        Serialization.writeMap(this, stream);
+    }
+
+    @SuppressWarnings("unchecked") // reading fields populated by writeObject
+    @GwtIncompatible // java.io.ObjectInputStream
+    private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+        stream.defaultReadObject();
+        keyTypeOrObjectUnderJ2cl = (Class<K>) requireNonNull(stream.readObject());
+        valueTypeOrObjectUnderJ2cl = (Class<V>) requireNonNull(stream.readObject());
+        setDelegates(new EnumMap<K, V>(keyTypeOrObjectUnderJ2cl), new EnumMap<V, K>(valueTypeOrObjectUnderJ2cl));
+        Serialization.populateMap(this, stream);
+    }
+
+    @GwtIncompatible // not needed in emulated source.
+    private static final long serialVersionUID = 0;
 }

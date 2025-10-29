@@ -25,43 +25,43 @@ import java.util.Map;
  * again.
  */
 public class NullPackageSource extends PackageSource {
-	static Map<String, NullPackageSource> sources = new HashMap<>();
+    static Map<String, NullPackageSource> sources = new HashMap<>();
 
-	private NullPackageSource(String name) {
-		super(name);
-	}
+    private NullPackageSource(String name) {
+        super(name);
+    }
 
-	@Override
-	public SingleSourcePackage[] getSuppliers() {
-		return null;
-	}
+    @Override
+    public SingleSourcePackage[] getSuppliers() {
+        return null;
+    }
 
-	@Override
-	public boolean isNullSource() {
-		return true;
-	}
+    @Override
+    public boolean isNullSource() {
+        return true;
+    }
 
-	@Override
-	public Class<?> loadClass(String name) {
-		return null;
-	}
+    @Override
+    public Class<?> loadClass(String name) {
+        return null;
+    }
 
-	@Override
-	public URL getResource(String name) {
-		return null;
-	}
+    @Override
+    public URL getResource(String name) {
+        return null;
+    }
 
-	@Override
-	public Enumeration<URL> getResources(String name) {
-		return null;
-	}
+    @Override
+    public Enumeration<URL> getResources(String name) {
+        return null;
+    }
 
-	public static synchronized NullPackageSource getNullPackageSource(String name) {
-		NullPackageSource result = sources.get(name);
-		if (result != null)
-			return result;
-		result = new NullPackageSource(name);
-		sources.put(name, result);
-		return result;
-	}
+    public static synchronized NullPackageSource getNullPackageSource(String name) {
+        NullPackageSource result = sources.get(name);
+        if (result != null)
+            return result;
+        result = new NullPackageSource(name);
+        sources.put(name, result);
+        return result;
+    }
 }

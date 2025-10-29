@@ -25,54 +25,54 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * @author $Id: a5a8d03c2b50f6b02cf791ac3df6f03d136e2afa $
  */
 public class BackingStoreException extends Exception {
-	static final long	serialVersionUID	= -1415637364122829574L;
+    static final long serialVersionUID = -1415637364122829574L;
 
-	/**
-	 * Constructs a {@code BackingStoreException} with the specified detail
-	 * message.
-	 * 
-	 * @param message The detail message.
-	 */
-	public BackingStoreException(String message) {
-		super(message);
-	}
+    /**
+     * Constructs a {@code BackingStoreException} with the specified detail
+     * message.
+     * 
+     * @param message The detail message.
+     */
+    public BackingStoreException(String message) {
+        super(message);
+    }
 
-	/**
-	 * Constructs a {@code BackingStoreException} with the specified detail
-	 * message.
-	 * 
-	 * @param message The detail message.
-	 * @param cause The cause of the exception. May be {@code null}.
-	 * @since 1.1
-	 */
-	public BackingStoreException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    /**
+     * Constructs a {@code BackingStoreException} with the specified detail
+     * message.
+     * 
+     * @param message The detail message.
+     * @param cause The cause of the exception. May be {@code null}.
+     * @since 1.1
+     */
+    public BackingStoreException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-	/**
-	 * Returns the cause of this exception or {@code null} if no cause was set.
-	 * 
-	 * @return The cause of this exception or {@code null} if no cause was set.
-	 * @since 1.1
-	 */
-	@Override
-	public Throwable getCause() {
-		return super.getCause();
-	}
+    /**
+     * Returns the cause of this exception or {@code null} if no cause was set.
+     * 
+     * @return The cause of this exception or {@code null} if no cause was set.
+     * @since 1.1
+     */
+    @Override
+    public Throwable getCause() {
+        return super.getCause();
+    }
 
-	/**
-	 * Initializes the cause of this exception to the specified value.
-	 * 
-	 * @param cause The cause of this exception.
-	 * @return This exception.
-	 * @throws IllegalArgumentException If the specified cause is this
-	 *         exception.
-	 * @throws IllegalStateException If the cause of this exception has already
-	 *         been set.
-	 * @since 1.1
-	 */
-	@Override
-	public Throwable initCause(Throwable cause) {
-		return super.initCause(cause);
-	}
+    /**
+     * Initializes the cause of this exception to the specified value.
+     * 
+     * @param cause The cause of this exception.
+     * @return This exception.
+     * @throws IllegalArgumentException If the specified cause is this
+     * exception.
+     * @throws IllegalStateException If the cause of this exception has already
+     * been set.
+     * @since 1.1
+     */
+    @Override
+    public Throwable initCause(Throwable cause) {
+        return super.initCause(cause);
+    }
 }

@@ -18,64 +18,64 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Preconditions.checkNotNull;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtIncompatible;
 import java.util.Spliterator;
 import java.util.function.Consumer;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 @GwtCompatible(emulated = true)
 @ElementTypesAreNonnullByDefault
 abstract class IndexedImmutableSet<E> extends ImmutableSet.CachingAsList<E> {
-  abstract E get(int index);
+    abstract E get(int index);
 
-  @Override
-  public UnmodifiableIterator<E> iterator() {
-    return asList().iterator();
-  }
-
-  @Override
-  public Spliterator<E> spliterator() {
-    return CollectSpliterators.indexed(size(), SPLITERATOR_CHARACTERISTICS, this::get);
-  }
-
-  @Override
-  public void forEach(Consumer<? super E> consumer) {
-    checkNotNull(consumer);
-    int n = size();
-    for (int i = 0; i < n; i++) {
-      consumer.accept(get(i));
+    @Override
+    public UnmodifiableIterator<E> iterator() {
+        return asList().iterator();
     }
-  }
 
-  @Override
-  @GwtIncompatible
-  int copyIntoArray(@Nullable Object[] dst, int offset) {
-    return asList().copyIntoArray(dst, offset);
-  }
+    @Override
+    public Spliterator<E> spliterator() {
+        return CollectSpliterators.indexed(size(), SPLITERATOR_CHARACTERISTICS, this::get);
+    }
 
-  @Override
-  ImmutableList<E> createAsList() {
-    return new ImmutableAsList<E>() {
-      @Override
-      public E get(int index) {
-        return IndexedImmutableSet.this.get(index);
-      }
+    @Override
+    public void forEach(Consumer<? super E> consumer) {
+        checkNotNull(consumer);
+        int n = size();
+        for (int i = 0; i < n; i++) {
+            consumer.accept(get(i));
+        }
+    }
 
-      @Override
-      boolean isPartialView() {
-        return IndexedImmutableSet.this.isPartialView();
-      }
+    @Override
+    @GwtIncompatible
+    int copyIntoArray(@Nullable Object[] dst, int offset) {
+        return asList().copyIntoArray(dst, offset);
+    }
 
-      @Override
-      public int size() {
-        return IndexedImmutableSet.this.size();
-      }
+    @Override
+    ImmutableList<E> createAsList() {
+        return new ImmutableAsList<E>() {
+            @Override
+            public E get(int index) {
+                return IndexedImmutableSet.this.get(index);
+            }
 
-      @Override
-      ImmutableCollection<E> delegateCollection() {
-        return IndexedImmutableSet.this;
-      }
-    };
-  }
+            @Override
+            boolean isPartialView() {
+                return IndexedImmutableSet.this.isPartialView();
+            }
+
+            @Override
+            public int size() {
+                return IndexedImmutableSet.this.size();
+            }
+
+            @Override
+            ImmutableCollection<E> delegateCollection() {
+                return IndexedImmutableSet.this;
+            }
+        };
+    }
 }

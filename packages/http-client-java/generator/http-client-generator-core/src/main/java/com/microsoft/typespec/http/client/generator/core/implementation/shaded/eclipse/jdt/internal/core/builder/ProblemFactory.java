@@ -13,23 +13,23 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.builder;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
 
 public class ProblemFactory extends DefaultProblemFactory {
 
-static Map<Locale, ProblemFactory> factories = new HashMap<>();
+    static Map<Locale, ProblemFactory> factories = new HashMap<>();
 
-private ProblemFactory(Locale locale) {
-	super(locale);
-}
+    private ProblemFactory(Locale locale) {
+        super(locale);
+    }
 
-public static ProblemFactory getProblemFactory(Locale locale) {
-	ProblemFactory factory = factories.get(locale);
-	if (factory == null)
-		factories.put(locale, factory = new ProblemFactory(locale));
-	return factory;
-}
+    public static ProblemFactory getProblemFactory(Locale locale) {
+        ProblemFactory factory = factories.get(locale);
+        if (factory == null)
+            factories.put(locale, factory = new ProblemFactory(locale));
+        return factory;
+    }
 }

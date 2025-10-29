@@ -18,36 +18,38 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 /** A package binding that is known not to be a {@link SplitPackageBinding}. */
 public class PlainPackageBinding extends PackageBinding {
 
-	/** Create a toplevel package. */
-	public PlainPackageBinding(char[] topLevelPackageName, LookupEnvironment environment, ModuleBinding enclosingModule) {
-		this(new char[][] {topLevelPackageName}, null, environment, enclosingModule);
-	}
+    /** Create a toplevel package. */
+    public PlainPackageBinding(char[] topLevelPackageName, LookupEnvironment environment,
+        ModuleBinding enclosingModule) {
+        this(new char[][] { topLevelPackageName }, null, environment, enclosingModule);
+    }
 
-	/** Create a default package. */
-	public PlainPackageBinding(LookupEnvironment environment) {
-		this(CharOperation.NO_CHAR_CHAR, null, environment, environment.module);
-	}
+    /** Create a default package. */
+    public PlainPackageBinding(LookupEnvironment environment) {
+        this(CharOperation.NO_CHAR_CHAR, null, environment, environment.module);
+    }
 
-	/** Create a normal package. */
-	public PlainPackageBinding(char[][] compoundName, PackageBinding parent, LookupEnvironment environment, ModuleBinding enclosingModule) {
-		super(compoundName, parent, environment, enclosingModule);
-	}
+    /** Create a normal package. */
+    public PlainPackageBinding(char[][] compoundName, PackageBinding parent, LookupEnvironment environment,
+        ModuleBinding enclosingModule) {
+        super(compoundName, parent, environment, enclosingModule);
+    }
 
-	protected PlainPackageBinding(char[][] compoundName, LookupEnvironment environment) {
-		// for problem bindings
-		super(compoundName, environment);
-	}
+    protected PlainPackageBinding(char[][] compoundName, LookupEnvironment environment) {
+        // for problem bindings
+        super(compoundName, environment);
+    }
 
-	@Override
-	public PlainPackageBinding getIncarnation(ModuleBinding moduleBinding) {
-		if (this.enclosingModule == moduleBinding)
-			return this;
-		return null;
-	}
+    @Override
+    public PlainPackageBinding getIncarnation(ModuleBinding moduleBinding) {
+        if (this.enclosingModule == moduleBinding)
+            return this;
+        return null;
+    }
 
-	@Override
-	PackageBinding addPackage(PackageBinding element, ModuleBinding module) {
-		assert element instanceof PlainPackageBinding : "PlainPackageBinding cannot be parent of split " + element; //$NON-NLS-1$
-		return super.addPackage(element, module);
-	}
+    @Override
+    PackageBinding addPackage(PackageBinding element, ModuleBinding module) {
+        assert element instanceof PlainPackageBinding : "PlainPackageBinding cannot be parent of split " + element; //$NON-NLS-1$
+        return super.addPackage(element, module);
+    }
 }

@@ -40,8 +40,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
  */
 public class Unknown extends COMInvoker implements IUnknown {
 
-    public static class ByReference extends Unknown implements
-            Structure.ByReference {
+    public static class ByReference extends Unknown implements Structure.ByReference {
     }
 
     public Unknown() {
@@ -51,7 +50,7 @@ public class Unknown extends COMInvoker implements IUnknown {
      * Instantiates a new i unknown.
      *
      * @param pvInstance
-     *            the pv instance
+     * the pv instance
      */
     public Unknown(Pointer pvInstance) {
         this.setPointer(pvInstance);
@@ -61,15 +60,14 @@ public class Unknown extends COMInvoker implements IUnknown {
      * Query interface.
      *
      * @param riid
-     *            the riid
+     * the riid
      * @param ppvObject
-     *            the ppv object
+     * the ppv object
      * @return the hresult
      */
     public HRESULT QueryInterface(REFIID riid, PointerByReference ppvObject) {
-        return (HRESULT) this._invokeNativeObject(0,
-                new Object[] { this.getPointer(), riid, ppvObject },
-                HRESULT.class);
+        return (HRESULT) this._invokeNativeObject(0, new Object[] { this.getPointer(), riid, ppvObject },
+            HRESULT.class);
     }
 
     public int AddRef() {

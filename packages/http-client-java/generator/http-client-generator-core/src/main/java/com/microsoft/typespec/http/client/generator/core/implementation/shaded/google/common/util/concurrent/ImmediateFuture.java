@@ -16,95 +16,94 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Preconditions.checkNotNull;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.util.concurrent.AbstractFuture.TrustedFuture;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /** Implementation of {@link Futures#immediateFuture}. */
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
 // TODO(cpovirk): Make this final (but that may break Mockito spy calls).
 class ImmediateFuture<V extends @Nullable Object> implements ListenableFuture<V> {
-  static final ListenableFuture<?> NULL = new ImmediateFuture<@Nullable Object>(null);
+    static final ListenableFuture<?> NULL = new ImmediateFuture<@Nullable Object>(null);
 
-  private static final Logger log = Logger.getLogger(ImmediateFuture.class.getName());
+    private static final Logger log = Logger.getLogger(ImmediateFuture.class.getName());
 
-  @ParametricNullness private final V value;
+    @ParametricNullness
+    private final V value;
 
-  ImmediateFuture(@ParametricNullness V value) {
-    this.value = value;
-  }
-
-  @Override
-  public void addListener(Runnable listener, Executor executor) {
-    checkNotNull(listener, "Runnable was null.");
-    checkNotNull(executor, "Executor was null.");
-    try {
-      executor.execute(listener);
-    } catch (RuntimeException e) {
-      // ListenableFuture's contract is that it will not throw unchecked exceptions, so log the bad
-      // runnable and/or executor and swallow it.
-      log.log(
-          Level.SEVERE,
-          "RuntimeException while executing runnable " + listener + " with executor " + executor,
-          e);
+    ImmediateFuture(@ParametricNullness V value) {
+        this.value = value;
     }
-  }
 
-  @Override
-  public boolean cancel(boolean mayInterruptIfRunning) {
-    return false;
-  }
-
-  // TODO(lukes): Consider throwing InterruptedException when appropriate.
-  @Override
-  @ParametricNullness
-  public V get() {
-    return value;
-  }
-
-  @Override
-  @ParametricNullness
-  public V get(long timeout, TimeUnit unit) throws ExecutionException {
-    checkNotNull(unit);
-    return get();
-  }
-
-  @Override
-  public boolean isCancelled() {
-    return false;
-  }
-
-  @Override
-  public boolean isDone() {
-    return true;
-  }
-
-  @Override
-  public String toString() {
-    // Behaviour analogous to AbstractFuture#toString().
-    return super.toString() + "[status=SUCCESS, result=[" + value + "]]";
-  }
-
-  static final class ImmediateFailedFuture<V extends @Nullable Object> extends TrustedFuture<V> {
-    ImmediateFailedFuture(Throwable thrown) {
-      setException(thrown);
+    @Override
+    public void addListener(Runnable listener, Executor executor) {
+        checkNotNull(listener, "Runnable was null.");
+        checkNotNull(executor, "Executor was null.");
+        try {
+            executor.execute(listener);
+        } catch (RuntimeException e) {
+            // ListenableFuture's contract is that it will not throw unchecked exceptions, so log the bad
+            // runnable and/or executor and swallow it.
+            log.log(Level.SEVERE,
+                "RuntimeException while executing runnable " + listener + " with executor " + executor, e);
+        }
     }
-  }
 
-  static final class ImmediateCancelledFuture<V extends @Nullable Object> extends TrustedFuture<V> {
-    @CheckForNull
-    static final ImmediateCancelledFuture<Object> INSTANCE =
-        AbstractFuture.GENERATE_CANCELLATION_CAUSES ? null : new ImmediateCancelledFuture<>();
-
-    ImmediateCancelledFuture() {
-      cancel(false);
+    @Override
+    public boolean cancel(boolean mayInterruptIfRunning) {
+        return false;
     }
-  }
+
+    // TODO(lukes): Consider throwing InterruptedException when appropriate.
+    @Override
+    @ParametricNullness
+    public V get() {
+        return value;
+    }
+
+    @Override
+    @ParametricNullness
+    public V get(long timeout, TimeUnit unit) throws ExecutionException {
+        checkNotNull(unit);
+        return get();
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return false;
+    }
+
+    @Override
+    public boolean isDone() {
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        // Behaviour analogous to AbstractFuture#toString().
+        return super.toString() + "[status=SUCCESS, result=[" + value + "]]";
+    }
+
+    static final class ImmediateFailedFuture<V extends @Nullable Object> extends TrustedFuture<V> {
+        ImmediateFailedFuture(Throwable thrown) {
+            setException(thrown);
+        }
+    }
+
+    static final class ImmediateCancelledFuture<V extends @Nullable Object> extends TrustedFuture<V> {
+        @CheckForNull
+        static final ImmediateCancelledFuture<Object> INSTANCE
+            = AbstractFuture.GENERATE_CANCELLATION_CAUSES ? null : new ImmediateCancelledFuture<>();
+
+        ImmediateCancelledFuture() {
+            cancel(false);
+        }
+    }
 }

@@ -24,7 +24,7 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
-import java.util.List;
+import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Winsvc.SERVICE_CONTROL_STOP;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Memory;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
@@ -38,17 +38,17 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Winsvc.SC_ACTION;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Winsvc.SC_HANDLE;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Winsvc.SC_STATUS_TYPE;
-import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Winsvc.SERVICE_CONTROL_STOP;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Winsvc.SERVICE_FAILURE_ACTIONS;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Winsvc.SERVICE_FAILURE_ACTIONS_FLAG;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Winsvc.SERVICE_STATUS;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Winsvc.SERVICE_STATUS_PROCESS;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.IntByReference;
 import java.io.Closeable;
-
+import java.util.List;
 
 /**
  * Win32 Service wrapper
+ * 
  * @author EugineLev
  */
 public class W32Service implements Closeable {
@@ -59,8 +59,8 @@ public class W32Service implements Closeable {
      * Win32 Service
      *
      * @param handle A handle to the service. This handle is returned by the
-     *               CreateService or OpenService function, and it must have the
-     *               SERVICE_QUERY_STATUS access right.
+     * CreateService or OpenService function, and it must have the
+     * SERVICE_QUERY_STATUS access right.
      */
     public W32Service(SC_HANDLE handle) {
         _handle = handle;
@@ -82,13 +82,12 @@ public class W32Service implements Closeable {
     private void addShutdownPrivilegeToProcess() {
         HANDLEByReference hToken = new HANDLEByReference();
         LUID luid = new LUID();
-        Advapi32.INSTANCE.OpenProcessToken(Kernel32.INSTANCE.GetCurrentProcess(),
-                WinNT.TOKEN_ADJUST_PRIVILEGES, hToken);
+        Advapi32.INSTANCE.OpenProcessToken(Kernel32.INSTANCE.GetCurrentProcess(), WinNT.TOKEN_ADJUST_PRIVILEGES,
+            hToken);
         Advapi32.INSTANCE.LookupPrivilegeValue("", WinNT.SE_SHUTDOWN_NAME, luid);
         TOKEN_PRIVILEGES tp = new TOKEN_PRIVILEGES(1);
         tp.Privileges[0] = new LUID_AND_ATTRIBUTES(luid, new DWORD(WinNT.SE_PRIVILEGE_ENABLED));
-        Advapi32.INSTANCE.AdjustTokenPrivileges(hToken.getValue(), false, tp, tp.size(), null,
-                new IntByReference());
+        Advapi32.INSTANCE.AdjustTokenPrivileges(hToken.getValue(), false, tp, tp.size(), null, new IntByReference());
     }
 
     /**
@@ -96,8 +95,7 @@ public class W32Service implements Closeable {
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms681988.aspx">ChangeServiceConfig2</a>
      * with parameter dwInfoLevel set to SERVICE_CONFIG_FAILURE_ACTIONS.
      */
-    public void setFailureActions(List<SC_ACTION> actions, int resetPeriod, String rebootMsg,
-            String command) {
+    public void setFailureActions(List<SC_ACTION> actions, int resetPeriod, String rebootMsg, String command) {
         SERVICE_FAILURE_ACTIONS.ByReference actionStruct = new SERVICE_FAILURE_ACTIONS.ByReference();
         actionStruct.dwResetPeriod = resetPeriod;
         actionStruct.lpRebootMsg = rebootMsg;
@@ -118,8 +116,7 @@ public class W32Service implements Closeable {
             i++;
         }
 
-        if (!Advapi32.INSTANCE.ChangeServiceConfig2(_handle, Winsvc.SERVICE_CONFIG_FAILURE_ACTIONS,
-                actionStruct)) {
+        if (!Advapi32.INSTANCE.ChangeServiceConfig2(_handle, Winsvc.SERVICE_CONFIG_FAILURE_ACTIONS, actionStruct)) {
             throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
         }
     }
@@ -131,7 +128,7 @@ public class W32Service implements Closeable {
         Pointer buffer = new Memory(bufferSize.getValue());
 
         if (!Advapi32.INSTANCE.QueryServiceConfig2(_handle, type, buffer, bufferSize.getValue(),
-                new IntByReference())) {
+            new IntByReference())) {
             throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
         }
 
@@ -158,8 +155,7 @@ public class W32Service implements Closeable {
         SERVICE_FAILURE_ACTIONS_FLAG flag = new SERVICE_FAILURE_ACTIONS_FLAG();
         flag.fFailureActionsOnNonCrashFailures = flagValue ? 1 : 0;
 
-        if (!Advapi32.INSTANCE.ChangeServiceConfig2(_handle, Winsvc.SERVICE_CONFIG_FAILURE_ACTIONS_FLAG,
-                flag)) {
+        if (!Advapi32.INSTANCE.ChangeServiceConfig2(_handle, Winsvc.SERVICE_CONFIG_FAILURE_ACTIONS_FLAG, flag)) {
             throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
         }
     }
@@ -184,12 +180,11 @@ public class W32Service implements Closeable {
     public SERVICE_STATUS_PROCESS queryStatus() {
         IntByReference size = new IntByReference();
 
-        Advapi32.INSTANCE.QueryServiceStatusEx(_handle, SC_STATUS_TYPE.SC_STATUS_PROCESS_INFO,
-                null, 0, size);
+        Advapi32.INSTANCE.QueryServiceStatusEx(_handle, SC_STATUS_TYPE.SC_STATUS_PROCESS_INFO, null, 0, size);
 
         SERVICE_STATUS_PROCESS status = new SERVICE_STATUS_PROCESS(size.getValue());
-        if (!Advapi32.INSTANCE.QueryServiceStatusEx(_handle, SC_STATUS_TYPE.SC_STATUS_PROCESS_INFO,
-                status, status.size(), size)) {
+        if (!Advapi32.INSTANCE.QueryServiceStatusEx(_handle, SC_STATUS_TYPE.SC_STATUS_PROCESS_INFO, status,
+            status.size(), size)) {
             throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
         }
 
@@ -266,8 +261,7 @@ public class W32Service implements Closeable {
         if (queryStatus().dwCurrentState == Winsvc.SERVICE_RUNNING) {
             return;
         }
-        if (!Advapi32.INSTANCE.ControlService(_handle, Winsvc.SERVICE_CONTROL_CONTINUE,
-                new SERVICE_STATUS())) {
+        if (!Advapi32.INSTANCE.ControlService(_handle, Winsvc.SERVICE_CONTROL_CONTINUE, new SERVICE_STATUS())) {
             throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
         }
         waitForNonPendingState();
@@ -285,8 +279,7 @@ public class W32Service implements Closeable {
         if (queryStatus().dwCurrentState == Winsvc.SERVICE_PAUSED) {
             return;
         }
-        if (!Advapi32.INSTANCE.ControlService(_handle, Winsvc.SERVICE_CONTROL_PAUSE,
-                new SERVICE_STATUS())) {
+        if (!Advapi32.INSTANCE.ControlService(_handle, Winsvc.SERVICE_CONTROL_PAUSE, new SERVICE_STATUS())) {
             throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
         }
         waitForNonPendingState();
@@ -352,6 +345,7 @@ public class W32Service implements Closeable {
             case Winsvc.SERVICE_PAUSE_PENDING:
             case Winsvc.SERVICE_START_PENDING:
                 return true;
+
             default:
                 return false;
         }
@@ -372,12 +366,13 @@ public class W32Service implements Closeable {
      * the dependent services can run.
      *
      * @param dwServiceState The state of the services to be enumerated. This
-     *                       parameter can be one of the following values.
+     * parameter can be one of the following values.
      * <table>
      * <tr><th>Value</th><th>Meaning</th></tr>
      * <tr><td>{@link Winsvc#SERVICE_ACTIVE}</td><td>Enumerates services that
      * are in the following states:
-     * {@link Winsvc#SERVICE_START_PENDING}, {@link Winsvc#SERVICE_STOP_PENDING}, {@link Winsvc#SERVICE_RUNNING}, {@link Winsvc#SERVICE_CONTINUE_PENDING}, {@link Winsvc#SERVICE_PAUSE_PENDING},
+     * {@link Winsvc#SERVICE_START_PENDING}, {@link Winsvc#SERVICE_STOP_PENDING}, {@link Winsvc#SERVICE_RUNNING},
+     * {@link Winsvc#SERVICE_CONTINUE_PENDING}, {@link Winsvc#SERVICE_PAUSE_PENDING},
      * and {@link Winsvc#SERVICE_PAUSED}.</td></tr>
      * <tr><td>{@link Winsvc#SERVICE_INACTIVE}</td><td>Enumerates services that
      * are in the {@link Winsvc#SERVICE_STOPPED} state.</td></tr>
@@ -387,19 +382,21 @@ public class W32Service implements Closeable {
      * </table>
      *
      * @return array of ENUM_SERVICE_STATUS structures that receives the name
-     *         and service status information for each dependent service in the
-     *         database.
+     * and service status information for each dependent service in the
+     * database.
      */
     public ENUM_SERVICE_STATUS[] enumDependentServices(int dwServiceState) {
         IntByReference pcbBytesNeeded = new IntByReference(0);
         IntByReference lpServicesReturned = new IntByReference(0);
-        Advapi32.INSTANCE.EnumDependentServices(_handle, dwServiceState, Pointer.NULL, 0, pcbBytesNeeded, lpServicesReturned);
+        Advapi32.INSTANCE.EnumDependentServices(_handle, dwServiceState, Pointer.NULL, 0, pcbBytesNeeded,
+            lpServicesReturned);
         int lastError = Kernel32.INSTANCE.GetLastError();
         if (lastError != WinError.ERROR_MORE_DATA) {
             throw new Win32Exception(lastError);
         }
         Memory buffer = new Memory(pcbBytesNeeded.getValue());
-        boolean result = Advapi32.INSTANCE.EnumDependentServices(_handle, dwServiceState, buffer, (int) buffer.size(), pcbBytesNeeded, lpServicesReturned);
+        boolean result = Advapi32.INSTANCE.EnumDependentServices(_handle, dwServiceState, buffer, (int) buffer.size(),
+            pcbBytesNeeded, lpServicesReturned);
         if (!result) {
             throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
         }

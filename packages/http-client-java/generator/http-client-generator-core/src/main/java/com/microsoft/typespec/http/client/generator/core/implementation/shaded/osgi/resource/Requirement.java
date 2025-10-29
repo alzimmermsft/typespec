@@ -16,8 +16,8 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource;
 
-import java.util.Map;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.ConsumerType;
+import java.util.Map;
 
 /**
  * A requirement that has been declared from a {@link Resource} .
@@ -32,63 +32,63 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 @ConsumerType
 public interface Requirement {
-	/**
-	 * Returns the namespace of this requirement.
-	 * 
-	 * @return The namespace of this requirement.
-	 */
-	String getNamespace();
+    /**
+     * Returns the namespace of this requirement.
+     * 
+     * @return The namespace of this requirement.
+     */
+    String getNamespace();
 
-	/**
-	 * Returns the directives of this requirement.
-	 * 
-	 * @return An unmodifiable map of directive names to directive values for
-	 *         this requirement, or an empty map if this requirement has no
-	 *         directives.
-	 */
-	Map<String, String> getDirectives();
+    /**
+     * Returns the directives of this requirement.
+     * 
+     * @return An unmodifiable map of directive names to directive values for
+     * this requirement, or an empty map if this requirement has no
+     * directives.
+     */
+    Map<String, String> getDirectives();
 
-	/**
-	 * Returns the attributes of this requirement.
-	 * 
-	 * <p>
-	 * Requirement attributes have no specified semantics and are considered
-	 * extra user defined information.
-	 * 
-	 * @return An unmodifiable map of attribute names to attribute values for
-	 *         this requirement, or an empty map if this requirement has no
-	 *         attributes.
-	 */
-	Map<String, Object> getAttributes();
+    /**
+     * Returns the attributes of this requirement.
+     * 
+     * <p>
+     * Requirement attributes have no specified semantics and are considered
+     * extra user defined information.
+     * 
+     * @return An unmodifiable map of attribute names to attribute values for
+     * this requirement, or an empty map if this requirement has no
+     * attributes.
+     */
+    Map<String, Object> getAttributes();
 
-	/**
-	 * Returns the resource declaring this requirement.
-	 * 
-	 * @return The resource declaring this requirement. This can be {@code null}
-	 *         if this requirement is synthesized.
-	 */
-	Resource getResource();
+    /**
+     * Returns the resource declaring this requirement.
+     * 
+     * @return The resource declaring this requirement. This can be {@code null}
+     * if this requirement is synthesized.
+     */
+    Resource getResource();
 
-	/**
-	 * Compares this {@code Requirement} to another {@code Requirement}.
-	 * 
-	 * <p>
-	 * This {@code Requirement} is equal to another {@code Requirement} if they
-	 * have the same namespace, directives and attributes and are declared by
-	 * the same resource.
-	 * 
-	 * @param obj The object to compare against this {@code Requirement}.
-	 * @return {@code true} if this {@code Requirement} is equal to the other
-	 *         object; {@code false} otherwise.
-	 */
-	@Override
-	boolean equals(Object obj);
+    /**
+     * Compares this {@code Requirement} to another {@code Requirement}.
+     * 
+     * <p>
+     * This {@code Requirement} is equal to another {@code Requirement} if they
+     * have the same namespace, directives and attributes and are declared by
+     * the same resource.
+     * 
+     * @param obj The object to compare against this {@code Requirement}.
+     * @return {@code true} if this {@code Requirement} is equal to the other
+     * object; {@code false} otherwise.
+     */
+    @Override
+    boolean equals(Object obj);
 
-	/**
-	 * Returns the hashCode of this {@code Requirement}.
-	 * 
-	 * @return The hashCode of this {@code Requirement}.
-	 */
-	@Override
-	int hashCode();
+    /**
+     * Returns the hashCode of this {@code Requirement}.
+     * 
+     * @return The hashCode of this {@code Requirement}.
+     */
+    @Override
+    int hashCode();
 }

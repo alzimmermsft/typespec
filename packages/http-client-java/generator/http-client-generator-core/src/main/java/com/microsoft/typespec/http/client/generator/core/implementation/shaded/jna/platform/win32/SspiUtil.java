@@ -49,6 +49,7 @@ public class SspiUtil {
 
         /**
          * Create a new SecBufferDesc with initial data.
+         * 
          * @param type Token type.
          * @param token Initial token data.
          */
@@ -60,6 +61,7 @@ public class SspiUtil {
 
         /**
          * Create a new SecBufferDesc with one SecBuffer of a given type and size.
+         * 
          * @param type type
          * @param tokenSize token size
          */
@@ -82,7 +84,7 @@ public class SspiUtil {
 
         @Override
         public void write() {
-            for(Sspi.SecBuffer sb: secBuffers)  {
+            for (Sspi.SecBuffer sb : secBuffers) {
                 sb.write();
             }
             writeField("ulVersion");

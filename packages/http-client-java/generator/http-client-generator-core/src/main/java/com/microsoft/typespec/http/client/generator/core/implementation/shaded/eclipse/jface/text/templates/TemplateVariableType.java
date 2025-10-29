@@ -13,13 +13,11 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.templates;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
-
 
 /**
  * Value object that represents the type of a template variable. A type is defined by its name and
@@ -30,56 +28,56 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public final class TemplateVariableType {
 
-	/** The name of the type. */
-	private final String fName;
-	/** The parameter list. */
-	private final List<String> fParams;
+    /** The name of the type. */
+    private final String fName;
+    /** The parameter list. */
+    private final List<String> fParams;
 
-	TemplateVariableType(String name) {
-		this(name, new String[0]);
-	}
+    TemplateVariableType(String name) {
+        this(name, new String[0]);
+    }
 
-	TemplateVariableType(String name, String[] params) {
-		Assert.isLegal(name != null);
-		Assert.isLegal(params != null);
-		fName= name;
-		fParams= Collections.unmodifiableList(new ArrayList<>(Arrays.asList(params)));
-	}
+    TemplateVariableType(String name, String[] params) {
+        Assert.isLegal(name != null);
+        Assert.isLegal(params != null);
+        fName = name;
+        fParams = Collections.unmodifiableList(new ArrayList<>(Arrays.asList(params)));
+    }
 
-	/**
-	 * Returns the type name of this variable type.
-	 *
-	 * @return the type name of this variable type
-	 */
-	public String getName() {
-		return fName;
-	}
+    /**
+     * Returns the type name of this variable type.
+     *
+     * @return the type name of this variable type
+     */
+    public String getName() {
+        return fName;
+    }
 
-	/**
-	 * Returns the unmodifiable and possibly empty list of parameters
-	 *
-	 * @return the list of parameters
-	 */
-	public List<String> getParams() {
-		return fParams;
-	}
+    /**
+     * Returns the unmodifiable and possibly empty list of parameters
+     *
+     * @return the list of parameters
+     */
+    public List<String> getParams() {
+        return fParams;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof TemplateVariableType) {
-			TemplateVariableType other= (TemplateVariableType) obj;
-			return other.fName.equals(fName) && other.fParams.equals(fParams);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof TemplateVariableType) {
+            TemplateVariableType other = (TemplateVariableType) obj;
+            return other.fName.equals(fName) && other.fParams.equals(fParams);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return fName.hashCode() + fParams.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return fName.hashCode() + fParams.hashCode();
+    }
 
-	@Override
-	public String toString() {
-		return fName + fParams.toString();
-	}
+    @Override
+    public String toString() {
+        return fName + fParams.toString();
+    }
 }

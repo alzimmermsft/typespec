@@ -26,43 +26,43 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public interface ITypeRequestor {
 
-	/**
-	 * Accept the resolved binary form for the requested type.
-	 */
-	void accept(IBinaryType binaryType, PackageBinding packageBinding, AccessRestriction accessRestriction);
+    /**
+     * Accept the resolved binary form for the requested type.
+     */
+    void accept(IBinaryType binaryType, PackageBinding packageBinding, AccessRestriction accessRestriction);
 
-	/**
-	 * Accept the requested type's compilation unit.
-	 */
-	void accept(ICompilationUnit unit, AccessRestriction accessRestriction);
+    /**
+     * Accept the requested type's compilation unit.
+     */
+    void accept(ICompilationUnit unit, AccessRestriction accessRestriction);
 
-	/**
-	 * Accept the unresolved source forms for the requested type.
-	 * Note that the multiple source forms can be answered, in case the target compilation unit
-	 * contains multiple types. The first one is then guaranteed to be the one corresponding to the
-	 * requested type.
-	 */
-	void accept(ISourceType[] sourceType, PackageBinding packageBinding, AccessRestriction accessRestriction);
+    /**
+     * Accept the unresolved source forms for the requested type.
+     * Note that the multiple source forms can be answered, in case the target compilation unit
+     * contains multiple types. The first one is then guaranteed to be the one corresponding to the
+     * requested type.
+     */
+    void accept(ISourceType[] sourceType, PackageBinding packageBinding, AccessRestriction accessRestriction);
 
-	/**
-	 * Accept the requested module, could come in in one of 3 different forms:
-	 * <ul>
-	 * <li>{@link IBinaryModule}
-	 * <li>{@link ISourceModule}
-	 * <li>IModule.AutoModule
-	 * </ul>
-	 *
-	 * @since 3.14
-	 */
-	default void accept(IModule module, LookupEnvironment environment) {
-		if (module instanceof ISourceModule) {
-			ICompilationUnit compilationUnit = ((ISourceModule) module).getCompilationUnit();
-			if (compilationUnit != null) {
-				accept(compilationUnit, null);
-			}
-		} else {
-			// handles IBinaryModule and IModule.AutoModule:
-			BinaryModuleBinding.create(module, environment);
-		}
-	}
+    /**
+     * Accept the requested module, could come in in one of 3 different forms:
+     * <ul>
+     * <li>{@link IBinaryModule}
+     * <li>{@link ISourceModule}
+     * <li>IModule.AutoModule
+     * </ul>
+     *
+     * @since 3.14
+     */
+    default void accept(IModule module, LookupEnvironment environment) {
+        if (module instanceof ISourceModule) {
+            ICompilationUnit compilationUnit = ((ISourceModule) module).getCompilationUnit();
+            if (compilationUnit != null) {
+                accept(compilationUnit, null);
+            }
+        } else {
+            // handles IBinaryModule and IModule.AutoModule:
+            BinaryModuleBinding.create(module, environment);
+        }
+    }
 }

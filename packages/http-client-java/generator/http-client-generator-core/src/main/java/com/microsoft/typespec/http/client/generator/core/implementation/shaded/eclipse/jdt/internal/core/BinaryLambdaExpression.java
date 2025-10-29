@@ -13,28 +13,29 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
-
 public class BinaryLambdaExpression extends LambdaExpression {
 
-	BinaryLambdaExpression(JavaElement parent, com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.LambdaExpression lambdaExpression) {
-		super(parent, lambdaExpression);
-	}
+    BinaryLambdaExpression(JavaElement parent,
+        com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.LambdaExpression lambdaExpression) {
+        super(parent, lambdaExpression);
+    }
 
-	BinaryLambdaExpression(JavaElement parent, String interphase, int sourceStart, int sourceEnd, int arrowPosition) {
-		super(parent, interphase, sourceStart, sourceEnd, arrowPosition);
-	}
+    BinaryLambdaExpression(JavaElement parent, String interphase, int sourceStart, int sourceEnd, int arrowPosition) {
+        super(parent, interphase, sourceStart, sourceEnd, arrowPosition);
+    }
 
-	BinaryLambdaExpression(JavaElement parent, String interphase, int sourceStart, int sourceEnd, int arrowPosition, LambdaMethod lambdaMethod) {
-		super(parent, interphase, sourceStart, sourceEnd, arrowPosition, lambdaMethod);
-	}
+    BinaryLambdaExpression(JavaElement parent, String interphase, int sourceStart, int sourceEnd, int arrowPosition,
+        LambdaMethod lambdaMethod) {
+        super(parent, interphase, sourceStart, sourceEnd, arrowPosition, lambdaMethod);
+    }
 
-	@Override
-	public JavaElement getPrimaryElement(boolean checkOwner) {
-		return this;
-	}
+    @Override
+    public JavaElement getPrimaryElement(boolean checkOwner) {
+        return this;
+    }
 
-	@Override
-	public boolean isBinary() {
-		return true;
-	}
+    @Override
+    public boolean isBinary() {
+        return true;
+    }
 }

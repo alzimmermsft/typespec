@@ -36,26 +36,32 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
  * by NT, but exposed through the Win32 API.
  * Ported from Winsvc.h.
  * Microsoft Windows SDK 7.0A.
+ * 
  * @author EugineLev
  */
 public interface Winsvc {
 
     /**
-     *  Contains status information for a service. The ControlService, EnumDependentServices,
-     *  EnumServicesStatus, and QueryServiceStatus functions use this structure. A service
-     *  uses this structure in the SetServiceStatus function to report its current status
-     *  to the service control manager.
+     * Contains status information for a service. The ControlService, EnumDependentServices,
+     * EnumServicesStatus, and QueryServiceStatus functions use this structure. A service
+     * uses this structure in the SetServiceStatus function to report its current status
+     * to the service control manager.
      */
-    @FieldOrder({"dwServiceType", "dwCurrentState", "dwControlsAccepted",
-        "dwWin32ExitCode", "dwServiceSpecificExitCode", "dwCheckPoint",
-        "dwWaitHint"})
+    @FieldOrder({
+        "dwServiceType",
+        "dwCurrentState",
+        "dwControlsAccepted",
+        "dwWin32ExitCode",
+        "dwServiceSpecificExitCode",
+        "dwCheckPoint",
+        "dwWaitHint" })
     public static class SERVICE_STATUS extends Structure {
         /**
          * dwServiceType - the type of service. This member can be one
          * of the following values:
          * SERVICE_KERNEL_DRIVER, SERVICE_FILE_SYSTEM_DRIVER,
          * SERVICE_WIN32_OWN_PROCESS, SERVICE_WIN32_SHARE_PROCESS,
-
+         * 
          * If the service type is either SERVICE_WIN32_OWN_PROCESS or
          * SERVICE_WIN32_SHARE_PROCESS, and the service is running in the
          * context of the LocalSystem account, the following type may also
@@ -78,7 +84,7 @@ public interface Winsvc {
          * dwControlsAccepted - The control codes the service accepts and processes
          * in its handler function:
          * SERVICE_ACCEPT_STOP, SERVICE_ACCEPT_PAUSE_CONTINUE, SERVICE_ACCEPT_SHUTDOWN,
-         * SERVICE_ACCEPT_PARAMCHANGE,  SERVICE_ACCEPT_NETBINDCHANGE, SERVICE_ACCEPT_HARDWAREPROFILECHANGE,
+         * SERVICE_ACCEPT_PARAMCHANGE, SERVICE_ACCEPT_NETBINDCHANGE, SERVICE_ACCEPT_HARDWAREPROFILECHANGE,
          * SERVICE_ACCEPT_POWEREVENT, SERVICE_ACCEPT_SESSIONCHANGE, SERVICE_ACCEPT_PRESHUTDOWN,
          * SERVICE_ACCEPT_TIMECHANGE, SERVICE_ACCEPT_TRIGGEREVENT
          */
@@ -122,16 +128,23 @@ public interface Winsvc {
      * EnumServicesStatusEx, NotifyServiceStatusChange, and QueryServiceStatusEx
      * functions use this structure.
      */
-    @FieldOrder({"dwServiceType", "dwCurrentState", "dwControlsAccepted",
-                "dwWin32ExitCode", "dwServiceSpecificExitCode",
-                "dwCheckPoint", "dwWaitHint", "dwProcessId", "dwServiceFlags"})
+    @FieldOrder({
+        "dwServiceType",
+        "dwCurrentState",
+        "dwControlsAccepted",
+        "dwWin32ExitCode",
+        "dwServiceSpecificExitCode",
+        "dwCheckPoint",
+        "dwWaitHint",
+        "dwProcessId",
+        "dwServiceFlags" })
     public class SERVICE_STATUS_PROCESS extends Structure {
         /**
          * dwServiceType - the type of service. This member can be one
          * of the following values:
          * SERVICE_KERNEL_DRIVER, SERVICE_FILE_SYSTEM_DRIVER,
          * SERVICE_WIN32_OWN_PROCESS, SERVICE_WIN32_SHARE_PROCESS,
-
+         * 
          * If the service type is either SERVICE_WIN32_OWN_PROCESS or
          * SERVICE_WIN32_SHARE_PROCESS, and the service is running in the
          * context of the LocalSystem account, the following type may also
@@ -140,7 +153,7 @@ public interface Winsvc {
          *
          * These values can be found in WinNT.h
          */
-        public int   dwServiceType;
+        public int dwServiceType;
 
         /**
          * dwCurrentState - The current state of the service.
@@ -148,17 +161,17 @@ public interface Winsvc {
          * SERVICE_STOPPED, SERVICE_START_PENDING, SERVICE_STOP_PENDING, SERVICE_RUNNING,
          * SERVICE_CONTINUE_PENDING, SERVICE_PAUSE_PENDING, SERVICE_PAUSED
          */
-        public int   dwCurrentState;
+        public int dwCurrentState;
 
         /**
          * dwControlsAccepted - The control codes the service accepts and processes
          * in its handler function:
          * SERVICE_ACCEPT_STOP, SERVICE_ACCEPT_PAUSE_CONTINUE, SERVICE_ACCEPT_SHUTDOWN,
-         * SERVICE_ACCEPT_PARAMCHANGE,  SERVICE_ACCEPT_NETBINDCHANGE, SERVICE_ACCEPT_HARDWAREPROFILECHANGE,
+         * SERVICE_ACCEPT_PARAMCHANGE, SERVICE_ACCEPT_NETBINDCHANGE, SERVICE_ACCEPT_HARDWAREPROFILECHANGE,
          * SERVICE_ACCEPT_POWEREVENT, SERVICE_ACCEPT_SESSIONCHANGE, SERVICE_ACCEPT_PRESHUTDOWN,
          * SERVICE_ACCEPT_TIMECHANGE, SERVICE_ACCEPT_TRIGGEREVENT
          */
-        public int   dwControlsAccepted;
+        public int dwControlsAccepted;
 
         /**
          * dwWin32ExitCode - The error code the service uses to report an error that occurs
@@ -167,36 +180,36 @@ public interface Winsvc {
          * the dwServiceSpecificExitCode member contains the error code. The service should
          * set this value to NO_ERROR when it is running and on normal termination.
          */
-        public int   dwWin32ExitCode;
+        public int dwWin32ExitCode;
 
         /**
          * dwServiceSpecificExitCode - A service-specific error code that the service returns
          * when an error occurs while the service is starting or stopping. This value is
          * ignored unless the dwWin32ExitCode member is set to ERROR_SERVICE_SPECIFIC_ERROR.
          */
-        public int   dwServiceSpecificExitCode;
+        public int dwServiceSpecificExitCode;
 
         /**
          * dwCheckPoint - The check-point value the service increments periodically to report
          * its progress during a lengthy start, stop, pause, or continue operation.
          */
-        public int   dwCheckPoint;
+        public int dwCheckPoint;
 
         /**
          * dwWaitHint - The estimated time required for a pending start, stop, pause, or continue
          * operation, in milliseconds.
          */
-        public int   dwWaitHint;
+        public int dwWaitHint;
 
         /**
          * dwProcessId - The process identifier of the service.
          */
-        public int   dwProcessId;
+        public int dwProcessId;
 
         /**
          * This member can be one of the following values: 0, or SERVICE_RUNS_IN_SYSTEM_PROCESS
          */
-        public int   dwServiceFlags;
+        public int dwServiceFlags;
 
         public SERVICE_STATUS_PROCESS() {
             super();
@@ -213,7 +226,8 @@ public interface Winsvc {
         }
 
         public ChangeServiceConfig2Info(Pointer p) {
-            super(p, ALIGN_DEFAULT, Boolean.getBoolean("w32.ascii") ? W32APITypeMapper.ASCII : W32APITypeMapper.UNICODE);
+            super(p, ALIGN_DEFAULT,
+                Boolean.getBoolean("w32.ascii") ? W32APITypeMapper.ASCII : W32APITypeMapper.UNICODE);
         }
     }
 
@@ -224,9 +238,10 @@ public interface Winsvc {
      * To configure additional circumstances under which the failure actions are to be executed, see
      * SERVICE_FAILURE_ACTIONS_FLAG.
      */
-    @FieldOrder({"dwResetPeriod", "lpRebootMsg", "lpCommand", "cActions", "lpsaActions"})
+    @FieldOrder({ "dwResetPeriod", "lpRebootMsg", "lpCommand", "cActions", "lpsaActions" })
     public class SERVICE_FAILURE_ACTIONS extends ChangeServiceConfig2Info {
-        public static class ByReference extends SERVICE_FAILURE_ACTIONS implements Structure.ByReference {}
+        public static class ByReference extends SERVICE_FAILURE_ACTIONS implements Structure.ByReference {
+        }
 
         /**
          * The time after which to reset the failure count to zero if there are no failures, in
@@ -242,7 +257,7 @@ public interface Winsvc {
          * "@[path]dllname,-strID"
          * The string with identifier strID is loaded from dllname; the path is optional. For more
          * information, see RegLoadMUIString.
-         * Windows Server 2003 and Windows XP:  Localized strings are not supported until Windows
+         * Windows Server 2003 and Windows XP: Localized strings are not supported until Windows
          * Vista.
          */
         public String lpRebootMsg;
@@ -279,9 +294,11 @@ public interface Winsvc {
     /**
      * Represents an action that the service control manager can perform.
      */
-    @FieldOrder({"type", "delay"})
+    @FieldOrder({ "type", "delay" })
     public class SC_ACTION extends Structure {
-        public static class ByReference extends SC_ACTION implements Structure.ByReference {}
+        public static class ByReference extends SC_ACTION implements Structure.ByReference {
+        }
+
         /**
          * The action to be performed. This member can be one of the following values from the
          * SC_ACTION_TYPE enumeration type.
@@ -297,7 +314,7 @@ public interface Winsvc {
      * Contains the failure actions flag setting of a service. This setting determines when failure
      * actions are to be executed.
      */
-    @FieldOrder({"fFailureActionsOnNonCrashFailures"})
+    @FieldOrder({ "fFailureActionsOnNonCrashFailures" })
     public class SERVICE_FAILURE_ACTIONS_FLAG extends ChangeServiceConfig2Info {
         /**
          * If this member is TRUE and the service has configured failure actions, the failure
@@ -327,23 +344,21 @@ public interface Winsvc {
     //
     int SERVICE_RUNS_IN_SYSTEM_PROCESS = 0x00000001;
 
-    public static class SC_HANDLE extends HANDLE { }
+    public static class SC_HANDLE extends HANDLE {
+    }
 
     //
     // Service Control Manager object specific access types
     //
-    int SC_MANAGER_CONNECT              = 0x0001;
-    int SC_MANAGER_CREATE_SERVICE       = 0x0002;
-    int SC_MANAGER_ENUMERATE_SERVICE    = 0x0004;
-    int SC_MANAGER_LOCK                 = 0x0008;
-    int SC_MANAGER_QUERY_LOCK_STATUS    = 0x0010;
-    int SC_MANAGER_MODIFY_BOOT_CONFIG   = 0x0020;
+    int SC_MANAGER_CONNECT = 0x0001;
+    int SC_MANAGER_CREATE_SERVICE = 0x0002;
+    int SC_MANAGER_ENUMERATE_SERVICE = 0x0004;
+    int SC_MANAGER_LOCK = 0x0008;
+    int SC_MANAGER_QUERY_LOCK_STATUS = 0x0010;
+    int SC_MANAGER_MODIFY_BOOT_CONFIG = 0x0020;
 
-    int SC_MANAGER_ALL_ACCESS =
-        WinNT.STANDARD_RIGHTS_REQUIRED | SC_MANAGER_CONNECT
-        | SC_MANAGER_CREATE_SERVICE | SC_MANAGER_ENUMERATE_SERVICE
-        | SC_MANAGER_LOCK | SC_MANAGER_QUERY_LOCK_STATUS
-        | SC_MANAGER_MODIFY_BOOT_CONFIG;
+    int SC_MANAGER_ALL_ACCESS = WinNT.STANDARD_RIGHTS_REQUIRED | SC_MANAGER_CONNECT | SC_MANAGER_CREATE_SERVICE
+        | SC_MANAGER_ENUMERATE_SERVICE | SC_MANAGER_LOCK | SC_MANAGER_QUERY_LOCK_STATUS | SC_MANAGER_MODIFY_BOOT_CONFIG;
 
     //
     // Service object specific access type
@@ -404,15 +419,12 @@ public interface Winsvc {
      */
     int SERVICE_USER_DEFINED_CONTROL = 0x0100;
 
-    int SERVICE_ALL_ACCESS =
-        WinNT.STANDARD_RIGHTS_REQUIRED | SERVICE_QUERY_CONFIG
-        | SERVICE_CHANGE_CONFIG | SERVICE_QUERY_STATUS
-        | SERVICE_ENUMERATE_DEPENDENTS | SERVICE_START | SERVICE_STOP
-        | SERVICE_PAUSE_CONTINUE | SERVICE_INTERROGATE
-        | SERVICE_USER_DEFINED_CONTROL;
+    int SERVICE_ALL_ACCESS = WinNT.STANDARD_RIGHTS_REQUIRED | SERVICE_QUERY_CONFIG | SERVICE_CHANGE_CONFIG
+        | SERVICE_QUERY_STATUS | SERVICE_ENUMERATE_DEPENDENTS | SERVICE_START | SERVICE_STOP | SERVICE_PAUSE_CONTINUE
+        | SERVICE_INTERROGATE | SERVICE_USER_DEFINED_CONTROL;
 
     //
-    //  Service State -- for Enum Requests (Bit Mask)
+    // Service State -- for Enum Requests (Bit Mask)
     //
     int SERVICE_ACTIVE = 0x00000001;
     int SERVICE_INACTIVE = 0x00000002;
@@ -428,17 +440,17 @@ public interface Winsvc {
      * <p>After sending the stop request to a service, you should not send other
      * controls to the service.</p>
      */
-    int SERVICE_CONTROL_STOP                  = 0x00000001;
+    int SERVICE_CONTROL_STOP = 0x00000001;
     /**
      * Notifies a service that it should pause. The hService handle must have
      * the {@link #SERVICE_PAUSE_CONTINUE} access right.
      */
-    int SERVICE_CONTROL_PAUSE                 = 0x00000002;
+    int SERVICE_CONTROL_PAUSE = 0x00000002;
     /**
      * Notifies a service that its startup parameters have changed. The hService
      * handle must have the {@link #SERVICE_PAUSE_CONTINUE} access right.
      */
-    int SERVICE_CONTROL_CONTINUE              = 0x00000003;
+    int SERVICE_CONTROL_CONTINUE = 0x00000003;
     /**
      * Notifies a service that it should report its current status information
      * to the service control manager. The hService handle must have the
@@ -448,95 +460,95 @@ public interface Winsvc {
      * Note that this control is not generally useful as the SCM is aware of the
      * current state of the service.</p>
      */
-    int SERVICE_CONTROL_INTERROGATE           = 0x00000004;
-    int SERVICE_CONTROL_SHUTDOWN              = 0x00000005;
-    int SERVICE_CONTROL_PARAMCHANGE           = 0x00000006;
+    int SERVICE_CONTROL_INTERROGATE = 0x00000004;
+    int SERVICE_CONTROL_SHUTDOWN = 0x00000005;
+    int SERVICE_CONTROL_PARAMCHANGE = 0x00000006;
     /**
      * Notifies a network service that there is a new component for binding. The
      * hService handle must have the {@link #SERVICE_PAUSE_CONTINUE} access
      * right. However, this control code has been deprecated; use Plug and Play
      * functionality instead.
      */
-    int SERVICE_CONTROL_NETBINDADD            = 0x00000007;
+    int SERVICE_CONTROL_NETBINDADD = 0x00000007;
     /**
      * Notifies a network service that a component for binding has been removed.
      * The hService handle must have the {@link #SERVICE_PAUSE_CONTINUE} access
      * right. However, this control code has been deprecated; use Plug and Play
      * functionality instead.
      */
-    int SERVICE_CONTROL_NETBINDREMOVE         = 0x00000008;
+    int SERVICE_CONTROL_NETBINDREMOVE = 0x00000008;
     /**
      * Notifies a network service that a disabled binding has been enabled. The
      * hService handle must have the {@link #SERVICE_PAUSE_CONTINUE} access
      * right. However, this control code has been deprecated; use Plug and Play
      * functionality instead.
      */
-    int SERVICE_CONTROL_NETBINDENABLE         = 0x00000009;
+    int SERVICE_CONTROL_NETBINDENABLE = 0x00000009;
     /**
      * Notifies a network service that one of its bindings has been disabled.
      * The hService handle must have the {@link #SERVICE_PAUSE_CONTINUE} access
      * right. However, this control code has been deprecated; use Plug and Play
      * functionality instead.
      */
-    int SERVICE_CONTROL_NETBINDDISABLE        = 0x0000000A;
-    int SERVICE_CONTROL_DEVICEEVENT           = 0x0000000B;
+    int SERVICE_CONTROL_NETBINDDISABLE = 0x0000000A;
+    int SERVICE_CONTROL_DEVICEEVENT = 0x0000000B;
     int SERVICE_CONTROL_HARDWAREPROFILECHANGE = 0x0000000C;
-    int SERVICE_CONTROL_POWEREVENT            = 0x0000000D;
-    int SERVICE_CONTROL_SESSIONCHANGE         = 0x0000000E;
-    int SERVICE_CONTROL_PRESHUTDOWN           = 0x0000000F;
-    int SERVICE_CONTROL_TIMECHANGE            = 0x00000010;
-    int SERVICE_CONTROL_TRIGGEREVENT          = 0x00000020;
-    int SERVICE_CONTROL_USERMODEREBOOT        = 0x00000040;
+    int SERVICE_CONTROL_POWEREVENT = 0x0000000D;
+    int SERVICE_CONTROL_SESSIONCHANGE = 0x0000000E;
+    int SERVICE_CONTROL_PRESHUTDOWN = 0x0000000F;
+    int SERVICE_CONTROL_TIMECHANGE = 0x00000010;
+    int SERVICE_CONTROL_TRIGGEREVENT = 0x00000020;
+    int SERVICE_CONTROL_USERMODEREBOOT = 0x00000040;
 
     //
     // Service State -- for CurrentState
     //
-    int SERVICE_STOPPED          = 0x00000001;
-    int SERVICE_START_PENDING    = 0x00000002;
-    int SERVICE_STOP_PENDING     = 0x00000003;
-    int SERVICE_RUNNING          = 0x00000004;
+    int SERVICE_STOPPED = 0x00000001;
+    int SERVICE_START_PENDING = 0x00000002;
+    int SERVICE_STOP_PENDING = 0x00000003;
+    int SERVICE_RUNNING = 0x00000004;
     int SERVICE_CONTINUE_PENDING = 0x00000005;
-    int SERVICE_PAUSE_PENDING    = 0x00000006;
-    int SERVICE_PAUSED           = 0x00000007;
+    int SERVICE_PAUSE_PENDING = 0x00000006;
+    int SERVICE_PAUSED = 0x00000007;
 
     //
-    // Controls Accepted  (Bit Mask)
+    // Controls Accepted (Bit Mask)
     //
-    int SERVICE_ACCEPT_STOP                  = 0x00000001;
-    int SERVICE_ACCEPT_PAUSE_CONTINUE        = 0x00000002;
-    int SERVICE_ACCEPT_SHUTDOWN              = 0x00000004;
-    int SERVICE_ACCEPT_PARAMCHANGE           = 0x00000008;
-    int SERVICE_ACCEPT_NETBINDCHANGE         = 0x00000010;
+    int SERVICE_ACCEPT_STOP = 0x00000001;
+    int SERVICE_ACCEPT_PAUSE_CONTINUE = 0x00000002;
+    int SERVICE_ACCEPT_SHUTDOWN = 0x00000004;
+    int SERVICE_ACCEPT_PARAMCHANGE = 0x00000008;
+    int SERVICE_ACCEPT_NETBINDCHANGE = 0x00000010;
     int SERVICE_ACCEPT_HARDWAREPROFILECHANGE = 0x00000020;
-    int SERVICE_ACCEPT_POWEREVENT            = 0x00000040;
-    int SERVICE_ACCEPT_SESSIONCHANGE         = 0x00000080;
-    int SERVICE_ACCEPT_PRESHUTDOWN           = 0x00000100;
-    int SERVICE_ACCEPT_TIMECHANGE            = 0x00000200;
-    int SERVICE_ACCEPT_TRIGGEREVENT          = 0x00000400;
+    int SERVICE_ACCEPT_POWEREVENT = 0x00000040;
+    int SERVICE_ACCEPT_SESSIONCHANGE = 0x00000080;
+    int SERVICE_ACCEPT_PRESHUTDOWN = 0x00000100;
+    int SERVICE_ACCEPT_TIMECHANGE = 0x00000200;
+    int SERVICE_ACCEPT_TRIGGEREVENT = 0x00000400;
 
     //
     // ChangeServiceConfig2 dwInfoLevel values
     //
-    int SERVICE_CONFIG_DESCRIPTION              = 0x00000001;
-    int SERVICE_CONFIG_FAILURE_ACTIONS          = 0x00000002;
-    int SERVICE_CONFIG_DELAYED_AUTO_START_INFO  = 0x00000003;
-    int SERVICE_CONFIG_FAILURE_ACTIONS_FLAG     = 0x00000004;
-    int SERVICE_CONFIG_SERVICE_SID_INFO         = 0x00000005;
+    int SERVICE_CONFIG_DESCRIPTION = 0x00000001;
+    int SERVICE_CONFIG_FAILURE_ACTIONS = 0x00000002;
+    int SERVICE_CONFIG_DELAYED_AUTO_START_INFO = 0x00000003;
+    int SERVICE_CONFIG_FAILURE_ACTIONS_FLAG = 0x00000004;
+    int SERVICE_CONFIG_SERVICE_SID_INFO = 0x00000005;
     int SERVICE_CONFIG_REQUIRED_PRIVILEGES_INFO = 0x00000006;
-    int SERVICE_CONFIG_PRESHUTDOWN_INFO         = 0x00000007;
-    int SERVICE_CONFIG_TRIGGER_INFO             = 0x00000008;
-    int SERVICE_CONFIG_PREFERRED_NODE           = 0x00000009;
-    int SERVICE_CONFIG_LAUNCH_PROTECTED         = 0x0000000c;
+    int SERVICE_CONFIG_PRESHUTDOWN_INFO = 0x00000007;
+    int SERVICE_CONFIG_TRIGGER_INFO = 0x00000008;
+    int SERVICE_CONFIG_PREFERRED_NODE = 0x00000009;
+    int SERVICE_CONFIG_LAUNCH_PROTECTED = 0x0000000c;
 
     //
     // Service failure actions
     //
-    int SC_ACTION_NONE        = 0x00000000;
-    int SC_ACTION_RESTART     = 0x00000001;
-    int SC_ACTION_REBOOT      = 0x00000002;
+    int SC_ACTION_NONE = 0x00000000;
+    int SC_ACTION_RESTART = 0x00000001;
+    int SC_ACTION_REBOOT = 0x00000002;
     int SC_ACTION_RUN_COMMAND = 0x00000003;
 
-    int SC_ENUM_PROCESS_INFO  = 0;
+    int SC_ENUM_PROCESS_INFO = 0;
 
     /**
      * The SC_STATUS_TYPE enumeration type contains values
@@ -552,21 +564,21 @@ public interface Winsvc {
 
         /**
          *
-         * @param dwArgc   [in] The number of arguments in the lpszArgv array.
+         * @param dwArgc [in] The number of arguments in the lpszArgv array.
          * @param lpszArgv [in] The null-terminated argument strings passed to
-         *                 the service by the call to the StartService function
-         *                 that started the service. If there are no arguments,
-         *                 this parameter can be NULL. Otherwise, the first
-         *                 argument (lpszArgv[0]) is the name of the service,
-         *                 followed by any additional arguments (lpszArgv[1]
-         *                 through lpszArgv[dwArgc-1]).
+         * the service by the call to the StartService function
+         * that started the service. If there are no arguments,
+         * this parameter can be NULL. Otherwise, the first
+         * argument (lpszArgv[0]) is the name of the service,
+         * followed by any additional arguments (lpszArgv[1]
+         * through lpszArgv[dwArgc-1]).
          *
-         *                 <p>If the user starts a manual service using the
-         *                 Services snap-in from the Control Panel, the strings
-         *                 for the lpszArgv parameter come from the properties
-         *                 dialog box for the service (from the Services snap-in,
-         *                 right-click the service entry, click Properties, and
-         *                 enter the parameters in Start parameters.)
+         * <p>If the user starts a manual service using the
+         * Services snap-in from the Control Panel, the strings
+         * for the lpszArgv parameter come from the properties
+         * dialog box for the service (from the Services snap-in,
+         * right-click the service entry, click Properties, and
+         * enter the parameters in Start parameters.)
          */
         public void callback(int dwArgc, Pointer lpszArgv);
     }
@@ -588,19 +600,38 @@ public interface Winsvc {
 
         /**
          * @param fdwControl [in] The control code. This parameter can be one of
-         *                   the following values.
+         * the following values.
          * <table>
          * <tr><th>Control code</th><th>Meaning</th></tr>
-         * <tr><td>SERVICE_CONTROL_CONTINUE<br>0x00000003</td><td>Notifies a paused service that it should resume.</td></tr>
-         * <tr><td>SERVICE_CONTROL_INTERROGATE<br>0x00000004</td><td>Notifies a service that it should report its current status information to the service control manager.<br>The handler should simply return NO_ERROR; the SCM is aware of the current state of the service.</td></tr>
-         * <tr><td>SERVICE_CONTROL_NETBINDADD<br>0x00000007</td><td>Notifies a network service that there is a new component for binding. The service should bind to the new component.<br>Applications should use Plug and Play functionality instead.</td></tr>
-         * <tr><td>SERVICE_CONTROL_NETBINDDISABLE<br>0x0000000A</td><td>Notifies a network service that one of its bindings has been disabled. The service should reread its binding information and remove the binding.<br>Applications should use Plug and Play functionality instead.</td></tr>
-         * <tr><td>SERVICE_CONTROL_NETBINDENABLE<br>0x00000009</td><td>Notifies a network service that a disabled binding has been enabled. The service should reread its binding information and add the new binding.<br>Applications should use Plug and Play functionality instead.</td></tr>
-         * <tr><td>SERVICE_CONTROL_NETBINDREMOVE<br>0x00000008</td><td>Notifies a network service that a component for binding has been removed. The service should reread its binding information and unbind from the removed component.<br>Applications should use Plug and Play functionality instead.</td></tr>
-         * <tr><td>SERVICE_CONTROL_PARAMCHANGE<br>0x00000006</td><td>Notifies a service that its startup parameters have changed. The service should reread its startup parameters.</td></tr>
+         * <tr><td>SERVICE_CONTROL_CONTINUE<br>0x00000003</td><td>Notifies a paused service that it should
+         * resume.</td></tr>
+         * <tr><td>SERVICE_CONTROL_INTERROGATE<br>0x00000004</td><td>Notifies a service that it should report its
+         * current status information to the service control manager.<br>The handler should simply return NO_ERROR; the
+         * SCM is aware of the current state of the service.</td></tr>
+         * <tr><td>SERVICE_CONTROL_NETBINDADD<br>0x00000007</td><td>Notifies a network service that there is a new
+         * component for binding. The service should bind to the new component.<br>Applications should use Plug and Play
+         * functionality instead.</td></tr>
+         * <tr><td>SERVICE_CONTROL_NETBINDDISABLE<br>0x0000000A</td><td>Notifies a network service that one of its
+         * bindings has been disabled. The service should reread its binding information and remove the
+         * binding.<br>Applications should use Plug and Play functionality instead.</td></tr>
+         * <tr><td>SERVICE_CONTROL_NETBINDENABLE<br>0x00000009</td><td>Notifies a network service that a disabled
+         * binding has been enabled. The service should reread its binding information and add the new
+         * binding.<br>Applications should use Plug and Play functionality instead.</td></tr>
+         * <tr><td>SERVICE_CONTROL_NETBINDREMOVE<br>0x00000008</td><td>Notifies a network service that a component for
+         * binding has been removed. The service should reread its binding information and unbind from the removed
+         * component.<br>Applications should use Plug and Play functionality instead.</td></tr>
+         * <tr><td>SERVICE_CONTROL_PARAMCHANGE<br>0x00000006</td><td>Notifies a service that its startup parameters have
+         * changed. The service should reread its startup parameters.</td></tr>
          * <tr><td>SERVICE_CONTROL_PAUSE<br>0x00000002</td><td>Notifies a service that it should pause.</td></tr>
-         * <tr><td>SERVICE_CONTROL_SHUTDOWN<br>0x00000005</td><td>Notifies a service that the system is shutting down so the service can perform cleanup tasks.<br>If a service accepts this control code, it must stop after it performs its cleanup tasks and return NO_ERROR. After the SCM sends this control code, it will not send other control codes to the service.</td></tr>
-         * <tr><td>SERVICE_CONTROL_STOP<br>0x00000001</td><td>Notifies a service that it should stop.<br>If a service accepts this control code, it must stop upon receipt and return NO_ERROR. After the SCM sends this control code, it does not send other control codes.<br>Windows XP:  If the service returns NO_ERROR and continues to run, it continues to receive control codes. This behavior changed starting with Windows Server 2003 and Windows XP with SP2.</td></tr>
+         * <tr><td>SERVICE_CONTROL_SHUTDOWN<br>0x00000005</td><td>Notifies a service that the system is shutting down so
+         * the service can perform cleanup tasks.<br>If a service accepts this control code, it must stop after it
+         * performs its cleanup tasks and return NO_ERROR. After the SCM sends this control code, it will not send other
+         * control codes to the service.</td></tr>
+         * <tr><td>SERVICE_CONTROL_STOP<br>0x00000001</td><td>Notifies a service that it should stop.<br>If a service
+         * accepts this control code, it must stop upon receipt and return NO_ERROR. After the SCM sends this control
+         * code, it does not send other control codes.<br>Windows XP: If the service returns NO_ERROR and continues to
+         * run, it continues to receive control codes. This behavior changed starting with Windows Server 2003 and
+         * Windows XP with SP2.</td></tr>
          * </table>
          *
          * <p>This parameter can also be a user-defined control code, as described in the following table.</p>
@@ -630,33 +661,74 @@ public interface Winsvc {
 
         /**
          * @param dwControl [in] The control code. This parameter can be one of
-         *                   the following values.
+         * the following values.
          * <table>
          * <tr><th>Control code</th><th>Meaning</th></tr>
-         * <tr><td>SERVICE_CONTROL_CONTINUE<br>0x00000003</td><td>Notifies a paused service that it should resume.</td></tr>
-         * <tr><td>SERVICE_CONTROL_INTERROGATE<br>0x00000004</td><td>Notifies a service that it should report its current status information to the service control manager.<br>The handler should simply return NO_ERROR; the SCM is aware of the current state of the service.</td></tr>
-         * <tr><td>SERVICE_CONTROL_NETBINDADD<br>0x00000007</td><td>Notifies a network service that there is a new component for binding. The service should bind to the new component.<br>Applications should use Plug and Play functionality instead.</td></tr>
-         * <tr><td>SERVICE_CONTROL_NETBINDDISABLE<br>0x0000000A</td><td>Notifies a network service that one of its bindings has been disabled. The service should reread its binding information and remove the binding.<br>Applications should use Plug and Play functionality instead.</td></tr>
-         * <tr><td>SERVICE_CONTROL_NETBINDENABLE<br>0x00000009</td><td>Notifies a network service that a disabled binding has been enabled. The service should reread its binding information and add the new binding.<br>Applications should use Plug and Play functionality instead.</td></tr>
-         * <tr><td>SERVICE_CONTROL_NETBINDREMOVE<br>0x00000008</td><td>Notifies a network service that a component for binding has been removed. The service should reread its binding information and unbind from the removed component.<br>Applications should use Plug and Play functionality instead.</td></tr>
-         * <tr><td>SERVICE_CONTROL_PARAMCHANGE<br>0x00000006</td><td>Notifies a service that its startup parameters have changed. The service should reread its startup parameters.</td></tr>
+         * <tr><td>SERVICE_CONTROL_CONTINUE<br>0x00000003</td><td>Notifies a paused service that it should
+         * resume.</td></tr>
+         * <tr><td>SERVICE_CONTROL_INTERROGATE<br>0x00000004</td><td>Notifies a service that it should report its
+         * current status information to the service control manager.<br>The handler should simply return NO_ERROR; the
+         * SCM is aware of the current state of the service.</td></tr>
+         * <tr><td>SERVICE_CONTROL_NETBINDADD<br>0x00000007</td><td>Notifies a network service that there is a new
+         * component for binding. The service should bind to the new component.<br>Applications should use Plug and Play
+         * functionality instead.</td></tr>
+         * <tr><td>SERVICE_CONTROL_NETBINDDISABLE<br>0x0000000A</td><td>Notifies a network service that one of its
+         * bindings has been disabled. The service should reread its binding information and remove the
+         * binding.<br>Applications should use Plug and Play functionality instead.</td></tr>
+         * <tr><td>SERVICE_CONTROL_NETBINDENABLE<br>0x00000009</td><td>Notifies a network service that a disabled
+         * binding has been enabled. The service should reread its binding information and add the new
+         * binding.<br>Applications should use Plug and Play functionality instead.</td></tr>
+         * <tr><td>SERVICE_CONTROL_NETBINDREMOVE<br>0x00000008</td><td>Notifies a network service that a component for
+         * binding has been removed. The service should reread its binding information and unbind from the removed
+         * component.<br>Applications should use Plug and Play functionality instead.</td></tr>
+         * <tr><td>SERVICE_CONTROL_PARAMCHANGE<br>0x00000006</td><td>Notifies a service that its startup parameters have
+         * changed. The service should reread its startup parameters.</td></tr>
          * <tr><td>SERVICE_CONTROL_PAUSE<br>0x00000002</td><td>Notifies a service that it should pause.</td></tr>
-         * <tr><td>SERVICE_CONTROL_PRESHUTDOWN<br>0x0000000F</td><td>Notifies a service that the system will be shutting down. Services that need additional time to perform cleanup tasks beyond the tight time restriction at system shutdown can use this notification. The service control manager sends this notification to applications that have registered for it before sending a SERVICE_CONTROL_SHUTDOWN notification to applications that have registered for that notification.<br>A service that handles this notification blocks system shutdown until the service stops or the preshutdown time-out interval specified through SERVICE_PRESHUTDOWN_INFO expires. Because this affects the user experience, services should use this feature only if it is absolutely necessary to avoid data loss or significant recovery time at the next system start.<br>Windows Server 2003 and Windows XP:  This value is not supported.</td></tr>
-         * <tr><td>SERVICE_CONTROL_SHUTDOWN<br>0x00000005</td><td>Notifies a service that the system is shutting down so the service can perform cleanup tasks.<br>If a service accepts this control code, it must stop after it performs its cleanup tasks and return NO_ERROR. After the SCM sends this control code, it will not send other control codes to the service.</td></tr>
-         * <tr><td>SERVICE_CONTROL_STOP<br>0x00000001</td><td>Notifies a service that it should stop.<br>If a service accepts this control code, it must stop upon receipt and return NO_ERROR. After the SCM sends this control code, it does not send other control codes.<br>Windows XP:  If the service returns NO_ERROR and continues to run, it continues to receive control codes. This behavior changed starting with Windows Server 2003 and Windows XP with SP2.</td></tr>
+         * <tr><td>SERVICE_CONTROL_PRESHUTDOWN<br>0x0000000F</td><td>Notifies a service that the system will be shutting
+         * down. Services that need additional time to perform cleanup tasks beyond the tight time restriction at system
+         * shutdown can use this notification. The service control manager sends this notification to applications that
+         * have registered for it before sending a SERVICE_CONTROL_SHUTDOWN notification to applications that have
+         * registered for that notification.<br>A service that handles this notification blocks system shutdown until
+         * the service stops or the preshutdown time-out interval specified through SERVICE_PRESHUTDOWN_INFO expires.
+         * Because this affects the user experience, services should use this feature only if it is absolutely necessary
+         * to avoid data loss or significant recovery time at the next system start.<br>Windows Server 2003 and Windows
+         * XP: This value is not supported.</td></tr>
+         * <tr><td>SERVICE_CONTROL_SHUTDOWN<br>0x00000005</td><td>Notifies a service that the system is shutting down so
+         * the service can perform cleanup tasks.<br>If a service accepts this control code, it must stop after it
+         * performs its cleanup tasks and return NO_ERROR. After the SCM sends this control code, it will not send other
+         * control codes to the service.</td></tr>
+         * <tr><td>SERVICE_CONTROL_STOP<br>0x00000001</td><td>Notifies a service that it should stop.<br>If a service
+         * accepts this control code, it must stop upon receipt and return NO_ERROR. After the SCM sends this control
+         * code, it does not send other control codes.<br>Windows XP: If the service returns NO_ERROR and continues to
+         * run, it continues to receive control codes. This behavior changed starting with Windows Server 2003 and
+         * Windows XP with SP2.</td></tr>
          * </table>
          *
-         * <p>This parameter can also be one of the following extended control codes. Note that these control codes are not supported by the {@link Handler} function.</p>
+         * <p>This parameter can also be one of the following extended control codes. Note that these control codes are
+         * not supported by the {@link Handler} function.</p>
          *
          * <table>
          * <tr><th>Control code</th><th>Meaning</th></tr>
-         * <tr><td>SERVICE_CONTROL_DEVICEEVENT<br>0x0000000B</td><td>Notifies a service of device events. (The service must have registered to receive these notifications using the RegisterDeviceNotification function.) The dwEventType and lpEventData parameters contain additional information.</td></tr>
-         * <tr><td>SERVICE_CONTROL_HARDWAREPROFILECHANGE<br>0x0000000C</td><td>Notifies a service that the computer's hardware profile has changed. The dwEventType parameter contains additional information.</td></tr>
-         * <tr><td>SERVICE_CONTROL_POWEREVENT<br>0x0000000D</td><td>Notifies a service of system power events. The dwEventType parameter contains additional information. If dwEventType is PBT_POWERSETTINGCHANGE, the lpEventData parameter also contains additional information.</td></tr>
-         * <tr><td>SERVICE_CONTROL_SESSIONCHANGE<br>0x0000000E</td><td>Notifies a service of session change events. Note that a service will only be notified of a user logon if it is fully loaded before the logon attempt is made. The dwEventType and lpEventData parameters contain additional information. </td></tr>
-         * <tr><td>SERVICE_CONTROL_TIMECHANGE<br>0x00000010</td><td>Notifies a service that the system time has changed. The lpEventData parameter contains additional information. The dwEventType parameter is not used.<br>Windows Server 2008, Windows Vista, Windows Server 2003 and Windows XP:  This control code is not supported.</td></tr>
-         * <tr><td>SERVICE_CONTROL_TRIGGEREVENT<br>0x00000020</td><td>Notifies a service registered for a service trigger event that the event has occurred.<br>Windows Server 2008, Windows Vista, Windows Server 2003 and Windows XP:  This control code is not supported.</td></tr>
-         * <tr><td>SERVICE_CONTROL_USERMODEREBOOT<br>0x00000040</td><td>Notifies a service that the user has initiated a reboot.<br>Windows Server 2008 R2, Windows 7, Windows Server 2008, Windows Vista, Windows Server 2003 and Windows XP:  This control code is not supported.</td></tr>
+         * <tr><td>SERVICE_CONTROL_DEVICEEVENT<br>0x0000000B</td><td>Notifies a service of device events. (The service
+         * must have registered to receive these notifications using the RegisterDeviceNotification function.) The
+         * dwEventType and lpEventData parameters contain additional information.</td></tr>
+         * <tr><td>SERVICE_CONTROL_HARDWAREPROFILECHANGE<br>0x0000000C</td><td>Notifies a service that the computer's
+         * hardware profile has changed. The dwEventType parameter contains additional information.</td></tr>
+         * <tr><td>SERVICE_CONTROL_POWEREVENT<br>0x0000000D</td><td>Notifies a service of system power events. The
+         * dwEventType parameter contains additional information. If dwEventType is PBT_POWERSETTINGCHANGE, the
+         * lpEventData parameter also contains additional information.</td></tr>
+         * <tr><td>SERVICE_CONTROL_SESSIONCHANGE<br>0x0000000E</td><td>Notifies a service of session change events. Note
+         * that a service will only be notified of a user logon if it is fully loaded before the logon attempt is made.
+         * The dwEventType and lpEventData parameters contain additional information. </td></tr>
+         * <tr><td>SERVICE_CONTROL_TIMECHANGE<br>0x00000010</td><td>Notifies a service that the system time has changed.
+         * The lpEventData parameter contains additional information. The dwEventType parameter is not used.<br>Windows
+         * Server 2008, Windows Vista, Windows Server 2003 and Windows XP: This control code is not supported.</td></tr>
+         * <tr><td>SERVICE_CONTROL_TRIGGEREVENT<br>0x00000020</td><td>Notifies a service registered for a service
+         * trigger event that the event has occurred.<br>Windows Server 2008, Windows Vista, Windows Server 2003 and
+         * Windows XP: This control code is not supported.</td></tr>
+         * <tr><td>SERVICE_CONTROL_USERMODEREBOOT<br>0x00000040</td><td>Notifies a service that the user has initiated a
+         * reboot.<br>Windows Server 2008 R2, Windows 7, Windows Server 2008, Windows Vista, Windows Server 2003 and
+         * Windows XP: This control code is not supported.</td></tr>
          * </table>
          *
          * <p>This parameter can also be a user-defined control code, as described in the following table.</p>
@@ -667,12 +739,12 @@ public interface Winsvc {
          * </table>
          *
          * @param dwEventType The type of event that has occurred. This
-         *                    parameter is used if dwControl is
-         *                    SERVICE_CONTROL_DEVICEEVENT,
-         *                    SERVICE_CONTROL_HARDWAREPROFILECHANGE,
-         *                    SERVICE_CONTROL_POWEREVENT, or
-         *                    SERVICE_CONTROL_SESSIONCHANGE. Otherwise, it is
-         *                    zero.
+         * parameter is used if dwControl is
+         * SERVICE_CONTROL_DEVICEEVENT,
+         * SERVICE_CONTROL_HARDWAREPROFILECHANGE,
+         * SERVICE_CONTROL_POWEREVENT, or
+         * SERVICE_CONTROL_SESSIONCHANGE. Otherwise, it is
+         * zero.
          *
          * <p>If dwControl is SERVICE_CONTROL_DEVICEEVENT, this parameter can be
          * one of the following values:</p>
@@ -703,8 +775,8 @@ public interface Winsvc {
          * WM_WTSSESSION_CHANGE message.</p>
          *
          * @param lpEventData [in] Additional device information, if required.
-         *                    The format of this data depends on the value of
-         *                    the dwControl and dwEventType parameters.
+         * The format of this data depends on the value of
+         * the dwControl and dwEventType parameters.
          *
          * <p>If dwControl is SERVICE_CONTROL_DEVICEEVENT, this data corresponds to
          * the lParam parameter that applications receive as part of a
@@ -720,13 +792,13 @@ public interface Winsvc {
          * <p>If dwControl is SERVICE_CONTROL_TIMECHANGE, this data is a pointer to
          * a SERVICE_TIMECHANGE_INFO structure.</p>
          *
-         * @param lpContext   [in] User-defined data passed from
-         *                    {@link Advapi32#RegisterServiceCtrlHandlerEx}. When multiple
-         *                    services share a process, the lpContext parameter
-         *                    can help identify the service.
+         * @param lpContext [in] User-defined data passed from
+         * {@link Advapi32#RegisterServiceCtrlHandlerEx}. When multiple
+         * services share a process, the lpContext parameter
+         * can help identify the service.
          *
          * @return The return value for this function depends on the control
-         *         code received.
+         * code received.
          *
          * <p>The following list identifies the rules for this return value:</p>
          *
@@ -749,15 +821,14 @@ public interface Winsvc {
          * NO_ERROR.</li>
          * </ul>
          */
-        public int callback(int dwControl, int dwEventType,
-                Pointer lpEventData, Pointer lpContext);
+        public int callback(int dwControl, int dwEventType, Pointer lpEventData, Pointer lpContext);
     }
 
     /**
      * Specifies the ServiceMain function for a service that can run in the
      * calling process. It is used by the StartServiceCtrlDispatcher function.
      */
-    @FieldOrder({"lpServiceName", "lpServiceProc"})
+    @FieldOrder({ "lpServiceName", "lpServiceProc" })
     public static class SERVICE_TABLE_ENTRY extends Structure {
         /**
          * The name of a service to be run in this service process.
@@ -803,7 +874,7 @@ public interface Winsvc {
      * are not supported until Windows Vista.</p>
      *
      */
-    @FieldOrder({"lpDescription"})
+    @FieldOrder({ "lpDescription" })
     public static class SERVICE_DESCRIPTION extends ChangeServiceConfig2Info {
         public String lpDescription;
     }
@@ -823,7 +894,7 @@ public interface Winsvc {
      * information about that service. It is used by the EnumDependentServices
      * and EnumServicesStatus functions.
      */
-    @FieldOrder({"lpServiceName", "lpDisplayName", "ServiceStatus"})
+    @FieldOrder({ "lpServiceName", "lpDisplayName", "ServiceStatus" })
     public static class ENUM_SERVICE_STATUS extends Structure {
         /**
          * The name of a service in the service control manager database. The
@@ -857,7 +928,7 @@ public interface Winsvc {
      * information about the service. It is used by the EnumServicesStatusEx
      * function.
      */
-    @FieldOrder({"lpServiceName", "lpDisplayName", "ServiceStatusProcess"})
+    @FieldOrder({ "lpServiceName", "lpDisplayName", "ServiceStatusProcess" })
     public static class ENUM_SERVICE_STATUS_PROCESS extends Structure {
         /**
          * The name of a service in the service control manager database. The

@@ -24,50 +24,48 @@ import java.util.Comparator;
  * </ul>
  */
 final class ImportComparator implements Comparator<ImportName> {
-	private static Comparator<ImportName> createQualifiedNameComparator() {
-		return new Comparator<>() {
-			@Override
-			public int compare(ImportName o1, ImportName o2) {
-				return o1.qualifiedName.compareTo(o2.qualifiedName);
-			}
-		};
-	}
+    private static Comparator<ImportName> createQualifiedNameComparator() {
+        return new Comparator<>() {
+            @Override
+            public int compare(ImportName o1, ImportName o2) {
+                return o1.qualifiedName.compareTo(o2.qualifiedName);
+            }
+        };
+    }
 
-	private final Comparator<ImportName> importGroupComparator;
-	private final Comparator<ImportName> typeContainerComparator;
-	private final Comparator<ImportName> staticContainerComparator;
-	private final Comparator<ImportName> qualifiedNameComparator;
+    private final Comparator<ImportName> importGroupComparator;
+    private final Comparator<ImportName> typeContainerComparator;
+    private final Comparator<ImportName> staticContainerComparator;
+    private final Comparator<ImportName> qualifiedNameComparator;
 
-	ImportComparator(
-			ImportGroupComparator importGroupComparator,
-			Comparator<ImportName> typeContainerComparator,
-			Comparator<ImportName> staticContainerComparator) {
-		this.importGroupComparator = importGroupComparator;
-		this.typeContainerComparator = typeContainerComparator;
-		this.staticContainerComparator = staticContainerComparator;
-		this.qualifiedNameComparator = createQualifiedNameComparator();
-	}
+    ImportComparator(ImportGroupComparator importGroupComparator, Comparator<ImportName> typeContainerComparator,
+        Comparator<ImportName> staticContainerComparator) {
+        this.importGroupComparator = importGroupComparator;
+        this.typeContainerComparator = typeContainerComparator;
+        this.staticContainerComparator = staticContainerComparator;
+        this.qualifiedNameComparator = createQualifiedNameComparator();
+    }
 
-	@Override
-	public int compare(ImportName o1, ImportName o2) {
-		final int comparison;
+    @Override
+    public int compare(ImportName o1, ImportName o2) {
+        final int comparison;
 
-		int importGroupComparison = this.importGroupComparator.compare(o1, o2);
-		if (importGroupComparison != 0) {
-			comparison = importGroupComparison;
-		} else {
-			// The two imports sorted into the same import group, so o2.isStatic == o1.isStatic.
-			Comparator<ImportName> containerComparator =
-					o1.isStatic ? this.staticContainerComparator : this.typeContainerComparator;
+        int importGroupComparison = this.importGroupComparator.compare(o1, o2);
+        if (importGroupComparison != 0) {
+            comparison = importGroupComparison;
+        } else {
+            // The two imports sorted into the same import group, so o2.isStatic == o1.isStatic.
+            Comparator<ImportName> containerComparator
+                = o1.isStatic ? this.staticContainerComparator : this.typeContainerComparator;
 
-			int containerComparison = containerComparator.compare(o1, o2);
-			if (containerComparison != 0) {
-				comparison = containerComparison;
-			} else {
-				comparison = this.qualifiedNameComparator.compare(o1, o2);
-			}
-		}
+            int containerComparison = containerComparator.compare(o1, o2);
+            if (containerComparison != 0) {
+                comparison = containerComparison;
+            } else {
+                comparison = this.qualifiedNameComparator.compare(o1, o2);
+            }
+        }
 
-		return comparison;
-	}
+        return comparison;
+    }
 }

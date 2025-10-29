@@ -39,21 +39,6 @@ public abstract class PlurlStreamHandlerBase extends URLStreamHandler implements
     public abstract URLConnection openConnection(URL u) throws IOException;
 
     /**
-     * Parse a URL using the {@code PlurlSetter} object. This method sets the
-     * {@code plurlSetter} field with the specified {@code PlurlSetter} object and
-     * then calls {@code parseURL(URL,String,int,int)}.
-     * 
-     * @param setter The object on which the {@code setURL} method must be invoked
-     * for the specified URL.
-     * @see "java.net.URLStreamHandler.parseURL"
-     */
-    @Override
-    public void parseURL(PlurlSetter setter, URL u, String spec, int start, int limit) {
-        this.plurlSetter = setter;
-        parseURL(u, spec, start, limit);
-    }
-
-    /**
      * This method calls {@code super.openConnection(URL, Proxy)}
      * 
      * @see "java.net.URLStreamHandler.openConnection(URL, Proxy)"

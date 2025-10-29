@@ -14,10 +14,8 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.preferences;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IStatus;
 
 import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * The preference service provides facilities for dealing with the default scope
@@ -44,29 +42,6 @@ public interface IPreferencesService {
      * @return the root of the hierarchy
      */
     IEclipsePreferences getRootNode();
-
-    /**
-     * Take the given preference tree and apply it to the Eclipse global preference
-     * hierarchy. If a node is an export root, then treat the operation for that
-     * node as an overwrite rather than a merge. That is, remove the node from the
-     * global tree before adding any preferences contained in it or its children.
-     * <p>
-     * The given preferences object must not be <code>null</code>.
-     * </p>
-     * <p>
-     * Before the tree is applied to the global preference tree, the registered
-     * <code>PreferenceModifyListener</code> objects are called and given the
-     * opportunity to modify the tree.
-     * </p>
-     *
-     * @param preferences the preferences to apply globally
-     * @return status object indicating success or failure
-     * @throws IllegalArgumentException if the preferences are <code>null</code>
-     * @throws CoreException if there are problems applying the
-     * preferences
-     * @see PreferenceModifyListener
-     */
-    IStatus applyPreferences(IExportedPreferences preferences) throws CoreException;
 
     /**
      * Read from the given input stream and create a node hierarchy representing the

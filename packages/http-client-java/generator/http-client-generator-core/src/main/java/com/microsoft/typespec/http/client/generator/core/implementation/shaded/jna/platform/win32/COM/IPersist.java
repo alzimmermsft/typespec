@@ -31,7 +31,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
  * client process, as it is used in the default implementation of marshaling.
  *
  * @see <a
- *      href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms688695%28v=vs.85%29.aspx">MSDN</a>
+ * href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms688695%28v=vs.85%29.aspx">MSDN</a>
  *
  */
 public interface IPersist extends IUnknown {

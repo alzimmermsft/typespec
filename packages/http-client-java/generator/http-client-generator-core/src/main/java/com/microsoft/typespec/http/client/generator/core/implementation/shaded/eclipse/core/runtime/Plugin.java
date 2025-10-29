@@ -18,12 +18,12 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.runtime.InternalPlatform;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.preferences.DefaultScope;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.preferences.IEclipsePreferences;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.preferences.IPreferencesService;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.preferences.InstanceScope;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Bundle;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.BundleActivator;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.BundleContext;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.FrameworkUtil;
+
 import java.io.OutputStream;
 
 /**
@@ -220,7 +220,7 @@ public abstract class Plugin implements BundleActivator {
      * @see Preferences#setToDefault(String)
      * @since 2.0
      * @deprecated Replaced by {@link IEclipsePreferences}. Preferences are now
-     * stored according to scopes in the {@link IPreferencesService}.
+     * stored according to scopes in the
      * The return value of this method corresponds to a combination of
      * the {@link InstanceScope} and the {@link DefaultScope}. To set
      * preferences for your plug-in, use
@@ -230,9 +230,6 @@ public abstract class Plugin implements BundleActivator {
      * To lookup an integer preference value for your plug-in, use
      * <code>Platform.getPreferencesService().getInt(&lt;yourPluginId&gt;, &lt;preferenceKey&gt;, &lt;defaultValue&gt;,
      * null)</code>.
-     * Similar methods exist on {@link IPreferencesService} for
-     * obtaining other kinds of preference values (strings, booleans,
-     * etc).
      */
     @Deprecated
     public final Preferences getPluginPreferences() {
@@ -253,7 +250,7 @@ public abstract class Plugin implements BundleActivator {
         // activation).
         final Preferences[] preferencesCopy = new Preferences[1];
         Runnable innerCall = () -> preferencesCopy[0]
-            = new org.eclipse.core.internal.preferences.legacy.PreferenceForwarder(this, bundleCopy.getSymbolicName());
+            = new com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.preferences.legacy.PreferenceForwarder(this, bundleCopy.getSymbolicName());
 
         innerCall.run();
         preferences = preferencesCopy[0];

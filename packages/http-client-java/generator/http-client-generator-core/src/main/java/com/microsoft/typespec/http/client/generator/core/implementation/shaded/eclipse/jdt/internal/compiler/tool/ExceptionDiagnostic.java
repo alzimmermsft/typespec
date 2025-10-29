@@ -13,59 +13,59 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.tool;
 
-import java.util.Locale;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.Diagnostic;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.JavaFileObject;
+import java.util.Locale;
 
 final class ExceptionDiagnostic implements Diagnostic<JavaFileObject> {
-	private final Exception exception;
+    private final Exception exception;
 
-	ExceptionDiagnostic(Exception e) {
-		this.exception = e;
-	}
+    ExceptionDiagnostic(Exception e) {
+        this.exception = e;
+    }
 
-	@Override
-	public String getCode() {
-		return "exception"; //$NON-NLS-1$
-	}
+    @Override
+    public String getCode() {
+        return "exception"; //$NON-NLS-1$
+    }
 
-	@Override
-	public long getColumnNumber() {
-		return 0;
-	}
+    @Override
+    public long getColumnNumber() {
+        return 0;
+    }
 
-	@Override
-	public long getEndPosition() {
-		return 0;
-	}
+    @Override
+    public long getEndPosition() {
+        return 0;
+    }
 
-	@Override
-	public Kind getKind() {
-		return Kind.ERROR;
-	}
+    @Override
+    public Kind getKind() {
+        return Kind.ERROR;
+    }
 
-	@Override
-	public long getLineNumber() {
-		return 0;
-	}
+    @Override
+    public long getLineNumber() {
+        return 0;
+    }
 
-	@Override
-	public String getMessage(Locale arg0) {
-		return this.exception.toString();
-	}
+    @Override
+    public String getMessage(Locale arg0) {
+        return this.exception.toString();
+    }
 
-	@Override
-	public long getPosition() {
-		return 0;
-	}
+    @Override
+    public long getPosition() {
+        return 0;
+    }
 
-	@Override
-	public JavaFileObject getSource() {
-		return null;
-	}
+    @Override
+    public JavaFileObject getSource() {
+        return null;
+    }
 
-	@Override
-	public long getStartPosition() {
-		return 0;
-	}
+    @Override
+    public long getStartPosition() {
+        return 0;
+    }
 }

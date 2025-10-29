@@ -34,7 +34,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.Util;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaModelManager;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.DeduplicationUtil;
-
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Arrays;
@@ -56,9 +55,11 @@ public class State {
     public ClasspathMultiDirectory[] testSourceLocations;
     public ClasspathLocation[] binaryLocations;
     public ClasspathLocation[] testBinaryLocations;
-    // keyed by the project relative path of the type (i.e. "src1/p1/p2/A.java"), value is a ReferenceCollection or an AdditionalTypeCollection
+    // keyed by the project relative path of the type (i.e. "src1/p1/p2/A.java"), value is a ReferenceCollection or an
+    // AdditionalTypeCollection
     Map<String, ReferenceCollection> references;
-    // Holds a mapping of types to a path to detect duplicate type definitions (possibly depending on the release for multi-release types)
+    // Holds a mapping of types to a path to detect duplicate type definitions (possibly depending on the release for
+    // multi-release types)
     public TypeLocators typeLocators;
 
     int buildNumber;
@@ -120,17 +121,20 @@ public class State {
         if (!(obj instanceof State other)) {
             return false;
         }
-        return this.buildNumber == other.buildNumber && this.lastStructuralBuildTime == other.lastStructuralBuildTime
-            && Objects.equals(this.javaProjectName, other.javaProjectName) && Arrays.equals(this.sourceLocations,
-            other.sourceLocations) && Arrays.equals(this.binaryLocations, other.binaryLocations) && Arrays.equals(
-            this.testSourceLocations, other.testSourceLocations) && Arrays.equals(this.testBinaryLocations,
-            other.testBinaryLocations) && Objects.equals(this.typeLocators, other.typeLocators) && Objects.equals(
-            this.references, other.references);
+        return this.buildNumber == other.buildNumber
+            && this.lastStructuralBuildTime == other.lastStructuralBuildTime
+            && Objects.equals(this.javaProjectName, other.javaProjectName)
+            && Arrays.equals(this.sourceLocations, other.sourceLocations)
+            && Arrays.equals(this.binaryLocations, other.binaryLocations)
+            && Arrays.equals(this.testSourceLocations, other.testSourceLocations)
+            && Arrays.equals(this.testBinaryLocations, other.testBinaryLocations)
+            && Objects.equals(this.typeLocators, other.typeLocators)
+            && Objects.equals(this.references, other.references);
         // Below fields aren't persisted
-        //			&& this.previousStructuralBuildTime == other.previousStructuralBuildTime
-        //			&& Arrays.equals(this.knownPackageNames, other.knownPackageNames)
-        //			&& Objects.equals(this.structurallyChangedTypes, other.structurallyChangedTypes)
-        //			&& Objects.equals(this.structuralBuildTimes, other.structuralBuildTimes)
+        // && this.previousStructuralBuildTime == other.previousStructuralBuildTime
+        // && Arrays.equals(this.knownPackageNames, other.knownPackageNames)
+        // && Objects.equals(this.structurallyChangedTypes, other.structurallyChangedTypes)
+        // && Objects.equals(this.structuralBuildTimes, other.structuralBuildTimes)
     }
 
     @Override
@@ -207,9 +211,10 @@ public class State {
                     char[][] rootNames = new char[in.readInt()][];
                     for (int j = 0, m = rootNames.length; j < m; j++)
                         rootNames[j] = internedRootNames[in.readIntInRange(internedRootNames.length)];
-                    collection = new AdditionalTypeCollection(additionalTypeNames, qualifiedNames, simpleNames,
-                        rootNames);
+                    collection
+                        = new AdditionalTypeCollection(additionalTypeNames, qualifiedNames, simpleNames, rootNames);
                     break;
+
                 case 2:
                     char[][][] qNames = new char[in.readInt()][][];
                     for (int j = 0, m = qNames.length; j < m; j++)
@@ -227,7 +232,8 @@ public class State {
         return newState;
     }
 
-    private static ClasspathMultiDirectory[] readSourceLocations(IProject project, CompressedReader in) throws IOException {
+    private static ClasspathMultiDirectory[] readSourceLocations(IProject project, CompressedReader in)
+        throws IOException {
         int length = in.readInt();
         ClasspathMultiDirectory[] sourceLocations = new ClasspathMultiDirectory[length];
         for (int i = 0; i < length; i++) {
@@ -253,8 +259,7 @@ public class State {
     }
 
     private static ClasspathLocation[] readBinaryLocations(IProject project, CompressedReader in,
-        ClasspathMultiDirectory[] sourceLocations)
-        throws IOException, CoreException {
+        ClasspathMultiDirectory[] sourceLocations) throws IOException, CoreException {
         int length = in.readInt();
         ClasspathLocation[] locations = new ClasspathLocation[length];
         IWorkspaceRoot root = project.getWorkspace().getRoot();
@@ -264,14 +269,15 @@ public class State {
                 case SOURCE_FOLDER:
                     locations[i] = sourceLocations[in.readInt()];
                     break;
+
                 case BINARY_FOLDER:
                     IPath path = new Path(in.readStringUsingDictionary());
-                    IContainer outputFolder = path.segmentCount() == 1
-                        ? root.getProject(path.toString())
-                        : root.getFolder(path);
+                    IContainer outputFolder
+                        = path.segmentCount() == 1 ? root.getProject(path.toString()) : root.getFolder(path);
                     locations[i] = ClasspathLocation.forBinaryFolder(outputFolder, in.readBoolean(),
                         readRestriction(in), new Path(in.readStringUsingDictionary()), in.readBoolean());
                     break;
+
                 case EXTERNAL_JAR:
                     String jarPath = in.readStringUsingDictionary();
                     if (Util.isJrt(jarPath)) {
@@ -282,6 +288,7 @@ public class State {
                             new Path(in.readStringUsingDictionary()), in.readBoolean(), in.readStringUsingDictionary());
                     }
                     break;
+
                 case INTERNAL_JAR:
                     locations[i] = ClasspathLocation.forLibrary(root.getFile(new Path(in.readStringUsingDictionary())),
                         readRestriction(in), new Path(in.readStringUsingDictionary()), in.readBoolean(),

@@ -68,11 +68,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.CLASS)
 @Target(ElementType.METHOD)
 public @interface Attribute {
-	/**
-	 * The name of the attribute.
-	 * <p>
-	 * If not specified, the name of the annotated element is used as the name
-	 * of the attribute.
-	 */
-	String value() default "";
+    /**
+     * The name of the attribute.
+     * <p>
+     * If not specified, the name of the annotated element is used as the name
+     * of the attribute.
+     */
+    String value() default "";
 }

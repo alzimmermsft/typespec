@@ -68,8 +68,6 @@ public class EFS {
      * Option flag constant (value 1 &lt;&lt;1) indicating that existing
      * files may be overwritten.
      *
-     * @see IFileStore#copy(IFileStore, int, IProgressMonitor)
-     * @see IFileStore#move(IFileStore, int, IProgressMonitor)
      */
     public static final int OVERWRITE = 1 << 1;
 

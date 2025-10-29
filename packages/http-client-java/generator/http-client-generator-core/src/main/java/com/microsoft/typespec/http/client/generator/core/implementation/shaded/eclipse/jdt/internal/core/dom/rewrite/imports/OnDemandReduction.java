@@ -27,16 +27,16 @@ import java.util.Collections;
  * compilation unit if one is not already present.
  */
 class OnDemandReduction {
-	final ImportName containerOnDemand;
-	final Collection<ImportName> reducibleImports;
+    final ImportName containerOnDemand;
+    final Collection<ImportName> reducibleImports;
 
-	OnDemandReduction(ImportName containerName, Collection<ImportName> reducibleImports) {
-		this.containerOnDemand = containerName;
-		this.reducibleImports = Collections.unmodifiableCollection(new ArrayList<>(reducibleImports));
-	}
+    OnDemandReduction(ImportName containerName, Collection<ImportName> reducibleImports) {
+        this.containerOnDemand = containerName;
+        this.reducibleImports = Collections.unmodifiableCollection(new ArrayList<>(reducibleImports));
+    }
 
-	@Override
-	public String toString() {
-		return String.format("{%s: %s}", this.containerOnDemand.containerName, this.reducibleImports); //$NON-NLS-1$
-	}
+    @Override
+    public String toString() {
+        return String.format("{%s: %s}", this.containerOnDemand.containerName, this.reducibleImports); //$NON-NLS-1$
+    }
 }

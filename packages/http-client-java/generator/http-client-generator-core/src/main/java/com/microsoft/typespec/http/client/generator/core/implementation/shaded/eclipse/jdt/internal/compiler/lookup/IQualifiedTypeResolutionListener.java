@@ -23,14 +23,14 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public interface IQualifiedTypeResolutionListener {
 
-	/**
-	 * Notifies that the given resolution has been found for the given type reference. Some of the bindings are
-	 * intermediate types i.e. qualifying types.
-	 *
-	 * @param typeReference
-	 *            the type reference
-	 * @param resolution
-	 *            the resolution found
-	 */
-	public void recordResolution(QualifiedTypeReference typeReference, TypeBinding resolution);
+    /**
+     * Notifies that the given resolution has been found for the given type reference. Some of the bindings are
+     * intermediate types i.e. qualifying types.
+     *
+     * @param typeReference
+     * the type reference
+     * @param resolution
+     * the resolution found
+     */
+    public void recordResolution(QualifiedTypeReference typeReference, TypeBinding resolution);
 }

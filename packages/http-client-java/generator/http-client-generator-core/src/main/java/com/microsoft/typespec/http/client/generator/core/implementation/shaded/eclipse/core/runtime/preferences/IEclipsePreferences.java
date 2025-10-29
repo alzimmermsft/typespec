@@ -269,29 +269,6 @@ public interface IEclipsePreferences extends Preferences {
     void removePreferenceChangeListener(IPreferenceChangeListener listener);
 
     /**
-     * Remove this node from the preference hierarchy. If this node is the scope
-     * root, then do not remove this node, only remove this node's children.
-     * <p>
-     * Functionally equivalent to calling {@link Preferences#removeNode()}. See the
-     * spec of {@link Preferences#removeNode()} for more details.
-     * </p>
-     * <p>
-     * Implementors must send the appropriate {@link NodeChangeEvent} to listeners
-     * who are registered on this node's parent.
-     * </p>
-     * <p>
-     * When this node is removed, its associated preference and node change
-     * listeners should be removed as well.
-     * </p>
-     *
-     * @throws BackingStoreException if there was a problem removing this node
-     * @see org.osgi.service.prefs.Preferences#removeNode()
-     * @see NodeChangeEvent
-     */
-    @Override
-    void removeNode() throws BackingStoreException;
-
-    /**
      * Return the preferences node with the given path. The given path must not be
      * <code>null</code>.
      * <p>

@@ -35,103 +35,103 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 
 public class ServiceException extends RuntimeException {
-	static final long		serialVersionUID	= 3038963223712959631L;
+    static final long serialVersionUID = 3038963223712959631L;
 
-	/**
-	 * Type of service exception.
-	 */
-	private final int		type;
+    /**
+     * Type of service exception.
+     */
+    private final int type;
 
-	/**
-	 * No exception type is unspecified.
-	 */
-	public static final int	UNSPECIFIED			= 0;
-	/**
-	 * The service has been unregistered.
-	 */
-	public static final int	UNREGISTERED		= 1;
-	/**
-	 * The service factory produced an invalid service object.
-	 */
-	public static final int	FACTORY_ERROR		= 2;
-	/**
-	 * The service factory threw an exception.
-	 */
-	public static final int	FACTORY_EXCEPTION	= 3;
-	/**
-	 * The exception is a subclass of ServiceException. The subclass should be
-	 * examined for the type of the exception.
-	 */
-	public static final int	SUBCLASSED			= 4;
-	/**
-	 * An error occurred invoking a remote service.
-	 */
-	public static final int	REMOTE				= 5;
-	/**
-	 * The service factory resulted in a recursive call to itself for the
-	 * requesting bundle.
-	 * 
-	 * @since 1.6
-	 */
-	public static final int	FACTORY_RECURSION	= 6;
-	/**
-	 * An asynchronous operation was unable to obtain the service.
-	 * 
-	 * @since 1.8
-	 */
-	public static final int	ASYNC_ERROR			= 7;
+    /**
+     * No exception type is unspecified.
+     */
+    public static final int UNSPECIFIED = 0;
+    /**
+     * The service has been unregistered.
+     */
+    public static final int UNREGISTERED = 1;
+    /**
+     * The service factory produced an invalid service object.
+     */
+    public static final int FACTORY_ERROR = 2;
+    /**
+     * The service factory threw an exception.
+     */
+    public static final int FACTORY_EXCEPTION = 3;
+    /**
+     * The exception is a subclass of ServiceException. The subclass should be
+     * examined for the type of the exception.
+     */
+    public static final int SUBCLASSED = 4;
+    /**
+     * An error occurred invoking a remote service.
+     */
+    public static final int REMOTE = 5;
+    /**
+     * The service factory resulted in a recursive call to itself for the
+     * requesting bundle.
+     * 
+     * @since 1.6
+     */
+    public static final int FACTORY_RECURSION = 6;
+    /**
+     * An asynchronous operation was unable to obtain the service.
+     * 
+     * @since 1.8
+     */
+    public static final int ASYNC_ERROR = 7;
 
-	/**
-	 * Creates a {@code ServiceException} with the specified message and
-	 * exception cause.
-	 * 
-	 * @param msg The associated message.
-	 * @param cause The cause of this exception.
-	 */
-	public ServiceException(String msg, Throwable cause) {
-		this(msg, UNSPECIFIED, cause);
-	}
+    /**
+     * Creates a {@code ServiceException} with the specified message and
+     * exception cause.
+     * 
+     * @param msg The associated message.
+     * @param cause The cause of this exception.
+     */
+    public ServiceException(String msg, Throwable cause) {
+        this(msg, UNSPECIFIED, cause);
+    }
 
-	/**
-	 * Creates a {@code ServiceException} with the specified message.
-	 * 
-	 * @param msg The message.
-	 */
-	public ServiceException(String msg) {
-		this(msg, UNSPECIFIED);
-	}
+    /**
+     * Creates a {@code ServiceException} with the specified message.
+     * 
+     * @param msg The message.
+     */
+    public ServiceException(String msg) {
+        this(msg, UNSPECIFIED);
+    }
 
-	/**
-	 * Creates a {@code ServiceException} with the specified message, type and
-	 * exception cause.
-	 * 
-	 * @param msg The associated message.
-	 * @param type The type for this exception.
-	 * @param cause The cause of this exception.
-	 */
-	public ServiceException(String msg, int type, Throwable cause) {
-		super(msg, cause);
-		this.type = type;
-	}
+    /**
+     * Creates a {@code ServiceException} with the specified message, type and
+     * exception cause.
+     * 
+     * @param msg The associated message.
+     * @param type The type for this exception.
+     * @param cause The cause of this exception.
+     */
+    public ServiceException(String msg, int type, Throwable cause) {
+        super(msg, cause);
+        this.type = type;
+    }
 
-	/**
-	 * Creates a {@code ServiceException} with the specified message and type.
-	 * 
-	 * @param msg The message.
-	 * @param type The type for this exception.
-	 */
-	public ServiceException(String msg, int type) {
-		super(msg);
-		this.type = type;
-	}
+    /**
+     * Creates a {@code ServiceException} with the specified message and type.
+     * 
+     * @param msg The message.
+     * @param type The type for this exception.
+     */
+    public ServiceException(String msg, int type) {
+        super(msg);
+        this.type = type;
+    }
 
-	/**
-	 * Returns the type for this exception or {@code UNSPECIFIED} if the type
-	 * was unspecified or unknown.
-	 * 
-	 * @return The type of this exception.
-	 */
-	public int getType() {
-		return type;
-	}
+    /**
+     * Returns the type for this exception or {@code UNSPECIFIED} if the type
+     * was unspecified or unknown.
+     * 
+     * @return The type of this exception.
+     */
+    public int getType() {
+        return type;
+    }
 }

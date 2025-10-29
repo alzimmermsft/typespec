@@ -15,24 +15,27 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 public interface ConflictedParser {
 
-	/* Return true if at the configuration the parser finds itself in, token would need to be disambiguated.
-	   At Java SE 8 time, we have three tokens that need to clarified: the use of '( and that of '<' and finally
-	   whether an @ begins a SE8 style type annotation or a SE5 declaration annotation. Where they can co-exist,
-	   we treat the type annotation as a declarative annotation.
-	*/
-	boolean atConflictScenario(TerminalToken token);
+    /*
+     * Return true if at the configuration the parser finds itself in, token would need to be disambiguated.
+     * At Java SE 8 time, we have three tokens that need to clarified: the use of '( and that of '<' and finally
+     * whether an @ begins a SE8 style type annotation or a SE5 declaration annotation. Where they can co-exist,
+     * we treat the type annotation as a declarative annotation.
+     */
+    boolean atConflictScenario(TerminalToken token);
 
-	/* Return true if at the configuration the parser finds itself in, it would shift the token.
-	   It is axiomatic of the push down automaton that corresponds to the LALR grammar that it
-	   will never shift on invalid input.
-	*/
-	boolean automatonWillShift(TerminalToken token);
+    /*
+     * Return true if at the configuration the parser finds itself in, it would shift the token.
+     * It is axiomatic of the push down automaton that corresponds to the LALR grammar that it
+     * will never shift on invalid input.
+     */
+    boolean automatonWillShift(TerminalToken token);
 
-	/*
-	 * Return true if the parser is parsing a module declaration. In Java 9, module, requires, exports,
-	 * to, uses, provides, and with are restricted keywords (i.e. they are keywords solely where they
-	 * appear as terminals in ModuleDeclaration, and are identifiers everywhere else)
-	 */
-	boolean isParsingModuleDeclaration();
-	boolean isParsingJava14();
+    /*
+     * Return true if the parser is parsing a module declaration. In Java 9, module, requires, exports,
+     * to, uses, provides, and with are restricted keywords (i.e. they are keywords solely where they
+     * appear as terminals in ModuleDeclaration, and are identifiers everywhere else)
+     */
+    boolean isParsingModuleDeclaration();
+
+    boolean isParsingJava14();
 }

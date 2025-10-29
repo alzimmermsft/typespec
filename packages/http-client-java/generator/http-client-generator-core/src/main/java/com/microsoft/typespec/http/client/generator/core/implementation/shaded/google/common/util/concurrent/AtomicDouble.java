@@ -38,13 +38,15 @@ import java.util.function.DoubleUnaryOperator;
  * Double#doubleToRawLongBits}, which differs from both the primitive double {@code ==} operator and
  * from {@link Double#equals}, as if implemented by:
  *
- * <pre>{@code
+ * <pre>
+ * {@code
  * static boolean bitEquals(double x, double y) {
  *   long xBits = Double.doubleToRawLongBits(x);
  *   long yBits = Double.doubleToRawLongBits(y);
  *   return xBits == yBits;
  * }
- * }</pre>
+ * }
+ * </pre>
  *
  * <p>It is possible to write a more scalable updater, at the cost of giving up strict atomicity.
  * See for example <a
@@ -60,249 +62,247 @@ import java.util.function.DoubleUnaryOperator;
 @ReflectionSupport(value = ReflectionSupport.Level.FULL)
 @ElementTypesAreNonnullByDefault
 public class AtomicDouble extends Number implements java.io.Serializable {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
 
-  private transient volatile long value;
+    private transient volatile long value;
 
-  private static final AtomicLongFieldUpdater<AtomicDouble> updater =
-      AtomicLongFieldUpdater.newUpdater(AtomicDouble.class, "value");
+    private static final AtomicLongFieldUpdater<AtomicDouble> updater
+        = AtomicLongFieldUpdater.newUpdater(AtomicDouble.class, "value");
 
-  /**
-   * Creates a new {@code AtomicDouble} with the given initial value.
-   *
-   * @param initialValue the initial value
-   */
-  public AtomicDouble(double initialValue) {
-    value = doubleToRawLongBits(initialValue);
-  }
-
-  /** Creates a new {@code AtomicDouble} with initial value {@code 0.0}. */
-  public AtomicDouble() {
-    // assert doubleToRawLongBits(0.0) == 0L;
-  }
-
-  /**
-   * Gets the current value.
-   *
-   * @return the current value
-   */
-  public final double get() {
-    return longBitsToDouble(value);
-  }
-
-  /**
-   * Sets to the given value.
-   *
-   * @param newValue the new value
-   */
-  public final void set(double newValue) {
-    long next = doubleToRawLongBits(newValue);
-    value = next;
-  }
-
-  /**
-   * Eventually sets to the given value.
-   *
-   * @param newValue the new value
-   */
-  public final void lazySet(double newValue) {
-    long next = doubleToRawLongBits(newValue);
-    updater.lazySet(this, next);
-  }
-
-  /**
-   * Atomically sets to the given value and returns the old value.
-   *
-   * @param newValue the new value
-   * @return the previous value
-   */
-  public final double getAndSet(double newValue) {
-    long next = doubleToRawLongBits(newValue);
-    return longBitsToDouble(updater.getAndSet(this, next));
-  }
-
-  /**
-   * Atomically sets the value to the given updated value if the current value is <a
-   * href="#bitEquals">bitwise equal</a> to the expected value.
-   *
-   * @param expect the expected value
-   * @param update the new value
-   * @return {@code true} if successful. False return indicates that the actual value was not
-   *     bitwise equal to the expected value.
-   */
-  public final boolean compareAndSet(double expect, double update) {
-    return updater.compareAndSet(this, doubleToRawLongBits(expect), doubleToRawLongBits(update));
-  }
-
-  /**
-   * Atomically sets the value to the given updated value if the current value is <a
-   * href="#bitEquals">bitwise equal</a> to the expected value.
-   *
-   * <p>May <a
-   * href="http://download.oracle.com/javase/7/docs/api/java/util/concurrent/atomic/package-summary.html#Spurious">
-   * fail spuriously</a> and does not provide ordering guarantees, so is only rarely an appropriate
-   * alternative to {@code compareAndSet}.
-   *
-   * @param expect the expected value
-   * @param update the new value
-   * @return {@code true} if successful
-   */
-  public final boolean weakCompareAndSet(double expect, double update) {
-    return updater.weakCompareAndSet(
-        this, doubleToRawLongBits(expect), doubleToRawLongBits(update));
-  }
-
-  /**
-   * Atomically adds the given value to the current value.
-   *
-   * @param delta the value to add
-   * @return the previous value
-   */
-  @CanIgnoreReturnValue
-  public final double getAndAdd(double delta) {
-    return getAndAccumulate(delta, Double::sum);
-  }
-
-  /**
-   * Atomically adds the given value to the current value.
-   *
-   * @param delta the value to add
-   * @return the updated value
-   */
-  @CanIgnoreReturnValue
-  public final double addAndGet(double delta) {
-    return accumulateAndGet(delta, Double::sum);
-  }
-
-  /**
-   * Atomically updates the current value with the results of applying the given function to the
-   * current and given values.
-   *
-   * @param x the update value
-   * @param accumulatorFunction the accumulator function
-   * @return the previous value
-   * @since 31.1
-   */
-  @CanIgnoreReturnValue
-  public final double getAndAccumulate(double x, DoubleBinaryOperator accumulatorFunction) {
-    checkNotNull(accumulatorFunction);
-    return getAndUpdate(oldValue -> accumulatorFunction.applyAsDouble(oldValue, x));
-  }
-
-  /**
-   * Atomically updates the current value with the results of applying the given function to the
-   * current and given values.
-   *
-   * @param x the update value
-   * @param accumulatorFunction the accumulator function
-   * @return the updated value
-   * @since 31.1
-   */
-  @CanIgnoreReturnValue
-  public final double accumulateAndGet(double x, DoubleBinaryOperator accumulatorFunction) {
-    checkNotNull(accumulatorFunction);
-    return updateAndGet(oldValue -> accumulatorFunction.applyAsDouble(oldValue, x));
-  }
-
-  /**
-   * Atomically updates the current value with the results of applying the given function.
-   *
-   * @param updateFunction the update function
-   * @return the previous value
-   * @since 31.1
-   */
-  @CanIgnoreReturnValue
-  public final double getAndUpdate(DoubleUnaryOperator updateFunction) {
-    while (true) {
-      long current = value;
-      double currentVal = longBitsToDouble(current);
-      double nextVal = updateFunction.applyAsDouble(currentVal);
-      long next = doubleToRawLongBits(nextVal);
-      if (updater.compareAndSet(this, current, next)) {
-        return currentVal;
-      }
+    /**
+     * Creates a new {@code AtomicDouble} with the given initial value.
+     *
+     * @param initialValue the initial value
+     */
+    public AtomicDouble(double initialValue) {
+        value = doubleToRawLongBits(initialValue);
     }
-  }
 
-  /**
-   * Atomically updates the current value with the results of applying the given function.
-   *
-   * @param updateFunction the update function
-   * @return the updated value
-   * @since 31.1
-   */
-  @CanIgnoreReturnValue
-  public final double updateAndGet(DoubleUnaryOperator updateFunction) {
-    while (true) {
-      long current = value;
-      double currentVal = longBitsToDouble(current);
-      double nextVal = updateFunction.applyAsDouble(currentVal);
-      long next = doubleToRawLongBits(nextVal);
-      if (updater.compareAndSet(this, current, next)) {
-        return nextVal;
-      }
+    /** Creates a new {@code AtomicDouble} with initial value {@code 0.0}. */
+    public AtomicDouble() {
+        // assert doubleToRawLongBits(0.0) == 0L;
     }
-  }
 
-  /**
-   * Returns the String representation of the current value.
-   *
-   * @return the String representation of the current value
-   */
-  @Override
-  public String toString() {
-    return Double.toString(get());
-  }
+    /**
+     * Gets the current value.
+     *
+     * @return the current value
+     */
+    public final double get() {
+        return longBitsToDouble(value);
+    }
 
-  /**
-   * Returns the value of this {@code AtomicDouble} as an {@code int} after a narrowing primitive
-   * conversion.
-   */
-  @Override
-  public int intValue() {
-    return (int) get();
-  }
+    /**
+     * Sets to the given value.
+     *
+     * @param newValue the new value
+     */
+    public final void set(double newValue) {
+        long next = doubleToRawLongBits(newValue);
+        value = next;
+    }
 
-  /**
-   * Returns the value of this {@code AtomicDouble} as a {@code long} after a narrowing primitive
-   * conversion.
-   */
-  @Override
-  public long longValue() {
-    return (long) get();
-  }
+    /**
+     * Eventually sets to the given value.
+     *
+     * @param newValue the new value
+     */
+    public final void lazySet(double newValue) {
+        long next = doubleToRawLongBits(newValue);
+        updater.lazySet(this, next);
+    }
 
-  /**
-   * Returns the value of this {@code AtomicDouble} as a {@code float} after a narrowing primitive
-   * conversion.
-   */
-  @Override
-  public float floatValue() {
-    return (float) get();
-  }
+    /**
+     * Atomically sets to the given value and returns the old value.
+     *
+     * @param newValue the new value
+     * @return the previous value
+     */
+    public final double getAndSet(double newValue) {
+        long next = doubleToRawLongBits(newValue);
+        return longBitsToDouble(updater.getAndSet(this, next));
+    }
 
-  /** Returns the value of this {@code AtomicDouble} as a {@code double}. */
-  @Override
-  public double doubleValue() {
-    return get();
-  }
+    /**
+     * Atomically sets the value to the given updated value if the current value is <a
+     * href="#bitEquals">bitwise equal</a> to the expected value.
+     *
+     * @param expect the expected value
+     * @param update the new value
+     * @return {@code true} if successful. False return indicates that the actual value was not
+     * bitwise equal to the expected value.
+     */
+    public final boolean compareAndSet(double expect, double update) {
+        return updater.compareAndSet(this, doubleToRawLongBits(expect), doubleToRawLongBits(update));
+    }
 
-  /**
-   * Saves the state to a stream (that is, serializes it).
-   *
-   * @serialData The current value is emitted (a {@code double}).
-   */
-  private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException {
-    s.defaultWriteObject();
+    /**
+     * Atomically sets the value to the given updated value if the current value is <a
+     * href="#bitEquals">bitwise equal</a> to the expected value.
+     *
+     * <p>May <a
+     * href="http://download.oracle.com/javase/7/docs/api/java/util/concurrent/atomic/package-summary.html#Spurious">
+     * fail spuriously</a> and does not provide ordering guarantees, so is only rarely an appropriate
+     * alternative to {@code compareAndSet}.
+     *
+     * @param expect the expected value
+     * @param update the new value
+     * @return {@code true} if successful
+     */
+    public final boolean weakCompareAndSet(double expect, double update) {
+        return updater.weakCompareAndSet(this, doubleToRawLongBits(expect), doubleToRawLongBits(update));
+    }
 
-    s.writeDouble(get());
-  }
+    /**
+     * Atomically adds the given value to the current value.
+     *
+     * @param delta the value to add
+     * @return the previous value
+     */
+    @CanIgnoreReturnValue
+    public final double getAndAdd(double delta) {
+        return getAndAccumulate(delta, Double::sum);
+    }
 
-  /** Reconstitutes the instance from a stream (that is, deserializes it). */
-  private void readObject(java.io.ObjectInputStream s)
-      throws java.io.IOException, ClassNotFoundException {
-    s.defaultReadObject();
+    /**
+     * Atomically adds the given value to the current value.
+     *
+     * @param delta the value to add
+     * @return the updated value
+     */
+    @CanIgnoreReturnValue
+    public final double addAndGet(double delta) {
+        return accumulateAndGet(delta, Double::sum);
+    }
 
-    set(s.readDouble());
-  }
+    /**
+     * Atomically updates the current value with the results of applying the given function to the
+     * current and given values.
+     *
+     * @param x the update value
+     * @param accumulatorFunction the accumulator function
+     * @return the previous value
+     * @since 31.1
+     */
+    @CanIgnoreReturnValue
+    public final double getAndAccumulate(double x, DoubleBinaryOperator accumulatorFunction) {
+        checkNotNull(accumulatorFunction);
+        return getAndUpdate(oldValue -> accumulatorFunction.applyAsDouble(oldValue, x));
+    }
+
+    /**
+     * Atomically updates the current value with the results of applying the given function to the
+     * current and given values.
+     *
+     * @param x the update value
+     * @param accumulatorFunction the accumulator function
+     * @return the updated value
+     * @since 31.1
+     */
+    @CanIgnoreReturnValue
+    public final double accumulateAndGet(double x, DoubleBinaryOperator accumulatorFunction) {
+        checkNotNull(accumulatorFunction);
+        return updateAndGet(oldValue -> accumulatorFunction.applyAsDouble(oldValue, x));
+    }
+
+    /**
+     * Atomically updates the current value with the results of applying the given function.
+     *
+     * @param updateFunction the update function
+     * @return the previous value
+     * @since 31.1
+     */
+    @CanIgnoreReturnValue
+    public final double getAndUpdate(DoubleUnaryOperator updateFunction) {
+        while (true) {
+            long current = value;
+            double currentVal = longBitsToDouble(current);
+            double nextVal = updateFunction.applyAsDouble(currentVal);
+            long next = doubleToRawLongBits(nextVal);
+            if (updater.compareAndSet(this, current, next)) {
+                return currentVal;
+            }
+        }
+    }
+
+    /**
+     * Atomically updates the current value with the results of applying the given function.
+     *
+     * @param updateFunction the update function
+     * @return the updated value
+     * @since 31.1
+     */
+    @CanIgnoreReturnValue
+    public final double updateAndGet(DoubleUnaryOperator updateFunction) {
+        while (true) {
+            long current = value;
+            double currentVal = longBitsToDouble(current);
+            double nextVal = updateFunction.applyAsDouble(currentVal);
+            long next = doubleToRawLongBits(nextVal);
+            if (updater.compareAndSet(this, current, next)) {
+                return nextVal;
+            }
+        }
+    }
+
+    /**
+     * Returns the String representation of the current value.
+     *
+     * @return the String representation of the current value
+     */
+    @Override
+    public String toString() {
+        return Double.toString(get());
+    }
+
+    /**
+     * Returns the value of this {@code AtomicDouble} as an {@code int} after a narrowing primitive
+     * conversion.
+     */
+    @Override
+    public int intValue() {
+        return (int) get();
+    }
+
+    /**
+     * Returns the value of this {@code AtomicDouble} as a {@code long} after a narrowing primitive
+     * conversion.
+     */
+    @Override
+    public long longValue() {
+        return (long) get();
+    }
+
+    /**
+     * Returns the value of this {@code AtomicDouble} as a {@code float} after a narrowing primitive
+     * conversion.
+     */
+    @Override
+    public float floatValue() {
+        return (float) get();
+    }
+
+    /** Returns the value of this {@code AtomicDouble} as a {@code double}. */
+    @Override
+    public double doubleValue() {
+        return get();
+    }
+
+    /**
+     * Saves the state to a stream (that is, serializes it).
+     *
+     * @serialData The current value is emitted (a {@code double}).
+     */
+    private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException {
+        s.defaultWriteObject();
+
+        s.writeDouble(get());
+    }
+
+    /** Reconstitutes the instance from a stream (that is, deserializes it). */
+    private void readObject(java.io.ObjectInputStream s) throws java.io.IOException, ClassNotFoundException {
+        s.defaultReadObject();
+
+        set(s.readDouble());
+    }
 }

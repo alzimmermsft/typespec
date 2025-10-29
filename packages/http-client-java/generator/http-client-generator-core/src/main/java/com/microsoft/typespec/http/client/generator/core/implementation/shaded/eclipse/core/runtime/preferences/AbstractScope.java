@@ -13,7 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.preferences;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.preferences.PreferencesService;
 import java.util.Objects;
 
 /**

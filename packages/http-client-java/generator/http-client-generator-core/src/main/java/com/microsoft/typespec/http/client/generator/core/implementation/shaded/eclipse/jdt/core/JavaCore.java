@@ -114,29 +114,20 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IContainer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IFile;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IFolder;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IProject;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResourceChangeEvent;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResourceChangeListener;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IWorkspace;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IWorkspaceRoot;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IWorkspaceRunnable;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.ResourcesPlugin;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IConfigurationElement;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IExtension;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IExtensionPoint;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Platform;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Plugin;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.jobs.ISchedulingRule;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.impl.CompilerOptions;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.BatchOperation;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.BufferFactoryWrapper;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.BufferManager;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.ClasspathAttribute;
@@ -148,9 +139,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaProject;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.Region;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.MementoTokenizer;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Util;
 
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Hashtable;
@@ -186,13 +175,6 @@ public final class JavaCore extends Plugin {
      */
     public static final String PLUGIN_ID
         = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core"; //$NON-NLS-1$
-
-    /**
-     * The identifier for the Java builder
-     * (value
-     * <code>"com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.javabuilder"</code>).
-     */
-    public static final String BUILDER_ID = PLUGIN_ID + ".javabuilder"; //$NON-NLS-1$
 
     /**
      * The identifier for the Java nature
@@ -358,20 +340,6 @@ public final class JavaCore extends Plugin {
      */
     public static final String COMPILER_PB_BOOLEAN_METHOD_THROWING_EXCEPTION
         = PLUGIN_ID + ".compiler.problem.booleanMethodThrowingException"; //$NON-NLS-1$
-    /**
-     * @deprecated Use {@link #COMPILER_PB_UNCHECKED_TYPE_OPERATION} instead.
-     * @since 3.1
-     * &#064;category DeprecatedOptionID
-     */
-    public static final String COMPILER_PB_UNSAFE_TYPE_OPERATION
-        = PLUGIN_ID + ".compiler.problem.uncheckedTypeOperation"; //$NON-NLS-1$
-    /**
-     * @since 3.1
-     * @deprecated Use {@link #COMPILER_PB_NULL_REFERENCE} instead.
-     * &#064;category DeprecatedOptionID
-     */
-    public static final String COMPILER_PB_INCONSISTENT_NULL_CHECK
-        = PLUGIN_ID + ".compiler.problem.inconsistentNullCheck"; //$NON-NLS-1$
 
     /**
      * Core option ID: Read external annotations from all build path entries.
@@ -692,21 +660,6 @@ public final class JavaCore extends Plugin {
      * &#064;category CoreOptionID
      */
     public static final String CORE_JAVA_BUILD_INVALID_CLASSPATH = PLUGIN_ID + ".builder.invalidClasspath"; //$NON-NLS-1$
-    /**
-     * Core option ID: Default Source Encoding Format.
-     * <p>Get the default encoding format of source files. This value is
-     * immutable and preset to the result of <code>ResourcesPlugin.getEncoding()</code>.</p>
-     * <p>It is offered as a convenience shortcut only.</p>
-     * <dl>
-     * <dt>Option
-     * id:</dt><dd><code>"com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.encoding"</code></dd>
-     * <dt>value:</dt><dd><code>&lt;immutable, platform default value&gt;</code></dd>
-     * </dl>
-     * 
-     * @since 2.0
-     * &#064;category CoreOptionID
-     */
-    public static final String CORE_ENCODING = PLUGIN_ID + ".encoding"; //$NON-NLS-1$
     /**
      * Core option ID: Enabling Usage of Classpath Exclusion Patterns.
      * <p>When disabled, no entry on a project classpath can be associated with
@@ -1579,23 +1532,6 @@ public final class JavaCore extends Plugin {
     // end configurable option values }
 
     /**
-     * Value of the content-type for Java source files. Use this value to retrieve the Java content type
-     * from the content type manager, and to add new Java-like extensions to this content type.
-     * 
-     * @since 3.2
-     */
-    public static final String JAVA_SOURCE_CONTENT_TYPE = JavaCore.PLUGIN_ID + ".javaSource"; //$NON-NLS-1$
-
-    /**
-     * The ID of the Eclipse built-in formatter.
-     *
-     * @see #JAVA_FORMATTER
-     * @see #JAVA_FORMATTER_EXTENSION_POINT_ID
-     * @since 3.11
-     */
-    public static final String DEFAULT_JAVA_FORMATTER = PLUGIN_ID + ".defaultJavaFormatter"; //$NON-NLS-1$
-
-    /**
      * Name of the extension point for contributing a source code formatter
      * 
      * @see #JAVA_FORMATTER
@@ -1658,61 +1594,10 @@ public final class JavaCore extends Plugin {
      *
      * @param listener the listener
      * @param eventMask the bit-wise OR of all event types of interest to the listener
-     * @see IElementChangedListener
-     * @see ElementChangedEvent
-     * @see #removeElementChangedListener(IElementChangedListener)
      * @since 2.0
      */
     public static void addElementChangedListener(IElementChangedListener listener, int eventMask) {
         JavaModelManager.getDeltaState().addElementChangedListener(listener, eventMask);
-    }
-
-    /**
-     * Adds the given listener for POST_CHANGE resource change events to the Java core.
-     * The listener is guaranteed to be notified of the POST_CHANGE resource change event before
-     * the Java core starts processing the resource change event itself.
-     * <p>
-     * Has no effect if an identical listener is already registered.
-     * </p>
-     *
-     * @param listener the listener
-     * @see #removePreProcessingResourceChangedListener(IResourceChangeListener)
-     * @since 3.0
-     * @deprecated use addPreProcessingResourceChangedListener(listener, IResourceChangeEvent.POST_CHANGE) instead
-     */
-    public static void addPreProcessingResourceChangedListener(IResourceChangeListener listener) {
-        addPreProcessingResourceChangedListener(listener, IResourceChangeEvent.POST_CHANGE);
-    }
-
-    /**
-     * Adds the given listener for resource change events of the given types to the Java core.
-     * The listener is guaranteed to be notified of the resource change event before
-     * the Java core starts processing the resource change event itself.
-     * <p>
-     * If an identical listener is already registered, the given event types are added to the event types
-     * of interest to the listener.
-     * </p>
-     * <p>
-     * Supported event types are:
-     * </p>
-     * <ul>
-     * <li>{@link IResourceChangeEvent#PRE_BUILD}</li>
-     * <li>{@link IResourceChangeEvent#POST_BUILD}</li>
-     * <li>{@link IResourceChangeEvent#POST_CHANGE}</li>
-     * <li>{@link IResourceChangeEvent#PRE_DELETE}</li>
-     * <li>{@link IResourceChangeEvent#PRE_CLOSE}</li>
-     * </ul>
-     * This list may increase in the future.
-     *
-     * @param listener the listener
-     * @param eventMask the bit-wise OR of all event types of interest to the
-     * listener
-     * @see #removePreProcessingResourceChangedListener(IResourceChangeListener)
-     * @see IResourceChangeEvent
-     * @since 3.2
-     */
-    public static void addPreProcessingResourceChangedListener(IResourceChangeListener listener, int eventMask) {
-        JavaModelManager.getDeltaState().addPreResourceChangedListener(listener, eventMask);
     }
 
     /**
@@ -1856,8 +1741,6 @@ public final class JavaCore extends Plugin {
      * </p>
      * <ul>
      * <li>a project - the element returned is the corresponding <code>IJavaProject</code></li>
-     * <li>a file with one of the {@link JavaCore#getJavaLikeExtensions()
-     * Java-like extensions} - the element returned is the corresponding <code>ICompilationUnit</code></li>
      * <li>a <code>.class</code> file - the element returned is the corresponding <code>IClassFile</code></li>
      * <li>a ZIP archive (e.g. a <code>.jar</code>, a <code>.zip</code> file, etc.) - the element returned is the
      * corresponding <code>IPackageFragmentRoot</code></li>
@@ -1895,8 +1778,7 @@ public final class JavaCore extends Plugin {
 
     /**
      * Creates and returns a compilation unit element for
-     * the given source file (i.e. a file with one of the {@link JavaCore#getJavaLikeExtensions()
-     * Java-like extensions}). Returns <code>null</code> if unable
+     * the given source file. Returns <code>null</code> if unable
      * to recognize the compilation unit.
      *
      * @param file the given source file
@@ -1905,52 +1787,6 @@ public final class JavaCore extends Plugin {
      */
     public static ICompilationUnit createCompilationUnitFrom(IFile file) {
         return JavaModelManager.createCompilationUnitFrom(file, null/* unknown java project */);
-    }
-
-    /**
-     * Answers the project specific value for a given classpath container.
-     * In case this container path could not be resolved, then will answer <code>null</code>.
-     * Both the container path and the project context are supposed to be non-null.
-     * <p>
-     * The containerPath is a formed by a first ID segment followed with extra segments, which can be
-     * used as additional hints for resolution. If no container was ever recorded for this container path
-     * onto this project (using <code>setClasspathContainer</code>, then a
-     * <code>ClasspathContainerInitializer</code> will be activated if any was registered for this container
-     * ID onto the extension point
-     * "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.classpathContainerInitializer".
-     * </p>
-     * <p>
-     * There is no assumption that the returned container must answer the exact same containerPath
-     * when requested <code>IClasspathContainer#getPath</code>.
-     * Indeed, the containerPath is just an indication for resolving it to an actual container object.
-     * </p>
-     * <p>
-     * Classpath container values are persisted locally to the workspace, but
-     * are not preserved from a session to another. It is thus highly recommended to register a
-     * <code>ClasspathContainerInitializer</code> for each referenced container
-     * (through the extension point
-     * "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ClasspathContainerInitializer").
-     * </p>
-     *
-     * @param containerPath the name of the container, which needs to be resolved
-     * @param project a specific project in which the container is being resolved
-     * @return the corresponding classpath container or <code>null</code> if unable to find one.
-     *
-     * @exception JavaModelException if an exception occurred while resolving the container, or if the resolved
-     * container
-     * contains illegal entries (contains CPE_CONTAINER entries or null entries).
-     *
-     * @since 2.0
-     */
-    public static IClasspathContainer getClasspathContainer(IPath containerPath, IJavaProject project)
-        throws JavaModelException {
-
-        JavaModelManager manager = JavaModelManager.getJavaModelManager();
-        IClasspathContainer container = manager.getClasspathContainer(containerPath, project);
-        if (container == JavaModelManager.CONTAINER_INITIALIZATION_IN_PROGRESS) {
-            return manager.getPreviousSessionContainer(containerPath, project);
-        }
-        return container;
     }
 
     /**
@@ -2048,7 +1884,6 @@ public final class JavaCore extends Plugin {
      *
      * @param variableName the name of the classpath variable
      * @return the path, or <code>null</code> if none
-     * @see #setClasspathVariable(String, IPath)
      */
     public static IPath getClasspathVariable(final String variableName) {
 
@@ -2243,48 +2078,6 @@ public final class JavaCore extends Plugin {
     }
 
     /**
-     * Returns a table of all known configurable options with their default values.
-     * These options allow to configure the behaviour of the underlying components.
-     * The client may safely use the result as a template that they can modify and
-     * then pass to <code>setOptions</code>.
-     * <p>
-     * Helper constants have been defined on JavaCore for each of the option IDs
-     * (categorized in Code assist option ID, Compiler option ID and Core option ID)
-     * and some of their acceptable values (categorized in Option value). Some
-     * options accept open value sets beyond the documented constant values.
-     * </p>
-     * <p>
-     * Note: each release may add new options.
-     * </p>
-     *
-     * @return a table of all known configurable options with their default values
-     */
-    public static Hashtable<String, String> getDefaultOptions() {
-        return JavaModelManager.getJavaModelManager().getDefaultOptions();
-    }
-
-    /**
-     * Returns the workspace root default charset encoding.
-     *
-     * @return the name of the default charset encoding for workspace root.
-     * @see IContainer#getDefaultCharset()
-     * @see ResourcesPlugin#getEncoding()
-     * @since 3.0
-     */
-    public static String getEncoding() {
-        try {
-            return ResourcesPlugin.getWorkspace().getRoot().getDefaultCharset();
-        } catch (IllegalStateException ise) {
-            // happen when there's no workspace (see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=216817)
-            // or when it is shutting down (see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=60687)
-            return Charset.defaultCharset().displayName(); // $NON-NLS-1$
-        } catch (CoreException ce) {
-            // fails silently and return plugin global encoding if core exception occurs
-        }
-        return ResourcesPlugin.getEncoding();
-    }
-
-    /**
      * Returns the single instance of the Java core plug-in runtime class.
      * Equivalent to <code>(JavaCore) getPlugin()</code>.
      *
@@ -2310,7 +2103,6 @@ public final class JavaCore extends Plugin {
      *
      * @return table of current settings of all options
      * (key type: <code>String</code>; value type: <code>String</code>)
-     * @see #getDefaultOptions()
      * @see JavaCorePreferenceInitializer for changing default settings
      */
     public static Hashtable<String, String> getOptions() {
@@ -2405,17 +2197,6 @@ public final class JavaCore extends Plugin {
     }
 
     /**
-     * Returns whether the given file name's extension is a Java-like extension.
-     *
-     * @return whether the given file name's extension is a Java-like extension
-     * @see #getJavaLikeExtensions()
-     * @since 3.2
-     */
-    public static boolean isJavaLikeFileName(String fileName) {
-        return Util.isJavaLikeFileName(fileName);
-    }
-
-    /**
      * Creates and returns a new access rule with the given file pattern and kind.
      * <p>
      * The rule kind is one of {@link IAccessRule#K_ACCESSIBLE}, {@link IAccessRule#K_DISCOURAGED},
@@ -2444,182 +2225,6 @@ public final class JavaCore extends Plugin {
      */
     public static IClasspathAttribute newClasspathAttribute(String name, String value) {
         return new ClasspathAttribute(name, value);
-    }
-
-    /**
-     * Creates and returns a new classpath entry of kind <code>CPE_CONTAINER</code>
-     * for the given path. This method is fully equivalent to calling
-     * {@link #newContainerEntry(IPath, IAccessRule[], IClasspathAttribute[], boolean)
-     * newContainerEntry(containerPath, new IAccessRule[0], new IClasspathAttribute[0], false)}.
-     *
-     * @param containerPath the path identifying the container, it must be formed of two
-     * segments
-     * @return a new container classpath entry
-     *
-     * @since 2.0
-     */
-    public static IClasspathEntry newContainerEntry(IPath containerPath) {
-        return newContainerEntry(containerPath, ClasspathEntry.NO_ACCESS_RULES, ClasspathEntry.NO_EXTRA_ATTRIBUTES,
-            false/* not exported */);
-    }
-
-    /**
-     * Creates and returns a new classpath entry of kind <code>CPE_CONTAINER</code>
-     * for the given path. The path of the container will be used during resolution so as to map this
-     * container entry to a set of other classpath entries the container is acting for.
-     * <p>
-     * A container entry allows to express indirect references to a set of libraries, projects and variable entries,
-     * which can be interpreted differently for each Java project where it is used.
-     * A classpath container entry can be resolved using <code>JavaCore.getResolvedClasspathContainer</code>,
-     * and updated with <code>JavaCore.classpathContainerChanged</code>
-     * </p>
-     * <p>
-     * A container is exclusively resolved by a <code>ClasspathContainerInitializer</code> registered onto the
-     * extension point
-     * "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.classpathContainerInitializer".
-     * </p>
-     * <p>
-     * A container path must be formed of at least one segment, where:
-     * </p>
-     * <ul>
-     * <li> the first segment is a unique ID identifying the target container, there must be a container initializer
-     * registered
-     * onto this ID through the extension point
-     * "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.classpathContainerInitializer".
-     * </li>
-     * <li> the remaining segments will be passed onto the initializer, and can be used as additional
-     * hints during the initialization phase. </li>
-     * </ul>
-     * <p>
-     * Example of an ClasspathContainerInitializer for a classpath container denoting a default JDK container:
-     * </p>
-     * 
-     * <pre>
-     * containerEntry = JavaCore.newContainerEntry(new Path("MyProvidedJDK/default"));
-     *
-     * &lt;extension
-     *    point="com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.classpathContainerInitializer"&gt;
-     *    &lt;containerInitializer
-     *       id="MyProvidedJDK"
-     *       class="com.example.MyInitializer"/&gt;
-     * </pre>
-     * 
-     * <p>
-     * The access rules determine the set of accessible source and class files
-     * in the container. If the list of access rules is empty, then all files
-     * in this container are accessible.
-     * See {@link IAccessRule} for a detailed description of access
-     * rules. Note that if an entry defined by the container defines access rules,
-     * then these access rules are combined with the given access rules.
-     * The given access rules are considered first, then the entry's access rules are
-     * considered.
-     * </p>
-     * <p>
-     * The <code>extraAttributes</code> list contains name/value pairs that must be persisted with
-     * this entry. If no extra attributes are provided, an empty array must be passed in.<br>
-     * Note that this list should not contain any duplicate name.
-     * </p>
-     * <p>
-     * The <code>isExported</code> flag indicates whether this entry is contributed to dependent
-     * projects. If not exported, dependent projects will not see any of the classes from this entry.
-     * If exported, dependent projects will concatenate the accessible files patterns of this entry with the
-     * accessible files patterns of the projects, and they will concatenate the non accessible files patterns of this
-     * entry
-     * with the non accessible files patterns of the project.
-     * </p>
-     * <p>
-     * Note that this operation does not attempt to validate classpath containers
-     * or access the resources at the given paths.
-     * </p>
-     *
-     * @param containerPath the path identifying the container, it must be formed of at least
-     * one segment (ID+hints)
-     * @param accessRules the possibly empty list of access rules for this entry
-     * @param extraAttributes the possibly empty list of extra attributes to persist with this entry
-     * @param isExported a boolean indicating whether this entry is contributed to dependent
-     * projects in addition to the output location
-     * @return a new container classpath entry
-     *
-     * @since 3.1
-     */
-    public static IClasspathEntry newContainerEntry(IPath containerPath, IAccessRule[] accessRules,
-        IClasspathAttribute[] extraAttributes, boolean isExported) {
-
-        if (containerPath == null) {
-            throw new ClasspathEntry.AssertionFailedException("Container path cannot be null"); //$NON-NLS-1$
-        } else if (containerPath.segmentCount() < 1) {
-            throw new ClasspathEntry.AssertionFailedException("Illegal classpath container path: '" //$NON-NLS-1$
-                + containerPath.makeRelative().toString() + "', must have at least one segment (containerID+hints)"); //$NON-NLS-1$
-        }
-        if (accessRules == null || accessRules.length == 0) {
-            accessRules = ClasspathEntry.NO_ACCESS_RULES;
-        }
-        if (extraAttributes == null || extraAttributes.length == 0) {
-            extraAttributes = ClasspathEntry.NO_EXTRA_ATTRIBUTES;
-        }
-        return new ClasspathEntry(IPackageFragmentRoot.K_SOURCE, IClasspathEntry.CPE_CONTAINER, containerPath,
-            ClasspathEntry.INCLUDE_ALL, // inclusion patterns
-            ClasspathEntry.EXCLUDE_NONE, // exclusion patterns
-            null, // source attachment
-            null, // source attachment root
-            null, // specific output folder
-            isExported, accessRules, true, // combine access rules
-            extraAttributes);
-    }
-
-    /**
-     * Creates and returns a new non-exported classpath entry of kind <code>CPE_LIBRARY</code> for the
-     * JAR or folder identified by the given absolute path. This specifies that all package fragments
-     * within the root will have children of type <code>IClassFile</code>.
-     * This method is fully equivalent to calling
-     * {@link #newLibraryEntry(IPath, IPath, IPath, IAccessRule[], IClasspathAttribute[], boolean)
-     * newLibraryEntry(path, sourceAttachmentPath, sourceAttachmentRootPath, new IAccessRule[0], new
-     * IClasspathAttribute[0], false)}.
-     *
-     * @param path the path to the library
-     * @param sourceAttachmentPath the absolute path of the corresponding source archive or folder,
-     * or <code>null</code> if none. Note, since 3.0, an empty path is allowed to denote no source attachment.
-     * Since 3.4, this path can also denote a path external to the workspace.
-     * and will be automatically converted to <code>null</code>.
-     * @param sourceAttachmentRootPath the location of the root of the source files within the source archive or folder
-     * or <code>null</code> if this location should be automatically detected.
-     * @return a new library classpath entry
-     */
-    public static IClasspathEntry newLibraryEntry(IPath path, IPath sourceAttachmentPath,
-        IPath sourceAttachmentRootPath) {
-
-        return newLibraryEntry(path, sourceAttachmentPath, sourceAttachmentRootPath, ClasspathEntry.NO_ACCESS_RULES,
-            ClasspathEntry.NO_EXTRA_ATTRIBUTES, false/* not exported */);
-    }
-
-    /**
-     * Creates and returns a new classpath entry of kind <code>CPE_LIBRARY</code> for the JAR or folder
-     * identified by the given absolute path. This specifies that all package fragments within the root
-     * will have children of type <code>IClassFile</code>.
-     * <p>
-     * This method is fully equivalent to calling
-     * {@link #newLibraryEntry(IPath, IPath, IPath, IAccessRule[], IClasspathAttribute[], boolean)
-     * newLibraryEntry(path, sourceAttachmentPath, sourceAttachmentRootPath, new IAccessRule[0], new
-     * IClasspathAttribute[0], isExported)}.
-     * </p>
-     *
-     * @param path the path to the library
-     * @param sourceAttachmentPath the absolute path of the corresponding source archive or folder,
-     * or <code>null</code> if none. Note, since 3.0, an empty path is allowed to denote no source attachment.
-     * and will be automatically converted to <code>null</code>. Since 3.4, this path can also denote a path external
-     * to the workspace.
-     * @param sourceAttachmentRootPath the location of the root of the source files within the source archive or folder
-     * or <code>null</code> if this location should be automatically detected.
-     * @param isExported indicates whether this entry is contributed to dependent
-     * projects in addition to the output location
-     * @return a new library classpath entry
-     * @since 2.0
-     */
-    public static IClasspathEntry newLibraryEntry(IPath path, IPath sourceAttachmentPath,
-        IPath sourceAttachmentRootPath, boolean isExported) {
-
-        return newLibraryEntry(path, sourceAttachmentPath, sourceAttachmentRootPath, ClasspathEntry.NO_ACCESS_RULES,
-            ClasspathEntry.NO_EXTRA_ATTRIBUTES, isExported);
     }
 
     /**
@@ -3002,56 +2607,6 @@ public final class JavaCore extends Plugin {
     }
 
     /**
-     * Creates and returns a new non-exported classpath entry of kind <code>CPE_VARIABLE</code>
-     * for the given path. This method is fully equivalent to calling
-     * {@link #newVariableEntry(IPath, IPath, IPath, IAccessRule[], IClasspathAttribute[], boolean)
-     * newVariableEntry(variablePath, variableSourceAttachmentPath, sourceAttachmentRootPath, new IAccessRule[0], new
-     * IClasspathAttribute[0], false)}.
-     *
-     * @param variablePath the path of the binary archive; first segment is the
-     * name of a classpath variable
-     * @param variableSourceAttachmentPath the path of the corresponding source archive,
-     * or <code>null</code> if none; if present, the first segment is the
-     * name of a classpath variable (not necessarily the same variable
-     * as the one that begins <code>variablePath</code>)
-     * @param sourceAttachmentRootPath the location of the root of the source files within the source archive
-     * or <code>null</code> if <code>variableSourceAttachmentPath</code> is also <code>null</code>
-     * @return a new library classpath entry
-     */
-    public static IClasspathEntry newVariableEntry(IPath variablePath, IPath variableSourceAttachmentPath,
-        IPath sourceAttachmentRootPath) {
-
-        return newVariableEntry(variablePath, variableSourceAttachmentPath, sourceAttachmentRootPath, false);
-    }
-
-    /**
-     * Creates and returns a new classpath entry of kind <code>CPE_VARIABLE</code>
-     * for the given path. This method is fully equivalent to calling
-     * {@link #newVariableEntry(IPath, IPath, IPath, IAccessRule[], IClasspathAttribute[], boolean)
-     * newVariableEntry(variablePath, variableSourceAttachmentPath, sourceAttachmentRootPath, new IAccessRule[0], new
-     * IClasspathAttribute[0], isExported)}.
-     *
-     * @param variablePath the path of the binary archive; first segment is the
-     * name of a classpath variable
-     * @param variableSourceAttachmentPath the path of the corresponding source archive,
-     * or <code>null</code> if none; if present, the first segment is the
-     * name of a classpath variable (not necessarily the same variable
-     * as the one that begins <code>variablePath</code>)
-     * @param variableSourceAttachmentRootPath the location of the root of the source files within the source archive
-     * or <code>null</code> if <code>variableSourceAttachmentPath</code> is also <code>null</code>
-     * @param isExported indicates whether this entry is contributed to dependent
-     * projects in addition to the output location
-     * @return a new variable classpath entry
-     * @since 2.0
-     */
-    public static IClasspathEntry newVariableEntry(IPath variablePath, IPath variableSourceAttachmentPath,
-        IPath variableSourceAttachmentRootPath, boolean isExported) {
-
-        return newVariableEntry(variablePath, variableSourceAttachmentPath, variableSourceAttachmentRootPath,
-            ClasspathEntry.NO_ACCESS_RULES, ClasspathEntry.NO_EXTRA_ATTRIBUTES, isExported);
-    }
-
-    /**
      * Creates and returns a new classpath entry of kind <code>CPE_VARIABLE</code>
      * for the given path. The first segment of the path is the name of a classpath variable.
      * The trailing segments of the path will be appended to resolved variable path.
@@ -3155,9 +2710,6 @@ public final class JavaCore extends Plugin {
      * previously in the project's .classpath file are retrieved and populated in the
      * corresponding referenced entry. If the project is <code>null</code>, the raw referenced
      * entries are returned without any persisted attributes.
-     * For more details on storing referenced entries, see
-     * {@link IJavaProject#setRawClasspath(IClasspathEntry[], IClasspathEntry[], IPath,
-     * IProgressMonitor)}.
      * </p>
      *
      * @param libraryEntry the library entry whose referenced entries are sought
@@ -3170,85 +2722,6 @@ public final class JavaCore extends Plugin {
     public static IClasspathEntry[] getReferencedClasspathEntries(IClasspathEntry libraryEntry, IJavaProject project) {
         JavaModelManager manager = JavaModelManager.getJavaModelManager();
         return manager.getReferencedClasspathEntries(libraryEntry, project);
-    }
-
-    /**
-     * Runs the given action as an atomic Java model operation.
-     * <p>
-     * After running a method that modifies java elements,
-     * registered listeners receive after-the-fact notification of
-     * what just transpired, in the form of a element changed event.
-     * This method allows clients to call a number of
-     * methods that modify java elements and only have element
-     * changed event notifications reported at the end of the entire
-     * batch.
-     * </p>
-     * <p>
-     * If this method is called outside the dynamic scope of another such
-     * call, this method runs the action and then reports a single
-     * element changed event describing the net effect of all changes
-     * done to java elements by the action.
-     * </p>
-     * <p>
-     * If this method is called in the dynamic scope of another such
-     * call, this method simply runs the action.
-     * </p>
-     *
-     * @param action the action to perform
-     * @param monitor a progress monitor, or <code>null</code> if progress
-     * reporting and cancellation are not desired
-     * @exception CoreException if the operation failed.
-     * @since 2.1
-     */
-    public static void run(IWorkspaceRunnable action, IProgressMonitor monitor) throws CoreException {
-        run(action, ResourcesPlugin.getWorkspace().getRoot(), monitor);
-    }
-
-    /**
-     * Runs the given action as an atomic Java model operation.
-     * <p>
-     * After running a method that modifies java elements,
-     * registered listeners receive after-the-fact notification of
-     * what just transpired, in the form of a element changed event.
-     * This method allows clients to call a number of
-     * methods that modify java elements and only have element
-     * changed event notifications reported at the end of the entire
-     * batch.
-     * </p>
-     * <p>
-     * If this method is called outside the dynamic scope of another such
-     * call, this method runs the action and then reports a single
-     * element changed event describing the net effect of all changes
-     * done to java elements by the action.
-     * </p>
-     * <p>
-     * If this method is called in the dynamic scope of another such
-     * call, this method simply runs the action.
-     * </p>
-     * <p>
-     * The supplied scheduling rule is used to determine whether this operation can be
-     * run simultaneously with workspace changes in other threads. See
-     * <code>IWorkspace.run(...)</code> for more details.
-     * </p>
-     *
-     * @param action the action to perform
-     * @param rule the scheduling rule to use when running this operation, or
-     * <code>null</code> if there are no scheduling restrictions for this operation.
-     * @param monitor a progress monitor, or <code>null</code> if progress
-     * reporting and cancellation are not desired
-     * @exception CoreException if the operation failed.
-     * @since 3.0
-     */
-    public static void run(IWorkspaceRunnable action, ISchedulingRule rule, IProgressMonitor monitor)
-        throws CoreException {
-        JavaModelManager.assertModelModifiable();
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        if (workspace.isTreeLocked()) {
-            new BatchOperation(action).run(monitor);
-        } else {
-            // use IWorkspace.run(...) to ensure that a build will be done in autobuild mode
-            workspace.run(new BatchOperation(action), rule, IWorkspace.AVOID_UPDATE, monitor);
-        }
     }
 
     /**

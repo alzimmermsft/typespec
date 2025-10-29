@@ -18,39 +18,40 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class ClasspathAttribute implements IClasspathAttribute {
 
-	private final String name;
-	private final String value;
+    private final String name;
+    private final String value;
 
-	public ClasspathAttribute(String name, String value) {
-		this.name = name;
-		this.value = value;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof ClasspathAttribute)) return false;
-		ClasspathAttribute other = (ClasspathAttribute) obj;
-		return this.name.equals(other.name) && this.value.equals(other.value);
-	}
-
-    @Override
-	public String getName() {
-		return this.name;
+    public ClasspathAttribute(String name, String value) {
+        this.name = name;
+        this.value = value;
     }
 
     @Override
-	public String getValue() {
-		return this.value;
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ClasspathAttribute))
+            return false;
+        ClasspathAttribute other = (ClasspathAttribute) obj;
+        return this.name.equals(other.name) && this.value.equals(other.value);
     }
 
     @Override
-	public int hashCode() {
-     	return Util.combineHashCodes(this.name.hashCode(), this.value.hashCode());
+    public String getName() {
+        return this.name;
     }
 
     @Override
-	public String toString() {
-    	return this.name + "=" + this.value; //$NON-NLS-1$
+    public String getValue() {
+        return this.value;
+    }
+
+    @Override
+    public int hashCode() {
+        return Util.combineHashCodes(this.name.hashCode(), this.value.hashCode());
+    }
+
+    @Override
+    public String toString() {
+        return this.name + "=" + this.value; //$NON-NLS-1$
     }
 
 }

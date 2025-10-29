@@ -14,9 +14,9 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.util.concurrent;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import java.util.concurrent.Future;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Transforms a value, possibly asynchronously. For an example usage and more information, see
@@ -29,12 +29,12 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @FunctionalInterface
 @ElementTypesAreNonnullByDefault
 public interface AsyncFunction<I extends @Nullable Object, O extends @Nullable Object> {
-  /**
-   * Returns an output {@code Future} to use in place of the given {@code input}. The output {@code
-   * Future} need not be {@linkplain Future#isDone done}, making {@code AsyncFunction} suitable for
-   * asynchronous derivations.
-   *
-   * <p>Throwing an exception from this method is equivalent to returning a failing {@code Future}.
-   */
-  ListenableFuture<O> apply(@ParametricNullness I input) throws Exception;
+    /**
+     * Returns an output {@code Future} to use in place of the given {@code input}. The output {@code
+     * Future} need not be {@linkplain Future#isDone done}, making {@code AsyncFunction} suitable for
+     * asynchronous derivations.
+     *
+     * <p>Throwing an exception from this method is equivalent to returning a failing {@code Future}.
+     */
+    ListenableFuture<O> apply(@ParametricNullness I input) throws Exception;
 }

@@ -18,35 +18,39 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.TypeReference;
 
 public class RecoveredTypeReference extends RecoveredElement {
-	public TypeReference typeReference;
+    public TypeReference typeReference;
 
-	public RecoveredTypeReference(TypeReference typeReference, RecoveredElement parent, int bracketBalance) {
-		super(parent, bracketBalance);
-		this.typeReference = typeReference;
-	}
+    public RecoveredTypeReference(TypeReference typeReference, RecoveredElement parent, int bracketBalance) {
+        super(parent, bracketBalance);
+        this.typeReference = typeReference;
+    }
 
-	/*
-	 * Answer the associated parsed structure
-	 */
-	@Override
-	public ASTNode parseTree(){
-		return this.typeReference;
-	}
-	public TypeReference updateTypeReference() {
-		return this.typeReference;
-	}
-	/*
-	 * Answer the very source end of the corresponding parse node
-	 */
-	@Override
-	public String toString(int tab) {
-		return tabString(tab) + "Recovered typereference: " + this.typeReference.toString(); //$NON-NLS-1$
-	}
-	public TypeReference updatedImportReference(){
-		return this.typeReference;
-	}
-	@Override
-	public void updateParseTree(){
-		updatedImportReference();
-	}
+    /*
+     * Answer the associated parsed structure
+     */
+    @Override
+    public ASTNode parseTree() {
+        return this.typeReference;
+    }
+
+    public TypeReference updateTypeReference() {
+        return this.typeReference;
+    }
+
+    /*
+     * Answer the very source end of the corresponding parse node
+     */
+    @Override
+    public String toString(int tab) {
+        return tabString(tab) + "Recovered typereference: " + this.typeReference.toString(); //$NON-NLS-1$
+    }
+
+    public TypeReference updatedImportReference() {
+        return this.typeReference;
+    }
+
+    @Override
+    public void updateParseTree() {
+        updatedImportReference();
+    }
 }

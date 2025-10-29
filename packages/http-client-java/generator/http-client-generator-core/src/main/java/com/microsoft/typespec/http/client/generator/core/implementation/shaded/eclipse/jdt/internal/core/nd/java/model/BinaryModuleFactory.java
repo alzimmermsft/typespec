@@ -13,10 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.nd.java.model;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IFile;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResourceStatus;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.ResourcesPlugin;
@@ -37,54 +33,60 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JrtPackageFragmentRoot;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.ModularClassFile;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.PackageFragmentRoot;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * <strong>FIXME:</strong> this class is a stub as of now, it does not support modules in the new index.
  */
 public class BinaryModuleFactory {
 
-	public static BinaryModuleDescriptor createDescriptor(ModularClassFile modularClassFile) {
-		return createDescriptor(modularClassFile.getPackageFragmentRoot(), modularClassFile);
-	}
+    public static BinaryModuleDescriptor createDescriptor(ModularClassFile modularClassFile) {
+        return createDescriptor(modularClassFile.getPackageFragmentRoot(), modularClassFile);
+    }
 
-	/**
-	 * Returns a descriptor for the given class within the given package fragment, or null if the fragment doesn't have
-	 * a location on the filesystem.
-	 */
-	private static BinaryModuleDescriptor createDescriptor(PackageFragmentRoot root, ModularClassFile classFile) {
-		IPath location = BinaryTypeFactory.getLocationForElement(root);
-		if (location == null) {
-			return null;
-		}
-		String entryName = TypeConstants.MODULE_INFO_CLASS_NAME_STRING;
-		IPath workspacePath = root.getPath();
-		String indexPath;
-		char[] moduleName = null;
+    /**
+     * Returns a descriptor for the given class within the given package fragment, or null if the fragment doesn't have
+     * a location on the filesystem.
+     */
+    private static BinaryModuleDescriptor createDescriptor(PackageFragmentRoot root, ModularClassFile classFile) {
+        IPath location = BinaryTypeFactory.getLocationForElement(root);
+        if (location == null) {
+            return null;
+        }
+        String entryName = TypeConstants.MODULE_INFO_CLASS_NAME_STRING;
+        IPath workspacePath = root.getPath();
+        String indexPath;
+        char[] moduleName = null;
 
-		if (root instanceof JarPackageFragmentRoot) {
-			entryName = ((JarPackageFragmentRoot) root).getClassFilePath(entryName);
-			indexPath = root.getHandleIdentifier() + IDependent.JAR_FILE_ENTRY_SEPARATOR + entryName;
-			// see additional comments in BinaryTypeFactor.createDescriptor()
-			if (root instanceof JrtPackageFragmentRoot) {
-				moduleName = root.getElementName().toCharArray();
-			}
-		} else {
-			location = location.append(entryName);
-			indexPath = workspacePath.append(entryName).toString();
-			workspacePath = classFile.resource().getFullPath();
-		}
+        if (root instanceof JarPackageFragmentRoot) {
+            entryName = ((JarPackageFragmentRoot) root).getClassFilePath(entryName);
+            indexPath = root.getHandleIdentifier() + IDependent.JAR_FILE_ENTRY_SEPARATOR + entryName;
+            // see additional comments in BinaryTypeFactor.createDescriptor()
+            if (root instanceof JrtPackageFragmentRoot) {
+                moduleName = root.getElementName().toCharArray();
+            }
+        } else {
+            location = location.append(entryName);
+            indexPath = workspacePath.append(entryName).toString();
+            workspacePath = classFile.resource().getFullPath();
+        }
 
-		return new BinaryModuleDescriptor(location.toString().toCharArray(), moduleName, // TODO: module name only known for JRT
-				workspacePath.toString().toCharArray(), indexPath.toCharArray());
-	}
+        return new BinaryModuleDescriptor(location.toString().toCharArray(), moduleName, // TODO: module name only known
+                                                                                         // for JRT
+            workspacePath.toString().toCharArray(), indexPath.toCharArray());
+    }
 
-	/**
-	 * Reads the given binary module. If the module can be found in the index with a fingerprint that exactly matches
-	 * the file on disk, the type is read from the index. Otherwise the type is read from disk. Returns null if
-	 * no such type exists.
-	 * <strong>caveat</strong> modules are not yet supported in the index.
-	 */
-	public static IBinaryModule readModule(BinaryModuleDescriptor descriptor, IProgressMonitor monitor) throws JavaModelException, ClassFormatException {
+    /**
+     * Reads the given binary module. If the module can be found in the index with a fingerprint that exactly matches
+     * the file on disk, the type is read from the index. Otherwise the type is read from disk. Returns null if
+     * no such type exists.
+     * <strong>caveat</strong> modules are not yet supported in the index.
+     */
+    public static IBinaryModule readModule(BinaryModuleDescriptor descriptor, IProgressMonitor monitor)
+        throws JavaModelException, ClassFormatException {
 // FIXME: support module in the new index
 //		if (JavaIndex.isEnabled()) {
 //			try {
@@ -93,68 +95,74 @@ public class BinaryModuleFactory {
 //				// fall back to reading the zip file, below
 //			}
 //		}
-		return rawReadModule(descriptor, true);
-	}
+        return rawReadModule(descriptor, true);
+    }
 
-	public static IBinaryModule rawReadModule(BinaryModuleDescriptor descriptor, boolean fullyInitialize) throws JavaModelException, ClassFormatException {
-		try {
-			return rawReadModuleTestForExists(descriptor, fullyInitialize, true);
-		} catch (FileNotFoundException e) {
-			throw new JavaModelException(e, IJavaModelStatusConstants.IO_EXCEPTION);
-		}
-	}
+    public static IBinaryModule rawReadModule(BinaryModuleDescriptor descriptor, boolean fullyInitialize)
+        throws JavaModelException, ClassFormatException {
+        try {
+            return rawReadModuleTestForExists(descriptor, fullyInitialize, true);
+        } catch (FileNotFoundException e) {
+            throw new JavaModelException(e, IJavaModelStatusConstants.IO_EXCEPTION);
+        }
+    }
 
-	/**
-	 * Read the class file from disk, circumventing the index's cache. This should only be used by callers
-	 * that need to read information from the class file which aren't present in the index (such as method bodies).
-	 *
-	 * @return the newly-created IBinaryModule or null if the given class file does not exist.
-	 * @throws ClassFormatException if the class file existed but was corrupt
-	 * @throws JavaModelException if unable to read the class file due to a transient failure
-	 * @throws FileNotFoundException if the file does not exist
-	 */
-	public static IBinaryModule rawReadModuleTestForExists(BinaryModuleDescriptor descriptor, boolean fullyInitialize,
-			boolean useInvalidArchiveCache) throws JavaModelException, ClassFormatException, FileNotFoundException {
-		if (descriptor == null) {
-			return null;
-		}
-		if (descriptor.isInJarFile()) {
-			ZipFile zip = null;
-			try {
-				zip = JavaModelManager.getJavaModelManager().getZipFile(new Path(new String(descriptor.workspacePath)),
-						useInvalidArchiveCache);
-				String entryName = TypeConstants.MODULE_INFO_CLASS_NAME_STRING;
-				ZipEntry ze = zip.getEntry(entryName);
-				if (ze != null) {
-					byte contents[];
-					try {
-						contents = com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.Util.getZipEntryByteContent(ze, zip);
-					} catch (IOException ioe) {
-						throw new JavaModelException(ioe, IJavaModelStatusConstants.IO_EXCEPTION);
-					}
-					ClassFileReader classFileReader = new ClassFileReader(contents, descriptor.indexPath, fullyInitialize);
-					return classFileReader.getModuleDeclaration();
-				}
-			} catch (CoreException e) {
-				throw new JavaModelException(e);
-			} finally {
-				JavaModelManager.getJavaModelManager().closeZipFile(zip);
-			}
-		} else {
-			IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(new String(descriptor.workspacePath)));
-			byte[] contents;
-			try {
-				contents = file.readAllBytes();
-			} catch (CoreException e) {
-				IStatus status = e.getStatus();
-				if (status.getCode() == IResourceStatus.RESOURCE_NOT_FOUND) {
-					throw new FileNotFoundException();
-				}
-				throw new JavaModelException(e);
-			}
-			ClassFileReader classFileReader = new ClassFileReader(contents, file.getFullPath().toString().toCharArray(), fullyInitialize);
-			return classFileReader.getModuleDeclaration();
-		}
-		return null;
-	}
+    /**
+     * Read the class file from disk, circumventing the index's cache. This should only be used by callers
+     * that need to read information from the class file which aren't present in the index (such as method bodies).
+     *
+     * @return the newly-created IBinaryModule or null if the given class file does not exist.
+     * @throws ClassFormatException if the class file existed but was corrupt
+     * @throws JavaModelException if unable to read the class file due to a transient failure
+     * @throws FileNotFoundException if the file does not exist
+     */
+    public static IBinaryModule rawReadModuleTestForExists(BinaryModuleDescriptor descriptor, boolean fullyInitialize,
+        boolean useInvalidArchiveCache) throws JavaModelException, ClassFormatException, FileNotFoundException {
+        if (descriptor == null) {
+            return null;
+        }
+        if (descriptor.isInJarFile()) {
+            ZipFile zip = null;
+            try {
+                zip = JavaModelManager.getJavaModelManager()
+                    .getZipFile(new Path(new String(descriptor.workspacePath)), useInvalidArchiveCache);
+                String entryName = TypeConstants.MODULE_INFO_CLASS_NAME_STRING;
+                ZipEntry ze = zip.getEntry(entryName);
+                if (ze != null) {
+                    byte contents[];
+                    try {
+                        contents
+                            = com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.Util
+                                .getZipEntryByteContent(ze, zip);
+                    } catch (IOException ioe) {
+                        throw new JavaModelException(ioe, IJavaModelStatusConstants.IO_EXCEPTION);
+                    }
+                    ClassFileReader classFileReader
+                        = new ClassFileReader(contents, descriptor.indexPath, fullyInitialize);
+                    return classFileReader.getModuleDeclaration();
+                }
+            } catch (CoreException e) {
+                throw new JavaModelException(e);
+            } finally {
+                JavaModelManager.getJavaModelManager().closeZipFile(zip);
+            }
+        } else {
+            IFile file
+                = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(new String(descriptor.workspacePath)));
+            byte[] contents;
+            try {
+                contents = file.readAllBytes();
+            } catch (CoreException e) {
+                IStatus status = e.getStatus();
+                if (status.getCode() == IResourceStatus.RESOURCE_NOT_FOUND) {
+                    throw new FileNotFoundException();
+                }
+                throw new JavaModelException(e);
+            }
+            ClassFileReader classFileReader
+                = new ClassFileReader(contents, file.getFullPath().toString().toCharArray(), fullyInitialize);
+            return classFileReader.getModuleDeclaration();
+        }
+        return null;
+    }
 }

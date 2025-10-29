@@ -17,8 +17,7 @@
  * under the License.
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver;
+
 public enum PermutationType {
-    USES,
-    IMPORT,
-    SUBSTITUTE
+    USES, IMPORT, SUBSTITUTE
 }

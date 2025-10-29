@@ -19,7 +19,6 @@ import java.io.*;
  * @see SafeChunkyOutputStream
  */
 public class SafeChunkyInputStream extends InputStream {
-    protected static final int BUFFER_SIZE = 8192;
     protected byte[] buffer;
     protected int bufferLength = 0;
     protected byte[] chunk;
@@ -28,10 +27,6 @@ public class SafeChunkyInputStream extends InputStream {
     protected InputStream input;
     protected int nextByteInBuffer = 0;
     protected int nextByteInChunk = 0;
-
-    public SafeChunkyInputStream(File target) throws IOException {
-        this(target, BUFFER_SIZE);
-    }
 
     public SafeChunkyInputStream(File target, int bufferSize) throws IOException {
         input = new FileInputStream(target);

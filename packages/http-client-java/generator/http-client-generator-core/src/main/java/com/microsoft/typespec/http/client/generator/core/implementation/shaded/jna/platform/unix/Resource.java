@@ -23,29 +23,28 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.unix;
 
-import java.util.List;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure.FieldOrder;
 
 /**
  * Definitions related to {@code getrlimit}/{@code setrlimit}
+ * 
  * @author Lyor Goldstein
  */
 public interface Resource {
-    /** Per-process CPU limit, in seconds.  */
+    /** Per-process CPU limit, in seconds. */
     int RLIMIT_CPU = 0;
 
-    /** Largest file that can be created, in bytes.  */
+    /** Largest file that can be created, in bytes. */
     int RLIMIT_FSIZE = 1;
 
-    /** Maximum size of data segment, in bytes.  */
+    /** Maximum size of data segment, in bytes. */
     int RLIMIT_DATA = 2;
 
-    /** Maximum size of stack segment, in bytes.  */
+    /** Maximum size of stack segment, in bytes. */
     int RLIMIT_STACK = 3;
 
-    /** Largest core file that can be created, in bytes.  */
+    /** Largest core file that can be created, in bytes. */
     int RLIMIT_CORE = 4;
 
     /**
@@ -55,25 +54,25 @@ public interface Resource {
      */
     int RLIMIT_RSS = 5;
 
-    /** Number of open files.  */
+    /** Number of open files. */
     int RLIMIT_NOFILE = 7;
 
-    /** Address space limit.  */
+    /** Address space limit. */
     int RLIMIT_AS = 9;
 
-    /** Number of processes.  */
+    /** Number of processes. */
     int RLIMIT_NPROC = 6;
 
-    /** Locked-in-memory address space.  */
+    /** Locked-in-memory address space. */
     int RLIMIT_MEMLOCK = 8;
 
-    /** Maximum number of file locks.  */
+    /** Maximum number of file locks. */
     int RLIMIT_LOCKS = 10;
 
-    /** Maximum number of pending signals.  */
+    /** Maximum number of pending signals. */
     int RLIMIT_SIGPENDING = 11;
 
-    /** Maximum bytes in POSIX message queues.  */
+    /** Maximum bytes in POSIX message queues. */
     int RLIMIT_MSGQUEUE = 12;
 
     /**
@@ -93,16 +92,17 @@ public interface Resource {
     /** Number of {@code rlimit} values */
     int RLIMIT_NLIMITS = 16;
 
-    @FieldOrder({"rlim_cur", "rlim_max"})
+    @FieldOrder({ "rlim_cur", "rlim_max" })
     public static class Rlimit extends Structure {
-        /** The current (soft) limit.  */
+        /** The current (soft) limit. */
         public long rlim_cur;
 
-        /** The hard limit.  */
+        /** The hard limit. */
         public long rlim_max;
     }
 
     // see man(2) rlimit
     int getrlimit(int resource, Rlimit rlim);
+
     int setrlimit(int resource, Rlimit rlim);
 }

@@ -29,4 +29,5 @@ import java.io.Serializable;
  * <p>TODO(cpovirk): Consider applying this subclass approach to our other types.
  */
 @GwtCompatible(emulated = true)
-abstract class RangeGwtSerializationDependencies<C extends Comparable> implements Serializable {}
+abstract class RangeGwtSerializationDependencies<C extends Comparable> implements Serializable {
+}

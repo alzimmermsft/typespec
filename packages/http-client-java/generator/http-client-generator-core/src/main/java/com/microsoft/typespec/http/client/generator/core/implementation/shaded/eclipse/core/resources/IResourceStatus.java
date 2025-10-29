@@ -46,12 +46,6 @@ public interface IResourceStatus extends IStatus {
     // Errors [66-98]
 
     /**
-     * Status code constant (value 75) indicating that a builder failed.
-     * Severity: error. Category: general.
-     */
-    int BUILD_FAILED = 75;
-
-    /**
      * Status code constant (value 76) indicating that an operation failed.
      * Severity: error. Category: general.
      */
@@ -69,48 +63,11 @@ public interface IResourceStatus extends IStatus {
     // Warnings [233-265]
 
     /**
-     * Status code constant (value 234) indicating that a project
-     * description file (.project), was missing but it has been repaired.
-     * Severity: warning. Category: local file system.
-     */
-    int MISSING_DESCRIPTION_REPAIRED = 234;
-
-    /**
-     * Status code constant (value 235) indicating the local file system location
-     * for a resource overlaps the location of another resource.
-     * Severity: warning. Category: local file system.
-     */
-    int OVERLAPPING_LOCATION = 235;
-
-    // Errors [266-298]
-
-    /**
-     * Status code constant (value 268) indicating a resource unexpectedly
-     * exists on the local file system.
-     * Severity: error. Category: local file system.
-     */
-    int EXISTS_LOCAL = 268;
-
-    /**
-     * Status code constant (value 269) indicating a resource unexpectedly
-     * does not exist on the local file system.
-     * Severity: error. Category: local file system.
-     */
-    int NOT_FOUND_LOCAL = 269;
-
-    /**
      * Status code constant (value 271) indicating an error occurred while
      * reading part of a resource from the local file system.
      * Severity: error. Category: local file system.
      */
     int FAILED_READ_LOCAL = 271;
-
-    /**
-     * Status code constant (value 272) indicating an error occurred while
-     * writing part of a resource to the local file system.
-     * Severity: error. Category: local file system.
-     */
-    int FAILED_WRITE_LOCAL = 272;
 
     /**
      * Status code constant (value 273) indicating an error occurred while
@@ -126,52 +83,6 @@ public interface IResourceStatus extends IStatus {
      * Severity: error. Category: local file system.
      */
     int OUT_OF_SYNC_LOCAL = 274;
-
-    /**
-     * Status code constant (value 275) indicating this file system is not case
-     * sensitive and a resource that differs only in case unexpectedly exists on
-     * the local file system.
-     * Severity: error. Category: local file system.
-     */
-    int CASE_VARIANT_EXISTS = 275;
-
-    /**
-     * Status code constant (value 276) indicating a file exists in the
-     * file system but is not of the expected type (file instead of directory,
-     * or vice-versa).
-     * Severity: error. Category: local file system.
-     */
-    int WRONG_TYPE_LOCAL = 276;
-
-    /**
-     * Status code constant (value 278) indicating a file exists in the
-     * file system but its name is not a valid resource name.
-     * Severity: error. Category: local file system.
-     */
-    int INVALID_RESOURCE_NAME = 278;
-
-    /**
-     * Status code constant (value 279) indicating that the
-     * file in the file system is marked as read-only.
-     * Severity: error. Category: local file system.
-     * 
-     * @since 3.0
-     */
-    int READ_ONLY_LOCAL = 279;
-
-    // Workspace constants [300-398]
-    // Information Only [300-332]
-
-    // Warnings [333-365]
-
-    /**
-     * Status code constant (value 333) indicating that a workspace path
-     * variable unexpectedly does not exist.
-     * Severity: warning. Category: workspace.
-     * 
-     * @since 2.1
-     */
-    int VARIABLE_NOT_DEFINED_WARNING = 333;
 
     // Errors [366-398]
 
@@ -211,14 +122,6 @@ public interface IResourceStatus extends IStatus {
     int PROJECT_NOT_OPEN = 372;
 
     /**
-     * Status code constant (value 374) indicating that the path
-     * of a resource being created is occupied by an existing resource
-     * of a different type.
-     * Severity: error. Category: workspace.
-     */
-    int PATH_OCCUPIED = 374;
-
-    /**
      * Status code constant (value 375) indicating that the sync partner
      * is not registered with the workspace synchronizer.
      * Severity: error. Category: workspace.
@@ -233,75 +136,14 @@ public interface IResourceStatus extends IStatus {
     int MARKER_NOT_FOUND = 376;
 
     /**
-     * Status code constant (value 378) indicating that linking is
-     * not permitted on a certain project.
-     * Severity: error. Category: workspace.
-     * 
-     * @since 2.1
-     */
-    int LINKING_NOT_ALLOWED = 378;
-
-    /**
-     * Status code constant (value 379) indicating that a workspace path
-     * variable unexpectedly does not exist.
-     * Severity: error. Category: workspace.
-     * 
-     * @since 2.1
-     */
-    int VARIABLE_NOT_DEFINED = 379;
-
-    /**
      * Status code constant (value 380) indicating that an attempt was made to modify
      * the workspace while it was locked. Resource changes are disallowed
      * during certain types of resource change event notification.
      * Severity: error. Category: workspace.
-     * 
-     * @see IResourceChangeEvent
+     *
      * @since 2.1
      */
     int WORKSPACE_LOCKED = 380;
-
-    /**
-     * Status code constant (value 381) indicating that a problem occurred while
-     * retrieving the content description for a resource.
-     * Severity: error. Category: workspace.
-     * 
-     * @see IFile#getContentDescription
-     * @since 3.0
-     */
-    int FAILED_DESCRIBING_CONTENTS = 381;
-
-    /**
-     * Status code constant (value 382) indicating that a problem occurred while
-     * setting the charset for a resource.
-     * Severity: error. Category: workspace.
-     * 
-     * @since 3.0
-     */
-    int FAILED_SETTING_CHARSET = 382;
-
-    /**
-     * Status code constant (value 383) indicating that a problem occurred while
-     * getting the charset for a resource.
-     * Severity: error. Category: workspace.
-     * 
-     * @since 3.0
-     */
-    int FAILED_GETTING_CHARSET = 383;
-
-    /**
-     * Status code constant (value 384) indicating a build configuration with
-     * the specified ID unexpectedly does not exist.
-     * Severity: error. Category: workspace.
-     * 
-     * @since 3.7
-     */
-    int BUILD_CONFIGURATION_NOT_FOUND = 384;
-
-    // Internal constants [500-598]
-    // Information Only [500-532]
-
-    // Warnings [533-565]
 
     // Errors [566-598]
 

@@ -25,69 +25,62 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class Annotation extends ClassFileStruct implements IAnnotation {
 
-	private static final IAnnotationComponent[] NO_ENTRIES = new IAnnotationComponent[0];
+    private static final IAnnotationComponent[] NO_ENTRIES = new IAnnotationComponent[0];
 
-	private final int typeIndex;
-	private char[] typeName;
-	private final int componentsNumber;
-	private IAnnotationComponent[] components;
-	private int readOffset;
+    private final int typeIndex;
+    private char[] typeName;
+    private final int componentsNumber;
+    private IAnnotationComponent[] components;
+    private int readOffset;
 
-	/**
-	 * Constructor for Annotation.
-	 */
-	public Annotation(
-			byte[] classFileBytes,
-			IConstantPool constantPool,
-			int offset) throws ClassFormatException {
+    /**
+     * Constructor for Annotation.
+     */
+    public Annotation(byte[] classFileBytes, IConstantPool constantPool, int offset) throws ClassFormatException {
 
-		final int index = u2At(classFileBytes, 0, offset);
-		this.typeIndex = index;
-		if (index != 0) {
-			IConstantPoolEntry constantPoolEntry = constantPool.decodeEntry(index);
-			if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Utf8) {
-				throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
-			}
-			this.typeName = constantPoolEntry.getUtf8Value();
-		} else {
-			throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
-		}
-		final int length = u2At(classFileBytes, 2, offset);
-		this.componentsNumber = length;
-		this.readOffset = 4;
-		if (length != 0) {
-			this.components = new IAnnotationComponent[length];
-			for (int i = 0; i < length; i++) {
-				AnnotationComponent component = new AnnotationComponent(classFileBytes, constantPool, offset + this.readOffset);
-				this.components[i] = component;
-				this.readOffset += component.sizeInBytes();
-			}
-		} else {
-			this.components = NO_ENTRIES;
-		}
-	}
+        final int index = u2At(classFileBytes, 0, offset);
+        this.typeIndex = index;
+        if (index != 0) {
+            IConstantPoolEntry constantPoolEntry = constantPool.decodeEntry(index);
+            if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Utf8) {
+                throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
+            }
+            this.typeName = constantPoolEntry.getUtf8Value();
+        } else {
+            throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
+        }
+        final int length = u2At(classFileBytes, 2, offset);
+        this.componentsNumber = length;
+        this.readOffset = 4;
+        if (length != 0) {
+            this.components = new IAnnotationComponent[length];
+            for (int i = 0; i < length; i++) {
+                AnnotationComponent component
+                    = new AnnotationComponent(classFileBytes, constantPool, offset + this.readOffset);
+                this.components[i] = component;
+                this.readOffset += component.sizeInBytes();
+            }
+        } else {
+            this.components = NO_ENTRIES;
+        }
+    }
 
-	@Override
-	public int getTypeIndex() {
-		return this.typeIndex;
-	}
+    @Override
+    public int getTypeIndex() {
+        return this.typeIndex;
+    }
 
-	@Override
-	public int getComponentsNumber() {
-		return this.componentsNumber;
-	}
+    @Override
+    public IAnnotationComponent[] getComponents() {
+        return this.components;
+    }
 
-	@Override
-	public IAnnotationComponent[] getComponents() {
-		return this.components;
-	}
+    int sizeInBytes() {
+        return this.readOffset;
+    }
 
-	int sizeInBytes() {
-		return this.readOffset;
-	}
-
-	@Override
-	public char[] getTypeName() {
-		return this.typeName;
-	}
+    @Override
+    public char[] getTypeName() {
+        return this.typeName;
+    }
 }

@@ -22,41 +22,39 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class EmptyStatement extends Statement {
 
-	public EmptyStatement(int startPosition, int endPosition) {
-		this.sourceStart = startPosition;
-		this.sourceEnd = endPosition;
-	}
+    public EmptyStatement(int startPosition, int endPosition) {
+        this.sourceStart = startPosition;
+        this.sourceEnd = endPosition;
+    }
 
-	@Override
-	public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
-		return flowInfo;
-	}
+    @Override
+    public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
+        return flowInfo;
+    }
 
-	@Override
-	public void generateCode(BlockScope currentScope, CodeStream codeStream){
-		// no bytecode, no need to check for reachability or recording source positions
-	}
+    @Override
+    public void generateCode(BlockScope currentScope, CodeStream codeStream) {
+        // no bytecode, no need to check for reachability or recording source positions
+    }
 
-	@Override
-	public StringBuilder printStatement(int tab, StringBuilder output) {
-		return printIndent(tab, output).append(';');
-	}
+    @Override
+    public StringBuilder printStatement(int tab, StringBuilder output) {
+        return printIndent(tab, output).append(';');
+    }
 
-	@Override
-	public void resolve(BlockScope scope) {
-		if ((this.bits & IsUsefulEmptyStatement) == 0) {
-			scope.problemReporter().superfluousSemicolon(this.sourceStart, this.sourceEnd);
-		} else {
-			scope.problemReporter().emptyControlFlowStatement(this.sourceStart, this.sourceEnd);
-		}
-	}
+    @Override
+    public void resolve(BlockScope scope) {
+        if ((this.bits & IsUsefulEmptyStatement) == 0) {
+            scope.problemReporter().superfluousSemicolon(this.sourceStart, this.sourceEnd);
+        } else {
+            scope.problemReporter().emptyControlFlowStatement(this.sourceStart, this.sourceEnd);
+        }
+    }
 
-	@Override
-	public void traverse(ASTVisitor visitor, BlockScope scope) {
-		visitor.visit(this, scope);
-		visitor.endVisit(this, scope);
-	}
-
+    @Override
+    public void traverse(ASTVisitor visitor, BlockScope scope) {
+        visitor.visit(this, scope);
+        visitor.endVisit(this, scope);
+    }
 
 }
-

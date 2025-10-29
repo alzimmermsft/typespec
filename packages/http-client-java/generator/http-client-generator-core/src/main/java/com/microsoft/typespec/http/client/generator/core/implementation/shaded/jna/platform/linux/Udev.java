@@ -68,7 +68,7 @@ public interface Udev extends Library {
          * enumerate object is 1.
          *
          * @return On success, returns the allocated enumerator. On failure, NULL is
-         *         returned.
+         * returned.
          */
         public UdevEnumerate enumerateNew() {
             return INSTANCE.udev_enumerate_new(this);
@@ -80,9 +80,9 @@ public interface Udev extends Library {
          * the reference count of the device is 1.
          *
          * @param syspath
-         *            The path of the device in {@code /sys}.
+         * The path of the device in {@code /sys}.
          * @return the allocated udev device. On failure, NULL is returned, and
-         *         {@code errno} is set appropriately.
+         * {@code errno} is set appropriately.
          */
         public UdevDevice deviceNewFromSyspath(String syspath) {
             return INSTANCE.udev_device_new_from_syspath(this, syspath);
@@ -115,7 +115,7 @@ public interface Udev extends Library {
          * Modify filters of this object to match a subsystem.
          *
          * @param subsystem
-         *            The subsystem to match
+         * The subsystem to match
          * @return an integer greater than, or equal to, 0 on success.
          */
         public int addMatchSubsystem(String subsystem) {
@@ -136,7 +136,7 @@ public interface Udev extends Library {
          * Get the first list entry from this object.
          *
          * @return On success, returns the first entry in the list of found devices. If
-         *         the list is empty, or on failure, NULL is returned.
+         * the list is empty, or on failure, NULL is returned.
          */
         public UdevListEntry getListEntry() {
             return INSTANCE.udev_enumerate_get_list_entry(this);
@@ -152,7 +152,7 @@ public interface Udev extends Library {
          * Gets the next entry in the enumeration.
          *
          * @return On success, returns the next list entry. If no such entry can be
-         *         found, or on failure, NULL is returned.
+         * found, or on failure, NULL is returned.
          */
         public UdevListEntry getNext() {
             return INSTANCE.udev_list_entry_get_next(this);
@@ -196,8 +196,8 @@ public interface Udev extends Library {
          * Gets the parent of this device
          *
          * @return the parent device. No additional reference to this device is
-         *         acquired, but the child device owns a reference to the parent device.
-         *         On failure, NULL is returned.
+         * acquired, but the child device owns a reference to the parent device.
+         * On failure, NULL is returned.
          */
         public UdevDevice getParent() {
             return INSTANCE.udev_device_get_parent(this);
@@ -207,12 +207,12 @@ public interface Udev extends Library {
          * Gets the parent of this device matching a subsystem and devtype
          *
          * @param subsystem
-         *            The subsystem to match
+         * The subsystem to match
          * @param devtype
-         *            The device type to match
+         * The device type to match
          * @return the parent device. No additional reference to this device is
-         *         acquired, but the child device owns a reference to the parent device.
-         *         On failure, NULL is returned.
+         * acquired, but the child device owns a reference to the parent device.
+         * On failure, NULL is returned.
          */
         public UdevDevice getParentWithSubsystemDevtype(String subsystem, String devtype) {
             return INSTANCE.udev_device_get_parent_with_subsystem_devtype(this, subsystem, devtype);
@@ -267,11 +267,11 @@ public interface Udev extends Library {
          * Retrieves a device attribute from this device
          *
          * @param sysattr
-         *            The attribute to retrieve.
+         * The attribute to retrieve.
          * @return a string of the requested value. On error, NULL is returned.
-         *         Attributes that may contain NUL bytes should not be retrieved with
-         *         udev_device_get_sysattr_value(); instead, read them directly from the
-         *         files within the device's syspath.
+         * Attributes that may contain NUL bytes should not be retrieved with
+         * udev_device_get_sysattr_value(); instead, read them directly from the
+         * files within the device's syspath.
          */
         public String getSysattrValue(String sysattr) {
             return INSTANCE.udev_device_get_sysattr_value(this, sysattr);
@@ -281,7 +281,7 @@ public interface Udev extends Library {
          * Retrieves a device property from this device
          *
          * @param key
-         *            The property to retrieve.
+         * The property to retrieve.
          * @return a string of the requested value. On error, NULL is returned.
          */
         public String getPropertyValue(String key) {
@@ -296,7 +296,7 @@ public interface Udev extends Library {
      * is 1.
      *
      * @return On success, returns a pointer to the allocated udev context. On
-     *         failure, NULL is returned.
+     * failure, NULL is returned.
      */
     UdevContext udev_new();
 
@@ -304,7 +304,7 @@ public interface Udev extends Library {
      * Acquire further references to a udev context object.
      *
      * @param udev
-     *            A udev context object.
+     * A udev context object.
      * @return the argument that was passed, unmodified.
      */
     UdevContext udev_ref(UdevContext udev);
@@ -314,7 +314,7 @@ public interface Udev extends Library {
      * the context object is destroyed and freed.
      *
      * @param udev
-     *            A udev context object.
+     * A udev context object.
      * @return always returns NULL.
      */
     UdevContext udev_unref(UdevContext udev);
@@ -332,11 +332,11 @@ public interface Udev extends Library {
      * such must contain a uevent file.
      *
      * @param udev
-     *            A udev context object.
+     * A udev context object.
      * @param syspath
-     *            The path of the device in {@code /sys}.
+     * The path of the device in {@code /sys}.
      * @return a pointer to the allocated udev device. On failure, NULL is returned,
-     *         and {@code errno} is set appropriately.
+     * and {@code errno} is set appropriately.
      */
     UdevDevice udev_device_new_from_syspath(UdevContext udev, String syspath);
 
@@ -345,9 +345,9 @@ public interface Udev extends Library {
      * enumerate object is 1.
      *
      * @param udev
-     *            A udev context object.
+     * A udev context object.
      * @return On success, returns a pointer to the allocated udev monitor. On
-     *         failure, NULL is returned.
+     * failure, NULL is returned.
      */
     UdevEnumerate udev_enumerate_new(UdevContext udev);
 
@@ -355,7 +355,7 @@ public interface Udev extends Library {
      * Acquire further references to a udev enumerate object.
      *
      * @param udev_enumerate
-     *            A udev enumerate object.
+     * A udev enumerate object.
      * @return the argument that was passed, unmodified.
      */
     UdevEnumerate udev_enumerate_ref(UdevEnumerate udev_enumerate);
@@ -365,7 +365,7 @@ public interface Udev extends Library {
      * the enumerate object is destroyed and freed.
      *
      * @param udev_enumerate
-     *            A udev enumerate object.
+     * A udev enumerate object.
      * @return always returns NULL.
      */
     UdevEnumerate udev_enumerate_unref(UdevEnumerate udev_enumerate);
@@ -374,9 +374,9 @@ public interface Udev extends Library {
      * Modify filters of a udev enumerate object to match a subsystem.
      *
      * @param udev_enumerate
-     *            The udev enumerate object to modify.
+     * The udev enumerate object to modify.
      * @param subsystem
-     *            The subsystem to match
+     * The subsystem to match
      * @return an integer greater than, or equal to, 0 on success.
      */
     int udev_enumerate_add_match_subsystem(UdevEnumerate udev_enumerate, String subsystem);
@@ -386,7 +386,7 @@ public interface Udev extends Library {
      * the given filters. No matches will return all currently available devices.
      *
      * @param udev_enumerate
-     *            The udev enumerate object, with optional filters.
+     * The udev enumerate object, with optional filters.
      * @return an integer greater than, or equal to, 0 on success.
      */
     int udev_enumerate_scan_devices(UdevEnumerate udev_enumerate);
@@ -395,9 +395,9 @@ public interface Udev extends Library {
      * Get the first list entry from a udev enumerate object.
      *
      * @param udev_enumerate
-     *            The udev enumerate object.
+     * The udev enumerate object.
      * @return On success, returns a pointer to the first entry in the list of found
-     *         devices. If the list is empty, or on failure, NULL is returned.
+     * devices. If the list is empty, or on failure, NULL is returned.
      */
     UdevListEntry udev_enumerate_get_list_entry(UdevEnumerate udev_enumerate);
 
@@ -405,9 +405,9 @@ public interface Udev extends Library {
      * Gets the next entry in the enumeration.
      *
      * @param list_entry
-     *            the current list entry
+     * the current list entry
      * @return On success, returns a pointer to the next list entry. If no such
-     *         entry can be found, or on failure, NULL is returned.
+     * entry can be found, or on failure, NULL is returned.
      */
     UdevListEntry udev_list_entry_get_next(UdevListEntry list_entry);
 
@@ -415,10 +415,10 @@ public interface Udev extends Library {
      * Get the name of the udev list entry
      *
      * @param list_entry
-     *            A udev list entry
+     * A udev list entry
      * @return a pointer to a constant string representing the requested value. The
-     *         string is bound to the lifetime of the list entry itself. On failure,
-     *         NULL is returned.
+     * string is bound to the lifetime of the list entry itself. On failure,
+     * NULL is returned.
      */
     String udev_list_entry_get_name(UdevListEntry list_entry);
 
@@ -426,7 +426,7 @@ public interface Udev extends Library {
      * Acquire further references to a udev device object.
      *
      * @param udev_device
-     *            A udev device object.
+     * A udev device object.
      * @return the argument that was passed, unmodified.
      */
     UdevDevice udev_device_ref(UdevDevice udev_device);
@@ -436,7 +436,7 @@ public interface Udev extends Library {
      * the device object is destroyed and freed.
      *
      * @param udev_device
-     *            A udev device object.
+     * A udev device object.
      * @return always returns NULL.
      */
     UdevDevice udev_device_unref(UdevDevice udev_device);
@@ -445,10 +445,10 @@ public interface Udev extends Library {
      * Gets the parent of a udev device
      *
      * @param udev_device
-     *            A udev device object.
+     * A udev device object.
      * @return a pointer to the parent device. No additional reference to this
-     *         device is acquired, but the child device owns a reference to such a
-     *         parent device. On failure, NULL is returned.
+     * device is acquired, but the child device owns a reference to such a
+     * parent device. On failure, NULL is returned.
      */
     UdevDevice udev_device_get_parent(UdevDevice udev_device);
 
@@ -456,14 +456,14 @@ public interface Udev extends Library {
      * Gets the parent of a udev device matching a subsystem and devtype
      *
      * @param udev_device
-     *            A udev device object.
+     * A udev device object.
      * @param subsystem
-     *            The subsystem to match
+     * The subsystem to match
      * @param devtype
-     *            The device type to match
+     * The device type to match
      * @return a pointer to the parent device. No additional reference to this
-     *         device is acquired, but the child device owns a reference to such a
-     *         parent device. On failure, NULL is returned.
+     * device is acquired, but the child device owns a reference to such a
+     * parent device. On failure, NULL is returned.
      */
     UdevDevice udev_device_get_parent_with_subsystem_devtype(UdevDevice udev_device, String subsystem, String devtype);
 
@@ -471,10 +471,10 @@ public interface Udev extends Library {
      * Gets the syspath of a udev device
      *
      * @param udev_device
-     *            A udev device object.
+     * A udev device object.
      * @return a pointer to a constant string that describes the syspath. The
-     *         lifetime of this string is bound to the device it was requested on.
-     *         On failure, may return NULL.
+     * lifetime of this string is bound to the device it was requested on.
+     * On failure, may return NULL.
      */
     String udev_device_get_syspath(UdevDevice udev_device);
 
@@ -482,10 +482,10 @@ public interface Udev extends Library {
      * Gets the sysname of a udev device
      *
      * @param udev_device
-     *            A udev device object.
+     * A udev device object.
      * @return a pointer to a constant string that describes the sysname. The
-     *         lifetime of this string is bound to the device it was requested on.
-     *         On failure, may return NULL.
+     * lifetime of this string is bound to the device it was requested on.
+     * On failure, may return NULL.
      */
     String udev_device_get_sysname(UdevDevice udev_device);
 
@@ -493,10 +493,10 @@ public interface Udev extends Library {
      * Gets the devnode of a udev device
      *
      * @param udev_device
-     *            A udev device object.
+     * A udev device object.
      * @return a pointer to a constant string that describes the devnode. The
-     *         lifetime of this string is bound to the device it was requested on.
-     *         On failure, may return NULL.
+     * lifetime of this string is bound to the device it was requested on.
+     * On failure, may return NULL.
      */
     String udev_device_get_devnode(UdevDevice udev_device);
 
@@ -504,10 +504,10 @@ public interface Udev extends Library {
      * Gets the devtype of a udev device
      *
      * @param udev_device
-     *            A udev device object.
+     * A udev device object.
      * @return a pointer to a constant string that describes the devtype. The
-     *         lifetime of this string is bound to the device it was requested on.
-     *         On failure, may return NULL.
+     * lifetime of this string is bound to the device it was requested on.
+     * On failure, may return NULL.
      */
     String udev_device_get_devtype(UdevDevice udev_device);
 
@@ -515,10 +515,10 @@ public interface Udev extends Library {
      * Gets the subsystem of a udev device
      *
      * @param udev_device
-     *            A udev device object.
+     * A udev device object.
      * @return a pointer to a constant string that describes the subsystem. The
-     *         lifetime of this string is bound to the device it was requested on.
-     *         On failure, may return NULL.
+     * lifetime of this string is bound to the device it was requested on.
+     * On failure, may return NULL.
      */
     String udev_device_get_subsystem(UdevDevice udev_device);
 
@@ -526,13 +526,13 @@ public interface Udev extends Library {
      * Retrieves a device attributesfrom a udev device.
      *
      * @param udev_device
-     *            A udev device object.
+     * A udev device object.
      * @param sysattr
-     *            The attribute to retrieve.
+     * The attribute to retrieve.
      * @return a pointer to a constant string of the requested value. On error, NULL
-     *         is returned. Attributes that may contain NUL bytes should not be
-     *         retrieved with udev_device_get_sysattr_value(); instead, read them
-     *         directly from the files within the device's syspath.
+     * is returned. Attributes that may contain NUL bytes should not be
+     * retrieved with udev_device_get_sysattr_value(); instead, read them
+     * directly from the files within the device's syspath.
      */
     String udev_device_get_sysattr_value(UdevDevice udev_device, String sysattr);
 
@@ -540,11 +540,11 @@ public interface Udev extends Library {
      * Retrieves a device property from a udev device.
      *
      * @param udev_device
-     *            A udev device object.
+     * A udev device object.
      * @param key
-     *            The property to retrieve.
+     * The property to retrieve.
      * @return a pointer to a constant string of the requested value. On error, NULL
-     *         is returned.
+     * is returned.
      */
     String udev_device_get_property_value(UdevDevice udev_device, String key);
 }

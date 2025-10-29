@@ -13,11 +13,10 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.text.edits;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.BadLocationException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.IDocument;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A move target edit denotes the target of a move operation. Move
@@ -38,147 +37,149 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public final class MoveTargetEdit extends TextEdit {
 
-	private MoveSourceEdit fSource;
+    private MoveSourceEdit fSource;
 
-	/**
-	 * Constructs a new move target edit
-	 *
-	 * @param offset the edit's offset
-	 */
-	public MoveTargetEdit(int offset) {
-		super(offset, 0);
-	}
+    /**
+     * Constructs a new move target edit
+     *
+     * @param offset the edit's offset
+     */
+    public MoveTargetEdit(int offset) {
+        super(offset, 0);
+    }
 
-	/**
-	 * Constructs an new move target edit
-	 *
-	 * @param offset the edit's offset
-	 * @param source the corresponding source edit
-	 */
-	public MoveTargetEdit(int offset, MoveSourceEdit source) {
-		this(offset);
-		setSourceEdit(source);
-	}
+    /**
+     * Constructs an new move target edit
+     *
+     * @param offset the edit's offset
+     * @param source the corresponding source edit
+     */
+    public MoveTargetEdit(int offset, MoveSourceEdit source) {
+        this(offset);
+        setSourceEdit(source);
+    }
 
-	/*
-	 * Copy constructor
-	 */
-	private MoveTargetEdit(MoveTargetEdit other) {
-		super(other);
-	}
+    /*
+     * Copy constructor
+     */
+    private MoveTargetEdit(MoveTargetEdit other) {
+        super(other);
+    }
 
-	/**
-	 * Returns the associated source edit or <code>null</code>
-	 * if no source edit is associated yet.
-	 *
-	 * @return the source edit or <code>null</code>
-	 */
-	public MoveSourceEdit getSourceEdit() {
-		return fSource;
-	}
+    /**
+     * Returns the associated source edit or <code>null</code>
+     * if no source edit is associated yet.
+     *
+     * @return the source edit or <code>null</code>
+     */
+    public MoveSourceEdit getSourceEdit() {
+        return fSource;
+    }
 
-	/**
-	 * Sets the source edit.
-	 *
-	 * @param edit the source edit
-	 *
-	 * @exception MalformedTreeException is thrown if the target edit
-	 *  is a direct or indirect child of the source edit
-	 */
-	public void setSourceEdit(MoveSourceEdit edit) {
-		if (fSource != edit) {
-			fSource= edit;
-			fSource.setTargetEdit(this);
-			TextEdit parent= getParent();
-			while (parent != null) {
-				if (parent == fSource)
-					throw new MalformedTreeException(parent, this, TextEditMessages.getString("MoveTargetEdit.wrong_parent")); //$NON-NLS-1$
-				parent= parent.getParent();
-			}
-		}
-	}
+    /**
+     * Sets the source edit.
+     *
+     * @param edit the source edit
+     *
+     * @exception MalformedTreeException is thrown if the target edit
+     * is a direct or indirect child of the source edit
+     */
+    public void setSourceEdit(MoveSourceEdit edit) {
+        if (fSource != edit) {
+            fSource = edit;
+            fSource.setTargetEdit(this);
+            TextEdit parent = getParent();
+            while (parent != null) {
+                if (parent == fSource)
+                    throw new MalformedTreeException(parent, this,
+                        TextEditMessages.getString("MoveTargetEdit.wrong_parent")); //$NON-NLS-1$
+                parent = parent.getParent();
+            }
+        }
+    }
 
-	@Override
-	protected TextEdit doCopy() {
-		return new MoveTargetEdit(this);
-	}
+    @Override
+    protected TextEdit doCopy() {
+        return new MoveTargetEdit(this);
+    }
 
-	@Override
-	protected void postProcessCopy(TextEditCopier copier) {
-		if (fSource != null) {
-			MoveTargetEdit target= (MoveTargetEdit)copier.getCopy(this);
-			MoveSourceEdit source= (MoveSourceEdit)copier.getCopy(fSource);
-			if (target != null && source != null)
-				target.setSourceEdit(source);
-		}
-	}
+    @Override
+    protected void postProcessCopy(TextEditCopier copier) {
+        if (fSource != null) {
+            MoveTargetEdit target = (MoveTargetEdit) copier.getCopy(this);
+            MoveSourceEdit source = (MoveSourceEdit) copier.getCopy(fSource);
+            if (target != null && source != null)
+                target.setSourceEdit(source);
+        }
+    }
 
-	@Override
-	protected void accept0(TextEditVisitor visitor) {
-		boolean visitChildren= visitor.visit(this);
-		if (visitChildren) {
-			acceptChildren(visitor);
-		}
-	}
+    @Override
+    protected void accept0(TextEditVisitor visitor) {
+        boolean visitChildren = visitor.visit(this);
+        if (visitChildren) {
+            acceptChildren(visitor);
+        }
+    }
 
-	//---- consistency check ----------------------------------------------------------
+    // ---- consistency check ----------------------------------------------------------
 
-	@Override
-	int traverseConsistencyCheck(TextEditProcessor processor, IDocument document, List<List<TextEdit>> sourceEdits) {
-		return super.traverseConsistencyCheck(processor, document, sourceEdits) + 1;
-	}
+    @Override
+    int traverseConsistencyCheck(TextEditProcessor processor, IDocument document, List<List<TextEdit>> sourceEdits) {
+        return super.traverseConsistencyCheck(processor, document, sourceEdits) + 1;
+    }
 
-	@Override
-	void performConsistencyCheck(TextEditProcessor processor, IDocument document) throws MalformedTreeException {
-		if (fSource == null)
-			throw new MalformedTreeException(getParent(), this, TextEditMessages.getString("MoveTargetEdit.no_source")); //$NON-NLS-1$
-		if (fSource.getTargetEdit() != this)
-			throw new MalformedTreeException(getParent(), this, TextEditMessages.getString("MoveTargetEdit.different_target")); //$NON-NLS-1$
-	}
+    @Override
+    void performConsistencyCheck(TextEditProcessor processor, IDocument document) throws MalformedTreeException {
+        if (fSource == null)
+            throw new MalformedTreeException(getParent(), this, TextEditMessages.getString("MoveTargetEdit.no_source")); //$NON-NLS-1$
+        if (fSource.getTargetEdit() != this)
+            throw new MalformedTreeException(getParent(), this,
+                TextEditMessages.getString("MoveTargetEdit.different_target")); //$NON-NLS-1$
+    }
 
-	//---- document updating ----------------------------------------------------------------
+    // ---- document updating ----------------------------------------------------------------
 
-	/*
-	 * @see TextEdit#performDocumentUpdating
-	 */
-	@Override
-	int performDocumentUpdating(IDocument document) throws BadLocationException {
-		String source= fSource.getContent();
-		document.replace(getOffset(), getLength(), source);
-		fDelta= source.length() - getLength();
+    /*
+     * @see TextEdit#performDocumentUpdating
+     */
+    @Override
+    int performDocumentUpdating(IDocument document) throws BadLocationException {
+        String source = fSource.getContent();
+        document.replace(getOffset(), getLength(), source);
+        fDelta = source.length() - getLength();
 
-		MultiTextEdit sourceRoot= fSource.getSourceRoot();
-		if (sourceRoot != null) {
-			sourceRoot.internalMoveTree(getOffset());
-			TextEdit[] sourceChildren= sourceRoot.removeChildren();
-			List<TextEdit> children= new ArrayList<>(sourceChildren.length);
-			for (TextEdit child : sourceChildren) {
-				child.internalSetParent(this);
-				children.add(child);
-			}
-			internalSetChildren(children);
-		}
-		fSource.clearContent();
-		return fDelta;
-	}
+        MultiTextEdit sourceRoot = fSource.getSourceRoot();
+        if (sourceRoot != null) {
+            sourceRoot.internalMoveTree(getOffset());
+            TextEdit[] sourceChildren = sourceRoot.removeChildren();
+            List<TextEdit> children = new ArrayList<>(sourceChildren.length);
+            for (TextEdit child : sourceChildren) {
+                child.internalSetParent(this);
+                children.add(child);
+            }
+            internalSetChildren(children);
+        }
+        fSource.clearContent();
+        return fDelta;
+    }
 
-	//---- region updating --------------------------------------------------------------
+    // ---- region updating --------------------------------------------------------------
 
-	@Override
-	int traverseRegionUpdating(TextEditProcessor processor, IDocument document, int accumulatedDelta, boolean delete) {
-		// the children got already updated / normalized while they got removed
-		// from the source edit. So we only have to adjust the offset computed to
-		// far.
-		if (delete) {
-			deleteTree();
-		} else {
-			internalMoveTree(accumulatedDelta);
-		}
-		return accumulatedDelta + fDelta;
-	}
+    @Override
+    int traverseRegionUpdating(TextEditProcessor processor, IDocument document, int accumulatedDelta, boolean delete) {
+        // the children got already updated / normalized while they got removed
+        // from the source edit. So we only have to adjust the offset computed to
+        // far.
+        if (delete) {
+            deleteTree();
+        } else {
+            internalMoveTree(accumulatedDelta);
+        }
+        return accumulatedDelta + fDelta;
+    }
 
-	@Override
-	boolean deleteChildren() {
-		return false;
-	}
+    @Override
+    boolean deleteChildren() {
+        return false;
+    }
 }

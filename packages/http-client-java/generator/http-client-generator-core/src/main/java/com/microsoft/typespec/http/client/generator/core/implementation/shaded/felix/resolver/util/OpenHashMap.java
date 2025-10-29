@@ -161,7 +161,8 @@ public class OpenHashMap<K, V> implements Serializable, Cloneable, SortedMap<K, 
     }
 
     private void tryCapacity(long capacity) {
-        int needed = (int) Math.min(1073741824L, Math.max(2L, nextPowerOfTwo((long) Math.ceil((float) capacity / this.f))));
+        int needed
+            = (int) Math.min(1073741824L, Math.max(2L, nextPowerOfTwo((long) Math.ceil((float) capacity / this.f))));
         if (needed > this.n) {
             this.rehash(needed);
         }
@@ -205,7 +206,8 @@ public class OpenHashMap<K, V> implements Serializable, Cloneable, SortedMap<K, 
 
         int n = m.size();
         if (m instanceof OpenHashMap) {
-            Iterator<? extends Entry<? extends K, ? extends V>> i = ((OpenHashMap<? extends K, ? extends V>) m).fast().iterator();
+            Iterator<? extends Entry<? extends K, ? extends V>> i
+                = ((OpenHashMap<? extends K, ? extends V>) m).fast().iterator();
             while (n-- != 0) {
                 Entry<? extends K, ? extends V> e = i.next();
                 this.put(e.getKey(), e.getValue());
@@ -328,8 +330,7 @@ public class OpenHashMap<K, V> implements Serializable, Cloneable, SortedMap<K, 
     protected final void shiftKeys(int pos) {
         Object[] key = this.key;
 
-        label32:
-        while (true) {
+        label32: while (true) {
             int last = pos;
 
             Object curr;
@@ -644,7 +645,8 @@ public class OpenHashMap<K, V> implements Serializable, Cloneable, SortedMap<K, 
         return values;
     }
 
-    /** Rehashes the map, making the table as small as possible.
+    /**
+     * Rehashes the map, making the table as small as possible.
      *
      * <P>This method rehashes the table to the smallest size satisfying the
      * load factor. It can be used when the set will not be changed anymore, so
@@ -670,7 +672,8 @@ public class OpenHashMap<K, V> implements Serializable, Cloneable, SortedMap<K, 
         }
     }
 
-    /** Rehashes this map if the table is too large.
+    /**
+     * Rehashes this map if the table is too large.
      *
      * <P>Let <var>N</var> be the smallest table size that can hold
      * <code>max(n,{@link #size()})</code> entries, still satisfying the load factor. If the current
@@ -678,7 +681,7 @@ public class OpenHashMap<K, V> implements Serializable, Cloneable, SortedMap<K, 
      * nothing. Otherwise, it rehashes this map in a table of size
      * <var>N</var>.
      *
-     * <P>This method is useful when reusing maps.  {@linkplain #clear() Clearing a
+     * <P>This method is useful when reusing maps. {@linkplain #clear() Clearing a
      * map} leaves the table size untouched. If you are reusing a map
      * many times, you can call this method with a typical
      * size to avoid keeping around a very large table just
@@ -702,7 +705,8 @@ public class OpenHashMap<K, V> implements Serializable, Cloneable, SortedMap<K, 
         }
     }
 
-    /** Rehashes the map.
+    /**
+     * Rehashes the map.
      *
      * <P>This method implements the basic rehashing strategy, and may be
      * overriden by subclasses implementing different rehashing strategies (e.g.,
@@ -730,7 +734,7 @@ public class OpenHashMap<K, V> implements Serializable, Cloneable, SortedMap<K, 
             } else {
                 pos = mix(key[i].hashCode()) & mask;
                 while (newKey[pos] != null) {
-                    pos = ( pos + 1 ) & mask;
+                    pos = (pos + 1) & mask;
                 }
                 newKey[pos] = key[i];
             }
@@ -786,7 +790,7 @@ public class OpenHashMap<K, V> implements Serializable, Cloneable, SortedMap<K, 
 
     public int hashCode() {
         int h = 0;
-        for( int j = realSize(), i = 0, t = 0; j-- != 0; ) {
+        for (int j = realSize(), i = 0, t = 0; j-- != 0;) {
             while (key[i] == null) {
                 ++i;
             }
@@ -1159,11 +1163,13 @@ public class OpenHashMap<K, V> implements Serializable, Cloneable, SortedMap<K, 
 
     private class MapIterator {
         /**
-         * The entry that will be returned by the next call to {@link java.util.ListIterator#previous()} (or <code>null</code> if no previous entry exists).
+         * The entry that will be returned by the next call to {@link java.util.ListIterator#previous()} (or
+         * <code>null</code> if no previous entry exists).
          */
         int prev = -1;
         /**
-         * The entry that will be returned by the next call to {@link java.util.ListIterator#next()} (or <code>null</code> if no next entry exists).
+         * The entry that will be returned by the next call to {@link java.util.ListIterator#next()} (or
+         * <code>null</code> if no next entry exists).
          */
         int next;
         /**
@@ -1171,7 +1177,8 @@ public class OpenHashMap<K, V> implements Serializable, Cloneable, SortedMap<K, 
          */
         int curr = -1;
         /**
-         * The current index (in the sense of a {@link java.util.ListIterator}). Note that this value is not meaningful when this iterator has been created using the nonempty constructor.
+         * The current index (in the sense of a {@link java.util.ListIterator}). Note that this value is not meaningful
+         * when this iterator has been created using the nonempty constructor.
          */
         int index;
 
@@ -1215,11 +1222,14 @@ public class OpenHashMap<K, V> implements Serializable, Cloneable, SortedMap<K, 
 
         public void remove() {
             this.ensureIndexKnown();
-            if (curr == -1) throw new IllegalStateException();
+            if (curr == -1)
+                throw new IllegalStateException();
 
             if (curr == prev) {
-                    /* If the last operation was a next(), we are removing an entry that preceeds
-                     * the current index, and thus we must decrement it. */
+                /*
+                 * If the last operation was a next(), we are removing an entry that preceeds
+                 * the current index, and thus we must decrement it.
+                 */
                 index--;
                 prev = (int) (link[curr] >>> 32);
             } else {
@@ -1227,8 +1237,10 @@ public class OpenHashMap<K, V> implements Serializable, Cloneable, SortedMap<K, 
             }
 
             size--;
-            /* Now we manually fix the pointers. Because of our knowledge of next
-             * and prev, this is going to be faster than calling fixPointers(). */
+            /*
+             * Now we manually fix the pointers. Because of our knowledge of next
+             * and prev, this is going to be faster than calling fixPointers().
+             */
             if (prev == -1) {
                 first = next;
             } else {
@@ -1250,22 +1262,25 @@ public class OpenHashMap<K, V> implements Serializable, Cloneable, SortedMap<K, 
                 Object curr;
                 Object[] key = OpenHashMap.this.key;
                 // We have to horribly duplicate the shiftKeys() code because we need to update next/prev.
-                for (; ; ) {
+                for (;;) {
                     pos = ((last = pos) + 1) & mask;
-                    for (; ; ) {
+                    for (;;) {
                         if ((curr = key[pos]) == null) {
                             key[last] = null;
                             value[last] = null;
                             return;
                         }
                         slot = mix(curr.hashCode()) & mask;
-                        if (last <= pos ? last >= slot || slot > pos : last >= slot && slot > pos) break;
+                        if (last <= pos ? last >= slot || slot > pos : last >= slot && slot > pos)
+                            break;
                         pos = (pos + 1) & mask;
                     }
                     key[last] = curr;
                     value[last] = value[pos];
-                    if (next == pos) next = last;
-                    if (prev == pos) prev = last;
+                    if (next == pos)
+                        next = last;
+                    if (prev == pos)
+                        prev = last;
                     fixPointers(pos, last);
                 }
             }
@@ -1320,16 +1335,14 @@ public class OpenHashMap<K, V> implements Serializable, Cloneable, SortedMap<K, 
         }
 
         public int hashCode() {
-            return (key[this.index] == null ? 0 :
-                    key[this.index].hashCode()) ^ (value[this.index] == null ? 0 :
-                    value[this.index].hashCode());
+            return (key[this.index] == null ? 0 : key[this.index].hashCode())
+                ^ (value[this.index] == null ? 0 : value[this.index].hashCode());
         }
 
         public String toString() {
             return key[this.index] + "=>" + value[this.index];
         }
     }
-
 
     public static abstract class AbstractObjectCollection<K> extends AbstractCollection<K> {
         protected AbstractObjectCollection() {
@@ -1436,7 +1449,8 @@ public class OpenHashMap<K, V> implements Serializable, Cloneable, SortedMap<K, 
     private static int arraySize(int expected, float f) {
         long s = Math.max(2L, nextPowerOfTwo((long) Math.ceil((float) expected / f)));
         if (s > 0x40000000L) {
-            throw new IllegalArgumentException("Too large (" + expected + " expected elements with load factor " + f + ")");
+            throw new IllegalArgumentException(
+                "Too large (" + expected + " expected elements with load factor " + f + ")");
         } else {
             return (int) s;
         }

@@ -27,12 +27,12 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 @ProviderType
 public interface BundleReference {
-	/**
-	 * Returns the {@code Bundle} object associated with this
-	 * {@code BundleReference}.
-	 * 
-	 * @return The {@code Bundle} object associated with this
-	 *         {@code BundleReference}.
-	 */
+    /**
+     * Returns the {@code Bundle} object associated with this
+     * {@code BundleReference}.
+     * 
+     * @return The {@code Bundle} object associated with this
+     * {@code BundleReference}.
+     */
     Bundle getBundle();
 }

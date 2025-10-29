@@ -16,10 +16,10 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.Iterator;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An iterator which forwards all its method calls to another iterator. Subclasses should override
@@ -38,29 +38,29 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
-public abstract class ForwardingIterator<T extends @Nullable Object> extends ForwardingObject
-    implements Iterator<T> {
+public abstract class ForwardingIterator<T extends @Nullable Object> extends ForwardingObject implements Iterator<T> {
 
-  /** Constructor for use by subclasses. */
-  protected ForwardingIterator() {}
+    /** Constructor for use by subclasses. */
+    protected ForwardingIterator() {
+    }
 
-  @Override
-  protected abstract Iterator<T> delegate();
+    @Override
+    protected abstract Iterator<T> delegate();
 
-  @Override
-  public boolean hasNext() {
-    return delegate().hasNext();
-  }
+    @Override
+    public boolean hasNext() {
+        return delegate().hasNext();
+    }
 
-  @CanIgnoreReturnValue
-  @Override
-  @ParametricNullness
-  public T next() {
-    return delegate().next();
-  }
+    @CanIgnoreReturnValue
+    @Override
+    @ParametricNullness
+    public T next() {
+        return delegate().next();
+    }
 
-  @Override
-  public void remove() {
-    delegate().remove();
-  }
+    @Override
+    public void remove() {
+        delegate().remove();
+    }
 }

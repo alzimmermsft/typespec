@@ -30,29 +30,31 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
 public class ExecutionError extends Error {
-  /*
-   * Ideally, this class would have exposed only constructors that require a non-null cause. We
-   * might try to move in that direction, but there are complications. See
-   * https://github.com/jspecify/jspecify-reference-checker/blob/61aafa4ae52594830cfc2d61c8b113009dbdb045/src/main/java/com/google/jspecify/nullness/NullSpecTransfer.java#L789
-   */
+    /*
+     * Ideally, this class would have exposed only constructors that require a non-null cause. We
+     * might try to move in that direction, but there are complications. See
+     * https://github.com/jspecify/jspecify-reference-checker/blob/61aafa4ae52594830cfc2d61c8b113009dbdb045/src/main/
+     * java/com/google/jspecify/nullness/NullSpecTransfer.java#L789
+     */
 
-  /** Creates a new instance with {@code null} as its detail message. */
-  protected ExecutionError() {}
+    /** Creates a new instance with {@code null} as its detail message. */
+    protected ExecutionError() {
+    }
 
-  /** Creates a new instance with the given detail message. */
-  protected ExecutionError(@CheckForNull String message) {
-    super(message);
-  }
+    /** Creates a new instance with the given detail message. */
+    protected ExecutionError(@CheckForNull String message) {
+        super(message);
+    }
 
-  /** Creates a new instance with the given detail message and cause. */
-  public ExecutionError(@CheckForNull String message, @CheckForNull Error cause) {
-    super(message, cause);
-  }
+    /** Creates a new instance with the given detail message and cause. */
+    public ExecutionError(@CheckForNull String message, @CheckForNull Error cause) {
+        super(message, cause);
+    }
 
-  /** Creates a new instance with the given cause. */
-  public ExecutionError(@CheckForNull Error cause) {
-    super(cause);
-  }
+    /** Creates a new instance with the given cause. */
+    public ExecutionError(@CheckForNull Error cause) {
+        super(cause);
+    }
 
-  private static final long serialVersionUID = 0;
+    private static final long serialVersionUID = 0;
 }

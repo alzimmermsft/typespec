@@ -13,7 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.ICoreRunnable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.jobs.ISchedulingRule;
 
 /**
@@ -40,10 +39,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * resources need to be locked), and thus all methods in this class may
  * return <code>null</code>.
  *
- * @see WorkspaceJob
- * @see IWorkspace#run(ICoreRunnable, ISchedulingRule, int,
- * com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor)
- * @see org.eclipse.core.runtime.jobs.MultiRule#combine(ISchedulingRule, ISchedulingRule)
  * @since 3.0
  * @noimplement This interface is not intended to be implemented by clients.
  * @noextend This interface is not intended to be extended by clients.
@@ -59,14 +54,6 @@ public interface IResourceRuleFactory {
     ISchedulingRule createRule(IResource resource);
 
     /**
-     * Returns the scheduling rule that is required for building a project or the
-     * entire workspace.
-     *
-     * @return a scheduling rule, or <code>null</code>
-     */
-    ISchedulingRule buildRule();
-
-    /**
      * Returns the scheduling rule that is required for changing the charset
      * setting for a file or the default charset setting for a container.
      *
@@ -75,16 +62,6 @@ public interface IResourceRuleFactory {
      * @since 3.1
      */
     ISchedulingRule charsetRule(IResource resource);
-
-    /**
-     * Returns the scheduling rule that is required for changing the derived flag
-     * on a resource.
-     *
-     * @param resource the resource for which the derived flag will be changed
-     * @return a scheduling rule, or <code>null</code>
-     * @since 3.6
-     */
-    ISchedulingRule derivedRule(IResource resource);
 
     /**
      * Returns the scheduling rule that is required for copying a resource.

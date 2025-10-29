@@ -54,22 +54,6 @@ public class ProjectNatureDescriptor implements IProjectNatureDescriptor {
     }
 
     /**
-     * Returns the IDs of the incremental builders that this nature claims to
-     * own. These builders do not necessarily exist in the registry.
-     */
-    public String[] getBuilderIds() {
-        return builderIds;
-    }
-
-    /**
-     * Returns the IDs of the content types this nature declares to
-     * have affinity with. These content types do not necessarily exist in the registry.
-     */
-    public String[] getContentTypeIds() {
-        return contentTypeIds;
-    }
-
-    /**
      * @see IProjectNatureDescriptor#getNatureId()
      */
     @Override
@@ -78,35 +62,11 @@ public class ProjectNatureDescriptor implements IProjectNatureDescriptor {
     }
 
     /**
-     * @see IProjectNatureDescriptor#getLabel()
-     */
-    @Override
-    public String getLabel() {
-        return label;
-    }
-
-    /**
      * @see IProjectNatureDescriptor#getRequiredNatureIds()
      */
     @Override
     public String[] getRequiredNatureIds() {
         return requiredNatures;
-    }
-
-    /**
-     * @see IProjectNatureDescriptor#getNatureSetIds()
-     */
-    @Override
-    public String[] getNatureSetIds() {
-        return natureSets;
-    }
-
-    /**
-     * @see IProjectNatureDescriptor#isLinkingAllowed()
-     */
-    @Override
-    public boolean isLinkingAllowed() {
-        return allowLinking;
     }
 
     /**

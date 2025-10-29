@@ -25,20 +25,20 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import static java.util.Collections.*;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.unix.LibCAPI.size_t;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.unix.LibCAPI.size_t;
-
 public class ExtAttrUtil {
 
     public static List<String> list(String path) throws IOException {
         // get required buffer size
-        long bufferLength = ExtAttr.INSTANCE.extattr_list_file(path, ExtAttr.EXTATTR_NAMESPACE_USER, null, new size_t(0)).longValue();
+        long bufferLength
+            = ExtAttr.INSTANCE.extattr_list_file(path, ExtAttr.EXTATTR_NAMESPACE_USER, null, new size_t(0)).longValue();
 
         if (bufferLength < 0) {
             throw new IOException("errno: " + Native.getLastError());
@@ -49,7 +49,9 @@ public class ExtAttrUtil {
         }
 
         ByteBuffer buffer = ByteBuffer.allocate((int) bufferLength);
-        long valueLength = ExtAttr.INSTANCE.extattr_list_file(path, ExtAttr.EXTATTR_NAMESPACE_USER, buffer, new size_t(bufferLength)).longValue();
+        long valueLength
+            = ExtAttr.INSTANCE.extattr_list_file(path, ExtAttr.EXTATTR_NAMESPACE_USER, buffer, new size_t(bufferLength))
+                .longValue();
 
         if (valueLength < 0) {
             throw new IOException("errno: " + Native.getLastError());
@@ -60,7 +62,9 @@ public class ExtAttrUtil {
 
     public static ByteBuffer get(String path, String name) throws IOException {
         // get required buffer size
-        long bufferLength = ExtAttr.INSTANCE.extattr_get_file(path, ExtAttr.EXTATTR_NAMESPACE_USER, name, null, new size_t(0)).longValue();
+        long bufferLength
+            = ExtAttr.INSTANCE.extattr_get_file(path, ExtAttr.EXTATTR_NAMESPACE_USER, name, null, new size_t(0))
+                .longValue();
 
         if (bufferLength < 0) {
             throw new IOException("errno: " + Native.getLastError());
@@ -71,7 +75,9 @@ public class ExtAttrUtil {
         }
 
         ByteBuffer buffer = ByteBuffer.allocate((int) bufferLength);
-        long valueLength = ExtAttr.INSTANCE.extattr_get_file(path, ExtAttr.EXTATTR_NAMESPACE_USER, name, buffer, new size_t(bufferLength)).longValue();
+        long valueLength = ExtAttr.INSTANCE
+            .extattr_get_file(path, ExtAttr.EXTATTR_NAMESPACE_USER, name, buffer, new size_t(bufferLength))
+            .longValue();
 
         if (valueLength < 0) {
             throw new IOException("errno: " + Native.getLastError());
@@ -81,7 +87,9 @@ public class ExtAttrUtil {
     }
 
     public static void set(String path, String name, ByteBuffer value) throws IOException {
-        long r = ExtAttr.INSTANCE.extattr_set_file(path, ExtAttr.EXTATTR_NAMESPACE_USER, name, value, new size_t(value.remaining())).longValue();
+        long r = ExtAttr.INSTANCE
+            .extattr_set_file(path, ExtAttr.EXTATTR_NAMESPACE_USER, name, value, new size_t(value.remaining()))
+            .longValue();
         if (r < 0) {
             throw new IOException("errno: " + Native.getLastError());
         }

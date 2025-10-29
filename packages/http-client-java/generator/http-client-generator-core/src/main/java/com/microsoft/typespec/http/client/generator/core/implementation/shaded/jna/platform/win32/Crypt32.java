@@ -24,18 +24,19 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.*;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WTypes.LPSTR;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinBase.FILETIME;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinCrypt.*;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinCrypt.CRYPTPROTECT_PROMPTSTRUCT;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinCrypt.DATA_BLOB;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.IntByReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.PointerByReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.win32.StdCallLibrary;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.win32.W32APIOptions;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinCrypt.*;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.IntByReference;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinBase.FILETIME;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WTypes.LPSTR;
 
 /**
  * Crypt32.dll Interface.
+ * 
  * @author dblock[at]dblock.org
  */
 public interface Crypt32 extends StdCallLibrary {
@@ -49,42 +50,39 @@ public interface Crypt32 extends StdCallLibrary {
      * encryption and decryption usually must be done on the same computer.
      *
      * @param pDataIn Pointer to a DATA_BLOB structure that contains
-     *                         the plaintext to be encrypted.
+     * the plaintext to be encrypted.
      * @param szDataDescr String with a readable description of the data to
-     *                         be encrypted. This description string is included
-     *                         with the encrypted data. This parameter is
-     *                         optional and can be set to NULL, except on
-     *                         Windows 2000.
+     * be encrypted. This description string is included
+     * with the encrypted data. This parameter is
+     * optional and can be set to NULL, except on
+     * Windows 2000.
      * @param pOptionalEntropy Pointer to a DATA_BLOB structure that contains a
-     *                         password or other additional entropy used to
-     *                         encrypt the data. The DATA_BLOB structure used in
-     *                         the encryption phase must also be used in the
-     *                         decryption phase. This parameter can be set to
-     *                         NULL for no additional entropy.
+     * password or other additional entropy used to
+     * encrypt the data. The DATA_BLOB structure used in
+     * the encryption phase must also be used in the
+     * decryption phase. This parameter can be set to
+     * NULL for no additional entropy.
      * @param pvReserved Reserved for future use and must be set to NULL.
      * @param pPromptStruct Pointer to a CRYPTPROTECT_PROMPTSTRUCT structure
-     *                         that provides information about where and when
-     *                         prompts are to be displayed and what the content
-     *                         of those prompts should be. This parameter can be
-     *                         set to NULL in both the encryption and decryption
-     *                         phases.
+     * that provides information about where and when
+     * prompts are to be displayed and what the content
+     * of those prompts should be. This parameter can be
+     * set to NULL in both the encryption and decryption
+     * phases.
      * @param dwFlags One of CRYPTPROTECT_LOCAL_MACHINE,
-     *                         CRYPTPROTECT_UI_FORBIDDEN, CRYPTPROTECT_AUDIT,
-     *                         CRYPTPROTECT_VERIFY_PROTECTION.
+     * CRYPTPROTECT_UI_FORBIDDEN, CRYPTPROTECT_AUDIT,
+     * CRYPTPROTECT_VERIFY_PROTECTION.
      * @param pDataOut Pointer to a DATA_BLOB structure that receives
-     *                         the encrypted data. When you have finished using
-     *                         the DATA_BLOB structure, free its pbData member
-     *                         by calling the LocalFree function.
+     * the encrypted data. When you have finished using
+     * the DATA_BLOB structure, free its pbData member
+     * by calling the LocalFree function.
      *
      * @return If the function succeeds, the function returns TRUE. If the
-     *         function fails, it returns FALSE. For extended error information,
-     *         call GetLastError.
+     * function fails, it returns FALSE. For extended error information,
+     * call GetLastError.
      */
-    public boolean CryptProtectData(DATA_BLOB pDataIn, String szDataDescr,
-            DATA_BLOB pOptionalEntropy, Pointer pvReserved,
-            CRYPTPROTECT_PROMPTSTRUCT pPromptStruct,
-            int dwFlags,
-            DATA_BLOB pDataOut);
+    public boolean CryptProtectData(DATA_BLOB pDataIn, String szDataDescr, DATA_BLOB pOptionalEntropy,
+        Pointer pvReserved, CRYPTPROTECT_PROMPTSTRUCT pPromptStruct, int dwFlags, DATA_BLOB pDataOut);
 
     /**
      * The CryptUnprotectData function decrypts and does an integrity check of
@@ -93,54 +91,51 @@ public interface Crypt32 extends StdCallLibrary {
      * encryption and decryption must be done on the same computer.
      *
      * @param pDataIn Pointer to a DATA_BLOB structure that holds the
-     *                         encrypted data. The DATA_BLOB structure's cbData
-     *                         member holds the length of the pbData member's
-     *                         byte string that contains the text to be
-     *                         encrypted.
+     * encrypted data. The DATA_BLOB structure's cbData
+     * member holds the length of the pbData member's
+     * byte string that contains the text to be
+     * encrypted.
      * @param szDataDescr Pointer to a string-readable description of the
-     *                         encrypted data included with the encrypted data.
-     *                         This parameter can be set to NULL. When you have
-     *                         finished using ppszDataDescr, free it by calling
-     *                         the LocalFree function.
+     * encrypted data included with the encrypted data.
+     * This parameter can be set to NULL. When you have
+     * finished using ppszDataDescr, free it by calling
+     * the LocalFree function.
      * @param pOptionalEntropy Pointer to a DATA_BLOB structure that contains a
-     *                         password or other additional entropy used when
-     *                         the data was encrypted. This parameter can be set
-     *                         to NULL; however, if an optional entropy
-     *                         DATA_BLOB structure was used in the encryption
-     *                         phase, that same DATA_BLOB structure must be used
-     *                         for the decryption phase.
+     * password or other additional entropy used when
+     * the data was encrypted. This parameter can be set
+     * to NULL; however, if an optional entropy
+     * DATA_BLOB structure was used in the encryption
+     * phase, that same DATA_BLOB structure must be used
+     * for the decryption phase.
      * @param pvReserved Reserved for future use; must be set to NULL.
      * @param pPromptStruct Pointer to a CRYPTPROTECT_PROMPTSTRUCT structure
-     *                         that provides information about where and when
-     *                         prompts are to be displayed and what the content
-     *                         of those prompts should be. This parameter can be
-     *                         set to NULL.
+     * that provides information about where and when
+     * prompts are to be displayed and what the content
+     * of those prompts should be. This parameter can be
+     * set to NULL.
      * @param dwFlags DWORD value that specifies options for this
-     *                         function. This parameter can be zero, in which
-     *                         case no option is set, or
-     *                         CRYPTPROTECT_UI_FORBIDDEN.
+     * function. This parameter can be zero, in which
+     * case no option is set, or
+     * CRYPTPROTECT_UI_FORBIDDEN.
      * @param pDataOut Pointer to a DATA_BLOB structure where the
-     *                         function stores the decrypted data. When you have
-     *                         finished using the DATA_BLOB structure, free its
-     *                         pbData member by calling the LocalFree function.
+     * function stores the decrypted data. When you have
+     * finished using the DATA_BLOB structure, free its
+     * pbData member by calling the LocalFree function.
      *
      * @return If the function succeeds, the return value is TRUE. If the
-     *         function fails, the return value is FALSE.
+     * function fails, the return value is FALSE.
      */
-    public boolean CryptUnprotectData(DATA_BLOB pDataIn, PointerByReference szDataDescr,
-            DATA_BLOB pOptionalEntropy, Pointer pvReserved,
-            CRYPTPROTECT_PROMPTSTRUCT pPromptStruct,
-            int dwFlags,
-            DATA_BLOB pDataOut);
+    public boolean CryptUnprotectData(DATA_BLOB pDataIn, PointerByReference szDataDescr, DATA_BLOB pOptionalEntropy,
+        Pointer pvReserved, CRYPTPROTECT_PROMPTSTRUCT pPromptStruct, int dwFlags, DATA_BLOB pDataOut);
 
     /**
      * The CertAddEncodedCertificateToSystemStore function opens the specified
      * system store and adds the encoded certificate to it.
      *
      * @param szCertStoreName A null-terminated string that contains the name of
-     *                        the system store for the encoded certificate.
+     * the system store for the encoded certificate.
      * @param pbCertEncoded A pointer to a buffer that contains the encoded
-     *                        certificate to add.
+     * certificate to add.
      * @param cbCertEncoded The size, in bytes, of the pbCertEncoded buffer.
      *
      * @return If the function succeeds, the return value is TRUE.<br>
@@ -160,73 +155,69 @@ public interface Crypt32 extends StdCallLibrary {
      * The {@code CertOpenStore} function opens a certificate store by using a specified store provider type
      *
      * @param lpszStoreProvider
-     *          A pointer to a null-terminated ANSI string that contains the store provider type.
+     * A pointer to a null-terminated ANSI string that contains the store provider type.
      * @param dwEncodingType
-     *          Specifies the <a href="https://docs.microsoft.com/en-us/windows/desktop/SecGloss/c-gly">certificate encoding type</a>
-     *          and <a href="https://docs.microsoft.com/en-us/windows/desktop/SecGloss/m-gly">message encoding</a> type.
-     *          Encoding is used only when the {@code dwSaveAs} parameter of the
-     *          <a href="https://docs.microsoft.com/en-us/windows/desktop/api/wincrypt/nf-wincrypt-certsavestore">CertSaveStore</a>
-     *          function contains {@code CERT_STORE_SAVE_AS_PKCS7}.
-     *          Otherwise, the {@code dwMsgAndCertEncodingType} parameter is not used.
+     * Specifies the <a href="https://docs.microsoft.com/en-us/windows/desktop/SecGloss/c-gly">certificate encoding
+     * type</a>
+     * and <a href="https://docs.microsoft.com/en-us/windows/desktop/SecGloss/m-gly">message encoding</a> type.
+     * Encoding is used only when the {@code dwSaveAs} parameter of the
+     * <a
+     * href="https://docs.microsoft.com/en-us/windows/desktop/api/wincrypt/nf-wincrypt-certsavestore">CertSaveStore</a>
+     * function contains {@code CERT_STORE_SAVE_AS_PKCS7}.
+     * Otherwise, the {@code dwMsgAndCertEncodingType} parameter is not used.
      * @param hCryptProv
-     *          This parameter is not used and should be set to NULL.
+     * This parameter is not used and should be set to NULL.
      * @param dwFlags
-     *          These values consist of high-word and low-word values combined by using a bitwise-OR operation.
-     *          See {@code CERT_STORE_*_FLAG} and {@code CERT_SYSTEM_STORE_*} constants.
+     * These values consist of high-word and low-word values combined by using a bitwise-OR operation.
+     * See {@code CERT_STORE_*_FLAG} and {@code CERT_SYSTEM_STORE_*} constants.
      * @param pvPara
-     *          Additional information for this function. The contents of
-     *          this parameter depends on the value of the {@code lpszStoreProvider} and other parameters.
+     * Additional information for this function. The contents of
+     * this parameter depends on the value of the {@code lpszStoreProvider} and other parameters.
      * @return
-     *          If the function succeeds, the function returns a handle to the certificate store.
-     *          When you have finished using the store, release the handle by calling the
-     *          {@link Crypt32#CertCloseStore(HCERTSTORE, int)} function.
-     *          If the function fails, it returns NULL. For extended error information,
-     *          call {@link Native#getLastError()}.
+     * If the function succeeds, the function returns a handle to the certificate store.
+     * When you have finished using the store, release the handle by calling the
+     * {@link Crypt32#CertCloseStore(HCERTSTORE, int)} function.
+     * If the function fails, it returns NULL. For extended error information,
+     * call {@link Native#getLastError()}.
      *
      * @see <a href="https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-certopenstore">MSDN</a>
      */
-    HCERTSTORE CertOpenStore(
-            CertStoreProviderName lpszStoreProvider,
-            int dwEncodingType,
-            HCRYPTPROV_LEGACY hCryptProv,
-            int dwFlags,
-            Pointer pvPara);
+    HCERTSTORE CertOpenStore(CertStoreProviderName lpszStoreProvider, int dwEncodingType, HCRYPTPROV_LEGACY hCryptProv,
+        int dwFlags, Pointer pvPara);
 
     /**
      * The {@code CertOpenStore} function opens a certificate store by using a specified store provider type
      *
      * @param lpszStoreProvider
-     *          A pointer to a null-terminated ANSI string that contains the store provider type.
+     * A pointer to a null-terminated ANSI string that contains the store provider type.
      * @param dwEncodingType
-     *          Specifies the <a href="https://docs.microsoft.com/en-us/windows/desktop/SecGloss/c-gly">certificate encoding type</a>
-     *          and <a href="https://docs.microsoft.com/en-us/windows/desktop/SecGloss/m-gly">message encoding</a> type.
-     *          Encoding is used only when the {@code dwSaveAs} parameter of the
-     *          <a href="https://docs.microsoft.com/en-us/windows/desktop/api/wincrypt/nf-wincrypt-certsavestore">CertSaveStore</a>
-     *          function contains {@code CERT_STORE_SAVE_AS_PKCS7}.
-     *          Otherwise, the {@code dwMsgAndCertEncodingType} parameter is not used.
+     * Specifies the <a href="https://docs.microsoft.com/en-us/windows/desktop/SecGloss/c-gly">certificate encoding
+     * type</a>
+     * and <a href="https://docs.microsoft.com/en-us/windows/desktop/SecGloss/m-gly">message encoding</a> type.
+     * Encoding is used only when the {@code dwSaveAs} parameter of the
+     * <a
+     * href="https://docs.microsoft.com/en-us/windows/desktop/api/wincrypt/nf-wincrypt-certsavestore">CertSaveStore</a>
+     * function contains {@code CERT_STORE_SAVE_AS_PKCS7}.
+     * Otherwise, the {@code dwMsgAndCertEncodingType} parameter is not used.
      * @param hCryptProv
-     *          This parameter is not used and should be set to NULL.
+     * This parameter is not used and should be set to NULL.
      * @param dwFlags
-     *          These values consist of high-word and low-word values combined by using a bitwise-OR operation.
-     *          See {@code CERT_STORE_*_FLAG} and {@code CERT_SYSTEM_STORE_*} constants.
+     * These values consist of high-word and low-word values combined by using a bitwise-OR operation.
+     * See {@code CERT_STORE_*_FLAG} and {@code CERT_SYSTEM_STORE_*} constants.
      * @param pvPara
-     *          Additional information for this function in {@link WTypes.LPWSTR} form. The contents of
-     *          this parameter depends on the value of the {@code lpszStoreProvider} and other parameters.
+     * Additional information for this function in {@link WTypes.LPWSTR} form. The contents of
+     * this parameter depends on the value of the {@code lpszStoreProvider} and other parameters.
      * @return
-     *          If the function succeeds, the function returns a handle to the certificate store.
-     *          When you have finished using the store, release the handle by calling the
-     *          {@link Crypt32#CertCloseStore(HCERTSTORE, int)} function.
-     *          If the function fails, it returns NULL. For extended error information,
-     *          call {@link Native#getLastError()}.
+     * If the function succeeds, the function returns a handle to the certificate store.
+     * When you have finished using the store, release the handle by calling the
+     * {@link Crypt32#CertCloseStore(HCERTSTORE, int)} function.
+     * If the function fails, it returns NULL. For extended error information,
+     * call {@link Native#getLastError()}.
      *
      * @see <a href="https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-certopenstore">MSDN</a>
      */
-    HCERTSTORE CertOpenStore(
-            CertStoreProviderName lpszStoreProvider,
-            int dwEncodingType,
-            HCRYPTPROV_LEGACY hCryptProv,
-            int dwFlags,
-            WTypes.LPWSTR pvPara);
+    HCERTSTORE CertOpenStore(CertStoreProviderName lpszStoreProvider, int dwEncodingType, HCRYPTPROV_LEGACY hCryptProv,
+        int dwFlags, WTypes.LPWSTR pvPara);
 
     /**
      * The CertOpenSystemStore function is a simplified function that opens the
@@ -244,7 +235,8 @@ public interface Crypt32 extends StdCallLibrary {
      * certificate store. If the function fails, it returns NULL. For extended
      * error information, call {@link Native#getLastError()}
      *
-     * @see <a href="https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-certopensystemstorew">MSDN</a>
+     * @see <a
+     * href="https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-certopensystemstorew">MSDN</a>
      */
     HCERTSTORE CertOpenSystemStore(Pointer hprov, String szSubsystemProtocol);
 
@@ -276,7 +268,7 @@ public interface Crypt32 extends StdCallLibrary {
      * the function fails, the return value is zero (FALSE).
      */
     boolean CryptSignMessage(CRYPT_SIGN_MESSAGE_PARA pSignPara, boolean fDetachedSignature, int cToBeSigned,
-            Pointer[] rgpbToBeSigned, int[] rgcbToBeSigned, Pointer pbSignedBlob, IntByReference pcbSignedBlob);
+        Pointer[] rgpbToBeSigned, int[] rgcbToBeSigned, Pointer pbSignedBlob, IntByReference pcbSignedBlob);
 
     /**
      * The CryptVerifyMessageSignature function verifies a signed message's
@@ -332,9 +324,8 @@ public interface Crypt32 extends StdCallLibrary {
      * is not verified. To verify the signature of a detached message, use t he
      * CryptVerifyDetachedMessageSignature function.
      */
-    boolean CryptVerifyMessageSignature(CRYPT_VERIFY_MESSAGE_PARA pVerifyPara,
-            int signerIndex, Pointer pbSignedBlob, int cbSignedBlob,
-            Pointer pbDecoded, IntByReference pcbDecoded, PointerByReference ppSignerCert);
+    boolean CryptVerifyMessageSignature(CRYPT_VERIFY_MESSAGE_PARA pVerifyPara, int signerIndex, Pointer pbSignedBlob,
+        int cbSignedBlob, Pointer pbDecoded, IntByReference pcbDecoded, PointerByReference ppSignerCert);
 
     /**
      * The CertGetCertificateChain function builds a certificate chain context
@@ -372,8 +363,8 @@ public interface Crypt32 extends StdCallLibrary {
      * the function fails, it returns zero (FALSE).
      */
     boolean CertGetCertificateChain(HCERTCHAINENGINE hChainEngine, CERT_CONTEXT pCertContext, FILETIME pTime,
-            HCERTSTORE hAdditionalStore, CERT_CHAIN_PARA pChainPara, int dwFlags, Pointer pvReserved,
-            PointerByReference ppChainContext);
+        HCERTSTORE hAdditionalStore, CERT_CHAIN_PARA pChainPara, int dwFlags, Pointer pvReserved,
+        PointerByReference ppChainContext);
 
     /**
      * The CertFreeCertificateContext function frees a certificate context by
@@ -474,7 +465,7 @@ public interface Crypt32 extends StdCallLibrary {
      * policy.
      */
     boolean CertVerifyCertificateChainPolicy(LPSTR pszPolicyOID, CERT_CHAIN_CONTEXT pChainContext,
-            CERT_CHAIN_POLICY_PARA pPolicyPara, CERT_CHAIN_POLICY_STATUS pPolicyStatus);
+        CERT_CHAIN_POLICY_PARA pPolicyPara, CERT_CHAIN_POLICY_STATUS pPolicyStatus);
 
     /**
      * The CertFindCertificateInStore function finds the first or next
@@ -512,7 +503,7 @@ public interface Crypt32 extends StdCallLibrary {
      * CertFindCertificateInStore.
      */
     CERT_CONTEXT.ByReference CertFindCertificateInStore(HCERTSTORE hCertStore, int dwCertEncodingType, int dwFindFlags,
-            int dwFindType, Pointer pvFindPara, CERT_CONTEXT pPrevCertContext);
+        int dwFindType, Pointer pvFindPara, CERT_CONTEXT pPrevCertContext);
 
     /**
      * The PFXImportCertStore function imports a PFX BLOB and returns the handle
@@ -571,7 +562,7 @@ public interface Crypt32 extends StdCallLibrary {
      * GetLastError function.</p>
      *
      * @see <a href=
-     *      "https://msdn.microsoft.com/en-us/library/windows/desktop/aa387314(v=vs.85).aspx">MSDN</a>
+     * "https://msdn.microsoft.com/en-us/library/windows/desktop/aa387314(v=vs.85).aspx">MSDN</a>
      */
     HCERTSTORE PFXImportCertStore(DATA_BLOB pPFX, WTypes.LPWSTR szPassword, int dwFlags);
 
@@ -580,9 +571,9 @@ public interface Crypt32 extends StdCallLibrary {
      * certificate in a certificate store. Used in a loop, this function can
      * retrieve in sequence all certificates in a certificate store.
      *
-     * @param hCertStore       A handle of a certificate store.
+     * @param hCertStore A handle of a certificate store.
      * @param pPrevCertContext A pointer to the {@link CERT_CONTEXT} of the
-     *                         previous certificate context found.
+     * previous certificate context found.
      * <p>
      * This parameter must be NULL to begin the enumeration and get the first
      * certificate in the store. Successive certificates are enumerated by
@@ -598,8 +589,8 @@ public interface Crypt32 extends StdCallLibrary {
      * previously deleted by CertDeleteCertificateFromStore.</p>
      *
      * @return If the function succeeds, the function returns a pointer to the
-     *         next {@link CERT_CONTEXT} in the store. If no more certificates
-     *         exist in the store, the function returns {@code NULL}.
+     * next {@link CERT_CONTEXT} in the store. If no more certificates
+     * exist in the store, the function returns {@code NULL}.
      *
      * <p>
      * For extended error information, call GetLastError. Some possible error
@@ -619,7 +610,7 @@ public interface Crypt32 extends StdCallLibrary {
      * </table>
      *
      * @see <a href=
-     *      "https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-certenumcertificatesinstore">MSDN</a>
+     * "https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-certenumcertificatesinstore">MSDN</a>
      */
     CERT_CONTEXT.ByReference CertEnumCertificatesInStore(HCERTSTORE hCertStore, Pointer pPrevCertContext);
 
@@ -629,19 +620,19 @@ public interface Crypt32 extends StdCallLibrary {
      * function can retrieve in sequence all CTL contexts in a certificate
      * store.
      *
-     * @param hCertStore      A handle of a certificate store.
+     * @param hCertStore A handle of a certificate store.
      * @param pPrevCtlContext A pointer to the previous {@link CTL_CONTEXT}
-     *                        structure found. It must be {@code NULL} to get
-     *                        the first CTL in the store. Successive CTLs are
-     *                        enumerated by setting {@code pPrevCtlContext} to
-     *                        the pointer returned by a previous call. This
-     *                        function frees the {@link CTL_CONTEXT} referenced
-     *                        by non-NULL values of this parameter. The
-     *                        enumeration skips any CTLs previously deleted by
-     *                        CertDeleteCTLFromStore.
+     * structure found. It must be {@code NULL} to get
+     * the first CTL in the store. Successive CTLs are
+     * enumerated by setting {@code pPrevCtlContext} to
+     * the pointer returned by a previous call. This
+     * function frees the {@link CTL_CONTEXT} referenced
+     * by non-NULL values of this parameter. The
+     * enumeration skips any CTLs previously deleted by
+     * CertDeleteCTLFromStore.
      *
      * @return If the function succeeds, the return value is a pointer to a
-     *         read-only CTL_CONTEXT.
+     * read-only CTL_CONTEXT.
      *
      * <p>
      * If the function fails and a CTL is not found, the return value is NULL.
@@ -657,7 +648,7 @@ public interface Crypt32 extends StdCallLibrary {
      * </table>
      *
      * @see <a href=
-     *      "https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-certenumctlsinstore">MSDN</a>
+     * "https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-certenumctlsinstore">MSDN</a>
      */
     CTL_CONTEXT.ByReference CertEnumCTLsInStore(HCERTSTORE hCertStore, Pointer pPrevCtlContext);
 
@@ -667,20 +658,20 @@ public interface Crypt32 extends StdCallLibrary {
      * this function can retrieve in sequence all CRL contexts in a certificate
      * store. store.
      *
-     * @param hCertStore      A handle of a certificate store.
+     * @param hCertStore A handle of a certificate store.
      * @param pPrevCrlContext A pointer to the previous {@link CRL_CONTEXT}
-     *                        structure found. The {@code code pPrevCrlContext}
-     *                        parameter must be {@code NULL} to get the first
-     *                        CRL in the store. Successive CRLs are enumerated
-     *                        by setting {@code pPrevCrlContext} to the pointer
-     *                        returned by a previous call to the function. This
-     *                        function frees the CRL_CONTEXT referenced by
-     *                        non-NULL values of this parameter. The enumeration
-     *                        skips any CRLs previously deleted by
-     *                        CertDeleteCRLFromStore.
+     * structure found. The {@code code pPrevCrlContext}
+     * parameter must be {@code NULL} to get the first
+     * CRL in the store. Successive CRLs are enumerated
+     * by setting {@code pPrevCrlContext} to the pointer
+     * returned by a previous call to the function. This
+     * function frees the CRL_CONTEXT referenced by
+     * non-NULL values of this parameter. The enumeration
+     * skips any CRLs previously deleted by
+     * CertDeleteCRLFromStore.
      *
      * @return If the function succeeds, the return value is a pointer to the
-     *         next {@link CRL_CONTEXT} in the store.
+     * next {@link CRL_CONTEXT} in the store.
      *
      * <p>
      * {@code NULL} is returned if the function fails. For extended error
@@ -696,7 +687,7 @@ public interface Crypt32 extends StdCallLibrary {
      * </table>
      *
      * @see <a href=
-     *      "https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-certenumcrlsinstore">MSDN</a>
+     * "https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-certenumcrlsinstore">MSDN</a>
      */
     CRL_CONTEXT.ByReference CertEnumCRLsInStore(HCERTSTORE hCertStore, Pointer pPrevCrlContext);
 
@@ -725,19 +716,10 @@ public interface Crypt32 extends StdCallLibrary {
      * call GetLastError.</p>
      *
      * @see <a href=
-     *      "https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-cryptqueryobject">MSDN</a>
+     * "https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-cryptqueryobject">MSDN</a>
      */
-    boolean CryptQueryObject(
-        int dwObjectType,
-        Pointer pvObject,
-        int dwExpectedContentTypeFlags,
-        int dwExpectedFormatTypeFlags,
-        int dwFlags,
-        IntByReference pdwMsgAndCertEncodingType,
-        IntByReference pdwContentType,
-        IntByReference pdwFormatType,
-        PointerByReference phCertStore,
-        PointerByReference phMsg,
-        PointerByReference ppvContext
-    );
+    boolean CryptQueryObject(int dwObjectType, Pointer pvObject, int dwExpectedContentTypeFlags,
+        int dwExpectedFormatTypeFlags, int dwFlags, IntByReference pdwMsgAndCertEncodingType,
+        IntByReference pdwContentType, IntByReference pdwFormatType, PointerByReference phCertStore,
+        PointerByReference phMsg, PointerByReference ppvContext);
 }

@@ -23,24 +23,25 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.win32;
 
-import java.lang.reflect.Method;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Function;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.FunctionMapper;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.NativeLibrary;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.NativeMapped;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.NativeMappedConverter;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
+import java.lang.reflect.Method;
 
-/** Provides mapping from simple method names to w32 stdcall-decorated names
+/**
+ * Provides mapping from simple method names to w32 stdcall-decorated names
  * where the name suffix is "@" followed by the number of bytes popped by
  * the called function.<p>
  * NOTE: if you use custom type mapping for primitive types, you may need to
  * override {@link #getArgumentNativeStackSize(Class)}.
  */
 public class StdCallFunctionMapper implements FunctionMapper {
-    /** Override this to handle any custom class mappings.
+    /**
+     * Override this to handle any custom class mappings.
+     * 
      * @param cls Java class of a parameter
      * @return number of native bytes used for this class on the stack
      */
@@ -53,7 +54,7 @@ public class StdCallFunctionMapper implements FunctionMapper {
         }
         try {
             return Native.getNativeSize(cls);
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Unknown native stack allocation size for " + cls);
         }
     }
@@ -79,12 +80,12 @@ public class StdCallFunctionMapper implements FunctionMapper {
         try {
             Function func = library.getFunction(decorated, conv);
             name = func.getName();
-        } catch(UnsatisfiedLinkError e) {
+        } catch (UnsatisfiedLinkError e) {
             // try with an explicit underscore
             try {
                 Function func = library.getFunction("_" + decorated, conv);
                 name = func.getName();
-            } catch(UnsatisfiedLinkError e2) {
+            } catch (UnsatisfiedLinkError e2) {
                 // not found; let caller try undecorated version
             }
         }

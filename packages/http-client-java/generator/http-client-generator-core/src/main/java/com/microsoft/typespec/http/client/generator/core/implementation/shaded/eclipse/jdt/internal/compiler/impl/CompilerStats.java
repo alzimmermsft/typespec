@@ -16,31 +16,32 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 @SuppressWarnings("rawtypes")
 public class CompilerStats implements Comparable {
 
-	// overall
-	public long startTime;
-	public long endTime;
-	public long overallTime;
-	public long lineCount;
+    // overall
+    public long startTime;
+    public long endTime;
+    public long overallTime;
+    public long lineCount;
 
-	// compile phases
-	public long parseTime;
-	public long resolveTime;
-	public long analyzeTime;
-	public long generateTime;
+    // compile phases
+    public long parseTime;
+    public long resolveTime;
+    public long analyzeTime;
+    public long generateTime;
 
-/**
- * Returns the total elapsed time (between start and end)
- * @return the time spent between start and end
- */
-public long elapsedTime() {
-	return this.overallTime;
-}
+    /**
+     * Returns the total elapsed time (between start and end)
+     * 
+     * @return the time spent between start and end
+     */
+    public long elapsedTime() {
+        return this.overallTime;
+    }
 
-@Override
-public int compareTo(Object o) {
-	CompilerStats otherStats = (CompilerStats) o;
-	long time1 = elapsedTime();
-	long time2 = otherStats.elapsedTime();
-	return time1 < time2 ? -1 : (time1 == time2 ? 0 : 1);
-}
+    @Override
+    public int compareTo(Object o) {
+        CompilerStats otherStats = (CompilerStats) o;
+        long time1 = elapsedTime();
+        long time2 = otherStats.elapsedTime();
+        return time1 < time2 ? -1 : (time1 == time2 ? 0 : 1);
+    }
 }

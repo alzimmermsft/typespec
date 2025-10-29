@@ -22,8 +22,8 @@ import java.util.Comparator;
  * The alternative is {@link PackageImportComparator}. See https://bugs.eclipse.org/194358.
  */
 final class PackageAndContainingTypeImportComparator implements Comparator<ImportName> {
-	@Override
-	public int compare(ImportName o1, ImportName o2) {
-		return o1.containerName.compareTo(o2.containerName);
-	}
+    @Override
+    public int compare(ImportName o1, ImportName o2) {
+        return o1.containerName.compareTo(o2.containerName);
+    }
 }

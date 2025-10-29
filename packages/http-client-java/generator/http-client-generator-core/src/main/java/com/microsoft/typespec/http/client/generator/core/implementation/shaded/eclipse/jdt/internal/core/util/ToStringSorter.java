@@ -25,36 +25,37 @@ import java.util.function.Function;
  * objects is based on their toString(). They are sorted in
  * alphabetical order.
  */
-public class ToStringSorter <T> {
-	private final Function<T, String> toString;
+public class ToStringSorter<T> {
+    private final Function<T, String> toString;
 
-	public ToStringSorter(Function<T, String> toString) {
-		this.toString = toString;
-	}
+    public ToStringSorter(Function<T, String> toString) {
+        this.toString = toString;
+    }
 
-	static class Pair<T> implements Comparable<Pair<T>> {
-		final T object;
-		final String string;
-		public Pair(T k, String s) {
-			this.object = k;
-			this.string = s;
-		}
+    static class Pair<T> implements Comparable<Pair<T>> {
+        final T object;
+        final String string;
 
-		@Override
-		public int compareTo(Pair<T> other) {
-			return this.string.compareTo(other.string);
-		}
-	}
+        public Pair(T k, String s) {
+            this.object = k;
+            this.string = s;
+        }
 
-	/**
-	 *  Return a new sorted collection from this unsorted collection.
-	 */
-	public List<Pair<T>> sort(Collection<T> unSorted) {
-		int size = unSorted.size();
-		//copy the list so can return a new sorted collection
-		List<Pair <T>> sortedObjects = new ArrayList<>(size);
-		unSorted.forEach(k -> sortedObjects.add(new Pair<>(k, this.toString.apply(k))));
-		Collections.sort(sortedObjects);
-		return sortedObjects;
-	}
+        @Override
+        public int compareTo(Pair<T> other) {
+            return this.string.compareTo(other.string);
+        }
+    }
+
+    /**
+     * Return a new sorted collection from this unsorted collection.
+     */
+    public List<Pair<T>> sort(Collection<T> unSorted) {
+        int size = unSorted.size();
+        // copy the list so can return a new sorted collection
+        List<Pair<T>> sortedObjects = new ArrayList<>(size);
+        unSorted.forEach(k -> sortedObjects.add(new Pair<>(k, this.toString.apply(k))));
+        Collections.sort(sortedObjects);
+        return sortedObjects;
+    }
 }

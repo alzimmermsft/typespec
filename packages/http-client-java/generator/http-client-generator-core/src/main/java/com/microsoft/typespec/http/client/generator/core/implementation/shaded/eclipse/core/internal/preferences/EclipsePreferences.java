@@ -42,12 +42,10 @@ import java.util.*;
 public class EclipsePreferences implements IEclipsePreferences, IScope {
 
     public static final String DEFAULT_PREFERENCES_DIRNAME = ".settings"; //$NON-NLS-1$
-    public static final String PREFS_FILE_EXTENSION = "prefs"; //$NON-NLS-1$
     protected static final String[] EMPTY_STRING_ARRAY = new String[0];
-    private static final String FALSE = "false"; //$NON-NLS-1$
+    //$NON-NLS-1$
     private static final String TRUE = "true"; //$NON-NLS-1$
     protected static final String VERSION_KEY = "eclipse.preferences.version"; //$NON-NLS-1$
-    protected static final String VERSION_VALUE = "1"; //$NON-NLS-1$
     protected static final String PATH_SEPARATOR = String.valueOf(IPath.SEPARATOR);
     protected static final String DOUBLE_SLASH = "//"; //$NON-NLS-1$
     protected static final String EMPTY_STRING = ""; //$NON-NLS-1$
@@ -73,14 +71,6 @@ public class EclipsePreferences implements IEclipsePreferences, IScope {
     private final ListenerList<INodeChangeListener> nodeChangeListeners = new ListenerList<>();
     private final ListenerList<IPreferenceChangeListener> preferenceChangeListeners = new ListenerList<>();
     private final ScopeDescriptor descriptor;
-
-    public EclipsePreferences() {
-        this(null, null);
-    }
-
-    protected EclipsePreferences(EclipsePreferences parent, String name) {
-        this(parent, name, null);
-    }
 
     EclipsePreferences(EclipsePreferences parent, String name, ScopeDescriptor descriptor) {
         this.parent = parent;
@@ -113,7 +103,7 @@ public class EclipsePreferences implements IEclipsePreferences, IScope {
         if (!visitor.visit(this)) {
             return;
         }
-        for (IEclipsePreferences p : getChildren(true)) {
+        for (IEclipsePreferences p : getChildren()) {
             p.accept(visitor);
         }
     }
@@ -184,57 +174,10 @@ public class EclipsePreferences implements IEclipsePreferences, IScope {
         }
     }
 
-    @Override
-    public void clear() {
-        // illegal state if this node has been removed
-        checkRemoved();
-        // call each one separately (instead of Properties.clear) so
-        // clients get change notification
-        String[] keys;
-        synchronized (childAndPropertyLock) {
-            keys = properties.keys();
-        }
-        // don't synchronize remove call because it calls listeners
-        for (String key : keys) {
-            remove(key);
-        }
-        makeDirty();
-    }
-
-    protected List<String> computeChildren(IPath root) {
-        if (root == null) {
-            return List.of();
-        }
-        IPath dir = root.append(DEFAULT_PREFERENCES_DIRNAME);
-        List<String> result = new ArrayList<>();
-        String extension = '.' + PREFS_FILE_EXTENSION;
-        File[] totalFiles = dir.toFile().listFiles();
-        if (totalFiles != null) {
-            for (File totalFile : totalFiles) {
-                String filename = totalFile.getName();
-                if (filename.endsWith(extension) && totalFile.isFile()) {
-                    String shortName = filename.substring(0, filename.length() - extension.length());
-                    result.add(shortName);
-                }
-            }
-        }
-        return result;
-    }
-
-    protected IPath computeLocation(IPath root, String qualifier) {
-        return root == null
-            ? null
-            : root.append(DEFAULT_PREFERENCES_DIRNAME).append(qualifier).addFileExtension(PREFS_FILE_EXTENSION);
-    }
-
     /*
      * Version 1 (current version) path/key=value
      */
-    protected static void convertFromProperties(EclipsePreferences node, Properties table, boolean notify) {
-        String version = table.getProperty(VERSION_KEY);
-        if (version == null || !VERSION_VALUE.equals(version)) {
-            // ignore for now
-        }
+    protected static void convertFromProperties(EclipsePreferences node, Properties table) {
         table.remove(VERSION_KEY);
         for (Object propName : table.keySet()) {
             String fullKey = (String) propName;
@@ -245,46 +188,11 @@ public class EclipsePreferences implements IEclipsePreferences, IScope {
                 path = makeRelative(path);
                 String key = splitPath[1];
                 // use internal methods to avoid notifying listeners
-                EclipsePreferences childNode = (EclipsePreferences) node.internalNode(path, false, null);
-                String oldValue = childNode.internalPut(key, value);
+                EclipsePreferences childNode = (EclipsePreferences) node.internalNode(path, false);
+                childNode.internalPut(key, value);
                 // notify listeners if applicable
-                if (notify && !value.equals(oldValue)) {
-                    childNode.firePreferenceEvent(key, oldValue, value);
-                }
             }
         }
-    }
-
-    /*
-     * Helper method to convert this node to a Properties file suitable for
-     * persistence.
-     */
-    protected Properties convertToProperties(Properties result, String prefix) throws BackingStoreException {
-        // add the key/value pairs from this node
-        boolean addSeparator = prefix.length() != 0;
-        // thread safety: copy reference in case of concurrent change
-        ImmutableMap temp;
-        synchronized (childAndPropertyLock) {
-            temp = properties;
-        }
-        for (String key : temp.keys()) {
-            String value = temp.get(key);
-            if (value != null) {
-                result.put(encodePath(prefix, key), value);
-            }
-        }
-        // recursively add the child information
-        for (IEclipsePreferences childNode : getChildren(true)) {
-            EclipsePreferences child = (EclipsePreferences) childNode;
-            String fullPath = addSeparator ? prefix + PATH_SEPARATOR + child.name() : child.name();
-            child.convertToProperties(result, fullPath);
-        }
-        return result;
-    }
-
-    @Override
-    public IEclipsePreferences create(IEclipsePreferences nodeParent, String nodeName) {
-        return create((EclipsePreferences) nodeParent, nodeName, null);
     }
 
     protected boolean isLoading() {
@@ -324,7 +232,7 @@ public class EclipsePreferences implements IEclipsePreferences, IScope {
 
     @Override
     public void flush() throws BackingStoreException {
-        IEclipsePreferences toFlush = null;
+        IEclipsePreferences toFlush;
         synchronized (childAndPropertyLock) {
             toFlush = internalFlush();
         }
@@ -416,10 +324,10 @@ public class EclipsePreferences implements IEclipsePreferences, IScope {
     /**
      * Thread safe way to obtain all children of this node. Never returns null.
      */
-    private List<IEclipsePreferences> getChildren(boolean create) {
+    private List<IEclipsePreferences> getChildren() {
         List<IEclipsePreferences> result = new ArrayList<>();
         for (String n : internalChildNames()) {
-            IEclipsePreferences child = getChild(n, null, create);
+            IEclipsePreferences child = getChild(n, null, true);
             if (child != null) {
                 result.add(child);
             }
@@ -491,7 +399,7 @@ public class EclipsePreferences implements IEclipsePreferences, IScope {
     /**
      * Implements the node(String) method, and optionally notifies listeners.
      */
-    protected IEclipsePreferences internalNode(String path, boolean notify, Object context) {
+    protected IEclipsePreferences internalNode(String path, boolean notify) {
 
         // illegal state if this node has been removed
         checkRemoved();
@@ -509,14 +417,14 @@ public class EclipsePreferences implements IEclipsePreferences, IScope {
         int index = path.indexOf(IPath.SEPARATOR);
         String key = index == -1 ? path : path.substring(0, index);
         boolean added = false;
-        IEclipsePreferences child = getChild(key, context, true);
+        IEclipsePreferences child = getChild(key, null, true);
         if (child == null) {
-            child = create(this, key, context);
+            child = create(this, key, null);
             added = true;
         }
         // notify listeners if a child was added
         if (added && notify) {
-            fireNodeEvent(new NodeChangeEvent(this, child), true);
+            fireNodeEvent(new NodeChangeEvent(this, child));
         }
         return (IEclipsePreferences) child.node(index == -1 ? EMPTY_STRING : path.substring(index + 1));
     }
@@ -571,7 +479,7 @@ public class EclipsePreferences implements IEclipsePreferences, IScope {
             if (props == null || props.isEmpty()) {
                 return;
             }
-            convertFromProperties(this, props, false);
+            convertFromProperties(this, props);
         }
     }
 
@@ -602,7 +510,7 @@ public class EclipsePreferences implements IEclipsePreferences, IScope {
             return;
         }
         Properties fromDisk = loadProperties(location);
-        convertFromProperties(this, fromDisk, false);
+        convertFromProperties(this, fromDisk);
     }
 
     protected void loaded() {
@@ -636,18 +544,12 @@ public class EclipsePreferences implements IEclipsePreferences, IScope {
 
     @Override
     public Preferences node(String pathName) {
-        return internalNode(pathName, true, null);
+        return internalNode(pathName, true);
     }
 
-    protected void fireNodeEvent(final NodeChangeEvent event, final boolean added) {
+    protected void fireNodeEvent(final NodeChangeEvent event) {
         for (final INodeChangeListener listener : nodeChangeListeners) {
-            SafeRunner.run(() -> {
-                if (added) {
-                    listener.added(event);
-                } else {
-                    listener.removed(event);
-                }
-            });
+            SafeRunner.run(() -> listener.added(event));
         }
     }
 
@@ -715,11 +617,6 @@ public class EclipsePreferences implements IEclipsePreferences, IScope {
     }
 
     @Override
-    public void putBoolean(String key, boolean value) {
-        put(key, value ? TRUE : FALSE);
-    }
-
-    @Override
     public void putInt(String key, int value) {
         put(key, Integer.toString(value));
     }
@@ -746,65 +643,6 @@ public class EclipsePreferences implements IEclipsePreferences, IScope {
     }
 
     @Override
-    public void removeNode() throws BackingStoreException {
-        // illegal state if this node has been removed
-        checkRemoved();
-        // clear all the property values. do it "the long way" so
-        // everyone gets notification
-        String[] keys = keys();
-        for (String key : keys) {
-            remove(key);
-        }
-        // don't remove the global root or the scope root from the
-        // parent but remove all its children
-        if (parent != null && !(parent instanceof RootPreferences)) {
-            // remove the node from the parent's collection and notify listeners
-            removed = true;
-            parent.removeNode(this);
-        }
-        for (IEclipsePreferences childNode : getChildren(false)) {
-            try {
-                childNode.removeNode();
-            } catch (IllegalStateException e) {
-                // ignore since we only get this exception if we have already
-                // been removed. no work to do.
-            }
-        }
-    }
-
-    /*
-     * Remove the child from the collection and notify the listeners if something
-     * was actually removed.
-     */
-    protected void removeNode(IEclipsePreferences child) {
-        if (removeNode(child.name()) != null) {
-            fireNodeEvent(new NodeChangeEvent(this, child), false);
-            if (descriptor != null) {
-                descriptor.removed(child.absolutePath());
-            }
-        }
-    }
-
-    /*
-     * Remove non-initialized node from the collection.
-     */
-    protected Object removeNode(String key) {
-        synchronized (childAndPropertyLock) {
-            if (children != null) {
-                Object result = children.remove(key);
-                if (result != null) {
-                    makeDirty();
-                }
-                if (children.isEmpty()) {
-                    children = null;
-                }
-                return result;
-            }
-        }
-        return null;
-    }
-
-    @Override
     public void removeNodeChangeListener(INodeChangeListener listener) {
         checkRemoved();
         nodeChangeListeners.remove(listener);
@@ -814,49 +652,6 @@ public class EclipsePreferences implements IEclipsePreferences, IScope {
     public void removePreferenceChangeListener(IPreferenceChangeListener listener) {
         checkRemoved();
         preferenceChangeListeners.remove(listener);
-    }
-
-    /*
-     * Encode the given path and key combo to a form which is suitable for
-     * persisting or using when searching. If the key contains a slash character
-     * then we must use a double-slash to indicate the end of the path/the beginning
-     * of the key.
-     */
-    public static String encodePath(String path, String key) {
-        int pathLength = path == null ? 0 : path.length();
-        if (key.indexOf(IPath.SEPARATOR) == -1) {
-            if (pathLength == 0) {
-                return key;
-            }
-            return path + IPath.SEPARATOR + key;
-        }
-        if (pathLength == 0) {
-            return DOUBLE_SLASH + key;
-        }
-        return path + DOUBLE_SLASH + key;
-    }
-
-    /*
-     * Return the segment from the given path or null. "segment" parameter is
-     * 0-based.
-     */
-    public static String getSegment(String path, int segment) {
-        int start = path.indexOf(IPath.SEPARATOR) == 0 ? 1 : 0;
-        int end = path.indexOf(IPath.SEPARATOR, start);
-        if (end == path.length() - 1) {
-            end = -1;
-        }
-        for (int i = 0; i < segment; i++) {
-            if (end == -1) {
-                return null;
-            }
-            start = end + 1;
-            end = path.indexOf(IPath.SEPARATOR, start);
-        }
-        if (end == -1) {
-            end = path.length();
-        }
-        return path.substring(start, end);
     }
 
     public static int getSegmentCount(String path) {
@@ -919,28 +714,4 @@ public class EclipsePreferences implements IEclipsePreferences, IScope {
         return absolutePath();
     }
 
-    protected IEclipsePreferences getOrCreate(String scope) {
-        IEclipsePreferences child;
-        synchronized (childAndPropertyLock) {
-            if (children == null) {
-                child = null;
-            } else {
-                Object value = children.get(scope);
-                if (value == null) {
-                    child = null;
-                } else if (value instanceof IEclipsePreferences eclipsePreferences) {
-                    child = eclipsePreferences;
-                } else {
-                    // lazy initialization
-                    child = PreferencesService.getDefault().createNode(scope);
-                    addChild(scope, child);
-                }
-            }
-            if (child == null) {
-                child = new EclipsePreferences(this, scope);
-                addChild(scope, child);
-            }
-        }
-        return child;
-    }
 }

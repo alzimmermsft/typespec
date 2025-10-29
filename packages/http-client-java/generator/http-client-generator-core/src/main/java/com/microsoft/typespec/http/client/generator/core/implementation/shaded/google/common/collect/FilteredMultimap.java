@@ -16,10 +16,10 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Predicate;
 import java.util.Map.Entry;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An interface for all filtered multimap types.
@@ -28,9 +28,8 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
-interface FilteredMultimap<K extends @Nullable Object, V extends @Nullable Object>
-    extends Multimap<K, V> {
-  Multimap<K, V> unfiltered();
+interface FilteredMultimap<K extends @Nullable Object, V extends @Nullable Object> extends Multimap<K, V> {
+    Multimap<K, V> unfiltered();
 
-  Predicate<? super Entry<K, V>> entryPredicate();
+    Predicate<? super Entry<K, V>> entryPredicate();
 }

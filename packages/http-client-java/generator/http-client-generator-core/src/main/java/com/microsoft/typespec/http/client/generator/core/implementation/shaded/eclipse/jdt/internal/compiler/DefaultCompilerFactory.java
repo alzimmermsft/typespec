@@ -18,11 +18,11 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class DefaultCompilerFactory implements ICompilerFactory {
 
-	@Override
-	public Compiler newCompiler(INameEnvironment environment, IErrorHandlingPolicy policy,
-			CompilerConfiguration compilerConfig, ICompilerRequestor requestor, IProblemFactory problemFactory,
-			CompilationProgress compilationProgress) {
-		return new Compiler(environment, policy, compilerConfig.compilerOptions(), requestor, problemFactory,
-				null /* printwriter */, compilationProgress);
-	}
+    @Override
+    public Compiler newCompiler(INameEnvironment environment, IErrorHandlingPolicy policy,
+        CompilerConfiguration compilerConfig, ICompilerRequestor requestor, IProblemFactory problemFactory,
+        CompilationProgress compilationProgress) {
+        return new Compiler(environment, policy, compilerConfig.compilerOptions(), requestor, problemFactory,
+            null /* printwriter */, compilationProgress);
+    }
 }

@@ -29,6 +29,7 @@ import java.lang.annotation.Target;
  * loop are deallocated.
  *
  * <p>Example usage:
+ * 
  * <pre>
  * // Temporary objects allocated during execution of this method will
  * // be deallocated upon returning from this method.
@@ -49,7 +50,7 @@ import java.lang.annotation.Target;
  *
  * @author Pankaj Kakkar
  */
-@Target({ElementType.METHOD, ElementType.LOCAL_VARIABLE})
+@Target({ ElementType.METHOD, ElementType.LOCAL_VARIABLE })
 @Retention(RetentionPolicy.SOURCE)
 public @interface AutoreleasePool {
 }

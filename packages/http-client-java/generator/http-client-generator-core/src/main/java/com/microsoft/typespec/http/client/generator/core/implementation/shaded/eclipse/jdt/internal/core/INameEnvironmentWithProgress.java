@@ -19,7 +19,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 /**
  * The name environment provides a callback API that the compiler
  * can use to look up types, compilation units, and packages in the
- * current environment.  The name environment is passed to the compiler
+ * current environment. The name environment is passed to the compiler
  * on creation.
  *
  * This name environment can be canceled using the monitor passed as an argument to
@@ -29,12 +29,12 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public interface INameEnvironmentWithProgress extends INameEnvironmentExtension {
 
-	/**
-	 * Set the monitor for the given name environment. In order to be able to cancel this name environment calls,
-	 * a non-null monitor should be given.
-	 *
-	 * @param monitor the given monitor
-	 */
-	void setMonitor(IProgressMonitor monitor);
+    /**
+     * Set the monitor for the given name environment. In order to be able to cancel this name environment calls,
+     * a non-null monitor should be given.
+     *
+     * @param monitor the given monitor
+     */
+    void setMonitor(IProgressMonitor monitor);
 
 }

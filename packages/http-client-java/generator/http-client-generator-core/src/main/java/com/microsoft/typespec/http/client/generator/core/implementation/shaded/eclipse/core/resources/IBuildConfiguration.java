@@ -13,8 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IAdaptable;
-
 /**
  * Build Configurations provide a mechanism for orthogonal configuration specific
  * builds within a single project. The resources plugin maintains build deltas per
@@ -27,20 +25,13 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * active configuration defaults to the first configuration in the project.
  * </p>
  * <p>
- * Build configurations are created and set on the project description using:
- * {@link IProjectDescription#setBuildConfigs(String[])}.
- * Build configurations set on Projects must have unique non-null names.
- * </p>
- * <p>
  * When a project is built, a specific configuration is built. This configuration
  * is passed to the builders so they can adapt their behavior
  * appropriately. Builders which don't care about configurations may ignore this,
  * and work as before.
  * </p>
  * <p>
- * Build configuration can reference other builds configurations. These references are created
- * using {@link IWorkspace#newBuildConfig(String, String)}, and set on the referencing project
- * with {@link IProjectDescription#setBuildConfigReferences(String, IBuildConfiguration[])}.
+ * Build configuration can reference other builds configurations.
  * A referenced build configuration may have a <code>null</code> configuration name which is resolved to the
  * referenced project's current active build configuration at build time.
  * </p>
@@ -53,7 +44,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * @noextend This interface is not intended to be extended by clients.
  * @since 3.7
  */
-public interface IBuildConfiguration extends IAdaptable {
+public interface IBuildConfiguration {
 
     /**
      * The Id of the default build configuration

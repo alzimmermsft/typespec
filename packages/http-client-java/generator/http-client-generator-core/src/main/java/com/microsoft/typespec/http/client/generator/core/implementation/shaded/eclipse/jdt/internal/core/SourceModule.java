@@ -13,43 +13,37 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
-import java.util.Map;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaElement;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CharOperation;
+import java.util.Map;
 
 public class SourceModule extends NamedMember implements AbstractModule {
-	public SourceModule(JavaElement parent, String name) {
-		super(parent, name);
-	}
-	@Override
-	public int getFlags() throws JavaModelException {
-		ModuleDescriptionInfo info = (ModuleDescriptionInfo) getElementInfo();
-		return info.getModifiers();
-	}
-	@Override
-	public char getHandleMementoDelimiter() {
-		return JavaElement.JEM_MODULE;
-	}
-	@Override
-	public String[] getCategories() throws JavaModelException {
-		ModuleDescriptionInfo info = (ModuleDescriptionInfo) getElementInfo();
-		Map<IJavaElement,String[]> map = info.getCategories();
-		if (map == null) return CharOperation.NO_STRINGS;
-		String[] categories = map.get(this);
-		if (categories == null) return CharOperation.NO_STRINGS;
-		return categories;
-	}
-	@Override
-	public String toString(String lineDelimiter) {
-		StringBuilder buffer = new StringBuilder();
-		try {
-			toStringContent(buffer, lineDelimiter);
-		} catch (JavaModelException e) {
-			if (JavaModelManager.VERBOSE) {
-				JavaModelManager.trace("", e); //$NON-NLS-1$
-			}
-		}
-		return buffer.toString();
-	}
+    public SourceModule(JavaElement parent, String name) {
+        super(parent, name);
+    }
+
+    @Override
+    public int getFlags() throws JavaModelException {
+        ModuleDescriptionInfo info = (ModuleDescriptionInfo) getElementInfo();
+        return info.getModifiers();
+    }
+
+    @Override
+    public char getHandleMementoDelimiter() {
+        return JavaElement.JEM_MODULE;
+    }
+
+    @Override
+    public String[] getCategories() throws JavaModelException {
+        ModuleDescriptionInfo info = (ModuleDescriptionInfo) getElementInfo();
+        Map<IJavaElement, String[]> map = info.getCategories();
+        if (map == null)
+            return CharOperation.NO_STRINGS;
+        String[] categories = map.get(this);
+        if (categories == null)
+            return CharOperation.NO_STRINGS;
+        return categories;
+    }
+
 }

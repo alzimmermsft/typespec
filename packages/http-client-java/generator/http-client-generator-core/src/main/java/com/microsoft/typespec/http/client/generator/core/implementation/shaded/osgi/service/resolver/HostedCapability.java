@@ -38,18 +38,18 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 @ProviderType
 public interface HostedCapability extends Capability {
 
-	/**
-	 * Return the Resource that hosts this Capability.
-	 * 
-	 * @return The Resource that hosts this Capability.
-	 */
-	@Override
-	Resource getResource();
+    /**
+     * Return the Resource that hosts this Capability.
+     * 
+     * @return The Resource that hosts this Capability.
+     */
+    @Override
+    Resource getResource();
 
-	/**
-	 * Return the Capability hosted by the Resource.
-	 * 
-	 * @return The Capability hosted by the Resource.
-	 */
-	Capability getDeclaredCapability();
+    /**
+     * Return the Capability hosted by the Resource.
+     * 
+     * @return The Capability hosted by the Resource.
+     */
+    Capability getDeclaredCapability();
 }

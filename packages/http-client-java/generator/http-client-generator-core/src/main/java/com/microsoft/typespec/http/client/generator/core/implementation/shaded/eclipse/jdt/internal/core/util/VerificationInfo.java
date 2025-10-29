@@ -21,59 +21,57 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class VerificationInfo extends ClassFileStruct implements IVerificationTypeInfo {
 
-	private final int tag;
-	private int offset;
-	private int constantPoolIndex;
-	private char[] classTypeName;
-	private int readOffset;
+    private final int tag;
+    private int offset;
+    private int constantPoolIndex;
+    private char[] classTypeName;
+    private int readOffset;
 
-	public VerificationInfo(
-			byte[] classFileBytes,
-			IConstantPool constantPool,
-			int offset) throws ClassFormatException {
-		final int t = u1At(classFileBytes, 0, offset);
-		this.tag = t;
-		this.readOffset = 1;
-		switch(t) {
-			case IVerificationTypeInfo.ITEM_OBJECT :
-				final int constantIndex = u2At(classFileBytes, 1, offset);
-				this.constantPoolIndex = constantIndex;
-				if (constantIndex != 0) {
-					IConstantPoolEntry constantPoolEntry = constantPool.decodeEntry(constantIndex);
-					if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Class) {
-						throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
-					}
-					this.classTypeName = constantPoolEntry.getClassInfoName();
-				}
-				this.readOffset += 2;
-				break;
-			case IVerificationTypeInfo.ITEM_UNINITIALIZED :
-				this.offset = u2At(classFileBytes, 1, offset);
-				this.readOffset += 2;
-		}
-	}
+    public VerificationInfo(byte[] classFileBytes, IConstantPool constantPool, int offset) throws ClassFormatException {
+        final int t = u1At(classFileBytes, 0, offset);
+        this.tag = t;
+        this.readOffset = 1;
+        switch (t) {
+            case IVerificationTypeInfo.ITEM_OBJECT:
+                final int constantIndex = u2At(classFileBytes, 1, offset);
+                this.constantPoolIndex = constantIndex;
+                if (constantIndex != 0) {
+                    IConstantPoolEntry constantPoolEntry = constantPool.decodeEntry(constantIndex);
+                    if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Class) {
+                        throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
+                    }
+                    this.classTypeName = constantPoolEntry.getClassInfoName();
+                }
+                this.readOffset += 2;
+                break;
 
-	@Override
-	public int getTag() {
-		return this.tag;
-	}
+            case IVerificationTypeInfo.ITEM_UNINITIALIZED:
+                this.offset = u2At(classFileBytes, 1, offset);
+                this.readOffset += 2;
+        }
+    }
 
-	@Override
-	public int getOffset() {
-		return this.offset;
-	}
+    @Override
+    public int getTag() {
+        return this.tag;
+    }
 
-	@Override
-	public int getConstantPoolIndex() {
-		return this.constantPoolIndex;
-	}
+    @Override
+    public int getOffset() {
+        return this.offset;
+    }
 
-	@Override
-	public char[] getClassTypeName() {
-		return this.classTypeName;
-	}
+    @Override
+    public int getConstantPoolIndex() {
+        return this.constantPoolIndex;
+    }
 
-	public int sizeInBytes() {
-		return this.readOffset;
-	}
+    @Override
+    public char[] getClassTypeName() {
+        return this.classTypeName;
+    }
+
+    public int sizeInBytes() {
+        return this.readOffset;
+    }
 }

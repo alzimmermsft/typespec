@@ -20,12 +20,12 @@ import static com.microsoft.typespec.http.client.generator.core.implementation.s
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.UnmodifiableIterator;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.util.AbstractSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 
 /**
  * A map-like data structure that wraps a backing map and caches values while iterating through
@@ -43,114 +43,115 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
  */
 @ElementTypesAreNonnullByDefault
 class MapIteratorCache<K, V> {
-  private final Map<K, V> backingMap;
+    private final Map<K, V> backingMap;
 
-  /*
-   * Per JDK: "the behavior of a map entry is undefined if the backing map has been modified after
-   * the entry was returned by the iterator, except through the setValue operation on the map entry"
-   * As such, this field must be cleared before every map mutation.
-   *
-   * Note about volatile: volatile doesn't make it safe to read from a mutable graph in one thread
-   * while writing to it in another. All it does is help with _reading_ from multiple threads
-   * concurrently. For more information, see AbstractNetworkTest.concurrentIteration.
-   */
-  @CheckForNull private transient volatile Entry<K, V> cacheEntry;
+    /*
+     * Per JDK: "the behavior of a map entry is undefined if the backing map has been modified after
+     * the entry was returned by the iterator, except through the setValue operation on the map entry"
+     * As such, this field must be cleared before every map mutation.
+     *
+     * Note about volatile: volatile doesn't make it safe to read from a mutable graph in one thread
+     * while writing to it in another. All it does is help with _reading_ from multiple threads
+     * concurrently. For more information, see AbstractNetworkTest.concurrentIteration.
+     */
+    @CheckForNull
+    private transient volatile Entry<K, V> cacheEntry;
 
-  MapIteratorCache(Map<K, V> backingMap) {
-    this.backingMap = checkNotNull(backingMap);
-  }
-
-  @CanIgnoreReturnValue
-  @CheckForNull
-  final V put(K key, V value) {
-    checkNotNull(key);
-    checkNotNull(value);
-    clearCache();
-    return backingMap.put(key, value);
-  }
-
-  @CanIgnoreReturnValue
-  @CheckForNull
-  final V remove(Object key) {
-    checkNotNull(key);
-    clearCache();
-    return backingMap.remove(key);
-  }
-
-  final void clear() {
-    clearCache();
-    backingMap.clear();
-  }
-
-  @CheckForNull
-  V get(Object key) {
-    checkNotNull(key);
-    V value = getIfCached(key);
-    // TODO(b/192579700): Use a ternary once it no longer confuses our nullness checker.
-    if (value == null) {
-      return getWithoutCaching(key);
-    } else {
-      return value;
+    MapIteratorCache(Map<K, V> backingMap) {
+        this.backingMap = checkNotNull(backingMap);
     }
-  }
 
-  @CheckForNull
-  final V getWithoutCaching(Object key) {
-    checkNotNull(key);
-    return backingMap.get(key);
-  }
+    @CanIgnoreReturnValue
+    @CheckForNull
+    final V put(K key, V value) {
+        checkNotNull(key);
+        checkNotNull(value);
+        clearCache();
+        return backingMap.put(key, value);
+    }
 
-  final boolean containsKey(@CheckForNull Object key) {
-    return getIfCached(key) != null || backingMap.containsKey(key);
-  }
+    @CanIgnoreReturnValue
+    @CheckForNull
+    final V remove(Object key) {
+        checkNotNull(key);
+        clearCache();
+        return backingMap.remove(key);
+    }
 
-  final Set<K> unmodifiableKeySet() {
-    return new AbstractSet<K>() {
-      @Override
-      public UnmodifiableIterator<K> iterator() {
-        Iterator<Entry<K, V>> entryIterator = backingMap.entrySet().iterator();
+    final void clear() {
+        clearCache();
+        backingMap.clear();
+    }
 
-        return new UnmodifiableIterator<K>() {
-          @Override
-          public boolean hasNext() {
-            return entryIterator.hasNext();
-          }
+    @CheckForNull
+    V get(Object key) {
+        checkNotNull(key);
+        V value = getIfCached(key);
+        // TODO(b/192579700): Use a ternary once it no longer confuses our nullness checker.
+        if (value == null) {
+            return getWithoutCaching(key);
+        } else {
+            return value;
+        }
+    }
 
-          @Override
-          public K next() {
-            Entry<K, V> entry = entryIterator.next(); // store local reference for thread-safety
-            cacheEntry = entry;
-            return entry.getKey();
-          }
+    @CheckForNull
+    final V getWithoutCaching(Object key) {
+        checkNotNull(key);
+        return backingMap.get(key);
+    }
+
+    final boolean containsKey(@CheckForNull Object key) {
+        return getIfCached(key) != null || backingMap.containsKey(key);
+    }
+
+    final Set<K> unmodifiableKeySet() {
+        return new AbstractSet<K>() {
+            @Override
+            public UnmodifiableIterator<K> iterator() {
+                Iterator<Entry<K, V>> entryIterator = backingMap.entrySet().iterator();
+
+                return new UnmodifiableIterator<K>() {
+                    @Override
+                    public boolean hasNext() {
+                        return entryIterator.hasNext();
+                    }
+
+                    @Override
+                    public K next() {
+                        Entry<K, V> entry = entryIterator.next(); // store local reference for thread-safety
+                        cacheEntry = entry;
+                        return entry.getKey();
+                    }
+                };
+            }
+
+            @Override
+            public int size() {
+                return backingMap.size();
+            }
+
+            @Override
+            public boolean contains(@CheckForNull Object key) {
+                return containsKey(key);
+            }
         };
-      }
-
-      @Override
-      public int size() {
-        return backingMap.size();
-      }
-
-      @Override
-      public boolean contains(@CheckForNull Object key) {
-        return containsKey(key);
-      }
-    };
-  }
-
-  // Internal methods (package-visible, but treat as only subclass-visible)
-
-  @CheckForNull
-  V getIfCached(@CheckForNull Object key) {
-    Entry<K, V> entry = cacheEntry; // store local reference for thread-safety
-
-    // Check cache. We use == on purpose because it's cheaper and a cache miss is ok.
-    if (entry != null && entry.getKey() == key) {
-      return entry.getValue();
     }
-    return null;
-  }
 
-  void clearCache() {
-    cacheEntry = null;
-  }
+    // Internal methods (package-visible, but treat as only subclass-visible)
+
+    @CheckForNull
+    V getIfCached(@CheckForNull Object key) {
+        Entry<K, V> entry = cacheEntry; // store local reference for thread-safety
+
+        // Check cache. We use == on purpose because it's cheaper and a cache miss is ok.
+        if (entry != null && entry.getKey() == key) {
+            return entry.getValue();
+        }
+        return null;
+    }
+
+    void clearCache() {
+        cacheEntry = null;
+    }
 }

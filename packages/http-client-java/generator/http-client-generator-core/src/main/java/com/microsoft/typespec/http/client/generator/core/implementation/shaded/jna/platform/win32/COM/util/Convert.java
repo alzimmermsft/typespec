@@ -23,18 +23,6 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.util;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OleAuto;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.Date;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VARIANT;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WTypes.BSTR;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl;
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VT_ARRAY;
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VT_BOOL;
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VT_BSTR;
@@ -61,8 +49,20 @@ import static com.microsoft.typespec.http.client.generator.core.implementation.s
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VT_UINT;
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VT_UNKNOWN;
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VT_VARIANT;
+
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OleAuto;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VARIANT;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WTypes.BSTR;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.PVOID;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.Date;
 
 /**
  * This class is considered internal to the package.
@@ -110,7 +110,8 @@ class Convert {
         } else if (value instanceof Boolean) {
             return new VARIANT((Boolean) value);
         } else if (value instanceof com.sun.jna.platform.win32.COM.Dispatch) {
-            return new VARIANT((com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.Dispatch) value);
+            return new VARIANT(
+                (com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.Dispatch) value);
         } else if (value instanceof Date) {
             return new VARIANT((Date) value);
         } else if (value instanceof Proxy) {
@@ -125,8 +126,7 @@ class Convert {
             if (value != null) {
                 for (Constructor<VARIANT> m : (Constructor<VARIANT>[]) VARIANT.class.getConstructors()) {
                     Class<?>[] parameters = m.getParameterTypes();
-                    if (parameters.length == 1
-                            && parameters[0].isAssignableFrom(value.getClass())) {
+                    if (parameters.length == 1 && parameters[0].isAssignableFrom(value.getClass())) {
                         constructor = m;
                     }
                 }
@@ -143,7 +143,8 @@ class Convert {
         }
     }
 
-    public static Object toJavaObject(VARIANT value, Class<?> targetClass, ObjectFactory factory, boolean addReference, boolean freeValue) {
+    public static Object toJavaObject(VARIANT value, Class<?> targetClass, ObjectFactory factory, boolean addReference,
+        boolean freeValue) {
         int varType = (value != null) ? value.getVarType().intValue() : VT_NULL;
 
         if (varType == VT_EMPTY || varType == VT_NULL) {
@@ -179,58 +180,76 @@ class Convert {
                 case VT_I1:
                     targetClass = Byte.class;
                     break;
+
                 case VT_I2:
                     targetClass = Short.class;
                     break;
+
                 case VT_UI2:
                     targetClass = Character.class;
                     break;
+
                 case VT_INT:
                 case VT_UINT:
                 case VT_UI4:
                 case VT_I4:
                     targetClass = Integer.class;
                     break;
+
                 case VT_UI8:
                 case VT_I8:
                     targetClass = Long.class;
                     break;
+
                 case VT_R4:
                     targetClass = Float.class;
                     break;
+
                 case VT_R8:
                     targetClass = Double.class;
                     break;
+
                 case VT_BOOL:
                     targetClass = Boolean.class;
                     break;
+
                 case VT_ERROR:
                     targetClass = WinDef.SCODE.class;
                     break;
+
                 case VT_CY:
                     targetClass = OaIdl.CURRENCY.class;
                     break;
+
                 case VT_DATE:
                     targetClass = Date.class;
                     break;
+
                 case VT_BSTR:
                     targetClass = String.class;
                     break;
+
                 case VT_UNKNOWN:
-                    targetClass = com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IUnknown.class;
+                    targetClass
+                        = com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IUnknown.class;
                     break;
+
                 case VT_DISPATCH:
                     targetClass = IDispatch.class;
                     break;
+
                 case VT_BYREF | VT_VARIANT:
                     targetClass = Variant.class;
                     break;
+
                 case VT_BYREF:
                     targetClass = PVOID.class;
                     break;
+
                 case VT_BYREF | VT_DECIMAL:
                     targetClass = OaIdl.DECIMAL.class;
                     break;
+
                 case VT_RECORD:
                 default:
                     if ((varType & VT_ARRAY) > 0) {
@@ -248,7 +267,9 @@ class Convert {
             result = (char) value.intValue();
         } else if (Integer.class.equals(targetClass) || int.class.equals(targetClass)) {
             result = value.intValue();
-        } else if (Long.class.equals(targetClass) || long.class.equals(targetClass) || IComEnum.class.isAssignableFrom(targetClass)) {
+        } else if (Long.class.equals(targetClass)
+            || long.class.equals(targetClass)
+            || IComEnum.class.isAssignableFrom(targetClass)) {
             result = value.longValue();
         } else if (Float.class.equals(targetClass) || float.class.equals(targetClass)) {
             result = value.floatValue();
@@ -263,7 +284,8 @@ class Convert {
         } else {
             result = value.getValue();
             if (result instanceof com.sun.jna.platform.win32.COM.Dispatch) {
-                com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.Dispatch d = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.Dispatch) result;
+                com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.Dispatch d
+                    = (com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.Dispatch) result;
                 if (targetClass != null && targetClass.isInterface()) {
                     Object proxy = factory.createProxy(targetClass, d);
                     // must release a COM reference, createProxy adds one, as does the
@@ -298,7 +320,8 @@ class Convert {
                     return t;
                 }
             }
-        } catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+        } catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException
+            | InvocationTargetException e) {
         }
         return null;
     }
@@ -310,13 +333,13 @@ class Convert {
      * This method is a companion to {@link #toVariant}. Primary usage is to
      * free BSTRs contained in VARIANTs.</p>
      *
-     * @param variant  to be cleared
+     * @param variant to be cleared
      * @param javaType type before/after conversion
      */
     public static void free(VARIANT variant, Class<?> javaType) {
         if ((javaType == null || (!BSTR.class.isAssignableFrom(javaType)))
-                && variant != null
-                && variant.getVarType().intValue() == Variant.VT_BSTR) {
+            && variant != null
+            && variant.getVarType().intValue() == Variant.VT_BSTR) {
             Object value = variant.getValue();
             if (value instanceof BSTR) {
                 OleAuto.INSTANCE.SysFreeString((BSTR) value);
@@ -332,7 +355,7 @@ class Convert {
      * free BSTRs contained in VARIANTs.</p>
      *
      * @param variant to be cleared
-     * @param value   value before/after conversion
+     * @param value value before/after conversion
      */
     public static void free(VARIANT variant, Object value) {
         free(variant, value == null ? null : value.getClass());

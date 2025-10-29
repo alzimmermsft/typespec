@@ -22,50 +22,51 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class ResolvedBinaryType extends BinaryType {
 
-	private final String uniqueKey;
+    private final String uniqueKey;
 
-	/*
-	 * See class comments.
-	 */
-	public ResolvedBinaryType(JavaElement parent, String name, String uniqueKey) {
-		super(parent, name);
-		this.uniqueKey = uniqueKey;
-	}
-	public ResolvedBinaryType(JavaElement parent, String name, String uniqueKey, int occurrenceCount) {
-		super(parent, name, occurrenceCount);
-		this.uniqueKey = uniqueKey;
-	}
+    /*
+     * See class comments.
+     */
+    public ResolvedBinaryType(JavaElement parent, String name, String uniqueKey) {
+        super(parent, name);
+        this.uniqueKey = uniqueKey;
+    }
+
+    public ResolvedBinaryType(JavaElement parent, String name, String uniqueKey, int occurrenceCount) {
+        super(parent, name, occurrenceCount);
+        this.uniqueKey = uniqueKey;
+    }
 
     @Override
-	public String getKey() {
-		return this.uniqueKey;
-	}
+    public String getKey() {
+        return this.uniqueKey;
+    }
 
-	@Override
-	public String getKey(boolean forceOpen) throws JavaModelException {
-		return this.uniqueKey;
-	}
+    @Override
+    public String getKey(boolean forceOpen) throws JavaModelException {
+        return this.uniqueKey;
+    }
 
-	@Override
-	public boolean isResolved() {
-		return true;
-	}
+    @Override
+    public boolean isResolved() {
+        return true;
+    }
 
-	/**
-	 * for debugging only
-	 */
-	@Override
-	protected void toStringInfo(int tab, StringBuilder buffer, Object info, boolean showResolvedInfo) {
-		super.toStringInfo(tab, buffer, info, showResolvedInfo);
-		if (showResolvedInfo) {
-			buffer.append(" {key="); //$NON-NLS-1$
-			buffer.append(this.uniqueKey);
-			buffer.append("}"); //$NON-NLS-1$
-		}
-	}
+    /**
+     * for debugging only
+     */
+    @Override
+    protected void toStringInfo(int tab, StringBuilder buffer, Object info, boolean showResolvedInfo) {
+        super.toStringInfo(tab, buffer, info, showResolvedInfo);
+        if (showResolvedInfo) {
+            buffer.append(" {key="); //$NON-NLS-1$
+            buffer.append(this.uniqueKey);
+            buffer.append("}"); //$NON-NLS-1$
+        }
+    }
 
-	@Override
-	public BinaryType unresolved() {
-		return new BinaryType(this.getParent(), this.name, this.getOccurrenceCount());
-	}
+    @Override
+    public BinaryType unresolved() {
+        return new BinaryType(this.getParent(), this.name, this.getOccurrenceCount());
+    }
 }

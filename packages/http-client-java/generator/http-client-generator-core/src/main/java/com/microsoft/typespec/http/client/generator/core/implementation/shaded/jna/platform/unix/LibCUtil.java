@@ -64,46 +64,46 @@ public class LibCUtil {
      * Creates a new mapping in the virtual address space of the calling process.
      *
      * @param addr
-     *            The starting address for the new mapping.
-     *            <p>
-     *            If {@code addr} is NULL, then the kernel chooses the
-     *            (page-aligned) address at which to create the mapping; this is the
-     *            most portable method of creating a new mapping. If {@code addr} is
-     *            not NULL, then the kernel takes it as a hint about where to place
-     *            the mapping; on Linux, the kernel will pick a nearby page boundary
-     *            (but always above or equal to the value specified by
-     *            {@code /proc/sys/vm/mmap_min_addr}) and attempt to create the
-     *            mapping there. If another mapping already exists there, the kernel
-     *            picks a new address that may or may not depend on the hint. The
-     *            address of the new mapping is returned as the result of the call.
+     * The starting address for the new mapping.
+     * <p>
+     * If {@code addr} is NULL, then the kernel chooses the
+     * (page-aligned) address at which to create the mapping; this is the
+     * most portable method of creating a new mapping. If {@code addr} is
+     * not NULL, then the kernel takes it as a hint about where to place
+     * the mapping; on Linux, the kernel will pick a nearby page boundary
+     * (but always above or equal to the value specified by
+     * {@code /proc/sys/vm/mmap_min_addr}) and attempt to create the
+     * mapping there. If another mapping already exists there, the kernel
+     * picks a new address that may or may not depend on the hint. The
+     * address of the new mapping is returned as the result of the call.
      * @param length
-     *            Specifies the length of the mapping (which must be greater than
-     *            0).
+     * Specifies the length of the mapping (which must be greater than
+     * 0).
      * @param prot
-     *            describes the desired memory protection of the mapping (and must
-     *            not conflict with the open mode of the file). It is either
-     *            {@code PROT_NONE} or the bitwise OR of one or more of
-     *            {@code PROT_READ}, {@code PROT_WRITE}, or {@code PROT_EXEC}.
+     * describes the desired memory protection of the mapping (and must
+     * not conflict with the open mode of the file). It is either
+     * {@code PROT_NONE} or the bitwise OR of one or more of
+     * {@code PROT_READ}, {@code PROT_WRITE}, or {@code PROT_EXEC}.
      * @param flags
-     *            determines whether updates to the mapping are visible to other
-     *            processes mapping the same region, and whether updates are carried
-     *            through to the underlying file. This behavior is determined by
-     *            including exactly one of {@code MAP_SHARED},
-     *            {@code MAP_SHARED_VALIDATE}, or {@code MAP_PRIVATE}. In addition,
-     *            0 or more additional flags can be ORed in {@code flags}.
+     * determines whether updates to the mapping are visible to other
+     * processes mapping the same region, and whether updates are carried
+     * through to the underlying file. This behavior is determined by
+     * including exactly one of {@code MAP_SHARED},
+     * {@code MAP_SHARED_VALIDATE}, or {@code MAP_PRIVATE}. In addition,
+     * 0 or more additional flags can be ORed in {@code flags}.
      * @param fd
-     *            The file descriptor for the object to be mapped. After the
-     *            {@code mmap()} call has returned, the file descriptor can be
-     *            closed immediately without invalidating the mapping.
+     * The file descriptor for the object to be mapped. After the
+     * {@code mmap()} call has returned, the file descriptor can be
+     * closed immediately without invalidating the mapping.
      * @param offset
-     *            The contents of a file mapping (as opposed to an anonymous
-     *            mapping), are initialized using {@code length} bytes starting at
-     *            offset {@code offset} in the file (or other object) referred to by
-     *            the file descriptor, {@code fd}. {@code offset} must be a multiple
-     *            of the page size as returned by {@code sysconf(_SC_PAGE_SIZE)}.
+     * The contents of a file mapping (as opposed to an anonymous
+     * mapping), are initialized using {@code length} bytes starting at
+     * offset {@code offset} in the file (or other object) referred to by
+     * the file descriptor, {@code fd}. {@code offset} must be a multiple
+     * of the page size as returned by {@code sysconf(_SC_PAGE_SIZE)}.
      * @return On success, returns a pointer to the mapped area. On error, the value
-     *         {@code MAP_FAILED} (that is, (void *) -1) is returned, and
-     *         {@code errno} is set to indicate the cause of the error.
+     * {@code MAP_FAILED} (that is, (void *) -1) is returned, and
+     * {@code errno} is set to indicate the cause of the error.
      */
     public static Pointer mmap(Pointer addr, long length, int prot, int flags, int fd, long offset) {
         Object[] params = new Object[6];
@@ -137,11 +137,11 @@ public class LibCUtil {
      * The file must be open for writing
      *
      * @param fd
-     *            a file descriptor
+     * a file descriptor
      * @param length
-     *            the number of bytes to truncate or extend the file to
+     * the number of bytes to truncate or extend the file to
      * @return On success, zero is returned. On error, -1 is returned, and
-     *         {@code errno} is set appropriately.
+     * {@code errno} is set appropriately.
      */
     public static int ftruncate(int fd, long length) {
         Object[] params = new Object[2];
@@ -159,12 +159,12 @@ public class LibCUtil {
      * Test that a value is 32-bit, throwing a custom exception otherwise
      *
      * @param val
-     *            The value to test
+     * The value to test
      * @param value
-     *            The name of the value, to be inserted in the exception message if
-     *            not 32-bit
+     * The name of the value, to be inserted in the exception message if
+     * not 32-bit
      * @throws IllegalArgumentException
-     *             if {@code val} is not 32-bit
+     * if {@code val} is not 32-bit
      */
     public static void require32Bit(long val, String value) {
         if (val > Integer.MAX_VALUE) {

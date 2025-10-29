@@ -31,59 +31,58 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.g
 @AutoValue
 public abstract class JavaFormatterOptions {
 
-  public enum Style {
-    /** The default Google Java Style configuration. */
-    GOOGLE(1),
+    public enum Style {
+        /** The default Google Java Style configuration. */
+        GOOGLE(1),
 
-    /** The AOSP-compliant configuration. */
-    AOSP(2);
+        /** The AOSP-compliant configuration. */
+        AOSP(2);
 
-    private final int indentationMultiplier;
+        private final int indentationMultiplier;
 
-    Style(int indentationMultiplier) {
-      this.indentationMultiplier = indentationMultiplier;
+        Style(int indentationMultiplier) {
+            this.indentationMultiplier = indentationMultiplier;
+        }
+
+        int indentationMultiplier() {
+            return indentationMultiplier;
+        }
     }
 
-    int indentationMultiplier() {
-      return indentationMultiplier;
+    /** Returns the multiplier for the unit of indent. */
+    public int indentationMultiplier() {
+        return style().indentationMultiplier();
     }
-  }
 
-  /** Returns the multiplier for the unit of indent. */
-  public int indentationMultiplier() {
-    return style().indentationMultiplier();
-  }
+    public abstract boolean formatJavadoc();
 
-  public abstract boolean formatJavadoc();
+    public abstract boolean reorderModifiers();
 
-  public abstract boolean reorderModifiers();
+    /** Returns the code style. */
+    public abstract Style style();
 
-  /** Returns the code style. */
-  public abstract Style style();
+    /** Returns the default formatting options. */
+    public static JavaFormatterOptions defaultOptions() {
+        return builder().build();
+    }
 
-  /** Returns the default formatting options. */
-  public static JavaFormatterOptions defaultOptions() {
-    return builder().build();
-  }
+    /** Returns a builder for {@link JavaFormatterOptions}. */
+    public static Builder builder() {
+        return new AutoValue_JavaFormatterOptions.Builder().style(Style.GOOGLE)
+            .formatJavadoc(true)
+            .reorderModifiers(true);
+    }
 
-  /** Returns a builder for {@link JavaFormatterOptions}. */
-  public static Builder builder() {
-    return new AutoValue_JavaFormatterOptions.Builder()
-        .style(Style.GOOGLE)
-        .formatJavadoc(true)
-        .reorderModifiers(true);
-  }
+    /** A builder for {@link JavaFormatterOptions}. */
+    @AutoValue.Builder
+    public abstract static class Builder {
 
-  /** A builder for {@link JavaFormatterOptions}. */
-  @AutoValue.Builder
-  public abstract static class Builder {
+        public abstract Builder style(Style style);
 
-    public abstract Builder style(Style style);
+        public abstract Builder formatJavadoc(boolean formatJavadoc);
 
-    public abstract Builder formatJavadoc(boolean formatJavadoc);
+        public abstract Builder reorderModifiers(boolean reorderModifiers);
 
-    public abstract Builder reorderModifiers(boolean reorderModifiers);
-
-    public abstract JavaFormatterOptions build();
-  }
+        public abstract JavaFormatterOptions build();
+    }
 }

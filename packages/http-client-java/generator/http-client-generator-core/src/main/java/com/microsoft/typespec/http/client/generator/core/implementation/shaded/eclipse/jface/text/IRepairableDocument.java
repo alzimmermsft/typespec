@@ -13,7 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text;
 
-
 /**
  * Tagging interface to be implemented by
  * {@link IDocument} implementers that offer a line
@@ -24,7 +23,7 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * a means of evolution. The following extension interfaces exist:
  * <ul>
  * <li> {@link IRepairableDocumentExtension} since version 3.4
- *      adds the ability to query whether the repairable document needs to be repaired.</li>
+ * adds the ability to query whether the repairable document needs to be repaired.</li>
  * </ul>
  *
  *
@@ -34,8 +33,8 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IRepairableDocument {
 
-	/**
-	 * Repairs the line information of the document implementing this interface.
-	 */
-	void repairLineInformation();
+    /**
+     * Repairs the line information of the document implementing this interface.
+     */
+    void repairLineInformation();
 }

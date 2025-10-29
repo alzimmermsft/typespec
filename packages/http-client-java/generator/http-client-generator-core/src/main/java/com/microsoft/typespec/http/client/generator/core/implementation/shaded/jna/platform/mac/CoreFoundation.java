@@ -104,7 +104,7 @@ public interface CoreFoundation extends Library {
          * Test whether this object has the specified ID
          *
          * @param typeID
-         *            The {@link CFTypeID} for the class to test
+         * The {@link CFTypeID} for the class to test
          * @return true if this object has the same ID as {@code typeID}
          */
         public boolean isTypeID(CFTypeID typeID) {
@@ -258,10 +258,24 @@ public interface CoreFoundation extends Library {
      * integer value corresponding to the C-style enum.
      */
     enum CFNumberType {
-        unusedZero, kCFNumberSInt8Type, kCFNumberSInt16Type, kCFNumberSInt32Type, kCFNumberSInt64Type,
-        kCFNumberFloat32Type, kCFNumberFloat64Type, kCFNumberCharType, kCFNumberShortType, kCFNumberIntType,
-        kCFNumberLongType, kCFNumberLongLongType, kCFNumberFloatType, kCFNumberDoubleType, kCFNumberCFIndexType,
-        kCFNumberNSIntegerType, kCFNumberCGFloatType, kCFNumberMaxType;
+        unusedZero,
+        kCFNumberSInt8Type,
+        kCFNumberSInt16Type,
+        kCFNumberSInt32Type,
+        kCFNumberSInt64Type,
+        kCFNumberFloat32Type,
+        kCFNumberFloat64Type,
+        kCFNumberCharType,
+        kCFNumberShortType,
+        kCFNumberIntType,
+        kCFNumberLongType,
+        kCFNumberLongLongType,
+        kCFNumberFloatType,
+        kCFNumberDoubleType,
+        kCFNumberCFIndexType,
+        kCFNumberNSIntegerType,
+        kCFNumberCGFloatType,
+        kCFNumberMaxType;
 
         /**
          * Index for the type of {@link CFNumberRef} stored.
@@ -330,7 +344,7 @@ public interface CoreFoundation extends Library {
          * Convenience method for {@link #CFArrayGetValueAtIndex} on this object
          *
          * @param idx
-         *            The index of the value to retrieve.
+         * The index of the value to retrieve.
          * @return The value at the {@code idx} index.
          */
         public Pointer getValueAtIndex(int idx) {
@@ -357,7 +371,7 @@ public interface CoreFoundation extends Library {
          * Convenience method for {@link #CFDataGetLength} on this object
          *
          * @return An index that specifies the number of bytes associated with this
-         *         object.
+         * object.
          */
         public int getLength() {
             return INSTANCE.CFDataGetLength(this).intValue();
@@ -428,9 +442,9 @@ public interface CoreFoundation extends Library {
          * object.
          *
          * @param key
-         *            The key for which to find a match.
+         * The key for which to find a match.
          * @return The value associated with key, or {@code null} if no key-value pair
-         *         matching key exists.
+         * matching key exists.
          */
         public Pointer getValue(PointerType key) {
             return INSTANCE.CFDictionaryGetValue(this, key);
@@ -451,12 +465,12 @@ public interface CoreFoundation extends Library {
          * {@link CoreFoundation#CFDictionaryGetValueIfPresent} on this object.
          *
          * @param key
-         *            The key for which to find a match.
+         * The key for which to find a match.
          * @param value
-         *            A pointer to memory which, on return, is filled with the
-         *            pointer-sized value if a matching key is found.
+         * A pointer to memory which, on return, is filled with the
+         * pointer-sized value if a matching key is found.
          * @return {@code true} if a matching key was found, otherwise
-         *         {@code false}
+         * {@code false}
          */
         public boolean getValueIfPresent(PointerType key, PointerByReference value) {
             return INSTANCE.CFDictionaryGetValueIfPresent(this, key, value) > 0;
@@ -480,9 +494,9 @@ public interface CoreFoundation extends Library {
          * object.
          *
          * @param key
-         *            The key of the value to set.
+         * The key of the value to set.
          * @param value
-         *            The value to add to or replace .
+         * The value to add to or replace .
          */
         public void setValue(PointerType key, PointerType value) {
             INSTANCE.CFDictionarySetValue(this, key, value);
@@ -550,9 +564,9 @@ public interface CoreFoundation extends Library {
          * references.
          *
          * @param s
-         *            A {@link String}.
+         * A {@link String}.
          * @return An immutable string containing {@code s}, or {@code null} if there
-         *         was a problem creating the object.
+         * was a problem creating the object.
          */
         public static CFStringRef createCFString(String s) {
             final char[] chars = s.toCharArray();
@@ -564,7 +578,7 @@ public interface CoreFoundation extends Library {
          * {@link String}
          *
          * @return The corresponding {@link String}, or null if the conversion
-         *         failed.
+         * failed.
          */
         public String stringValue() {
             // Get number of characters (UTF-16 code pairs)
@@ -654,16 +668,16 @@ public interface CoreFoundation extends Library {
      * references.
      *
      * @param alloc
-     *            The allocator to use to allocate memory for the new string. Pass
-     *            {@code null} or {@code kCFAllocatorDefault} to use the current
-     *            default allocator.
+     * The allocator to use to allocate memory for the new string. Pass
+     * {@code null} or {@code kCFAllocatorDefault} to use the current
+     * default allocator.
      * @param chars
-     *            The buffer of Unicode characters to copy into the new string.
+     * The buffer of Unicode characters to copy into the new string.
      * @param length
-     *            The number of characters in the buffer pointed to by chars. Only
-     *            this number of characters will be copied to internal storage.
+     * The number of characters in the buffer pointed to by chars. Only
+     * this number of characters will be copied to internal storage.
      * @return An immutable string containing {@code chars}, or {@code null} if
-     *         there was a problem creating the object.
+     * there was a problem creating the object.
      */
     CFStringRef CFStringCreateWithCharacters(CFAllocatorRef alloc, char[] chars, CFIndex length);
 
@@ -674,21 +688,21 @@ public interface CoreFoundation extends Library {
      * references.
      *
      * @param alloc
-     *            The allocator to use to allocate memory for the new object. Pass
-     *            {@code null} or {@code kCFAllocatorDefault} to use the current
-     *            default allocator.
+     * The allocator to use to allocate memory for the new object. Pass
+     * {@code null} or {@code kCFAllocatorDefault} to use the current
+     * default allocator.
      * @param theType
-     *            A constant that specifies the data type of the value to convert.
-     *            The ordinal value of the enum.
-     *            <p>
-     *            The {@code theType} parameter is not necessarily preserved when
-     *            creating a new {@code CFNumber} object. The {@code CFNumber}
-     *            object will be created using whatever internal storage type the
-     *            creation function deems appropriate. Use the function
-     *            {@link #CFNumberGetType} to find out what type the
-     *            {@code CFNumber} object used to store your value.
+     * A constant that specifies the data type of the value to convert.
+     * The ordinal value of the enum.
+     * <p>
+     * The {@code theType} parameter is not necessarily preserved when
+     * creating a new {@code CFNumber} object. The {@code CFNumber}
+     * object will be created using whatever internal storage type the
+     * creation function deems appropriate. Use the function
+     * {@link #CFNumberGetType} to find out what type the
+     * {@code CFNumber} object used to store your value.
      * @param valuePtr
-     *            A pointer to the value for the returned number object.
+     * A pointer to the value for the returned number object.
      * @return A new number with the value specified by {@code valuePtr}.
      */
     CFNumberRef CFNumberCreate(CFAllocatorRef alloc, CFIndex theType, ByReference valuePtr);
@@ -700,37 +714,37 @@ public interface CoreFoundation extends Library {
      * references.
      *
      * @param alloc
-     *            The allocator to use to allocate memory for the new array and its
-     *            storage for values. Pass {@code null} or
-     *            {@code kCFAllocatorDefault} to use the current default allocator.
+     * The allocator to use to allocate memory for the new array and its
+     * storage for values. Pass {@code null} or
+     * {@code kCFAllocatorDefault} to use the current default allocator.
      * @param values
-     *            A C array of the pointer-sized values to be in the new array. The
-     *            values in the new array are ordered in the same order in which
-     *            they appear in this C array. This value may be {@code null} if
-     *            {@code numValues} is 0. This C array is not changed or freed by
-     *            this function. If {@code values} is not a valid pointer to a C
-     *            array of at least {@code numValues} elements, the behavior is
-     *            undefined.
+     * A C array of the pointer-sized values to be in the new array. The
+     * values in the new array are ordered in the same order in which
+     * they appear in this C array. This value may be {@code null} if
+     * {@code numValues} is 0. This C array is not changed or freed by
+     * this function. If {@code values} is not a valid pointer to a C
+     * array of at least {@code numValues} elements, the behavior is
+     * undefined.
      * @param numValues
-     *            The number of values to copy from the {@code values} C array into
-     *            the new array. This number will be the count of the new array—it
-     *            must not be negative or greater than the number of elements in
-     *            values.
+     * The number of values to copy from the {@code values} C array into
+     * the new array. This number will be the count of the new array—it
+     * must not be negative or greater than the number of elements in
+     * values.
      * @param callBacks
-     *            A pointer to a {@code CFArrayCallBacks} structure initialized with
-     *            the callbacks for the array to use on each value in the
-     *            collection. The retain callback is used within this function, for
-     *            example, to retain all of the new values from the {@code values} C
-     *            array. A copy of the contents of the callbacks structure is made,
-     *            so that a pointer to a structure on the stack can be passed in or
-     *            can be reused for multiple collection creations.
-     *            <p>
-     *            This value may be {@code null}, which is treated as if a valid
-     *            structure of version 0 with all fields {@code null} had been
-     *            passed in.
+     * A pointer to a {@code CFArrayCallBacks} structure initialized with
+     * the callbacks for the array to use on each value in the
+     * collection. The retain callback is used within this function, for
+     * example, to retain all of the new values from the {@code values} C
+     * array. A copy of the contents of the callbacks structure is made,
+     * so that a pointer to a structure on the stack can be passed in or
+     * can be reused for multiple collection creations.
+     * <p>
+     * This value may be {@code null}, which is treated as if a valid
+     * structure of version 0 with all fields {@code null} had been
+     * passed in.
      * @return A new immutable array containing {@code numValues} from
-     *         {@code values}, or {@code null} if there was a problem creating the
-     *         object.
+     * {@code values}, or {@code null} if there was a problem creating the
+     * object.
      */
     CFArrayRef CFArrayCreate(CFAllocatorRef alloc, Pointer values, CFIndex numValues, Pointer callBacks);
 
@@ -742,16 +756,16 @@ public interface CoreFoundation extends Library {
      * references.
      *
      * @param alloc
-     *            The allocator to use to allocate memory for the new object. Pass
-     *            {@code null} or {@code kCFAllocatorDefault} to use the current
-     *            default allocator.
+     * The allocator to use to allocate memory for the new object. Pass
+     * {@code null} or {@code kCFAllocatorDefault} to use the current
+     * default allocator.
      * @param bytes
-     *            A pointer to the byte buffer that contains the raw data to be
-     *            copied into the Data.
+     * A pointer to the byte buffer that contains the raw data to be
+     * copied into the Data.
      * @param length
-     *            The number of bytes in the buffer ({@code bytes}).
+     * The number of bytes in the buffer ({@code bytes}).
      * @return A new {@code CFData} object, or {@code null} if there was a problem
-     *         creating the object.
+     * creating the object.
      */
     CFDataRef CFDataCreate(CFAllocatorRef alloc, Pointer bytes, CFIndex length);
 
@@ -762,41 +776,41 @@ public interface CoreFoundation extends Library {
      * references.
      *
      * @param alloc
-     *            The allocator to use to allocate memory for the new string. Pass
-     *            {@code null} or {@code kCFAllocatorDefault} to use the current
-     *            default allocator.
+     * The allocator to use to allocate memory for the new string. Pass
+     * {@code null} or {@code kCFAllocatorDefault} to use the current
+     * default allocator.
      * @param capacity
-     *            The maximum number of key-value pairs that can be contained by the
-     *            new dictionary. The dictionary starts empty and can grow to this
-     *            number of key-value pairs (and it can have less).
-     *            <p>
-     *            Pass 0 to specify that the maximum capacity is not limited. The
-     *            value must not be negative.
+     * The maximum number of key-value pairs that can be contained by the
+     * new dictionary. The dictionary starts empty and can grow to this
+     * number of key-value pairs (and it can have less).
+     * <p>
+     * Pass 0 to specify that the maximum capacity is not limited. The
+     * value must not be negative.
      * @param keyCallBacks
-     *            A pointer to a {@code CFDictionaryKeyCallBacks} structure
-     *            initialized with the callbacks to use to retain, release,
-     *            describe, and compare keys in the dictionary. A copy of the
-     *            contents of the callbacks structure is made, so that a pointer to
-     *            a structure on the stack can be passed in or can be reused for
-     *            multiple collection creations.
-     *            <p>
-     *            This value may be {@code null}, which is treated as a valid
-     *            structure of version 0 with all fields {@code null}.
+     * A pointer to a {@code CFDictionaryKeyCallBacks} structure
+     * initialized with the callbacks to use to retain, release,
+     * describe, and compare keys in the dictionary. A copy of the
+     * contents of the callbacks structure is made, so that a pointer to
+     * a structure on the stack can be passed in or can be reused for
+     * multiple collection creations.
+     * <p>
+     * This value may be {@code null}, which is treated as a valid
+     * structure of version 0 with all fields {@code null}.
      * @param valueCallBacks
-     *            A pointer to a {@code CFDictionaryValueCallBacks} structure
-     *            initialized with the callbacks to use to retain, release,
-     *            describe, and compare values in the dictionary. A copy of the
-     *            contents of the callbacks structure is made, so that a pointer to
-     *            a structure on the stack can be passed in or can be reused for
-     *            multiple collection creations.
-     *            <p>
-     *            This value may be {@code null}, which is treated as a valid
-     *            structure of version 0 with all fields {@code null}.
+     * A pointer to a {@code CFDictionaryValueCallBacks} structure
+     * initialized with the callbacks to use to retain, release,
+     * describe, and compare values in the dictionary. A copy of the
+     * contents of the callbacks structure is made, so that a pointer to
+     * a structure on the stack can be passed in or can be reused for
+     * multiple collection creations.
+     * <p>
+     * This value may be {@code null}, which is treated as a valid
+     * structure of version 0 with all fields {@code null}.
      * @return A new dictionary, or {@code null} if there was a problem creating the
-     *         object.
+     * object.
      */
     CFMutableDictionaryRef CFDictionaryCreateMutable(CFAllocatorRef alloc, CFIndex capacity, Pointer keyCallBacks,
-            Pointer valueCallBacks);
+        Pointer valueCallBacks);
 
     /**
      * Returns a textual description of a Core Foundation object.
@@ -812,8 +826,8 @@ public interface CoreFoundation extends Library {
      * function.
      *
      * @param cf
-     *            The {@code CFType} object (a generic reference of type
-     *            {@code CFTypeRef}) from which to derive a description.
+     * The {@code CFType} object (a generic reference of type
+     * {@code CFTypeRef}) from which to derive a description.
      * @return A string that contains a description of {@code cf}.
      */
     CFStringRef CFCopyDescription(CFTypeRef cf);
@@ -827,8 +841,8 @@ public interface CoreFoundation extends Library {
      * object, you are responsible for releasing it when you no longer need it.
      *
      * @param cf
-     *            A {@code CFType} object to release. This value must not be
-     *            {@code null}.
+     * A {@code CFType} object to release. This value must not be
+     * {@code null}.
      */
     void CFRelease(CFTypeRef cf);
 
@@ -841,8 +855,8 @@ public interface CoreFoundation extends Library {
      * with {@link #CFRelease}.
      *
      * @param cf
-     *            The {@code CFType} object to retain. This value must not be
-     *            {@code null}.
+     * The {@code CFType} object to retain. This value must not be
+     * {@code null}.
      * @return The input value, {code cf}.
      */
     CFTypeRef CFRetain(CFTypeRef cf);
@@ -851,7 +865,7 @@ public interface CoreFoundation extends Library {
      * Returns the reference count of a Core Foundation object.
      *
      * @param cf
-     *            The {@code CFType} object to examine.
+     * The {@code CFType} object to examine.
      * @return A number representing the reference count of {code cf}.
      */
     CFIndex CFGetRetainCount(CFTypeRef cf);
@@ -860,7 +874,7 @@ public interface CoreFoundation extends Library {
      * Returns the number of key-value pairs in a dictionary.
      *
      * @param theDict
-     *            The dictionary to examine.
+     * The dictionary to examine.
      * @return The number of key-value pairs in theDict.
      */
     CFIndex CFDictionaryGetCount(CFDictionaryRef theDict);
@@ -869,20 +883,20 @@ public interface CoreFoundation extends Library {
      * Returns the value associated with a given key.
      *
      * @param theDict
-     *            The dictionary to examine.
+     * The dictionary to examine.
      * @param key
-     *            The key for which to find a match in {@code theDict}. The key hash
-     *            and equal callbacks provided when the dictionary was created are
-     *            used to compare. If the hash callback was {@code null}, the key is
-     *            treated as a pointer and converted to an integer. If the equal
-     *            callback was {@code null}, pointer equality (in C, ==) is used. If
-     *            {@code key}, or any of the keys in {@code theDict}, is not
-     *            understood by the equal callback, the behavior is undefined.
+     * The key for which to find a match in {@code theDict}. The key hash
+     * and equal callbacks provided when the dictionary was created are
+     * used to compare. If the hash callback was {@code null}, the key is
+     * treated as a pointer and converted to an integer. If the equal
+     * callback was {@code null}, pointer equality (in C, ==) is used. If
+     * {@code key}, or any of the keys in {@code theDict}, is not
+     * understood by the equal callback, the behavior is undefined.
      * @return The value associated with key in {@code theDict}, or {@code null} if
-     *         no key-value pair matching key exists. Since {@code null} is also a
-     *         valid value in some dictionaries, use
-     *         {@link #CFDictionaryGetValueIfPresent} to distinguish between a value
-     *         that is not found, and a {@code null} value.
+     * no key-value pair matching key exists. Since {@code null} is also a
+     * valid value in some dictionaries, use
+     * {@link #CFDictionaryGetValueIfPresent} to distinguish between a value
+     * that is not found, and a {@code null} value.
      */
     Pointer CFDictionaryGetValue(CFDictionaryRef theDict, PointerType key);
 
@@ -891,23 +905,23 @@ public interface CoreFoundation extends Library {
      * is in a dictionary, and returns that value indirectly if it exists.
      *
      * @param theDict
-     *            The dictionary to examine.
+     * The dictionary to examine.
      * @param key
-     *            The key for which to find a match in {@code theDict}. The key hash
-     *            and equal callbacks provided when the dictionary was created are
-     *            used to compare. If the hash callback was {@code null}, the key is
-     *            treated as a pointer and converted to an integer. If the equal
-     *            callback was {@code null}, pointer equality (in C, ==) is used. If
-     *            {@code key}, or any of the keys in {@code theDict}, is not
-     *            understood by the equal callback, the behavior is undefined.
+     * The key for which to find a match in {@code theDict}. The key hash
+     * and equal callbacks provided when the dictionary was created are
+     * used to compare. If the hash callback was {@code null}, the key is
+     * treated as a pointer and converted to an integer. If the equal
+     * callback was {@code null}, pointer equality (in C, ==) is used. If
+     * {@code key}, or any of the keys in {@code theDict}, is not
+     * understood by the equal callback, the behavior is undefined.
      * @param value
-     *            A pointer to memory which, on return, is filled with the
-     *            pointer-sized value if a matching key is found. If no key match is
-     *            found, the contents of the storage pointed to by this parameter
-     *            are undefined. This value may be {@code null}, in which case the
-     *            value from the dictionary is not returned (but the return value of
-     *            this function still indicates whether or not the key-value pair
-     *            was present).
+     * A pointer to memory which, on return, is filled with the
+     * pointer-sized value if a matching key is found. If no key match is
+     * found, the contents of the storage pointed to by this parameter
+     * are undefined. This value may be {@code null}, in which case the
+     * value from the dictionary is not returned (but the return value of
+     * this function still indicates whether or not the key-value pair
+     * was present).
      * @return 1 if a matching key was found, otherwise 0.
      */
     byte CFDictionaryGetValueIfPresent(CFDictionaryRef theDict, PointerType key, PointerByReference value);
@@ -916,26 +930,26 @@ public interface CoreFoundation extends Library {
      * Sets the value corresponding to a given key.
      *
      * @param theDict
-     *            The dictionary to modify. If this parameter is a fixed-capacity
-     *            dictionary and it is full before this operation, and the key does
-     *            not exist in the dictionary, the behavior is undefined.
+     * The dictionary to modify. If this parameter is a fixed-capacity
+     * dictionary and it is full before this operation, and the key does
+     * not exist in the dictionary, the behavior is undefined.
      * @param key
-     *            The key of the value to set in {@code theDict}. If a key which
-     *            matches {@code key} is already present in the dictionary, only the
-     *            value for the key is changed ("add if absent, replace if
-     *            present"). If no key matches {@code key}, the key-value pair is
-     *            added to the dictionary.
-     *            <p>
-     *            If a key-value pair is added, both key and value are retained by
-     *            the dictionary, using the retain callback provided when
-     *            {@code theDict} was created. {@code key} must be of the type
-     *            expected by the key retain callback.
+     * The key of the value to set in {@code theDict}. If a key which
+     * matches {@code key} is already present in the dictionary, only the
+     * value for the key is changed ("add if absent, replace if
+     * present"). If no key matches {@code key}, the key-value pair is
+     * added to the dictionary.
+     * <p>
+     * If a key-value pair is added, both key and value are retained by
+     * the dictionary, using the retain callback provided when
+     * {@code theDict} was created. {@code key} must be of the type
+     * expected by the key retain callback.
      * @param value
-     *            The value to add to or replace in {@code theDict}. {@code value}
-     *            is retained using the value retain callback provided when
-     *            {@code theDict} was created, and the previous value if any is
-     *            released. {@code value} must be of the type expected by the retain
-     *            and release callbacks.
+     * The value to add to or replace in {@code theDict}. {@code value}
+     * is retained using the value retain callback provided when
+     * {@code theDict} was created, and the previous value if any is
+     * released. {@code value} must be of the type expected by the retain
+     * and release callbacks.
      */
     void CFDictionarySetValue(CFMutableDictionaryRef theDict, PointerType key, PointerType value);
 
@@ -944,22 +958,22 @@ public interface CoreFoundation extends Library {
      * converting the characters to a given encoding.
      *
      * @param theString
-     *            The string whose contents you wish to access.
+     * The string whose contents you wish to access.
      * @param bufferToFill
-     *            The C string buffer into which to copy the string. On return, the
-     *            buffer contains the converted characters. If there is an error in
-     *            conversion, the buffer contains only partial results.
-     *            <p>
-     *            The buffer must be large enough to contain the converted
-     *            characters and a NUL terminator.
+     * The C string buffer into which to copy the string. On return, the
+     * buffer contains the converted characters. If there is an error in
+     * conversion, the buffer contains only partial results.
+     * <p>
+     * The buffer must be large enough to contain the converted
+     * characters and a NUL terminator.
      * @param bufferSize
-     *            The length of {@code buffer} in bytes.
+     * The length of {@code buffer} in bytes.
      * @param encoding
-     *            The string encoding to which the character contents of
-     *            {@code theString} should be converted. The encoding must specify
-     *            an 8-bit encoding.
+     * The string encoding to which the character contents of
+     * {@code theString} should be converted. The encoding must specify
+     * an 8-bit encoding.
      * @return 1 upon success or 0 if the conversion fails or the provided buffer is
-     *         too small.
+     * too small.
      */
     byte CFStringGetCString(CFStringRef theString, Pointer bufferToFill, CFIndex bufferSize, int encoding);
 
@@ -967,7 +981,7 @@ public interface CoreFoundation extends Library {
      * Returns the value of a {@code CFBoolean} object.
      *
      * @param bool
-     *            The boolean to examine.
+     * The boolean to examine.
      * @return 1 if the value of {@code bool} is {@code true}, 0 otherwise.
      */
     byte CFBooleanGetValue(CFBooleanRef bool);
@@ -976,7 +990,7 @@ public interface CoreFoundation extends Library {
      * Returns the number of values currently in an array.
      *
      * @param theArray
-     *            a {@link CFArrayRef} object.
+     * a {@link CFArrayRef} object.
      * @return The number of values in {@code array}.
      */
     CFIndex CFArrayGetCount(CFArrayRef theArray);
@@ -985,11 +999,11 @@ public interface CoreFoundation extends Library {
      * Retrieves a value at a given index.
      *
      * @param theArray
-     *            The array to examine.
+     * The array to examine.
      * @param idx
-     *            The index of the value to retrieve. If the index is outside the
-     *            index space of {@code theArray} (0 to N-1 inclusive (where N is
-     *            the count of {@code theArray})), the behavior is undefined.
+     * The index of the value to retrieve. If the index is outside the
+     * index space of {@code theArray} (0 to N-1 inclusive (where N is
+     * the count of {@code theArray})), the behavior is undefined.
      * @return The value at the {@code idx} index in {@code theArray}).
      */
     Pointer CFArrayGetValueAtIndex(CFArrayRef theArray, CFIndex idx);
@@ -998,9 +1012,9 @@ public interface CoreFoundation extends Library {
      * Returns the type used by a {@code CFNumber} object to store its value.
      *
      * @param number
-     *            The {@code CFNumber} object to examine.
+     * The {@code CFNumber} object to examine.
      * @return A constant that indicates the data type of the value contained in
-     *         number. See {@link CFNumberType} for a list of possible values.
+     * number. See {@link CFNumberType} for a list of possible values.
      */
     CFIndex CFNumberGetType(CFNumberRef number);
 
@@ -1008,12 +1022,12 @@ public interface CoreFoundation extends Library {
      * Obtains the value of a {@code CFNumber} object cast to a specified type.
      *
      * @param number
-     *            The {@code CFNumber} object to examine.
+     * The {@code CFNumber} object to examine.
      * @param theType
-     *            A constant that specifies the data type to return. See
-     *            {@link CFNumberType} for a list of possible values.
+     * A constant that specifies the data type to return. See
+     * {@link CFNumberType} for a list of possible values.
      * @param valuePtr
-     *            On return, contains the value of {@code number}.
+     * On return, contains the value of {@code number}.
      * @return 1 if the operation was successful, otherwise 0.
      */
     byte CFNumberGetValue(CFNumberRef number, CFIndex theType, ByReference valuePtr);
@@ -1023,9 +1037,9 @@ public interface CoreFoundation extends Library {
      * string.
      *
      * @param theString
-     *            The string to examine.
+     * The string to examine.
      * @return The number (in terms of UTF-16 code pairs) of characters stored in
-     *         {@code theString}.
+     * {@code theString}.
      */
     CFIndex CFStringGetLength(CFStringRef theString);
 
@@ -1034,18 +1048,19 @@ public interface CoreFoundation extends Library {
      * Unicode characters) will take up if encoded in a specified encoding.
      *
      * @param length
-     *            The number of Unicode characters to evaluate.
+     * The number of Unicode characters to evaluate.
      * @param encoding
-     *            The string encoding for the number of characters specified by
-     *            length.
+     * The string encoding for the number of characters specified by
+     * length.
      * @return The maximum number of bytes that could be needed to represent length
-     *         number of Unicode characters with the string encoding encoding, or
-     *         {@link #kCFNotFound} if the number exceeds {@link Long#MAX_VALUE}.
+     * number of Unicode characters with the string encoding encoding, or
+     * {@link #kCFNotFound} if the number exceeds {@link Long#MAX_VALUE}.
      */
     CFIndex CFStringGetMaximumSizeForEncoding(CFIndex length, int encoding);
 
     /**
      * Determines whether two Core Foundation objects are considered equal.
+     * 
      * @param cf1 A CFType object to compare to cf2.
      * @param cf2 A CFType object to compare to cf1.
      * @return true if cf1 and cf2 are of the same type and considered equal, otherwise false.
@@ -1056,10 +1071,10 @@ public interface CoreFoundation extends Library {
      * Gets the default allocator object for the current thread.
      *
      * @return A reference to the default allocator for the current thread. If none
-     *         has been explicitly set, returns the generic system allocator.
-     *         <p>
-     *         The default allocator can never be released, so it is not necessary
-     *         to {@link #CFRetain} this reference.
+     * has been explicitly set, returns the generic system allocator.
+     * <p>
+     * The default allocator can never be released, so it is not necessary
+     * to {@link #CFRetain} this reference.
      */
     CFAllocatorRef CFAllocatorGetDefault();
 
@@ -1067,7 +1082,7 @@ public interface CoreFoundation extends Library {
      * Returns the number of bytes contained by a {@code CFData} object.
      *
      * @param theData
-     *            The {@code CFData} object to examine.
+     * The {@code CFData} object to examine.
      * @return An index that specifies the number of bytes in {@code theData}.
      */
     CFIndex CFDataGetLength(CFDataRef theData);
@@ -1076,7 +1091,7 @@ public interface CoreFoundation extends Library {
      * Returns a read-only pointer to the bytes of a {@code CFData} object.
      *
      * @param theData
-     *            The {@code CFData} object to examine.
+     * The {@code CFData} object to examine.
      * @return A read-only pointer to the bytes associated with {@code theData}.
      */
     Pointer CFDataGetBytePtr(CFDataRef theData);
@@ -1085,9 +1100,9 @@ public interface CoreFoundation extends Library {
      * Returns the type of a {@code CFType} object.
      *
      * @param theObject
-     *            The {@code CFData} object to examine.
+     * The {@code CFData} object to examine.
      * @return A value of type {@link CFTypeID} that identifies the opaque type of
-     *         {@code cf}.
+     * {@code cf}.
      */
     CFTypeID CFGetTypeID(CFTypeRef theObject);
 
@@ -1096,9 +1111,9 @@ public interface CoreFoundation extends Library {
      * Allows to inspect object type without creating a {@link CFTypeRef} wrapper.
      *
      * @param theObject
-     *            The pointer to {@code CFData} object to examine.
+     * The pointer to {@code CFData} object to examine.
      * @return A value of type {@link CFTypeID} that identifies the opaque type of
-     *         {@code cf}.
+     * {@code cf}.
      */
     CFTypeID CFGetTypeID(Pointer theObject);
 
@@ -1119,17 +1134,17 @@ public interface CoreFoundation extends Library {
 
     /**
      * @return The type identifier for the {@code CFData} opaque type.
-     *         <p>
-     *         {@code CFMutableData} objects have the same type identifier as
-     *         {@code CFData} objects.
+     * <p>
+     * {@code CFMutableData} objects have the same type identifier as
+     * {@code CFData} objects.
      */
     CFTypeID CFDataGetTypeID();
 
     /**
      * @return The type identifier for the {@code CFDictionary} opaque type.
-     *         <p>
-     *         {@code CFMutableDictionary} objects have the same type identifier as
-     *         {@code CFDictionary} objects.
+     * <p>
+     * {@code CFMutableDictionary} objects have the same type identifier as
+     * {@code CFDictionary} objects.
      */
     CFTypeID CFDictionaryGetTypeID();
 

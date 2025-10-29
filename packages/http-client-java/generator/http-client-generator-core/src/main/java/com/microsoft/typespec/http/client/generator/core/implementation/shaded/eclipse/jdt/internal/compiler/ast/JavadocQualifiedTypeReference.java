@@ -26,115 +26,126 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.Scope;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 
-
 public class JavadocQualifiedTypeReference extends QualifiedTypeReference implements IJavadocTypeReference {
 
-	public int tagSourceStart, tagSourceEnd;
-	public PackageBinding packageBinding;
-	public ModuleBinding moduleBinding;
-	private final boolean canBeModule;
+    public int tagSourceStart, tagSourceEnd;
+    public PackageBinding packageBinding;
+    public ModuleBinding moduleBinding;
+    private final boolean canBeModule;
 
-	public JavadocQualifiedTypeReference(char[][] sources, long[] pos, int tagStart, int tagEnd) {
-		this(sources, pos, tagStart, tagEnd, false);
-	}
+    public JavadocQualifiedTypeReference(char[][] sources, long[] pos, int tagStart, int tagEnd) {
+        this(sources, pos, tagStart, tagEnd, false);
+    }
 
-	public JavadocQualifiedTypeReference(char[][] sources, long[] pos, int tagStart, int tagEnd, boolean canBeModule) {
-		super(sources, pos);
-		this.tagSourceStart = tagStart;
-		this.tagSourceEnd = tagEnd;
-		this.bits |= ASTNode.InsideJavadoc;
-		this.canBeModule = canBeModule;
-	}
+    public JavadocQualifiedTypeReference(char[][] sources, long[] pos, int tagStart, int tagEnd, boolean canBeModule) {
+        super(sources, pos);
+        this.tagSourceStart = tagStart;
+        this.tagSourceEnd = tagEnd;
+        this.bits |= ASTNode.InsideJavadoc;
+        this.canBeModule = canBeModule;
+    }
 
-	/*
-	 * We need to modify resolving behavior to handle package references
-	 */
-	private TypeBinding internalResolveType(Scope scope, boolean checkBounds) {
-		// handle the error here
-		this.constant = Constant.NotAConstant;
-		if (this.resolvedType != null) // is a shared type reference which was already resolved
-			return this.resolvedType.isValidBinding() ? this.resolvedType : this.resolvedType.closestMatch(); // already reported error
+    /*
+     * We need to modify resolving behavior to handle package references
+     */
+    private TypeBinding internalResolveType(Scope scope, boolean checkBounds) {
+        // handle the error here
+        this.constant = Constant.NotAConstant;
+        if (this.resolvedType != null) // is a shared type reference which was already resolved
+            return this.resolvedType.isValidBinding() ? this.resolvedType : this.resolvedType.closestMatch(); // already
+                                                                                                              // reported
+                                                                                                              // error
 
-		TypeBinding type = this.resolvedType = getTypeBinding(scope);
-		// End resolution when getTypeBinding(scope) returns null. This may happen in
-		// certain circumstances, typically when an illegal access is done on a type
-		// variable (see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=204749)
-		if (type == null) return null;
-		if (!type.isValidBinding()) {
-			Binding binding = scope.getTypeOrPackage(this.tokens);
-			if (binding instanceof PackageBinding) {
-				this.packageBinding = (PackageBinding) binding;
-				// Valid package references are allowed in Javadoc (https://bugs.eclipse.org/bugs/show_bug.cgi?id=281609)
-			} else {
-				Binding modBinding = null;
-				if (this.canBeModule) {
-					char[] moduleName = CharOperation.concatWith(this.tokens, '.');
-					modBinding = scope.environment().getModule(moduleName);
-				}
-				if (modBinding instanceof ModuleBinding
-						&& !((ModuleBinding)modBinding).isUnnamed()
-						&& modBinding.isValidBinding()) {
-					this.moduleBinding = (ModuleBinding) modBinding;
-				} else {
-					reportInvalidType(scope);
-				}
-			}
-			return null;
-		}
-		// https://bugs.eclipse.org/bugs/show_bug.cgi?id=209936
-		// raw convert all enclosing types when dealing with Javadoc references
-		if (type.isGenericType() || type.isParameterizedType()) {
-			this.resolvedType = scope.environment().convertToRawType(type, true /*force the conversion of enclosing types*/);
-		}
-		return this.resolvedType;
-	}
-	@Override
-	protected void reportDeprecatedType(TypeBinding type, Scope scope) {
-		scope.problemReporter().javadocDeprecatedType(type, this, scope.getDeclarationModifiers());
-	}
+        TypeBinding type = this.resolvedType = getTypeBinding(scope);
+        // End resolution when getTypeBinding(scope) returns null. This may happen in
+        // certain circumstances, typically when an illegal access is done on a type
+        // variable (see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=204749)
+        if (type == null)
+            return null;
+        if (!type.isValidBinding()) {
+            Binding binding = scope.getTypeOrPackage(this.tokens);
+            if (binding instanceof PackageBinding) {
+                this.packageBinding = (PackageBinding) binding;
+                // Valid package references are allowed in Javadoc
+                // (https://bugs.eclipse.org/bugs/show_bug.cgi?id=281609)
+            } else {
+                Binding modBinding = null;
+                if (this.canBeModule) {
+                    char[] moduleName = CharOperation.concatWith(this.tokens, '.');
+                    modBinding = scope.environment().getModule(moduleName);
+                }
+                if (modBinding instanceof ModuleBinding
+                    && !((ModuleBinding) modBinding).isUnnamed()
+                    && modBinding.isValidBinding()) {
+                    this.moduleBinding = (ModuleBinding) modBinding;
+                } else {
+                    reportInvalidType(scope);
+                }
+            }
+            return null;
+        }
+        // https://bugs.eclipse.org/bugs/show_bug.cgi?id=209936
+        // raw convert all enclosing types when dealing with Javadoc references
+        if (type.isGenericType() || type.isParameterizedType()) {
+            this.resolvedType
+                = scope.environment().convertToRawType(type, true /* force the conversion of enclosing types */);
+        }
+        return this.resolvedType;
+    }
 
-	@Override
-	protected void reportDeprecatedType(TypeBinding type, Scope scope, int index) {
-		scope.problemReporter().javadocDeprecatedType(type, this, scope.getDeclarationModifiers(), index);
-	}
+    @Override
+    protected void reportDeprecatedType(TypeBinding type, Scope scope) {
+        scope.problemReporter().javadocDeprecatedType(type, this, scope.getDeclarationModifiers());
+    }
 
-	@Override
-	protected void reportInvalidType(Scope scope) {
-		scope.problemReporter().javadocInvalidType(this, this.resolvedType, scope.getDeclarationModifiers());
-	}
-	@Override
-	public TypeBinding resolveType(BlockScope blockScope, boolean checkBounds, int location) {
-		return internalResolveType(blockScope, checkBounds);
-	}
+    @Override
+    protected void reportDeprecatedType(TypeBinding type, Scope scope, int index) {
+        scope.problemReporter().javadocDeprecatedType(type, this, scope.getDeclarationModifiers(), index);
+    }
 
-	@Override
-	public TypeBinding resolveType(ClassScope classScope, int location) {
-		return internalResolveType(classScope, false);
-	}
+    @Override
+    protected void reportInvalidType(Scope scope) {
+        scope.problemReporter().javadocInvalidType(this, this.resolvedType, scope.getDeclarationModifiers());
+    }
 
-	/* (non-Javadoc)
-	 * Redefine to capture javadoc specific signatures
-	 * @see org.eclipse.jdt.internal.compiler.ast.ASTNode#traverse(com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ASTVisitor, com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.BlockScope)
-	 */
-	@Override
-	public void traverse(ASTVisitor visitor, BlockScope scope) {
-		visitor.visit(this, scope);
-		visitor.endVisit(this, scope);
-	}
+    @Override
+    public TypeBinding resolveType(BlockScope blockScope, boolean checkBounds, int location) {
+        return internalResolveType(blockScope, checkBounds);
+    }
 
-	@Override
-	public void traverse(ASTVisitor visitor, ClassScope scope) {
-		visitor.visit(this, scope);
-		visitor.endVisit(this, scope);
-	}
+    @Override
+    public TypeBinding resolveType(ClassScope classScope, int location) {
+        return internalResolveType(classScope, false);
+    }
 
-	@Override
-	public int getTagSourceStart() {
-		return this.tagSourceStart;
-	}
+    /*
+     * (non-Javadoc)
+     * Redefine to capture javadoc specific signatures
+     * 
+     * @see org.eclipse.jdt.internal.compiler.ast.ASTNode#traverse(com.microsoft.typespec.http.client.generator.core.
+     * implementation.shaded.eclipse.jdt.internal.compiler.ASTVisitor,
+     * com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.
+     * BlockScope)
+     */
+    @Override
+    public void traverse(ASTVisitor visitor, BlockScope scope) {
+        visitor.visit(this, scope);
+        visitor.endVisit(this, scope);
+    }
 
-	@Override
-	public int getTagSourceEnd() {
-		return this.tagSourceEnd;
-	}
+    @Override
+    public void traverse(ASTVisitor visitor, ClassScope scope) {
+        visitor.visit(this, scope);
+        visitor.endVisit(this, scope);
+    }
+
+    @Override
+    public int getTagSourceStart() {
+        return this.tagSourceStart;
+    }
+
+    @Override
+    public int getTagSourceEnd() {
+        return this.tagSourceEnd;
+    }
 }

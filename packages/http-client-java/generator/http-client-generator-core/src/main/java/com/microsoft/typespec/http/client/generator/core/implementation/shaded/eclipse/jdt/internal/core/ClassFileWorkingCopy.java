@@ -18,7 +18,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IBuffer;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaModelStatusConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ToolFactory;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.WorkingCopyOwner;
@@ -35,89 +34,94 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class ClassFileWorkingCopy extends CompilationUnit {
 
-	public final AbstractClassFile classFile;
+    public final AbstractClassFile classFile;
 
-public ClassFileWorkingCopy(AbstractClassFile classFile, WorkingCopyOwner owner) {
-	super((PackageFragment) classFile.getParent(), sourceFileName(classFile), owner);
-	this.classFile = classFile;
-}
-private static String sourceFileName(AbstractClassFile classFile) {
-	if (classFile instanceof ModularClassFile)
-		return TypeConstants.MODULE_INFO_FILE_NAME_STRING;
-	else
-		return ((BinaryType) ((ClassFile) classFile).getType()).getSourceFileName(null/*no info available*/);
-}
+    public ClassFileWorkingCopy(AbstractClassFile classFile, WorkingCopyOwner owner) {
+        super((PackageFragment) classFile.getParent(), sourceFileName(classFile), owner);
+        this.classFile = classFile;
+    }
 
-@Override
-public IBuffer getBuffer() throws JavaModelException {
-	if (isWorkingCopy())
-		return super.getBuffer();
-	else
-		return this.classFile.getBuffer();
-}
+    private static String sourceFileName(AbstractClassFile classFile) {
+        if (classFile instanceof ModularClassFile)
+            return TypeConstants.MODULE_INFO_FILE_NAME_STRING;
+        else
+            return ((BinaryType) ((ClassFile) classFile).getType()).getSourceFileName(null/* no info available */);
+    }
 
-@Override
-public char[] getContents() {
-	try {
-		IBuffer buffer = getBuffer();
-		if (buffer == null) return CharOperation.NO_CHAR;
-		char[] characters = buffer.getCharacters();
-		if (characters == null) return CharOperation.NO_CHAR;
-		return characters;
-	} catch (JavaModelException e) {
-		return CharOperation.NO_CHAR;
-	}
-}
+    @Override
+    public IBuffer getBuffer() throws JavaModelException {
+        if (isWorkingCopy())
+            return super.getBuffer();
+        else
+            return this.classFile.getBuffer();
+    }
 
-@Override
-public IPath getPath() {
-	return this.classFile.getPath();
-}
+    @Override
+    public char[] getContents() {
+        try {
+            IBuffer buffer = getBuffer();
+            if (buffer == null)
+                return CharOperation.NO_CHAR;
+            char[] characters = buffer.getCharacters();
+            if (characters == null)
+                return CharOperation.NO_CHAR;
+            return characters;
+        } catch (JavaModelException e) {
+            return CharOperation.NO_CHAR;
+        }
+    }
 
-@Override
-public JavaElement getPrimaryElement(boolean checkOwner) {
-	if (checkOwner && isPrimary()) return this;
-	return new ClassFileWorkingCopy(this.classFile, DefaultWorkingCopyOwner.PRIMARY);
-}
+    @Override
+    public IPath getPath() {
+        return this.classFile.getPath();
+    }
 
-@Override
-public IResource resource(PackageFragmentRoot root) {
-	if (root.isArchive())
-		return root.resource(root);
-	return this.classFile.resource(root);
-}
+    @Override
+    public JavaElement getPrimaryElement(boolean checkOwner) {
+        if (checkOwner && isPrimary())
+            return this;
+        return new ClassFileWorkingCopy(this.classFile, DefaultWorkingCopyOwner.PRIMARY);
+    }
 
-@Override
-protected IBuffer openBuffer(IProgressMonitor pm, IElementInfo info) throws JavaModelException {
+    @Override
+    public IResource resource(PackageFragmentRoot root) {
+        if (root.isArchive())
+            return root.resource(root);
+        return this.classFile.resource(root);
+    }
 
-	// create buffer
-	IBuffer buffer = BufferManager.createBuffer(this);
+    @Override
+    protected IBuffer openBuffer(IProgressMonitor pm, IElementInfo info) throws JavaModelException {
 
-	// set the buffer source
-	IBuffer classFileBuffer = this.classFile.getBuffer();
-	if (classFileBuffer != null) {
-		buffer.setContents(classFileBuffer.getCharacters());
-	} else {
-		// Disassemble
-		IClassFileReader reader = ToolFactory.createDefaultClassFileReader(this.classFile, IClassFileReader.ALL);
-		Disassembler disassembler = new Disassembler();
-		String contents = disassembler.disassemble(reader, Util.getLineSeparator("", getJavaProject()), ClassFileBytesDisassembler.WORKING_COPY); //$NON-NLS-1$
-		buffer.setContents(contents);
-	}
+        // create buffer
+        IBuffer buffer = BufferManager.createBuffer(this);
 
-	// add buffer to buffer cache
-	BufferManager bufManager = getBufferManager();
-	bufManager.addBuffer(buffer);
+        // set the buffer source
+        IBuffer classFileBuffer = this.classFile.getBuffer();
+        if (classFileBuffer != null) {
+            buffer.setContents(classFileBuffer.getCharacters());
+        } else {
+            // Disassemble
+            IClassFileReader reader = ToolFactory.createDefaultClassFileReader(this.classFile, IClassFileReader.ALL);
+            Disassembler disassembler = new Disassembler();
+            String contents = disassembler.disassemble(reader, Util.getLineSeparator("", getJavaProject()), //$NON-NLS-1$
+                ClassFileBytesDisassembler.WORKING_COPY);
+            buffer.setContents(contents);
+        }
 
-	// listen to buffer changes
-	buffer.addBufferChangedListener(this);
+        // add buffer to buffer cache
+        BufferManager bufManager = getBufferManager();
+        bufManager.addBuffer(buffer);
 
-	return buffer;
-}
+        // listen to buffer changes
+        buffer.addBufferChangedListener(this);
 
-@Override
-protected void toStringName(StringBuilder buffer) {
-	buffer.append(this.classFile.getElementName());
-}
+        return buffer;
+    }
+
+    @Override
+    protected void toStringName(StringBuilder buffer) {
+        buffer.append(this.classFile.getElementName());
+    }
 
 }

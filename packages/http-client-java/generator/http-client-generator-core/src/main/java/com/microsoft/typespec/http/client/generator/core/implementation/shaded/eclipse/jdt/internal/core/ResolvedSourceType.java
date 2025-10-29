@@ -19,47 +19,48 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public class ResolvedSourceType extends SourceType {
 
-	private final String uniqueKey;
+    private final String uniqueKey;
 
-	/*
-	 * See class comments.
-	 */
-	public ResolvedSourceType(JavaElement parent, String name, String uniqueKey) {
-		super(parent, name);
-		this.uniqueKey = uniqueKey;
-	}
-	public ResolvedSourceType(JavaElement parent, String name, String uniqueKey, int occurrenceCount) {
-		super(parent, name, occurrenceCount);
-		this.uniqueKey = uniqueKey;
-	}
+    /*
+     * See class comments.
+     */
+    public ResolvedSourceType(JavaElement parent, String name, String uniqueKey) {
+        super(parent, name);
+        this.uniqueKey = uniqueKey;
+    }
+
+    public ResolvedSourceType(JavaElement parent, String name, String uniqueKey, int occurrenceCount) {
+        super(parent, name, occurrenceCount);
+        this.uniqueKey = uniqueKey;
+    }
 
     @Override
-	public String getKey() {
-		return this.uniqueKey;
-	}
+    public String getKey() {
+        return this.uniqueKey;
+    }
 
-	@Override
-	public boolean isResolved() {
-		return true;
-	}
+    @Override
+    public boolean isResolved() {
+        return true;
+    }
 
-	/**
-	 * for debugging only
-	 */
-	@Override
-	protected void toStringInfo(int tab, StringBuilder buffer, Object info, boolean showResolvedInfo) {
-		super.toStringInfo(tab, buffer, info, showResolvedInfo);
-		if (showResolvedInfo) {
-			buffer.append(" {key="); //$NON-NLS-1$
-			buffer.append(this.getKey());
-			buffer.append("}"); //$NON-NLS-1$
-		}
-	}
+    /**
+     * for debugging only
+     */
+    @Override
+    protected void toStringInfo(int tab, StringBuilder buffer, Object info, boolean showResolvedInfo) {
+        super.toStringInfo(tab, buffer, info, showResolvedInfo);
+        if (showResolvedInfo) {
+            buffer.append(" {key="); //$NON-NLS-1$
+            buffer.append(this.getKey());
+            buffer.append("}"); //$NON-NLS-1$
+        }
+    }
 
-	@Override
-	public SourceType unresolved() {
-		SourceType handle = new SourceType(this.getParent(), this.name, this.getOccurrenceCount());
-		handle.localOccurrenceCount = this.localOccurrenceCount;
-		return handle;
-	}
+    @Override
+    public SourceType unresolved() {
+        SourceType handle = new SourceType(this.getParent(), this.name, this.getOccurrenceCount());
+        handle.localOccurrenceCount = this.localOccurrenceCount;
+        return handle;
+    }
 }

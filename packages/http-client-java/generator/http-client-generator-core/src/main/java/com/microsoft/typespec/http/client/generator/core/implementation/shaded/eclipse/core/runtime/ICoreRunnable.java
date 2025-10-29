@@ -40,5 +40,5 @@ public interface ICoreRunnable {
      * @exception CoreException if this operation fails
      * @exception OperationCanceledException if this operation is canceled
      */
-    public void run(IProgressMonitor monitor) throws CoreException;
+    void run(IProgressMonitor monitor) throws CoreException;
 }

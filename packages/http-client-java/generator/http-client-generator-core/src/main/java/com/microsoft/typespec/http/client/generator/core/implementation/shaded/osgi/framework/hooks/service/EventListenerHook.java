@@ -16,12 +16,12 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.hooks.service;
 
-import java.util.Collection;
-import java.util.Map;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.ConsumerType;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.BundleContext;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.ServiceEvent;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.hooks.service.ListenerHook.ListenerInfo;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * OSGi Framework Service Event Listener Hook Service.
@@ -36,25 +36,25 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 @ConsumerType
 public interface EventListenerHook {
-	/**
-	 * Event listener hook method. This method is called prior to service event
-	 * delivery when a publishing bundle registers, modifies or unregisters a
-	 * service. This method can filter the listeners which receive the event.
-	 * 
-	 * @param event The service event to be delivered.
-	 * @param listeners A map of Bundle Contexts to a collection of Listener
-	 *        Infos for the bundle's listeners to which the specified event will
-	 *        be delivered. The implementation of this method may remove bundle
-	 *        contexts from the map and listener infos from the collection
-	 *        values to prevent the event from being delivered to the associated
-	 *        listeners. The map supports all the optional {@code Map}
-	 *        operations except {@code put} and {@code putAll}. Attempting to
-	 *        add to the map will result in an
-	 *        {@code UnsupportedOperationException}. The collection values in
-	 *        the map supports all the optional {@code Collection} operations
-	 *        except {@code add} and {@code addAll}. Attempting to add to a
-	 *        collection will result in an {@code UnsupportedOperationException}
-	 *        . The map and the collections are not synchronized.
-	 */
-	void event(ServiceEvent event, Map<BundleContext, Collection<ListenerInfo>> listeners);
+    /**
+     * Event listener hook method. This method is called prior to service event
+     * delivery when a publishing bundle registers, modifies or unregisters a
+     * service. This method can filter the listeners which receive the event.
+     * 
+     * @param event The service event to be delivered.
+     * @param listeners A map of Bundle Contexts to a collection of Listener
+     * Infos for the bundle's listeners to which the specified event will
+     * be delivered. The implementation of this method may remove bundle
+     * contexts from the map and listener infos from the collection
+     * values to prevent the event from being delivered to the associated
+     * listeners. The map supports all the optional {@code Map}
+     * operations except {@code put} and {@code putAll}. Attempting to
+     * add to the map will result in an
+     * {@code UnsupportedOperationException}. The collection values in
+     * the map supports all the optional {@code Collection} operations
+     * except {@code add} and {@code addAll}. Attempting to add to a
+     * collection will result in an {@code UnsupportedOperationException}
+     * . The map and the collections are not synchronized.
+     */
+    void event(ServiceEvent event, Map<BundleContext, Collection<ListenerInfo>> listeners);
 }

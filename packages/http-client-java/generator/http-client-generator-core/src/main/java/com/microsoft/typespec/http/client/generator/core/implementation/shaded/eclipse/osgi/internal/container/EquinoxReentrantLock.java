@@ -19,10 +19,10 @@ import java.util.concurrent.locks.ReentrantLock;
  * This is just a ReentrantLock that makes getOwner a public methd
  */
 public final class EquinoxReentrantLock extends ReentrantLock {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Override
-	final public Thread getOwner() {
-		return super.getOwner();
-	}
+    @Override
+    final public Thread getOwner() {
+        return super.getOwner();
+    }
 }

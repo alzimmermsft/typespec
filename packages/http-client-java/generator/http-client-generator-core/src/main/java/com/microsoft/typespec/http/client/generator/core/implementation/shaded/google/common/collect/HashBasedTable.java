@@ -49,58 +49,56 @@ import java.util.Map;
 @GwtCompatible(serializable = true)
 @ElementTypesAreNonnullByDefault
 public class HashBasedTable<R, C, V> extends StandardTable<R, C, V> {
-  private static class Factory<C, V> implements Supplier<Map<C, V>>, Serializable {
-    final int expectedSize;
+    private static class Factory<C, V> implements Supplier<Map<C, V>>, Serializable {
+        final int expectedSize;
 
-    Factory(int expectedSize) {
-      this.expectedSize = expectedSize;
+        Factory(int expectedSize) {
+            this.expectedSize = expectedSize;
+        }
+
+        @Override
+        public Map<C, V> get() {
+            return Maps.newLinkedHashMapWithExpectedSize(expectedSize);
+        }
+
+        private static final long serialVersionUID = 0;
     }
 
-    @Override
-    public Map<C, V> get() {
-      return Maps.newLinkedHashMapWithExpectedSize(expectedSize);
+    /** Creates an empty {@code HashBasedTable}. */
+    public static <R, C, V> HashBasedTable<R, C, V> create() {
+        return new HashBasedTable<>(new LinkedHashMap<R, Map<C, V>>(), new Factory<C, V>(0));
+    }
+
+    /**
+     * Creates an empty {@code HashBasedTable} with the specified map sizes.
+     *
+     * @param expectedRows the expected number of distinct row keys
+     * @param expectedCellsPerRow the expected number of column key / value mappings in each row
+     * @throws IllegalArgumentException if {@code expectedRows} or {@code expectedCellsPerRow} is
+     * negative
+     */
+    public static <R, C, V> HashBasedTable<R, C, V> create(int expectedRows, int expectedCellsPerRow) {
+        checkNonnegative(expectedCellsPerRow, "expectedCellsPerRow");
+        Map<R, Map<C, V>> backingMap = Maps.newLinkedHashMapWithExpectedSize(expectedRows);
+        return new HashBasedTable<>(backingMap, new Factory<C, V>(expectedCellsPerRow));
+    }
+
+    /**
+     * Creates a {@code HashBasedTable} with the same mappings as the specified table.
+     *
+     * @param table the table to copy
+     * @throws NullPointerException if any of the row keys, column keys, or values in {@code table} is
+     * null
+     */
+    public static <R, C, V> HashBasedTable<R, C, V> create(Table<? extends R, ? extends C, ? extends V> table) {
+        HashBasedTable<R, C, V> result = create();
+        result.putAll(table);
+        return result;
+    }
+
+    HashBasedTable(Map<R, Map<C, V>> backingMap, Factory<C, V> factory) {
+        super(backingMap, factory);
     }
 
     private static final long serialVersionUID = 0;
-  }
-
-  /** Creates an empty {@code HashBasedTable}. */
-  public static <R, C, V> HashBasedTable<R, C, V> create() {
-    return new HashBasedTable<>(new LinkedHashMap<R, Map<C, V>>(), new Factory<C, V>(0));
-  }
-
-  /**
-   * Creates an empty {@code HashBasedTable} with the specified map sizes.
-   *
-   * @param expectedRows the expected number of distinct row keys
-   * @param expectedCellsPerRow the expected number of column key / value mappings in each row
-   * @throws IllegalArgumentException if {@code expectedRows} or {@code expectedCellsPerRow} is
-   *     negative
-   */
-  public static <R, C, V> HashBasedTable<R, C, V> create(
-      int expectedRows, int expectedCellsPerRow) {
-    checkNonnegative(expectedCellsPerRow, "expectedCellsPerRow");
-    Map<R, Map<C, V>> backingMap = Maps.newLinkedHashMapWithExpectedSize(expectedRows);
-    return new HashBasedTable<>(backingMap, new Factory<C, V>(expectedCellsPerRow));
-  }
-
-  /**
-   * Creates a {@code HashBasedTable} with the same mappings as the specified table.
-   *
-   * @param table the table to copy
-   * @throws NullPointerException if any of the row keys, column keys, or values in {@code table} is
-   *     null
-   */
-  public static <R, C, V> HashBasedTable<R, C, V> create(
-      Table<? extends R, ? extends C, ? extends V> table) {
-    HashBasedTable<R, C, V> result = create();
-    result.putAll(table);
-    return result;
-  }
-
-  HashBasedTable(Map<R, Map<C, V>> backingMap, Factory<C, V> factory) {
-    super(backingMap, factory);
-  }
-
-  private static final long serialVersionUID = 0;
 }

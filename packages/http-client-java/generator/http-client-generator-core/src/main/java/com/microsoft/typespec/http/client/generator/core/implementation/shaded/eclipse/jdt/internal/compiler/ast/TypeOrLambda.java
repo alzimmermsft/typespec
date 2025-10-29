@@ -28,34 +28,35 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public interface TypeOrLambda {
 
-	/**
-	 * If the current type or lambda is within some early construction context, then next enclosing
-	 * instance may need to be managed via a synthetic argument (and field in the case of types).
-	 * @param earlySeen are we already looking from an early construction context?
-	 * @param outerScope where to search for enclosing types to be managed
-	 */
-	default void addSyntheticArgumentsBeyondEarlyConstructionContext(boolean earlySeen, Scope outerScope) {
-		if (outerScope != null && JavaFeature.FLEXIBLE_CONSTRUCTOR_BODIES.isSupported(outerScope.compilerOptions())) {
-			// JEP 482 / 492:
-			// This is the central location for organizing synthetic arguments and fields
-			// to serve far outer instances even in inner early construction context.
-			// Locations MethodBinding.computeSignature() and BlockScope.getEmulationPath() will faithfully
-			// use the information generated here, to decide about signature and call sequence.
-			while (outerScope != null) {
-				if (outerScope instanceof ClassScope cs) {
-					if (earlySeen && !cs.insideEarlyConstructionContext) {
-						// a direct outer beyond an early construction context disrupts
-						// the chain of fields, supply a local copy instead (arg & field):
-						ensureSyntheticOuterAccess(cs.referenceContext.binding);
-					}
-					earlySeen = cs.insideEarlyConstructionContext;
-				}
-				outerScope = outerScope.parent;
-				if (outerScope instanceof MethodScope ms && ms.isStatic)
-					break;
-			}
-		}
-	}
+    /**
+     * If the current type or lambda is within some early construction context, then next enclosing
+     * instance may need to be managed via a synthetic argument (and field in the case of types).
+     * 
+     * @param earlySeen are we already looking from an early construction context?
+     * @param outerScope where to search for enclosing types to be managed
+     */
+    default void addSyntheticArgumentsBeyondEarlyConstructionContext(boolean earlySeen, Scope outerScope) {
+        if (outerScope != null && JavaFeature.FLEXIBLE_CONSTRUCTOR_BODIES.isSupported(outerScope.compilerOptions())) {
+            // JEP 482 / 492:
+            // This is the central location for organizing synthetic arguments and fields
+            // to serve far outer instances even in inner early construction context.
+            // Locations MethodBinding.computeSignature() and BlockScope.getEmulationPath() will faithfully
+            // use the information generated here, to decide about signature and call sequence.
+            while (outerScope != null) {
+                if (outerScope instanceof ClassScope cs) {
+                    if (earlySeen && !cs.insideEarlyConstructionContext) {
+                        // a direct outer beyond an early construction context disrupts
+                        // the chain of fields, supply a local copy instead (arg & field):
+                        ensureSyntheticOuterAccess(cs.referenceContext.binding);
+                    }
+                    earlySeen = cs.insideEarlyConstructionContext;
+                }
+                outerScope = outerScope.parent;
+                if (outerScope instanceof MethodScope ms && ms.isStatic)
+                    break;
+            }
+        }
+    }
 
-	void ensureSyntheticOuterAccess(SourceTypeBinding targetEnclosing);
+    void ensureSyntheticOuterAccess(SourceTypeBinding targetEnclosing);
 }

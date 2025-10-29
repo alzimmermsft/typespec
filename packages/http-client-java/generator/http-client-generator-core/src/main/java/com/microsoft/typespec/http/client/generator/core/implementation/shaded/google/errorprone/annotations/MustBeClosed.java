@@ -35,5 +35,6 @@ import java.lang.annotation.Target;
  * annotation should be avoided on APIs that may be used on Android, unless desugaring is used.
  */
 @Documented
-@Target({CONSTRUCTOR, METHOD})
-public @interface MustBeClosed {}
+@Target({ CONSTRUCTOR, METHOD })
+public @interface MustBeClosed {
+}

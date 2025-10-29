@@ -22,20 +22,20 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * may contain multiple {@code ImportEntry}s with equal {@code ImportName}s.
  */
 abstract class ImportEntry {
-	final ImportName importName;
+    final ImportName importName;
 
-	protected ImportEntry(ImportName importName) {
-		this.importName = importName;
-	}
+    protected ImportEntry(ImportName importName) {
+        this.importName = importName;
+    }
 
-	/**
-	 * Returns true if this import declaration occurred originally (before the rewrite).
-	 */
-	abstract boolean isOriginal();
+    /**
+     * Returns true if this import declaration occurred originally (before the rewrite).
+     */
+    abstract boolean isOriginal();
 
-	/**
-	 * If this import declaration occurred originally, returns it as an OriginalImportEntry;
-	 * otherwise throws an exception.
-	 */
-	abstract OriginalImportEntry asOriginalImportEntry();
+    /**
+     * If this import declaration occurred originally, returns it as an OriginalImportEntry;
+     * otherwise throws an exception.
+     */
+    abstract OriginalImportEntry asOriginalImportEntry();
 }

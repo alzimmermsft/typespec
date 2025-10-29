@@ -26,6 +26,7 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 /**
  * Ported from LMJoin.h.
  * Windows SDK 6.0A.
+ * 
  * @author dblock[at]dblock.org
  */
 public interface LMJoin {

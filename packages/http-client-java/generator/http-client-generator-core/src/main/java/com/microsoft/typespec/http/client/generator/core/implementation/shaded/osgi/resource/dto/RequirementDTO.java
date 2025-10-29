@@ -16,9 +16,9 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.dto;
 
-import java.util.Map;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.dto.DTO;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Requirement;
+import java.util.Map;
 
 /**
  * Data Transfer Object for a Requirement.
@@ -33,38 +33,38 @@ public class RequirementDTO extends DTO {
      * <p>
      * This identifier is transiently assigned and may vary across restarts.
      */
-    public int                 id;
+    public int id;
 
     /**
-	 * The namespace for the requirement.
-	 * 
-	 * @see Requirement#getNamespace()
-	 */
-    public String              namespace;
+     * The namespace for the requirement.
+     * 
+     * @see Requirement#getNamespace()
+     */
+    public String namespace;
 
     /**
-	 * The directives for the requirement.
-	 * 
-	 * @see Requirement#getDirectives()
-	 */
+     * The directives for the requirement.
+     * 
+     * @see Requirement#getDirectives()
+     */
     public Map<String, String> directives;
 
     /**
-	 * The attributes for the requirement.
-	 * 
-	 * <p>
-	 * The value type must be a numerical type, Boolean, String, DTO or an array
-	 * of any of the former.
-	 * 
-	 * @see Requirement#getAttributes()
-	 */
+     * The attributes for the requirement.
+     * 
+     * <p>
+     * The value type must be a numerical type, Boolean, String, DTO or an array
+     * of any of the former.
+     * 
+     * @see Requirement#getAttributes()
+     */
     public Map<String, Object> attributes;
 
     /**
-	 * The identifier of the resource declaring the requirement.
-	 * 
-	 * @see ResourceDTO#id
-	 * @see Requirement#getResource()
-	 */
-    public int                 resource;
+     * The identifier of the resource declaring the requirement.
+     * 
+     * @see ResourceDTO#id
+     * @see Requirement#getResource()
+     */
+    public int resource;
 }

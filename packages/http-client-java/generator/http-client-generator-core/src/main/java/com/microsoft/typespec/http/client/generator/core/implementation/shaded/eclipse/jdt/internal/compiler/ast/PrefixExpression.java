@@ -18,49 +18,53 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class PrefixExpression extends CompoundAssignment {
 
-/**
- * PrefixExpression constructor comment.
- * @param lhs org.eclipse.jdt.internal.compiler.ast.Expression
- * @param expression org.eclipse.jdt.internal.compiler.ast.Expression
- * @param operator int
- */
-public PrefixExpression(Expression lhs, Expression expression, int operator, int pos) {
-	super(lhs, expression, operator, lhs.sourceEnd);
-	this.sourceStart = pos;
-	this.sourceEnd = lhs.sourceEnd;
-}
-@Override
-public boolean checkCastCompatibility() {
-	return false;
-}
-@Override
-public String operatorToString() {
-	switch (this.operator) {
-		case PLUS :
-			return "++"; //$NON-NLS-1$
-		case MINUS :
-			return "--"; //$NON-NLS-1$
-	}
-	return "unknown operator"; //$NON-NLS-1$
-}
+    /**
+     * PrefixExpression constructor comment.
+     * 
+     * @param lhs org.eclipse.jdt.internal.compiler.ast.Expression
+     * @param expression org.eclipse.jdt.internal.compiler.ast.Expression
+     * @param operator int
+     */
+    public PrefixExpression(Expression lhs, Expression expression, int operator, int pos) {
+        super(lhs, expression, operator, lhs.sourceEnd);
+        this.sourceStart = pos;
+        this.sourceEnd = lhs.sourceEnd;
+    }
 
-@Override
-public StringBuilder printExpressionNoParenthesis(int indent, StringBuilder output) {
+    @Override
+    public boolean checkCastCompatibility() {
+        return false;
+    }
 
-	output.append(operatorToString()).append(' ');
-	return this.lhs.printExpression(0, output);
-}
+    @Override
+    public String operatorToString() {
+        switch (this.operator) {
+            case PLUS:
+                return "++"; //$NON-NLS-1$
 
-@Override
-public boolean restrainUsageToNumericTypes() {
-	return true;
-}
+            case MINUS:
+                return "--"; //$NON-NLS-1$
+        }
+        return "unknown operator"; //$NON-NLS-1$
+    }
 
-@Override
-public void traverse(ASTVisitor visitor, BlockScope scope) {
-	if (visitor.visit(this, scope)) {
-		this.lhs.traverse(visitor, scope);
-	}
-	visitor.endVisit(this, scope);
-}
+    @Override
+    public StringBuilder printExpressionNoParenthesis(int indent, StringBuilder output) {
+
+        output.append(operatorToString()).append(' ');
+        return this.lhs.printExpression(0, output);
+    }
+
+    @Override
+    public boolean restrainUsageToNumericTypes() {
+        return true;
+    }
+
+    @Override
+    public void traverse(ASTVisitor visitor, BlockScope scope) {
+        if (visitor.visit(this, scope)) {
+            this.lhs.traverse(visitor, scope);
+        }
+        visitor.endVisit(this, scope);
+    }
 }

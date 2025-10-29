@@ -25,10 +25,10 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Guid.CLSID;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Ole32;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WTypes;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.PointerByReference;
 
 public class Moniker extends Unknown implements IMoniker {
@@ -136,8 +136,8 @@ public class Moniker extends Unknown implements IMoniker {
 
         PointerByReference ppszDisplayNameRef = new PointerByReference();
 
-        WinNT.HRESULT hr = (WinNT.HRESULT) this._invokeNativeObject(vTableId, new Object[]{this.getPointer(), pbc,
-            pmkToLeft, ppszDisplayNameRef}, WinNT.HRESULT.class);
+        WinNT.HRESULT hr = (WinNT.HRESULT) this._invokeNativeObject(vTableId,
+            new Object[] { this.getPointer(), pbc, pmkToLeft, ppszDisplayNameRef }, WinNT.HRESULT.class);
 
         COMUtils.checkRC(hr);
 

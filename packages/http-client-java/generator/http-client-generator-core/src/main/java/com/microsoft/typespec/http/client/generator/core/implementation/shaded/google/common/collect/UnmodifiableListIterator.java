@@ -16,10 +16,10 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.DoNotCall;
 import java.util.ListIterator;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A list iterator that does not support {@link #remove}, {@link #add}, or {@link #set}.
@@ -29,34 +29,35 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
-public abstract class UnmodifiableListIterator<E extends @Nullable Object>
-    extends UnmodifiableIterator<E> implements ListIterator<E> {
-  /** Constructor for use by subclasses. */
-  protected UnmodifiableListIterator() {}
+public abstract class UnmodifiableListIterator<E extends @Nullable Object> extends UnmodifiableIterator<E>
+    implements ListIterator<E> {
+    /** Constructor for use by subclasses. */
+    protected UnmodifiableListIterator() {
+    }
 
-  /**
-   * Guaranteed to throw an exception and leave the underlying data unmodified.
-   *
-   * @throws UnsupportedOperationException always
-   * @deprecated Unsupported operation.
-   */
-  @Deprecated
-  @Override
-  @DoNotCall("Always throws UnsupportedOperationException")
-  public final void add(@ParametricNullness E e) {
-    throw new UnsupportedOperationException();
-  }
+    /**
+     * Guaranteed to throw an exception and leave the underlying data unmodified.
+     *
+     * @throws UnsupportedOperationException always
+     * @deprecated Unsupported operation.
+     */
+    @Deprecated
+    @Override
+    @DoNotCall("Always throws UnsupportedOperationException")
+    public final void add(@ParametricNullness E e) {
+        throw new UnsupportedOperationException();
+    }
 
-  /**
-   * Guaranteed to throw an exception and leave the underlying data unmodified.
-   *
-   * @throws UnsupportedOperationException always
-   * @deprecated Unsupported operation.
-   */
-  @Deprecated
-  @Override
-  @DoNotCall("Always throws UnsupportedOperationException")
-  public final void set(@ParametricNullness E e) {
-    throw new UnsupportedOperationException();
-  }
+    /**
+     * Guaranteed to throw an exception and leave the underlying data unmodified.
+     *
+     * @throws UnsupportedOperationException always
+     * @deprecated Unsupported operation.
+     */
+    @Deprecated
+    @Override
+    @DoNotCall("Always throws UnsupportedOperationException")
+    public final void set(@ParametricNullness E e) {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -36,7 +36,7 @@ public enum Win32VK {
     VK_LBUTTON(0x01),
     VK_RBUTTON(0x02),
     VK_CANCEL(0x03),
-    VK_MBUTTON(0x04),     /* NOT contiguous with L & RBUTTON */
+    VK_MBUTTON(0x04), /* NOT contiguous with L & RBUTTON */
 
     VK_XBUTTON1(0x05, 0x0500), /* NOT contiguous with L & RBUTTON */
     VK_XBUTTON2(0x06, 0x0500), /* NOT contiguous with L & RBUTTON */

@@ -13,8 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text;
 
-
-
 /**
  * Describes a region of an indexed text store such as a document or a string.
  * The region consists of offset, length, and type. The region type is defined
@@ -27,10 +25,10 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface ITypedRegion extends IRegion {
 
-	/**
-	 * Returns the content type of the region.
-	 *
-	 * @return the content type of the region
-	 */
-	String getType();
+    /**
+     * Returns the content type of the region.
+     *
+     * @return the content type of the region
+     */
+    String getType();
 }

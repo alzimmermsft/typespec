@@ -32,10 +32,6 @@ public class ScopeDescriptor {
         this.storage = storage;
     }
 
-    String getName() {
-        return name;
-    }
-
     /*
      * For now the default behaviour is that we flush/load at the second level.
      */
@@ -113,33 +109,6 @@ public class ScopeDescriptor {
         return result[0] == null ? null : result[0];
     }
 
-    void save(final String path, final Properties properties) throws BackingStoreException {
-        if (storage == null) {
-            return;
-        }
-        final BackingStoreException[] bse = new BackingStoreException[1];
-        ISafeRunnable code = new ISafeRunnable() {
-            @Override
-            public void run() throws Exception {
-                storage.save(path, properties);
-            }
-
-            @Override
-            public void handleException(Throwable exception) {
-                if (exception instanceof BackingStoreException) {
-                    bse[0] = (BackingStoreException) exception;
-                } else {
-                    bse[0]
-                        = new BackingStoreException(NLS.bind(PrefsMessages.preferences_saveException, path), exception);
-                }
-            }
-        };
-        SafeRunner.run(code);
-        if (bse[0] != null) {
-            throw bse[0];
-        }
-    }
-
     boolean isAlreadyLoaded(String node) {
         return loadedNodes.contains(node);
     }
@@ -148,9 +117,4 @@ public class ScopeDescriptor {
         loadedNodes.add(node);
     }
 
-    void removed(final String path) {
-        if (storage != null) {
-            SafeRunner.run(() -> storage.removed(path));
-        }
-    }
 }

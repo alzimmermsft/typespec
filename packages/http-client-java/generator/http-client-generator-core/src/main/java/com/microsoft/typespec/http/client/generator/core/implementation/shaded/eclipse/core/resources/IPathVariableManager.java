@@ -41,38 +41,6 @@ import java.net.URI;
 public interface IPathVariableManager {
 
     /**
-     * Converts an absolute path to path relative to some defined
-     * variable. For example, converts "C:/foo/bar.txt" into "FOO/bar.txt",
-     * granted that the path variable "FOO" value is "C:/foo".
-     * <p>
-     * The "force" argument will cause an intermediate path variable to be created if
-     * the given path can be relative only to a parent of an existing path variable.
-     * For example, if the path "C:/other/file.txt" is to be converted
-     * and no path variables point to "C:/" or "C:/other" but "FOO"
-     * points to "C:/foo", an intermediate "OTHER" variable will be
-     * created relative to "FOO" containing the value "${PARENT-1-FOO}"
-     * so that the final path returned will be "OTHER/file.txt".
-     * </p>
-     * <p>
-     * The argument "variableHint" can be used to specify the name of the path
-     * variable to make the provided path relative to.
-     * </p>
-     *
-     * @param path The absolute path to be converted
-     * @param force indicates whether intermediate path variables should be created
-     * if the path is relative only to a parent of an existing path variable.
-     * @param variableHint The name of the variable to which the path should be made
-     * relative to, or <code>null</code> for the nearest one.
-     * @return The converted path
-     * @exception CoreException if this method fails. Reasons include:
-     * <ul>
-     * <li>The variable name is not valid</li>
-     * </ul>
-     * @since 3.6
-     */
-    URI convertToRelative(URI path, boolean force, String variableHint) throws CoreException;
-
-    /**
      * Returns the value of the path variable with the given name. If there is
      * no variable defined with the given name, returns <code>null</code>.
      *
@@ -95,35 +63,8 @@ public interface IPathVariableManager {
      */
     URI getURIValue(String name);
 
-    /**
-     * Returns an array containing all defined path variable names.
-     *
-     * @return an array containing all defined path variable names
-     */
-    String[] getPathVariableNames();
-
     // Should be added for 3.6
     // public String[] getPathVariableNames(String name);
-
-    /**
-     * Registers the given listener to receive notification of changes to path
-     * variables. The listener will be notified whenever a variable has been
-     * added, removed or had its value changed. Has no effect if an identical
-     * path variable change listener is already registered.
-     *
-     * @param listener the listener
-     * @see IPathVariableChangeListener
-     */
-    void addChangeListener(IPathVariableChangeListener listener);
-
-    /**
-     * Removes the given path variable change listener from the listeners list.
-     * Has no effect if an identical listener is not registered.
-     *
-     * @param listener the listener
-     * @see IPathVariableChangeListener
-     */
-    void removeChangeListener(IPathVariableChangeListener listener);
 
     /**
      * Resolves a relative <code>URI</code> object potentially containing a
@@ -184,30 +125,6 @@ public interface IPathVariableManager {
     IPath resolvePath(IPath path);
 
     /**
-     * Returns <code>true</code> if the given variable is defined and
-     * <code>false</code> otherwise. Returns <code>false</code> if the given
-     * name is not a valid path variable name.
-     *
-     * @param name the variable's name
-     * @return <code>true</code> if the variable exists, <code>false</code>
-     * otherwise
-     */
-    boolean isDefined(String name);
-
-    /**
-     * Validates the given name as the name for a path variable. A valid path
-     * variable name is made exclusively of letters, digits and the underscore
-     * character, and does not start with a digit.
-     *
-     * @param name a possibly valid path variable name
-     * @return a status object with code <code>IStatus.OK</code> if
-     * the given name is a valid path variable name, otherwise a status
-     * object indicating what is wrong with the string
-     * @see IStatus#OK
-     */
-    IStatus validateName(String name);
-
-    /**
      * Validates the given path as the value for a path variable. A path
      * variable value must be a valid path that is absolute.
      *
@@ -219,32 +136,5 @@ public interface IPathVariableManager {
      * @see IStatus#OK
      */
     IStatus validateValue(IPath path);
-
-    /**
-     * Validates the given path as the value for a path variable. A path
-     * variable value must be a valid path that is absolute.
-     *
-     * @param path a possibly valid path variable value
-     * @return a status object with code {@link IStatus#OK} if the given
-     * path is a valid path variable value, otherwise a status object indicating
-     * what is wrong with the value
-     * @see IPath#isValidPath(String)
-     * @see IStatus#OK
-     * @since 3.6
-     */
-    IStatus validateValue(URI path);
-
-    /**
-     * Converts the internal format of the linked resource location if the PARENT
-     * variables is used. For example, if the value is "${PARENT-2-VAR}\foo", the
-     * converted result is "${VAR}\..\..\foo".
-     * 
-     * @param value the value encoded using OS string (as returned from Path.toOSString())
-     * @param locationFormat indicates whether the value contains a string that is stored in the linked resource
-     * location rather than in the path variable value
-     * @return the converted path variable value
-     * @since 3.6
-     */
-    String convertToUserEditableFormat(String value, boolean locationFormat);
 
 }

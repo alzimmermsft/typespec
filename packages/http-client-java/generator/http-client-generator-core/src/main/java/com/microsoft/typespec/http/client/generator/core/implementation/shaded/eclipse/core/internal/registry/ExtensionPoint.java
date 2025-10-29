@@ -37,10 +37,6 @@ public class ExtensionPoint extends RegistryObject {
     private static final byte CONTRIBUTOR_ID = 4; // The ID of the actual contributor of the extension point
     private static final int EXTRA_SIZE = 5;
 
-    protected ExtensionPoint(ExtensionRegistry registry, boolean persist) {
-        super(registry, persist);
-    }
-
     protected ExtensionPoint(int self, int[] children, int dataOffset, ExtensionRegistry registry, boolean persist) {
         super(registry, persist);
 
@@ -76,18 +72,6 @@ public class ExtensionPoint extends RegistryObject {
         return result;
     }
 
-    /**
-     * At the end of this method, extra information will be a string[]
-     */
-    private void ensureExtraInformationType() {
-        if (extraInformation instanceof SoftReference) {
-            extraInformation = ((SoftReference<?>) extraInformation).get();
-        }
-        if (extraInformation == null) {
-            extraInformation = new String[EXTRA_SIZE];
-        }
-    }
-
     protected String getSchemaReference() {
         String[] result = getExtraData();
         return result[1] == null ? "" : result[SCHEMA].replace(File.separatorChar, '/'); //$NON-NLS-1$
@@ -114,39 +98,9 @@ public class ExtensionPoint extends RegistryObject {
         return registry.getObjectManager().getContributor(getContributorId());
     }
 
-    void setSchema(String value) {
-        ensureExtraInformationType();
-        ((String[]) extraInformation)[SCHEMA] = value;
-    }
-
-    void setLabel(String value) {
-        ensureExtraInformationType();
-        ((String[]) extraInformation)[LABEL] = value;
-    }
-
-    void setUniqueIdentifier(String value) {
-        ensureExtraInformationType();
-        ((String[]) extraInformation)[QUALIFIED_NAME] = value;
-    }
-
-    void setNamespace(String value) {
-        ensureExtraInformationType();
-        ((String[]) extraInformation)[NAMESPACE] = value;
-    }
-
-    void setContributorId(String id) {
-        ensureExtraInformationType();
-        ((String[]) extraInformation)[CONTRIBUTOR_ID] = id;
-    }
-
     @Override
     public String toString() {
         return getUniqueIdentifier();
-    }
-
-    protected String getLabelAsIs() {
-        String[] result = getExtraData();
-        return result[0] == null ? "" : result[LABEL]; //$NON-NLS-1$
     }
 
     protected String getLabel(String locale) {

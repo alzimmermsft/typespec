@@ -13,7 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text;
 
-
 /**
  * Extension interface for {@link IRepairableDocument}.
  * <p>
@@ -25,16 +24,16 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IRepairableDocumentExtension {
 
-	/**
-	 * Tells whether the line information of the document implementing this interface needs to be
-	 * repaired after replacing the given text.
-	 *
-	 * @param offset the document offset
-	 * @param length the length of the specified range
-	 * @param text the substitution text to check
-	 * @return <code>true</code> if the line information must be repaired after replacing
-	 * @throws BadLocationException if the offset is invalid in this document
-	 * @see IRepairableDocument#repairLineInformation()
-	 */
-	boolean isLineInformationRepairNeeded(int offset, int length, String text) throws BadLocationException;
+    /**
+     * Tells whether the line information of the document implementing this interface needs to be
+     * repaired after replacing the given text.
+     *
+     * @param offset the document offset
+     * @param length the length of the specified range
+     * @param text the substitution text to check
+     * @return <code>true</code> if the line information must be repaired after replacing
+     * @throws BadLocationException if the offset is invalid in this document
+     * @see IRepairableDocument#repairLineInformation()
+     */
+    boolean isLineInformationRepairNeeded(int offset, int length, String text) throws BadLocationException;
 }

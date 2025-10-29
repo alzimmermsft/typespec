@@ -14,7 +14,6 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.text.edits;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.BadLocationException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.IDocument;
 
@@ -26,69 +25,69 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public final class ReplaceEdit extends TextEdit {
 
-	private String fText;
+    private String fText;
 
-	/**
-	 * Constructs a new replace edit.
-	 *
-	 * @param offset the offset of the range to replace
-	 * @param length the length of the range to replace
-	 * @param text the new text
-	 */
-	public ReplaceEdit(int offset, int length, String text) {
-		super(offset, length);
-		Assert.isNotNull(text);
-		fText= text;
-	}
+    /**
+     * Constructs a new replace edit.
+     *
+     * @param offset the offset of the range to replace
+     * @param length the length of the range to replace
+     * @param text the new text
+     */
+    public ReplaceEdit(int offset, int length, String text) {
+        super(offset, length);
+        Assert.isNotNull(text);
+        fText = text;
+    }
 
-	/*
-	 * Copy constructor
-	 *
-	 * @param other the edit to copy from
-	 */
-	private ReplaceEdit(ReplaceEdit other) {
-		super(other);
-		fText= other.fText;
-	}
+    /*
+     * Copy constructor
+     *
+     * @param other the edit to copy from
+     */
+    private ReplaceEdit(ReplaceEdit other) {
+        super(other);
+        fText = other.fText;
+    }
 
-	/**
-	 * Returns the new text replacing the text denoted
-	 * by the edit.
-	 *
-	 * @return the edit's text.
-	 */
-	public String getText() {
-		return fText;
-	}
+    /**
+     * Returns the new text replacing the text denoted
+     * by the edit.
+     *
+     * @return the edit's text.
+     */
+    public String getText() {
+        return fText;
+    }
 
-	@Override
-	protected TextEdit doCopy() {
-		return new ReplaceEdit(this);
-	}
+    @Override
+    protected TextEdit doCopy() {
+        return new ReplaceEdit(this);
+    }
 
-	@Override
-	protected void accept0(TextEditVisitor visitor) {
-		boolean visitChildren= visitor.visit(this);
-		if (visitChildren) {
-			acceptChildren(visitor);
-		}
-	}
+    @Override
+    protected void accept0(TextEditVisitor visitor) {
+        boolean visitChildren = visitor.visit(this);
+        if (visitChildren) {
+            acceptChildren(visitor);
+        }
+    }
 
-	@Override
-	int performDocumentUpdating(IDocument document) throws BadLocationException {
-		document.replace(getOffset(), getLength(), fText);
-		fDelta= fText.length() - getLength();
-		return fDelta;
-	}
+    @Override
+    int performDocumentUpdating(IDocument document) throws BadLocationException {
+        document.replace(getOffset(), getLength(), fText);
+        fDelta = fText.length() - getLength();
+        return fDelta;
+    }
 
-	@Override
-	boolean deleteChildren() {
-		return true;
-	}
+    @Override
+    boolean deleteChildren() {
+        return true;
+    }
 
-	@Override
-	void internalToString(StringBuilder buffer, int indent) {
-		super.internalToString(buffer, indent);
-		buffer.append(" <<").append(fText); //$NON-NLS-1$
-	}
+    @Override
+    void internalToString(StringBuilder buffer, int indent) {
+        super.internalToString(buffer, indent);
+        buffer.append(" <<").append(fText); //$NON-NLS-1$
+    }
 }

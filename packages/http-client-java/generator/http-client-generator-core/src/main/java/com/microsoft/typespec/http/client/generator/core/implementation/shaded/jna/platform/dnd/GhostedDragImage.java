@@ -23,6 +23,11 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.dnd;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.swing.Icon;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.swing.JOptionPane;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.swing.SwingUtilities;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.swing.Timer;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.WindowUtils;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -35,14 +40,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Area;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.swing.Icon;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.swing.JOptionPane;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.swing.SwingUtilities;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.swing.Timer;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.WindowUtils;
-
-/** Provide a ghosted drag image for use during drags where
+/**
+ * Provide a ghosted drag image for use during drags where
  * {@link DragSource#isDragImageSupported} returns false.<p>
  * Its location in screen coordinates may be changed via {@link #move}.<p>
  * When the image is no longer needed, invoke {@link #dispose}, which
@@ -56,29 +55,34 @@ public class GhostedDragImage {
     // Initial image position, relative to drag source
     private Point origin;
 
-    /** Create a ghosted drag image, using the given icon.
+    /**
+     * Create a ghosted drag image, using the given icon.
+     * 
      * @param dragSource source of the drag
      * @param icon image to be drawn
      * @param initialScreenLoc initial screen location of the image
      * @param cursorOffset offset of the cursor from the image origin
      */
-    public GhostedDragImage(Component dragSource, final Icon icon, Point initialScreenLoc,
-                            final Point cursorOffset) {
-        Window parent = dragSource instanceof Window
-            ? (Window)dragSource : SwingUtilities.getWindowAncestor(dragSource);
+    public GhostedDragImage(Component dragSource, final Icon icon, Point initialScreenLoc, final Point cursorOffset) {
+        Window parent
+            = dragSource instanceof Window ? (Window) dragSource : SwingUtilities.getWindowAncestor(dragSource);
         // FIXME ensure gc is compatible (X11)
         GraphicsConfiguration gc = parent.getGraphicsConfiguration();
         dragImage = new Window(JOptionPane.getRootFrame(), gc) {
             private static final long serialVersionUID = 1L;
+
             public void paint(Graphics g) {
                 icon.paintIcon(this, g, 0, 0);
             }
+
             public Dimension getPreferredSize() {
                 return new Dimension(icon.getIconWidth(), icon.getIconHeight());
             }
+
             public Dimension getMinimumSize() {
                 return getPreferredSize();
             }
+
             public Dimension getMaximumSize() {
                 return getPreferredSize();
             }
@@ -89,14 +93,16 @@ public class GhostedDragImage {
             public int getIconHeight() {
                 return icon.getIconHeight();
             }
+
             public int getIconWidth() {
                 return icon.getIconWidth();
             }
+
             public void paintIcon(Component c, Graphics g, int x, int y) {
                 g = g.create();
                 Area area = new Area(new Rectangle(x, y, getIconWidth(), getIconHeight()));
                 // X11 needs more of a window due to differences in event processing
-                area.subtract(new Area(new Rectangle(x + cursorOffset.x-1, y + cursorOffset.y-1, 3, 3)));
+                area.subtract(new Area(new Rectangle(x + cursorOffset.x - 1, y + cursorOffset.y - 1, 3, 3)));
                 g.setClip(area);
                 icon.paintIcon(c, g, x, y);
                 g.dispose();
@@ -110,7 +116,9 @@ public class GhostedDragImage {
         dragImage.setVisible(true);
     }
 
-    /** Set the transparency of the ghosted image.
+    /**
+     * Set the transparency of the ghosted image.
+     * 
      * @param alpha transparency level
      */
     public void setAlpha(float alpha) {
@@ -123,7 +131,9 @@ public class GhostedDragImage {
         dragImage = null;
     }
 
-    /** Move the ghosted image to the requested location.
+    /**
+     * Move the ghosted image to the requested location.
+     * 
      * @param screenLocation Where to draw the image, in screen coordinates
      */
     public void move(Point screenLocation) {
@@ -133,7 +143,8 @@ public class GhostedDragImage {
         dragImage.setLocation(screenLocation.x, screenLocation.y);
     }
 
-    private static final int SLIDE_INTERVAL = 1000/30;
+    private static final int SLIDE_INTERVAL = 1000 / 30;
+
     /** Animate the ghosted image returning to its origin. */
     public void returnToOrigin() {
         final Timer timer = new Timer(SLIDE_INTERVAL, null);
@@ -141,13 +152,12 @@ public class GhostedDragImage {
             public void actionPerformed(ActionEvent e) {
                 Point location = dragImage.getLocationOnScreen();
                 Point dst = new Point(origin);
-                int dx = (dst.x - location.x)/2;
-                int dy = (dst.y - location.y)/2;
+                int dx = (dst.x - location.x) / 2;
+                int dy = (dst.y - location.y) / 2;
                 if (dx != 0 || dy != 0) {
                     location.translate(dx, dy);
                     move(location);
-                }
-                else {
+                } else {
                     timer.stop();
                     dispose();
                 }

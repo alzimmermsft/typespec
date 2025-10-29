@@ -20,31 +20,31 @@ import java.util.regex.Pattern;
 
 /**
  * Rewrite comments. This interface is implemented by {@link
- * com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.googlejavaformat.java.JavaCommentsHelper JavaCommentsHelper}.
+ * com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.googlejavaformat.java.JavaCommentsHelper
+ * JavaCommentsHelper}.
  */
 public interface CommentsHelper {
-  /**
-   * Try to rewrite comments, returning rewritten text.
-   *
-   * @param tok the comment's tok
-   * @param maxWidth the line length for the output
-   * @param column0 the current column
-   * @return the rewritten comment
-   */
-  String rewrite(Tok tok, int maxWidth, int column0);
+    /**
+     * Try to rewrite comments, returning rewritten text.
+     *
+     * @param tok the comment's tok
+     * @param maxWidth the line length for the output
+     * @param column0 the current column
+     * @return the rewritten comment
+     */
+    String rewrite(Tok tok, int maxWidth, int column0);
 
-  static Optional<String> reformatParameterComment(Tok tok) {
-    if (!tok.isSlashStarComment()) {
-      return Optional.empty();
+    static Optional<String> reformatParameterComment(Tok tok) {
+        if (!tok.isSlashStarComment()) {
+            return Optional.empty();
+        }
+        var match = PARAMETER_COMMENT.matcher(tok.getOriginalText());
+        if (!match.matches()) {
+            return Optional.empty();
+        }
+        return Optional.of(String.format("/* %s= */", match.group(1)));
     }
-    var match = PARAMETER_COMMENT.matcher(tok.getOriginalText());
-    if (!match.matches()) {
-      return Optional.empty();
-    }
-    return Optional.of(String.format("/* %s= */", match.group(1)));
-  }
 
-  Pattern PARAMETER_COMMENT =
-      Pattern.compile(
-          "/\\*\\s*(\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*(\\Q...\\E)?)\\s*=\\s*\\*/");
+    Pattern PARAMETER_COMMENT = Pattern
+        .compile("/\\*\\s*(\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*(\\Q...\\E)?)\\s*=\\s*\\*/");
 }

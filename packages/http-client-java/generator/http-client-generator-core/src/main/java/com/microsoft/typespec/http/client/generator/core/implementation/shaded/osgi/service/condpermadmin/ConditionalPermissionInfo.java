@@ -29,140 +29,140 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 @ProviderType
 public interface ConditionalPermissionInfo {
-	/**
-	 * This string is used to indicate that a row in the Conditional Permission
-	 * Table should return an access decision of &quot;allow&quot; if the
-	 * conditions are all satisfied and at least one of the permissions is
-	 * implied.
-	 * 
-	 * @since 1.1
-	 */
-    String	ALLOW	= "allow";
+    /**
+     * This string is used to indicate that a row in the Conditional Permission
+     * Table should return an access decision of &quot;allow&quot; if the
+     * conditions are all satisfied and at least one of the permissions is
+     * implied.
+     * 
+     * @since 1.1
+     */
+    String ALLOW = "allow";
 
-	/**
-	 * This string is used to indicate that a row in the Conditional Permission
-	 * Table should return an access decision of &quot;deny&quot; if the
-	 * conditions are all satisfied and at least one of the permissions is
-	 * implied.
-	 * 
-	 * @since 1.1
-	 */
-    String	DENY	= "deny";
+    /**
+     * This string is used to indicate that a row in the Conditional Permission
+     * Table should return an access decision of &quot;deny&quot; if the
+     * conditions are all satisfied and at least one of the permissions is
+     * implied.
+     * 
+     * @since 1.1
+     */
+    String DENY = "deny";
 
-	/**
-	 * Returns the Condition Infos for the Conditions that must be satisfied to
-	 * enable the Permissions.
-	 * 
-	 * @return The Condition Infos for the Conditions in this Conditional
-	 *         Permission Info.
-	 */
-	ConditionInfo[] getConditionInfos();
+    /**
+     * Returns the Condition Infos for the Conditions that must be satisfied to
+     * enable the Permissions.
+     * 
+     * @return The Condition Infos for the Conditions in this Conditional
+     * Permission Info.
+     */
+    ConditionInfo[] getConditionInfos();
 
-	/**
-	 * Returns the Permission Infos for the Permissions in this Conditional
-	 * Permission Info.
-	 * 
-	 * @return The Permission Infos for the Permissions in this Conditional
-	 *         Permission Info.
-	 */
-	PermissionInfo[] getPermissionInfos();
+    /**
+     * Returns the Permission Infos for the Permissions in this Conditional
+     * Permission Info.
+     * 
+     * @return The Permission Infos for the Permissions in this Conditional
+     * Permission Info.
+     */
+    PermissionInfo[] getPermissionInfos();
 
-	/**
-	 * Returns the name of this Conditional Permission Info.
-	 * 
-	 * @return The name of this Conditional Permission Info. This can be
-	 *         {@code null} if this Conditional Permission Info was created
-	 *         without a name.
-	 */
-	String getName();
+    /**
+     * Returns the name of this Conditional Permission Info.
+     * 
+     * @return The name of this Conditional Permission Info. This can be
+     * {@code null} if this Conditional Permission Info was created
+     * without a name.
+     */
+    String getName();
 
-	/**
-	 * Returns the access decision for this Conditional Permission Info.
-	 * 
-	 * @return One of the following values:
-	 *         <ul>
-	 *         <li>{@link #ALLOW allow} - The access decision is
-	 *         &quot;allow&quot;.</li>
-	 *         <li>{@link #DENY deny} - The access decision is &quot;deny&quot;.
-	 *         </li>
-	 *         </ul>
-	 * @since 1.1
-	 */
-	String getAccessDecision();
+    /**
+     * Returns the access decision for this Conditional Permission Info.
+     * 
+     * @return One of the following values:
+     * <ul>
+     * <li>{@link #ALLOW allow} - The access decision is
+     * &quot;allow&quot;.</li>
+     * <li>{@link #DENY deny} - The access decision is &quot;deny&quot;.
+     * </li>
+     * </ul>
+     * @since 1.1
+     */
+    String getAccessDecision();
 
-	/**
-	 * Returns the string encoding of this {@code ConditionalPermissionInfo} in
-	 * a form suitable for restoring this {@code ConditionalPermissionInfo}.
-	 * 
-	 * <p>
-	 * The encoded format is:
-	 * 
-	 * <pre>
-	 *   access {conditions permissions} name
-	 * </pre>
-	 * 
-	 * where <i>access</i> is the access decision, <i>conditions</i> is zero or
-	 * more {@link ConditionInfo#getEncoded() encoded conditions},
-	 * <i>permissions</i> is one or more {@link PermissionInfo#getEncoded()
-	 * encoded permissions} and <i>name</i> is the name of the
-	 * {@code ConditionalPermissionInfo}.
-	 * 
-	 * <p>
-	 * <i>name</i> is optional. If <i>name</i> is present in the encoded string,
-	 * it must quoted, beginning and ending with {@code "}. The <i>name</i>
-	 * value must be encoded for proper parsing. Specifically, the {@code "},
-	 * {@code \}, carriage return, and line feed characters must be escaped
-	 * using {@code \"}, {@code \\}, {@code \r}, and {@code \n}, respectively.
-	 * 
-	 * <p>
-	 * The encoded string contains no leading or trailing whitespace characters.
-	 * A single space character is used between <i>access</i> and <code>{</code>
-	 * and between <code>}</code> and <i>name</i>, if <i>name</i> is present.
-	 * All encoded conditions and permissions are separated by a single space
-	 * character.
-	 * 
-	 * @return The string encoding of this {@code ConditionalPermissionInfo}.
-	 * @since 1.1
-	 */
-	String getEncoded();
+    /**
+     * Returns the string encoding of this {@code ConditionalPermissionInfo} in
+     * a form suitable for restoring this {@code ConditionalPermissionInfo}.
+     * 
+     * <p>
+     * The encoded format is:
+     * 
+     * <pre>
+     *   access {conditions permissions} name
+     * </pre>
+     * 
+     * where <i>access</i> is the access decision, <i>conditions</i> is zero or
+     * more {@link ConditionInfo#getEncoded() encoded conditions},
+     * <i>permissions</i> is one or more {@link PermissionInfo#getEncoded()
+     * encoded permissions} and <i>name</i> is the name of the
+     * {@code ConditionalPermissionInfo}.
+     * 
+     * <p>
+     * <i>name</i> is optional. If <i>name</i> is present in the encoded string,
+     * it must quoted, beginning and ending with {@code "}. The <i>name</i>
+     * value must be encoded for proper parsing. Specifically, the {@code "},
+     * {@code \}, carriage return, and line feed characters must be escaped
+     * using {@code \"}, {@code \\}, {@code \r}, and {@code \n}, respectively.
+     * 
+     * <p>
+     * The encoded string contains no leading or trailing whitespace characters.
+     * A single space character is used between <i>access</i> and <code>{</code>
+     * and between <code>}</code> and <i>name</i>, if <i>name</i> is present.
+     * All encoded conditions and permissions are separated by a single space
+     * character.
+     * 
+     * @return The string encoding of this {@code ConditionalPermissionInfo}.
+     * @since 1.1
+     */
+    String getEncoded();
 
-	/**
-	 * Returns the string representation of this
-	 * {@code ConditionalPermissionInfo}. The string is created by calling the
-	 * {@code getEncoded} method on this {@code ConditionalPermissionInfo}.
-	 * 
-	 * @return The string representation of this
-	 *         {@code ConditionalPermissionInfo}.
-	 * @since 1.1
-	 */
-	@Override
-	String toString();
+    /**
+     * Returns the string representation of this
+     * {@code ConditionalPermissionInfo}. The string is created by calling the
+     * {@code getEncoded} method on this {@code ConditionalPermissionInfo}.
+     * 
+     * @return The string representation of this
+     * {@code ConditionalPermissionInfo}.
+     * @since 1.1
+     */
+    @Override
+    String toString();
 
-	/**
-	 * Determines the equality of two {@code ConditionalPermissionInfo} objects.
-	 * 
-	 * This method checks that specified object has the same access decision,
-	 * conditions, permissions and name as this
-	 * {@code ConditionalPermissionInfo} object.
-	 * 
-	 * @param obj The object to test for equality with this
-	 *        {@code ConditionalPermissionInfo} object.
-	 * @return {@code true} if {@code obj} is a
-	 *         {@code ConditionalPermissionInfo}, and has the same access
-	 *         decision, conditions, permissions and name as this
-	 *         {@code ConditionalPermissionInfo} object; {@code false}
-	 *         otherwise.
-	 * @since 1.1
-	 */
-	@Override
-	boolean equals(Object obj);
+    /**
+     * Determines the equality of two {@code ConditionalPermissionInfo} objects.
+     * 
+     * This method checks that specified object has the same access decision,
+     * conditions, permissions and name as this
+     * {@code ConditionalPermissionInfo} object.
+     * 
+     * @param obj The object to test for equality with this
+     * {@code ConditionalPermissionInfo} object.
+     * @return {@code true} if {@code obj} is a
+     * {@code ConditionalPermissionInfo}, and has the same access
+     * decision, conditions, permissions and name as this
+     * {@code ConditionalPermissionInfo} object; {@code false}
+     * otherwise.
+     * @since 1.1
+     */
+    @Override
+    boolean equals(Object obj);
 
-	/**
-	 * Returns the hash code value for this object.
-	 * 
-	 * @return A hash code value for this object.
-	 * @since 1.1
-	 */
-	@Override
-	int hashCode();
+    /**
+     * Returns the hash code value for this object.
+     * 
+     * @return A hash code value for this object.
+     * @since 1.1
+     */
+    @Override
+    int hashCode();
 }

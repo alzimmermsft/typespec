@@ -24,6 +24,12 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.tlb.imp;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IDispatch;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.ITypeInfo;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IUnknown;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeInfoUtil;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeInfoUtil.TypeInfoDoc;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeLibUtil;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Guid.CLSID;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.CURRENCY;
@@ -52,12 +58,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.ULONG;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.USHORT;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HRESULT;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IDispatch;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.ITypeInfo;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IUnknown;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeInfoUtil;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeInfoUtil.TypeInfoDoc;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeLibUtil;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -89,16 +89,15 @@ public abstract class TlbAbstractMethod extends TlbBase implements Variant {
      * Instantiates a new tlb function.
      *
      * @param index
-     *            the index
+     * the index
      * @param typeLibUtil
-     *            the type lib util
+     * the type lib util
      * @param funcDesc
-     *            the func desc
+     * the func desc
      * @param typeInfoUtil
-     *            the type info util
+     * the type info util
      */
-    public TlbAbstractMethod(int index, TypeLibUtil typeLibUtil,
-            FUNCDESC funcDesc, TypeInfoUtil typeInfoUtil) {
+    public TlbAbstractMethod(int index, TypeLibUtil typeLibUtil, FUNCDESC funcDesc, TypeInfoUtil typeInfoUtil) {
         super(index, typeLibUtil, typeInfoUtil);
         this.typeInfoDoc = typeInfoUtil.getDocumentation(funcDesc.memid);
         this.methodName = typeInfoDoc.getName();
@@ -127,113 +126,161 @@ public abstract class TlbAbstractMethod extends TlbBase implements Variant {
      * Gets the var type.
      *
      * @param vt
-     *            the vt
+     * the vt
      * @return the var type
      */
     protected String getVarType(VARTYPE vt) {
         switch (vt.intValue()) {
             case VT_EMPTY:
                 return "";
+
             case VT_NULL:
                 return "null";
+
             case VT_I2:
                 return "short";
+
             case VT_I4:
                 return "int";
+
             case VT_R4:
                 return "float";
+
             case VT_R8:
                 return "double";
+
             case VT_CY:
                 return CURRENCY.class.getSimpleName();
+
             case VT_DATE:
                 return DATE.class.getSimpleName();
+
             case VT_BSTR:
                 return BSTR.class.getSimpleName();
+
             case VT_DISPATCH:
                 return IDispatch.class.getSimpleName();
+
             case VT_ERROR:
                 return SCODE.class.getSimpleName();
+
             case VT_BOOL:
                 return BOOL.class.getSimpleName();
+
             case VT_VARIANT:
                 return VARIANT.class.getSimpleName();
+
             case VT_UNKNOWN:
                 return IUnknown.class.getSimpleName();
+
             case VT_DECIMAL:
                 return DECIMAL.class.getSimpleName();
+
             case VT_I1:
                 return CHAR.class.getSimpleName();
+
             case VT_UI1:
                 return UCHAR.class.getSimpleName();
+
             case VT_UI2:
                 return USHORT.class.getSimpleName();
+
             case VT_UI4:
                 return UINT.class.getSimpleName();
+
             case VT_I8:
                 return LONG.class.getSimpleName();
+
             case VT_UI8:
                 return ULONG.class.getSimpleName();
+
             case VT_INT:
                 return "int";
+
             case VT_UINT:
                 return UINT.class.getSimpleName();
+
             case VT_VOID:
                 return PVOID.class.getSimpleName();
+
             case VT_HRESULT:
                 return HRESULT.class.getSimpleName();
+
             case VT_PTR:
                 return Pointer.class.getSimpleName();
+
             case VT_SAFEARRAY:
                 return "safearray";
+
             case VT_CARRAY:
                 return "carray";
+
             case VT_USERDEFINED:
                 return "userdefined";
+
             case VT_LPSTR:
                 return LPSTR.class.getSimpleName();
+
             case VT_LPWSTR:
                 return LPWSTR.class.getSimpleName();
+
             case VT_RECORD:
                 return "record";
+
             case VT_INT_PTR:
                 return INT_PTR.class.getSimpleName();
+
             case VT_UINT_PTR:
                 return UINT_PTR.class.getSimpleName();
+
             case VT_FILETIME:
                 return FILETIME.class.getSimpleName();
+
             case VT_STREAM:
                 return "steam";
+
             case VT_STORAGE:
                 return "storage";
+
             case VT_STREAMED_OBJECT:
                 return "steamed_object";
+
             case VT_STORED_OBJECT:
                 return "stored_object";
+
             case VT_BLOB_OBJECT:
                 return "blob_object";
+
             case VT_CF:
                 return "cf";
+
             case VT_CLSID:
                 return CLSID.class.getSimpleName();
+
             case VT_VERSIONED_STREAM:
                 return "";
-                // case VT_BSTR_BLOB:
-                // return "";
+
+            // case VT_BSTR_BLOB:
+            // return "";
             case VT_VECTOR:
                 return "";
+
             case VT_ARRAY:
                 return "";
+
             case VT_BYREF:
                 return PVOID.class.getSimpleName();
+
             case VT_RESERVED:
                 return "";
+
             case VT_ILLEGAL:
                 return "illegal";
-                /*
-                 * case VT_ILLEGALMASKED: return "illegal_masked"; case VT_TYPEMASK:
-                 * return "typemask";
-                 */
+
+            /*
+             * case VT_ILLEGALMASKED: return "illegal_masked"; case VT_TYPEMASK:
+             * return "typemask";
+             */
             default:
                 return null;
         }
@@ -242,8 +289,7 @@ public abstract class TlbAbstractMethod extends TlbBase implements Variant {
     protected String getUserdefinedType(HREFTYPE hreftype) {
         ITypeInfo refTypeInfo = this.typeInfoUtil.getRefTypeInfo(hreftype);
         TypeInfoUtil typeInfoUtil = new TypeInfoUtil(refTypeInfo);
-        TypeInfoDoc documentation = typeInfoUtil
-                .getDocumentation(OaIdl.MEMBERID_NIL);
+        TypeInfoDoc documentation = typeInfoUtil.getDocumentation(OaIdl.MEMBERID_NIL);
         return documentation.getName();
     }
 
@@ -264,8 +310,7 @@ public abstract class TlbAbstractMethod extends TlbBase implements Variant {
         if (vt.intValue() == Variant.VT_PTR) {
             TYPEDESC lptdesc = typeDesc._typedesc.getLptdesc();
             type = this.getType(lptdesc);
-        } else if (vt.intValue() == Variant.VT_SAFEARRAY
-                || vt.intValue() == Variant.VT_CARRAY) {
+        } else if (vt.intValue() == Variant.VT_SAFEARRAY || vt.intValue() == Variant.VT_CARRAY) {
             TYPEDESC tdescElem = typeDesc._typedesc.getLpadesc().tdescElem;
             type = this.getType(tdescElem);
         } else if (vt.intValue() == Variant.VT_USERDEFINED) {

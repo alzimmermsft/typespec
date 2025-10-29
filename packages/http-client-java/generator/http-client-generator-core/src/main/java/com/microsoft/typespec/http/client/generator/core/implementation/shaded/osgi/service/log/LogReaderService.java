@@ -16,14 +16,15 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.log;
 
-import java.util.Enumeration;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.ProviderType;
+import java.util.Enumeration;
 
 /**
  * LogReaderService for obtaining logging information.
  * <p>
- * Since 1.4, {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.log.stream.LogStreamProvider} is the
+ * Since 1.4,
+ * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.log.stream.LogStreamProvider}
+ * is the
  * preferred way to obtain {@link LogEntry} objects.
  * <p>
  * The LogReaderService provides two ways to obtain {@link LogEntry} objects:
@@ -41,57 +42,61 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 @ProviderType
 public interface LogReaderService {
-	/**
-	 * Subscribes to {@link LogEntry} objects.
-	 * <p>
-	 * This method registers a {@link LogListener} object with the Log Reader
-	 * Service. The {@link LogListener#logged(LogEntry)} method will be called
-	 * for each {@link LogEntry} object placed into the log.
-	 * <p>
-	 * When a bundle which registers a {@link LogListener} object is stopped or
-	 * otherwise releases the Log Reader Service, the Log Reader Service must
-	 * remove all of the bundle's listeners.
-	 * <p>
-	 * If this Log Reader Service's list of listeners already contains a
-	 * listener {@code l} such that {@code (l==listener)}, this method does
-	 * nothing.
-	 * <p>
-	 * Since 1.4, {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.log.stream.LogStreamProvider} is the
-	 * preferred way to obtain {@link LogEntry} objects.
-	 * 
-	 * @param listener A {@link LogListener} object to register; the
-	 *            {@link LogListener} object is used to receive {@link LogEntry}
-	 *            objects.
-	 */
-	void addLogListener(LogListener listener);
+    /**
+     * Subscribes to {@link LogEntry} objects.
+     * <p>
+     * This method registers a {@link LogListener} object with the Log Reader
+     * Service. The {@link LogListener#logged(LogEntry)} method will be called
+     * for each {@link LogEntry} object placed into the log.
+     * <p>
+     * When a bundle which registers a {@link LogListener} object is stopped or
+     * otherwise releases the Log Reader Service, the Log Reader Service must
+     * remove all of the bundle's listeners.
+     * <p>
+     * If this Log Reader Service's list of listeners already contains a
+     * listener {@code l} such that {@code (l==listener)}, this method does
+     * nothing.
+     * <p>
+     * Since 1.4,
+     * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.log.stream.LogStreamProvider}
+     * is the
+     * preferred way to obtain {@link LogEntry} objects.
+     * 
+     * @param listener A {@link LogListener} object to register; the
+     * {@link LogListener} object is used to receive {@link LogEntry}
+     * objects.
+     */
+    void addLogListener(LogListener listener);
 
-	/**
-	 * Unsubscribes to {@link LogEntry} objects.
-	 * <p>
-	 * This method unregisters a {@link LogListener} object from the Log Reader
-	 * Service.
-	 * <p>
-	 * If {@code listener} is not contained in this Log Reader Service's list of
-	 * listeners, this method does nothing.
-	 * <p>
-	 * Since 1.4, {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.log.stream.LogStreamProvider} is the
-	 * preferred way to obtain {@link LogEntry} objects.
-	 * 
-	 * @param listener A {@link LogListener} object to unregister.
-	 */
-	void removeLogListener(LogListener listener);
+    /**
+     * Unsubscribes to {@link LogEntry} objects.
+     * <p>
+     * This method unregisters a {@link LogListener} object from the Log Reader
+     * Service.
+     * <p>
+     * If {@code listener} is not contained in this Log Reader Service's list of
+     * listeners, this method does nothing.
+     * <p>
+     * Since 1.4,
+     * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.log.stream.LogStreamProvider}
+     * is the
+     * preferred way to obtain {@link LogEntry} objects.
+     * 
+     * @param listener A {@link LogListener} object to unregister.
+     */
+    void removeLogListener(LogListener listener);
 
-	/**
-	 * Returns an {@code Enumeration} of the {@link LogEntry} objects in the
-	 * log.
-	 * <p>
-	 * Each element of the enumeration is a {@link LogEntry} object, ordered
-	 * with the most recent entry first. Whether the enumeration is of all
-	 * {@link LogEntry} objects since the Log Service was started or some recent
-	 * past is implementation-specific.
-	 * 
-	 * @return An {@code Enumeration} of the {@link LogEntry} objects in the
-	 *         log.
-	 */
-	Enumeration<LogEntry> getLog();
+    /**
+     * Returns an {@code Enumeration} of the {@link LogEntry} objects in the
+     * log.
+     * <p>
+     * Each element of the enumeration is a {@link LogEntry} object, ordered
+     * with the most recent entry first. Whether the enumeration is of all
+     * {@link LogEntry} objects since the Log Service was started or some recent
+     * past is implementation-specific.
+     * 
+     * @return An {@code Enumeration} of the {@link LogEntry} objects in the
+     * log.
+     */
+    Enumeration<LogEntry> getLog();
 }

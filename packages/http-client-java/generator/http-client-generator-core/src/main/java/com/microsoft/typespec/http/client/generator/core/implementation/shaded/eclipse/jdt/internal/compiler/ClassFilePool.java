@@ -13,62 +13,65 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler;
 
-import java.util.Arrays;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.ModuleBinding;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;
+import java.util.Arrays;
 
 public class ClassFilePool {
-	public static final int POOL_SIZE = 25; // need to have enough for 2 units
-	ClassFile[] classFiles;
+    public static final int POOL_SIZE = 25; // need to have enough for 2 units
+    ClassFile[] classFiles;
 
-private ClassFilePool() {
-	// prevent instantiation
-	this.classFiles = new ClassFile[POOL_SIZE];
-}
+    private ClassFilePool() {
+        // prevent instantiation
+        this.classFiles = new ClassFile[POOL_SIZE];
+    }
 
-public static ClassFilePool newInstance() {
-	return new ClassFilePool();
-}
+    public static ClassFilePool newInstance() {
+        return new ClassFilePool();
+    }
 
-public synchronized ClassFile acquire(SourceTypeBinding typeBinding) {
-	for (int i = 0; i < POOL_SIZE; i++) {
-		ClassFile classFile = this.classFiles[i];
-		if (classFile == null) {
-			ClassFile newClassFile = new ClassFile(typeBinding);
-			this.classFiles[i] = newClassFile;
-			newClassFile.isShared = true;
-			return newClassFile;
-		}
-		if (!classFile.isShared) {
-			classFile.reset(typeBinding, typeBinding.scope.compilerOptions());
-			classFile.isShared = true;
-			return classFile;
-		}
-	}
-	return new ClassFile(typeBinding);
-}
-public synchronized ClassFile acquireForModule(ModuleBinding moduleBinding, CompilerOptions options) {
-	for (int i = 0; i < POOL_SIZE; i++) {
-		ClassFile classFile = this.classFiles[i];
-		if (classFile == null) {
-			ClassFile newClassFile = new ClassFile(moduleBinding, options);
-			this.classFiles[i] = newClassFile;
-			newClassFile.isShared = true;
-			return newClassFile;
-		}
-		if (!classFile.isShared) {
-			classFile.reset(null, options);
-			classFile.isShared = true;
-			return classFile;
-		}
-	}
-	return new ClassFile(moduleBinding, options);
-}
-public synchronized void release(ClassFile classFile) {
-	classFile.isShared = false;
-}
-public void reset() {
-	Arrays.fill(this.classFiles, null);
-}
+    public synchronized ClassFile acquire(SourceTypeBinding typeBinding) {
+        for (int i = 0; i < POOL_SIZE; i++) {
+            ClassFile classFile = this.classFiles[i];
+            if (classFile == null) {
+                ClassFile newClassFile = new ClassFile(typeBinding);
+                this.classFiles[i] = newClassFile;
+                newClassFile.isShared = true;
+                return newClassFile;
+            }
+            if (!classFile.isShared) {
+                classFile.reset(typeBinding, typeBinding.scope.compilerOptions());
+                classFile.isShared = true;
+                return classFile;
+            }
+        }
+        return new ClassFile(typeBinding);
+    }
+
+    public synchronized ClassFile acquireForModule(ModuleBinding moduleBinding, CompilerOptions options) {
+        for (int i = 0; i < POOL_SIZE; i++) {
+            ClassFile classFile = this.classFiles[i];
+            if (classFile == null) {
+                ClassFile newClassFile = new ClassFile(moduleBinding, options);
+                this.classFiles[i] = newClassFile;
+                newClassFile.isShared = true;
+                return newClassFile;
+            }
+            if (!classFile.isShared) {
+                classFile.reset(null, options);
+                classFile.isShared = true;
+                return classFile;
+            }
+        }
+        return new ClassFile(moduleBinding, options);
+    }
+
+    public synchronized void release(ClassFile classFile) {
+        classFile.isShared = false;
+    }
+
+    public void reset() {
+        Arrays.fill(this.classFiles, null);
+    }
 }

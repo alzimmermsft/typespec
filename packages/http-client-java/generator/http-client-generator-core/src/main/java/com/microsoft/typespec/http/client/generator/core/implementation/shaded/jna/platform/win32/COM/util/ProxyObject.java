@@ -23,29 +23,9 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.util;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Proxy;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.WString;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.internal.ReflectionUtils;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Guid;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Guid.IID;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Guid.REFIID;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Kernel32Util;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.DISPID;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.DISPIDByReference;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.EXCEPINFO;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OleAuto;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OleAuto.DISPPARAMS;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VARIANT;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.DWORDByReference;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HRESULT;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.COMException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.COMUtils;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.ConnectionPoint;
@@ -56,8 +36,26 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.util.annotation.ComInterface;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.util.annotation.ComMethod;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.util.annotation.ComProperty;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Guid;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Guid.IID;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Guid.REFIID;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Kernel32Util;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.DISPID;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.DISPIDByReference;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.EXCEPINFO;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OleAuto;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OleAuto.DISPPARAMS;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VARIANT;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.DWORDByReference;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HRESULT;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.IntByReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.PointerByReference;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Proxy;
 
 /**
  * This object acts as the invocation handler for interfaces annotated with
@@ -68,11 +66,14 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
  * COM runtime and appropriate thread-handling - depending on the choosen
  * handling model.</p>
  *
- * @see <a href="https://msdn.microsoft.com/de-de/library/windows/desktop/ms693344%28v=vs.85%29.aspx">MSDN - Processes, Threads, and Apartments</a>
- * @see <a href="https://msdn.microsoft.com/en-us/library/ms809971.aspx">MSDN - Understanding and Using COM Threading Models</a>
+ * @see <a href="https://msdn.microsoft.com/de-de/library/windows/desktop/ms693344%28v=vs.85%29.aspx">MSDN - Processes,
+ * Threads, and Apartments</a>
+ * @see <a href="https://msdn.microsoft.com/en-us/library/ms809971.aspx">MSDN - Understanding and Using COM Threading
+ * Models</a>
  */
-public class ProxyObject implements InvocationHandler, com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.util.IDispatch,
-        IRawDispatchHandle, IConnectionPoint {
+public class ProxyObject implements InvocationHandler,
+    com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.util.IDispatch,
+    IRawDispatchHandle, IConnectionPoint {
 
     // cached value of the IUnknown interface pointer
     // Rules of COM state that querying for the IUnknown interface must return
@@ -105,7 +106,8 @@ public class ProxyObject implements InvocationHandler, com.microsoft.typespec.ht
                 Thread current = Thread.currentThread();
                 String tn = current.getName();
 
-                IID iid = com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IUnknown.IID_IUNKNOWN;
+                IID iid
+                    = com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IUnknown.IID_IUNKNOWN;
                 HRESULT hr = ProxyObject.this.getRawDispatch().QueryInterface(new REFIID(iid), ppvObject);
 
                 if (WinNT.S_OK.equals(hr)) {
@@ -200,15 +202,17 @@ public class ProxyObject implements InvocationHandler, com.microsoft.typespec.ht
     // --------------------- InvocationHandler -----------------------------
     @Override
     public Object invoke(final Object proxy, final java.lang.reflect.Method method, final Object[] args)
-            throws Throwable {
+        throws Throwable {
         boolean declaredAsInterface
-                = (method.getAnnotation(ComMethod.class) != null)
-                || (method.getAnnotation(ComProperty.class) != null);
+            = (method.getAnnotation(ComMethod.class) != null) || (method.getAnnotation(ComProperty.class) != null);
 
-        if ((!declaredAsInterface) && (method.getDeclaringClass().equals(Object.class)
+        if ((!declaredAsInterface)
+            && (method.getDeclaringClass().equals(Object.class)
                 || method.getDeclaringClass().equals(IRawDispatchHandle.class)
                 || method.getDeclaringClass().equals(IUnknown.class)
-                || method.getDeclaringClass().equals(com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.util.IDispatch.class)
+                || method.getDeclaringClass()
+                    .equals(
+                        com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.util.IDispatch.class)
                 || method.getDeclaringClass().equals(IConnectionPoint.class))) {
             try {
                 return method.invoke(this, args);
@@ -217,7 +221,7 @@ public class ProxyObject implements InvocationHandler, com.microsoft.typespec.ht
             }
         }
 
-        if((!declaredAsInterface) && ReflectionUtils.isDefault(method)) {
+        if ((!declaredAsInterface) && ReflectionUtils.isDefault(method)) {
             Object methodHandle = ReflectionUtils.getMethodHandle(method);
             return ReflectionUtils.invokeDefaultMethod(proxy, methodHandle, args);
         }
@@ -283,22 +287,22 @@ public class ProxyObject implements InvocationHandler, com.microsoft.typespec.ht
 
     @Override
     public IComEventCallbackCookie advise(Class<?> comEventCallbackInterface,
-            final IComEventCallbackListener comEventCallbackListener)
-            throws COMException {
+        final IComEventCallbackListener comEventCallbackListener) throws COMException {
         assert COMUtils.comIsInitialized() : "COM not initialized";
 
         try {
             ComInterface comInterfaceAnnotation = comEventCallbackInterface.getAnnotation(ComInterface.class);
             if (null == comInterfaceAnnotation) {
                 throw new COMException(
-                        "advise: Interface must define a value for either iid via the ComInterface annotation");
+                    "advise: Interface must define a value for either iid via the ComInterface annotation");
             }
             final IID iid = this.getIID(comInterfaceAnnotation);
 
             final ConnectionPoint rawCp = this.fetchRawConnectionPoint(iid);
 
             // create the dispatch listener
-            final IDispatchCallback rawListener = factory.createDispatchCallback(comEventCallbackInterface, comEventCallbackListener);
+            final IDispatchCallback rawListener
+                = factory.createDispatchCallback(comEventCallbackInterface, comEventCallbackListener);
             // store it the comEventCallback argument, so it is not garbage
             // collected.
             comEventCallbackListener.setDispatchCallbackListener(rawListener);
@@ -318,7 +322,8 @@ public class ProxyObject implements InvocationHandler, com.microsoft.typespec.ht
             if (e instanceof COMException) {
                 throw e;
             } else {
-                throw new COMException("Error occured in advise when trying to connect the listener " + comEventCallbackListener, e);
+                throw new COMException(
+                    "Error occured in advise when trying to connect the listener " + comEventCallbackListener, e);
             }
         }
     }
@@ -331,7 +336,7 @@ public class ProxyObject implements InvocationHandler, com.microsoft.typespec.ht
             ComInterface comInterfaceAnnotation = comEventCallbackInterface.getAnnotation(ComInterface.class);
             if (null == comInterfaceAnnotation) {
                 throw new COMException(
-                        "unadvise: Interface must define a value for iid via the ComInterface annotation");
+                    "unadvise: Interface must define a value for iid via the ComInterface annotation");
             }
             IID iid = this.getIID(comInterfaceAnnotation);
 
@@ -347,7 +352,8 @@ public class ProxyObject implements InvocationHandler, com.microsoft.typespec.ht
             if (e instanceof COMException) {
                 throw e;
             } else {
-                throw new COMException("Error occured in unadvise when trying to disconnect the listener from " + this, e);
+                throw new COMException("Error occured in unadvise when trying to disconnect the listener from " + this,
+                    e);
             }
         }
     }
@@ -482,7 +488,7 @@ public class ProxyObject implements InvocationHandler, com.microsoft.typespec.ht
             ComInterface comInterfaceAnnotation = comInterface.getAnnotation(ComInterface.class);
             if (null == comInterfaceAnnotation) {
                 throw new COMException(
-                        "queryInterface: Interface must define a value for iid via the ComInterface annotation");
+                    "queryInterface: Interface must define a value for iid via the ComInterface annotation");
             }
             final IID iid = this.getIID(comInterfaceAnnotation);
             final PointerByReference ppvObject = new PointerByReference();
@@ -529,7 +535,7 @@ public class ProxyObject implements InvocationHandler, com.microsoft.typespec.ht
                 return methName.replaceFirst("get", "");
             } else {
                 throw new RuntimeException(
-                        "Property Accessor name must start with 'get', or set the anotation 'name' value");
+                    "Property Accessor name must start with 'get', or set the anotation 'name' value");
             }
         } else {
             return prop.name();
@@ -543,7 +549,7 @@ public class ProxyObject implements InvocationHandler, com.microsoft.typespec.ht
                 return methName.replaceFirst("set", "");
             } else {
                 throw new RuntimeException(
-                        "Property Mutator name must start with 'set', or set the anotation 'name' value");
+                    "Property Mutator name must start with 'set', or set the anotation 'name' value");
             }
         } else {
             return prop.name();
@@ -565,35 +571,33 @@ public class ProxyObject implements InvocationHandler, com.microsoft.typespec.ht
     }
 
     protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult, String name, VARIANT pArg)
-            throws COMException {
+        throws COMException {
         return this.oleMethod(nType, pvResult, name, new VARIANT[] { pArg });
     }
 
     protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult, DISPID dispId, VARIANT pArg)
-            throws COMException {
+        throws COMException {
         return this.oleMethod(nType, pvResult, dispId, new VARIANT[] { pArg });
     }
 
-    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult, String name)
-            throws COMException {
+    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult, String name) throws COMException {
         return this.oleMethod(nType, pvResult, name, (VARIANT[]) null);
     }
 
-    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult, DISPID dispId)
-            throws COMException {
+    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult, DISPID dispId) throws COMException {
 
         return this.oleMethod(nType, pvResult, dispId, (VARIANT[]) null);
     }
 
-    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult, String name,
-            VARIANT[] pArgs) throws COMException {
+    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult, String name, VARIANT[] pArgs)
+        throws COMException {
 
         return this.oleMethod(nType, pvResult, resolveDispId(name), pArgs);
     }
 
     @SuppressWarnings("deprecation")
-    protected HRESULT oleMethod(final int nType, final VARIANT.ByReference pvResult,
-            final DISPID dispId, VARIANT[] pArgs) throws COMException {
+    protected HRESULT oleMethod(final int nType, final VARIANT.ByReference pvResult, final DISPID dispId,
+        VARIANT[] pArgs) throws COMException {
         return oleMethod(nType, pvResult, getRawDispatch(), dispId, pArgs);
     }
 
@@ -605,15 +609,10 @@ public class ProxyObject implements InvocationHandler, com.microsoft.typespec.ht
             throw new COMException("pDisp (IDispatch) parameter is null!");
         }
 
-        final WString[] ptName = new WString[]{new WString(name)};
+        final WString[] ptName = new WString[] { new WString(name) };
         final DISPIDByReference pdispID = new DISPIDByReference();
 
-        HRESULT hr = pDisp.GetIDsOfNames(
-                new REFIID(Guid.IID_NULL),
-                ptName,
-                1,
-                factory.getLCID(),
-                pdispID);
+        HRESULT hr = pDisp.GetIDsOfNames(new REFIID(Guid.IID_NULL), ptName, 1, factory.getLCID(), pdispID);
 
         COMUtils.checkRC(hr);
 
@@ -622,39 +621,39 @@ public class ProxyObject implements InvocationHandler, com.microsoft.typespec.ht
 
     @Deprecated
     protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult, IDispatch pDisp, String name, VARIANT pArg)
-            throws COMException {
-        return this.oleMethod(nType, pvResult, pDisp, name, new VARIANT[]{pArg});
+        throws COMException {
+        return this.oleMethod(nType, pvResult, pDisp, name, new VARIANT[] { pArg });
     }
 
     @Deprecated
     protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult, IDispatch pDisp, DISPID dispId, VARIANT pArg)
-            throws COMException {
-        return this.oleMethod(nType, pvResult, pDisp, dispId, new VARIANT[]{pArg});
+        throws COMException {
+        return this.oleMethod(nType, pvResult, pDisp, dispId, new VARIANT[] { pArg });
     }
 
     @Deprecated
     protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult, IDispatch pDisp, String name)
-            throws COMException {
+        throws COMException {
         return this.oleMethod(nType, pvResult, pDisp, name, (VARIANT[]) null);
     }
 
     @Deprecated
     protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult, IDispatch pDisp, DISPID dispId)
-            throws COMException {
+        throws COMException {
 
         return this.oleMethod(nType, pvResult, pDisp, dispId, (VARIANT[]) null);
     }
 
     @Deprecated
     protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult, final IDispatch pDisp, String name,
-            VARIANT[] pArgs) throws COMException {
+        VARIANT[] pArgs) throws COMException {
 
         return this.oleMethod(nType, pvResult, pDisp, resolveDispId(pDisp, name), pArgs);
     }
 
     @Deprecated
     protected HRESULT oleMethod(final int nType, final VARIANT.ByReference pvResult, final IDispatch pDisp,
-            final DISPID dispId, VARIANT[] pArgs) throws COMException {
+        final DISPID dispId, VARIANT[] pArgs) throws COMException {
 
         assert COMUtils.comIsInitialized() : "COM not initialized";
 
@@ -682,7 +681,7 @@ public class ProxyObject implements InvocationHandler, com.microsoft.typespec.ht
 
         // Handle special-case for property-puts!
         if (nType == OleAuto.DISPATCH_PROPERTYPUT) {
-            dp.setRgdispidNamedArgs(new DISPID[]{OaIdl.DISPID_PROPERTYPUT});
+            dp.setRgdispidNamedArgs(new DISPID[] { OaIdl.DISPID_PROPERTYPUT });
         }
 
         // Apply "fix" according to
@@ -699,7 +698,7 @@ public class ProxyObject implements InvocationHandler, com.microsoft.typespec.ht
         //
         // The MSDN article advises this behaviour: "[...] Some languages cannot
         // distinguish between retrieving a property and calling a method. In this
-        //case, you should set the flags DISPATCH_PROPERTYGET and DISPATCH_METHOD.
+        // case, you should set the flags DISPATCH_PROPERTYGET and DISPATCH_METHOD.
         // [...]"))
         //
         // This was found when trying to bind InchesToPoints from the _Application
@@ -723,15 +722,8 @@ public class ProxyObject implements InvocationHandler, com.microsoft.typespec.ht
             dp.write();
         }
 
-        HRESULT hr = pDisp.Invoke(
-                dispId,
-                new REFIID(Guid.IID_NULL),
-                factory.getLCID(),
-                new WinDef.WORD(finalNType),
-                dp,
-                pvResult,
-                pExcepInfo,
-                puArgErr);
+        HRESULT hr = pDisp.Invoke(dispId, new REFIID(Guid.IID_NULL), factory.getLCID(), new WinDef.WORD(finalNType), dp,
+            pvResult, pExcepInfo, puArgErr);
 
         COMUtils.checkRC(hr, pExcepInfo, puArgErr);
         return hr;

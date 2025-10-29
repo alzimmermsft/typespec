@@ -24,15 +24,13 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna;
 
-import java.lang.reflect.InvocationTargetException;
-
 /**
  * Represents a native integer value, which may have a platform-specific size
  * (e.g. <code>long</code> on unix-based platforms).
  *
  * May optionally indicate an unsigned attribute, such that when a value is
  * extracted into a larger-sized container (e.g. <code>int</code> retrieved
- * via {@link Number#longValue}, the value will be unsigned.  Default behavior
+ * via {@link Number#longValue}, the value will be unsigned. Default behavior
  * is signed.
  *
  * @author wmeissner@gmail.com
@@ -69,7 +67,9 @@ public abstract class IntegerType extends Number implements NativeMapped {
         setValue(value);
     }
 
-    /** Change the value for this data.
+    /**
+     * Change the value for this data.
+     * 
      * @param value value to set
      */
     public void setValue(long value) {
@@ -83,6 +83,7 @@ public abstract class IntegerType extends Number implements NativeMapped {
                 truncated = (byte) value;
                 this.number = Byte.valueOf((byte) value);
                 break;
+
             case 2:
                 if (unsigned) {
                     this.value = value & 0xFFFFL;
@@ -90,6 +91,7 @@ public abstract class IntegerType extends Number implements NativeMapped {
                 truncated = (short) value;
                 this.number = Short.valueOf((short) value);
                 break;
+
             case 4:
                 if (unsigned) {
                     this.value = value & 0xFFFFFFFFL;
@@ -97,19 +99,19 @@ public abstract class IntegerType extends Number implements NativeMapped {
                 truncated = (int) value;
                 this.number = Integer.valueOf((int) value);
                 break;
+
             case 8:
                 this.number = Long.valueOf(value);
                 break;
+
             default:
                 throw new IllegalArgumentException("Unsupported size: " + size);
         }
         if (size < 8) {
             long mask = ~((1L << (size * 8)) - 1);
-            if ((value < 0 && truncated != value)
-                    || (value >= 0 && (mask & value) != 0)) {
-                throw new IllegalArgumentException("Argument value 0x"
-                        + Long.toHexString(value) + " exceeds native capacity ("
-                        + size + " bytes) mask=0x" + Long.toHexString(mask));
+            if ((value < 0 && truncated != value) || (value >= 0 && (mask & value) != 0)) {
+                throw new IllegalArgumentException("Argument value 0x" + Long.toHexString(value)
+                    + " exceeds native capacity (" + size + " bytes) mask=0x" + Long.toHexString(mask));
             }
         }
     }
@@ -122,8 +124,7 @@ public abstract class IntegerType extends Number implements NativeMapped {
     @Override
     public Object fromNative(Object nativeValue, FromNativeContext context) {
         // be forgiving of null values read from memory
-        long value = nativeValue == null
-            ? 0 : ((Number) nativeValue).longValue();
+        long value = nativeValue == null ? 0 : ((Number) nativeValue).longValue();
         IntegerType number = Klass.newInstance(getClass());
         number.setValue(value);
         return number;
@@ -136,7 +137,7 @@ public abstract class IntegerType extends Number implements NativeMapped {
 
     @Override
     public int intValue() {
-        return (int)value;
+        return (int) value;
     }
 
     @Override
@@ -156,8 +157,7 @@ public abstract class IntegerType extends Number implements NativeMapped {
 
     @Override
     public boolean equals(Object rhs) {
-        return rhs instanceof IntegerType
-            && number.equals(((IntegerType)rhs).number);
+        return rhs instanceof IntegerType && number.equals(((IntegerType) rhs).number);
     }
 
     @Override

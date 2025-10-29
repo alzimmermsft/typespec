@@ -30,7 +30,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * Internal class
  */
 class AnnotationBinding implements IAnnotationBinding {
-    static final AnnotationBinding[] NoAnnotations = new AnnotationBinding[0];
     private final com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.AnnotationBinding binding;
     private final BindingResolver bindingResolver;
     private String key;
@@ -63,8 +62,7 @@ class AnnotationBinding implements IAnnotationBinding {
         IMemberValuePairBinding[] pairs
             = length == 0 ? MemberValuePairBinding.NoPair : new MemberValuePairBinding[length];
         int counter = 0;
-        for (int i = 0; i < length; i++) {
-            ElementValuePair valuePair = internalPairs[i];
+        for (ElementValuePair valuePair : internalPairs) {
             if (valuePair.binding == null)
                 continue;
             pairs[counter++] = this.bindingResolver.getMemberValuePairBinding(valuePair);
@@ -94,11 +92,11 @@ class AnnotationBinding implements IAnnotationBinding {
             return pairs;
 
         HashtableOfObject table = new HashtableOfObject(declaredLength);
-        for (int i = 0; i < declaredLength; i++) {
-            char[] internalName = ((MemberValuePairBinding) pairs[i]).internalName();
+        for (IMemberValuePairBinding iMemberValuePairBinding : pairs) {
+            char[] internalName = ((MemberValuePairBinding) iMemberValuePairBinding).internalName();
             if (internalName == null)
                 continue;
-            table.put(internalName, pairs[i]);
+            table.put(internalName, iMemberValuePairBinding);
         }
 
         // handle case of more methods than declared members

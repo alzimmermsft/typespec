@@ -91,7 +91,7 @@ public interface PowrProf extends Library {
          * The {@code lpOutputBuffer} buffer receives a
          * {@link WinDef.ULONG} value containing the
          * system execution state buffer. This value may contain any combination
-         * of the following values:          {@link WinBase#ES_SYSTEM_REQUIRED},
+         * of the following values: {@link WinBase#ES_SYSTEM_REQUIRED},
          * {@link WinBase#ES_DISPLAY_REQUIRED}, or
          * {@link WinBase#ES_USER_PRESENT}. For more information, see the
          * {@link Kernel32#SetThreadExecutionState} function.
@@ -151,7 +151,7 @@ public interface PowrProf extends Library {
 
         /**
          * If {@code lpInBuffer} is not {@code NULL}, the function applies the
-         * {@link  WinNT.SYSTEM_POWER_POLICY} values
+         * {@link WinNT.SYSTEM_POWER_POLICY} values
          * passed in {@code lpInBuffer} to the current system power policy used
          * while the system is running on battery power.
          * <p>
@@ -188,46 +188,45 @@ public interface PowrProf extends Library {
      * {@code SetActivePwrScheme}, or other power scheme functions.
      *
      * @param informationLevel
-     *            The information level requested. This value indicates the
-     *            specific power information to be set or retrieved. This
-     *            parameter must be one of the following
-     *            {@link POWER_INFORMATION_LEVEL} enumeration type values:
-     *            {@link POWER_INFORMATION_LEVEL#LastSleepTime},
-     *            {@link POWER_INFORMATION_LEVEL#LastWakeTime},
-     *            {@link POWER_INFORMATION_LEVEL#ProcessorInformation},
-     *            {@link POWER_INFORMATION_LEVEL#SystemBatteryState},
-     *            {@link POWER_INFORMATION_LEVEL#SystemExecutionState},
-     *            {@link POWER_INFORMATION_LEVEL#SystemPowerCapabilities},
-     *            {@link POWER_INFORMATION_LEVEL#SystemPowerInformation},
-     *            {@link POWER_INFORMATION_LEVEL#SystemPowerPolicyAc},
-     *            {@link POWER_INFORMATION_LEVEL#SystemPowerPolicyCurrent},
-     *            {@link POWER_INFORMATION_LEVEL#SystemPowerPolicyDc}, or
-     *            {@link POWER_INFORMATION_LEVEL#SystemReserveHiberFile}.
+     * The information level requested. This value indicates the
+     * specific power information to be set or retrieved. This
+     * parameter must be one of the following
+     * {@link POWER_INFORMATION_LEVEL} enumeration type values:
+     * {@link POWER_INFORMATION_LEVEL#LastSleepTime},
+     * {@link POWER_INFORMATION_LEVEL#LastWakeTime},
+     * {@link POWER_INFORMATION_LEVEL#ProcessorInformation},
+     * {@link POWER_INFORMATION_LEVEL#SystemBatteryState},
+     * {@link POWER_INFORMATION_LEVEL#SystemExecutionState},
+     * {@link POWER_INFORMATION_LEVEL#SystemPowerCapabilities},
+     * {@link POWER_INFORMATION_LEVEL#SystemPowerInformation},
+     * {@link POWER_INFORMATION_LEVEL#SystemPowerPolicyAc},
+     * {@link POWER_INFORMATION_LEVEL#SystemPowerPolicyCurrent},
+     * {@link POWER_INFORMATION_LEVEL#SystemPowerPolicyDc}, or
+     * {@link POWER_INFORMATION_LEVEL#SystemReserveHiberFile}.
      * @param lpInputBuffer
-     *            A pointer to an optional input buffer. The data type of this
-     *            buffer depends on the information level requested in the
-     *            {@code informationLevel} parameter.
+     * A pointer to an optional input buffer. The data type of this
+     * buffer depends on the information level requested in the
+     * {@code informationLevel} parameter.
      * @param nInputBufferSize
-     *            The size of the input buffer, in bytes.
+     * The size of the input buffer, in bytes.
      * @param lpOutputBuffer
-     *            A pointer to an optional output buffer. The data type of this
-     *            buffer depends on the information level requested in the
-     *            {@code informationLevel} parameter. If the buffer is too small
-     *            to contain the information, the function returns
-     *            {@link NTStatus#STATUS_BUFFER_TOO_SMALL}.
+     * A pointer to an optional output buffer. The data type of this
+     * buffer depends on the information level requested in the
+     * {@code informationLevel} parameter. If the buffer is too small
+     * to contain the information, the function returns
+     * {@link NTStatus#STATUS_BUFFER_TOO_SMALL}.
      * @param nOutputBufferSize
-     *            The size of the output buffer, in bytes. Depending on the
-     *            information level requested, this may be a variably sized
-     *            buffer.
+     * The size of the output buffer, in bytes. Depending on the
+     * information level requested, this may be a variably sized
+     * buffer.
      * @return If the function succeeds, the return value is
-     *         {@link NTStatus#STATUS_SUCCESS}. If the function fails, the
-     *         return value can be one the following status codes:
-     *         {@link NTStatus#STATUS_BUFFER_TOO_SMALL} if the output buffer is
-     *         of insufficient size to contain the data to be returned.
-     *         {@link NTStatus#STATUS_ACCESS_DENIED} if the caller had
-     *         insufficient access rights to perform the requested action.
+     * {@link NTStatus#STATUS_SUCCESS}. If the function fails, the
+     * return value can be one the following status codes:
+     * {@link NTStatus#STATUS_BUFFER_TOO_SMALL} if the output buffer is
+     * of insufficient size to contain the data to be returned.
+     * {@link NTStatus#STATUS_ACCESS_DENIED} if the caller had
+     * insufficient access rights to perform the requested action.
      */
     int CallNtPowerInformation(int informationLevel, Pointer lpInputBuffer, int nInputBufferSize,
-            Pointer lpOutputBuffer, int nOutputBufferSize);
+        Pointer lpOutputBuffer, int nOutputBufferSize);
 }
-

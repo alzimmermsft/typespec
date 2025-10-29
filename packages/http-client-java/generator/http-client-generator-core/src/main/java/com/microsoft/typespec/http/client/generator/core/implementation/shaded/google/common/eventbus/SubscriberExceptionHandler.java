@@ -14,7 +14,6 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.eventbus;
 
-
 /**
  * Handler for exceptions thrown by event subscribers.
  *
@@ -22,6 +21,6 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 @ElementTypesAreNonnullByDefault
 public interface SubscriberExceptionHandler {
-  /** Handles exceptions thrown by subscribers. */
-  void handleException(Throwable exception, SubscriberExceptionContext context);
+    /** Handles exceptions thrown by subscribers. */
+    void handleException(Throwable exception, SubscriberExceptionContext context);
 }

@@ -22,23 +22,23 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class DocumentAdapter extends Document {
 
-	private final IBuffer buffer;
+    private final IBuffer buffer;
 
-	public DocumentAdapter(IBuffer buffer) {
-		super(buffer.getContents());
-		this.buffer = buffer;
-	}
+    public DocumentAdapter(IBuffer buffer) {
+        super(buffer.getContents());
+        this.buffer = buffer;
+    }
 
-	@Override
-	public void set(String text) {
-		super.set(text);
-		this.buffer.setContents(text);
-	}
+    @Override
+    public void set(String text) {
+        super.set(text);
+        this.buffer.setContents(text);
+    }
 
-	@Override
-	public void replace(int offset, int length, String text) throws BadLocationException {
-		super.replace(offset, length, text);
-		this.buffer.replace(offset, length, text);
-	}
+    @Override
+    public void replace(int offset, int length, String text) throws BadLocationException {
+        super.replace(offset, length, text);
+        this.buffer.replace(offset, length, text);
+    }
 
 }

@@ -46,18 +46,17 @@ public class COMException extends RuntimeException {
      * Instantiates a new automation exception.
      *
      * @param message
-     *            the message
+     * the message
      */
     public COMException(String message) {
         this(message, (Throwable) null);
     }
 
-
     /**
      * Instantiates a new automation exception.
      *
      * @param cause
-     *            the cause
+     * the cause
      */
     public COMException(Throwable cause) {
         this(null, cause);
@@ -67,9 +66,9 @@ public class COMException extends RuntimeException {
      * Instantiates a new automation exception.
      *
      * @param message
-     *            the message
+     * the message
      * @param cause
-     *            the cause
+     * the cause
      */
     public COMException(String message, Throwable cause) {
         super(message, cause);
@@ -80,9 +79,9 @@ public class COMException extends RuntimeException {
      * Instantiates a new automation exception.
      *
      * @param message
-     *            the message
+     * the message
      * @param hresult
-     *            HRESULT that lead to the creation of the COMException
+     * HRESULT that lead to the creation of the COMException
      */
     public COMException(String message, HRESULT hresult) {
         super(message);
@@ -90,7 +89,8 @@ public class COMException extends RuntimeException {
     }
 
     /**
-     * @return the HRESULT that lead to thie COMException or NULL if the COMException as not directly caused by a native call
+     * @return the HRESULT that lead to thie COMException or NULL if the COMException as not directly caused by a native
+     * call
      */
     public HRESULT getHresult() {
         return hresult;

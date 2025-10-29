@@ -13,40 +13,40 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.internal.permadmin;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.condpermadmin.ConditionalPermissionInfo;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.condpermadmin.ConditionalPermissionUpdate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SecurityTableUpdate implements ConditionalPermissionUpdate {
 
-	private final SecurityAdmin securityAdmin;
-	private final List<ConditionalPermissionInfo> rows;
-	private final long timeStamp;
+    private final SecurityAdmin securityAdmin;
+    private final List<ConditionalPermissionInfo> rows;
+    private final long timeStamp;
 
-	public SecurityTableUpdate(SecurityAdmin securityAdmin, SecurityRow[] rows, long timeStamp) {
-		this.securityAdmin = securityAdmin;
-		this.timeStamp = timeStamp;
-		// must make a snap shot of the security rows.
-		this.rows = new ArrayList<>(rows.length);
-		for (SecurityRow row : rows) {
-			// Use SecurityRowSnapShot to prevent modification before commit
-			// and to throw exceptions from delete
-			this.rows.add(new SecurityRowSnapShot(row.getName(), row.internalGetConditionInfos(),
-					row.internalGetPermissionInfos(), row.getAccessDecision()));
-		}
-	}
+    public SecurityTableUpdate(SecurityAdmin securityAdmin, SecurityRow[] rows, long timeStamp) {
+        this.securityAdmin = securityAdmin;
+        this.timeStamp = timeStamp;
+        // must make a snap shot of the security rows.
+        this.rows = new ArrayList<>(rows.length);
+        for (SecurityRow row : rows) {
+            // Use SecurityRowSnapShot to prevent modification before commit
+            // and to throw exceptions from delete
+            this.rows.add(new SecurityRowSnapShot(row.getName(), row.internalGetConditionInfos(),
+                row.internalGetPermissionInfos(), row.getAccessDecision()));
+        }
+    }
 
-	@Override
-	public boolean commit() {
-		return securityAdmin.commit(rows, timeStamp);
-	}
+    @Override
+    public boolean commit() {
+        return securityAdmin.commit(rows, timeStamp);
+    }
 
-	@Override
-	public List<ConditionalPermissionInfo> getConditionalPermissionInfos() {
-		// it is fine to return the internal list; it is a snap shot and we allow
-		// clients to modify it.
-		return rows;
-	}
+    @Override
+    public List<ConditionalPermissionInfo> getConditionalPermissionInfos() {
+        // it is fine to return the internal list; it is a snap shot and we allow
+        // clients to modify it.
+        return rows;
+    }
 
 }

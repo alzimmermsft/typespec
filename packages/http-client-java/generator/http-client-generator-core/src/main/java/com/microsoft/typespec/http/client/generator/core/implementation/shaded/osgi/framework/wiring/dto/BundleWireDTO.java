@@ -31,18 +31,18 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 public class BundleWireDTO extends WireDTO {
     /**
-	 * The identifier of the provider wiring for the bundle wire.
-	 * 
-	 * @see WiringDTO#id
-	 * @see BundleWire#getProviderWiring()
-	 */
+     * The identifier of the provider wiring for the bundle wire.
+     * 
+     * @see WiringDTO#id
+     * @see BundleWire#getProviderWiring()
+     */
     public int providerWiring;
 
     /**
-	 * The identifier of the requiring wiring for the bundle wire.
-	 * 
-	 * @see WiringDTO#id
-	 * @see BundleWire#getRequirerWiring()
-	 */
+     * The identifier of the requiring wiring for the bundle wire.
+     * 
+     * @see WiringDTO#id
+     * @see BundleWire#getRequirerWiring()
+     */
     public int requirerWiring;
 }

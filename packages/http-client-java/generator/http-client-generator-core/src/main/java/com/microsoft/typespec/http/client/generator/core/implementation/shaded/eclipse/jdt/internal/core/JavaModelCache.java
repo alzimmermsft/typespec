@@ -26,7 +26,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.LRUCache;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Util;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,12 +40,12 @@ public class JavaModelCache {
 
     public static final String RATIO_PROPERTY
         = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.javamodelcache.ratio";
-        //$NON-NLS-1$
+    // $NON-NLS-1$
     public static final String JAR_TYPE_RATIO_PROPERTY
         = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.javamodelcache.jartyperatio";
-        //$NON-NLS-1$
+    // $NON-NLS-1$
 
-    public static final IBinaryInfo NON_EXISTING_JAR_TYPE_INFO = new IBinaryInfo() {/*empty marker instance only*/
+    public static final IBinaryInfo NON_EXISTING_JAR_TYPE_INFO = new IBinaryInfo() {/* empty marker instance only */
     };
 
     /**
@@ -133,15 +132,20 @@ public class JavaModelCache {
         switch (element.getElementType()) {
             case IJavaElement.JAVA_MODEL:
                 return this.modelInfo;
+
             case IJavaElement.JAVA_PROJECT:
                 return this.projectCache.get(element);
+
             case IJavaElement.PACKAGE_FRAGMENT_ROOT:
                 return this.rootCache.get((IPackageFragmentRoot) element);
+
             case IJavaElement.PACKAGE_FRAGMENT:
                 return this.pkgCache.get((IPackageFragment) element);
+
             case IJavaElement.COMPILATION_UNIT:
             case IJavaElement.CLASS_FILE:
                 return this.openableCache.get((ITypeRoot) element);
+
             case IJavaElement.TYPE:
                 IElementInfo result = this.jarTypeCache.get(element);
                 if (result != null)
@@ -154,24 +158,30 @@ public class JavaModelCache {
     }
 
     /*
-     *  Returns the existing element that is equal to the given element if present in the cache.
-     *  Returns the given element otherwise.
+     * Returns the existing element that is equal to the given element if present in the cache.
+     * Returns the given element otherwise.
      */
     public IJavaElement getExistingElement(IJavaElement element) {
         switch (element.getElementType()) {
             case IJavaElement.JAVA_MODEL:
                 return element;
+
             case IJavaElement.JAVA_PROJECT:
                 return element; // projectCache is a Hashtable and Hashtables don't support getKey(...)
+
             case IJavaElement.PACKAGE_FRAGMENT_ROOT:
                 return this.rootCache.getKey((IPackageFragmentRoot) element);
+
             case IJavaElement.PACKAGE_FRAGMENT:
                 return this.pkgCache.getKey((IPackageFragment) element);
+
             case IJavaElement.COMPILATION_UNIT:
             case IJavaElement.CLASS_FILE:
                 return this.openableCache.getKey((ITypeRoot) element);
+
             case IJavaElement.TYPE:
                 return element; // jarTypeCache or childrenCache are Hashtables and Hashtables don't support getKey(...)
+
             default:
                 return element; // childrenCache is a Hashtable and Hashtables don't support getKey(...)
         }
@@ -185,15 +195,20 @@ public class JavaModelCache {
         switch (element.getElementType()) {
             case IJavaElement.JAVA_MODEL:
                 return this.modelInfo;
+
             case IJavaElement.JAVA_PROJECT:
                 return this.projectCache.get(element);
+
             case IJavaElement.PACKAGE_FRAGMENT_ROOT:
                 return this.rootCache.peek((IPackageFragmentRoot) element);
+
             case IJavaElement.PACKAGE_FRAGMENT:
                 return this.pkgCache.peek((IPackageFragment) element);
+
             case IJavaElement.COMPILATION_UNIT:
             case IJavaElement.CLASS_FILE:
                 return this.openableCache.peek((ITypeRoot) element);
+
             case IJavaElement.TYPE:
                 IElementInfo result = this.jarTypeCache.peek(element);
                 if (result != null)
@@ -213,22 +228,27 @@ public class JavaModelCache {
             case IJavaElement.JAVA_MODEL:
                 this.modelInfo = (JavaElementInfo) info;
                 break;
+
             case IJavaElement.JAVA_PROJECT:
                 this.projectCache.put((IJavaProject) element, (JavaElementInfo) info);
                 this.rootCache.ensureSpaceLimit((JavaElementInfo) info, element);
                 break;
+
             case IJavaElement.PACKAGE_FRAGMENT_ROOT:
                 this.rootCache.put((IPackageFragmentRoot) element, (JavaElementInfo) info);
                 this.pkgCache.ensureSpaceLimit((JavaElementInfo) info, element);
                 break;
+
             case IJavaElement.PACKAGE_FRAGMENT:
                 this.pkgCache.put((IPackageFragment) element, (JavaElementInfo) info);
                 this.openableCache.ensureSpaceLimit((JavaElementInfo) info, element);
                 break;
+
             case IJavaElement.COMPILATION_UNIT:
             case IJavaElement.CLASS_FILE:
                 this.openableCache.put((ITypeRoot) element, (JavaElementInfo) info);
                 break;
+
             default:
                 this.childrenCache.put(element, info);
                 return; // don't trace children -- too many
@@ -243,18 +263,22 @@ public class JavaModelCache {
             case IJavaElement.JAVA_MODEL:
                 this.modelInfo = null;
                 break;
+
             case IJavaElement.JAVA_PROJECT:
                 this.projectCache.remove((IJavaProject) element);
                 this.rootCache.resetSpaceLimit(element);
                 break;
+
             case IJavaElement.PACKAGE_FRAGMENT_ROOT:
                 this.rootCache.remove((IPackageFragmentRoot) element);
                 this.pkgCache.resetSpaceLimit(element);
                 break;
+
             case IJavaElement.PACKAGE_FRAGMENT:
                 this.pkgCache.remove((IPackageFragment) element);
                 this.openableCache.resetSpaceLimit(element);
                 break;
+
             case IJavaElement.COMPILATION_UNIT:
             case IJavaElement.CLASS_FILE:
                 this.openableCache.remove((ITypeRoot) element);
@@ -263,6 +287,7 @@ public class JavaModelCache {
                     removeInfo(element.getJavaProject());
                 }
                 break;
+
             default:
                 this.childrenCache.remove(element);
                 return; // don't trace children -- too many

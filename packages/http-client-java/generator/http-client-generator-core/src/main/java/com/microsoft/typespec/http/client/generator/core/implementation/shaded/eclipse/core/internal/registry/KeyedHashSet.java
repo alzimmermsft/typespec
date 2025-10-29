@@ -281,39 +281,6 @@ public class KeyedHashSet {
         return false;
     }
 
-    public boolean removeByKey(Object key) {
-        if (elementCount == 0) {
-            return false;
-        }
-        int hash = keyHash(key);
-
-        for (int i = hash; i < elements.length; i++) {
-            KeyedElement element = elements[i];
-            if (element == null) {
-                return false;
-            }
-            if (element.getKey().equals(key)) {
-                rehashTo(i);
-                elementCount--;
-                return true;
-            }
-        }
-
-        for (int i = 0; i < hash - 1; i++) {
-            KeyedElement element = elements[i];
-            if (element == null) {
-                return false;
-            }
-            if (element.getKey().equals(key)) {
-                rehashTo(i);
-                elementCount--;
-                return true;
-            }
-        }
-
-        return true;
-    }
-
     private boolean shouldGrow() {
         return elementCount > elements.length * 0.75;
     }

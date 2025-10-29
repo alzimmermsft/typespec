@@ -28,9 +28,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.linux.XAttr.size_t;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.linux.XAttr.ssize_t;
-
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -47,8 +45,8 @@ public abstract class XAttrUtil {
     /**
      * Set or replace value of extended attribute.
      *
-     * @param path  file path
-     * @param name  extended attribute name
+     * @param path file path
+     * @param name extended attribute name
      * @param value value to set
      * @throws IOException on any error
      */
@@ -59,22 +57,21 @@ public abstract class XAttrUtil {
     /**
      * Set or replace value of extended attribute.
      *
-     * @param path     file path
-     * @param name     extended attribute name
-     * @param value    value to set
+     * @param path file path
+     * @param name extended attribute name
+     * @param value value to set
      * @param encoding character encoding to be used for stored value
      * @throws IOException on any error
      */
-    public static void setXAttr(String path, String name, String value, String encoding)
-        throws IOException {
+    public static void setXAttr(String path, String name, String value, String encoding) throws IOException {
         setXAttr(path, name, value.getBytes(encoding));
     }
 
     /**
      * Set or replace value of extended attribute.
      *
-     * @param path  file path
-     * @param name  extended attribute name
+     * @param path file path
+     * @param name extended attribute name
      * @param value value to set
      * @throws IOException on any error
      */
@@ -86,13 +83,12 @@ public abstract class XAttrUtil {
         }
     }
 
-
     /**
      * Set or replace value of extended attribute but in case of symbolic link set the extended
      * attribute on the link itself instead linked file.
      *
-     * @param path  file path
-     * @param name  extended attribute name
+     * @param path file path
+     * @param name extended attribute name
      * @param value value to set
      * @throws IOException on any error
      */
@@ -104,14 +100,13 @@ public abstract class XAttrUtil {
      * Set or replace value of extended attribute but in case of symbolic link set the extended
      * attribute on the link itself instead linked file.
      *
-     * @param path     file path
-     * @param name     extended attribute name
-     * @param value    value to set
+     * @param path file path
+     * @param name extended attribute name
+     * @param value value to set
      * @param encoding character encoding to be used for stored value
      * @throws IOException on any error
      */
-    public static void lSetXAttr(String path, String name, String value, String encoding)
-        throws IOException {
+    public static void lSetXAttr(String path, String name, String value, String encoding) throws IOException {
         lSetXAttr(path, name, value.getBytes(encoding));
     }
 
@@ -119,8 +114,8 @@ public abstract class XAttrUtil {
      * Set or replace value of extended attribute but in case of symbolic link set the extended
      * attribute on the link itself instead linked file.
      *
-     * @param path  file path
-     * @param name  extended attribute name
+     * @param path file path
+     * @param name extended attribute name
      * @param value value to set
      * @throws IOException on any error
      */
@@ -132,12 +127,11 @@ public abstract class XAttrUtil {
         }
     }
 
-
     /**
      * Set or replace value of extended attribute.
      *
-     * @param fd    file handle
-     * @param name  extended attribute name
+     * @param fd file handle
+     * @param name extended attribute name
      * @param value value to set
      * @throws IOException on any error
      */
@@ -148,22 +142,21 @@ public abstract class XAttrUtil {
     /**
      * Set or replace value of extended attribute.
      *
-     * @param fd       file handle
-     * @param name     extended attribute name
-     * @param value    value to set
+     * @param fd file handle
+     * @param name extended attribute name
+     * @param value value to set
      * @param encoding character encoding to be used for stored value
      * @throws IOException on any error
      */
-    public static void fSetXAttr(int fd, String name, String value, String encoding)
-        throws IOException {
+    public static void fSetXAttr(int fd, String name, String value, String encoding) throws IOException {
         fSetXAttr(fd, name, value.getBytes(encoding));
     }
 
     /**
      * Set or replace value of extended attribute.
      *
-     * @param fd    file handle
-     * @param name  extended attribute name
+     * @param fd file handle
+     * @param name extended attribute name
      * @param value value to set
      * @throws IOException on any error
      */
@@ -174,7 +167,6 @@ public abstract class XAttrUtil {
             throw new IOException("errno: " + eno);
         }
     }
-
 
     /**
      * Get extended attribute value.
@@ -191,8 +183,8 @@ public abstract class XAttrUtil {
     /**
      * Get extended attribute value.
      *
-     * @param path     file path
-     * @param name     extended attribute name
+     * @param path file path
+     * @param name extended attribute name
      * @param encoding character encoding to be used to decode stored extended attribute value
      * @return extended attribute value
      * @throws IOException on any error except <code>ERANGE</code> which handled internally
@@ -272,7 +264,6 @@ public abstract class XAttrUtil {
         return valueMem;
     }
 
-
     /**
      * Get extended attribute value but in case of symbolic link get the value from the link
      * itself instead of linked file.
@@ -290,8 +281,8 @@ public abstract class XAttrUtil {
      * Get extended attribute value but in case of symbolic link get the value from the link
      * itself instead of linked file.
      *
-     * @param path     file path
-     * @param name     extended attribute name
+     * @param path file path
+     * @param name extended attribute name
      * @param encoding character encoding to be used to decode stored extended attribute value
      * @return extended attribute value
      * @throws IOException on any error except <code>ERANGE</code> which handled internally
@@ -373,11 +364,10 @@ public abstract class XAttrUtil {
         return valueMem;
     }
 
-
     /**
      * Get extended attribute value.
      *
-     * @param fd   file handle
+     * @param fd file handle
      * @param name extended attribute name
      * @return extended attribute value
      * @throws IOException on any error except <code>ERANGE</code> which handled internally
@@ -389,8 +379,8 @@ public abstract class XAttrUtil {
     /**
      * Get extended attribute value.
      *
-     * @param fd       file handle
-     * @param name     extended attribute name
+     * @param fd file handle
+     * @param name extended attribute name
      * @param encoding character encoding to be used to decode stored extended attribute value
      * @return extended attribute value
      * @throws IOException on any error except <code>ERANGE</code> which handled internally
@@ -403,7 +393,7 @@ public abstract class XAttrUtil {
     /**
      * Get extended attribute value.
      *
-     * @param fd   file handle
+     * @param fd file handle
      * @param name extended attribute name
      * @return extended attribute value
      * @throws IOException on any error except <code>ERANGE</code> which handled internally
@@ -436,7 +426,7 @@ public abstract class XAttrUtil {
     /**
      * Get extended attribute value.
      *
-     * @param fd   file handle
+     * @param fd file handle
      * @param name extended attribute name
      * @return extended attribute value
      * @throws IOException on any error except <code>ERANGE</code> which handled internally
@@ -470,7 +460,6 @@ public abstract class XAttrUtil {
         return valueMem;
     }
 
-
     /**
      * List extended attributes on file.
      *
@@ -485,7 +474,7 @@ public abstract class XAttrUtil {
     /**
      * List extended attributes on file.
      *
-     * @param path     file path
+     * @param path file path
      * @param encoding character encoding use to decode extended attributes' names
      * @return collection of extended attributes' names
      * @throws IOException on any error except <code>ERANGE</code> which handled internally
@@ -515,7 +504,6 @@ public abstract class XAttrUtil {
         return splitBufferToStrings(listMem, encoding);
     }
 
-
     /**
      * List extended attributes on file but in case of symbolic link get extended attributes of
      * the link itself instead of linked file.
@@ -532,7 +520,7 @@ public abstract class XAttrUtil {
      * List extended attributes on file but in case of symbolic link get extended attributes of
      * the link itself instead of linked file.
      *
-     * @param path     file path
+     * @param path file path
      * @param encoding character encoding use to decode extended attributes' names
      * @return collection of extended attributes' names
      * @throws IOException on any error except <code>ERANGE</code> which handled internally
@@ -562,7 +550,6 @@ public abstract class XAttrUtil {
         return splitBufferToStrings(listMem, encoding);
     }
 
-
     /**
      * List extended attributes on file.
      *
@@ -577,7 +564,7 @@ public abstract class XAttrUtil {
     /**
      * List extended attributes on file.
      *
-     * @param fd       file handle
+     * @param fd file handle
      * @param encoding character encoding use to decode extended attributes' names
      * @return collection of extended attributes' names
      * @throws IOException on any error except <code>ERANGE</code> which handled internally
@@ -606,7 +593,6 @@ public abstract class XAttrUtil {
 
         return splitBufferToStrings(listMem, encoding);
     }
-
 
     /**
      * Remove extended attribute from file.
@@ -642,7 +628,7 @@ public abstract class XAttrUtil {
     /**
      * Remove extended attribute from file.
      *
-     * @param fd   file handle
+     * @param fd file handle
      * @param name extended attribute name
      * @throws IOException on any error
      */
@@ -654,14 +640,13 @@ public abstract class XAttrUtil {
         }
     }
 
-    private static Collection<String> splitBufferToStrings(byte[] valueMem, String encoding)
-        throws IOException {
+    private static Collection<String> splitBufferToStrings(byte[] valueMem, String encoding) throws IOException {
         final Charset charset = Charset.forName(encoding);
         final Set<String> attributesList = new LinkedHashSet<>(1);
         int offset = 0;
-        for(int i = 0; i < valueMem.length; i++) {
+        for (int i = 0; i < valueMem.length; i++) {
             // each entry is terminated by a single \0 byte
-            if(valueMem[i] == 0) {
+            if (valueMem[i] == 0) {
                 // Convert bytes of the name to String.
                 final String name = new String(valueMem, offset, i - offset, charset);
                 attributesList.add(name);

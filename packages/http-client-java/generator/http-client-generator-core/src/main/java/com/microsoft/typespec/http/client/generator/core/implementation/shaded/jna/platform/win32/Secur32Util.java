@@ -23,15 +23,15 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
-import java.util.ArrayList;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Sspi.PSecPkgInfo;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Sspi.SecPkgInfo;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.IntByReference;
+import java.util.ArrayList;
 
 /**
  * Secur32 Utility API.
+ * 
  * @author dblock[at]dblock.org
  */
 public abstract class Secur32Util {
@@ -62,14 +62,15 @@ public abstract class Secur32Util {
         IntByReference len = new IntByReference(buffer.length);
         boolean result = Secur32.INSTANCE.GetUserNameEx(format, buffer, len);
 
-        if (! result) {
+        if (!result) {
 
             int rc = Kernel32.INSTANCE.GetLastError();
 
-            switch(rc) {
+            switch (rc) {
                 case W32Errors.ERROR_MORE_DATA:
                     buffer = new char[len.getValue() + 1];
                     break;
+
                 default:
                     throw new Win32Exception(Native.getLastError());
             }
@@ -77,7 +78,7 @@ public abstract class Secur32Util {
             result = Secur32.INSTANCE.GetUserNameEx(format, buffer, len);
         }
 
-        if (! result) {
+        if (!result) {
             throw new Win32Exception(Native.getLastError());
         }
 
@@ -86,8 +87,9 @@ public abstract class Secur32Util {
 
     /**
      * Get the security packages installed on the current computer.
+     * 
      * @return
-     *  An array of SSPI security packages.
+     * An array of SSPI security packages.
      */
     public static SecurityPackage[] getSecurityPackages() {
         IntByReference pcPackages = new IntByReference();

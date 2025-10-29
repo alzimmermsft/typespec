@@ -14,65 +14,64 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.io.Serializable;
 import java.util.Iterator;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 @GwtCompatible(serializable = true)
 @ElementTypesAreNonnullByDefault
-final class PairwiseEquivalence<E, T extends @Nullable E> extends Equivalence<Iterable<T>>
-    implements Serializable {
-  final Equivalence<E> elementEquivalence;
+final class PairwiseEquivalence<E, T extends @Nullable E> extends Equivalence<Iterable<T>> implements Serializable {
+    final Equivalence<E> elementEquivalence;
 
-  PairwiseEquivalence(Equivalence<E> elementEquivalence) {
-    this.elementEquivalence = Preconditions.checkNotNull(elementEquivalence);
-  }
+    PairwiseEquivalence(Equivalence<E> elementEquivalence) {
+        this.elementEquivalence = Preconditions.checkNotNull(elementEquivalence);
+    }
 
-  @Override
-  protected boolean doEquivalent(Iterable<T> iterableA, Iterable<T> iterableB) {
-    Iterator<T> iteratorA = iterableA.iterator();
-    Iterator<T> iteratorB = iterableB.iterator();
+    @Override
+    protected boolean doEquivalent(Iterable<T> iterableA, Iterable<T> iterableB) {
+        Iterator<T> iteratorA = iterableA.iterator();
+        Iterator<T> iteratorB = iterableB.iterator();
 
-    while (iteratorA.hasNext() && iteratorB.hasNext()) {
-      if (!elementEquivalence.equivalent(iteratorA.next(), iteratorB.next())) {
+        while (iteratorA.hasNext() && iteratorB.hasNext()) {
+            if (!elementEquivalence.equivalent(iteratorA.next(), iteratorB.next())) {
+                return false;
+            }
+        }
+
+        return !iteratorA.hasNext() && !iteratorB.hasNext();
+    }
+
+    @Override
+    protected int doHash(Iterable<T> iterable) {
+        int hash = 78721;
+        for (T element : iterable) {
+            hash = hash * 24943 + elementEquivalence.hash(element);
+        }
+        return hash;
+    }
+
+    @Override
+    public boolean equals(@CheckForNull Object object) {
+        if (object instanceof PairwiseEquivalence) {
+            @SuppressWarnings("unchecked")
+            PairwiseEquivalence<Object, Object> that = (PairwiseEquivalence<Object, Object>) object;
+            return this.elementEquivalence.equals(that.elementEquivalence);
+        }
+
         return false;
-      }
     }
 
-    return !iteratorA.hasNext() && !iteratorB.hasNext();
-  }
-
-  @Override
-  protected int doHash(Iterable<T> iterable) {
-    int hash = 78721;
-    for (T element : iterable) {
-      hash = hash * 24943 + elementEquivalence.hash(element);
-    }
-    return hash;
-  }
-
-  @Override
-  public boolean equals(@CheckForNull Object object) {
-    if (object instanceof PairwiseEquivalence) {
-      @SuppressWarnings("unchecked")
-      PairwiseEquivalence<Object, Object> that = (PairwiseEquivalence<Object, Object>) object;
-      return this.elementEquivalence.equals(that.elementEquivalence);
+    @Override
+    public int hashCode() {
+        return elementEquivalence.hashCode() ^ 0x46a3eb07;
     }
 
-    return false;
-  }
+    @Override
+    public String toString() {
+        return elementEquivalence + ".pairwise()";
+    }
 
-  @Override
-  public int hashCode() {
-    return elementEquivalence.hashCode() ^ 0x46a3eb07;
-  }
-
-  @Override
-  public String toString() {
-    return elementEquivalence + ".pairwise()";
-  }
-
-  private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 1;
 }

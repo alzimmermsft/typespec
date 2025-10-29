@@ -49,13 +49,4 @@ public interface IJobChangeEvent {
      */
     IStatus getResult();
 
-    /**
-     * The result returned by the job's job group, if this event signals
-     * completion of the last job in a group, or <code>null</code> if not
-     * applicable. This value is only applicable for the <code>done</code> event.
-     *
-     * @return the job group status for this event, or <code>null</code>
-     * @since 3.7
-     */
-    IStatus getJobGroupResult();
 }

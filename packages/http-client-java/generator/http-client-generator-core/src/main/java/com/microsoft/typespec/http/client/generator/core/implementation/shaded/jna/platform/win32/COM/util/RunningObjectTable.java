@@ -23,17 +23,18 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.util;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.COMException;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.COMUtils;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.PointerByReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.COMException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.COMUtils;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.PointerByReference;
-
 public class RunningObjectTable implements IRunningObjectTable {
 
-    protected RunningObjectTable(com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.RunningObjectTable raw, ObjectFactory factory) {
+    protected RunningObjectTable(
+        com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.RunningObjectTable raw,
+        ObjectFactory factory) {
         this.raw = raw;
         this.factory = factory;
     }
@@ -50,15 +51,15 @@ public class RunningObjectTable implements IRunningObjectTable {
         WinNT.HRESULT hr = this.raw.EnumRunning(ppenumMoniker);
 
         COMUtils.checkRC(hr);
-        com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.EnumMoniker raw = new com.sun.jna.platform.win32.COM.EnumMoniker(
-            ppenumMoniker.getValue());
+        com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.EnumMoniker raw
+            = new com.sun.jna.platform.win32.COM.EnumMoniker(ppenumMoniker.getValue());
 
         return new EnumMoniker(raw, this.raw, this.factory);
     }
 
     @Override
     public <T> List<T> getActiveObjectsByInterface(Class<T> comInterface) {
-                assert COMUtils.comIsInitialized() : "COM not initialized";
+        assert COMUtils.comIsInitialized() : "COM not initialized";
 
         List<T> result = new ArrayList<>();
 

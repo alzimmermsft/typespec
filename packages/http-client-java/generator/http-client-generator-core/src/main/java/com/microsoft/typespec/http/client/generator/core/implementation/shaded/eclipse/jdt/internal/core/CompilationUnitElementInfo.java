@@ -14,67 +14,69 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
-import java.util.Map;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ISourceRange;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.SourceRange;
+import java.util.Map;
 
 public class CompilationUnitElementInfo extends OpenableElementInfo {
 
-	/**
-	 * Count that will be used by SourceTypeConverter to decide whether or not to diet parse.
-	 */
-	public static int ANNOTATION_THRESHOLD_FOR_DIET_PARSE = 10;
+    /**
+     * Count that will be used by SourceTypeConverter to decide whether or not to diet parse.
+     */
+    public static int ANNOTATION_THRESHOLD_FOR_DIET_PARSE = 10;
 
-	/**
-	 * The length of this compilation unit's source code <code>String</code>
-	 */
-	protected int sourceLength;
+    /**
+     * The length of this compilation unit's source code <code>String</code>
+     */
+    protected int sourceLength;
 
-	/**
-	 * Timestamp of original resource at the time this element
-	 * was opened or last updated.
-	 */
-	protected long timestamp;
+    /**
+     * Timestamp of original resource at the time this element
+     * was opened or last updated.
+     */
+    protected long timestamp;
 
-	/*
-	 * Number of annotations in this compilation unit
-	 */
-	public int annotationNumber = 0;
+    /*
+     * Number of annotations in this compilation unit
+     */
+    public int annotationNumber = 0;
 
-	public boolean hasFunctionalTypes = false;
+    public boolean hasFunctionalTypes = false;
 
-	/**
-	 * The custom options for this compilation unit
-	 */
-	private Map<String, String> customOptions;
+    /**
+     * The custom options for this compilation unit
+     */
+    private Map<String, String> customOptions;
 
-/**
- * Returns the length of the source string.
- */
-public int getSourceLength() {
-	return this.sourceLength;
-}
-protected ISourceRange getSourceRange() {
-	return new SourceRange(0, this.sourceLength);
-}
-/**
- * Sets the length of the source string.
- */
-public void setSourceLength(int newSourceLength) {
-	this.sourceLength = newSourceLength;
-}
+    /**
+     * Returns the length of the source string.
+     */
+    public int getSourceLength() {
+        return this.sourceLength;
+    }
 
-/**
- * Returns the custom options of this compilation unit element.
- */
-public synchronized Map<String, String> getCustomOptions() {
-	return this.customOptions;
-}
+    protected ISourceRange getSourceRange() {
+        return new SourceRange(0, this.sourceLength);
+    }
 
-/**
- * Sets the custom options of this compilation unit element.
- */
-public synchronized void setCustomOptions(Map<String, String> customOptions) {
-	this.customOptions = customOptions;
-}
+    /**
+     * Sets the length of the source string.
+     */
+    public void setSourceLength(int newSourceLength) {
+        this.sourceLength = newSourceLength;
+    }
+
+    /**
+     * Returns the custom options of this compilation unit element.
+     */
+    public synchronized Map<String, String> getCustomOptions() {
+        return this.customOptions;
+    }
+
+    /**
+     * Sets the custom options of this compilation unit element.
+     */
+    public synchronized void setCustomOptions(Map<String, String> customOptions) {
+        this.customOptions = customOptions;
+    }
 }

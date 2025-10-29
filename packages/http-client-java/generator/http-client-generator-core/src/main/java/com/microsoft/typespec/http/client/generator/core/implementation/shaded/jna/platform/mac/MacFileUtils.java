@@ -23,22 +23,23 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.mac;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Library;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.FileUtils;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.ByteByReference;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.PointerByReference;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Library;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.PointerByReference;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.ByteByReference;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.FileUtils;
-
 public class MacFileUtils extends FileUtils {
 
     @Override
-    public boolean hasTrash() { return true; }
+    public boolean hasTrash() {
+        return true;
+    }
 
     public interface FileManager extends Library {
 
@@ -53,7 +54,7 @@ public class MacFileUtils extends FileUtils {
         int kFSPathDefaultOptions = 0x0;
         int kFSPathMakeRefDoNotFollowLeafSymlink = 0x01;
 
-        @Structure.FieldOrder({"hidden"})
+        @Structure.FieldOrder({ "hidden" })
         class FSRef extends Structure {
             public byte[] hidden = new byte[80];
         }
@@ -61,20 +62,23 @@ public class MacFileUtils extends FileUtils {
         // Deprecated; use trashItemAtURL instead:
         // https://developer.apple.com/library/mac/#documentation/Cocoa/Reference/Foundation/Classes/NSFileManager_Class/Reference/Reference.html#//apple_ref/occ/instm/NSFileManager/trashItemAtURL:resultingItemURL:error:
         int FSRefMakePath(FSRef fsref, byte[] path, int maxPathSize);
+
         int FSPathMakeRef(String source, int options, ByteByReference isDirectory);
+
         int FSPathMakeRefWithOptions(String source, int options, FSRef fsref, ByteByReference isDirectory);
+
         int FSPathMoveObjectToTrashSync(String source, PointerByReference target, int options);
+
         int FSMoveObjectToTrashSync(FSRef source, FSRef target, int options);
     }
 
     @Override
     public void moveToTrash(File... files) throws IOException {
         List<String> failed = new ArrayList<>();
-        for (File src: files) {
+        for (File src : files) {
             FileManager.FSRef fsref = new FileManager.FSRef();
             int status = FileManager.INSTANCE.FSPathMakeRefWithOptions(src.getAbsolutePath(),
-                                                                       FileManager.kFSPathMakeRefDoNotFollowLeafSymlink,
-                                                                       fsref, null);
+                FileManager.kFSPathMakeRefDoNotFollowLeafSymlink, fsref, null);
             if (status != 0) {
                 failed.add(src + " (FSRef: " + status + ")");
                 continue;

@@ -57,67 +57,67 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 @ConsumerType
 public interface ServiceFactory<S> {
-	/**
-	 * Returns a service object for a bundle.
-	 * 
-	 * <p>
-	 * The Framework invokes this method the first time the specified
-	 * {@code bundle} requests a service object using the
-	 * {@link BundleContext#getService(ServiceReference)} method. The factory
-	 * can then return a customized service object for each bundle.
-	 * 
-	 * <p>
-	 * The Framework must check that the returned service object is valid. If
-	 * the returned service object is {@code null} or is not an
-	 * {@code instanceof} all the classes named when the service was registered,
-	 * a framework event of type {@link FrameworkEvent#ERROR} is fired
-	 * containing a service exception of type
-	 * {@link ServiceException#FACTORY_ERROR} and {@code null} is returned to
-	 * the bundle. If this method throws an exception, a framework event of type
-	 * {@link FrameworkEvent#ERROR} is fired containing a service exception of
-	 * type {@link ServiceException#FACTORY_EXCEPTION} with the thrown exception
-	 * as the cause and {@code null} is returned to the bundle. If this method
-	 * is recursively called for the specified bundle, a framework event of type
-	 * {@link FrameworkEvent#ERROR} is fired containing a service exception of
-	 * type {@link ServiceException#FACTORY_RECURSION} and {@code null} is
-	 * returned to the bundle.
-	 * 
-	 * <p>
-	 * The Framework caches the valid service object and will return the same
-	 * service object on any future call to
-	 * {@link BundleContext#getService(ServiceReference)} for the specified
-	 * bundle. This means the Framework must not allow this method to be
-	 * concurrently called for the specified bundle.
-	 * 
-	 * @param bundle The bundle requesting the service.
-	 * @param registration The {@code ServiceRegistration} object for the
-	 *        requested service.
-	 * @return A service object that <strong>must</strong> be an instance of all
-	 *         the classes named when the service was registered.
-	 * @see BundleContext#getService(ServiceReference)
-	 */
-	public S getService(Bundle bundle, ServiceRegistration<S> registration);
+    /**
+     * Returns a service object for a bundle.
+     * 
+     * <p>
+     * The Framework invokes this method the first time the specified
+     * {@code bundle} requests a service object using the
+     * {@link BundleContext#getService(ServiceReference)} method. The factory
+     * can then return a customized service object for each bundle.
+     * 
+     * <p>
+     * The Framework must check that the returned service object is valid. If
+     * the returned service object is {@code null} or is not an
+     * {@code instanceof} all the classes named when the service was registered,
+     * a framework event of type {@link FrameworkEvent#ERROR} is fired
+     * containing a service exception of type
+     * {@link ServiceException#FACTORY_ERROR} and {@code null} is returned to
+     * the bundle. If this method throws an exception, a framework event of type
+     * {@link FrameworkEvent#ERROR} is fired containing a service exception of
+     * type {@link ServiceException#FACTORY_EXCEPTION} with the thrown exception
+     * as the cause and {@code null} is returned to the bundle. If this method
+     * is recursively called for the specified bundle, a framework event of type
+     * {@link FrameworkEvent#ERROR} is fired containing a service exception of
+     * type {@link ServiceException#FACTORY_RECURSION} and {@code null} is
+     * returned to the bundle.
+     * 
+     * <p>
+     * The Framework caches the valid service object and will return the same
+     * service object on any future call to
+     * {@link BundleContext#getService(ServiceReference)} for the specified
+     * bundle. This means the Framework must not allow this method to be
+     * concurrently called for the specified bundle.
+     * 
+     * @param bundle The bundle requesting the service.
+     * @param registration The {@code ServiceRegistration} object for the
+     * requested service.
+     * @return A service object that <strong>must</strong> be an instance of all
+     * the classes named when the service was registered.
+     * @see BundleContext#getService(ServiceReference)
+     */
+    public S getService(Bundle bundle, ServiceRegistration<S> registration);
 
-	/**
-	 * Releases a service object customized for a bundle.
-	 * 
-	 * <p>
-	 * The Framework invokes this method when a service has been released by a
-	 * bundle. The service object may then be destroyed.
-	 * 
-	 * <p>
-	 * If this method throws an exception, a framework event of type
-	 * {@link FrameworkEvent#ERROR} is fired containing a service exception of
-	 * type {@link ServiceException#FACTORY_EXCEPTION} with the thrown exception
-	 * as the cause.
-	 * 
-	 * @param bundle The bundle releasing the service.
-	 * @param registration The {@code ServiceRegistration} object for the
-	 *        service being released.
-	 * @param service The service object returned by a previous call to the
-	 *        {@link #getService(Bundle, ServiceRegistration) getService}
-	 *        method.
-	 * @see BundleContext#ungetService(ServiceReference)
-	 */
-	public void ungetService(Bundle bundle, ServiceRegistration<S> registration, S service);
+    /**
+     * Releases a service object customized for a bundle.
+     * 
+     * <p>
+     * The Framework invokes this method when a service has been released by a
+     * bundle. The service object may then be destroyed.
+     * 
+     * <p>
+     * If this method throws an exception, a framework event of type
+     * {@link FrameworkEvent#ERROR} is fired containing a service exception of
+     * type {@link ServiceException#FACTORY_EXCEPTION} with the thrown exception
+     * as the cause.
+     * 
+     * @param bundle The bundle releasing the service.
+     * @param registration The {@code ServiceRegistration} object for the
+     * service being released.
+     * @param service The service object returned by a previous call to the
+     * {@link #getService(Bundle, ServiceRegistration) getService}
+     * method.
+     * @see BundleContext#ungetService(ServiceReference)
+     */
+    public void ungetService(Bundle bundle, ServiceRegistration<S> registration, S service);
 }

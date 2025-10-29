@@ -37,7 +37,8 @@
  * Start Level support in the Framework includes the ability to modify the
  * active start level of the Framework and to assign a specific start level to a
  * bundle. The beginning start level of a Framework is specified via the
- * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Constants#FRAMEWORK_BEGINNING_STARTLEVEL} framework
+ * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Constants#FRAMEWORK_BEGINNING_STARTLEVEL}
+ * framework
  * property when configuring a framework.
  * 
  * <p>
@@ -46,18 +47,21 @@
  * before it is launched. When the Framework is launched, the Framework will
  * enter start level one and all bundles which are assigned to start level one
  * and whose autostart setting indicates the bundle should be started are
- * started as described in the {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Bundle#start(int)}
+ * started as described in the
+ * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Bundle#start(int)}
  * method. The Framework will continue to increase the start level, starting
  * bundles at each start level, until the Framework has reached a beginning
  * start level. At this point the Framework has completed starting bundles and
  * will then fire a Framework event of type
- * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.FrameworkEvent#STARTED} to announce it has
+ * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.FrameworkEvent#STARTED}
+ * to announce it has
  * completed its launch.
  * 
  * <p>
  * Within a start level, bundles may be started in an order defined by the
  * Framework implementation. This may be something like ascending
- * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Bundle#getBundleId()} order or an order based upon
+ * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Bundle#getBundleId()}
+ * order or an order based upon
  * dependencies between bundles. A similar but reversed order may be used when
  * stopping bundles within a start level.
  * 
@@ -80,4 +84,3 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.startlevel;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.Version;
-

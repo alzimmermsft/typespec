@@ -21,22 +21,22 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * line ends or problems.
  */
 public class RecordedParsingInformation {
-	public CategorizedProblem[] problems;
-	public int problemsCount;
-	public int[] lineEnds;
-	public int[][] commentPositions;
+    public CategorizedProblem[] problems;
+    public int problemsCount;
+    public int[] lineEnds;
+    public int[][] commentPositions;
 
-	public RecordedParsingInformation(CategorizedProblem[] problems, int[] lineEnds, int[][] commentPositions) {
-		this.problems = problems;
-		this.lineEnds = lineEnds;
-		this.commentPositions = commentPositions;
-		this.problemsCount = problems != null ? problems.length : 0;
-	}
+    public RecordedParsingInformation(CategorizedProblem[] problems, int[] lineEnds, int[][] commentPositions) {
+        this.problems = problems;
+        this.lineEnds = lineEnds;
+        this.commentPositions = commentPositions;
+        this.problemsCount = problems != null ? problems.length : 0;
+    }
 
-	void updateRecordedParsingInformation(CompilationResult compilationResult) {
-		if (compilationResult.problems != null) {
-			this.problems = compilationResult.problems;
-			this.problemsCount = this.problems.length;
-		}
-	}
+    void updateRecordedParsingInformation(CompilationResult compilationResult) {
+        if (compilationResult.problems != null) {
+            this.problems = compilationResult.problems;
+            this.problemsCount = this.problems.length;
+        }
+    }
 }

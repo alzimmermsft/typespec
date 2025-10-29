@@ -13,7 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IMarker;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
 
@@ -128,114 +127,6 @@ public interface IWorkingCopy {
      * @deprecated Use {@link ITypeRoot#findPrimaryType()} instead.
      */
     IType findPrimaryType();
-
-    /**
-     * Returns a shared working copy on this element using the given factory to create
-     * the buffer, or this element if this element is already a working copy.
-     * This API can only answer an already existing working copy if it is based on the same
-     * original compilation unit AND was using the same buffer factory (that is, as defined by
-     * <code>Object.equals</code>).
-     * <p>
-     * The life time of a shared working copy is as follows:
-     * <ul>
-     * <li>The first call to <code>getSharedWorkingCopy(...)</code> creates a new working copy for this
-     * element</li>
-     * <li>Subsequent calls increment an internal counter.</li>
-     * <li>A call to <code>destroy()</code> decrements the internal counter.</li>
-     * <li>When this counter is 0, the working copy is destroyed.
-     * </ul>
-     * So users of this method must destroy exactly once the working copy.
-     * <p>
-     * Note that the buffer factory will be used for the life time of this working copy, that is if the
-     * working copy is closed then reopened, this factory will be used.
-     * The buffer will be automatically initialized with the original's compilation unit content
-     * upon creation.
-     * <p>
-     * When the shared working copy instance is created, an ADDED IJavaElementDelta is reported on this
-     * working copy.
-     *
-     * @param monitor a progress monitor used to report progress while opening this compilation unit
-     * or <code>null</code> if no progress should be reported
-     * @param factory the factory that creates a buffer that is used to get the content of the working copy
-     * or <code>null</code> if the internal factory should be used
-     * @param problemRequestor a requestor which will get notified of problems detected during
-     * reconciling as they are discovered. The requestor can be set to <code>null</code> indicating
-     * that the client is not interested in problems.
-     * @exception JavaModelException if the contents of this element can
-     * not be determined.
-     * @return a shared working copy on this element using the given factory to create
-     * the buffer, or this element if this element is already a working copy
-     * @see IBufferFactory
-     * @see IProblemRequestor
-     * @since 2.0
-     *
-     * @deprecated Use {@link ICompilationUnit#getWorkingCopy(WorkingCopyOwner, IProblemRequestor, IProgressMonitor)}
-     * instead.
-     */
-    IJavaElement getSharedWorkingCopy(IProgressMonitor monitor, IBufferFactory factory,
-        IProblemRequestor problemRequestor) throws JavaModelException;
-
-    /**
-     * Returns a new working copy of this element if this element is not
-     * a working copy, or this element if this element is already a working copy.
-     * <p>
-     * Note: if intending to share a working copy amongst several clients, then
-     * <code>#getSharedWorkingCopy</code> should be used instead.
-     * </p><p>
-     * When the working copy instance is created, an ADDED IJavaElementDelta is
-     * reported on this working copy.
-     * </p><p>
-     * Since 2.1, a working copy can be created on a not-yet existing compilation
-     * unit. In particular, such a working copy can then be committed in order to create
-     * the corresponding compilation unit.
-     * </p>
-     * 
-     * @exception JavaModelException if the contents of this element can
-     * not be determined.
-     * @return a new working copy of this element if this element is not
-     * a working copy, or this element if this element is already a working copy
-     *
-     * @deprecated Use {@link ICompilationUnit#getWorkingCopy(IProgressMonitor)} instead.
-     */
-    IJavaElement getWorkingCopy() throws JavaModelException;
-
-    /**
-     * Returns a new working copy of this element using the given factory to create
-     * the buffer, or this element if this element is already a working copy.
-     * Note that this factory will be used for the life time of this working copy, that is if the
-     * working copy is closed then reopened, this factory will be reused.
-     * The buffer will be automatically initialized with the original's compilation unit content
-     * upon creation.
-     * <p>
-     * Note: if intending to share a working copy amongst several clients, then
-     * <code>#getSharedWorkingCopy</code> should be used instead.
-     * </p><p>
-     * When the working copy instance is created, an ADDED IJavaElementDelta is
-     * reported on this working copy.
-     * </p><p>
-     * Since 2.1, a working copy can be created on a not-yet existing compilation
-     * unit. In particular, such a working copy can then be committed in order to create
-     * the corresponding compilation unit.
-     * </p>
-     * 
-     * @param monitor a progress monitor used to report progress while opening this compilation unit
-     * or <code>null</code> if no progress should be reported
-     * @param factory the factory that creates a buffer that is used to get the content of the working copy
-     * or <code>null</code> if the internal factory should be used
-     * @param problemRequestor a requestor which will get notified of problems detected during
-     * reconciling as they are discovered. The requestor can be set to <code>null</code> indicating
-     * that the client is not interested in problems.
-     * @exception JavaModelException if the contents of this element can
-     * not be determined.
-     * @return a new working copy of this element using the given factory to create
-     * the buffer, or this element if this element is already a working copy
-     * @since 2.0
-     *
-     * @deprecated Use {@link ICompilationUnit#getWorkingCopy(WorkingCopyOwner, IProblemRequestor, IProgressMonitor)}
-     * instead.
-     */
-    IJavaElement getWorkingCopy(IProgressMonitor monitor, IBufferFactory factory, IProblemRequestor problemRequestor)
-        throws JavaModelException;
 
     /**
      * Returns whether this working copy's original element's content

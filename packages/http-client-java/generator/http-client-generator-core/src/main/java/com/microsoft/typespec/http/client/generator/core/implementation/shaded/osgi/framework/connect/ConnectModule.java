@@ -15,11 +15,10 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.connect;
 
-import java.io.IOException;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.ConsumerType;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.launch.Framework;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.wiring.BundleRevision;
+import java.io.IOException;
 
 /**
  * A {@code ConnectModule} is used by a {@link Framework} instance to access the
@@ -30,18 +29,18 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 @ConsumerType
 public interface ConnectModule {
-	/**
-	 * Returns the current content of this connect module.
-	 * <p>
-	 * The framework must call this method when it needs to access the content
-	 * for the current {@link BundleRevision bundle revision} of this
-	 * {@code ConnectModule}. The framework may defer opening the returned
-	 * {@link ConnectContent} until requests to access the bundle revision
-	 * content are made.
-	 * 
-	 * @return The current {@link ConnectContent} of this {@code ConnectModule}.
-	 * @throws IOException If an error occurred getting the content.
-	 * @see ModuleConnector#connect(String)
-	 */
-	ConnectContent getContent() throws IOException;
+    /**
+     * Returns the current content of this connect module.
+     * <p>
+     * The framework must call this method when it needs to access the content
+     * for the current {@link BundleRevision bundle revision} of this
+     * {@code ConnectModule}. The framework may defer opening the returned
+     * {@link ConnectContent} until requests to access the bundle revision
+     * content are made.
+     * 
+     * @return The current {@link ConnectContent} of this {@code ConnectModule}.
+     * @throws IOException If an error occurred getting the content.
+     * @see ModuleConnector#connect(String)
+     */
+    ConnectContent getContent() throws IOException;
 }

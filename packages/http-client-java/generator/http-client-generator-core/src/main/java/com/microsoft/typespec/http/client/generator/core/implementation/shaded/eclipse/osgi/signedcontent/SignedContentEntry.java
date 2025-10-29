@@ -33,31 +33,31 @@ import java.io.IOException;
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface SignedContentEntry {
-	/**
-	 * Returns the name of the entry.
-	 * 
-	 * @return the name of the entry.
-	 */
+    /**
+     * Returns the name of the entry.
+     * 
+     * @return the name of the entry.
+     */
     String getName();
 
     /**
-	 * Returns true if the entry is signed; false otherwise. This is a convenience
-	 * method equivalent to calling
-	 * <code>{@link #getSignerInfos()}.length &gt; 0</code>
-	 * 
-	 * @return true if the content is signed
-	 */
+     * Returns true if the entry is signed; false otherwise. This is a convenience
+     * method equivalent to calling
+     * <code>{@link #getSignerInfos()}.length &gt; 0</code>
+     * 
+     * @return true if the content is signed
+     */
     boolean isSigned();
 
-	// Does the digest of this entry match what is expected?
-	// TODO: what does this mean in the face of multiple signers
-	/**
-	 * Verifies the content of this this entry is valid.
-	 * 
-	 * @throws IOException             if an error occurred reading the entry
-	 *                                 content
-	 * @throws InvalidContentException if the entry content is not valid
-	 */
+    // Does the digest of this entry match what is expected?
+    // TODO: what does this mean in the face of multiple signers
+    /**
+     * Verifies the content of this this entry is valid.
+     * 
+     * @throws IOException if an error occurred reading the entry
+     * content
+     * @throws InvalidContentException if the entry content is not valid
+     */
     void verify() throws IOException, InvalidContentException;
 
 }

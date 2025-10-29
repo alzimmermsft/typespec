@@ -26,125 +26,131 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class JavadocImplicitTypeReference extends TypeReference {
 
-	public char[] token;
+    public char[] token;
 
-	public JavadocImplicitTypeReference(char[] name, int pos) {
-		super();
-		this.token = name;
-		this.sourceStart = pos;
-		this.sourceEnd = pos;
-	}
+    public JavadocImplicitTypeReference(char[] name, int pos) {
+        super();
+        this.token = name;
+        this.sourceStart = pos;
+        this.sourceEnd = pos;
+    }
 
-	@Override
-	public TypeReference augmentTypeWithAdditionalDimensions(int additionalDimensions, Annotation[][] additionalAnnotations, boolean isVarargs) {
-		return null;
-	}
+    @Override
+    public TypeReference augmentTypeWithAdditionalDimensions(int additionalDimensions,
+        Annotation[][] additionalAnnotations, boolean isVarargs) {
+        return null;
+    }
 
-	@Override
-	protected TypeBinding getTypeBinding(Scope scope) {
-		this.constant = Constant.NotAConstant;
-		return this.resolvedType = scope.enclosingReceiverType();
-	}
+    @Override
+    protected TypeBinding getTypeBinding(Scope scope) {
+        this.constant = Constant.NotAConstant;
+        return this.resolvedType = scope.enclosingReceiverType();
+    }
 
-	@Override
-	public char[] getLastToken() {
-		return this.token;
-	}
+    @Override
+    public char[] getLastToken() {
+        return this.token;
+    }
 
-	@Override
-	public char[][] getTypeName() {
-		if (this.token != null) {
-			char[][] tokens = { this.token };
-			return tokens;
-		}
-		return null;
-	}
-	@Override
-	public boolean isThis() {
-		return true;
-	}
+    @Override
+    public char[][] getTypeName() {
+        if (this.token != null) {
+            char[][] tokens = { this.token };
+            return tokens;
+        }
+        return null;
+    }
 
-	/*
-	 * Resolves type on a Block, Class or CompilationUnit scope.
-	 * We need to modify resoling behavior to avoid raw type creation.
-	 */
-	@Override
-	protected TypeBinding internalResolveType(Scope scope, int location) {
-		// handle the error here
-		this.constant = Constant.NotAConstant;
-		if (this.resolvedType != null) { // is a shared type reference which was already resolved
-			if (this.resolvedType.isValidBinding()) {
-				return this.resolvedType;
-			} else {
-				switch (this.resolvedType.problemId()) {
-					case ProblemReasons.NotFound :
-					case ProblemReasons.NotVisible :
-						TypeBinding type = this.resolvedType.closestMatch();
-						return type;
-					default :
-						return null;
-				}
-			}
-		}
-		boolean hasError;
-		TypeBinding type = this.resolvedType = getTypeBinding(scope);
-		if (type == null) {
-			return null; // detected cycle while resolving hierarchy
-		} else if ((hasError = !type.isValidBinding())== true) {
-			reportInvalidType(scope);
-			switch (type.problemId()) {
-				case ProblemReasons.NotFound :
-				case ProblemReasons.NotVisible :
-					type = type.closestMatch();
-					if (type == null) return null;
-					break;
-				default :
-					return null;
-			}
-		}
-		if (type.isArrayType() && ((ArrayBinding) type).leafComponentType == TypeBinding.VOID) {
-			scope.problemReporter().cannotAllocateVoidArray(this);
-			return null;
-		}
-		if (isTypeUseDeprecated(type, scope)) {
-			reportDeprecatedType(type, scope);
-		}
-		// https://bugs.eclipse.org/bugs/show_bug.cgi?id=209936
-		// raw convert all enclosing types when dealing with Javadoc references
-		if (type.isGenericType() || type.isParameterizedType()) {
-			type = scope.environment().convertToRawType(type, true /*force the conversion of enclosing types*/);
-		}
+    @Override
+    public boolean isThis() {
+        return true;
+    }
 
-		if (hasError) {
-			// do not store the computed type, keep the problem type instead
-			return type;
-		}
-		return this.resolvedType = type;
-	}
+    /*
+     * Resolves type on a Block, Class or CompilationUnit scope.
+     * We need to modify resoling behavior to avoid raw type creation.
+     */
+    @Override
+    protected TypeBinding internalResolveType(Scope scope, int location) {
+        // handle the error here
+        this.constant = Constant.NotAConstant;
+        if (this.resolvedType != null) { // is a shared type reference which was already resolved
+            if (this.resolvedType.isValidBinding()) {
+                return this.resolvedType;
+            } else {
+                switch (this.resolvedType.problemId()) {
+                    case ProblemReasons.NotFound:
+                    case ProblemReasons.NotVisible:
+                        TypeBinding type = this.resolvedType.closestMatch();
+                        return type;
 
-	@Override
-	protected void reportInvalidType(Scope scope) {
-		scope.problemReporter().javadocInvalidType(this, this.resolvedType, scope.getDeclarationModifiers());
-	}
-	@Override
-	protected void reportDeprecatedType(TypeBinding type, Scope scope) {
-		scope.problemReporter().javadocDeprecatedType(type, this, scope.getDeclarationModifiers());
-	}
+                    default:
+                        return null;
+                }
+            }
+        }
+        boolean hasError;
+        TypeBinding type = this.resolvedType = getTypeBinding(scope);
+        if (type == null) {
+            return null; // detected cycle while resolving hierarchy
+        } else if ((hasError = !type.isValidBinding()) == true) {
+            reportInvalidType(scope);
+            switch (type.problemId()) {
+                case ProblemReasons.NotFound:
+                case ProblemReasons.NotVisible:
+                    type = type.closestMatch();
+                    if (type == null)
+                        return null;
+                    break;
 
-	@Override
-	public void traverse(ASTVisitor visitor, BlockScope scope) {
-		visitor.visit(this, scope);
-		visitor.endVisit(this, scope);
-	}
+                default:
+                    return null;
+            }
+        }
+        if (type.isArrayType() && ((ArrayBinding) type).leafComponentType == TypeBinding.VOID) {
+            scope.problemReporter().cannotAllocateVoidArray(this);
+            return null;
+        }
+        if (isTypeUseDeprecated(type, scope)) {
+            reportDeprecatedType(type, scope);
+        }
+        // https://bugs.eclipse.org/bugs/show_bug.cgi?id=209936
+        // raw convert all enclosing types when dealing with Javadoc references
+        if (type.isGenericType() || type.isParameterizedType()) {
+            type = scope.environment().convertToRawType(type, true /* force the conversion of enclosing types */);
+        }
 
-	@Override
-	public void traverse(ASTVisitor visitor, ClassScope scope) {
-		visitor.visit(this, scope);
-		visitor.endVisit(this, scope);
-	}
+        if (hasError) {
+            // do not store the computed type, keep the problem type instead
+            return type;
+        }
+        return this.resolvedType = type;
+    }
 
-	@Override
-	public StringBuilder printExpression(int indent, StringBuilder output) {
-		return new StringBuilder();
-	}
+    @Override
+    protected void reportInvalidType(Scope scope) {
+        scope.problemReporter().javadocInvalidType(this, this.resolvedType, scope.getDeclarationModifiers());
+    }
+
+    @Override
+    protected void reportDeprecatedType(TypeBinding type, Scope scope) {
+        scope.problemReporter().javadocDeprecatedType(type, this, scope.getDeclarationModifiers());
+    }
+
+    @Override
+    public void traverse(ASTVisitor visitor, BlockScope scope) {
+        visitor.visit(this, scope);
+        visitor.endVisit(this, scope);
+    }
+
+    @Override
+    public void traverse(ASTVisitor visitor, ClassScope scope) {
+        visitor.visit(this, scope);
+        visitor.endVisit(this, scope);
+    }
+
+    @Override
+    public StringBuilder printExpression(int indent, StringBuilder output) {
+        return new StringBuilder();
+    }
 }

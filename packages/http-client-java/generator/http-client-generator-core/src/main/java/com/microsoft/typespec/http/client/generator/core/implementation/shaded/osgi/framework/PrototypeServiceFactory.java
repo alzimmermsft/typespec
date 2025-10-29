@@ -69,58 +69,58 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 @ConsumerType
 public interface PrototypeServiceFactory<S> extends ServiceFactory<S> {
-	/**
-	 * Returns a service object for a caller.
-	 * 
-	 * <p>
-	 * The Framework invokes this method for each caller requesting a service
-	 * object using {@link ServiceObjects#getService()}. The factory can then
-	 * return a customized service object for the caller.
-	 * 
-	 * <p>
-	 * The Framework must check that the returned service object is valid. If
-	 * the returned service object is {@code null} or is not an
-	 * {@code instanceof} all the classes named when the service was registered,
-	 * a framework event of type {@link FrameworkEvent#ERROR} is fired
-	 * containing a service exception of type
-	 * {@link ServiceException#FACTORY_ERROR} and {@code null} is returned to
-	 * the caller. If this method throws an exception, a framework event of type
-	 * {@link FrameworkEvent#ERROR} is fired containing a service exception of
-	 * type {@link ServiceException#FACTORY_EXCEPTION} with the thrown exception
-	 * as the cause and {@code null} is returned to the caller.
-	 * 
-	 * @param bundle The bundle requesting the service.
-	 * @param registration The {@code ServiceRegistration} object for the
-	 *        requested service.
-	 * @return A service object that <strong>must</strong> be an instance of all
-	 *         the classes named when the service was registered.
-	 * @see ServiceObjects#getService()
-	 */
-	@Override
-	public S getService(Bundle bundle, ServiceRegistration<S> registration);
+    /**
+     * Returns a service object for a caller.
+     * 
+     * <p>
+     * The Framework invokes this method for each caller requesting a service
+     * object using {@link ServiceObjects#getService()}. The factory can then
+     * return a customized service object for the caller.
+     * 
+     * <p>
+     * The Framework must check that the returned service object is valid. If
+     * the returned service object is {@code null} or is not an
+     * {@code instanceof} all the classes named when the service was registered,
+     * a framework event of type {@link FrameworkEvent#ERROR} is fired
+     * containing a service exception of type
+     * {@link ServiceException#FACTORY_ERROR} and {@code null} is returned to
+     * the caller. If this method throws an exception, a framework event of type
+     * {@link FrameworkEvent#ERROR} is fired containing a service exception of
+     * type {@link ServiceException#FACTORY_EXCEPTION} with the thrown exception
+     * as the cause and {@code null} is returned to the caller.
+     * 
+     * @param bundle The bundle requesting the service.
+     * @param registration The {@code ServiceRegistration} object for the
+     * requested service.
+     * @return A service object that <strong>must</strong> be an instance of all
+     * the classes named when the service was registered.
+     * @see ServiceObjects#getService()
+     */
+    @Override
+    public S getService(Bundle bundle, ServiceRegistration<S> registration);
 
-	/**
-	 * Releases a service object customized for a caller.
-	 * 
-	 * <p>
-	 * The Framework invokes this method when a service has been released by a
-	 * bundle such as by calling {@link ServiceObjects#ungetService(Object)}.
-	 * The service object may then be destroyed.
-	 * 
-	 * <p>
-	 * If this method throws an exception, a framework event of type
-	 * {@link FrameworkEvent#ERROR} is fired containing a service exception of
-	 * type {@link ServiceException#FACTORY_EXCEPTION} with the thrown exception
-	 * as the cause.
-	 * 
-	 * @param bundle The bundle releasing the service.
-	 * @param registration The {@code ServiceRegistration} object for the
-	 *        service being released.
-	 * @param service The service object returned by a previous call to the
-	 *        {@link #getService(Bundle, ServiceRegistration) getService}
-	 *        method.
-	 * @see ServiceObjects#ungetService(Object)
-	 */
-	@Override
-	public void ungetService(Bundle bundle, ServiceRegistration<S> registration, S service);
+    /**
+     * Releases a service object customized for a caller.
+     * 
+     * <p>
+     * The Framework invokes this method when a service has been released by a
+     * bundle such as by calling {@link ServiceObjects#ungetService(Object)}.
+     * The service object may then be destroyed.
+     * 
+     * <p>
+     * If this method throws an exception, a framework event of type
+     * {@link FrameworkEvent#ERROR} is fired containing a service exception of
+     * type {@link ServiceException#FACTORY_EXCEPTION} with the thrown exception
+     * as the cause.
+     * 
+     * @param bundle The bundle releasing the service.
+     * @param registration The {@code ServiceRegistration} object for the
+     * service being released.
+     * @param service The service object returned by a previous call to the
+     * {@link #getService(Bundle, ServiceRegistration) getService}
+     * method.
+     * @see ServiceObjects#ungetService(Object)
+     */
+    @Override
+    public void ungetService(Bundle bundle, ServiceRegistration<S> registration, S service);
 }

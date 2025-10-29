@@ -14,7 +14,7 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IAdaptable;
+
 import java.util.Map;
 
 /**
@@ -84,20 +84,13 @@ import java.util.Map;
  * @noimplement This interface is not intended to be implemented by clients.
  * @noextend This interface is not intended to be extended by clients.
  */
-public interface IMarker extends IAdaptable {
+public interface IMarker {
 
     /*
      * ====================================================================
      * Marker types:
      * ====================================================================
      */
-
-    /**
-     * Problem marker type.
-     *
-     * @see #getType()
-     */
-    String PROBLEM = ResourcesPlugin.PI_RESOURCES + ".problemmarker"; //$NON-NLS-1$
 
     /**
      * Text marker type.
@@ -143,17 +136,6 @@ public interface IMarker extends IAdaptable {
     String LOCATION = "location"; //$NON-NLS-1$
 
     /**
-     * Priority marker attribute. A number from the set of high, normal and low
-     * priorities defined by the platform.
-     *
-     * @see #PRIORITY_HIGH
-     * @see #PRIORITY_NORMAL
-     * @see #PRIORITY_LOW
-     * @see #getAttribute(String, int)
-     */
-    String PRIORITY = "priority"; //$NON-NLS-1$
-
-    /**
      * Character start marker attribute. An integer value indicating where a text
      * marker starts. This attribute is zero-relative and inclusive.
      *
@@ -188,19 +170,6 @@ public interface IMarker extends IAdaptable {
     String TRANSIENT = "transient"; //$NON-NLS-1$
 
     /**
-     * User editable marker attribute. A boolean value indicating whether a
-     * user should be able to manually change the marker (e.g. a task). The
-     * default is <code>true</code>. Note that the value of this attribute
-     * is to be used by the UI as a suggestion and its value will NOT be
-     * interpreted by Core in any manner and will not be enforced by Core
-     * when performing any operations on markers.
-     *
-     * @see #getAttribute(String, String)
-     * @since 2.1
-     */
-    String USER_EDITABLE = "userEditable"; //$NON-NLS-1$
-
-    /**
      * Source id attribute. A string attribute that can be used by tools that
      * generate markers to indicate the source of the marker. Use of this attribute is
      * optional and its format or existence is not enforced. This attribute is
@@ -218,27 +187,6 @@ public interface IMarker extends IAdaptable {
      * Marker attributes values:
      * ====================================================================
      */
-
-    /**
-     * High priority constant (value 2).
-     *
-     * @see #getAttribute(String, int)
-     */
-    int PRIORITY_HIGH = 2;
-
-    /**
-     * Normal priority constant (value 1).
-     *
-     * @see #getAttribute(String, int)
-     */
-    int PRIORITY_NORMAL = 1;
-
-    /**
-     * Low priority constant (value 0).
-     *
-     * @see #getAttribute(String, int)
-     */
-    int PRIORITY_LOW = 0;
 
     /**
      * Error severity constant (value 2) indicating an error state.
@@ -391,7 +339,6 @@ public interface IMarker extends IAdaptable {
      * Marker ids are not globally unique.
      *
      * @return the id of the marker
-     * @see IResource#findMarker(long)
      */
     long getId();
 
@@ -426,76 +373,6 @@ public interface IMarker extends IAdaptable {
      * </ul>
      */
     boolean isSubtypeOf(String superType) throws CoreException;
-
-    /**
-     * Sets the integer-valued attribute with the given name.
-     * <p>
-     * This method changes resources; these changes will be reported
-     * in a subsequent resource change event, including an indication
-     * that this marker has been modified.
-     * </p>
-     *
-     * @param attributeName the name of the attribute
-     * @param value the value
-     * @exception CoreException if this method fails. Reasons include:
-     * <ul>
-     * <li> This marker does not exist.</li>
-     * <li> Resource changes are disallowed during certain types of resource change
-     * event notification. See <code>IResourceChangeEvent</code> for more details.</li>
-     * </ul>
-     * @see IResourceRuleFactory#markerRule(IResource)
-     */
-    void setAttribute(String attributeName, int value) throws CoreException;
-
-    /**
-     * Sets the attribute with the given name. The value must be <code>null</code> or
-     * an instance of one of the following classes:
-     * <code>String</code>, <code>Integer</code>, or <code>Boolean</code>.
-     * If the value is <code>null</code>, the attribute is considered to be undefined.
-     *
-     * <p>
-     * The attribute value cannot be <code>String</code>
-     * whose UTF encoding exceeds 65535 bytes. On persistent
-     * markers this limit is enforced by an assertion.
-     * </p>
-     *
-     * <p>
-     * This method changes resources; these changes will be reported
-     * in a subsequent resource change event, including an indication
-     * that this marker has been modified.
-     * </p>
-     *
-     * @param attributeName the name of the attribute
-     * @param value the value, or <code>null</code> if the attribute is to be undefined
-     * @exception CoreException if this method fails. Reasons include:
-     * <ul>
-     * <li> This marker does not exist.</li>
-     * <li> Resource changes are disallowed during certain types of resource change
-     * event notification. See <code>IResourceChangeEvent</code> for more details.</li>
-     * </ul>
-     * @see IResourceRuleFactory#markerRule(IResource)
-     */
-    void setAttribute(String attributeName, Object value) throws CoreException;
-
-    /**
-     * Sets the boolean-valued attribute with the given name.
-     * <p>
-     * This method changes resources; these changes will be reported
-     * in a subsequent resource change event, including an indication
-     * that this marker has been modified.
-     * </p>
-     *
-     * @param attributeName the name of the attribute
-     * @param value the value
-     * @exception CoreException if this method fails. Reasons include:
-     * <ul>
-     * <li> This marker does not exist.</li>
-     * <li> Resource changes are disallowed during certain types of resource change
-     * event notification. See <code>IResourceChangeEvent</code> for more details.</li>
-     * </ul>
-     * @see IResourceRuleFactory#markerRule(IResource)
-     */
-    void setAttribute(String attributeName, boolean value) throws CoreException;
 
     /**
      * Sets the given attribute key-value pairs on this marker.

@@ -16,11 +16,11 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.hooks.bundle;
 
-import java.util.Collection;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.ConsumerType;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Bundle;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.BundleContext;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.BundleException;
+import java.util.Collection;
 
 /**
  * OSGi Framework Bundle Context Hook Service.
@@ -34,32 +34,32 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 @ConsumerType
 public interface FindHook {
-	/**
-	 * Find hook method. This method is called for the following:
-	 * <ul>
-	 * <li>Bundle find operations using {@link BundleContext#getBundle(long)}
-	 * and {@link BundleContext#getBundles()} methods. The find method can
-	 * filter the result of the find operation. Note that a find operation using
-	 * the {@link BundleContext#getBundle(String)} method does not cause the
-	 * find method to be called.</li>
-	 * <li>Bundle install operations when an existing bundle is already
-	 * installed at a given location. In this case, the find method is called to
-	 * determine if the context performing the install operation is able to find
-	 * the bundle. If the context cannot find the existing bundle then the
-	 * install operation must fail with a
-	 * {@link BundleException#REJECTED_BY_HOOK} exception.</li>
-	 * </ul>
-	 * 
-	 * @param context The bundle context of the bundle performing the find
-	 *        operation.
-	 * @param bundles A collection of Bundles to be returned as a result of the
-	 *        find operation. The implementation of this method may remove
-	 *        bundles from the collection to prevent the bundles from being
-	 *        returned to the bundle performing the find operation. The
-	 *        collection supports all the optional {@code Collection} operations
-	 *        except {@code add} and {@code addAll}. Attempting to add to the
-	 *        collection will result in an {@code UnsupportedOperationException}
-	 *        . The collection is not synchronized.
-	 */
-	void find(BundleContext context, Collection<Bundle> bundles);
+    /**
+     * Find hook method. This method is called for the following:
+     * <ul>
+     * <li>Bundle find operations using {@link BundleContext#getBundle(long)}
+     * and {@link BundleContext#getBundles()} methods. The find method can
+     * filter the result of the find operation. Note that a find operation using
+     * the {@link BundleContext#getBundle(String)} method does not cause the
+     * find method to be called.</li>
+     * <li>Bundle install operations when an existing bundle is already
+     * installed at a given location. In this case, the find method is called to
+     * determine if the context performing the install operation is able to find
+     * the bundle. If the context cannot find the existing bundle then the
+     * install operation must fail with a
+     * {@link BundleException#REJECTED_BY_HOOK} exception.</li>
+     * </ul>
+     * 
+     * @param context The bundle context of the bundle performing the find
+     * operation.
+     * @param bundles A collection of Bundles to be returned as a result of the
+     * find operation. The implementation of this method may remove
+     * bundles from the collection to prevent the bundles from being
+     * returned to the bundle performing the find operation. The
+     * collection supports all the optional {@code Collection} operations
+     * except {@code add} and {@code addAll}. Attempting to add to the
+     * collection will result in an {@code UnsupportedOperationException}
+     * . The collection is not synchronized.
+     */
+    void find(BundleContext context, Collection<Bundle> bundles);
 }

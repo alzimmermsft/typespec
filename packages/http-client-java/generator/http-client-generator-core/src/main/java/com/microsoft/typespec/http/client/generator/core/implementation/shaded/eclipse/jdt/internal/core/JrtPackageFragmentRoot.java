@@ -13,16 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Path;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IClasspathAttribute;
@@ -35,155 +25,173 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.JRTUtil;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JarPackageFragmentRootInfo.PackageContent;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Util;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A package fragment root that corresponds to a module in a JRT file system.
  */
 public class JrtPackageFragmentRoot extends JarPackageFragmentRoot implements IModulePathEntry {
 
-	protected final String moduleName;
+    protected final String moduleName;
 
-	public static final ThreadLocal<Boolean> workingOnOldClasspath = new ThreadLocal<>();
+    public static final ThreadLocal<Boolean> workingOnOldClasspath = new ThreadLocal<>();
 
-	record JrtModuleKey(File image, String moduleName, String classNameSubFolder) {/** nothing */}
-	/**
-	 * static cache for org.eclipse.jdt.internal.core.JarPackageFragmentRootInfo.rawPackageInfo across JarPackageFragmentRoot instances per java project
-	 **/
-	private static final Map<JrtModuleKey, Map<List<String>, PackageContent>> childrenCache = new ConcurrentHashMap<>();
+    record JrtModuleKey(File image, String moduleName, String classNameSubFolder) {
+        /** nothing */
+    }
 
-	/**
-	 * Constructs a package fragment root which represents a module
-	 * contained in a JRT.
-	 */
-	protected JrtPackageFragmentRoot(IPath jrtPath, String moduleName, JavaProject project, IClasspathAttribute[] extraAttributes) {
-		super(null, jrtPath, project, extraAttributes);
-		this.moduleName = moduleName;
-	}
+    /**
+     * static cache for org.eclipse.jdt.internal.core.JarPackageFragmentRootInfo.rawPackageInfo across
+     * JarPackageFragmentRoot instances per java project
+     **/
+    private static final Map<JrtModuleKey, Map<List<String>, PackageContent>> childrenCache = new ConcurrentHashMap<>();
 
-	@Override
-	protected boolean computeChildren(OpenableElementInfo info, IResource underlyingResource) throws JavaModelException {
-		JrtModuleKey key = new JrtModuleKey(this.jarPath.toFile(), this.moduleName, getClassNameSubFolder());
-		Map<List<String>, PackageContent> rawPackageInfo;
-		rawPackageInfo = childrenCache.computeIfAbsent(key, JrtPackageFragmentRoot::computeChildren);
-		info.setChildren(createChildren(rawPackageInfo.keySet()));
-		((JarPackageFragmentRootInfo) info).rawPackageInfo = rawPackageInfo;
-		return true;
-	}
+    /**
+     * Constructs a package fragment root which represents a module
+     * contained in a JRT.
+     */
+    protected JrtPackageFragmentRoot(IPath jrtPath, String moduleName, JavaProject project,
+        IClasspathAttribute[] extraAttributes) {
+        super(null, jrtPath, project, extraAttributes);
+        this.moduleName = moduleName;
+    }
 
-	/** static implementation to make sure the result can be shared across instances*/
-	private static Map<List<String>, PackageContent> computeChildren(JrtModuleKey key) {
-		Map<List<String>, PackageContent> rawPackageInfo= new HashMap<>();
-		File image= key.image();
-		String moduleName= key.moduleName();
-		String classNameSubFolder= key.classNameSubFolder();
-		String compliance = CompilerOptions.VERSION_1_8; // TODO: Java 9 Revisit
-		// always create the default package
-		rawPackageInfo.put(List.of(), new PackageContent());
-		try {
-			JRTUtil.walkModuleImage(image,
-					new org.eclipse.jdt.internal.compiler.util.JRTUtil.JrtFileVisitor<Path>() {
-						@Override
-						public FileVisitResult visitPackage(Path dir, Path mod, BasicFileAttributes attrs)
-								throws IOException {
-							initRawPackageInfo(rawPackageInfo, classNameSubFolder, dir.toString(), true, compliance);
-							return FileVisitResult.CONTINUE;
-						}
+    @Override
+    protected boolean computeChildren(OpenableElementInfo info, IResource underlyingResource)
+        throws JavaModelException {
+        JrtModuleKey key = new JrtModuleKey(this.jarPath.toFile(), this.moduleName, getClassNameSubFolder());
+        Map<List<String>, PackageContent> rawPackageInfo;
+        rawPackageInfo = childrenCache.computeIfAbsent(key, JrtPackageFragmentRoot::computeChildren);
+        info.setChildren(createChildren(rawPackageInfo.keySet()));
+        ((JarPackageFragmentRootInfo) info).rawPackageInfo = rawPackageInfo;
+        return true;
+    }
 
-						@Override
-						public FileVisitResult visitFile(Path path, Path mod, BasicFileAttributes attrs)
-								throws IOException {
-							initRawPackageInfo(rawPackageInfo, classNameSubFolder, path.toString(), false, compliance);
-							return FileVisitResult.CONTINUE;
-						}
+    /** static implementation to make sure the result can be shared across instances */
+    private static Map<List<String>, PackageContent> computeChildren(JrtModuleKey key) {
+        Map<List<String>, PackageContent> rawPackageInfo = new HashMap<>();
+        File image = key.image();
+        String moduleName = key.moduleName();
+        String classNameSubFolder = key.classNameSubFolder();
+        String compliance = CompilerOptions.VERSION_1_8; // TODO: Java 9 Revisit
+        // always create the default package
+        rawPackageInfo.put(List.of(), new PackageContent());
+        try {
+            JRTUtil.walkModuleImage(image, new org.eclipse.jdt.internal.compiler.util.JRTUtil.JrtFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitPackage(Path dir, Path mod, BasicFileAttributes attrs) throws IOException {
+                    initRawPackageInfo(rawPackageInfo, classNameSubFolder, dir.toString(), true, compliance);
+                    return FileVisitResult.CONTINUE;
+                }
 
-						@Override
-						public FileVisitResult visitModule(Path path, String name) throws IOException {
-							if (!moduleName.equals(name)) {
-								return FileVisitResult.SKIP_SUBTREE;
-							}
-							return FileVisitResult.CONTINUE;
-						}
-					}, JRTUtil.NOTIFY_ALL);
-		} catch (IOException e) {
-			Util.log(e, "Error reading modules" + image); //$NON-NLS-1$
-		}
-		return unmodifiableCopy(rawPackageInfo);
-	}
-	@Override
-	SourceMapper createSourceMapper(IPath sourcePath, IPath rootPath) throws JavaModelException {
-		IClasspathEntry entry = ((JavaProject) getParent()).getClasspathEntryFor(getPath());
-		String encoding = (entry== null) ? null : ((ClasspathEntry) entry).getSourceAttachmentEncoding();
-		IModule mod = getModule();
-		String modName = mod == null ? null : new String(mod.name());
-		SourceMapper mapper = new SourceMapper(
-			sourcePath,
-			rootPath == null ? modName : rootPath.toOSString(),
-			getJavaProject().getOptions(true),// cannot use workspace options if external jar is 1.5 jar and workspace options are 1.4 options
-			encoding);
-		return mapper;
-	}
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o instanceof JrtPackageFragmentRoot other) {
-			return this.moduleName.equals(other.moduleName) &&
-					this.jarPath.equals(other.jarPath) &&
-					Arrays.equals(this.extraAttributes, other.extraAttributes);
-		}
-		return false;
-	}
-	@Override
-	protected int calculateHashCode() {
-		int hash = 31;
-		hash = Util.combineHashCodes(hash, this.jarPath.hashCode());
-		hash = Util.combineHashCodes(hash, this.moduleName.hashCode());
-		hash = Util.combineHashCodes(hash, Arrays.hashCode(this.extraAttributes));
-		return hash;
-	}
-	@Override
-	public String getElementName() {
-		return this.moduleName;
-	}
-	@Override
-	public PackageFragment getPackageFragment(String[] pkgName) {
-		// NOTE: Do we need a different kind of package fragment?
-		return new JarPackageFragment(this, pkgName);
-	}
-	@Override
-	protected void toStringInfo(int tab, StringBuilder buffer, Object info, boolean showResolvedInfo) {
-		buffer.append(tabString(tab));
-		buffer.append("<module:").append(this.moduleName).append(">"); //$NON-NLS-1$ //$NON-NLS-2$
-		if (info == null) {
-			buffer.append(" (not open)"); //$NON-NLS-1$
-		}
-	}
+                @Override
+                public FileVisitResult visitFile(Path path, Path mod, BasicFileAttributes attrs) throws IOException {
+                    initRawPackageInfo(rawPackageInfo, classNameSubFolder, path.toString(), false, compliance);
+                    return FileVisitResult.CONTINUE;
+                }
 
-	@Override
-	public IModule getModule() {
-		IModuleDescription desc = getModuleDescription();
-		if (desc != null) {
-			try {
-				return (IModule)((JavaElement) desc).getElementInfo();
-			} catch (JavaModelException e) {
-				Util.log(e);
-			}
-		}
-		return null;
-	}
+                @Override
+                public FileVisitResult visitModule(Path path, String name) throws IOException {
+                    if (!moduleName.equals(name)) {
+                        return FileVisitResult.SKIP_SUBTREE;
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+            }, JRTUtil.NOTIFY_ALL);
+        } catch (IOException e) {
+            Util.log(e, "Error reading modules" + image); //$NON-NLS-1$
+        }
+        return unmodifiableCopy(rawPackageInfo);
+    }
 
-	@Override
-	protected boolean isComplianceJava9OrHigher() {
-		return true;
-	}
+    @Override
+    SourceMapper createSourceMapper(IPath sourcePath, IPath rootPath) throws JavaModelException {
+        IClasspathEntry entry = ((JavaProject) getParent()).getClasspathEntryFor(getPath());
+        String encoding = (entry == null) ? null : ((ClasspathEntry) entry).getSourceAttachmentEncoding();
+        IModule mod = getModule();
+        String modName = mod == null ? null : new String(mod.name());
+        SourceMapper mapper = new SourceMapper(sourcePath, rootPath == null ? modName : rootPath.toOSString(),
+            getJavaProject().getOptions(true),// cannot use workspace options if external jar is 1.5 jar and workspace
+                                              // options are 1.4 options
+            encoding);
+        return mapper;
+    }
 
-	@Override
-	public char[][] getModulesDeclaringPackage(String qualifiedPackageName, String requestedModuleName) {
-		if (requestedModuleName != null && !requestedModuleName.equals(this.moduleName))
-			return null;
-		if (getPackageFragment(qualifiedPackageName).exists()) {
-			return new char[][] { requestedModuleName.toCharArray() };
-		}
-		return null;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o instanceof JrtPackageFragmentRoot other) {
+            return this.moduleName.equals(other.moduleName)
+                && this.jarPath.equals(other.jarPath)
+                && Arrays.equals(this.extraAttributes, other.extraAttributes);
+        }
+        return false;
+    }
+
+    @Override
+    protected int calculateHashCode() {
+        int hash = 31;
+        hash = Util.combineHashCodes(hash, this.jarPath.hashCode());
+        hash = Util.combineHashCodes(hash, this.moduleName.hashCode());
+        hash = Util.combineHashCodes(hash, Arrays.hashCode(this.extraAttributes));
+        return hash;
+    }
+
+    @Override
+    public String getElementName() {
+        return this.moduleName;
+    }
+
+    @Override
+    public PackageFragment getPackageFragment(String[] pkgName) {
+        // NOTE: Do we need a different kind of package fragment?
+        return new JarPackageFragment(this, pkgName);
+    }
+
+    @Override
+    protected void toStringInfo(int tab, StringBuilder buffer, Object info, boolean showResolvedInfo) {
+        buffer.append(tabString(tab));
+        buffer.append("<module:").append(this.moduleName).append(">"); //$NON-NLS-1$ //$NON-NLS-2$
+        if (info == null) {
+            buffer.append(" (not open)"); //$NON-NLS-1$
+        }
+    }
+
+    @Override
+    public IModule getModule() {
+        IModuleDescription desc = getModuleDescription();
+        if (desc != null) {
+            try {
+                return (IModule) ((JavaElement) desc).getElementInfo();
+            } catch (JavaModelException e) {
+                Util.log(e);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    protected boolean isComplianceJava9OrHigher() {
+        return true;
+    }
+
+    @Override
+    public char[][] getModulesDeclaringPackage(String qualifiedPackageName, String requestedModuleName) {
+        if (requestedModuleName != null && !requestedModuleName.equals(this.moduleName))
+            return null;
+        if (getPackageFragment(qualifiedPackageName).exists()) {
+            return new char[][] { requestedModuleName.toCharArray() };
+        }
+        return null;
+    }
 }

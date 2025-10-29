@@ -25,11 +25,8 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.ParameterizedGenericMethodBinding;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.RawTypeBinding;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.SyntheticMethodBinding;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TagBits;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeVariableBinding;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.problem.AbortCompilation;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaElement;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.LambdaExpression;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.LambdaFactory;
@@ -44,7 +41,6 @@ class MethodBinding implements IMethodBinding {
         = Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE | Modifier.ABSTRACT | Modifier.STATIC | Modifier.FINAL
             | Modifier.SYNCHRONIZED | Modifier.NATIVE | Modifier.STRICTFP | Modifier.DEFAULT;
     private static final ITypeBinding[] NO_TYPE_BINDINGS = new ITypeBinding[0];
-    static final IVariableBinding[] NO_VARIABLE_BINDINGS = new IVariableBinding[0];
     protected com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.MethodBinding binding;
     protected BindingResolver resolver;
     private volatile ITypeBinding[] parameterTypes;
@@ -55,8 +51,6 @@ class MethodBinding implements IMethodBinding {
     private volatile String key;
     private volatile ITypeBinding[] typeParameters;
     private volatile ITypeBinding[] typeArguments;
-    private volatile IAnnotationBinding[] annotations;
-    private volatile IAnnotationBinding[][] parameterAnnotations;
 
     MethodBinding(BindingResolver resolver,
         com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.MethodBinding binding) {
@@ -144,40 +138,6 @@ class MethodBinding implements IMethodBinding {
         return null;
     }
 
-    @Override
-    public IAnnotationBinding[] getParameterAnnotations(int index) {
-        if (getParameterTypes() == NO_TYPE_BINDINGS) {
-            return AnnotationBinding.NoAnnotations;
-        }
-        if (this.parameterAnnotations != null) {
-            return this.parameterAnnotations[index];
-        }
-        com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.AnnotationBinding[][] bindingAnnotations
-            = this.binding.getParameterAnnotations();
-        if (bindingAnnotations == null)
-            return AnnotationBinding.NoAnnotations;
-
-        int length = bindingAnnotations.length;
-        IAnnotationBinding[][] domAnnotations = new IAnnotationBinding[length][];
-        for (int i = 0; i < length; i++) {
-            com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.AnnotationBinding[] paramBindingAnnotations
-                = bindingAnnotations[i];
-            int pLength = paramBindingAnnotations.length;
-            domAnnotations[i] = new AnnotationBinding[pLength];
-            for (int j = 0; j < pLength; j++) {
-                IAnnotationBinding domAnnotation = this.resolver.getAnnotationInstance(paramBindingAnnotations[j]);
-                if (domAnnotation == null) {
-                    domAnnotations[i] = AnnotationBinding.NoAnnotations;
-                    break;
-                }
-                domAnnotations[i][j] = domAnnotation;
-            }
-        }
-        this.parameterAnnotations = domAnnotations;
-
-        return this.parameterAnnotations[index];
-    }
-
     /**
      * @see IMethodBinding#getParameterTypes()
      */
@@ -230,47 +190,6 @@ class MethodBinding implements IMethodBinding {
             this.returnType = this.resolver.getTypeBinding(this.binding.returnType);
         }
         return this.returnType;
-    }
-
-    protected IAnnotationBinding[] filterTypeAnnotations(
-        com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.AnnotationBinding[] internalAnnotations) {
-        int length = internalAnnotations == null ? 0 : internalAnnotations.length;
-        if (length != 0) {
-            IAnnotationBinding[] tempAnnotations = new IAnnotationBinding[length];
-            int convertedAnnotationCount = 0;
-            final boolean isConstructor = this.isConstructor();
-            for (int i = 0; i < length; i++) {
-                com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.AnnotationBinding internalAnnotation
-                    = internalAnnotations[i];
-                if (internalAnnotation == null) {
-                    continue;
-                }
-                final ReferenceBinding annotationType = internalAnnotation.getAnnotationType();
-                long metaTagBits = annotationType.getAnnotationTagBits();
-
-                // Exclude all other targets including TYPE_USE, even though TYPE_USE is accepted.
-                if (isConstructor
-                    && (metaTagBits & TagBits.AnnotationForConstructor) == 0
-                    && ((metaTagBits & TagBits.AnnotationTargetMASK) != 0)) {
-                    continue;
-                }
-
-                final IAnnotationBinding annotationInstance = this.resolver.getAnnotationInstance(internalAnnotation);
-                if (annotationInstance == null) {
-                    continue;
-                }
-                tempAnnotations[convertedAnnotationCount++] = annotationInstance;
-            }
-            if (convertedAnnotationCount == length)
-                return tempAnnotations;
-            if (convertedAnnotationCount == 0)
-                return AnnotationBinding.NoAnnotations;
-
-            System.arraycopy(tempAnnotations, 0, (tempAnnotations = new IAnnotationBinding[convertedAnnotationCount]),
-                0, convertedAnnotationCount);
-            return tempAnnotations;
-        }
-        return AnnotationBinding.NoAnnotations;
     }
 
     @Override
@@ -475,35 +394,12 @@ class MethodBinding implements IMethodBinding {
     }
 
     /**
-     * @see org.eclipse.jdt.core.dom.IMethodBinding#isParameterizedMethod()
-     */
-    @Override
-    public boolean isParameterizedMethod() {
-        return (this.binding instanceof ParameterizedGenericMethodBinding)
-            && !((ParameterizedGenericMethodBinding) this.binding).isRaw;
-    }
-
-    /**
      * @see org.eclipse.jdt.core.dom.IMethodBinding#isRawMethod()
      */
     @Override
     public boolean isRawMethod() {
         return (this.binding instanceof ParameterizedGenericMethodBinding)
             && ((ParameterizedGenericMethodBinding) this.binding).isRaw;
-    }
-
-    @Override
-    public boolean isSubsignature(IMethodBinding otherMethod) {
-        try {
-            LookupEnvironment lookupEnvironment = this.resolver.lookupEnvironment();
-            return lookupEnvironment != null
-                && lookupEnvironment.methodVerifier()
-                    .isMethodSubsignature(this.binding, ((MethodBinding) otherMethod).binding);
-        } catch (AbortCompilation e) {
-            // don't surface internal exception to clients
-            // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=143013
-            return false;
-        }
     }
 
     /**
@@ -545,7 +441,6 @@ class MethodBinding implements IMethodBinding {
 
         private final MethodBinding implementation;
         private final IBinding declaringMember;
-        private IVariableBinding[] syntheticOuterLocalVariables;
 
         public LambdaMethod(DefaultBindingResolver resolver,
             com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.MethodBinding lambdaDescriptor,
@@ -578,11 +473,6 @@ class MethodBinding implements IMethodBinding {
         }
 
         @Override
-        public IAnnotationBinding[] getParameterAnnotations(int paramIndex) {
-            return this.implementation.getParameterAnnotations(paramIndex);
-        }
-
-        @Override
         public IBinding getDeclaringMember() {
             return this.declaringMember;
         }
@@ -597,16 +487,7 @@ class MethodBinding implements IMethodBinding {
             return super.toString().replace("public abstract ", "public ");  //$NON-NLS-1$//$NON-NLS-2$
         }
 
-        @Override
-        public IVariableBinding[] getSyntheticOuterLocals() {
-            if (this.syntheticOuterLocalVariables != null) {
-                return this.syntheticOuterLocalVariables;
-            }
-            return NO_VARIABLE_BINDINGS;
-        }
-
         public void setSyntheticOuterLocals(IVariableBinding[] syntheticOuterLocalVariables) {
-            this.syntheticOuterLocalVariables = syntheticOuterLocalVariables;
         }
 
         @Override
@@ -625,29 +506,19 @@ class MethodBinding implements IMethodBinding {
             // as it populates newAstToOldAst.
             ASTNode current = domNode;
             while (current != null) {
-                if (current instanceof org.eclipse.jdt.core.dom.LambdaExpression domLambda) {
+                if (current instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.dom.LambdaExpression domLambda) {
                     defaultBindingResolver.resolveMethod(domLambda);
                 }
                 current = current.getParent();
             }
             if (defaultBindingResolver.newAstToOldAst
-                .get(domNode)instanceof org.eclipse.jdt.internal.compiler.ast.LambdaExpression lambdaExpression) {
+                .get(domNode)instanceof com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.LambdaExpression lambdaExpression) {
                 LambdaExpression expr = LambdaFactory
                     .createLambdaExpression((JavaElement) getDeclaringMember().getJavaElement(), lambdaExpression);
                 return LambdaFactory.createLambdaMethod(expr, lambdaExpression);
             }
             return super.getUnresolvedJavaElement();
         }
-    }
-
-    @Override
-    public IVariableBinding[] getSyntheticOuterLocals() {
-        return NO_VARIABLE_BINDINGS;
-    }
-
-    @Override
-    public boolean isSyntheticRecordMethod() {
-        return ((getDeclaringClass().isRecord()) && (this.binding instanceof SyntheticMethodBinding));
     }
 
     @Override

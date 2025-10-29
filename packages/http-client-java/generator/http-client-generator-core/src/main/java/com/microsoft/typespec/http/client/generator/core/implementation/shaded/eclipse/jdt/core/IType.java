@@ -14,9 +14,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
-import java.io.InputStream;
-
 /**
  * Represents either a source type in a compilation unit (either a top-level
  * type, a member type, a local type, an anonymous type or a lambda expression)
@@ -177,7 +174,6 @@ public interface IType extends IMember, IAnnotatable {
      * 
      * @return the binding key for this type
      * @see org.eclipse.jdt.core.dom.IBinding#getKey()
-     * @see BindingKey
      * @since 3.1
      * @see #isResolved()
      */
@@ -556,74 +552,6 @@ public interface IType extends IMember, IAnnotatable {
      * @since 3.1
      */
     boolean isResolved();
-
-    /**
-     * Loads a previously saved ITypeHierarchy from an input stream. A type hierarchy can
-     * be stored using ITypeHierachy#store(OutputStream).
-     *
-     * Only hierarchies originally created by the following methods can be loaded:
-     * <ul>
-     * <li>IType#newSupertypeHierarchy(IProgressMonitor)</li>
-     * <li>IType#newTypeHierarchy(IJavaProject, IProgressMonitor)</li>
-     * <li>IType#newTypeHierarchy(IProgressMonitor)</li>
-     * </ul>
-     *
-     * @param input stream where hierarchy will be read
-     * @param monitor the given progress monitor
-     * @return the stored hierarchy
-     * @exception JavaModelException if the hierarchy could not be restored, reasons include:
-     * - type is not the focus of the hierarchy or
-     * - unable to read the input stream (wrong format, IOException during reading, ...)
-     * @see ITypeHierarchy#store(java.io.OutputStream, IProgressMonitor)
-     * @since 2.1
-     */
-    ITypeHierarchy loadTypeHierachy(InputStream input, IProgressMonitor monitor) throws JavaModelException;
-
-    /**
-     * Creates and returns a type hierarchy for this type containing
-     * this type, all of its supertypes, and all its subtypes
-     * in the context of the given project, considering types in the
-     * working copies with the given owner.
-     * In other words, the owner's working copies will take
-     * precedence over their original compilation units in the workspace.
-     * <p>
-     * Note that if a working copy is empty, it will be as if the original compilation
-     * unit had been deleted.
-     * </p>
-     *
-     * @param project the given project
-     * @param owner the owner of working copies that take precedence over their original compilation units
-     * @param monitor the given progress monitor
-     * @exception JavaModelException if this element does not exist or if an
-     * exception occurs while accessing its corresponding resource.
-     * @return a type hierarchy for this type containing
-     * this type, all of its supertypes, and all its subtypes
-     * in the context of the given project
-     * @since 3.0
-     */
-    ITypeHierarchy newTypeHierarchy(IJavaProject project, WorkingCopyOwner owner, IProgressMonitor monitor)
-        throws JavaModelException;
-
-    /**
-     * Creates and returns a type hierarchy for this type containing
-     * this type, all of its supertypes, and all its subtypes in the workspace,
-     * considering types in the working copies with the given owner.
-     * In other words, the owner's working copies will take
-     * precedence over their original compilation units in the workspace.
-     * <p>
-     * Note that if a working copy is empty, it will be as if the original compilation
-     * unit had been deleted.
-     * </p>
-     *
-     * @param owner the owner of working copies that take precedence over their original compilation units
-     * @param monitor the given progress monitor
-     * @return a type hierarchy for this type containing
-     * this type, all of its supertypes, and all its subtypes in the workspace
-     * @exception JavaModelException if this element does not exist or if an
-     * exception occurs while accessing its corresponding resource.
-     * @since 3.0
-     */
-    ITypeHierarchy newTypeHierarchy(WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaModelException;
 
     /**
      * Returns whether this type represents a lambda expression.

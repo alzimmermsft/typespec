@@ -23,26 +23,21 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  *
  * @since 3.0
  */
-public class AnnotationDefaultAttribute extends ClassFileAttribute
-		implements
-			IAnnotationDefaultAttribute {
+public class AnnotationDefaultAttribute extends ClassFileAttribute implements IAnnotationDefaultAttribute {
 
-	private final IAnnotationComponentValue memberValue;
+    private final IAnnotationComponentValue memberValue;
 
-	/**
-	 * Constructor for AnnotationDefaultAttribute.
-	 */
-	public AnnotationDefaultAttribute(
-			byte[] classFileBytes,
-			IConstantPool constantPool,
-			int offset)
-			throws ClassFormatException {
-		super(classFileBytes, constantPool, offset);
-		this.memberValue = new AnnotationComponentValue(classFileBytes, constantPool, offset + 6);
-	}
+    /**
+     * Constructor for AnnotationDefaultAttribute.
+     */
+    public AnnotationDefaultAttribute(byte[] classFileBytes, IConstantPool constantPool, int offset)
+        throws ClassFormatException {
+        super(classFileBytes, constantPool, offset);
+        this.memberValue = new AnnotationComponentValue(classFileBytes, constantPool, offset + 6);
+    }
 
-	@Override
-	public IAnnotationComponentValue getMemberValue() {
-		return this.memberValue;
-	}
+    @Override
+    public IAnnotationComponentValue getMemberValue() {
+        return this.memberValue;
+    }
 }

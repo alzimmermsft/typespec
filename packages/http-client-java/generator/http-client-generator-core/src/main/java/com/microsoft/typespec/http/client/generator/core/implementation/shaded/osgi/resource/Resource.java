@@ -16,8 +16,8 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource;
 
-import java.util.List;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.ConsumerType;
+import java.util.List;
 
 /**
  * A resource is the representation of a uniquely identified and typed data. A
@@ -34,53 +34,53 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 @ConsumerType
 public interface Resource {
-	/**
-	 * Returns the capabilities declared by this resource.
-	 * 
-	 * @param namespace The namespace of the declared capabilities to return or
-	 *        {@code null} to return the declared capabilities from all
-	 *        namespaces.
-	 * @return An unmodifiable list containing the declared {@link Capability}s
-	 *         from the specified namespace. The returned list will be empty if
-	 *         this resource declares no capabilities in the specified
-	 *         namespace.
-	 */
-	List<Capability> getCapabilities(String namespace);
+    /**
+     * Returns the capabilities declared by this resource.
+     * 
+     * @param namespace The namespace of the declared capabilities to return or
+     * {@code null} to return the declared capabilities from all
+     * namespaces.
+     * @return An unmodifiable list containing the declared {@link Capability}s
+     * from the specified namespace. The returned list will be empty if
+     * this resource declares no capabilities in the specified
+     * namespace.
+     */
+    List<Capability> getCapabilities(String namespace);
 
-	/**
-	 * Returns the requirements declared by this bundle resource.
-	 * 
-	 * @param namespace The namespace of the declared requirements to return or
-	 *        {@code null} to return the declared requirements from all
-	 *        namespaces.
-	 * @return An unmodifiable list containing the declared {@link Requirement}
-	 *         s from the specified namespace. The returned list will be empty
-	 *         if this resource declares no requirements in the specified
-	 *         namespace.
-	 */
-	List<Requirement> getRequirements(String namespace);
+    /**
+     * Returns the requirements declared by this bundle resource.
+     * 
+     * @param namespace The namespace of the declared requirements to return or
+     * {@code null} to return the declared requirements from all
+     * namespaces.
+     * @return An unmodifiable list containing the declared {@link Requirement}
+     * s from the specified namespace. The returned list will be empty
+     * if this resource declares no requirements in the specified
+     * namespace.
+     */
+    List<Requirement> getRequirements(String namespace);
 
-	/**
-	 * Compares this {@code Resource} to another {@code Resource}.
-	 * 
-	 * <p>
-	 * This {@code Resource} is equal to another {@code Resource} if both have
-	 * the same content and come from the same location. Location may be defined
-	 * as the bundle location if the resource is an installed bundle or the
-	 * repository location if the resource is in a repository.
-	 * 
-	 * @param obj The object to compare against this {@code Resource}.
-	 * @return {@code true} if this {@code Resource} is equal to the other
-	 *         object; {@code false} otherwise.
-	 */
-	@Override
-	boolean equals(Object obj);
+    /**
+     * Compares this {@code Resource} to another {@code Resource}.
+     * 
+     * <p>
+     * This {@code Resource} is equal to another {@code Resource} if both have
+     * the same content and come from the same location. Location may be defined
+     * as the bundle location if the resource is an installed bundle or the
+     * repository location if the resource is in a repository.
+     * 
+     * @param obj The object to compare against this {@code Resource}.
+     * @return {@code true} if this {@code Resource} is equal to the other
+     * object; {@code false} otherwise.
+     */
+    @Override
+    boolean equals(Object obj);
 
-	/**
-	 * Returns the hashCode of this {@code Resource}.
-	 * 
-	 * @return The hashCode of this {@code Resource}.
-	 */
-	@Override
-	int hashCode();
+    /**
+     * Returns the hashCode of this {@code Resource}.
+     * 
+     * @return The hashCode of this {@code Resource}.
+     */
+    @Override
+    int hashCode();
 }

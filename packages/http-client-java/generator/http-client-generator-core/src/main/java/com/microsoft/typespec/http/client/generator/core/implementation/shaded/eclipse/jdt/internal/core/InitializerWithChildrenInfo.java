@@ -17,15 +17,15 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class InitializerWithChildrenInfo extends InitializerElementInfo {
 
-	protected IJavaElement[] children;
+    protected IJavaElement[] children;
 
-	public InitializerWithChildrenInfo(IJavaElement[] children) {
-		this.children = children;
-	}
+    public InitializerWithChildrenInfo(IJavaElement[] children) {
+        this.children = children;
+    }
 
-	@Override
-	public IJavaElement[] getChildren() {
-		return this.children;
-	}
+    @Override
+    public IJavaElement[] getChildren() {
+        return this.children;
+    }
 
 }

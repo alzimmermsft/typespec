@@ -16,9 +16,9 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import java.io.Serializable;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An immutable {@code Map.Entry}, used both by {@link
@@ -27,33 +27,35 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @GwtCompatible(serializable = true)
 @ElementTypesAreNonnullByDefault
-class ImmutableEntry<K extends @Nullable Object, V extends @Nullable Object>
-    extends AbstractMapEntry<K, V> implements Serializable {
-  @ParametricNullness final K key;
-  @ParametricNullness final V value;
+class ImmutableEntry<K extends @Nullable Object, V extends @Nullable Object> extends AbstractMapEntry<K, V>
+    implements Serializable {
+    @ParametricNullness
+    final K key;
+    @ParametricNullness
+    final V value;
 
-  ImmutableEntry(@ParametricNullness K key, @ParametricNullness V value) {
-    this.key = key;
-    this.value = value;
-  }
+    ImmutableEntry(@ParametricNullness K key, @ParametricNullness V value) {
+        this.key = key;
+        this.value = value;
+    }
 
-  @Override
-  @ParametricNullness
-  public final K getKey() {
-    return key;
-  }
+    @Override
+    @ParametricNullness
+    public final K getKey() {
+        return key;
+    }
 
-  @Override
-  @ParametricNullness
-  public final V getValue() {
-    return value;
-  }
+    @Override
+    @ParametricNullness
+    public final V getValue() {
+        return value;
+    }
 
-  @Override
-  @ParametricNullness
-  public final V setValue(@ParametricNullness V value) {
-    throw new UnsupportedOperationException();
-  }
+    @Override
+    @ParametricNullness
+    public final V setValue(@ParametricNullness V value) {
+        throw new UnsupportedOperationException();
+    }
 
-  private static final long serialVersionUID = 0;
+    private static final long serialVersionUID = 0;
 }

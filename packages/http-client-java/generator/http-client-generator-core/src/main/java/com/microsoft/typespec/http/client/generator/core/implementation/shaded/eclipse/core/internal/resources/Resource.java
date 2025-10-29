@@ -23,22 +23,15 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.resources;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.filesystem.EFS;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.filesystem.IFileInfo;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.filesystem.IFileStore;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.filesystem.provider.FileInfo;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.events.LifecycleEvent;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.localstore.FileSystemResourceManager;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.properties.IPropertyManager;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.utils.FileUtil;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.utils.Messages;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.utils.WrappedRuntimeException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.watson.ElementTreeIterator;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.watson.IElementContentVisitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.watson.IPathRequestor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.FileInfoMatcherDescription;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IContainer;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IFile;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IFolder;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IMarker;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IPathVariableManager;
@@ -48,30 +41,18 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResourceStatus;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResourceVisitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IWorkspace;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IWorkspaceRoot;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.ResourceAttributes;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.ResourcesPlugin;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.team.IMoveDeleteHook;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IStatus;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.MultiStatus;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.OperationCanceledException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.PlatformObject;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.QualifiedName;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Status;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.SubMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.jobs.ISchedulingRule;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.jobs.MultiRule;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.util.NLS;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 public abstract class Resource extends PlatformObject implements IResource, ICoreConstants, Cloneable, IPathRequestor {
@@ -187,55 +168,6 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
         }
     }
 
-    protected void assertCopyRequirements(IPath destination, int destinationType)
-        throws CoreException {
-        IStatus status = checkCopyRequirements(destination, destinationType);
-        if (!status.isOK()) {
-            // This assert is ok because the error cases generated by the check method above
-            // indicate assertion conditions.
-            Assert.isTrue(false, status.getChildren()[0].getMessage());
-        }
-    }
-
-    /**
-     * Throws an exception if the link preconditions are not met. Returns the file info
-     * for the file being linked to, or <code>null</code> if not available.
-     */
-    protected IFileInfo assertLinkRequirements(URI localLocation, int updateFlags) throws CoreException {
-        boolean allowMissingLocal = (updateFlags & IResource.ALLOW_MISSING_LOCAL) != 0;
-        if ((updateFlags & IResource.REPLACE) == 0) {
-            checkDoesNotExist(getFlags(getResourceInfo(false, false)), true);
-        }
-        IStatus locationStatus = workspace.validateLinkLocationURI(this, localLocation);
-        // We only tolerate an undefined path variable in the allow missing local case.
-        final boolean variableUndefined = locationStatus.getCode() == IResourceStatus.VARIABLE_NOT_DEFINED_WARNING;
-        if (locationStatus.getSeverity() == IStatus.ERROR || (variableUndefined && !allowMissingLocal)) {
-            throw new ResourceException(locationStatus);
-        }
-        // Check that the parent exists and is open.
-        Container parent = (Container) getParent();
-        parent.checkAccessible(getFlags(parent.getResourceInfo(false, false)));
-        // If the variable is undefined we can't do any further checks.
-        if (variableUndefined) {
-            return null;
-        }
-        // Check if the file exists.
-        URI resolved = getPathVariableManager().resolveURI(localLocation);
-        IFileStore store = EFS.getStore(resolved);
-        IFileInfo fileInfo = store.fetchInfo();
-        boolean localExists = fileInfo.exists();
-        if (!allowMissingLocal && !localExists) {
-            String msg = NLS.bind(Messages.links_localDoesNotExist, store.toString());
-            throw new ResourceException(IResourceStatus.NOT_FOUND_LOCAL, getFullPath(), msg, null);
-        }
-        // Resource type and file system type must match.
-        if (localExists && ((getType() == IResource.FOLDER) != fileInfo.isDirectory())) {
-            String msg = NLS.bind(Messages.links_wrongLocalType, getFullPath());
-            throw new ResourceException(IResourceStatus.WRONG_TYPE_LOCAL, getFullPath(), msg, null);
-        }
-        return fileInfo;
-    }
-
     public void checkAccessible(int flags) throws CoreException {
         checkExists(flags, true);
     }
@@ -246,114 +178,6 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
         checkAccessible(flags);
         checkLocal(flags, depth);
         return info;
-    }
-
-    /**
-     * This method reports errors in two different ways. It can throw a
-     * CoreException or return a status. CoreExceptions are used according to the
-     * specification of the copy method. Programming errors, that would usually be
-     * prevented by using an "Assert" code, are reported as an IStatus. We're doing
-     * this way because we have two different methods to copy resources:
-     * IResource#copy and IWorkspace#copy. The first one gets the error and throws
-     * its message in an AssertionFailureException. The second one just throws a
-     * CoreException using the status returned by this method.
-     */
-    public IStatus checkCopyRequirements(IPath destination, int destinationType) throws CoreException {
-        String message = Messages.resources_copyNotMet;
-        MultiStatus status
-            = new MultiStatus(ResourcesPlugin.PI_RESOURCES, IResourceStatus.INVALID_VALUE, message, null);
-        if (destination == null) {
-            message = Messages.resources_destNotNull;
-            return new ResourceStatus(IResourceStatus.INVALID_VALUE, getFullPath(), message);
-        }
-        destination = makePathAbsolute(destination);
-        if (getFullPath().isPrefixOf(destination)) {
-            message = NLS.bind(Messages.resources_copyDestNotSub, getFullPath());
-            status.add(new ResourceStatus(IResourceStatus.INVALID_VALUE, getFullPath(), message));
-        }
-        checkValidPath(destination, destinationType, false);
-
-        ResourceInfo info;
-        checkAccessibleAndLocal(DEPTH_INFINITE);
-
-        IPath destinationParent = destination.removeLastSegments(1);
-        checkValidGroupContainer(destinationParent, isLinked(), isVirtual());
-
-        Resource dest = workspace.newResource(destination, destinationType);
-        dest.checkDoesNotExist();
-
-        // Ensure we aren't trying to copy a file to a project.
-        if (getType() == IResource.FILE && destinationType == IResource.PROJECT) {
-            message = Messages.resources_fileToProj;
-            throw new ResourceException(IResourceStatus.INVALID_VALUE, getFullPath(), message, null);
-        }
-
-        // We can't copy into a closed project.
-        if (destinationType != IResource.PROJECT) {
-            Project project = (Project) dest.getProject();
-            info = project.getResourceInfo(false, false);
-            project.checkAccessible(getFlags(info));
-            Container parent = (Container) dest.getParent();
-            if (!parent.equals(project)) {
-                info = parent.getResourceInfo(false, false);
-                parent.checkExists(getFlags(info), true);
-            }
-        }
-        if (isUnderLink() || dest.isUnderLink()) {
-            // Make sure location is not null. This can occur with linked resources relative to
-            // undefined path variables
-            URI sourceLocation = getLocationURI();
-            if (sourceLocation == null) {
-                message = NLS.bind(Messages.localstore_locationUndefined, getFullPath());
-                throw new ResourceException(IResourceStatus.FAILED_READ_LOCAL, getFullPath(), message, null);
-            }
-            URI destLocation = dest.getLocationURI();
-            if (destLocation == null && !dest.isUnderVirtual()) {
-                message = NLS.bind(Messages.localstore_locationUndefined, dest.getFullPath());
-                throw new ResourceException(IResourceStatus.FAILED_READ_LOCAL, dest.getFullPath(), message, null);
-            }
-            // Make sure location of source is not a prefix of the location of the destination
-            // this can occur if the source and/or destination is a linked resource
-            if (getStore().isParentOf(dest.getStore())) {
-                message = NLS.bind(Messages.resources_copyDestNotSub, getFullPath());
-                throw new ResourceException(IResourceStatus.INVALID_VALUE, getFullPath(), message, null);
-            }
-        }
-
-        return status.isOK() ? Status.OK_STATUS : (IStatus) status;
-    }
-
-    /**
-     * Checks that this resource does not exist. If the file system is not case
-     * sensitive, this method also checks for a case variant.
-     */
-    protected void checkDoesNotExist() throws CoreException {
-        checkDoesNotExist(getFlags(getResourceInfo(false, false)), false);
-    }
-
-    /**
-     * Checks that this resource does not exist. If the file system is not case
-     * sensitive, this method also checks for a case variant.
-     *
-     * @exception CoreException if this resource exists
-     */
-    public void checkDoesNotExist(int flags, boolean checkType) throws CoreException {
-        // If this exact resource exists we are done.
-        if (exists(flags, checkType)) {
-            String message = NLS.bind(Messages.resources_mustNotExist, getFullPath());
-            throw new ResourceException(checkType ? IResourceStatus.RESOURCE_EXISTS : IResourceStatus.PATH_OCCUPIED,
-                getFullPath(), message, null);
-        }
-        if (Workspace.caseSensitive) {
-            return;
-        }
-        // Now look for a matching case variant in the tree.
-        IResource variant = findExistingResourceVariant(getFullPath());
-        if (variant == null) {
-            return;
-        }
-        String msg = NLS.bind(Messages.resources_existsDifferentCase, variant.getFullPath());
-        throw new ResourceException(IResourceStatus.CASE_VARIANT_EXISTS, variant.getFullPath(), msg, null);
     }
 
     /**
@@ -379,60 +203,6 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
             String message = NLS.bind(Messages.resources_mustBeLocal, getFullPath());
             throw new ResourceException(IResourceStatus.RESOURCE_NOT_LOCAL, getFullPath(), message, null);
         }
-    }
-
-    /**
-     * Checks that the supplied path is valid according to Workspace.validatePath().
-     *
-     * @exception CoreException if the path is not valid
-     */
-    public void checkValidPath(IPath toValidate, int type, boolean lastSegmentOnly) throws CoreException {
-        IStatus result = workspace.locationValidator.validatePath(toValidate, type, lastSegmentOnly);
-        if (!result.isOK()) {
-            throw new ResourceException(result);
-        }
-    }
-
-    /**
-     * Checks that the destination is a suitable one given that it could be a group.
-     *
-     * @exception CoreException if the path points to a group
-     */
-    public void checkValidGroupContainer(IPath destination, boolean isLink, boolean isGroup) throws CoreException {
-        IStatus status = getValidGroupContainer(destination, isLink, isGroup);
-        if (!status.isOK()) {
-            throw new ResourceException(status);
-        }
-    }
-
-    /**
-     * Checks that the destination is a suitable one given that it could be a group.
-     *
-     * @exception CoreException if the path points to a group
-     */
-    public void checkValidGroupContainer(Container destination, boolean isLink, boolean isGroup) throws CoreException {
-        if (!isLink && !isGroup) {
-            String message = Messages.group_invalidParent;
-            if (destination.isVirtual()) {
-                throw new ResourceException(new ResourceStatus(IResourceStatus.INVALID_VALUE, null, message));
-            }
-        }
-    }
-
-    public IStatus getValidGroupContainer(IPath destination, boolean isLink, boolean isGroup) {
-        if (!isLink && !isGroup) {
-            String message = Messages.group_invalidParent;
-            ResourceInfo info = workspace.getResourceInfo(destination, false, false);
-            if (info != null && info.isSet(M_VIRTUAL)) {
-                return new ResourceStatus(IResourceStatus.INVALID_VALUE, null, message);
-            }
-        }
-        return Status.OK_STATUS;
-    }
-
-    @Override
-    public void clearHistory(IProgressMonitor monitor) {
-        getLocalManager().getHistoryStore().remove(getFullPath(), monitor);
     }
 
     @Override
@@ -476,86 +246,6 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
         info.setMarkers(null);
     }
 
-    /**
-     * Count the number of resources in the tree from this container to the
-     * specified depth. Include this resource. Include phantoms if
-     * the phantom boolean is true.
-     */
-    public int countResources(int depth, boolean phantom) {
-        return workspace.countResources(path, depth, phantom);
-    }
-
-    public void createLink(URI localLocation, int updateFlags, IProgressMonitor monitor) throws CoreException {
-        Assert.isNotNull(localLocation);
-        IResource existing = null;
-        if ((updateFlags & REPLACE) != 0) {
-            existing = workspace.getRoot().findMember(getFullPath());
-            if (existing != null && existing.isLinked()) {
-                setLinkLocation(localLocation, updateFlags, monitor);
-                return;
-            }
-        }
-
-        String message = NLS.bind(Messages.links_creating, getFullPath());
-        SubMonitor progress = SubMonitor.convert(monitor, message, 100).checkCanceled();
-        checkValidPath(path, FOLDER, true);
-        final ISchedulingRule rule = workspace.getRuleFactory().createRule(this);
-        SubMonitor split = progress.split(1);
-        try {
-            workspace.prepareOperation(rule, split);
-            IFileInfo fileInfo = assertLinkRequirements(localLocation, updateFlags);
-            workspace.broadcastEvent(LifecycleEvent.newEvent(LifecycleEvent.PRE_LINK_CREATE, this));
-            workspace.beginOperation(true);
-            // Replace existing resource, if applicable.
-            if ((updateFlags & REPLACE) != 0 && existing != null) {
-                workspace.deleteResource(existing);
-            }
-            ResourceInfo info = workspace.createResource(this, false);
-            if ((updateFlags & IResource.HIDDEN) != 0) {
-                info.set(M_HIDDEN);
-            }
-            info.set(M_LINK);
-            LinkDescription linkDescription = new LinkDescription(this, localLocation);
-            if (linkDescription.isGroup()) {
-                info.set(M_VIRTUAL);
-            }
-            getLocalManager().link(this, localLocation, fileInfo);
-            progress.split(5);
-            // Save the location in the project description.
-            Project project = (Project) getProject();
-            boolean changed
-                = project.internalGetDescription().setLinkLocation(getProjectRelativePath(), linkDescription);
-            if (changed) {
-                try {
-                    project.writeDescription();
-                } catch (CoreException e) {
-                    // A problem happened updating the description, so delete the resource from the workspace.
-                    workspace.deleteResource(this);
-                    throw e; // Rethrow.
-                }
-            }
-            progress.split(4);
-
-            // Refresh to discover any new resources below this linked location.
-            if (getType() != IResource.FILE) {
-                // Refresh either in background or foreground.
-                if ((updateFlags & IResource.BACKGROUND_REFRESH) != 0) {
-                    progress.split(90);
-                } else {
-                    refreshLocal(DEPTH_INFINITE, progress.split(90));
-                }
-            } else {
-                progress.split(90);
-            }
-        } catch (OperationCanceledException e) {
-            workspace.getWorkManager().operationCanceled();
-            throw e;
-        } finally {
-            progress.done();
-            workspace.endOperation(rule, true);
-        }
-    }
-
     @Override
     public IMarker createMarker(String type) throws CoreException {
         return createMarker(type, Collections.emptyMap());
@@ -586,74 +276,6 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
     }
 
     @Override
-    public void delete(boolean force, IProgressMonitor monitor) throws CoreException {
-        delete(force ? IResource.FORCE : IResource.NONE, monitor);
-    }
-
-    @Override
-    public void delete(int updateFlags, IProgressMonitor monitor) throws CoreException {
-        String message = NLS.bind(Messages.resources_deleting, getFullPath());
-        SubMonitor progress = SubMonitor.convert(monitor, 100).checkCanceled();
-        progress.subTask(message);
-        final ISchedulingRule rule = workspace.getRuleFactory().deleteRule(this);
-        SubMonitor split = progress.split(1);
-        try {
-            workspace.prepareOperation(rule, split);
-            // If there is no resource then there is nothing to delete so just return.
-            if (!exists()) {
-                return;
-            }
-            workspace.beginOperation(true);
-            broadcastPreDeleteEvent();
-
-            final IFileStore originalStore = getStore();
-            boolean wasLinked = isLinked();
-            message = Messages.resources_deleteProblem;
-            MultiStatus status
-                = new MultiStatus(ResourcesPlugin.PI_RESOURCES, IResourceStatus.FAILED_DELETE_LOCAL, message, null);
-            WorkManager workManager = workspace.getWorkManager();
-            ResourceTree tree
-                = new ResourceTree(workspace.getFileSystemManager(), workManager.getLock(), status, updateFlags);
-            int depth = 0;
-            try {
-                depth = workManager.beginUnprotected();
-                unprotectedDelete(tree, updateFlags, progress.split(50));
-            } finally {
-                workManager.endUnprotected(depth);
-            }
-            if (getType() == ROOT) {
-                // Need to clear out the root info.
-                workspace.getMarkerManager().removeMarkers(this, IResource.DEPTH_ZERO);
-                getPropertyManager().deleteProperties(this, IResource.DEPTH_ZERO);
-                getResourceInfo(false, false).clearSessionProperties();
-            }
-            // Invalidate the tree for further use by clients.
-            tree.makeInvalid();
-            if (!tree.getStatus().isOK()) {
-                throw new ResourceException(tree.getStatus());
-            }
-            // Update any aliases of this resource.
-            // Note that deletion of a linked resource cannot affect other resources.
-            if (!wasLinked) {
-                workspace.getAliasManager()
-                    .updateAliases(this, originalStore, IResource.DEPTH_INFINITE, progress.split(48));
-            }
-            if (getType() == PROJECT) {
-                // Make sure the rule factory is cleared on project deletion.
-                ((Rules) workspace.getRuleFactory()).setRuleFactory((IProject) this, null);
-                // Make sure project deletion is remembered.
-                workspace.getSaveManager().requestSnapshot();
-            }
-        } catch (OperationCanceledException e) {
-            workspace.getWorkManager().operationCanceled();
-            throw e;
-        } finally {
-            progress.done();
-            workspace.endOperation(rule, true);
-        }
-    }
-
-    @Override
     public void deleteMarkers(String type, boolean includeSubtypes, int depth) throws CoreException {
         final ISchedulingRule rule = workspace.getRuleFactory().markerRule(this);
         try {
@@ -666,137 +288,6 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
         } finally {
             workspace.endOperation(rule, false);
         }
-    }
-
-    /**
-     * This method should be called to delete a resource from the tree because it will also
-     * delete its properties and markers. If a status object is provided, minor exceptions are
-     * added, otherwise they are thrown. If major exceptions occur, they are always thrown.
-     */
-    public void deleteResource(boolean convertToPhantom, MultiStatus status) throws CoreException {
-        // Remove markers on this resource and its descendants.
-        if (exists()) {
-            getMarkerManager().removeMarkers(this, IResource.DEPTH_INFINITE);
-        }
-        // If this is a linked resource or contains linked resources,
-        // remove their entries from the project description.
-        List<Resource> links = findLinks();
-        // Pre-delete notification to internal infrastructure
-        if (links != null) {
-            for (Resource resource : links) {
-                workspace.broadcastEvent(LifecycleEvent.newEvent(LifecycleEvent.PRE_LINK_DELETE, resource));
-            }
-        }
-
-        // Check if we deleted a preferences file.
-        ProjectPreferences.deleted(this);
-
-        // Remove all deleted linked resources from the project description.
-        if (getType() != IResource.PROJECT && links != null) {
-            Project project = (Project) getProject();
-            ProjectDescription description = project.internalGetDescription();
-            if (description != null) {
-                boolean wasChanged = false;
-                for (Resource resource : links) {
-                    wasChanged |= description.setLinkLocation(resource.getProjectRelativePath(), null);
-                }
-                if (wasChanged) {
-                    project.internalSetDescription(description, true);
-                    try {
-                        project.writeDescription();
-                    } catch (CoreException e) {
-                        // A problem happened updating the description, update the description in memory.
-                        project.updateDescription();
-                        throw e; // Rethrow.
-                    }
-                }
-            }
-        }
-
-        // If we are synchronizing, do not delete the resource. Convert it
-        // into a phantom. Actual deletion will happen when we refresh or push.
-        if (convertToPhantom && getType() != PROJECT && synchronizing(getResourceInfo(true, false))) {
-            convertToPhantom();
-        } else {
-            workspace.deleteResource(this);
-        }
-
-        List<Resource> filters = findFilters();
-        if ((filters != null) && (!filters.isEmpty())) {
-            // Delete resource filters.
-            Project project = (Project) getProject();
-            ProjectDescription description = project.internalGetDescription();
-            if (description != null) {
-                for (Resource resource : filters) {
-                    description.setFilters(resource.getProjectRelativePath(), null);
-                }
-                project.internalSetDescription(description, true);
-                project.writeDescription();
-            }
-        }
-
-        // Delete properties after the resource is deleted from the tree. See bug 84584.
-        CoreException err = null;
-        try {
-            getPropertyManager().deleteResource(this);
-        } catch (CoreException e) {
-            if (status != null) {
-                status.add(e.getStatus());
-            } else {
-                err = e;
-            }
-        }
-        if (err != null) {
-            throw err;
-        }
-    }
-
-    /**
-     * Returns a list of all linked resources at or below this resource, or null if there are no links.
-     */
-    private List<Resource> findLinks() {
-        Project project = (Project) getProject();
-        ProjectDescription description = project.internalGetDescription();
-        HashMap<IPath, LinkDescription> linkMap = description.getLinks();
-        if (linkMap == null) {
-            return null;
-        }
-        List<Resource> links = null;
-        IPath myPath = getProjectRelativePath();
-        for (LinkDescription link : linkMap.values()) {
-            IPath linkPath = link.getProjectRelativePath();
-            if (myPath.isPrefixOf(linkPath)) {
-                if (links == null) {
-                    links = new ArrayList<>();
-                }
-                links.add(workspace.newResource(project.getFullPath().append(linkPath), link.getType()));
-            }
-        }
-        return links;
-    }
-
-    /**
-     * Returns a list of all filtered resources at or below this resource, or null if there are no links.
-     */
-    private List<Resource> findFilters() {
-        Project project = (Project) getProject();
-        ProjectDescription description = project.internalGetDescription();
-        List<Resource> filters = null;
-        if (description != null) {
-            HashMap<IPath, LinkedList<FilterDescription>> filterMap = description.getFilters();
-            if (filterMap != null) {
-                IPath myPath = getProjectRelativePath();
-                for (IPath filterPath : filterMap.keySet()) {
-                    if (myPath.isPrefixOf(filterPath)) {
-                        if (filters == null) {
-                            filters = new ArrayList<>();
-                        }
-                        filters.add(workspace.newResource(project.getFullPath().append(filterPath), IResource.FOLDER));
-                    }
-                }
-            }
-        }
-        return filters;
     }
 
     @Override
@@ -820,34 +311,6 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
         return flags != NULL_FLAG && !(checkType && ResourceInfo.getType(flags) != getType());
     }
 
-    /**
-     * Helper method for case insensitive file systems. Returns
-     * an existing resource whose path differs only in case from
-     * the given path, or null if no such resource exists.
-     */
-    public IResource findExistingResourceVariant(IPath target) {
-        if (!workspace.tree.includesIgnoreCase(target)) {
-            return null;
-        }
-        // Ignore phantoms.
-        ResourceInfo info = (ResourceInfo) workspace.tree.getElementDataIgnoreCase(target);
-        if (info != null && info.isSet(M_PHANTOM)) {
-            return null;
-        }
-        // Resort to slow lookup to find exact case variant.
-        IPath result = IPath.ROOT;
-        int segmentCount = target.segmentCount();
-        for (int i = 0; i < segmentCount; i++) {
-            String[] childNames = workspace.tree.getNamesOfChildren(result);
-            String name = findVariant(target.segment(i), childNames);
-            if (name == null) {
-                return null;
-            }
-            result = result.append(name);
-        }
-        return workspace.getRoot().findMember(result);
-    }
-
     @Override
     public IMarker[] findMarkers(String type, boolean includeSubtypes, int depth) throws CoreException {
         ResourceInfo info = getResourceInfo(false, false);
@@ -855,56 +318,6 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
         // It might happen that from this point the resource is not accessible anymore.
         // But markers have the #exists method that callers can use to check if it is still valid.
         return workspace.getMarkerManager().findMarkers(this, type, includeSubtypes, depth);
-    }
-
-    /**
-     * Searches for a variant of the given target in the list,
-     * that differs only in case. Returns the variant from
-     * the list if one is found, otherwise returns null.
-     */
-    private String findVariant(String target, String[] list) {
-        for (String element : list) {
-            if (target.equalsIgnoreCase(element)) {
-                return element;
-            }
-        }
-        return null;
-    }
-
-    protected void fixupAfterMoveSource() throws CoreException {
-        ResourceInfo info = getResourceInfo(true, true);
-        // If a linked resource is moved, we need to remove the location info from the ".project" file.
-        if (isLinked() || isVirtual()) {
-            Project project = (Project) getProject();
-            if (project.internalGetDescription().setLinkLocation(getProjectRelativePath(), null)) {
-                project.writeDescription();
-            }
-        }
-
-        List<Resource> filters = findFilters();
-        if ((filters != null) && (!filters.isEmpty())) {
-            // Delete resource filters.
-            Project project = (Project) getProject();
-            ProjectDescription description = project.internalGetDescription();
-            for (Resource resource : filters) {
-                description.setFilters(resource.getProjectRelativePath(), null);
-            }
-            project.writeDescription();
-        }
-
-        // Check if we deleted a preferences file.
-        ProjectPreferences.deleted(this);
-
-        if (!synchronizing(info)) {
-            workspace.deleteResource(this);
-            return;
-        }
-        info.clearSessionProperties();
-        info.clear(M_LOCAL_EXISTS);
-        info.setLocalSyncInfo(I_NULL_SYNC_INFO);
-        info.set(M_PHANTOM);
-        info.clearModificationStamp();
-        info.setMarkers(null);
     }
 
     @Override
@@ -949,10 +362,6 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
             return null;
         }
         return getLocalManager().locationURIFor(this, false);
-    }
-
-    protected MarkerManager getMarkerManager() {
-        return workspace.getMarkerManager();
     }
 
     @Override
@@ -1000,23 +409,6 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
     }
 
     @Override
-    public IPath getRawLocation() {
-        if (isLinked()) {
-            return FileUtil
-                .toPath(((Project) getProject()).internalGetDescription().getLinkLocationURI(getProjectRelativePath()));
-        }
-        return getLocation();
-    }
-
-    @Override
-    public URI getRawLocationURI() {
-        if (isLinked()) {
-            return ((Project) getProject()).internalGetDescription().getLinkLocationURI(getProjectRelativePath());
-        }
-        return getLocationURI();
-    }
-
-    @Override
     public ResourceAttributes getResourceAttributes() {
         if (!isAccessible() || isVirtual()) {
             return null;
@@ -1035,12 +427,6 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
      */
     public ResourceInfo getResourceInfo(boolean phantom, boolean mutable) {
         return workspace.getResourceInfo(getFullPath(), phantom, mutable);
-    }
-
-    @Override
-    public Object getSessionProperty(QualifiedName key) throws CoreException {
-        ResourceInfo info = checkAccessibleAndLocal(DEPTH_ZERO);
-        return info.getSessionProperty(key);
     }
 
     public IFileStore getStore() {
@@ -1216,20 +602,6 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
         return info != null && info.isSet(M_VIRTUAL);
     }
 
-    /**
-     * Checks whether the current resource has a parent that is virtual.
-     */
-    public boolean isUnderVirtual() {
-        IContainer parent = getParent();
-        while (parent != null) {
-            if (parent.isVirtual()) {
-                return true;
-            }
-            parent = parent.getParent();
-        }
-        return false;
-    }
-
     @Override
     @Deprecated
     public boolean isLocal(int depth) {
@@ -1284,66 +656,6 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
         return flags != NULL_FLAG && ResourceInfo.isSet(flags, M_PHANTOM);
     }
 
-    @Deprecated
-    @Override
-    public boolean isReadOnly() {
-        final ResourceAttributes attributes = getResourceAttributes();
-        return attributes != null && attributes.isReadOnly();
-    }
-
-    /**
-     * Returns true if this resource is a linked resource, or a child of a linked
-     * resource, and false otherwise.
-     */
-    public boolean isUnderLink() {
-        int depth = path.segmentCount();
-        if (depth < 2) {
-            return false;
-        }
-        if (depth == 2) {
-            return isLinked();
-        }
-        // Check if parent at depth two is a link.
-        IPath linkParent = path.removeLastSegments(depth - 2);
-        return workspace.getResourceInfo(linkParent, false, false).isSet(ICoreConstants.M_LINK);
-    }
-
-    protected IPath makePathAbsolute(IPath target) {
-        if (target.isAbsolute()) {
-            return target;
-        }
-        return getParent().getFullPath().append(target);
-    }
-
-    @Override
-    public void refreshLocal(int depth, IProgressMonitor monitor) throws CoreException {
-        boolean isRoot = getType() == ROOT;
-        String message
-            = isRoot ? Messages.resources_refreshingRoot : NLS.bind(Messages.resources_refreshing, getFullPath());
-        SubMonitor progress = SubMonitor.convert(monitor, 100).checkCanceled();
-        progress.subTask(message);
-        boolean build = false;
-        final ISchedulingRule rule = workspace.getRuleFactory().refreshRule(this);
-        SubMonitor split = progress.split(1);
-        try {
-            workspace.prepareOperation(rule, split);
-            if ((!isRoot && !getProject().isAccessible()) || (!exists() && isFiltered())) {
-                return;
-            }
-            workspace.beginOperation(true);
-            if (getType() == IResource.PROJECT || getType() == IResource.ROOT) {
-                workspace.broadcastEvent(LifecycleEvent.newEvent(LifecycleEvent.PRE_REFRESH, this));
-            }
-            build = getLocalManager().refresh(this, depth, true, progress.split(98));
-        } catch (OperationCanceledException e) {
-            workspace.getWorkManager().operationCanceled();
-            throw e;
-        } finally {
-            progress.done();
-            workspace.endOperation(rule, build);
-        }
-    }
-
     @Override
     public String requestName() {
         return getName();
@@ -1381,32 +693,9 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
     }
 
     @Override
-    public void setPersistentProperty(QualifiedName key, String value) throws CoreException {
-        checkAccessibleAndLocal(DEPTH_ZERO);
-        getPropertyManager().setProperty(this, key, value);
-    }
-
-    @Override
     public void setResourceAttributes(ResourceAttributes attributes) throws CoreException {
         checkAccessibleAndLocal(DEPTH_ZERO);
         getLocalManager().setResourceAttributes(this, attributes);
-    }
-
-    @Override
-    public void setSessionProperty(QualifiedName key, Object value) throws CoreException {
-        // Fetch the info but don't bother making it mutable even though we are going to modify it.
-        // We don't know whether or not the tree is open and it really doesn't matter as the change
-        // we are making does not show up in deltas.
-        ResourceInfo info = checkAccessibleAndLocal(DEPTH_ZERO);
-        info.setSessionProperty(key, value);
-    }
-
-    /**
-     * Returns true if this resource has the potential to be
-     * (or have been) synchronized.
-     */
-    public boolean synchronizing(ResourceInfo info) {
-        return info != null && info.getSyncInfo(false) != null;
     }
 
     @Override
@@ -1415,248 +704,11 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
     }
 
     @Override
-    public void touch(IProgressMonitor monitor) throws CoreException {
-        String message = NLS.bind(Messages.resources_touch, getFullPath());
-        SubMonitor progress = SubMonitor.convert(monitor, message, 100).checkCanceled();
-        final ISchedulingRule rule = workspace.getRuleFactory().modifyRule(this);
-        SubMonitor split = progress.split(1);
-        try {
-            workspace.prepareOperation(rule, split);
-            checkAccessibleAndLocal(DEPTH_ZERO);
-            ResourceInfo info;
-
-            workspace.beginOperation(true);
-            // Fake a change by incrementing the content ID.
-            info = getResourceInfo(false, true);
-            info.incrementContentId();
-            // Forget content-related caching flags.
-            info.clear(M_CONTENT_CACHE);
-            workspace.updateModificationStamp(info);
-            progress.split(98);
-        } catch (OperationCanceledException e) {
-            workspace.getWorkManager().operationCanceled();
-            throw e;
-        } finally {
-            progress.done();
-            workspace.endOperation(rule, true);
-        }
-    }
-
-    /**
-     * Calls the move/delete hook to perform the deletion. Since this method calls
-     * client code, it is run "unprotected", so the workspace lock is not held.
-     */
-    private void unprotectedDelete(ResourceTree tree, int updateFlags, IProgressMonitor monitor) {
-        IMoveDeleteHook hook = workspace.getMoveDeleteHook();
-        SubMonitor progress = SubMonitor.convert(monitor, 2).checkCanceled();
-        try {
-            switch (getType()) {
-                case IResource.FILE:
-                    if (!hook.deleteFile(tree, (IFile) this, updateFlags, progress.split(1))) {
-                        tree.standardDeleteFile((IFile) this, updateFlags, progress.split(1));
-                    }
-                    break;
-
-                case IResource.FOLDER:
-                    if (!hook.deleteFolder(tree, (IFolder) this, updateFlags, progress.split(1))) {
-                        tree.standardDeleteFolder((IFolder) this, updateFlags, progress.split(1));
-                    }
-                    break;
-
-                case IResource.PROJECT:
-                    if (!hook.deleteProject(tree, (IProject) this, updateFlags, progress.split(1))) {
-                        tree.standardDeleteProject((IProject) this, updateFlags, progress.split(1));
-                    }
-                    break;
-
-                case IResource.ROOT:
-                    // When the root is deleted, all its children including hidden projects have to
-                    // be deleted.
-                    IProject[] projects = ((IWorkspaceRoot) this).getProjects(IContainer.INCLUDE_HIDDEN);
-                    progress.setWorkRemaining(projects.length * 2);
-                    for (IProject project : projects) {
-                        if (!hook.deleteProject(tree, project, updateFlags, progress.split(1))) {
-                            tree.standardDeleteProject(project, updateFlags, progress.split(1));
-                        }
-                    }
-                    break;
-            }
-        } finally {
-            progress.done();
-        }
-    }
-
-    private void broadcastPreDeleteEvent() throws CoreException {
-        switch (getType()) {
-            case IResource.PROJECT:
-                workspace.broadcastEvent(LifecycleEvent.newEvent(LifecycleEvent.PRE_PROJECT_DELETE, this));
-                break;
-
-            case IResource.ROOT:
-                // All root children including hidden projects will be deleted so notify.
-                IResource[] projects = ((Container) this).getChildren(IContainer.INCLUDE_HIDDEN);
-                for (IResource project2 : projects) {
-                    workspace.broadcastEvent(LifecycleEvent.newEvent(LifecycleEvent.PRE_PROJECT_DELETE, project2));
-                }
-                break;
-        }
-    }
-
-    @Override
     public IPathVariableManager getPathVariableManager() {
         if (getProject() == null) {
             return workspace.getPathVariableManager();
         }
         return new ProjectPathVariableManager(this);
-    }
-
-    /**
-     * Calculates whether the current resource is filtered out from the resource tree
-     * by resource filters. This can happen because resource filters apply to the resource,
-     * or because resource filters apply to one of its parent. For example, if "/foo/bar"
-     * is filtered out, then calling isFilteredFromParent() on "/foo/bar/sub/file.txt" will
-     * return true as well, even though there's no resource filters that apply to "file.txt" per se.
-     *
-     * @return true is the resource is filtered out from the resource tree
-     * @see IContainer#createFilter(int, FileInfoMatcherDescription, int, IProgressMonitor)
-     */
-    public boolean isFiltered() {
-        try {
-            return isFilteredWithException(false);
-        } catch (CoreException e) {
-            // nothing
-        }
-        return false;
-    }
-
-    public boolean isFilteredWithException(boolean throwExeception) throws CoreException {
-        if (isLinked() || isVirtual()) {
-            return false;
-        }
-
-        Project project = (Project) getProject();
-        if (project == null) {
-            return false;
-        }
-        final ProjectDescription description = project.internalGetDescription();
-        if ((description == null) || (description.getFilters() == null)) {
-            return false;
-        }
-
-        Resource currentResource = this;
-        while (currentResource != null && currentResource.getParent() != null) {
-            Resource parent = (Resource) currentResource.getParent();
-            IFileStore store = currentResource.getStore();
-            if (store != null) {
-                FileInfo fileInfo = new FileInfo(store.getName());
-                fileInfo.setDirectory(currentResource.getType() == IResource.FOLDER);
-                if (fileInfo != null) {
-                    IFileInfo[] filtered
-                        = parent.filterChildren(project, description, new IFileInfo[] { fileInfo }, throwExeception);
-                    if (filtered.length == 0) {
-                        return true;
-                    }
-                }
-            }
-            currentResource = parent;
-        }
-        return false;
-    }
-
-    public IFileInfo[] filterChildren(IFileInfo[] list, boolean throwException) throws CoreException {
-        Project project = (Project) getProject();
-        if (project == null) {
-            return list;
-        }
-        final ProjectDescription description = project.internalGetDescription();
-        if (description == null) {
-            return list;
-        }
-        return filterChildren(project, description, list, throwException);
-    }
-
-    private IFileInfo[] filterChildren(Project project, ProjectDescription description, IFileInfo[] list,
-        boolean throwException) throws CoreException {
-        IPath relativePath = getProjectRelativePath();
-        LinkedList<Filter> currentIncludeFilters = new LinkedList<>();
-        LinkedList<Filter> currentExcludeFilters = new LinkedList<>();
-        LinkedList<FilterDescription> filters;
-
-        boolean firstSegment = true;
-        do {
-            if (!firstSegment) {
-                relativePath = relativePath.removeLastSegments(1);
-            }
-            filters = description.getFilter(relativePath);
-            if (filters != null) {
-                for (FilterDescription desc : filters) {
-                    if (firstSegment || desc.isInheritable()) {
-                        Filter filter = new Filter(project, desc);
-                        if (filter.isIncludeOnly()) {
-                            if (filter.isFirst()) {
-                                currentIncludeFilters.addFirst(filter);
-                            } else {
-                                currentIncludeFilters.addLast(filter);
-                            }
-                        } else {
-                            if (filter.isFirst()) {
-                                currentExcludeFilters.addFirst(filter);
-                            } else {
-                                currentExcludeFilters.addLast(filter);
-                            }
-                        }
-                    }
-                }
-            }
-            firstSegment = false;
-        } while (relativePath.segmentCount() > 0);
-
-        if ((!currentIncludeFilters.isEmpty()) || (!currentExcludeFilters.isEmpty())) {
-            try {
-                list = Filter.filter(project, currentIncludeFilters, currentExcludeFilters, (IContainer) this, list);
-            } catch (CoreException e) {
-                if (throwException) {
-                    throw e;
-                }
-            }
-        }
-        return list;
-    }
-
-    public void setLinkLocation(URI location, int updateFlags, IProgressMonitor monitor) throws CoreException {
-        if (!isLinked()) {
-            String message = NLS.bind(Messages.links_resourceIsNotALink, getFullPath());
-            throw new ResourceException(IResourceStatus.INVALID_VALUE, getFullPath(), message, null);
-        }
-
-        String message = NLS.bind(Messages.links_setLocation, getFullPath());
-        SubMonitor progress = SubMonitor.convert(monitor, message, 100).checkCanceled();
-        final ISchedulingRule rule = workspace.getRuleFactory().createRule(this);
-        SubMonitor split = progress.split(1);
-        try {
-            workspace.prepareOperation(rule, split);
-            workspace.broadcastEvent(LifecycleEvent.newEvent(LifecycleEvent.PRE_LINK_CHANGE, this));
-            workspace.beginOperation(true);
-
-            ResourceInfo info = workspace.getResourceInfo(getFullPath(), true, false);
-            getLocalManager().setLocation(this, info, location);
-
-            LinkDescription linkDescription;
-            linkDescription = new LinkDescription(this, location);
-            Project project = (Project) getProject();
-            project.internalGetDescription().setLinkLocation(getProjectRelativePath(), linkDescription);
-            project.writeDescription();
-
-            // Refresh either in background or foreground.
-            if ((updateFlags & IResource.BACKGROUND_REFRESH) != 0) {
-                progress.split(99);
-            } else {
-                refreshLocal(DEPTH_INFINITE, progress.split(98));
-            }
-        } finally {
-            progress.done();
-            workspace.endOperation(rule, true);
-        }
     }
 
 }

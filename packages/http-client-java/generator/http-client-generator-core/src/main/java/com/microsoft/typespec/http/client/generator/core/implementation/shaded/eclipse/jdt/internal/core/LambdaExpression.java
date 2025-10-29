@@ -37,270 +37,300 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class LambdaExpression extends SourceType {
 
-	private final SourceTypeElementInfo elementInfo;
-	protected LambdaMethod lambdaMethod;
+    private final SourceTypeElementInfo elementInfo;
+    protected LambdaMethod lambdaMethod;
 
-	// These fields could be materialized from elementInfo, but for ease of use stashed here
-	protected final int sourceStart;
-	protected final int sourceEnd;
-	protected final int arrowPosition;
-	protected final String interphase;
+    // These fields could be materialized from elementInfo, but for ease of use stashed here
+    protected final int sourceStart;
+    protected final int sourceEnd;
+    protected final int arrowPosition;
+    protected final String interphase;
 
+    // Construction from AST node
+    LambdaExpression(JavaElement parent,
+        com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.LambdaExpression lambdaExpression) {
+        super(parent,
+            com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.Util.EMPTY_STRING);
+        this.sourceStart = lambdaExpression.sourceStart;
+        this.sourceEnd = lambdaExpression.sourceEnd;
+        this.arrowPosition = lambdaExpression.arrowPosition;
 
-	// Construction from AST node
-	LambdaExpression(JavaElement parent, com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.LambdaExpression lambdaExpression) {
-		super(parent, com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.Util.EMPTY_STRING);
-		this.sourceStart = lambdaExpression.sourceStart;
-		this.sourceEnd = lambdaExpression.sourceEnd;
-		this.arrowPosition = lambdaExpression.arrowPosition;
+        TypeBinding supertype = findLambdaSuperType(lambdaExpression);
+        this.interphase
+            = DeduplicationUtil.toString(CharOperation.replaceOnCopy(supertype.genericTypeSignature(), '/', '.'));
+        this.elementInfo
+            = makeTypeElementInfo(this, this.interphase, this.sourceStart, this.sourceEnd, this.arrowPosition);
+        this.lambdaMethod = LambdaFactory.createLambdaMethod(this, lambdaExpression);
+        this.elementInfo.children = new IJavaElement[] { this.lambdaMethod };
+    }
 
-		TypeBinding supertype = findLambdaSuperType(lambdaExpression);
-		this.interphase = DeduplicationUtil.toString(CharOperation.replaceOnCopy(supertype.genericTypeSignature(), '/', '.'));
-		this.elementInfo = makeTypeElementInfo(this, this.interphase, this.sourceStart, this.sourceEnd, this.arrowPosition);
-		this.lambdaMethod = LambdaFactory.createLambdaMethod(this, lambdaExpression);
-		this.elementInfo.children = new IJavaElement[] { this.lambdaMethod };
-	}
+    public TypeBinding findLambdaSuperType(
+        com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.LambdaExpression lambdaExpression) {
+        // start from the specific type, ignoring type arguments:
+        TypeBinding original = lambdaExpression.resolvedType.original();
+        // infer type arguments from here:
+        final TypeBinding descType = lambdaExpression.descriptor.declaringClass;
+        if (descType instanceof ParameterizedTypeBinding) {
+            final ParameterizedTypeBinding descPTB = (ParameterizedTypeBinding) descType;
+            // intermediate type: original pulled up to the level of descType:
+            final TypeBinding originalSuper = original.findSuperTypeOriginatingFrom(descType);
+            return Scope.substitute(new Substitution() {
+                @Override
+                public TypeBinding substitute(TypeVariableBinding typeVariable) {
+                    if (originalSuper instanceof ParameterizedTypeBinding) {
+                        ParameterizedTypeBinding originalSuperPTB = (ParameterizedTypeBinding) originalSuper;
+                        TypeBinding[] superArguments = originalSuperPTB.arguments;
+                        for (int i = 0; i < superArguments.length; i++) {
+                            // if originalSuper holds typeVariable as it i'th argument, then the i'th argument of
+                            // descType is our answer:
+                            if (TypeBinding.equalsEquals(superArguments[i], typeVariable))
+                                return descPTB.arguments[i];
+                        }
+                    }
+                    // regular substitution:
+                    return descPTB.substitute(typeVariable);
+                }
 
-	public TypeBinding findLambdaSuperType(com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.LambdaExpression lambdaExpression) {
-		// start from the specific type, ignoring type arguments:
-		TypeBinding original = lambdaExpression.resolvedType.original();
-		// infer type arguments from here:
-		final TypeBinding descType = lambdaExpression.descriptor.declaringClass;
-		if (descType instanceof ParameterizedTypeBinding) {
-			final ParameterizedTypeBinding descPTB = (ParameterizedTypeBinding) descType;
-			// intermediate type: original pulled up to the level of descType:
-			final TypeBinding originalSuper = original.findSuperTypeOriginatingFrom(descType);
-			return Scope.substitute(new Substitution() {
-							@Override
-							public TypeBinding substitute(TypeVariableBinding typeVariable) {
-								if (originalSuper instanceof ParameterizedTypeBinding) {
-									ParameterizedTypeBinding originalSuperPTB = (ParameterizedTypeBinding) originalSuper;
-									TypeBinding[] superArguments = originalSuperPTB.arguments;
-									for (int i = 0; i < superArguments.length; i++) {
-										// if originalSuper holds typeVariable as it i'th argument, then the i'th argument of descType is our answer:
-										if (TypeBinding.equalsEquals(superArguments[i], typeVariable))
-											return descPTB.arguments[i];
-									}
-								}
-								// regular substitution:
-								return descPTB.substitute(typeVariable);
-							}
-							@Override
-							public boolean isRawSubstitution() {
-								return descPTB.isRawType();
-							}
-							@Override
-							public LookupEnvironment environment() {
-								return descPTB.environment;
-							}
-						}, original);
-		}
-		return original;
-	}
+                @Override
+                public boolean isRawSubstitution() {
+                    return descPTB.isRawType();
+                }
 
-	// Construction from memento
-	LambdaExpression(JavaElement parent, String interphase, int sourceStart, int sourceEnd, int arrowPosition) {
-		super(parent, com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.Util.EMPTY_STRING);
-		this.sourceStart = sourceStart;
-		this.sourceEnd = sourceEnd;
-		this.arrowPosition = arrowPosition;
-		this.interphase = interphase;
-		this.elementInfo = makeTypeElementInfo(this, interphase, sourceStart, sourceEnd, arrowPosition);
-		// Method is in the process of being fabricated, will be attached shortly.
-	}
+                @Override
+                public LookupEnvironment environment() {
+                    return descPTB.environment;
+                }
+            }, original);
+        }
+        return original;
+    }
 
-	// Construction from subtypes.
-	LambdaExpression(JavaElement parent, String interphase, int sourceStart, int sourceEnd, int arrowPosition, LambdaMethod lambdaMethod) {
-		super(parent, com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.Util.EMPTY_STRING);
-		this.sourceStart = sourceStart;
-		this.sourceEnd = sourceEnd;
-		this.arrowPosition = arrowPosition;
-		this.interphase = interphase;
-		this.elementInfo = makeTypeElementInfo(this, interphase, sourceStart, sourceEnd, arrowPosition);
-		this.elementInfo.children = new IJavaElement[] { this.lambdaMethod = lambdaMethod };
-	}
+    // Construction from memento
+    LambdaExpression(JavaElement parent, String interphase, int sourceStart, int sourceEnd, int arrowPosition) {
+        super(parent,
+            com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.Util.EMPTY_STRING);
+        this.sourceStart = sourceStart;
+        this.sourceEnd = sourceEnd;
+        this.arrowPosition = arrowPosition;
+        this.interphase = interphase;
+        this.elementInfo = makeTypeElementInfo(this, interphase, sourceStart, sourceEnd, arrowPosition);
+        // Method is in the process of being fabricated, will be attached shortly.
+    }
 
-	// Lambda expression is not backed by model, fabricate element information structure and stash it.
-	static private SourceTypeElementInfo makeTypeElementInfo (LambdaExpression handle, String interphase, int sourceStart, int sourceEnd, int arrowPosition) {
+    // Construction from subtypes.
+    LambdaExpression(JavaElement parent, String interphase, int sourceStart, int sourceEnd, int arrowPosition,
+        LambdaMethod lambdaMethod) {
+        super(parent,
+            com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.Util.EMPTY_STRING);
+        this.sourceStart = sourceStart;
+        this.sourceEnd = sourceEnd;
+        this.arrowPosition = arrowPosition;
+        this.interphase = interphase;
+        this.elementInfo = makeTypeElementInfo(this, interphase, sourceStart, sourceEnd, arrowPosition);
+        this.elementInfo.children = new IJavaElement[] { this.lambdaMethod = lambdaMethod };
+    }
 
-		SourceTypeElementInfo elementInfo = new SourceTypeElementInfo();
+    // Lambda expression is not backed by model, fabricate element information structure and stash it.
+    static private SourceTypeElementInfo makeTypeElementInfo(LambdaExpression handle, String interphase,
+        int sourceStart, int sourceEnd, int arrowPosition) {
 
-		elementInfo.setFlags(0);
-		elementInfo.setHandle(handle);
-		elementInfo.setSourceRangeStart(sourceStart);
-		elementInfo.setSourceRangeEnd(sourceEnd);
+        SourceTypeElementInfo elementInfo = new SourceTypeElementInfo();
 
-		elementInfo.setNameSourceStart(sourceStart);
-		elementInfo.setNameSourceEnd(arrowPosition);
-		elementInfo.setSuperclassName(null);
-		elementInfo.addCategories(handle, null);
+        elementInfo.setFlags(0);
+        elementInfo.setHandle(handle);
+        elementInfo.setSourceRangeStart(sourceStart);
+        elementInfo.setSourceRangeEnd(sourceEnd);
 
-		char[][] superinterfaces = new char [][] { DeduplicationUtil.intern(Signature.toString(interphase).toCharArray()) }; // drops marker interfaces - to fix.
-		elementInfo.setSuperInterfaceNames(superinterfaces);
-		return elementInfo;
-	}
+        elementInfo.setNameSourceStart(sourceStart);
+        elementInfo.setNameSourceEnd(arrowPosition);
+        elementInfo.setSuperclassName(null);
+        elementInfo.addCategories(handle, null);
 
-	@Override
-	protected void closing(Object info) throws JavaModelException {
-		// nothing to do, not backed by model ATM.
-	}
+        char[][] superinterfaces
+            = new char[][] { DeduplicationUtil.intern(Signature.toString(interphase).toCharArray()) }; // drops marker
+                                                                                                       // interfaces -
+                                                                                                       // to fix.
+        elementInfo.setSuperInterfaceNames(superinterfaces);
+        return elementInfo;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		/* I see cases where equal lambdas are dismissed as unequal on account of working copy owner.
-		   This results in spurious failures. See JavaSearchBugs8Tests.testBug400905_0021()
-		   For now exclude the working copy owner and compare
-		*/
-		if (o instanceof LambdaExpression that) {
-			if (this.sourceStart != that.sourceStart)
-				return false;
-			ITypeRoot thisTR = this.getTypeRoot();
-			ITypeRoot thatTR = that.getTypeRoot();
-			return thisTR.getElementName().equals(thatTR.getElementName()) && thisTR.getParent().equals(thatTR.getParent());
-		}
-		return false;
-	}
+    @Override
+    protected void closing(Object info) throws JavaModelException {
+        // nothing to do, not backed by model ATM.
+    }
 
-	@Override
-	protected int calculateHashCode() {
-		return Util.combineHashCodes(super.calculateHashCode(), this.sourceStart);
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        /*
+         * I see cases where equal lambdas are dismissed as unequal on account of working copy owner.
+         * This results in spurious failures. See JavaSearchBugs8Tests.testBug400905_0021()
+         * For now exclude the working copy owner and compare
+         */
+        if (o instanceof LambdaExpression that) {
+            if (this.sourceStart != that.sourceStart)
+                return false;
+            ITypeRoot thisTR = this.getTypeRoot();
+            ITypeRoot thatTR = that.getTypeRoot();
+            return thisTR.getElementName().equals(thatTR.getElementName())
+                && thisTR.getParent().equals(thatTR.getParent());
+        }
+        return false;
+    }
 
-	@Override
-	public SourceTypeElementInfo getElementInfo(IProgressMonitor monitor) throws JavaModelException {
-		return this.elementInfo;
-	}
+    @Override
+    protected int calculateHashCode() {
+        return Util.combineHashCodes(super.calculateHashCode(), this.sourceStart);
+    }
 
-	@Override
-	protected char getHandleMementoDelimiter() {
-		return JavaElement.JEM_LAMBDA_EXPRESSION;
-	}
+    @Override
+    public SourceTypeElementInfo getElementInfo(IProgressMonitor monitor) throws JavaModelException {
+        return this.elementInfo;
+    }
 
-	@Override
-	protected void getHandleMemento(StringBuilder buff) {
-		getHandleMemento(buff, true, true);
-		// lambda method and lambda expression cannot share the same memento - add a trailing discriminator.
-		appendEscapedDelimiter(buff, getHandleMementoDelimiter());
-	}
+    @Override
+    protected char getHandleMementoDelimiter() {
+        return JavaElement.JEM_LAMBDA_EXPRESSION;
+    }
 
-	protected void getHandleMemento(StringBuilder buff, boolean serializeParent, boolean serializeChild) {
-		if (serializeParent)
-			getParent().getHandleMemento(buff);
-		appendEscapedDelimiter(buff, getHandleMementoDelimiter());
-		appendEscapedDelimiter(buff, JEM_STRING);
-		escapeMementoName(buff, this.interphase);
-		buff.append(JEM_COUNT);
-		buff.append(this.sourceStart);
-		buff.append(JEM_COUNT);
-		buff.append(this.sourceEnd);
-		buff.append(JEM_COUNT);
-		buff.append(this.arrowPosition);
-		if (serializeChild)
-			this.lambdaMethod.getHandleMemento(buff, false);
-	}
+    @Override
+    protected void getHandleMemento(StringBuilder buff) {
+        getHandleMemento(buff, true, true);
+        // lambda method and lambda expression cannot share the same memento - add a trailing discriminator.
+        appendEscapedDelimiter(buff, getHandleMementoDelimiter());
+    }
 
-	@Override
-	public IJavaElement getHandleFromMemento(String token, MementoTokenizer memento, WorkingCopyOwner workingCopyOwner) {
+    protected void getHandleMemento(StringBuilder buff, boolean serializeParent, boolean serializeChild) {
+        if (serializeParent)
+            getParent().getHandleMemento(buff);
+        appendEscapedDelimiter(buff, getHandleMementoDelimiter());
+        appendEscapedDelimiter(buff, JEM_STRING);
+        escapeMementoName(buff, this.interphase);
+        buff.append(JEM_COUNT);
+        buff.append(this.sourceStart);
+        buff.append(JEM_COUNT);
+        buff.append(this.sourceEnd);
+        buff.append(JEM_COUNT);
+        buff.append(this.arrowPosition);
+        if (serializeChild)
+            this.lambdaMethod.getHandleMemento(buff, false);
+    }
 
-		if (token.charAt(0) != JEM_LAMBDA_METHOD)
-			return null;
+    @Override
+    public IJavaElement getHandleFromMemento(String token, MementoTokenizer memento,
+        WorkingCopyOwner workingCopyOwner) {
 
-		// ----
-		if (!memento.hasMoreTokens()) return this;
-		String selector = memento.nextToken();
-		if (!memento.hasMoreTokens() || memento.nextToken().charAt(0) != JEM_COUNT) return this;
-		if (!memento.hasMoreTokens()) return this;
-		int length = Integer.parseInt(memento.nextToken());
-		String [] parameterTypes = new String[length];
-		String [] parameterNames = new String[length];
-		for (int i = 0; i < length; i++) {
-			if (!memento.hasMoreTokens() || memento.nextToken().charAt(0) != JEM_STRING) return this;
-			parameterTypes[i] = memento.nextToken();
-			if (!memento.hasMoreTokens() || memento.nextToken().charAt(0) != JEM_STRING) return this;
-			parameterNames[i] = memento.nextToken();
-		}
-		if (!memento.hasMoreTokens() || memento.nextToken().charAt(0) != JEM_STRING) return this;
-		String returnType = memento.nextToken();
-		if (!memento.hasMoreTokens() || memento.nextToken().charAt(0) != JEM_STRING) return this;
-		String key = memento.nextToken();
-		this.lambdaMethod = LambdaFactory.createLambdaMethod(this, selector, key, this.sourceStart, this.sourceEnd, this.arrowPosition, parameterTypes, parameterNames, returnType);
-		ILocalVariable [] parameters = new ILocalVariable[length];
-		for (int i = 0; i < length; i++) {
-			parameters[i] = (ILocalVariable) this.lambdaMethod.getHandleFromMemento(memento, workingCopyOwner);
-		}
-		this.lambdaMethod.elementInfo.arguments  = parameters;
-		this.elementInfo.children = new IJavaElement[] { this.lambdaMethod };
-		if (!memento.hasMoreTokens())
-			return this.lambdaMethod;
-		switch (memento.nextToken().charAt(0)) {
-			case JEM_LAMBDA_METHOD:
-				if (!memento.hasMoreTokens())
-					return this.lambdaMethod;
-				return this.lambdaMethod.getHandleFromMemento(memento, workingCopyOwner);
-			case JEM_LAMBDA_EXPRESSION:
-			default:
-				return this;
-		}
-	}
+        if (token.charAt(0) != JEM_LAMBDA_METHOD)
+            return null;
 
-	@Override
-	public IJavaElement[] getChildren() throws JavaModelException {
-		return new IJavaElement[] { this.lambdaMethod };
-	}
+        // ----
+        if (!memento.hasMoreTokens())
+            return this;
+        String selector = memento.nextToken();
+        if (!memento.hasMoreTokens() || memento.nextToken().charAt(0) != JEM_COUNT)
+            return this;
+        if (!memento.hasMoreTokens())
+            return this;
+        int length = Integer.parseInt(memento.nextToken());
+        String[] parameterTypes = new String[length];
+        String[] parameterNames = new String[length];
+        for (int i = 0; i < length; i++) {
+            if (!memento.hasMoreTokens() || memento.nextToken().charAt(0) != JEM_STRING)
+                return this;
+            parameterTypes[i] = memento.nextToken();
+            if (!memento.hasMoreTokens() || memento.nextToken().charAt(0) != JEM_STRING)
+                return this;
+            parameterNames[i] = memento.nextToken();
+        }
+        if (!memento.hasMoreTokens() || memento.nextToken().charAt(0) != JEM_STRING)
+            return this;
+        String returnType = memento.nextToken();
+        if (!memento.hasMoreTokens() || memento.nextToken().charAt(0) != JEM_STRING)
+            return this;
+        String key = memento.nextToken();
+        this.lambdaMethod = LambdaFactory.createLambdaMethod(this, selector, key, this.sourceStart, this.sourceEnd,
+            this.arrowPosition, parameterTypes, parameterNames, returnType);
+        ILocalVariable[] parameters = new ILocalVariable[length];
+        for (int i = 0; i < length; i++) {
+            parameters[i] = (ILocalVariable) this.lambdaMethod.getHandleFromMemento(memento, workingCopyOwner);
+        }
+        this.lambdaMethod.elementInfo.arguments = parameters;
+        this.elementInfo.children = new IJavaElement[] { this.lambdaMethod };
+        if (!memento.hasMoreTokens())
+            return this.lambdaMethod;
+        switch (memento.nextToken().charAt(0)) {
+            case JEM_LAMBDA_METHOD:
+                if (!memento.hasMoreTokens())
+                    return this.lambdaMethod;
+                return this.lambdaMethod.getHandleFromMemento(memento, workingCopyOwner);
 
-	@Override
-	public boolean isLocal() {
-		return true;
-	}
+            case JEM_LAMBDA_EXPRESSION:
+            default:
+                return this;
+        }
+    }
 
-	@Override
-	public ResolvedLambdaExpression resolved(Binding binding) {
-		return new ResolvedLambdaExpression(this.getParent(), this, DeduplicationUtil.toString(binding.computeUniqueKey()));
-	}
+    @Override
+    public IJavaElement[] getChildren() throws JavaModelException {
+        return new IJavaElement[] { this.lambdaMethod };
+    }
 
-	public IMethod getMethod() {
-		return this.lambdaMethod;
-	}
+    @Override
+    public boolean isLocal() {
+        return true;
+    }
 
-	@Override
-	public boolean isLambda() {
-		return true;
-	}
+    @Override
+    public ResolvedLambdaExpression resolved(Binding binding) {
+        return new ResolvedLambdaExpression(this.getParent(), this,
+            DeduplicationUtil.toString(binding.computeUniqueKey()));
+    }
 
-	@Override
-	public boolean isAnonymous() {
-		return false;
-	}
+    public IMethod getMethod() {
+        return this.lambdaMethod;
+    }
 
-	@Override
-	public void toStringName(StringBuilder buffer) {
-		super.toStringName(buffer);
-		buffer.append("<lambda #"); //$NON-NLS-1$
-		buffer.append(this.getOccurrenceCount());
-		buffer.append(">"); //$NON-NLS-1$
-	}
+    @Override
+    public boolean isLambda() {
+        return true;
+    }
 
-	@Override
-	public JavaElement getPrimaryElement(boolean checkOwner) {
-		if (checkOwner) {
-			CompilationUnit cu = (CompilationUnit)getAncestor(COMPILATION_UNIT);
-			if (cu == null || cu.isPrimary()) return this;
-		}
-		IJavaElement primaryParent = this.getParent().getPrimaryElement(false);
-		if (primaryParent instanceof JavaElement) {
-			JavaElement ancestor = (JavaElement) primaryParent;
-			StringBuilder buffer = new StringBuilder(32);
-			getHandleMemento(buffer, false, true);
-			String memento = buffer.toString();
-			return (JavaElement) ancestor.getHandleFromMemento(new MementoTokenizer(memento), DefaultWorkingCopyOwner.PRIMARY).getParent();
-		}
-		return this;
-	}
+    @Override
+    public boolean isAnonymous() {
+        return false;
+    }
 
-	@Override
-	public String[] getSuperInterfaceTypeSignatures() throws JavaModelException {
-		return new String[] { this.interphase };
-	}
+    @Override
+    public void toStringName(StringBuilder buffer) {
+        super.toStringName(buffer);
+        buffer.append("<lambda #"); //$NON-NLS-1$
+        buffer.append(this.getOccurrenceCount());
+        buffer.append(">"); //$NON-NLS-1$
+    }
+
+    @Override
+    public JavaElement getPrimaryElement(boolean checkOwner) {
+        if (checkOwner) {
+            CompilationUnit cu = (CompilationUnit) getAncestor(COMPILATION_UNIT);
+            if (cu == null || cu.isPrimary())
+                return this;
+        }
+        IJavaElement primaryParent = this.getParent().getPrimaryElement(false);
+        if (primaryParent instanceof JavaElement) {
+            JavaElement ancestor = (JavaElement) primaryParent;
+            StringBuilder buffer = new StringBuilder(32);
+            getHandleMemento(buffer, false, true);
+            String memento = buffer.toString();
+            return (JavaElement) ancestor
+                .getHandleFromMemento(new MementoTokenizer(memento), DefaultWorkingCopyOwner.PRIMARY)
+                .getParent();
+        }
+        return this;
+    }
+
+    @Override
+    public String[] getSuperInterfaceTypeSignatures() throws JavaModelException {
+        return new String[] { this.interphase };
+    }
 }

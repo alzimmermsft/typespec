@@ -15,7 +15,6 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.Position;
 
-
 /**
  * Internal class. Do not use. Only public for testing purposes.
  * <p>
@@ -28,18 +27,18 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class Fragment extends Position {
 
-	/**
-	 * The corresponding segment of this fragment.
-	 */
-	public Segment segment;
+    /**
+     * The corresponding segment of this fragment.
+     */
+    public Segment segment;
 
-	/**
-	 * Creates a new fragment covering the given range.
-	 *
-	 * @param offset the offset of the fragment
-	 * @param length the length of the fragment
-	 */
-	public Fragment(int offset, int length) {
-		super(offset, length);
-	}
+    /**
+     * Creates a new fragment covering the given range.
+     *
+     * @param offset the offset of the fragment
+     * @param length the length of the fragment
+     */
+    public Fragment(int offset, int length) {
+        super(offset, length);
+    }
 }

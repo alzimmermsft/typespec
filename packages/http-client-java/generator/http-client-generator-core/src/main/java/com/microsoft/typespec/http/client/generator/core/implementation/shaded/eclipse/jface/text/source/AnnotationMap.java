@@ -13,16 +13,13 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.source;
 
-
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.Position;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.Position;
-
 
 /**
  * Internal implementation of {@link IAnnotationMap}.
@@ -31,136 +28,137 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 class AnnotationMap implements IAnnotationMap {
 
-	/**
-	 * The lock object used to synchronize the operations explicitly defined by
-	 * <code>IAnnotationMap</code>
-	 */
-	private Object fLockObject;
-	/**
-	 * The internal lock object used if <code>fLockObject</code> is <code>null</code>.
-	 * @since 3.2
-	 */
-	private final Object fInternalLockObject= new Object();
+    /**
+     * The lock object used to synchronize the operations explicitly defined by
+     * <code>IAnnotationMap</code>
+     */
+    private Object fLockObject;
+    /**
+     * The internal lock object used if <code>fLockObject</code> is <code>null</code>.
+     * 
+     * @since 3.2
+     */
+    private final Object fInternalLockObject = new Object();
 
-	/** The map holding the annotations */
-	private Map<Annotation, Position> fInternalMap;
+    /** The map holding the annotations */
+    private Map<Annotation, Position> fInternalMap;
 
-	/**
-	 * Creates a new annotation map with the given capacity.
-	 *
-	 * @param capacity the capacity
-	 */
-	public AnnotationMap(int capacity) {
-		fInternalMap= new HashMap<>(capacity);
-	}
+    /**
+     * Creates a new annotation map with the given capacity.
+     *
+     * @param capacity the capacity
+     */
+    public AnnotationMap(int capacity) {
+        fInternalMap = new HashMap<>(capacity);
+    }
 
-	@Override
-	public synchronized void setLockObject(Object lockObject) {
-		fLockObject= lockObject;
-	}
+    @Override
+    public synchronized void setLockObject(Object lockObject) {
+        fLockObject = lockObject;
+    }
 
-	@Override
-	public synchronized Object getLockObject() {
-		if (fLockObject == null)
-			return fInternalLockObject;
-		return fLockObject;
-	}
+    @Override
+    public synchronized Object getLockObject() {
+        if (fLockObject == null)
+            return fInternalLockObject;
+        return fLockObject;
+    }
 
-	@Override
-	public Iterator<Position> valuesIterator() {
-		synchronized (getLockObject()) {
-			return new ArrayList<>(fInternalMap.values()).iterator();
-		}
-	}
+    @Override
+    public Iterator<Position> valuesIterator() {
+        synchronized (getLockObject()) {
+            return new ArrayList<>(fInternalMap.values()).iterator();
+        }
+    }
 
-	@Override
-	public Iterator<Annotation> keySetIterator() {
-		synchronized (getLockObject()) {
-			return new ArrayList<>(fInternalMap.keySet()).iterator();
-		}
-	}
+    @Override
+    public Iterator<Annotation> keySetIterator() {
+        synchronized (getLockObject()) {
+            return new ArrayList<>(fInternalMap.keySet()).iterator();
+        }
+    }
 
-	@Override
-	public boolean containsKey(Object annotation) {
-		synchronized (getLockObject()) {
-			return fInternalMap.containsKey(annotation);
-		}
-	}
+    @Override
+    public boolean containsKey(Object annotation) {
+        synchronized (getLockObject()) {
+            return fInternalMap.containsKey(annotation);
+        }
+    }
 
-	@Override
-	public Position put(Annotation annotation, Position position) {
-		synchronized (getLockObject()) {
-			return fInternalMap.put(annotation, position);
-		}
-	}
+    @Override
+    public Position put(Annotation annotation, Position position) {
+        synchronized (getLockObject()) {
+            return fInternalMap.put(annotation, position);
+        }
+    }
 
-	@Override
-	public Position get(Object annotation) {
-		synchronized (getLockObject()) {
-			return fInternalMap.get(annotation);
-		}
-	}
+    @Override
+    public Position get(Object annotation) {
+        synchronized (getLockObject()) {
+            return fInternalMap.get(annotation);
+        }
+    }
 
-	@Override
-	public void clear() {
-		synchronized (getLockObject()) {
-			fInternalMap.clear();
-		}
-	}
+    @Override
+    public void clear() {
+        synchronized (getLockObject()) {
+            fInternalMap.clear();
+        }
+    }
 
-	@Override
-	public Position remove(Object annotation) {
-		synchronized (getLockObject()) {
-			return fInternalMap.remove(annotation);
-		}
-	}
+    @Override
+    public Position remove(Object annotation) {
+        synchronized (getLockObject()) {
+            return fInternalMap.remove(annotation);
+        }
+    }
 
-	@Override
-	public int size() {
-		synchronized (getLockObject()) {
-			return fInternalMap.size();
-		}
-	}
+    @Override
+    public int size() {
+        synchronized (getLockObject()) {
+            return fInternalMap.size();
+        }
+    }
 
-	@Override
-	public boolean isEmpty() {
-		synchronized (getLockObject()) {
-			return fInternalMap.isEmpty();
-		}
-	}
+    @Override
+    public boolean isEmpty() {
+        synchronized (getLockObject()) {
+            return fInternalMap.isEmpty();
+        }
+    }
 
-	@Override
-	public boolean containsValue(Object value) {
-		synchronized(getLockObject()) {
-			return fInternalMap.containsValue(value);
-		}
-	}
+    @Override
+    public boolean containsValue(Object value) {
+        synchronized (getLockObject()) {
+            return fInternalMap.containsValue(value);
+        }
+    }
 
-	@Override
-	public void putAll(Map<? extends Annotation, ? extends Position> map) {
-		synchronized (getLockObject()) {
-			fInternalMap.putAll(map);
-		}
-	}
+    @Override
+    public void putAll(Map<? extends Annotation, ? extends Position> map) {
+        synchronized (getLockObject()) {
+            fInternalMap.putAll(map);
+        }
+    }
 
-	@Override
-	public Set<Entry<Annotation, Position>> entrySet() {
-		synchronized (getLockObject()) {
-			return fInternalMap.entrySet();
-		}
-	}
+    @Override
+    public Set<Entry<Annotation, Position>> entrySet() {
+        synchronized (getLockObject()) {
+            return fInternalMap.entrySet();
+        }
+    }
 
-	@Override
-	public Set<Annotation> keySet() {
-		synchronized (getLockObject()) {
-			return fInternalMap.keySet();
-		}
-	}
+    @Override
+    public Set<Annotation> keySet() {
+        synchronized (getLockObject()) {
+            return fInternalMap.keySet();
+        }
+    }
 
-	@Override
-	public Collection<Position> values() {
-		synchronized (getLockObject()) {
-			return fInternalMap.values();
-		}
-	}
+    @Override
+    public Collection<Position> values() {
+        synchronized (getLockObject()) {
+            return fInternalMap.values();
+        }
+    }
 }

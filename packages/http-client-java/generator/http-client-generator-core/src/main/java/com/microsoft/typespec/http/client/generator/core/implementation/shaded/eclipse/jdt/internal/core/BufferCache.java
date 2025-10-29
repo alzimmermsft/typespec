@@ -13,62 +13,63 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IBuffer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.LRUCache;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An LRU cache of <code>IBuffers</code>.
  */
 public class BufferCache<K> extends OverflowingLRUCache<K, IBuffer> {
 
-	private final ThreadLocal<List<IBuffer>> buffersToClose = new ThreadLocal<>();
+    private final ThreadLocal<List<IBuffer>> buffersToClose = new ThreadLocal<>();
 
-	/**
-	 * Constructs a new buffer cache of the given size.
-	 */
-	public BufferCache(int size) {
-		super(size);
-	}
-	/**
-	 * Constructs a new buffer cache of the given size.
-	 */
-	public BufferCache(int size, int overflow) {
-		super(size, overflow);
-	}
+    /**
+     * Constructs a new buffer cache of the given size.
+     */
+    public BufferCache(int size) {
+        super(size);
+    }
 
-	@Override
-	protected boolean close(LRUCacheEntry<K, IBuffer> entry) {
-		IBuffer buffer= entry.value;
+    /**
+     * Constructs a new buffer cache of the given size.
+     */
+    public BufferCache(int size, int overflow) {
+        super(size, overflow);
+    }
 
-		// prevent buffer that have unsaved changes or working copy buffer to be removed
-		// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=39311
-		if (!((Openable)buffer.getOwner()).canBufferBeRemovedFromCache(buffer)) {
-			return false;
-		} else {
-			List<IBuffer> buffers = this.buffersToClose.get();
-			if (buffers == null) {
-				buffers = new ArrayList<>();
-				this.buffersToClose.set(buffers);
-			}
-			buffers.add(buffer);
-			return true;
-		}
-	}
+    @Override
+    protected boolean close(LRUCacheEntry<K, IBuffer> entry) {
+        IBuffer buffer = entry.value;
 
-	void closeBuffers() {
-		List<IBuffer> buffers = this.buffersToClose.get();
-		if (buffers == null)
-			return;
-		this.buffersToClose.remove();
-		for (IBuffer buffer : buffers) {
-			buffer.close();
-		}
-	}
+        // prevent buffer that have unsaved changes or working copy buffer to be removed
+        // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=39311
+        if (!((Openable) buffer.getOwner()).canBufferBeRemovedFromCache(buffer)) {
+            return false;
+        } else {
+            List<IBuffer> buffers = this.buffersToClose.get();
+            if (buffers == null) {
+                buffers = new ArrayList<>();
+                this.buffersToClose.set(buffers);
+            }
+            buffers.add(buffer);
+            return true;
+        }
+    }
 
-	@Override
-	protected LRUCache<K, IBuffer> newInstance(int size, int newOverflow) {
-		return new BufferCache<>(size, newOverflow);
-	}
+    void closeBuffers() {
+        List<IBuffer> buffers = this.buffersToClose.get();
+        if (buffers == null)
+            return;
+        this.buffersToClose.remove();
+        for (IBuffer buffer : buffers) {
+            buffer.close();
+        }
+    }
+
+    @Override
+    protected LRUCache<K, IBuffer> newInstance(int size, int newOverflow) {
+        return new BufferCache<>(size, newOverflow);
+    }
 }

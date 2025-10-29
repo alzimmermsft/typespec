@@ -27,115 +27,112 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class QualifiedSuperReference extends QualifiedThisReference {
 
-public QualifiedSuperReference(TypeReference name, int pos, int sourceEnd) {
-	super(name, pos, sourceEnd);
-}
+    public QualifiedSuperReference(TypeReference name, int pos, int sourceEnd) {
+        super(name, pos, sourceEnd);
+    }
 
-@Override
-public boolean isSuper() {
-	return true;
-}
+    @Override
+    public boolean isSuper() {
+        return true;
+    }
 
-@Override
-public boolean isQualifiedSuper() {
-	return true;
-}
+    @Override
+    public boolean isQualifiedSuper() {
+        return true;
+    }
 
-@Override
-public boolean isThis() {
-	return false;
-}
+    @Override
+    public boolean isThis() {
+        return false;
+    }
 
-@Override
-public StringBuilder printExpression(int indent, StringBuilder output) {
-	return this.qualification.print(0, output).append(".super"); //$NON-NLS-1$
-}
+    @Override
+    public StringBuilder printExpression(int indent, StringBuilder output) {
+        return this.qualification.print(0, output).append(".super"); //$NON-NLS-1$
+    }
 
-@Override
-public TypeBinding resolveType(BlockScope scope) {
-	if ((this.bits & ParenthesizedMASK) != 0) {
-		scope.problemReporter().invalidParenthesizedExpression(this);
-		return null;
-	}
-	super.resolveType(scope);
-	if (this.resolvedType != null && !this.resolvedType.isValidBinding()) {
-		scope.problemReporter().illegalSuperAccess(this.qualification.resolvedType, this.resolvedType, this);
-		return null;
-	}
-	if (this.currentCompatibleType == null)
-		return null; // error case
+    @Override
+    public TypeBinding resolveType(BlockScope scope) {
+        if ((this.bits & ParenthesizedMASK) != 0) {
+            scope.problemReporter().invalidParenthesizedExpression(this);
+            return null;
+        }
+        super.resolveType(scope);
+        if (this.resolvedType != null && !this.resolvedType.isValidBinding()) {
+            scope.problemReporter().illegalSuperAccess(this.qualification.resolvedType, this.resolvedType, this);
+            return null;
+        }
+        if (this.currentCompatibleType == null)
+            return null; // error case
 
-	if (this.currentCompatibleType.id == T_JavaLangObject) {
-		scope.problemReporter().cannotUseSuperInJavaLangObject(this);
-		return null;
-	}
-	ReferenceBinding enclosingReceiverType = scope.enclosingReceiverType();
-	// interface-qualified this selects a default method in a super interface,
-	// but here we are only interested in supers of *enclosing instances*:
-	if (enclosingReceiverType != null && !enclosingReceiverType.isInterface()) {
-		TypeBinding typeToCheck = (enclosingReceiverType.isCompatibleWith(this.resolvedType))
-				? enclosingReceiverType // cannot reference super of the current type
-				: this.resolvedType; // assumeably not a super but an outer type
-		if (scope.isInsideEarlyConstructionContext(typeToCheck, false))
-			scope.problemReporter().errorExpressionInEarlyConstructionContext(this);
-	}
-	return this.resolvedType = (this.currentCompatibleType.isInterface()
-			? this.currentCompatibleType
-			: this.currentCompatibleType.superclass());
-}
+        if (this.currentCompatibleType.id == T_JavaLangObject) {
+            scope.problemReporter().cannotUseSuperInJavaLangObject(this);
+            return null;
+        }
+        ReferenceBinding enclosingReceiverType = scope.enclosingReceiverType();
+        // interface-qualified this selects a default method in a super interface,
+        // but here we are only interested in supers of *enclosing instances*:
+        if (enclosingReceiverType != null && !enclosingReceiverType.isInterface()) {
+            TypeBinding typeToCheck = (enclosingReceiverType.isCompatibleWith(this.resolvedType))
+                ? enclosingReceiverType // cannot reference super of the current type
+                : this.resolvedType; // assumeably not a super but an outer type
+            if (scope.isInsideEarlyConstructionContext(typeToCheck, false))
+                scope.problemReporter().errorExpressionInEarlyConstructionContext(this);
+        }
+        return this.resolvedType = (this.currentCompatibleType.isInterface()
+            ? this.currentCompatibleType
+            : this.currentCompatibleType.superclass());
+    }
 
-@Override
-int findCompatibleEnclosing(ReferenceBinding enclosingType, TypeBinding type, BlockScope scope) {
-	if (type.isInterface()) {
-		// super call to an overridden default method? (not considering outer enclosings)
-		ReferenceBinding[] supers = enclosingType.superInterfaces();
-		int length = supers.length;
-		boolean isLegal = true; // false => compoundName != null && closestMatch != null
-		char[][] compoundName = null;
-		ReferenceBinding closestMatch = null;
-		for (int i = 0; i < length; i++) {
-			if (TypeBinding.equalsEquals(supers[i].erasure(), type)) {
-				this.currentCompatibleType = closestMatch = supers[i];
-			} else if (supers[i].erasure().isCompatibleWith(type)) {
-				isLegal = false;
-				compoundName = supers[i].compoundName;
-				if (closestMatch == null)
-					closestMatch = supers[i];
-				// keep looking to ensure we always find the referenced type (even if illegal)
-			}
-		}
-		if (!isLegal) {
-			this.currentCompatibleType = null;
-			// Please note the slightly unconventional use of the ProblemReferenceBinding:
-			// we use the problem's compoundName to report the type being illegally bypassed,
-			// whereas the closestMatch denotes the resolved (though illegal) target type
-			// for downstream resolving.
-			this.resolvedType =  new ProblemReferenceBinding(compoundName,
-					closestMatch, ProblemReasons.AttemptToBypassDirectSuper);
-		}
-		return 0; // never an outer enclosing type
-	}
-	return super.findCompatibleEnclosing(enclosingType, type, scope);
-}
+    @Override
+    int findCompatibleEnclosing(ReferenceBinding enclosingType, TypeBinding type, BlockScope scope) {
+        if (type.isInterface()) {
+            // super call to an overridden default method? (not considering outer enclosings)
+            ReferenceBinding[] supers = enclosingType.superInterfaces();
+            int length = supers.length;
+            boolean isLegal = true; // false => compoundName != null && closestMatch != null
+            char[][] compoundName = null;
+            ReferenceBinding closestMatch = null;
+            for (int i = 0; i < length; i++) {
+                if (TypeBinding.equalsEquals(supers[i].erasure(), type)) {
+                    this.currentCompatibleType = closestMatch = supers[i];
+                } else if (supers[i].erasure().isCompatibleWith(type)) {
+                    isLegal = false;
+                    compoundName = supers[i].compoundName;
+                    if (closestMatch == null)
+                        closestMatch = supers[i];
+                    // keep looking to ensure we always find the referenced type (even if illegal)
+                }
+            }
+            if (!isLegal) {
+                this.currentCompatibleType = null;
+                // Please note the slightly unconventional use of the ProblemReferenceBinding:
+                // we use the problem's compoundName to report the type being illegally bypassed,
+                // whereas the closestMatch denotes the resolved (though illegal) target type
+                // for downstream resolving.
+                this.resolvedType = new ProblemReferenceBinding(compoundName, closestMatch,
+                    ProblemReasons.AttemptToBypassDirectSuper);
+            }
+            return 0; // never an outer enclosing type
+        }
+        return super.findCompatibleEnclosing(enclosingType, type, scope);
+    }
 
-@Override
-public void traverse(
-	ASTVisitor visitor,
-	BlockScope blockScope) {
+    @Override
+    public void traverse(ASTVisitor visitor, BlockScope blockScope) {
 
-	if (visitor.visit(this, blockScope)) {
-		this.qualification.traverse(visitor, blockScope);
-	}
-	visitor.endVisit(this, blockScope);
-}
-@Override
-public void traverse(
-		ASTVisitor visitor,
-		ClassScope blockScope) {
+        if (visitor.visit(this, blockScope)) {
+            this.qualification.traverse(visitor, blockScope);
+        }
+        visitor.endVisit(this, blockScope);
+    }
 
-	if (visitor.visit(this, blockScope)) {
-		this.qualification.traverse(visitor, blockScope);
-	}
-	visitor.endVisit(this, blockScope);
-}
+    @Override
+    public void traverse(ASTVisitor visitor, ClassScope blockScope) {
+
+        if (visitor.visit(this, blockScope)) {
+            this.qualification.traverse(visitor, blockScope);
+        }
+        visitor.endVisit(this, blockScope);
+    }
 }

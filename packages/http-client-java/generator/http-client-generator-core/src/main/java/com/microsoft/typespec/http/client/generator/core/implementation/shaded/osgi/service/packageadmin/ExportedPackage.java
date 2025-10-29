@@ -43,25 +43,25 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  * @ThreadSafe
  * @noimplement
  * @deprecated The PackageAdmin service has been replaced by the
- *             <code>com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.wiring</code> package.
+ * <code>com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.wiring</code> package.
  * @author $Id: f4cdb9e84ce788c16d5304166a2b9eeecb5fabf3 $
  */
 public interface ExportedPackage {
-	/**
-	 * Returns the name of the package associated with this exported package.
-	 * 
-	 * @return The name of this exported package.
-	 */
+    /**
+     * Returns the name of the package associated with this exported package.
+     * 
+     * @return The name of this exported package.
+     */
     String getName();
 
-	/**
-	 * Returns the version of this exported package.
-	 * 
-	 * @return The version of this exported package, or
-	 *         {@link Version#emptyVersion} if no version information is
-	 *         available.
-	 * @since 1.2
-	 */
+    /**
+     * Returns the version of this exported package.
+     * 
+     * @return The version of this exported package, or
+     * {@link Version#emptyVersion} if no version information is
+     * available.
+     * @since 1.2
+     */
     Version getVersion();
 
 }

@@ -18,11 +18,11 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver.Candidates.FaultyResourcesReport;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver.Candidates.FaultyResourcesReport;
 
 /**
  * The Backlog has the following purpose:

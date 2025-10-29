@@ -28,35 +28,11 @@ public class RegistryIndexElement implements KeyedElement {
         this.key = key;
     }
 
-    public RegistryIndexElement(String key, int[] extensionPoints, int[] extensions) {
-        this.key = key;
-        this.extensionPoints = new RegistryIndexChildren(extensionPoints);
-        this.extensions = new RegistryIndexChildren(extensions);
-    }
-
     protected int[] getExtensions() {
         if (extensions == null) {
             return RegistryIndexChildren.EMPTY_ARRAY;
         }
         return extensions.getChildren();
-    }
-
-    protected int[] getExtensionPoints() {
-        if (extensionPoints == null) {
-            return RegistryIndexChildren.EMPTY_ARRAY;
-        }
-        return extensionPoints.getChildren();
-    }
-
-    public boolean updateExtension(int id, boolean add) {
-        if (extensions == null) {
-            extensions = new RegistryIndexChildren();
-        }
-
-        if (add) {
-            return extensions.linkChild(id);
-        }
-        return extensions.unlinkChild(id);
     }
 
     public boolean updateExtensions(int[] IDs, boolean add) {
@@ -68,17 +44,6 @@ public class RegistryIndexElement implements KeyedElement {
             return extensions.linkChildren(IDs);
         }
         return extensions.unlinkChildren(IDs);
-    }
-
-    public boolean updateExtensionPoint(int id, boolean add) {
-        if (extensionPoints == null) {
-            extensionPoints = new RegistryIndexChildren();
-        }
-
-        if (add) {
-            return extensionPoints.linkChild(id);
-        }
-        return extensionPoints.unlinkChild(id);
     }
 
     public boolean updateExtensionPoints(int[] IDs, boolean add) {

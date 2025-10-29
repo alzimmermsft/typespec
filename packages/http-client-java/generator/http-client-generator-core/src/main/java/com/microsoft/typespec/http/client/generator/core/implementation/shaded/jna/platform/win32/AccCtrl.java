@@ -29,6 +29,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 /**
  * Ported from AccCtrl.h.
  * Microsoft Windows SDK 7.1
+ * 
  * @author amarcionek[at]gmail.com
  */
 

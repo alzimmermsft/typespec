@@ -26,100 +26,100 @@ import java.util.stream.Collectors;
  * @author jkubitz
  */
 public final class CharArrayMap<P> implements CharArrayMapper<P> {
-	private char[] keyTable[];
-	private P valueTable[];
+    private char[] keyTable[];
+    private P valueTable[];
 
-	/**
-	 * The number of key-value mappings contained in this map.
-	 */
-	private int size;
+    /**
+     * The number of key-value mappings contained in this map.
+     */
+    private int size;
 
-	public CharArrayMap() {
-		this(0); // usually not very large
-	}
+    public CharArrayMap() {
+        this(0); // usually not very large
+    }
 
-	public CharArrayMap(int estimatedSize) {
-		int capacity = estimatedSize > 0 ? estimatedSize : 0;
-		this.size = 0;
-		this.keyTable = new char[capacity][];
-		@SuppressWarnings("unchecked")
-		P[] x = (P[]) new Object[capacity];
-		this.valueTable = x;
-	}
+    public CharArrayMap(int estimatedSize) {
+        int capacity = estimatedSize > 0 ? estimatedSize : 0;
+        this.size = 0;
+        this.keyTable = new char[capacity][];
+        @SuppressWarnings("unchecked")
+        P[] x = (P[]) new Object[capacity];
+        this.valueTable = x;
+    }
 
-	@Override
-	public Collection<P> values() {
-		return Arrays.stream(this.valueTable).filter(Objects::nonNull).collect(Collectors.toList());
-	}
+    @Override
+    public Collection<P> values() {
+        return Arrays.stream(this.valueTable).filter(Objects::nonNull).collect(Collectors.toList());
+    }
 
-	@Override
-	public Collection<char[]> keys() {
-		return Arrays.stream(this.keyTable).filter(Objects::nonNull).collect(Collectors.toList());
-	}
+    @Override
+    public Collection<char[]> keys() {
+        return Arrays.stream(this.keyTable).filter(Objects::nonNull).collect(Collectors.toList());
+    }
 
-	@Override
-	public boolean containsKey(char[] key) {
-		for (int i = 0; i < this.size; i++) {
-			if (Arrays.equals(this.keyTable[i], key)) {
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    public boolean containsKey(char[] key) {
+        for (int i = 0; i < this.size; i++) {
+            if (Arrays.equals(this.keyTable[i], key)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	@Override
-	public P get(char[] key) {
-		for (int i = 0; i < this.size; i++) {
-			if (Arrays.equals(this.keyTable[i], key)) {
-				return this.valueTable[i];
-			}
-		}
-		return null;
-	}
+    @Override
+    public P get(char[] key) {
+        for (int i = 0; i < this.size; i++) {
+            if (Arrays.equals(this.keyTable[i], key)) {
+                return this.valueTable[i];
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public P put(char[] key, P value) {
-		int i = 0;
-		for (; i < this.size; i++) {
-			if (Arrays.equals(this.keyTable[i], key)) {
-				P previous = this.valueTable[i];
-				this.valueTable[i] = value;
-				return previous;
-			}
-		}
+    @Override
+    public P put(char[] key, P value) {
+        int i = 0;
+        for (; i < this.size; i++) {
+            if (Arrays.equals(this.keyTable[i], key)) {
+                P previous = this.valueTable[i];
+                this.valueTable[i] = value;
+                return previous;
+            }
+        }
 
-		if (i >= this.keyTable.length) {
-			grow();
-		}
-		this.keyTable[i] = key;
-		this.valueTable[i] = value;
-		this.size++;
-		// assumes the threshold is never equal to the size of the table
-		return null;
-	}
+        if (i >= this.keyTable.length) {
+            grow();
+        }
+        this.keyTable[i] = key;
+        this.valueTable[i] = value;
+        this.size++;
+        // assumes the threshold is never equal to the size of the table
+        return null;
+    }
 
-	void transferTo(CharArrayMapper<P> bigMap) {
-		for (int i = 0; i < this.size; i++) {
-			if (this.keyTable[i] != null) {
-				bigMap.put(this.keyTable[i], this.valueTable[i]);
-			}
-		}
-	}
+    void transferTo(CharArrayMapper<P> bigMap) {
+        for (int i = 0; i < this.size; i++) {
+            if (this.keyTable[i] != null) {
+                bigMap.put(this.keyTable[i], this.valueTable[i]);
+            }
+        }
+    }
 
-	private void grow() {
-		int capacity = this.keyTable.length > 1 ? this.keyTable.length : 1;
-		int newCapacity = capacity * 2;
-		this.keyTable = Arrays.copyOfRange(this.keyTable, 0, newCapacity);
-		this.valueTable = Arrays.copyOfRange(this.valueTable, 0, newCapacity);
-	}
+    private void grow() {
+        int capacity = this.keyTable.length > 1 ? this.keyTable.length : 1;
+        int newCapacity = capacity * 2;
+        this.keyTable = Arrays.copyOfRange(this.keyTable, 0, newCapacity);
+        this.valueTable = Arrays.copyOfRange(this.valueTable, 0, newCapacity);
+    }
 
-	@Override
-	public int size() {
-		return this.size;
-	}
+    @Override
+    public int size() {
+        return this.size;
+    }
 
-	@Override
-	public String toString() {
-		return CharArrayMapper.toString(this);
-	}
+    @Override
+    public String toString() {
+        return CharArrayMapper.toString(this);
+    }
 }

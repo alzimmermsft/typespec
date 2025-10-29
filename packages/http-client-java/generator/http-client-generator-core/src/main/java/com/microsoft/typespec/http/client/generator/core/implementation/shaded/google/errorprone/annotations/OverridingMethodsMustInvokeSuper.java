@@ -40,4 +40,5 @@ import java.lang.annotation.Target;
 @Documented
 @Target(METHOD)
 @Retention(CLASS)
-public @interface OverridingMethodsMustInvokeSuper {}
+public @interface OverridingMethodsMustInvokeSuper {
+}

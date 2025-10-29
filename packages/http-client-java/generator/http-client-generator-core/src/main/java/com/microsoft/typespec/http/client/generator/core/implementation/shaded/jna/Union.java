@@ -27,41 +27,49 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Represents a native union.  When writing to native memory, the field
+/**
+ * Represents a native union. When writing to native memory, the field
  * corresponding to the type passed to {@link #setType} will be written
- * to native memory.  Upon reading from native memory, Structure, String,
+ * to native memory. Upon reading from native memory, Structure, String,
  * or WString fields will <em>not</em> be initialized unless they are
- * the current field as identified by a call to {@link #setType}.  The current
+ * the current field as identified by a call to {@link #setType}. The current
  * field is always unset by default to avoid accidentally attempting to read
- * a field that is not valid.  In the case of a String, for instance, an
+ * a field that is not valid. In the case of a String, for instance, an
  * invalid pointer may result in a memory fault when attempting to initialize
  * the String.
  */
 public abstract class Union extends Structure {
     private StructField activeField;
 
-    /** Create a Union whose size and alignment will be calculated
+    /**
+     * Create a Union whose size and alignment will be calculated
      * automatically.
      */
-    protected Union() { }
+    protected Union() {
+    }
+
     /** Create a Union of the given size, using default alignment. */
     protected Union(Pointer p) {
         super(p);
     }
+
     /** Create a Union of the given size and alignment type. */
     protected Union(Pointer p, int alignType) {
         super(p, alignType);
     }
+
     /** Create a Union of the given size and alignment type. */
     protected Union(TypeMapper mapper) {
         super(mapper);
     }
+
     /** Create a Union of the given size and alignment type. */
     protected Union(Pointer p, int alignType, TypeMapper mapper) {
         super(p, alignType, mapper);
     }
 
-    /** Unions do not need a field order, so automatically provide a value to
+    /**
+     * Unions do not need a field order, so automatically provide a value to
      * satisfy checking in the Structure superclass.
      */
     @Override
@@ -74,9 +82,11 @@ public abstract class Union extends Structure {
         return list;
     }
 
-    /** Indicates by type which field will be used to write to native memory.
+    /**
+     * Indicates by type which field will be used to write to native memory.
      * If there are multiple fields of the same type, use {@link
      * #setType(String)} instead with the field name.
+     * 
      * @param type desired active type for the union
      * @throws IllegalArgumentException if the type does not correspond to
      * any declared union field.
@@ -94,6 +104,7 @@ public abstract class Union extends Structure {
 
     /**
      * Indicates which field will be used to write to native memory.
+     * 
      * @param fieldName desired field to use for the active union type
      * @throws IllegalArgumentException if the name does not correspond to
      * any declared union field.
@@ -103,14 +114,14 @@ public abstract class Union extends Structure {
         StructField f = fields().get(fieldName);
         if (f != null) {
             activeField = f;
-        }
-        else {
-            throw new IllegalArgumentException("No field named " + fieldName
-                                               + " in " + this);
+        } else {
+            throw new IllegalArgumentException("No field named " + fieldName + " in " + this);
         }
     }
 
-    /** Force a read of the given field from native memory.
+    /**
+     * Force a read of the given field from native memory.
+     * 
      * @return the new field value, after updating
      * @throws IllegalArgumentException if no field exists with the given name
      */
@@ -121,8 +132,10 @@ public abstract class Union extends Structure {
         return super.readField(fieldName);
     }
 
-    /** Write the given field value to native memory.
+    /**
+     * Write the given field value to native memory.
      * The given field will become the active one.
+     * 
      * @throws IllegalArgumentException if no field exists with the given name
      */
     @Override
@@ -132,8 +145,10 @@ public abstract class Union extends Structure {
         super.writeField(fieldName);
     }
 
-    /** Write the given field value to the field and native memory.
+    /**
+     * Write the given field value to the field and native memory.
      * The given field will become the active one.
+     * 
      * @throws IllegalArgumentException if no field exists with the given name
      */
     @Override
@@ -143,15 +158,20 @@ public abstract class Union extends Structure {
         super.writeField(fieldName, value);
     }
 
-    /** Reads the Structure field of the given type from memory, sets it as
-     * the active type and returns it.  Convenience method for
-     * <pre><code>
+    /**
+     * Reads the Structure field of the given type from memory, sets it as
+     * the active type and returns it. Convenience method for
+     * 
+     * <pre>
+     * <code>
      * Union u;
      * Class type;
      * u.setType(type);
      * u.read();
      * value = u.<i>field</i>;
-     * </code></pre>
+     * </code>
+     * </pre>
+     * 
      * @param type class type of the Structure field to read
      * @return the Structure field with the given type
      */
@@ -167,13 +187,18 @@ public abstract class Union extends Structure {
         throw new IllegalArgumentException("No field of type " + type + " in " + this);
     }
 
-    /** Set the active type and its value.  Convenience method for
-     * <pre><code>
+    /**
+     * Set the active type and its value. Convenience method for
+     * 
+     * <pre>
+     * <code>
      * Union u;
      * Class type;
      * u.setType(type);
      * u.<i>field</i> = value;
-     * </code></pre>
+     * </code>
+     * </pre>
+     * 
      * @param object instance of a class which is part of the union
      * @return this Union object
      */
@@ -187,8 +212,10 @@ public abstract class Union extends Structure {
         throw new IllegalArgumentException("No field of type " + object.getClass() + " in " + this);
     }
 
-    /** Returns the field in this union with the same type as <code>type</code>,
+    /**
+     * Returns the field in this union with the same type as <code>type</code>,
      * if any, null otherwise.
+     * 
      * @param type type to search for
      * @return StructField of matching type
      */
@@ -210,8 +237,9 @@ public abstract class Union extends Structure {
         }
     }
 
-    /** Avoid reading pointer-based fields and structures unless explicitly
-     * selected.  Structures may contain pointer-based fields which can
+    /**
+     * Avoid reading pointer-based fields and structures unless explicitly
+     * selected. Structures may contain pointer-based fields which can
      * crash the VM if not properly initialized.
      */
     @Override

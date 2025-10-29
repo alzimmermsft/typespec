@@ -23,6 +23,8 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.tlb.imp;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeInfoUtil;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeLibUtil;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,9 +33,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeInfoUtil;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeLibUtil;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -77,12 +76,10 @@ public abstract class TlbBase {
     protected String name = "DefaultName";
 
     /** The iunknown methods. */
-    public static String[] IUNKNOWN_METHODS = {"QueryInterface", "AddRef",
-        "Release"};
+    public static String[] IUNKNOWN_METHODS = { "QueryInterface", "AddRef", "Release" };
 
     /** The idispatch methods. */
-    public static String[] IDISPATCH_METHODS = {"GetTypeInfoCount",
-        "GetTypeInfo", "GetIDsOfNames", "Invoke"};
+    public static String[] IDISPATCH_METHODS = { "GetTypeInfoCount", "GetTypeInfo", "GetIDsOfNames", "Invoke" };
 
     protected String bindingMode = TlbConst.BINDING_MODE_DISPID;
 
@@ -109,7 +106,7 @@ public abstract class TlbBase {
      * Log error.
      *
      * @param msg
-     *            the msg
+     * the msg
      */
     public void logError(String msg) {
         this.log("ERROR", msg);
@@ -119,7 +116,7 @@ public abstract class TlbBase {
      * Log info.
      *
      * @param msg
-     *            the msg
+     * the msg
      */
     public void logInfo(String msg) {
         this.log("INFO", msg);
@@ -138,7 +135,7 @@ public abstract class TlbBase {
      * Creates the content.
      *
      * @param content
-     *            the content
+     * the content
      */
     public void createContent(String content) {
         this.replaceVariable("content", content);
@@ -166,9 +163,9 @@ public abstract class TlbBase {
      * Log.
      *
      * @param level
-     *            the level
+     * the level
      * @param msg
-     *            the msg
+     * the msg
      */
     protected void log(String level, String msg) {
         String _msg = level + " " + this.getTime() + " : " + msg;
@@ -196,16 +193,15 @@ public abstract class TlbBase {
      * Read template file.
      *
      * @param filename
-     *            the filename
+     * the filename
      * @throws IOException
-     *             Signals that an I/O exception has occurred.
+     * Signals that an I/O exception has occurred.
      */
     protected void readTemplateFile(String filename) throws IOException {
         this.templateBuffer = new StringBuffer();
         BufferedReader reader = null;
         try {
-            InputStream is = this.getClass().getClassLoader()
-                    .getResourceAsStream(filename);
+            InputStream is = this.getClass().getClassLoader().getResourceAsStream(filename);
             reader = new BufferedReader(new InputStreamReader(is));
             String line = null;
             while ((line = reader.readLine()) != null)
@@ -220,9 +216,9 @@ public abstract class TlbBase {
      * Replace variable.
      *
      * @param name
-     *            the name
+     * the name
      * @param value
-     *            the value
+     * the value
      */
     protected void replaceVariable(String name, String value) {
         if (value == null)
@@ -249,7 +245,7 @@ public abstract class TlbBase {
      * Creates the class name.
      *
      * @param name
-     *            the name
+     * the name
      */
     protected void createClassName(String name) {
         this.replaceVariable("classname", name);
@@ -259,7 +255,7 @@ public abstract class TlbBase {
      * Checks if is reserved method.
      *
      * @param method
-     *            the method
+     * the method
      * @return true, if is reserved method
      */
     protected boolean isReservedMethod(String method) {
@@ -277,14 +273,14 @@ public abstract class TlbBase {
     }
 
     protected boolean isVTableMode() {
-        if(this.bindingMode.equalsIgnoreCase(TlbConst.BINDING_MODE_VTABLE))
+        if (this.bindingMode.equalsIgnoreCase(TlbConst.BINDING_MODE_VTABLE))
             return true;
         else
             return false;
     }
 
     protected boolean isDispIdMode() {
-        if(this.bindingMode.equalsIgnoreCase(TlbConst.BINDING_MODE_DISPID))
+        if (this.bindingMode.equalsIgnoreCase(TlbConst.BINDING_MODE_DISPID))
             return true;
         else
             return false;

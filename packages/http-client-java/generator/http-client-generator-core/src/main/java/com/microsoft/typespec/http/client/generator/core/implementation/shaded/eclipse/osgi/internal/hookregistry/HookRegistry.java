@@ -16,7 +16,6 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.internal.framework.EquinoxConfiguration;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.internal.framework.EquinoxContainer;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,60 +30,60 @@ public final class HookRegistry {
 
     private final EquinoxContainer container;
     private final List<ClassLoaderHook> classLoaderHooks = new ArrayList<>();
-	private final List<ClassLoaderHook> classLoaderHooksRO = Collections.unmodifiableList(classLoaderHooks);
-	private final List<StorageHookFactory<?, ?, ?>> storageHookFactories = new ArrayList<>();
-	private final List<StorageHookFactory<?, ?, ?>> storageHookFactoriesRO = Collections
-			.unmodifiableList(storageHookFactories);
-	private final List<BundleFileWrapperFactoryHook> bundleFileWrapperFactoryHooks = new ArrayList<>();
-	private final List<BundleFileWrapperFactoryHook> bundleFileWrapperFactoryHooksRO = Collections
-			.unmodifiableList(bundleFileWrapperFactoryHooks);
+    private final List<ClassLoaderHook> classLoaderHooksRO = Collections.unmodifiableList(classLoaderHooks);
+    private final List<StorageHookFactory<?, ?, ?>> storageHookFactories = new ArrayList<>();
+    private final List<StorageHookFactory<?, ?, ?>> storageHookFactoriesRO
+        = Collections.unmodifiableList(storageHookFactories);
+    private final List<BundleFileWrapperFactoryHook> bundleFileWrapperFactoryHooks = new ArrayList<>();
+    private final List<BundleFileWrapperFactoryHook> bundleFileWrapperFactoryHooksRO
+        = Collections.unmodifiableList(bundleFileWrapperFactoryHooks);
 
     public HookRegistry(EquinoxContainer container) {
-		this.container = container;
-	}
+        this.container = container;
+    }
 
     /**
-	 * Returns the list of configured class loading hooks.
-	 * 
-	 * @return the list of configured class loading hooks.
-	 */
-	public List<ClassLoaderHook> getClassLoaderHooks() {
-		return classLoaderHooksRO;
-	}
-
-	/**
-	 * Returns the list of configured storage hooks.
-	 * 
-	 * @return the list of configured storage hooks.
-	 */
-	public List<StorageHookFactory<?, ?, ?>> getStorageHookFactories() {
-		return storageHookFactoriesRO;
-	}
-
-	/**
-	 * Returns the configured bundle file wrapper factories
-	 * 
-	 * @return the configured bundle file wrapper factories
-	 */
-	public List<BundleFileWrapperFactoryHook> getBundleFileWrapperFactoryHooks() {
-		return bundleFileWrapperFactoryHooksRO;
-	}
+     * Returns the list of configured class loading hooks.
+     * 
+     * @return the list of configured class loading hooks.
+     */
+    public List<ClassLoaderHook> getClassLoaderHooks() {
+        return classLoaderHooksRO;
+    }
 
     /**
-	 * Returns the configuration associated with this hook registry.
-	 * 
-	 * @return the configuration associated with this hook registry.
-	 */
-	public EquinoxConfiguration getConfiguration() {
-		return container.getConfiguration();
-	}
+     * Returns the list of configured storage hooks.
+     * 
+     * @return the list of configured storage hooks.
+     */
+    public List<StorageHookFactory<?, ?, ?>> getStorageHookFactories() {
+        return storageHookFactoriesRO;
+    }
 
-	/**
-	 * Returns the equinox container associated with this hook registry.
-	 * 
-	 * @return the equinox container associated with this hook registry.
-	 */
-	public EquinoxContainer getContainer() {
-		return container;
-	}
+    /**
+     * Returns the configured bundle file wrapper factories
+     * 
+     * @return the configured bundle file wrapper factories
+     */
+    public List<BundleFileWrapperFactoryHook> getBundleFileWrapperFactoryHooks() {
+        return bundleFileWrapperFactoryHooksRO;
+    }
+
+    /**
+     * Returns the configuration associated with this hook registry.
+     * 
+     * @return the configuration associated with this hook registry.
+     */
+    public EquinoxConfiguration getConfiguration() {
+        return container.getConfiguration();
+    }
+
+    /**
+     * Returns the equinox container associated with this hook registry.
+     * 
+     * @return the equinox container associated with this hook registry.
+     */
+    public EquinoxContainer getContainer() {
+        return container;
+    }
 }

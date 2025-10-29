@@ -38,7 +38,8 @@ public class BatchCompilerRequestor implements ICompilerRequestor {
         }
         this.compiler.logger.startLoggingSource(compilationResult);
         if (compilationResult.hasProblems() || compilationResult.hasTasks()) {
-        	this.compiler.logger.logProblems(compilationResult.getAllProblems(), compilationResult.compilationUnit.getContents(), this.compiler);
+            this.compiler.logger.logProblems(compilationResult.getAllProblems(),
+                compilationResult.compilationUnit.getContents(), this.compiler);
             reportProblems(compilationResult);
         }
         this.compiler.outputClassFiles(compilationResult);

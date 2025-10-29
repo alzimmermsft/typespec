@@ -29,20 +29,19 @@ import java.util.concurrent.Executor;
 @ElementTypesAreNonnullByDefault
 public final class RemovalListeners {
 
-  private RemovalListeners() {}
+    private RemovalListeners() {
+    }
 
-  /**
-   * Returns a {@code RemovalListener} which processes all eviction notifications using {@code
-   * executor}.
-   *
-   * @param listener the backing listener
-   * @param executor the executor with which removal notifications are asynchronously executed
-   */
-  public static <K, V> RemovalListener<K, V> asynchronous(
-      RemovalListener<K, V> listener, Executor executor) {
-    checkNotNull(listener);
-    checkNotNull(executor);
-    return (RemovalNotification<K, V> notification) ->
-        executor.execute(() -> listener.onRemoval(notification));
-  }
+    /**
+     * Returns a {@code RemovalListener} which processes all eviction notifications using {@code
+     * executor}.
+     *
+     * @param listener the backing listener
+     * @param executor the executor with which removal notifications are asynchronously executed
+     */
+    public static <K, V> RemovalListener<K, V> asynchronous(RemovalListener<K, V> listener, Executor executor) {
+        checkNotNull(listener);
+        checkNotNull(executor);
+        return (RemovalNotification<K, V> notification) -> executor.execute(() -> listener.onRemoval(notification));
+    }
 }

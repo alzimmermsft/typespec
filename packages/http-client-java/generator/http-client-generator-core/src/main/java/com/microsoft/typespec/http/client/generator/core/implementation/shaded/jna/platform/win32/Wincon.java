@@ -34,11 +34,13 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 
 /**
  * Ported from Wincon.h.
+ * 
  * @author lgoldstein
  */
 public interface Wincon {
     /**
      * Allocates a new console for the calling process.
+     * 
      * @return {@code true} if successful - if {@code false} then use
      * {@code GetLastError()} to get extended error information
      * @see <a href="https://msdn.microsoft.com/en-us/library/ms681944(v=vs.85).aspx">AllocConsole documentation</a>
@@ -47,15 +49,18 @@ public interface Wincon {
 
     /**
      * Detaches the calling process from its console
+     * 
      * @return {@code true} if successful - if {@code false} then use
      * {@code GetLastError()} to get extended error information
      * @see <a href="https://msdn.microsoft.com/en-us/library/ms683150(v=vs.85).aspx">FreeConsole documentation</a>
      */
     boolean FreeConsole();
 
-    int ATTACH_PARENT_PROCESS=(-1);
+    int ATTACH_PARENT_PROCESS = (-1);
+
     /**
      * Attaches the calling process to the console of the specified process
+     * 
      * @param dwProcessId The identifier of the process whose console is to
      * be used. Can be either the process ID or the special {@link #ATTACH_PARENT_PROCESS}
      * value to indicate the console of the parent of the current process.
@@ -68,26 +73,30 @@ public interface Wincon {
     /**
      * Flushes the console input buffer. All input records currently in the input
      * buffer are discarded.
+     * 
      * @param hConsoleInput A handle to the console input buffer. The handle must
      * have the GENERIC_WRITE access right.
      * @return {@code true} if successful - if {@code false} then use
      * {@code GetLastError()} to get extended error information
-     * @see <a href="https://msdn.microsoft.com/en-us/library/ms683147(v=vs.85).aspx">FlushConsoleInputBuffer documentation</a>
+     * @see <a href="https://msdn.microsoft.com/en-us/library/ms683147(v=vs.85).aspx">FlushConsoleInputBuffer
+     * documentation</a>
      */
     boolean FlushConsoleInputBuffer(HANDLE hConsoleInput);
 
     /* Events to be sent by GenerateConsoleCtrlEvent */
-    int CTRL_C_EVENT=0;
-    int CTRL_BREAK_EVENT=1;
+    int CTRL_C_EVENT = 0;
+    int CTRL_BREAK_EVENT = 1;
 
     /**
      * Sends a specified signal to a console process group that shares the console
      * associated with the calling process.
+     * 
      * @param dwCtrlEvent The type of signal to be generated.
      * @param dwProcessGroupId The identifier of the process group to receive the signal
      * @return {@code true} if successful - if {@code false} then use
      * {@code GetLastError()} to get extended error information
-     * @see <a href="https://msdn.microsoft.com/en-us/library/ms683155(v=vs.85).aspx">GenerateConsoleCtrlEvent documentation</a>
+     * @see <a href="https://msdn.microsoft.com/en-us/library/ms683155(v=vs.85).aspx">GenerateConsoleCtrlEvent
+     * documentation</a>
      */
     boolean GenerateConsoleCtrlEvent(int dwCtrlEvent, int dwProcessGroupId);
 
@@ -115,7 +124,8 @@ public interface Wincon {
      * @param wCodePageID The output code page used by the console associated with the calling process.
      * @return {@code true} if successful - if {@code false} then use
      * {@code GetLastError()} to get extended error information
-     * @see <a href="https://msdn.microsoft.com/en-us/library/ms686036(v=vs.85).aspx">SetConsoleOutputCP documentation</a>
+     * @see <a href="https://msdn.microsoft.com/en-us/library/ms686036(v=vs.85).aspx">SetConsoleOutputCP
+     * documentation</a>
      */
     boolean SetConsoleOutputCP(int wCodePageID);
 
@@ -127,11 +137,12 @@ public interface Wincon {
     /**
      * @param hConsoleInput A handle to the console input buffer. The handle must
      * have the GENERIC_READ access right
-     * @param lpcNumberOfEvents A  pointer to a variable that receives the number
+     * @param lpcNumberOfEvents A pointer to a variable that receives the number
      * of unread input records in the console's input buffer
      * @return {@code true} if successful - if {@code false} then use
      * {@code GetLastError()} to get extended error information
-     * @see <a href="https://msdn.microsoft.com/en-us/library/ms683207(v=vs.85).aspx">GetNumberOfConsoleInputEvents documentation</a>
+     * @see <a href="https://msdn.microsoft.com/en-us/library/ms683207(v=vs.85).aspx">GetNumberOfConsoleInputEvents
+     * documentation</a>
      */
     boolean GetNumberOfConsoleInputEvents(HANDLE hConsoleInput, IntByReference lpcNumberOfEvents);
 
@@ -140,14 +151,15 @@ public interface Wincon {
      * of mouse buttons
      * @return {@code true} if successful - if {@code false} then use
      * {@code GetLastError()} to get extended error information
-     * @see <a href="https://msdn.microsoft.com/en-us/library/ms683208(v=vs.85).aspx">GetNumberOfConsoleMouseButtons documentation</a>
+     * @see <a href="https://msdn.microsoft.com/en-us/library/ms683208(v=vs.85).aspx">GetNumberOfConsoleMouseButtons
+     * documentation</a>
      */
     boolean GetNumberOfConsoleMouseButtons(IntByReference lpNumberOfMouseButtons);
 
     /* The values to use for Get/SetStdHandle */
-    int STD_INPUT_HANDLE=(-10);
-    int STD_OUTPUT_HANDLE=(-11);
-    int STD_ERROR_HANDLE=(-12);
+    int STD_INPUT_HANDLE = (-10);
+    int STD_OUTPUT_HANDLE = (-11);
+    int STD_ERROR_HANDLE = (-12);
 
     /**
      * @param nStdHandle The standard device identifier
@@ -165,36 +177,39 @@ public interface Wincon {
     boolean SetStdHandle(int nStdHandle, HANDLE hHandle);
 
     /* console mode values */
-    int CONSOLE_FULLSCREEN=1;
-    int CONSOLE_FULLSCREEN_HARDWARE=2;
+    int CONSOLE_FULLSCREEN = 1;
+    int CONSOLE_FULLSCREEN_HARDWARE = 2;
 
     /**
      * Retrieves the display mode of the current console
+     * 
      * @param lpModeFlags The display mode of the console
      * @return {@code true} if successful - if {@code false} then use
      * {@code GetLastError()} to get extended error information
-     * @see <a href="https://msdn.microsoft.com/en-us/library/ms683164(v=vs.85).aspx">GetConsoleDisplayMode documentation</a>
+     * @see <a href="https://msdn.microsoft.com/en-us/library/ms683164(v=vs.85).aspx">GetConsoleDisplayMode
+     * documentation</a>
      */
     boolean GetConsoleDisplayMode(IntByReference lpModeFlags);
 
     /* console modes used by Get/SetConsoleMode */
-    int ENABLE_PROCESSED_INPUT=0x0001;
-    int ENABLE_LINE_INPUT=0x0002;
-    int ENABLE_ECHO_INPUT=0x0004;
-    int ENABLE_WINDOW_INPUT=0x0008;
-    int ENABLE_MOUSE_INPUT=0x0010;
-    int ENABLE_INSERT_MODE=0x0020;
-    int ENABLE_QUICK_EDIT_MODE=0x0040;
-    int ENABLE_EXTENDED_FLAGS=0x0080;
+    int ENABLE_PROCESSED_INPUT = 0x0001;
+    int ENABLE_LINE_INPUT = 0x0002;
+    int ENABLE_ECHO_INPUT = 0x0004;
+    int ENABLE_WINDOW_INPUT = 0x0008;
+    int ENABLE_MOUSE_INPUT = 0x0010;
+    int ENABLE_INSERT_MODE = 0x0020;
+    int ENABLE_QUICK_EDIT_MODE = 0x0040;
+    int ENABLE_EXTENDED_FLAGS = 0x0080;
     int ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004;
     int DISABLE_NEWLINE_AUTO_RETURN = 0x0008;
     int ENABLE_VIRTUAL_TERMINAL_INPUT = 0x0200;
 
-    /* If the hConsoleHandle parameter is a screen buffer handle, the mode
+    /*
+     * If the hConsoleHandle parameter is a screen buffer handle, the mode
      * can be one or more of the following values
      */
-    int ENABLE_PROCESSED_OUTPUT=0x0001;
-    int ENABLE_WRAP_AT_EOL_OUTPUT=0x0002;
+    int ENABLE_PROCESSED_OUTPUT = 0x0001;
+    int ENABLE_WRAP_AT_EOL_OUTPUT = 0x0002;
 
     /**
      * @param hConsoleHandle A handle to the console input buffer or the console
@@ -217,7 +232,7 @@ public interface Wincon {
      */
     boolean SetConsoleMode(HANDLE hConsoleHandle, int dwMode);
 
-    int MAX_CONSOLE_TITLE_LENGTH=64 * 1024;
+    int MAX_CONSOLE_TITLE_LENGTH = 64 * 1024;
 
     /**
      * @param lpConsoleTitle A pointer to a buffer that receives a null-terminated
@@ -230,7 +245,8 @@ public interface Wincon {
      * @return If the function succeeds, the return value is the length of the console
      * window's title, in characters. If the function fails, the return value is zero
      * and {@code GetLastError} returns the error code.
-     * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms683174(v=vs.85).aspx">GetConsoleTitle documentation</a>
+     * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms683174(v=vs.85).aspx">GetConsoleTitle
+     * documentation</a>
      */
     int GetConsoleTitle(char[] lpConsoleTitle, int nSize);
 
@@ -244,7 +260,9 @@ public interface Wincon {
      * to store the title, the return value is zero and {@code GetLastError} returns
      * {@code ERROR_SUCCESS}. If the function fails, the return value is zero
      * and {@code GetLastError} returns the error code.
-     * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms683168(v=vs.85).aspx">GetConsoleOriginalTitle documentation</a>
+     * @see <a
+     * href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms683168(v=vs.85).aspx">GetConsoleOriginalTitle
+     * documentation</a>
      */
     int GetConsoleOriginalTitle(char[] lpConsoleTitle, int nSize);
 
@@ -259,28 +277,36 @@ public interface Wincon {
 
     /**
      * Retrieves information about the specified console screen buffer.
+     * 
      * @param hConsoleOutput A handle to the console screen buffer.
-     * @param lpConsoleScreenBufferInfo A pointer to a CONSOLE_SCREEN_BUFFER_INFO structure that receives the console screen buffer information.
+     * @param lpConsoleScreenBufferInfo A pointer to a CONSOLE_SCREEN_BUFFER_INFO structure that receives the console
+     * screen buffer information.
      * @return {@code true} if successful - if {@code false} then use
      * {@code GetLastError()} to get extended error information
-     * @see <a href="https://docs.microsoft.com/en-us/windows/console/getconsolescreenbufferinfo">GetConsoleScreenBufferInfo documentation</a>
+     * @see <a
+     * href="https://docs.microsoft.com/en-us/windows/console/getconsolescreenbufferinfo">GetConsoleScreenBufferInfo
+     * documentation</a>
      */
     boolean GetConsoleScreenBufferInfo(HANDLE hConsoleOutput, CONSOLE_SCREEN_BUFFER_INFO lpConsoleScreenBufferInfo);
 
     /**
      * Reads data from a console input buffer and removes it from the buffer.
+     * 
      * @param hConsoleInput A handle to the console input buffer.
      * @param lpBuffer A pointer to an array of INPUT_RECORD structures that receives the input buffer data.
      * @param nLength The size of the array pointed to by the lpBuffer parameter, in array elements.
      * @param lpNumberOfEventsRead A pointer to a variable that receives the number of input records read.
      * @return {@code true} if successful - if {@code false} then use
      * {@code GetLastError()} to get extended error information
-     * @see <a href="https://docs.microsoft.com/en-us/windows/console/readconsoleinput">ReadConsoleInput documentation</a>
+     * @see <a href="https://docs.microsoft.com/en-us/windows/console/readconsoleinput">ReadConsoleInput
+     * documentation</a>
      */
-    boolean ReadConsoleInput(HANDLE hConsoleInput, INPUT_RECORD[] lpBuffer, int nLength, IntByReference lpNumberOfEventsRead);
+    boolean ReadConsoleInput(HANDLE hConsoleInput, INPUT_RECORD[] lpBuffer, int nLength,
+        IntByReference lpNumberOfEventsRead);
 
     /**
      * Writes a character string to a console screen buffer beginning at the current cursor location.
+     * 
      * @param hConsoleOutput A handle to the console screen buffer.
      * @param lpBuffer A pointer to a buffer that contains characters to be written to the console screen buffer.
      * @param nNumberOfCharsToWrite The number of characters to be written.
@@ -290,7 +316,8 @@ public interface Wincon {
      * {@code GetLastError()} to get extended error information
      * @see <a href="https://docs.microsoft.com/en-us/windows/console/writeconsole">WriteConsole documentation</a>
      */
-    boolean WriteConsole(HANDLE hConsoleOutput, String lpBuffer, int nNumberOfCharsToWrite, IntByReference lpNumberOfCharsWritten, LPVOID lpReserved);
+    boolean WriteConsole(HANDLE hConsoleOutput, String lpBuffer, int nNumberOfCharsToWrite,
+        IntByReference lpNumberOfCharsWritten, LPVOID lpReserved);
 
     /**
      * COORD structure
@@ -338,7 +365,8 @@ public interface Wincon {
 
         @Override
         public String toString() {
-            return String.format("CONSOLE_SCREEN_BUFFER_INFO(%s,%s,%s,%s,%s)", dwSize, dwCursorPosition, wAttributes, srWindow, dwMaximumWindowSize);
+            return String.format("CONSOLE_SCREEN_BUFFER_INFO(%s,%s,%s,%s,%s)", dwSize, dwCursorPosition, wAttributes,
+                srWindow, dwMaximumWindowSize);
         }
     }
 
@@ -368,9 +396,11 @@ public interface Wincon {
                 case KEY_EVENT:
                     Event.setType("KeyEvent");
                     break;
+
                 case MOUSE_EVENT:
                     Event.setType("MouseEvent");
                     break;
+
                 case WINDOW_BUFFER_SIZE_EVENT:
                     Event.setType("WindowBufferSizeEvent");
                     break;
@@ -399,7 +429,8 @@ public interface Wincon {
 
         @Override
         public String toString() {
-            return String.format("KEY_EVENT_RECORD(%s,%s,%s,%s,%s,%s)", bKeyDown, wRepeatCount, wVirtualKeyCode, wVirtualKeyCode, wVirtualScanCode, uChar, dwControlKeyState);
+            return String.format("KEY_EVENT_RECORD(%s,%s,%s,%s,%s,%s)", bKeyDown, wRepeatCount, wVirtualKeyCode,
+                wVirtualKeyCode, wVirtualScanCode, uChar, dwControlKeyState);
         }
     }
 
@@ -416,7 +447,8 @@ public interface Wincon {
 
         @Override
         public String toString() {
-            return String.format("MOUSE_EVENT_RECORD(%s,%s,%s,%s)", dwMousePosition, dwButtonState, dwControlKeyState, dwEventFlags);
+            return String.format("MOUSE_EVENT_RECORD(%s,%s,%s,%s)", dwMousePosition, dwButtonState, dwControlKeyState,
+                dwEventFlags);
         }
     }
 

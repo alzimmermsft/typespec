@@ -23,27 +23,27 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
-import java.util.Arrays;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Memory;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinCrypt.CRYPTPROTECT_PROMPTSTRUCT;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinCrypt.DATA_BLOB;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.PointerByReference;
+import java.util.Arrays;
 
 /**
  * Crypt32 utility API.
+ * 
  * @author dblock[at]dblock.org
  */
 public abstract class Crypt32Util {
 
     /**
      * Protect a blob of data.
+     * 
      * @param data
-     *  Data to protect.
+     * Data to protect.
      * @return
-     *  Protected data.
+     * Protected data.
      */
     public static byte[] cryptProtectData(byte[] data) {
         return cryptProtectData(data, 0);
@@ -51,12 +51,13 @@ public abstract class Crypt32Util {
 
     /**
      * Protect a blob of data with optional flags.
+     * 
      * @param data
-     *  Data to protect.
+     * Data to protect.
      * @param flags
-     *  Optional flags, eg. CRYPTPROTECT_LOCAL_MACHINE | CRYPTPROTECT_UI_FORBIDDEN.
+     * Optional flags, eg. CRYPTPROTECT_LOCAL_MACHINE | CRYPTPROTECT_UI_FORBIDDEN.
      * @return
-     *  Protected data.
+     * Protected data.
      */
     public static byte[] cryptProtectData(byte[] data, int flags) {
         return cryptProtectData(data, null, flags, "", null);
@@ -64,29 +65,30 @@ public abstract class Crypt32Util {
 
     /**
      * Protect a blob of data.
+     * 
      * @param data
-     *  Data to protect.
+     * Data to protect.
      * @param entropy
-     *  Optional entropy.
+     * Optional entropy.
      * @param flags
-     *  Optional flags.
+     * Optional flags.
      * @param description
-     *  Optional description.
+     * Optional description.
      * @param prompt
-     *  Prompt structure.
+     * Prompt structure.
      * @return
-     *  Protected bytes.
+     * Protected bytes.
      */
-    public static byte[] cryptProtectData(byte[] data, byte[] entropy, int flags,
-            String description, CRYPTPROTECT_PROMPTSTRUCT prompt) {
+    public static byte[] cryptProtectData(byte[] data, byte[] entropy, int flags, String description,
+        CRYPTPROTECT_PROMPTSTRUCT prompt) {
         DATA_BLOB pDataIn = new DATA_BLOB(data);
         DATA_BLOB pDataProtected = new DATA_BLOB();
         DATA_BLOB pEntropy = (entropy == null) ? null : new DATA_BLOB(entropy);
         Win32Exception err = null;
         byte[] protectedData = null;
         try {
-            if (! Crypt32.INSTANCE.CryptProtectData(pDataIn, description,
-                    pEntropy, null, prompt, flags, pDataProtected)) {
+            if (!Crypt32.INSTANCE.CryptProtectData(pDataIn, description, pEntropy, null, prompt, flags,
+                pDataProtected)) {
                 err = new Win32Exception(Kernel32.INSTANCE.GetLastError());
             } else {
                 protectedData = pDataProtected.getData();
@@ -102,7 +104,7 @@ public abstract class Crypt32Util {
                 pDataProtected.pbData.clear(pDataProtected.cbData);
                 try {
                     Kernel32Util.freeLocalMemory(pDataProtected.pbData);
-                } catch(Win32Exception e) {
+                } catch (Win32Exception e) {
                     if (err == null) {
                         err = e;
                     } else {
@@ -124,10 +126,11 @@ public abstract class Crypt32Util {
 
     /**
      * Unprotect a blob of data.
+     * 
      * @param data
-     *  Data to unprotect.
+     * Data to unprotect.
      * @return
-     *  Unprotected blob of data.
+     * Unprotected blob of data.
      */
     public static byte[] cryptUnprotectData(byte[] data) {
         return cryptUnprotectData(data, 0);
@@ -135,12 +138,13 @@ public abstract class Crypt32Util {
 
     /**
      * Unprotect a blob of data.
+     * 
      * @param data
-     *  Data to unprotect.
+     * Data to unprotect.
      * @param flags
-     *  Optional flags, eg. CRYPTPROTECT_UI_FORBIDDEN.
+     * Optional flags, eg. CRYPTPROTECT_UI_FORBIDDEN.
      * @return
-     *  Unprotected blob of data.
+     * Unprotected blob of data.
      */
     public static byte[] cryptUnprotectData(byte[] data, int flags) {
         return cryptUnprotectData(data, null, flags, null);
@@ -148,27 +152,26 @@ public abstract class Crypt32Util {
 
     /**
      * Unprotect a blob of data.
+     * 
      * @param data
-     *  Data to unprotect.
+     * Data to unprotect.
      * @param entropy
-     *  Optional entropy.
+     * Optional entropy.
      * @param flags
-     *  Optional flags.
+     * Optional flags.
      * @param prompt
-     *  Optional prompt structure.
+     * Optional prompt structure.
      * @return
-     *  Unprotected blob of data.
+     * Unprotected blob of data.
      */
-    public static byte[] cryptUnprotectData(byte[] data, byte[] entropy, int flags,
-            CRYPTPROTECT_PROMPTSTRUCT prompt) {
+    public static byte[] cryptUnprotectData(byte[] data, byte[] entropy, int flags, CRYPTPROTECT_PROMPTSTRUCT prompt) {
         DATA_BLOB pDataIn = new DATA_BLOB(data);
         DATA_BLOB pDataUnprotected = new DATA_BLOB();
         DATA_BLOB pEntropy = (entropy == null) ? null : new DATA_BLOB(entropy);
         Win32Exception err = null;
         byte[] unProtectedData = null;
         try {
-            if (! Crypt32.INSTANCE.CryptUnprotectData(pDataIn, null,
-                    pEntropy, null, prompt, flags, pDataUnprotected)) {
+            if (!Crypt32.INSTANCE.CryptUnprotectData(pDataIn, null, pEntropy, null, prompt, flags, pDataUnprotected)) {
                 err = new Win32Exception(Kernel32.INSTANCE.GetLastError());
             } else {
                 unProtectedData = pDataUnprotected.getData();
@@ -184,7 +187,7 @@ public abstract class Crypt32Util {
                 pDataUnprotected.pbData.clear(pDataUnprotected.cbData);
                 try {
                     Kernel32Util.freeLocalMemory(pDataUnprotected.pbData);
-                } catch(Win32Exception e) {
+                } catch (Win32Exception e) {
                     if (err == null) {
                         err = e;
                     } else {
@@ -222,22 +225,12 @@ public abstract class Crypt32Util {
         int charToBytes = Boolean.getBoolean("w32.ascii") ? 1 : Native.WCHAR_SIZE;
 
         // Initialize the signature structure.
-        int requiredSize = Crypt32.INSTANCE.CertNameToStr(
-                dwCertEncodingType,
-                pName,
-                dwStrType,
-                Pointer.NULL,
-                0);
+        int requiredSize = Crypt32.INSTANCE.CertNameToStr(dwCertEncodingType, pName, dwStrType, Pointer.NULL, 0);
 
         Memory mem = new Memory(requiredSize * charToBytes);
 
         // Initialize the signature structure.
-        int resultBytes = Crypt32.INSTANCE.CertNameToStr(
-                dwCertEncodingType,
-                pName,
-                dwStrType,
-                mem,
-                requiredSize);
+        int resultBytes = Crypt32.INSTANCE.CertNameToStr(dwCertEncodingType, pName, dwStrType, mem, requiredSize);
 
         assert resultBytes == requiredSize;
 

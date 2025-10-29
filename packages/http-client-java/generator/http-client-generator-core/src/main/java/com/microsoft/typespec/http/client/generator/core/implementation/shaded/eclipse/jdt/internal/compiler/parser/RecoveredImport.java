@@ -21,45 +21,52 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class RecoveredImport extends RecoveredElement {
 
-	public ImportReference importReference;
-public RecoveredImport(ImportReference importReference, RecoveredElement parent, int bracketBalance){
-	super(parent, bracketBalance);
-	this.importReference = importReference;
-}
-/*
- * Answer the associated parsed structure
- */
-@Override
-public ASTNode parseTree(){
-	return this.importReference;
-}
-/*
- * Answer the very source end of the corresponding parse node
- */
-@Override
-public int sourceEnd(){
-	return this.importReference.declarationSourceEnd;
-}
-@Override
-public String toString(int tab) {
-	return tabString(tab) + "Recovered import: " + this.importReference.toString(); //$NON-NLS-1$
-}
-public ImportReference updatedImportReference(){
+    public ImportReference importReference;
 
-	return this.importReference;
-}
-@Override
-public void updateParseTree(){
-	updatedImportReference();
-}
-/*
- * Update the declarationSourceEnd of the corresponding parse node
- */
-@Override
-public void updateSourceEndIfNecessary(int bodyStart, int bodyEnd){
-	if (this.importReference.declarationSourceEnd == 0) {
-		this.importReference.declarationSourceEnd = bodyEnd;
-		this.importReference.declarationEnd = bodyEnd;
-	}
-}
+    public RecoveredImport(ImportReference importReference, RecoveredElement parent, int bracketBalance) {
+        super(parent, bracketBalance);
+        this.importReference = importReference;
+    }
+
+    /*
+     * Answer the associated parsed structure
+     */
+    @Override
+    public ASTNode parseTree() {
+        return this.importReference;
+    }
+
+    /*
+     * Answer the very source end of the corresponding parse node
+     */
+    @Override
+    public int sourceEnd() {
+        return this.importReference.declarationSourceEnd;
+    }
+
+    @Override
+    public String toString(int tab) {
+        return tabString(tab) + "Recovered import: " + this.importReference.toString(); //$NON-NLS-1$
+    }
+
+    public ImportReference updatedImportReference() {
+
+        return this.importReference;
+    }
+
+    @Override
+    public void updateParseTree() {
+        updatedImportReference();
+    }
+
+    /*
+     * Update the declarationSourceEnd of the corresponding parse node
+     */
+    @Override
+    public void updateSourceEndIfNecessary(int bodyStart, int bodyEnd) {
+        if (this.importReference.declarationSourceEnd == 0) {
+            this.importReference.declarationSourceEnd = bodyEnd;
+            this.importReference.declarationEnd = bodyEnd;
+        }
+    }
 }

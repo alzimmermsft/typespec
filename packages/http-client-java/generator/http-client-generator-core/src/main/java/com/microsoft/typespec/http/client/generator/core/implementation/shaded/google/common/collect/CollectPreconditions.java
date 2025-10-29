@@ -26,41 +26,41 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.g
 @ElementTypesAreNonnullByDefault
 final class CollectPreconditions {
 
-  static void checkEntryNotNull(Object key, Object value) {
-    if (key == null) {
-      throw new NullPointerException("null key in entry: null=" + value);
-    } else if (value == null) {
-      throw new NullPointerException("null value in entry: " + key + "=null");
+    static void checkEntryNotNull(Object key, Object value) {
+        if (key == null) {
+            throw new NullPointerException("null key in entry: null=" + value);
+        } else if (value == null) {
+            throw new NullPointerException("null value in entry: " + key + "=null");
+        }
     }
-  }
 
-  @CanIgnoreReturnValue
-  static int checkNonnegative(int value, String name) {
-    if (value < 0) {
-      throw new IllegalArgumentException(name + " cannot be negative but was: " + value);
+    @CanIgnoreReturnValue
+    static int checkNonnegative(int value, String name) {
+        if (value < 0) {
+            throw new IllegalArgumentException(name + " cannot be negative but was: " + value);
+        }
+        return value;
     }
-    return value;
-  }
 
-  @CanIgnoreReturnValue
-  static long checkNonnegative(long value, String name) {
-    if (value < 0) {
-      throw new IllegalArgumentException(name + " cannot be negative but was: " + value);
+    @CanIgnoreReturnValue
+    static long checkNonnegative(long value, String name) {
+        if (value < 0) {
+            throw new IllegalArgumentException(name + " cannot be negative but was: " + value);
+        }
+        return value;
     }
-    return value;
-  }
 
-  static void checkPositive(int value, String name) {
-    if (value <= 0) {
-      throw new IllegalArgumentException(name + " must be positive but was: " + value);
+    static void checkPositive(int value, String name) {
+        if (value <= 0) {
+            throw new IllegalArgumentException(name + " must be positive but was: " + value);
+        }
     }
-  }
 
-  /**
-   * Precondition tester for {@code Iterator.remove()} that throws an exception with a consistent
-   * error message.
-   */
-  static void checkRemove(boolean canRemove) {
-    checkState(canRemove, "no calls to next() since the last call to remove()");
-  }
+    /**
+     * Precondition tester for {@code Iterator.remove()} that throws an exception with a consistent
+     * error message.
+     */
+    static void checkRemove(boolean canRemove) {
+        checkState(canRemove, "no calls to next() since the last call to remove()");
+    }
 }

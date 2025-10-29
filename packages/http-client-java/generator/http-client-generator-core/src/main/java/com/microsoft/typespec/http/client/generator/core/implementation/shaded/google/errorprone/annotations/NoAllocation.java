@@ -32,4 +32,5 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Target(METHOD)
-public @interface NoAllocation {}
+public @interface NoAllocation {
+}

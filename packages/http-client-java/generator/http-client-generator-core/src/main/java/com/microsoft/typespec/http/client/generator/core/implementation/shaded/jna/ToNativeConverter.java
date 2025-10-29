@@ -50,6 +50,7 @@ public interface ToNativeConverter {
      * </ul>
      */
     Object toNative(Object value, ToNativeContext context);
+
     /** Indicate the type expected from {@link #toNative}. */
     Class<?> nativeType();
 }

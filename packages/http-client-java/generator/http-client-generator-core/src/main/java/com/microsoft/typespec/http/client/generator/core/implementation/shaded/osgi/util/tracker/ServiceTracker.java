@@ -27,7 +27,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.ServiceEvent;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.ServiceListener;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.ServiceReference;
-
 import java.util.Collections;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -147,8 +146,8 @@ public class ServiceTracker<S, T> implements ServiceTrackerCustomizer<S, T> {
         this.trackReference = reference;
         this.trackClass = null;
         this.customizer = (customizer == null) ? this : customizer;
-        this.listenerFilter = "(" + Constants.SERVICE_ID + "=" + reference.getProperty(Constants.SERVICE_ID).toString()
-            + ")";
+        this.listenerFilter
+            = "(" + Constants.SERVICE_ID + "=" + reference.getProperty(Constants.SERVICE_ID).toString() + ")";
         try {
             this.filter = context.createFilter(listenerFilter);
         } catch (InvalidSyntaxException e) {
@@ -156,8 +155,7 @@ public class ServiceTracker<S, T> implements ServiceTrackerCustomizer<S, T> {
              * we could only get this exception if the ServiceReference was
              * invalid
              */
-            throw new IllegalArgumentException(
-                "unexpected InvalidSyntaxException: " + e.getMessage(), e);
+            throw new IllegalArgumentException("unexpected InvalidSyntaxException: " + e.getMessage(), e);
         }
     }
 
@@ -193,8 +191,7 @@ public class ServiceTracker<S, T> implements ServiceTrackerCustomizer<S, T> {
              * we could only get this exception if the clazz argument was
              * malformed
              */
-            throw new IllegalArgumentException(
-                "unexpected InvalidSyntaxException: " + e.getMessage(), e);
+            throw new IllegalArgumentException("unexpected InvalidSyntaxException: " + e.getMessage(), e);
         }
     }
 
@@ -262,7 +259,6 @@ public class ServiceTracker<S, T> implements ServiceTrackerCustomizer<S, T> {
      *
      * @throws IllegalStateException If the {@code BundleContext} with
      * which this {@code ServiceTracker} was created is no longer valid.
-     * @see #open(boolean)
      */
     public void open() {
         open(false);
@@ -341,8 +337,9 @@ public class ServiceTracker<S, T> implements ServiceTrackerCustomizer<S, T> {
     private ServiceReference<S>[] getInitialReferences(boolean trackAllServices, String className, String filterString)
         throws InvalidSyntaxException {
         @SuppressWarnings("unchecked")
-        ServiceReference<S>[] result = (ServiceReference<S>[]) ((trackAllServices) ? context.getAllServiceReferences(
-            className, filterString) : context.getServiceReferences(className, filterString));
+        ServiceReference<S>[] result = (ServiceReference<S>[]) ((trackAllServices)
+            ? context.getAllServiceReferences(className, filterString)
+            : context.getServiceReferences(className, filterString));
         return result;
     }
 

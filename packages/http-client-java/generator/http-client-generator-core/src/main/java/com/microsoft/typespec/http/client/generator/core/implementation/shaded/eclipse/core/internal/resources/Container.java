@@ -18,8 +18,6 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.*;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.*;
 
-import java.util.*;
-
 public abstract class Container extends Resource implements IContainer {
     protected Container(IPath path, Workspace container) {
         super(path, container);
@@ -71,19 +69,6 @@ public abstract class Container extends Resource implements IContainer {
         return (info == null) ? null : workspace.newResource(childPath, info.getType());
     }
 
-    @Override
-    protected void fixupAfterMoveSource() throws CoreException {
-        super.fixupAfterMoveSource();
-        if (!synchronizing(getResourceInfo(true, false))) {
-            return;
-        }
-        IResource[] members = members(
-            IContainer.INCLUDE_PHANTOMS | IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS | IContainer.INCLUDE_HIDDEN);
-        for (IResource member : members) {
-            ((Resource) member).fixupAfterMoveSource();
-        }
-    }
-
     protected IResource[] getChildren(int memberFlags) {
         IPath[] children = null;
         try {
@@ -113,22 +98,6 @@ public abstract class Container extends Resource implements IContainer {
 
     public IFile getFile(String name) {
         return (IFile) workspace.newResource(getFullPath().append(name), FILE);
-    }
-
-    public boolean hasFilters() {
-        IProject project = getProject();
-        if (project == null) {
-            return false;
-        }
-        ProjectDescription desc = ((Project) project).internalGetDescription();
-        if (desc == null) {
-            return false;
-        }
-        LinkedList<FilterDescription> filters = desc.getFilter(getProjectRelativePath());
-        if ((filters != null) && (filters.size() > 0)) {
-            return true;
-        }
-        return false;
     }
 
     @Override
@@ -180,10 +149,5 @@ public abstract class Container extends Resource implements IContainer {
         ResourceInfo info = getResourceInfo(phantom, false);
         checkAccessible(getFlags(info));
         return getChildren(memberFlags);
-    }
-
-    @Override
-    public String getDefaultCharset() throws CoreException {
-        return getDefaultCharset(true);
     }
 }

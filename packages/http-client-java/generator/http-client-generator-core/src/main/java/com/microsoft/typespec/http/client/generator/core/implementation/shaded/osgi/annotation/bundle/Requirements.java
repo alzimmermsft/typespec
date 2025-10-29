@@ -31,12 +31,10 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.CLASS)
-@Target({
-		ElementType.TYPE, ElementType.PACKAGE
-})
+@Target({ ElementType.TYPE, ElementType.PACKAGE })
 public @interface Requirements {
-	/**
-	 * Repeated {@link Requirement} annotations.
-	 */
-	Requirement[] value();
+    /**
+     * Repeated {@link Requirement} annotations.
+     */
+    Requirement[] value();
 }

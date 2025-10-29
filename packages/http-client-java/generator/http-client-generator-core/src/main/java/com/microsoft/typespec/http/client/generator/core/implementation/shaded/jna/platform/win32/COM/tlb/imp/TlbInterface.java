@@ -23,14 +23,14 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.tlb.imp;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.MEMBERID;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.TYPEATTR;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.VARDESC;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VARIANT;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeInfoUtil;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeInfoUtil.TypeInfoDoc;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeLibUtil;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeLibUtil.TypeLibDoc;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.MEMBERID;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.TYPEATTR;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.VARDESC;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VARIANT;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -44,9 +44,9 @@ public class TlbInterface extends TlbBase {
      * Instantiates a new tlb interface.
      *
      * @param index
-     *            the index
+     * the index
      * @param typeLibUtil
-     *            the type lib util
+     * the type lib util
      */
     public TlbInterface(int index, String packagename, TypeLibUtil typeLibUtil) {
         super(index, typeLibUtil, null);
@@ -82,8 +82,8 @@ public class TlbInterface extends TlbBase {
             // Get the name of the property
             TypeInfoDoc typeInfoDoc2 = typeInfoUtil.getDocumentation(memberID);
             this.content += TABTAB + "//" + typeInfoDoc2.getName() + CR;
-            this.content += TABTAB + "public static final int "
-                    + typeInfoDoc2.getName() + " = " + value.toString() + ";";
+            this.content
+                += TABTAB + "public static final int " + typeInfoDoc2.getName() + " = " + value.toString() + ";";
 
             if (i < cVars - 1)
                 this.content += CR;
@@ -96,9 +96,9 @@ public class TlbInterface extends TlbBase {
      * Creates the java doc header.
      *
      * @param guid
-     *            the guid
+     * the guid
      * @param helpstring
-     *            the helpstring
+     * the helpstring
      */
     protected void createJavaDocHeader(String guid, String helpstring) {
         this.replaceVariable("uuid", guid);

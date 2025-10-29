@@ -25,24 +25,24 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 @FunctionalInterface
 public interface HookContext<T> {
 
-	/**
-	 * Call the specified hook.
-	 *
-	 * @param hook             The hook object to call. The hook object must be of
-	 *                         the type supported by this hook context. If it is
-	 *                         not, then this method will simply return.
-	 * @param hookRegistration the registration for the hook object
-	 * @throws Exception An exception thrown by the hook object.
-	 */
-	public void call(T hook, ServiceRegistration<T> hookRegistration) throws Exception;
+    /**
+     * Call the specified hook.
+     *
+     * @param hook The hook object to call. The hook object must be of
+     * the type supported by this hook context. If it is
+     * not, then this method will simply return.
+     * @param hookRegistration the registration for the hook object
+     * @throws Exception An exception thrown by the hook object.
+     */
+    public void call(T hook, ServiceRegistration<T> hookRegistration) throws Exception;
 
-	/**
-	 * Returns true if the given registration should be skipped.
-	 * 
-	 * @param hookRegistration the registration to check
-	 * @return true if the given registration should be skipped.
-	 */
-	public default boolean skipRegistration(ServiceRegistration<?> hookRegistration) {
-		return false;
-	}
+    /**
+     * Returns true if the given registration should be skipped.
+     * 
+     * @param hookRegistration the registration to check
+     * @return true if the given registration should be skipped.
+     */
+    public default boolean skipRegistration(ServiceRegistration<?> hookRegistration) {
+        return false;
+    }
 }

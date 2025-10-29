@@ -21,46 +21,46 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * disk or read it from the index.
  */
 public final class BinaryTypeDescriptor {
-	public final char[] indexPath;
-	public final char[] fieldDescriptor;
-	public final char[] location;
-	public final char[] workspacePath;
+    public final char[] indexPath;
+    public final char[] fieldDescriptor;
+    public final char[] location;
+    public final char[] workspacePath;
 
-	/**
-	 * Constructs a new descriptor
-	 *
-	 * @param location
-	 *            location where the archive (.jar or .class) can be found in the local filesystem
-	 * @param fieldDescriptor
-	 *            field descriptor for the type (see the JVM specification)
-	 * @param workspacePath
-	 *            location where the archive (.jar or class) can be found in the workspace. If it is not in the
-	 *            workspace, this is the path where it can be found on the local filesystem.
-	 * @param indexPath
-	 *            index path for the new type (workspace-or-local path to jar optionally followed by a | and a relative
-	 *            path within the .jar)
-	 */
-	public BinaryTypeDescriptor(char[] location, char[] fieldDescriptor, char[] workspacePath, char[] indexPath) {
-		super();
-		this.location = location;
-		this.fieldDescriptor = fieldDescriptor;
-		this.indexPath = indexPath;
-		this.workspacePath = workspacePath;
-	}
+    /**
+     * Constructs a new descriptor
+     *
+     * @param location
+     * location where the archive (.jar or .class) can be found in the local filesystem
+     * @param fieldDescriptor
+     * field descriptor for the type (see the JVM specification)
+     * @param workspacePath
+     * location where the archive (.jar or class) can be found in the workspace. If it is not in the
+     * workspace, this is the path where it can be found on the local filesystem.
+     * @param indexPath
+     * index path for the new type (workspace-or-local path to jar optionally followed by a | and a relative
+     * path within the .jar)
+     */
+    public BinaryTypeDescriptor(char[] location, char[] fieldDescriptor, char[] workspacePath, char[] indexPath) {
+        super();
+        this.location = location;
+        this.fieldDescriptor = fieldDescriptor;
+        this.indexPath = indexPath;
+        this.workspacePath = workspacePath;
+    }
 
-	public boolean isInJarFile() {
-		return CharArrayUtils.indexOf(IDependent.JAR_FILE_ENTRY_SEPARATOR, this.indexPath) != -1;
-	}
+    public boolean isInJarFile() {
+        return CharArrayUtils.indexOf(IDependent.JAR_FILE_ENTRY_SEPARATOR, this.indexPath) != -1;
+    }
 
-	/**
-	 * For debugging purposes only.
-	 */
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append(this.workspacePath);
-		builder.append('|');
-		builder.append(this.fieldDescriptor);
-		return builder.toString();
-	}
+    /**
+     * For debugging purposes only.
+     */
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(this.workspacePath);
+        builder.append('|');
+        builder.append(this.fieldDescriptor);
+        return builder.toString();
+    }
 }

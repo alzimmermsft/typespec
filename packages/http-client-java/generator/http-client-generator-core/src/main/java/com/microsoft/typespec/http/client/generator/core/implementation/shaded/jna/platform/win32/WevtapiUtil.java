@@ -59,27 +59,28 @@ public abstract class WevtapiUtil {
         return Native.toString(mem);
     }
 
-
     /**
      * Renders an XML fragment based on the rendering context that you specify.
      *
-     * @param context       [in] A handle to the rendering context that the {@link Wevtapi#EvtCreateRenderContext}
-     *                      function returns. This parameter must be set to NULL if the Flags parameter is set to
-     *                      {@link Winevt.EVT_RENDER_FLAGS#EvtRenderEventXml} or
-     *                      {@link Winevt.EVT_RENDER_FLAGS#EvtRenderBookmark}.
-     * @param fragment      [in] A handle to an event or to a bookmark. Set this parameter to a bookmark handle
-     *                      if the Flags parameter is set to {@link Winevt.EVT_RENDER_FLAGS#EvtRenderEventXml};
-     *                      otherwise, set to an event handle.
-     * @param flags         [in] A flag that identifies what to render. For example, the entire event or specific
-     *                      properties of the event. For possible values,see the {@link Winevt.EVT_RENDER_FLAGS}
-     *                      enumeration.
+     * @param context [in] A handle to the rendering context that the {@link Wevtapi#EvtCreateRenderContext}
+     * function returns. This parameter must be set to NULL if the Flags parameter is set to
+     * {@link Winevt.EVT_RENDER_FLAGS#EvtRenderEventXml} or
+     * {@link Winevt.EVT_RENDER_FLAGS#EvtRenderBookmark}.
+     * @param fragment [in] A handle to an event or to a bookmark. Set this parameter to a bookmark handle
+     * if the Flags parameter is set to {@link Winevt.EVT_RENDER_FLAGS#EvtRenderEventXml};
+     * otherwise, set to an event handle.
+     * @param flags [in] A flag that identifies what to render. For example, the entire event or specific
+     * properties of the event. For possible values,see the {@link Winevt.EVT_RENDER_FLAGS}
+     * enumeration.
      * @param propertyCount [out] The number of the properties in the Buffer parameter if the Flags parameter is set
-     *                      to {@link Winevt.EVT_RENDER_FLAGS#EvtRenderEventValues}; otherwise, zero.
+     * to {@link Winevt.EVT_RENDER_FLAGS#EvtRenderEventValues}; otherwise, zero.
      * @return A caller-allocated buffer that will receive the rendered output. The contents is a null-terminated
      * Unicode string if the Flags parameter is set to {@link Winevt.EVT_RENDER_FLAGS#EvtRenderEventXml} or
-     * {@link Winevt.EVT_RENDER_FLAGS#EvtRenderBookmark}. Otherwise, if Flags is set to {@link Winevt.EVT_RENDER_FLAGS#EvtRenderEventValues},
+     * {@link Winevt.EVT_RENDER_FLAGS#EvtRenderBookmark}. Otherwise, if Flags is set to
+     * {@link Winevt.EVT_RENDER_FLAGS#EvtRenderEventValues},
      * the buffer contains an array of EVT_VARIANT structures; one for each property specified by the rendering context.
-     * The PropertyCount parameter contains the number of elements in the array. the {@link Kernel32#GetLastError} function.
+     * The PropertyCount parameter contains the number of elements in the array. the {@link Kernel32#GetLastError}
+     * function.
      */
     public static Memory EvtRender(EVT_HANDLE context, EVT_HANDLE fragment, int flags, IntByReference propertyCount) {
         boolean result;
@@ -101,45 +102,46 @@ public abstract class WevtapiUtil {
      * Formats a message string.
      *
      * @param publisherMetadata [in] A handle to the provider's metadata that
-     *                          the {@link Wevtapi#EvtOpenPublisherMetadata} function returns. The handle acts as
-     *                          a formatting context for the event or message identifier.
-     *                          <p>
-     *                          You can set this parameter to NULL if the Windows Event Collector service forwarded
-     *                          the event. Forwarded events include a RenderingInfo section that contains the rendered
-     *                          message strings. You can also set this parameter to NULL if the event property that
-     *                          you are formatting is defined in the Winmeta.xml file (for example, if level is set
-     *                          to win:Error). In the latter case, the service uses the Winmeta provider as
-     *                          the formatting context and will format only those message strings that you reference
-     *                          in your event that are defined in the Winmeta.xml file.
-     * @param event             [in] A handle to an event. The Flags parameter specifies the message string in
-     *                          the event that you want to format. This parameter must be NULL if the Flags parameter
-     *                          is set to EvtFormatMessageId.
-     * @param messageId         [in] The resource identifier of the message string that you want to format.
-     *                          To get the resource identifier for a message string, call
-     *                          the {@link Wevtapi#EvtGetPublisherMetadataProperty} function. Set this parameter only
-     *                          if the Flags parameter is set to EvtFormatMessageId.
-     * @param valueCount        [in] The number of values in the Values parameter.
-     * @param values            [in] An array of insertion values to use when formatting the event's message string.
-     *                          Typically, you set this parameter to NULL and the function gets the insertion values
-     *                          from the event data itself. You would use this parameter to override the default
-     *                          behavior and supply the insertion values to use. For example, you might use this
-     *                          parameter if you wanted to resolve a SID to a principal name before inserting the value.
-     *                          <p>
-     *                          To override the insertion values, the Flags parameter must be set to
-     *                          {@link Winevt.EVT_FORMAT_MESSAGE_FLAGS#EvtFormatMessageEvent},
-     *                          {@link Winevt.EVT_FORMAT_MESSAGE_FLAGS#EvtFormatMessageXml}, or
-     *                          {@link Winevt.EVT_FORMAT_MESSAGE_FLAGS#EvtFormatMessageId}, If Flags is set to
-     *                          {@link Winevt.EVT_FORMAT_MESSAGE_FLAGS#EvtFormatMessageId}, the resource identifier
-     *                          must identify the event's message string.
-     * @param flags             [in] A flag that specifies the message string in the event to format. For possible
-     *                          values, see the {@link Winevt.EVT_FORMAT_MESSAGE_FLAGS} enumeration.
+     * the {@link Wevtapi#EvtOpenPublisherMetadata} function returns. The handle acts as
+     * a formatting context for the event or message identifier.
+     * <p>
+     * You can set this parameter to NULL if the Windows Event Collector service forwarded
+     * the event. Forwarded events include a RenderingInfo section that contains the rendered
+     * message strings. You can also set this parameter to NULL if the event property that
+     * you are formatting is defined in the Winmeta.xml file (for example, if level is set
+     * to win:Error). In the latter case, the service uses the Winmeta provider as
+     * the formatting context and will format only those message strings that you reference
+     * in your event that are defined in the Winmeta.xml file.
+     * @param event [in] A handle to an event. The Flags parameter specifies the message string in
+     * the event that you want to format. This parameter must be NULL if the Flags parameter
+     * is set to EvtFormatMessageId.
+     * @param messageId [in] The resource identifier of the message string that you want to format.
+     * To get the resource identifier for a message string, call
+     * the {@link Wevtapi#EvtGetPublisherMetadataProperty} function. Set this parameter only
+     * if the Flags parameter is set to EvtFormatMessageId.
+     * @param valueCount [in] The number of values in the Values parameter.
+     * @param values [in] An array of insertion values to use when formatting the event's message string.
+     * Typically, you set this parameter to NULL and the function gets the insertion values
+     * from the event data itself. You would use this parameter to override the default
+     * behavior and supply the insertion values to use. For example, you might use this
+     * parameter if you wanted to resolve a SID to a principal name before inserting the value.
+     * <p>
+     * To override the insertion values, the Flags parameter must be set to
+     * {@link Winevt.EVT_FORMAT_MESSAGE_FLAGS#EvtFormatMessageEvent},
+     * {@link Winevt.EVT_FORMAT_MESSAGE_FLAGS#EvtFormatMessageXml}, or
+     * {@link Winevt.EVT_FORMAT_MESSAGE_FLAGS#EvtFormatMessageId}, If Flags is set to
+     * {@link Winevt.EVT_FORMAT_MESSAGE_FLAGS#EvtFormatMessageId}, the resource identifier
+     * must identify the event's message string.
+     * @param flags [in] A flag that specifies the message string in the event to format. For possible
+     * values, see the {@link Winevt.EVT_FORMAT_MESSAGE_FLAGS} enumeration.
      * @return Formatted message string
      */
     public static String EvtFormatMessage(EVT_HANDLE publisherMetadata, EVT_HANDLE event, int messageId, int valueCount,
-                                          EVT_VARIANT[] values, int flags) {
+        EVT_VARIANT[] values, int flags) {
         boolean result;
         IntByReference bufferUsed = new IntByReference();
-        result = Wevtapi.INSTANCE.EvtFormatMessage(publisherMetadata, event, messageId, valueCount, values, flags, 0, null, bufferUsed);
+        result = Wevtapi.INSTANCE.EvtFormatMessage(publisherMetadata, event, messageId, valueCount, values, flags, 0,
+            null, bufferUsed);
         int errorCode = Kernel32.INSTANCE.GetLastError();
         if ((!result) && errorCode != Kernel32.ERROR_INSUFFICIENT_BUFFER) {
             throw new Win32Exception(errorCode);
@@ -147,7 +149,7 @@ public abstract class WevtapiUtil {
 
         char[] buffer = new char[bufferUsed.getValue()];
         result = Wevtapi.INSTANCE.EvtFormatMessage(publisherMetadata, event, messageId, valueCount, values, flags,
-                buffer.length, buffer, bufferUsed);
+            buffer.length, buffer, bufferUsed);
         if (!result) {
             throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
         }
@@ -158,22 +160,23 @@ public abstract class WevtapiUtil {
      * Gets the specified channel configuration property.
      *
      * @param channelHandle [in] A handle to the channel's configuration properties that
-     *                      the {@link Wevtapi#EvtOpenChannelConfig} function returns.
-     * @param propertyId    [in] The identifier of the channel property to retrieve. For a list of property
-     *                      identifiers, see the {@link Winevt.EVT_CHANNEL_CONFIG_PROPERTY_ID} enumeration.
+     * the {@link Wevtapi#EvtOpenChannelConfig} function returns.
+     * @param propertyId [in] The identifier of the channel property to retrieve. For a list of property
+     * identifiers, see the {@link Winevt.EVT_CHANNEL_CONFIG_PROPERTY_ID} enumeration.
      * @return EVT_VARIANT(already reading from native memory)
      */
     public static EVT_VARIANT EvtGetChannelConfigProperty(EVT_HANDLE channelHandle, int propertyId) {
         IntByReference propertyValueBufferUsed = new IntByReference();
-        boolean result = Wevtapi.INSTANCE.EvtGetChannelConfigProperty(channelHandle, propertyId, 0, 0, null, propertyValueBufferUsed);
+        boolean result = Wevtapi.INSTANCE.EvtGetChannelConfigProperty(channelHandle, propertyId, 0, 0, null,
+            propertyValueBufferUsed);
         int errorCode = Kernel32.INSTANCE.GetLastError();
         if ((!result) && errorCode != Kernel32.ERROR_INSUFFICIENT_BUFFER) {
             throw new Win32Exception(errorCode);
         }
 
         Memory propertyValueBuffer = new Memory(propertyValueBufferUsed.getValue());
-        result = Wevtapi.INSTANCE.EvtGetChannelConfigProperty(channelHandle, propertyId, 0, (int) propertyValueBuffer.size(),
-                propertyValueBuffer, propertyValueBufferUsed);
+        result = Wevtapi.INSTANCE.EvtGetChannelConfigProperty(channelHandle, propertyId, 0,
+            (int) propertyValueBuffer.size(), propertyValueBuffer, propertyValueBufferUsed);
         if (!result) {
             throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
         }
@@ -186,7 +189,7 @@ public abstract class WevtapiUtil {
      * Gets the identifier of a provider from the enumerator.
      *
      * @param publisherEnum [in] A handle to the registered providers enumerator that
-     *                      the {@link Wevtapi#EvtOpenPublisherEnum} function returns.
+     * the {@link Wevtapi#EvtOpenPublisherEnum} function returns.
      * @return The name of the registered provider.
      */
     public static String EvtNextPublisherId(EVT_HANDLE publisherEnum) {
@@ -198,7 +201,8 @@ public abstract class WevtapiUtil {
         }
 
         char[] publisherIdBuffer = new char[publisherIdBufferUsed.getValue()];
-        result = Wevtapi.INSTANCE.EvtNextPublisherId(publisherEnum, publisherIdBuffer.length, publisherIdBuffer, publisherIdBufferUsed);
+        result = Wevtapi.INSTANCE.EvtNextPublisherId(publisherEnum, publisherIdBuffer.length, publisherIdBuffer,
+            publisherIdBufferUsed);
         if (!result) {
             throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
         }
@@ -209,24 +213,26 @@ public abstract class WevtapiUtil {
      * Gets the specified provider metadata property.
      *
      * @param PublisherMetadata [in] A handle to the metadata that
-     *                          the {@link Wevtapi#EvtOpenPublisherMetadata} function returns.
-     * @param PropertyId        [in] The identifier of the metadata property to retrieve.
-     *                          For a list of property identifiers, see
-     *                          the {@link Winevt.EVT_PUBLISHER_METADATA_PROPERTY_ID} enumeration.
-     * @param Flags             [in] Reserved. Must be zero.
-     * @return A caller-allocated buffer that will receive the metadata property. The buffer contains an EVT_VARIANT object.
+     * the {@link Wevtapi#EvtOpenPublisherMetadata} function returns.
+     * @param PropertyId [in] The identifier of the metadata property to retrieve.
+     * For a list of property identifiers, see
+     * the {@link Winevt.EVT_PUBLISHER_METADATA_PROPERTY_ID} enumeration.
+     * @param Flags [in] Reserved. Must be zero.
+     * @return A caller-allocated buffer that will receive the metadata property. The buffer contains an EVT_VARIANT
+     * object.
      */
     public static Memory EvtGetPublisherMetadataProperty(EVT_HANDLE PublisherMetadata, int PropertyId, int Flags) {
         IntByReference publisherMetadataPropertyBufferUsed = new IntByReference();
         boolean result = Wevtapi.INSTANCE.EvtGetPublisherMetadataProperty(PublisherMetadata, PropertyId, Flags, 0, null,
-                publisherMetadataPropertyBufferUsed);
+            publisherMetadataPropertyBufferUsed);
         int errorCode = Kernel32.INSTANCE.GetLastError();
         if ((!result) && errorCode != Kernel32.ERROR_INSUFFICIENT_BUFFER) {
             throw new Win32Exception(errorCode);
         }
         Memory publisherMetadataPropertyBuffer = new Memory(publisherMetadataPropertyBufferUsed.getValue());
         result = Wevtapi.INSTANCE.EvtGetPublisherMetadataProperty(PublisherMetadata, PropertyId, Flags,
-                (int) publisherMetadataPropertyBuffer.size(), publisherMetadataPropertyBuffer, publisherMetadataPropertyBufferUsed);
+            (int) publisherMetadataPropertyBuffer.size(), publisherMetadataPropertyBuffer,
+            publisherMetadataPropertyBufferUsed);
         if (!result) {
             throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
         }

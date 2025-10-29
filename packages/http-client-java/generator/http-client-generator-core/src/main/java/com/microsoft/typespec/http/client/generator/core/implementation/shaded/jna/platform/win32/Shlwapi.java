@@ -29,10 +29,10 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.ShTypes.STRRET;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.*;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.PointerByReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.win32.StdCallLibrary;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.win32.W32APIOptions;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.*;
 
 public interface Shlwapi extends StdCallLibrary {
     Shlwapi INSTANCE = Native.load("Shlwapi", Shlwapi.class, W32APIOptions.DEFAULT_OPTIONS);
@@ -42,15 +42,15 @@ public interface Shlwapi extends StdCallLibrary {
      * to an allocated string containing the display name.
      *
      * @param pstr
-     *            A pointer to the STRRET structure. When the function returns,
-     *            this pointer will no longer be valid.
+     * A pointer to the STRRET structure. When the function returns,
+     * this pointer will no longer be valid.
      * @param pidl
-     *            A pointer to the item's ITEMIDLIST structure. This value can be NULL.
+     * A pointer to the item's ITEMIDLIST structure. This value can be NULL.
      *
      * @param ppszName
-     *            A pointer to an allocated string containing the result. StrRetToStr allocates
-     *            memory for this string with CoTaskMemAlloc. You should free the string
-     *            with CoTaskMemFree when it is no longer needed.
+     * A pointer to an allocated string containing the result. StrRetToStr allocates
+     * memory for this string with CoTaskMemAlloc. You should free the string
+     * with CoTaskMemFree when it is no longer needed.
      *
      * @return If this function succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.
      */
@@ -62,7 +62,7 @@ public interface Shlwapi extends StdCallLibrary {
      * a path based on a drive letter.
      *
      * @param path
-     *            A string containing the path to validate.
+     * A string containing the path to validate.
      *
      * @return TRUE if the string is a valid UNC path; otherwise, FALSE.
      */

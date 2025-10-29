@@ -25,7 +25,7 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.util.annotation.ComInterface;
 
-@ComInterface(iid="{B196B284-BAB4-101A-B69C-00AA00341D07}")
+@ComInterface(iid = "{B196B284-BAB4-101A-B69C-00AA00341D07}")
 public interface IConnectionPointContainer extends IRawDispatchHandle {
 
 }

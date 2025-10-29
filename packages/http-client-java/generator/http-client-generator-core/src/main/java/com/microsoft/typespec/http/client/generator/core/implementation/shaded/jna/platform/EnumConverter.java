@@ -32,6 +32,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 /**
  * A {@link TypeConverter} that maps an integer enum value to
  * an actual Java enum.
+ * 
  * @param <T> the enum type
  * @author Martin Steiger
  */
@@ -42,8 +43,7 @@ public class EnumConverter<T extends Enum<T>> implements TypeConverter {
     /**
      * @param clazz the enum class
      */
-    public EnumConverter(Class<T> clazz)
-    {
+    public EnumConverter(Class<T> clazz) {
         this.clazz = clazz;
     }
 
@@ -67,5 +67,3 @@ public class EnumConverter<T extends Enum<T>> implements TypeConverter {
         return Integer.class;
     }
 }
-
-

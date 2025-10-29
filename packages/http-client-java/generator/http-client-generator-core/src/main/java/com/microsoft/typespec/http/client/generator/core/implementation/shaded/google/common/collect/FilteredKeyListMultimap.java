@@ -16,11 +16,11 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Predicate;
-import java.util.List;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
+import java.util.List;
 
 /**
  * Implementation of {@link Multimaps#filterKeys(ListMultimap, Predicate)}.
@@ -31,27 +31,27 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @ElementTypesAreNonnullByDefault
 final class FilteredKeyListMultimap<K extends @Nullable Object, V extends @Nullable Object>
     extends FilteredKeyMultimap<K, V> implements ListMultimap<K, V> {
-  FilteredKeyListMultimap(ListMultimap<K, V> unfiltered, Predicate<? super K> keyPredicate) {
-    super(unfiltered, keyPredicate);
-  }
+    FilteredKeyListMultimap(ListMultimap<K, V> unfiltered, Predicate<? super K> keyPredicate) {
+        super(unfiltered, keyPredicate);
+    }
 
-  @Override
-  public ListMultimap<K, V> unfiltered() {
-    return (ListMultimap<K, V>) super.unfiltered();
-  }
+    @Override
+    public ListMultimap<K, V> unfiltered() {
+        return (ListMultimap<K, V>) super.unfiltered();
+    }
 
-  @Override
-  public List<V> get(@ParametricNullness K key) {
-    return (List<V>) super.get(key);
-  }
+    @Override
+    public List<V> get(@ParametricNullness K key) {
+        return (List<V>) super.get(key);
+    }
 
-  @Override
-  public List<V> removeAll(@CheckForNull Object key) {
-    return (List<V>) super.removeAll(key);
-  }
+    @Override
+    public List<V> removeAll(@CheckForNull Object key) {
+        return (List<V>) super.removeAll(key);
+    }
 
-  @Override
-  public List<V> replaceValues(@ParametricNullness K key, Iterable<? extends V> values) {
-    return (List<V>) super.replaceValues(key, values);
-  }
+    @Override
+    public List<V> replaceValues(@ParametricNullness K key, Iterable<? extends V> values) {
+        return (List<V>) super.replaceValues(key, values);
+    }
 }

@@ -16,28 +16,31 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IBinaryAnnotation;
 
 public class AnnotationMethodInfoWithAnnotations extends AnnotationMethodInfo {
-	private final AnnotationInfo[] annotations;
+    private final AnnotationInfo[] annotations;
 
-AnnotationMethodInfoWithAnnotations(MethodInfo methodInfo, Object defaultValue, AnnotationInfo[] annotations) {
-	super(methodInfo, defaultValue);
-	this.annotations = annotations;
-}
-@Override
-public IBinaryAnnotation[] getAnnotations() {
-	return this.annotations;
-}
-@Override
-protected void initialize() {
-	for (int i = 0, l = this.annotations == null ? 0 : this.annotations.length; i < l; i++)
-		if (this.annotations[i] != null)
-			this.annotations[i].initialize();
-	super.initialize();
-}
-@Override
-protected void reset() {
-	for (int i = 0, l = this.annotations == null ? 0 : this.annotations.length; i < l; i++)
-		if (this.annotations[i] != null)
-			this.annotations[i].reset();
-	super.reset();
-}
+    AnnotationMethodInfoWithAnnotations(MethodInfo methodInfo, Object defaultValue, AnnotationInfo[] annotations) {
+        super(methodInfo, defaultValue);
+        this.annotations = annotations;
+    }
+
+    @Override
+    public IBinaryAnnotation[] getAnnotations() {
+        return this.annotations;
+    }
+
+    @Override
+    protected void initialize() {
+        for (int i = 0, l = this.annotations == null ? 0 : this.annotations.length; i < l; i++)
+            if (this.annotations[i] != null)
+                this.annotations[i].initialize();
+        super.initialize();
+    }
+
+    @Override
+    protected void reset() {
+        for (int i = 0, l = this.annotations == null ? 0 : this.annotations.length; i < l; i++)
+            if (this.annotations[i] != null)
+                this.annotations[i].reset();
+        super.reset();
+    }
 }

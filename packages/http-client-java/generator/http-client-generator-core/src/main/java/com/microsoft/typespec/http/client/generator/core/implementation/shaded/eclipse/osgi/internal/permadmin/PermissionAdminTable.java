@@ -13,41 +13,41 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.internal.permadmin;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.permissionadmin.PermissionInfo;
 import java.util.HashMap;
 import java.util.Map;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.permissionadmin.PermissionInfo;
 
 public class PermissionAdminTable {
-	private final Map<String, PermissionInfoCollection> locations = new HashMap<>();
+    private final Map<String, PermissionInfoCollection> locations = new HashMap<>();
 
-	String[] getLocations() {
-		return locations.keySet().toArray(new String[locations.size()]);
-	}
+    String[] getLocations() {
+        return locations.keySet().toArray(new String[locations.size()]);
+    }
 
-	PermissionInfo[] getPermissions(String location) {
-		PermissionInfoCollection collection = locations.get(location);
-		if (collection != null)
-			return collection.getPermissionInfos();
-		return null;
-	}
+    PermissionInfo[] getPermissions(String location) {
+        PermissionInfoCollection collection = locations.get(location);
+        if (collection != null)
+            return collection.getPermissionInfos();
+        return null;
+    }
 
-	void setPermissions(String location, PermissionInfo[] permissions) {
-		if (permissions == null) {
-			locations.remove(location);
-			return;
-		}
-		locations.put(location, new PermissionInfoCollection(permissions));
-	}
+    void setPermissions(String location, PermissionInfo[] permissions) {
+        if (permissions == null) {
+            locations.remove(location);
+            return;
+        }
+        locations.put(location, new PermissionInfoCollection(permissions));
+    }
 
-	PermissionInfoCollection getCollection(String location) {
-		return locations.get(location);
-	}
+    PermissionInfoCollection getCollection(String location) {
+        return locations.get(location);
+    }
 
-	PermissionInfoCollection[] getCollections() {
-		String[] currentLocations = getLocations();
-		PermissionInfoCollection[] results = new PermissionInfoCollection[currentLocations.length];
-		for (int i = 0; i < results.length; i++)
-			results[i] = getCollection(currentLocations[i]);
-		return results;
-	}
+    PermissionInfoCollection[] getCollections() {
+        String[] currentLocations = getLocations();
+        PermissionInfoCollection[] results = new PermissionInfoCollection[currentLocations.length];
+        for (int i = 0; i < results.length; i++)
+            results[i] = getCollection(currentLocations[i]);
+        return results;
+    }
 }

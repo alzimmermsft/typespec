@@ -36,7 +36,6 @@ public abstract class ProgressProvider {
      * <code>run</code> method.
      *
      * @see #createProgressGroup()
-     * @see Job#setProgressGroup(IProgressMonitor, int)
      * @param job the job to create a progress monitor for
      * @return a progress monitor, or <code>null</code> if no progress monitoring
      * is needed.
@@ -74,7 +73,6 @@ public abstract class ProgressProvider {
      * may override.
      *
      * @see IJobManager#createProgressGroup()
-     * @see Job#setProgressGroup(IProgressMonitor, int)
      * @param job the job to create a progress monitor for
      * @param group the progress monitor group that this job belongs to
      * @param ticks the number of ticks of work for the progress monitor

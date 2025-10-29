@@ -14,11 +14,11 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.codegen;
 
 public class CachedIndexEntry {
-	public char[] signature;
-	public int index;
+    public char[] signature;
+    public int index;
 
-	public CachedIndexEntry(char[] signature, int index) {
-		this.signature = signature;
-		this.index = index;
-	}
+    public CachedIndexEntry(char[] signature, int index) {
+        this.signature = signature;
+        this.index = index;
+    }
 }

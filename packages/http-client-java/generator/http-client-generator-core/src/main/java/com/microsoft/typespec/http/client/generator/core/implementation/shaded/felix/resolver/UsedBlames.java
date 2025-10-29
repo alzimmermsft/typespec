@@ -18,6 +18,8 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Capability;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Requirement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,8 +27,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Capability;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Requirement;
 
 /*
  * UsedBlames hold a list of Blame that have a common used capability.
@@ -41,44 +41,35 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  * do not have to worry about transitivity of the uses directive
  * from other capability types.
  */
-class UsedBlames
-{
+class UsedBlames {
     public final Set<Capability> m_caps;
     public final List<Blame> m_blames = new ArrayList<Blame>();
     private Map<Requirement, Set<Capability>> m_rootCauses;
 
-    public UsedBlames(Set<Capability> caps)
-    {
+    public UsedBlames(Set<Capability> caps) {
         m_caps = caps;
     }
 
-    public void addBlame(Blame blame, Capability matchingRootCause)
-    {
-        if (!m_caps.contains(blame.m_cap))
-        {
+    public void addBlame(Blame blame, Capability matchingRootCause) {
+        if (!m_caps.contains(blame.m_cap)) {
             throw new IllegalArgumentException(
-                "Attempt to add a blame with a different used capability: "
-                + blame.m_cap);
+                "Attempt to add a blame with a different used capability: " + blame.m_cap);
         }
         m_blames.add(blame);
-        if (matchingRootCause != null)
-        {
+        if (matchingRootCause != null) {
             Requirement req = blame.m_reqs.get(0);
             // Assumption made that the root requirement of the chain is the only
             // possible multiple cardinality requirement and that the matching root cause
             // capability is passed down from the beginning of the chain creation.
-            if (Util.isMultiple(req))
-            {
+            if (Util.isMultiple(req)) {
                 // The root requirement is multiple. Need to store the root cause
                 // so that we can find it later in case the used capability which the cause
                 // capability pulled in is a conflict.
-                if (m_rootCauses == null)
-                {
+                if (m_rootCauses == null) {
                     m_rootCauses = new HashMap<Requirement, Set<Capability>>();
                 }
                 Set<Capability> rootCauses = m_rootCauses.get(req);
-                if (rootCauses == null)
-                {
+                if (rootCauses == null) {
                     rootCauses = new HashSet<Capability>();
                     m_rootCauses.put(req, rootCauses);
                 }
@@ -87,10 +78,8 @@ class UsedBlames
         }
     }
 
-    public Set<Capability> getRootCauses(Requirement req)
-    {
-        if (m_rootCauses == null)
-        {
+    public Set<Capability> getRootCauses(Requirement req) {
+        if (m_rootCauses == null) {
             return Collections.emptySet();
         }
         Set<Capability> result = m_rootCauses.get(req);
@@ -98,8 +87,7 @@ class UsedBlames
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return m_blames.toString();
     }
 }

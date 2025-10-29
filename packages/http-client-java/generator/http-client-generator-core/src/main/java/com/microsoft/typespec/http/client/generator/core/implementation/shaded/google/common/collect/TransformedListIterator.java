@@ -16,10 +16,10 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Function;
 import java.util.ListIterator;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An iterator that transforms a backing list iterator; for internal use. This avoids the object
@@ -31,42 +31,42 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @ElementTypesAreNonnullByDefault
 abstract class TransformedListIterator<F extends @Nullable Object, T extends @Nullable Object>
     extends TransformedIterator<F, T> implements ListIterator<T> {
-  TransformedListIterator(ListIterator<? extends F> backingIterator) {
-    super(backingIterator);
-  }
+    TransformedListIterator(ListIterator<? extends F> backingIterator) {
+        super(backingIterator);
+    }
 
-  private ListIterator<? extends F> backingIterator() {
-    return Iterators.cast(backingIterator);
-  }
+    private ListIterator<? extends F> backingIterator() {
+        return Iterators.cast(backingIterator);
+    }
 
-  @Override
-  public final boolean hasPrevious() {
-    return backingIterator().hasPrevious();
-  }
+    @Override
+    public final boolean hasPrevious() {
+        return backingIterator().hasPrevious();
+    }
 
-  @Override
-  @ParametricNullness
-  public final T previous() {
-    return transform(backingIterator().previous());
-  }
+    @Override
+    @ParametricNullness
+    public final T previous() {
+        return transform(backingIterator().previous());
+    }
 
-  @Override
-  public final int nextIndex() {
-    return backingIterator().nextIndex();
-  }
+    @Override
+    public final int nextIndex() {
+        return backingIterator().nextIndex();
+    }
 
-  @Override
-  public final int previousIndex() {
-    return backingIterator().previousIndex();
-  }
+    @Override
+    public final int previousIndex() {
+        return backingIterator().previousIndex();
+    }
 
-  @Override
-  public void set(@ParametricNullness T element) {
-    throw new UnsupportedOperationException();
-  }
+    @Override
+    public void set(@ParametricNullness T element) {
+        throw new UnsupportedOperationException();
+    }
 
-  @Override
-  public void add(@ParametricNullness T element) {
-    throw new UnsupportedOperationException();
-  }
+    @Override
+    public void add(@ParametricNullness T element) {
+        throw new UnsupportedOperationException();
+    }
 }

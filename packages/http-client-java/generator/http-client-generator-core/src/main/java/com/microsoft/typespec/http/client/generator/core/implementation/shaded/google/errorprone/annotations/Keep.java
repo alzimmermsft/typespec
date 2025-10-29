@@ -37,6 +37,7 @@ import java.lang.annotation.Target;
  * should also be kept.
  */
 @Documented
-@Target({ANNOTATION_TYPE, CONSTRUCTOR, FIELD, METHOD, TYPE})
+@Target({ ANNOTATION_TYPE, CONSTRUCTOR, FIELD, METHOD, TYPE })
 @Retention(RUNTIME)
-public @interface Keep {}
+public @interface Keep {
+}

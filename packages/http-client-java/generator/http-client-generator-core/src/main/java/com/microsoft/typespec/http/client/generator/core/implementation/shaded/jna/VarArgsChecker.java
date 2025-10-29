@@ -31,6 +31,7 @@ import java.lang.reflect.Method;
  * of the underlying JVM implementation. On older versions of the VM not supporting
  * varargs, the returned VarArgsChecker will always return <code>false</code>
  * on calls to {@link VarArgsChecker#isVarArgs(Method) isVarArgs(Method)}.
+ * 
  * @author Max Bureck
  */
 abstract class VarArgsChecker {
@@ -71,13 +72,14 @@ abstract class VarArgsChecker {
     /**
      * Creates a new instance of a concrete subclass of VarArgsChecker, depending
      * if {@link Method#isVarArgs()} exists.
+     * 
      * @return new instance of concrete VarArgsChecker subclass
      */
     static VarArgsChecker create() {
         try {
             // check if Method#isVarArgs() exists
             final Method isVarArgsMethod = Method.class.getMethod("isVarArgs", new Class[0]);
-            if(isVarArgsMethod != null) {
+            if (isVarArgsMethod != null) {
                 // if it exitsts, return new instance of RealVarArgsChecker
                 return new RealVarArgsChecker();
             } else {
@@ -90,6 +92,7 @@ abstract class VarArgsChecker {
 
     /**
      * Checks if the given method was declared to take a variable number of arguments.
+     * 
      * @param m Method to be checked
      * @return <code>true</code> if the given method takes a variable number of arguments, <code>false</code> otherwise.
      */
@@ -97,6 +100,7 @@ abstract class VarArgsChecker {
 
     /**
      * If variadic, returns the number of fixed arguments to the method.
+     * 
      * @param m Method to be checked
      * @return Number of fixed arguments if the given method takes a variable number of arguments, zero otherwise.
      */

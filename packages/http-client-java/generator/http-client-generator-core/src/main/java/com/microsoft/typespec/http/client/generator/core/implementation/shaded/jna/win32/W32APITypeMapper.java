@@ -31,12 +31,14 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.TypeMapper;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.WString;
 
-/** Provide standard conversion for W32 API types.  This comprises the
+/**
+ * Provide standard conversion for W32 API types. This comprises the
  * following native types:
  * <ul>
  * <li>Unicode or ASCII/MBCS strings and arrays of string, as appropriate
  * <li>BOOL
  * </ul>
+ * 
  * @author twall
  */
 public class W32APITypeMapper extends DefaultTypeMapper {
@@ -55,16 +57,18 @@ public class W32APITypeMapper extends DefaultTypeMapper {
                     if (value == null)
                         return null;
                     if (value instanceof String[]) {
-                        return new StringArray((String[])value, true);
+                        return new StringArray((String[]) value, true);
                     }
                     return new WString(value.toString());
                 }
+
                 @Override
                 public Object fromNative(Object value, FromNativeContext context) {
                     if (value == null)
                         return null;
                     return value.toString();
                 }
+
                 @Override
                 public Class<?> nativeType() {
                     return WString.class;
@@ -78,10 +82,12 @@ public class W32APITypeMapper extends DefaultTypeMapper {
             public Object toNative(Object value, ToNativeContext context) {
                 return Integer.valueOf(Boolean.TRUE.equals(value) ? 1 : 0);
             }
+
             @Override
             public Object fromNative(Object value, FromNativeContext context) {
-                return ((Integer)value).intValue() != 0 ? Boolean.TRUE : Boolean.FALSE;
+                return ((Integer) value).intValue() != 0 ? Boolean.TRUE : Boolean.FALSE;
             }
+
             @Override
             public Class<?> nativeType() {
                 // BOOL is 32-bit int

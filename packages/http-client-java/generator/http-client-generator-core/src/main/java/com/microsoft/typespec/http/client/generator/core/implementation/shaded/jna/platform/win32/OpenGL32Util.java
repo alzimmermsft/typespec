@@ -37,6 +37,7 @@ public abstract class OpenGL32Util {
 
     /**
      * Return a procedure function pointer
+     * 
      * @param procName the procedure name
      * @return the function
      */
@@ -47,6 +48,7 @@ public abstract class OpenGL32Util {
 
     /**
      * Count GPUs
+     * 
      * @return the number of available GPUs
      */
     public static int countGpusNV() {
@@ -76,13 +78,15 @@ public abstract class OpenGL32Util {
         User32Util.destroyWindow(hWnd);
 
         // abort if the nVidia extensions are not present
-        if (fncEnumGpusNV == null) return 0;
+        if (fncEnumGpusNV == null)
+            return 0;
 
         // enumerate nVidia adapters
         HGLRCByReference hGPU = new HGLRCByReference();
         for (int i = 0; i < 16; i++) {
             Boolean ok = (Boolean) fncEnumGpusNV.invoke(Boolean.class, new Object[] { Integer.valueOf(i), hGPU, });
-            if (!ok.booleanValue()) return i;
+            if (!ok.booleanValue())
+                return i;
         }
 
         return 0;

@@ -25,7 +25,8 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import java.lang.reflect.Method;
 
-/** Provides mapping of Java method names to native function names.
+/**
+ * Provides mapping of Java method names to native function names.
  * An instance of this interface may be provided to
  * {@link Native#load(String, Class, java.util.Map)} as an entry in
  * the options map with key {@link Library#OPTION_FUNCTION_MAPPER}.
@@ -37,9 +38,10 @@ import java.lang.reflect.Method;
  * <li>Generated linker symbols are different than those used in C code.
  * Windows <code>stdcall</code> functions, for instance, are exported with a
  * special suffix that describes the stack size of the function arguments
- * (see {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.win32.StdCallFunctionMapper}).
+ * (see
+ * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.win32.StdCallFunctionMapper}).
  * <li>The naming of the C library methods conflicts horribly with your
- * Java coding standards, or are otherwise hard to follow.  It's generally
+ * Java coding standards, or are otherwise hard to follow. It's generally
  * better to keep the original function names in this case, to avoid confusion
  * about what's actually being called, but the option is available.
  * </ul>

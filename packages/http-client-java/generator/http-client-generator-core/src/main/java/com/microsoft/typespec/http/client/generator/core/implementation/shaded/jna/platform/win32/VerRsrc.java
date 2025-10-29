@@ -22,7 +22,6 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure.FieldOrder;
@@ -35,12 +34,20 @@ public interface VerRsrc {
     /**
      * Contains version information for a file. This information is language and code page independent.
      */
-    @FieldOrder({"dwSignature", "dwStrucVersion",
-                "dwFileVersionMS", "dwFileVersionLS",
-                "dwProductVersionMS", "dwProductVersionLS",
-                "dwFileFlagsMask", "dwFileFlags", "dwFileOS",
-                "dwFileType", "dwFileSubtype",
-                "dwFileDateMS", "dwFileDateLS"})
+    @FieldOrder({
+        "dwSignature",
+        "dwStrucVersion",
+        "dwFileVersionMS",
+        "dwFileVersionLS",
+        "dwProductVersionMS",
+        "dwProductVersionLS",
+        "dwFileFlagsMask",
+        "dwFileFlags",
+        "dwFileOS",
+        "dwFileType",
+        "dwFileSubtype",
+        "dwFileDateMS",
+        "dwFileDateLS" })
     public static class VS_FIXEDFILEINFO extends Structure {
 
         public static class ByReference extends VS_FIXEDFILEINFO implements Structure.ByReference {

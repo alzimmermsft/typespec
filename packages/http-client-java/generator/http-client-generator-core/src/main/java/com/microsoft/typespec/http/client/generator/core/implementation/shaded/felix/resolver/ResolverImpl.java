@@ -18,20 +18,6 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver;
 
-import java.security.AccessControlContext;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver.Candidates.FaultyResourcesReport;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver.util.ArrayMap;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.namespace.BundleNamespace;
@@ -48,65 +34,60 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.resolver.ResolutionException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.resolver.ResolveContext;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.resolver.Resolver;
+import java.security.AccessControlContext;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class ResolverImpl implements Resolver
-{
-    private final AccessControlContext m_acc =
-        System.getSecurityManager() != null ?
-            AccessController.getContext() :
-            null;
+public class ResolverImpl implements Resolver {
+    private final AccessControlContext m_acc
+        = System.getSecurityManager() != null ? AccessController.getContext() : null;
 
     private final int m_parallelism;
 
     private final Executor m_executor;
 
-    public ResolverImpl(Executor executor)
-    {
+    public ResolverImpl(Executor executor) {
         this.m_parallelism = -1;
         this.m_executor = executor;
     }
 
-    public Map<Resource, List<Wire>> resolve(ResolveContext rc) throws ResolutionException
-    {
-        if (m_executor != null)
-        {
+    public Map<Resource, List<Wire>> resolve(ResolveContext rc) throws ResolutionException {
+        if (m_executor != null) {
             return resolve(rc, m_executor);
-        }
-        else if (m_parallelism > 1)
-        {
-            final ExecutorService executor =
-                System.getSecurityManager() != null ?
-                    AccessController.doPrivileged(
-                        (PrivilegedAction<ExecutorService>) () -> Executors.newFixedThreadPool(m_parallelism), m_acc)
-                :
-                    Executors.newFixedThreadPool(m_parallelism);
-            try
-            {
+        } else if (m_parallelism > 1) {
+            final ExecutorService executor = System.getSecurityManager() != null
+                ? AccessController.doPrivileged(
+                    (PrivilegedAction<ExecutorService>) () -> Executors.newFixedThreadPool(m_parallelism), m_acc)
+                : Executors.newFixedThreadPool(m_parallelism);
+            try {
                 return resolve(rc, executor);
-            }
-            finally
-            {
-                if (System.getSecurityManager() != null)
-                {
+            } finally {
+                if (System.getSecurityManager() != null) {
                     AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
                         executor.shutdownNow();
                         return null;
                     }, m_acc);
-                }
-                else
-                {
+                } else {
                     executor.shutdownNow();
                 }
             }
-        }
-        else
-        {
+        } else {
             return resolve(rc, new DumbExecutor());
         }
     }
 
-    public Map<Resource, List<Wire>> resolve(ResolveContext rc, Executor executor) throws ResolutionException
-    {
+    public Map<Resource, List<Wire>> resolve(ResolveContext rc, Executor executor) throws ResolutionException {
         ResolveSession session = ResolveSession.createSession(rc, executor, null, null, null);
         return doResolve(session);
     }
@@ -114,11 +95,9 @@ public class ResolverImpl implements Resolver
     private Map<Resource, List<Wire>> doResolve(ResolveSession session) throws ResolutionException {
         Map<Resource, List<Wire>> wireMap = new HashMap<>();
         boolean retry;
-        do
-        {
+        do {
             retry = false;
-            try
-            {
+            try {
                 getInitialCandidates(session);
 
                 Map<Resource, ResolutionError> faultyResources = new HashMap<>();
@@ -129,64 +108,46 @@ public class ResolverImpl implements Resolver
                 // optionally resolved resource is to blame (typically a fragment).
                 // If so, then remove the optionally resolved resolved and try
                 // again; otherwise, m_currentError the resolve exception.
-                if (session.getCurrentError() != null)
-                {
+                if (session.getCurrentError() != null) {
                     Set<Resource> resourceKeys = faultyResources.keySet();
                     retry = (session.getOptionalResources().removeAll(resourceKeys));
-                    for (Resource faultyResource : resourceKeys)
-                    {
-                        if (session.invalidateRelatedResource(faultyResource))
-                        {
+                    for (Resource faultyResource : resourceKeys) {
+                        if (session.invalidateRelatedResource(faultyResource)) {
                             retry = true;
                         }
                     }
                     // log all the resolution exceptions for the uses constraint violations
-                    for (Entry<Resource, ResolutionError> usesError : faultyResources.entrySet())
-                    {
+                    for (Entry<Resource, ResolutionError> usesError : faultyResources.entrySet()) {
                     }
-                    if (!retry)
-                    {
+                    if (!retry) {
                         throw session.getCurrentError().toException();
                     }
                 }
                 // If there is no exception to m_currentError, then this was a clean
                 // resolve, so populate the wire map.
-                else
-                {
-                    if (session.getMultipleCardCandidates() != null)
-                    {
+                else {
+                    if (session.getMultipleCardCandidates() != null) {
                         // Candidates for multiple cardinality requirements were
                         // removed in order to provide a consistent class space.
                         // Use the consistent permutation
                         allCandidates = session.getMultipleCardCandidates();
                     }
-                    if (session.isDynamic() )
-                    {
-                        wireMap = populateDynamicWireMap(session,
-                            wireMap, allCandidates);
-                    }
-                    else
-                    {
-                        for (Resource resource : allCandidates.getRootHosts().keySet())
-                        {
-                            if (allCandidates.isPopulated(resource))
-                            {
-                                wireMap =
-                                    populateWireMap(
-                                        session, allCandidates.getWrappedHost(resource),
-                                        wireMap, allCandidates);
+                    if (session.isDynamic()) {
+                        wireMap = populateDynamicWireMap(session, wireMap, allCandidates);
+                    } else {
+                        for (Resource resource : allCandidates.getRootHosts().keySet()) {
+                            if (allCandidates.isPopulated(resource)) {
+                                wireMap = populateWireMap(session, allCandidates.getWrappedHost(resource), wireMap,
+                                    allCandidates);
                             }
                         }
                     }
                 }
-            }
-            finally
-            {
+            } finally {
                 // Always clear the state.
                 session.clearPermutations();
             }
-        }
-        while (retry);
+        } while (retry);
 
         return wireMap;
     }
@@ -207,19 +168,15 @@ public class ResolverImpl implements Resolver
 
             // Populate mandatory resources; since these are mandatory
             // resources, failure throws a resolve exception.
-            for (Resource resource : session.getMandatoryResources())
-            {
-                if (Util.isFragment(resource) || (session.getContext().getWirings().get(resource) == null))
-                {
+            for (Resource resource : session.getMandatoryResources()) {
+                if (Util.isFragment(resource) || (session.getContext().getWirings().get(resource) == null)) {
                     toPopulate.add(resource);
                 }
             }
             // Populate optional resources; since these are optional
             // resources, failure does not throw a resolve exception.
-            for (Resource resource : session.getOptionalResources())
-            {
-                if (Util.isFragment(resource) || (session.getContext().getWirings().get(resource) == null))
-                {
+            for (Resource resource : session.getOptionalResources()) {
+                if (Util.isFragment(resource) || (session.getContext().getWirings().get(resource) == null)) {
                     toPopulate.add(resource);
                 }
             }
@@ -230,12 +187,9 @@ public class ResolverImpl implements Resolver
 
         // Merge any fragments into hosts.
         ResolutionError prepareError = initialCandidates.prepare();
-        if (prepareError != null)
-        {
+        if (prepareError != null) {
             throw prepareError.toException();
-        }
-        else
-        {
+        } else {
             // Record the initial candidate permutation.
             session.addPermutation(PermutationType.USES, initialCandidates);
         }
@@ -282,8 +236,7 @@ public class ResolverImpl implements Resolver
                 }
             }
             Candidates next = backlog.getNext();
-            if (next == null)
-            {
+            if (next == null) {
                 // nothing more, return the best we found
                 session.setCurrentError(bestError);
                 return bestCandidate;
@@ -293,12 +246,8 @@ public class ResolverImpl implements Resolver
         return current;
     }
 
-
-
-    public Map<Resource,List<Wire>> resolveDynamic(ResolveContext context,
-            Wiring hostWiring, Requirement dynamicRequirement)
-            throws ResolutionException
-    {
+    public Map<Resource, List<Wire>> resolveDynamic(ResolveContext context, Wiring hostWiring,
+        Requirement dynamicRequirement) throws ResolutionException {
         Resource host = hostWiring.getResource();
         List<Capability> matches = context.findProviders(dynamicRequirement);
         // We can only create a dynamic import if the following
@@ -306,82 +255,63 @@ public class ResolverImpl implements Resolver
         // 1. The package in question is not already imported.
         // 2. The package in question is not accessible via require-bundle.
         // 3. The package in question is not exported by the resource.
-        if (!matches.isEmpty())
-        {
+        if (!matches.isEmpty()) {
             // Make sure all matching candidates are packages.
-            for (Capability cap : matches)
-            {
-                if (!cap.getNamespace().equals(PackageNamespace.PACKAGE_NAMESPACE))
-                {
-                    throw new IllegalArgumentException(
-                        "Matching candidate does not provide a package name.");
+            for (Capability cap : matches) {
+                if (!cap.getNamespace().equals(PackageNamespace.PACKAGE_NAMESPACE)) {
+                    throw new IllegalArgumentException("Matching candidate does not provide a package name.");
                 }
             }
-            ResolveSession session = ResolveSession.createSession(context, new DumbExecutor(), host, dynamicRequirement,
-                    matches);
+            ResolveSession session
+                = ResolveSession.createSession(context, new DumbExecutor(), host, dynamicRequirement, matches);
             return doResolve(session);
         }
 
         throw new Candidates.MissingRequirementError(dynamicRequirement).toException();
     }
 
-    private static Resource getDeclaredResource(Resource resource)
-    {
-        if (resource instanceof WrappedResource)
-        {
+    private static Resource getDeclaredResource(Resource resource) {
+        if (resource instanceof WrappedResource) {
             return ((WrappedResource) resource).getDeclaredResource();
         }
         return resource;
     }
 
-    private static Capability getDeclaredCapability(Capability c)
-    {
-        if (c instanceof HostedCapability)
-        {
+    private static Capability getDeclaredCapability(Capability c) {
+        if (c instanceof HostedCapability) {
             return ((HostedCapability) c).getDeclaredCapability();
         }
         return c;
     }
 
-    static Requirement getDeclaredRequirement(Requirement r)
-    {
-        if (r instanceof WrappedRequirement)
-        {
+    static Requirement getDeclaredRequirement(Requirement r) {
+        if (r instanceof WrappedRequirement) {
             return ((WrappedRequirement) r).getDeclaredRequirement();
         }
         return r;
     }
 
-    private static Map<Resource, List<Wire>> populateWireMap(
-        ResolveSession session, Resource resource,
-        Map<Resource, List<Wire>> wireMap, Candidates allCandidates)
-    {
+    private static Map<Resource, List<Wire>> populateWireMap(ResolveSession session, Resource resource,
+        Map<Resource, List<Wire>> wireMap, Candidates allCandidates) {
         Resource unwrappedResource = getDeclaredResource(resource);
         if (!session.getContext().getWirings().containsKey(unwrappedResource)
-            && !wireMap.containsKey(unwrappedResource))
-        {
+            && !wireMap.containsKey(unwrappedResource)) {
             wireMap.put(unwrappedResource, Collections.<Wire>emptyList());
 
             List<Wire> packageWires = new ArrayList<>();
             List<Wire> bundleWires = new ArrayList<>();
             List<Wire> capabilityWires = new ArrayList<>();
 
-            for (Requirement req : resource.getRequirements(null))
-            {
+            for (Requirement req : resource.getRequirements(null)) {
                 List<Capability> cands = allCandidates.getCandidates(req);
-                if ((cands != null) && (cands.size() > 0))
-                {
-                    for (Capability cand : cands)
-                    {
+                if ((cands != null) && (cands.size() > 0)) {
+                    for (Capability cand : cands) {
                         // Do not create wires for the osgi.wiring.* namespaces
                         // if the provider and requirer are the same resource;
                         // allow such wires for non-OSGi wiring namespaces.
-                        if (!cand.getNamespace().startsWith("osgi.wiring.")
-                            || !resource.equals(cand.getResource()))
-                        {
+                        if (!cand.getNamespace().startsWith("osgi.wiring.") || !resource.equals(cand.getResource())) {
                             // Populate wires for the candidate
-                            populateWireMap(session, cand.getResource(),
-                                    wireMap, allCandidates);
+                            populateWireMap(session, cand.getResource(), wireMap, allCandidates);
 
                             Resource provider;
                             if (req.getNamespace().equals(IdentityNamespace.IDENTITY_NAMESPACE)) {
@@ -389,26 +319,17 @@ public class ResolverImpl implements Resolver
                             } else {
                                 provider = getDeclaredResource(cand.getResource());
                             }
-                            Wire wire = new WireImpl(
-                                unwrappedResource,
-                                getDeclaredRequirement(req),
-                                provider,
+                            Wire wire = new WireImpl(unwrappedResource, getDeclaredRequirement(req), provider,
                                 getDeclaredCapability(cand));
-                            if (req.getNamespace().equals(PackageNamespace.PACKAGE_NAMESPACE))
-                            {
+                            if (req.getNamespace().equals(PackageNamespace.PACKAGE_NAMESPACE)) {
                                 packageWires.add(wire);
-                            }
-                            else if (req.getNamespace().equals(BundleNamespace.BUNDLE_NAMESPACE))
-                            {
+                            } else if (req.getNamespace().equals(BundleNamespace.BUNDLE_NAMESPACE)) {
                                 bundleWires.add(wire);
-                            }
-                            else
-                            {
+                            } else {
                                 capabilityWires.add(wire);
                             }
                         }
-                        if (!Util.isMultiple(req))
-                        {
+                        if (!Util.isMultiple(req)) {
                             // If not multiple just create a wire for the first candidate.
                             break;
                         }
@@ -422,11 +343,9 @@ public class ResolverImpl implements Resolver
             wireMap.put(unwrappedResource, packageWires);
 
             // Add host wire for any fragments.
-            if (resource instanceof WrappedResource)
-            {
+            if (resource instanceof WrappedResource) {
                 List<Resource> fragments = ((WrappedResource) resource).getFragments();
-                for (Resource fragment : fragments)
-                {
+                for (Resource fragment : fragments) {
                     // Get wire list for the fragment from the wire map.
                     // If there isn't one, then create one. Note that we won't
                     // add the wire list to the wire map until the end, so
@@ -435,37 +354,26 @@ public class ResolverImpl implements Resolver
                     // creating duplicate non-payload wires if the fragment
                     // is attached to more than one host.
                     List<Wire> fragmentWires = wireMap.get(fragment);
-                    fragmentWires = (fragmentWires == null)
-                        ? new ArrayList<>() : fragmentWires;
+                    fragmentWires = (fragmentWires == null) ? new ArrayList<>() : fragmentWires;
 
                     // Loop through all of the fragment's requirements and create
                     // any necessary wires for non-payload requirements.
-                    for (Requirement req : fragment.getRequirements(null))
-                    {
+                    for (Requirement req : fragment.getRequirements(null)) {
                         // Only look at non-payload requirements.
-                        if (!isPayload(req))
-                        {
+                        if (!isPayload(req)) {
                             // If this is the host requirement, then always create
                             // a wire for it to the current resource.
-                            if (req.getNamespace().equals(HostNamespace.HOST_NAMESPACE))
-                            {
-                                fragmentWires.add(
-                                    new WireImpl(
-                                        getDeclaredResource(fragment),
-                                        req,
-                                        unwrappedResource,
-                                        unwrappedResource.getCapabilities(
-                                            HostNamespace.HOST_NAMESPACE).get(0)));
+                            if (req.getNamespace().equals(HostNamespace.HOST_NAMESPACE)) {
+                                fragmentWires.add(new WireImpl(getDeclaredResource(fragment), req, unwrappedResource,
+                                    unwrappedResource.getCapabilities(HostNamespace.HOST_NAMESPACE).get(0)));
                             }
                             // Otherwise, if the fragment isn't already resolved and
                             // this is the first time we are seeing it, then create
                             // a wire for the non-payload requirement.
                             else if (!session.getContext().getWirings().containsKey(fragment)
-                                && !wireMap.containsKey(fragment))
-                            {
+                                && !wireMap.containsKey(fragment)) {
                                 Wire wire = createWire(req, allCandidates);
-                                if (wire != null)
-                                {
+                                if (wire != null) {
                                     fragmentWires.add(wire);
                                 }
                             }
@@ -487,34 +395,25 @@ public class ResolverImpl implements Resolver
         return wireMap;
     }
 
-    private static Wire createWire(Requirement requirement, Candidates allCandidates)
-    {
+    private static Wire createWire(Requirement requirement, Candidates allCandidates) {
         Capability cand = allCandidates.getFirstCandidate(requirement);
         if (cand == null) {
             return null;
         }
-        return new WireImpl(
-            getDeclaredResource(requirement.getResource()),
-            getDeclaredRequirement(requirement),
-            getDeclaredResource(cand.getResource()),
-            getDeclaredCapability(cand));
+        return new WireImpl(getDeclaredResource(requirement.getResource()), getDeclaredRequirement(requirement),
+            getDeclaredResource(cand.getResource()), getDeclaredCapability(cand));
     }
 
-    private static boolean isPayload(Requirement fragmentReq)
-    {
+    private static boolean isPayload(Requirement fragmentReq) {
         // this is where we would add other non-payload namespaces
-        if (ExecutionEnvironmentNamespace.EXECUTION_ENVIRONMENT_NAMESPACE
-            .equals(fragmentReq.getNamespace()))
-        {
+        if (ExecutionEnvironmentNamespace.EXECUTION_ENVIRONMENT_NAMESPACE.equals(fragmentReq.getNamespace())) {
             return false;
         }
         return !HostNamespace.HOST_NAMESPACE.equals(fragmentReq.getNamespace());
     }
 
-    private static Map<Resource, List<Wire>> populateDynamicWireMap(
-        ResolveSession session, Map<Resource,
-        List<Wire>> wireMap, Candidates allCandidates)
-    {
+    private static Map<Resource, List<Wire>> populateDynamicWireMap(ResolveSession session,
+        Map<Resource, List<Wire>> wireMap, Candidates allCandidates) {
         wireMap.put(session.getDynamicHost(), Collections.<Wire>emptyList());
 
         List<Wire> packageWires = new ArrayList<>();
@@ -523,18 +422,12 @@ public class ResolverImpl implements Resolver
         // Record the dynamic candidate.
         Capability dynCand = allCandidates.getFirstCandidate(session.getDynamicRequirement());
 
-        if (!session.getContext().getWirings().containsKey(dynCand.getResource()))
-        {
-            populateWireMap(session, dynCand.getResource(),
-                wireMap, allCandidates);
+        if (!session.getContext().getWirings().containsKey(dynCand.getResource())) {
+            populateWireMap(session, dynCand.getResource(), wireMap, allCandidates);
         }
 
-        packageWires.add(
-            new WireImpl(
-                session.getDynamicHost(),
-                session.getDynamicRequirement(),
-                getDeclaredResource(dynCand.getResource()),
-                getDeclaredCapability(dynCand)));
+        packageWires.add(new WireImpl(session.getDynamicHost(), session.getDynamicRequirement(),
+            getDeclaredResource(dynCand.getResource()), getDeclaredCapability(dynCand)));
 
         wireMap.put(session.getDynamicHost(), packageWires);
 
@@ -542,40 +435,30 @@ public class ResolverImpl implements Resolver
     }
 
     @SuppressWarnings("unused")
-    private static void dumpResourcePkgMap(
-        ResolveContext rc, Map<Resource, Packages> resourcePkgMap)
-    {
+    private static void dumpResourcePkgMap(ResolveContext rc, Map<Resource, Packages> resourcePkgMap) {
         System.out.println("+++RESOURCE PKG MAP+++");
-        for (Entry<Resource, Packages> entry : resourcePkgMap.entrySet())
-        {
+        for (Entry<Resource, Packages> entry : resourcePkgMap.entrySet()) {
             dumpResourcePkgs(rc, entry.getKey(), entry.getValue());
         }
     }
 
-    private static void dumpResourcePkgs(
-        ResolveContext rc, Resource resource, Packages packages)
-    {
+    private static void dumpResourcePkgs(ResolveContext rc, Resource resource, Packages packages) {
         Wiring wiring = rc.getWirings().get(resource);
-        System.out.println(resource
-            + " (" + ((wiring != null) ? "RESOLVED)" : "UNRESOLVED)"));
+        System.out.println(resource + " (" + ((wiring != null) ? "RESOLVED)" : "UNRESOLVED)"));
         System.out.println("  EXPORTED");
-        for (Entry<String, Blame> entry : packages.m_exportedPkgs.entrySet())
-        {
+        for (Entry<String, Blame> entry : packages.m_exportedPkgs.entrySet()) {
             System.out.println("    " + entry.getKey() + " - " + entry.getValue());
         }
         System.out.println("  IMPORTED");
-        for (Entry<String, List<Blame>> entry : packages.m_importedPkgs.entrySet())
-        {
+        for (Entry<String, List<Blame>> entry : packages.m_importedPkgs.entrySet()) {
             System.out.println("    " + entry.getKey() + " - " + entry.getValue());
         }
         System.out.println("  REQUIRED");
-        for (Entry<String, List<Blame>> entry : packages.m_requiredPkgs.entrySet())
-        {
+        for (Entry<String, List<Blame>> entry : packages.m_requiredPkgs.entrySet()) {
             System.out.println("    " + entry.getKey() + " - " + entry.getValue());
         }
         System.out.println("  USED");
-        for (Entry<String, ArrayMap<Set<Capability>, UsedBlames>> entry : packages.m_usedPkgs.entrySet())
-        {
+        for (Entry<String, ArrayMap<Set<Capability>, UsedBlames>> entry : packages.m_usedPkgs.entrySet()) {
             System.out.println("    " + entry.getKey() + " - " + entry.getValue().values());
         }
     }

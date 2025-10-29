@@ -23,9 +23,6 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.unix.solaris;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Library;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
@@ -97,9 +94,25 @@ public interface LibKstat extends Library {
      * Each kstat has a common header section and a type-specific data section.
      * The header section is defined by the kstat_t structure
      */
-    @FieldOrder({"ks_crtime", "ks_next", "ks_kid", "ks_module", "ks_resv", "ks_instance",
-        "ks_name", "ks_type", "ks_class", "ks_flags", "ks_data", "ks_ndata", "ks_data_size", "ks_snaptime",
-        "ks_update", "ks_private", "ks_snapshot", "ks_lock"})
+    @FieldOrder({
+        "ks_crtime",
+        "ks_next",
+        "ks_kid",
+        "ks_module",
+        "ks_resv",
+        "ks_instance",
+        "ks_name",
+        "ks_type",
+        "ks_class",
+        "ks_flags",
+        "ks_data",
+        "ks_ndata",
+        "ks_data_size",
+        "ks_snaptime",
+        "ks_update",
+        "ks_private",
+        "ks_snapshot",
+        "ks_lock" })
     class Kstat extends Structure {
 
         // Fields relevant to both kernel and user
@@ -154,7 +167,7 @@ public interface LibKstat extends Library {
     /**
      * A list of arbitrary name=value statistics.
      */
-    @FieldOrder({"name", "data_type", "value"})
+    @FieldOrder({ "name", "data_type", "value" })
     class KstatNamed extends Structure {
 
         public byte[] name = new byte[KSTAT_STRLEN]; // name of counter
@@ -177,7 +190,7 @@ public interface LibKstat extends Library {
 
             public STR str;
 
-            @FieldOrder({"addr", "len"})
+            @FieldOrder({ "addr", "len" })
             public static class STR extends Structure {
 
                 public Pointer addr;
@@ -203,17 +216,21 @@ public interface LibKstat extends Library {
                 case KSTAT_DATA_CHAR:
                     value.setType(byte[].class);
                     break;
+
                 case KSTAT_DATA_STRING:
                     value.setType(UNION.STR.class);
                     break;
+
                 case KSTAT_DATA_INT32:
                 case KSTAT_DATA_UINT32:
                     value.setType(int.class);
                     break;
+
                 case KSTAT_DATA_INT64:
                 case KSTAT_DATA_UINT64:
                     value.setType(long.class);
                     break;
+
                 default:
                     break;
             }
@@ -230,7 +247,7 @@ public interface LibKstat extends Library {
      * detected and serviced just prior to returning from any of the other
      * types).
      */
-    @FieldOrder({"intrs"})
+    @FieldOrder({ "intrs" })
     class KstatIntr extends Structure {
 
         public int[] intrs = new int[KSTAT_NUM_INTRS]; // interrupt counters
@@ -241,8 +258,7 @@ public interface LibKstat extends Library {
      * Event timer statistics. These provide basic counting and timing
      * information for any type of event.
      */
-    @FieldOrder({"name", "resv", "num_events", "elapsed_time", "min_time", "max_time",
-        "start_time", "stop_time"})
+    @FieldOrder({ "name", "resv", "num_events", "elapsed_time", "min_time", "max_time", "start_time", "stop_time" })
     class KstatTimer extends Structure {
 
         public byte[] name = new byte[KSTAT_STRLEN]; // event name
@@ -266,8 +282,19 @@ public interface LibKstat extends Library {
     /**
      * IO Statistics.
      */
-    @FieldOrder({"nread", "nwritten", "reads", "writes", "wtime", "wlentime",
-        "wlastupdate", "rtime", "rlentime", "rlastupdate", "wcnt", "rcnt"})
+    @FieldOrder({
+        "nread",
+        "nwritten",
+        "reads",
+        "writes",
+        "wtime",
+        "wlentime",
+        "wlastupdate",
+        "rtime",
+        "rlentime",
+        "rlastupdate",
+        "wcnt",
+        "rcnt" })
     class KstatIO extends Structure {
 
         // Basic counters.
@@ -351,7 +378,7 @@ public interface LibKstat extends Library {
      * A kstat control structure. Only one thread may actively use a KstatCtl
      * value at any time. Synchronization is left to the application.
      */
-    @FieldOrder({"kc_chain_id", "kc_chain", "kc_kd"})
+    @FieldOrder({ "kc_chain_id", "kc_chain", "kc_kd" })
     class KstatCtl extends Structure {
 
         public int kc_chain_id; // current kstat chain ID
@@ -367,7 +394,7 @@ public interface LibKstat extends Library {
      * provides access to the kernel statistics library.
      *
      * @return A pointer to this structure, which must be supplied as the kc
-     *         argument in subsequent libkstat function calls.
+     * argument in subsequent libkstat function calls.
      */
     KstatCtl kstat_open();
 
@@ -376,7 +403,7 @@ public interface LibKstat extends Library {
      * kc.
      *
      * @param kc
-     *            a kstat control structure
+     * a kstat control structure
      * @return 0 on success and -1 on failure.
      */
     int kstat_close(KstatCtl kc);
@@ -398,9 +425,9 @@ public interface LibKstat extends Library {
      * user's kstat chain are unmodified.
      *
      * @param kc
-     *            a kstat control structure
+     * a kstat control structure
      * @return the new KCID if the kstat chain has changed, 0 if it hasn't, or
-     *         -1 on failure.
+     * -1 on failure.
      */
     int kstat_chain_update(KstatCtl kc);
 
@@ -413,14 +440,14 @@ public interface LibKstat extends Library {
      * snapshot was taken.
      *
      * @param kc
-     *            The kstat control structure
+     * The kstat control structure
      * @param ksp
-     *            The kstat from which to retrieve data
+     * The kstat from which to retrieve data
      * @param p
-     *            If buf is non-NULL , the data is copied from ksp.ks_data into
-     *            buf.
+     * If buf is non-NULL , the data is copied from ksp.ks_data into
+     * buf.
      * @return On success, return the current kstat chain ID (KCID). On failure,
-     *         return -1.
+     * return -1.
      */
     int kstat_read(KstatCtl kc, Kstat ksp, Pointer p);
 
@@ -430,14 +457,14 @@ public interface LibKstat extends Library {
      * kstat_write() .
      *
      * @param kc
-     *            The kstat control structure
+     * The kstat control structure
      * @param ksp
-     *            The kstat on which to set data
+     * The kstat on which to set data
      * @param buf
-     *            If buf is non-NULL, the data is copied from buf into
-     *            ksp.ks_data.
+     * If buf is non-NULL, the data is copied from buf into
+     * ksp.ks_data.
      * @return On success, return the current kstat chain ID (KCID). On failure,
-     *         return -1.
+     * return -1.
      */
     int kstat_write(KstatCtl kc, Kstat ksp, Pointer buf);
 
@@ -450,15 +477,15 @@ public interface LibKstat extends Library {
      * find the first kstat with name "foo".
      *
      * @param kc
-     *            The kstat control structure
+     * The kstat control structure
      * @param ks_module
-     *            The kstat module to search
+     * The kstat module to search
      * @param ks_instance
-     *            The kstat instance number
+     * The kstat instance number
      * @param ks_name
-     *            The kstat name to search
+     * The kstat name to search
      * @return a pointer to the requested kstat if it is found, or NULL if it is
-     *         not.
+     * not.
      */
     Kstat kstat_lookup(KstatCtl kc, String ks_module, int ks_instance, String ks_name);
 
@@ -469,13 +496,13 @@ public interface LibKstat extends Library {
      * KSTAT_TYPE_NAMED and KSTAT_TYPE_TIMER kstats have named data records.
      *
      * @param ksp
-     *            The kstat to search
+     * The kstat to search
      * @param name
-     *            The key for the name-value pair, or name of the timer as
-     *            applicable
+     * The key for the name-value pair, or name of the timer as
+     * applicable
      * @return a pointer to the requested data record if it is found. If the
-     *         requested record is not found, or if the kstat type is invalid,
-     *         returns NULL.
+     * requested record is not found, or if the kstat type is invalid,
+     * returns NULL.
      */
     Pointer kstat_data_lookup(Kstat ksp, String name);
 }

@@ -15,6 +15,7 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 public interface Tuples {
 
-	record Pair<T> (T left, T right) {}
+    record Pair<T> (T left, T right) {
+    }
 
 }

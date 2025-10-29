@@ -13,8 +13,10 @@ import java.lang.annotation.RetentionPolicy;
  * value is {@literal @Foo(1)}, then the value cannot be {@literal @Foo(2)} or {{@literal @Foo(3)}.
  * 
  * <pre>
- * &#064;TypeQualifier &#064;interface Foo {
- *     &#064;Exclusive int value();
+ * &#064;TypeQualifier
+ * &#064;interface Foo {
+ *     &#064;Exclusive
+ *     int value();
  * }
  * </pre>
  * 

@@ -19,63 +19,66 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class PostfixExpression extends CompoundAssignment {
 
-public PostfixExpression(Expression lhs, Expression expression, int operator, int pos) {
-	super(lhs, expression, operator, pos);
-	this.sourceStart = lhs.sourceStart;
-	this.sourceEnd = pos;
-}
-@Override
-public boolean checkCastCompatibility() {
-	return false;
-}
-/**
- * Code generation for PostfixExpression
- *
- * @param currentScope org.eclipse.jdt.internal.compiler.lookup.BlockScope
- * @param codeStream org.eclipse.jdt.internal.compiler.codegen.CodeStream
- * @param valueRequired boolean
- */
-@Override
-public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
-	// various scenarii are possible, setting an array reference,
-	// a field reference, a blank final field reference, a field of an enclosing instance or
-	// just a local variable.
+    public PostfixExpression(Expression lhs, Expression expression, int operator, int pos) {
+        super(lhs, expression, operator, pos);
+        this.sourceStart = lhs.sourceStart;
+        this.sourceEnd = pos;
+    }
 
-	int pc = codeStream.position;
-	 ((Reference) this.lhs).generatePostIncrement(currentScope, codeStream, this, valueRequired);
-	if (valueRequired) {
-		codeStream.generateImplicitConversion(this.implicitConversion);
-	}
-	codeStream.recordPositionsFrom(pc, this.sourceStart);
-}
+    @Override
+    public boolean checkCastCompatibility() {
+        return false;
+    }
 
-@Override
-public String operatorToString() {
-	switch (this.operator) {
-		case PLUS :
-			return "++"; //$NON-NLS-1$
-		case MINUS :
-			return "--"; //$NON-NLS-1$
-	}
-	return "unknown operator"; //$NON-NLS-1$
-}
+    /**
+     * Code generation for PostfixExpression
+     *
+     * @param currentScope org.eclipse.jdt.internal.compiler.lookup.BlockScope
+     * @param codeStream org.eclipse.jdt.internal.compiler.codegen.CodeStream
+     * @param valueRequired boolean
+     */
+    @Override
+    public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
+        // various scenarii are possible, setting an array reference,
+        // a field reference, a blank final field reference, a field of an enclosing instance or
+        // just a local variable.
 
-@Override
-public StringBuilder printExpressionNoParenthesis(int indent, StringBuilder output) {
-	return this.lhs.printExpression(indent, output).append(' ').append(operatorToString());
-}
+        int pc = codeStream.position;
+        ((Reference) this.lhs).generatePostIncrement(currentScope, codeStream, this, valueRequired);
+        if (valueRequired) {
+            codeStream.generateImplicitConversion(this.implicitConversion);
+        }
+        codeStream.recordPositionsFrom(pc, this.sourceStart);
+    }
 
-@Override
-public boolean restrainUsageToNumericTypes() {
-	return true;
-}
+    @Override
+    public String operatorToString() {
+        switch (this.operator) {
+            case PLUS:
+                return "++"; //$NON-NLS-1$
 
-@Override
-public void traverse(ASTVisitor visitor, BlockScope scope) {
+            case MINUS:
+                return "--"; //$NON-NLS-1$
+        }
+        return "unknown operator"; //$NON-NLS-1$
+    }
 
-	if (visitor.visit(this, scope)) {
-		this.lhs.traverse(visitor, scope);
-	}
-	visitor.endVisit(this, scope);
-}
+    @Override
+    public StringBuilder printExpressionNoParenthesis(int indent, StringBuilder output) {
+        return this.lhs.printExpression(indent, output).append(' ').append(operatorToString());
+    }
+
+    @Override
+    public boolean restrainUsageToNumericTypes() {
+        return true;
+    }
+
+    @Override
+    public void traverse(ASTVisitor visitor, BlockScope scope) {
+
+        if (visitor.visit(this, scope)) {
+            this.lhs.traverse(visitor, scope);
+        }
+        visitor.endVisit(this, scope);
+    }
 }

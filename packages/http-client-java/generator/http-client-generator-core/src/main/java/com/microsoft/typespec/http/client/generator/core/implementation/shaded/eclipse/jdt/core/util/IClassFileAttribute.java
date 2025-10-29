@@ -22,14 +22,6 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 public interface IClassFileAttribute {
 
     /**
-     * Answer back the attribute name index in the constant pool as specified
-     * in the JVM specifications.
-     *
-     * @return the attribute name index in the constant pool
-     */
-    int getAttributeNameIndex();
-
-    /**
      * Answer back the attribute name as specified
      * in the JVM specifications.
      *

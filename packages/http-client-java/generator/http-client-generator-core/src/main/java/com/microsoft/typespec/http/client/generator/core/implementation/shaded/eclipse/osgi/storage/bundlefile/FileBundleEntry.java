@@ -23,88 +23,88 @@ import java.net.URL;
  * for bundles that are installed as extracted zips on a file system.
  */
 public class FileBundleEntry extends BundleEntry {
-	/**
-	 * File for this entry.
-	 */
-	private final File file;
-	/**
-	 * The name for this entry
-	 */
-	private final String name;
+    /**
+     * File for this entry.
+     */
+    private final File file;
+    /**
+     * The name for this entry
+     */
+    private final String name;
 
-	/**
-	 * Constructs the BundleEntry using a File.
-	 * 
-	 * @param file BundleFile object this entry is a member of
-	 * @param name the name of this BundleEntry
-	 */
-	public FileBundleEntry(File file, String name) {
-		this.file = file;
-		boolean endsInSlash = name.length() > 0 && name.charAt(name.length() - 1) == '/';
-		if (BundleFile.secureAction.isDirectory(file)) {
-			if (!endsInSlash)
-				name += '/';
-		} else if (endsInSlash)
-			name = name.substring(0, name.length() - 1);
-		this.name = name;
-	}
+    /**
+     * Constructs the BundleEntry using a File.
+     * 
+     * @param file BundleFile object this entry is a member of
+     * @param name the name of this BundleEntry
+     */
+    public FileBundleEntry(File file, String name) {
+        this.file = file;
+        boolean endsInSlash = name.length() > 0 && name.charAt(name.length() - 1) == '/';
+        if (BundleFile.secureAction.isDirectory(file)) {
+            if (!endsInSlash)
+                name += '/';
+        } else if (endsInSlash)
+            name = name.substring(0, name.length() - 1);
+        this.name = name;
+    }
 
-	/**
-	 * Return an InputStream for the entry.
-	 *
-	 * @return InputStream for the entry
-	 * @exception IOException
-	 */
-	@Override
-	public InputStream getInputStream() throws IOException {
-		return BundleFile.secureAction.getFileInputStream(file);
-	}
+    /**
+     * Return an InputStream for the entry.
+     *
+     * @return InputStream for the entry
+     * @exception IOException
+     */
+    @Override
+    public InputStream getInputStream() throws IOException {
+        return BundleFile.secureAction.getFileInputStream(file);
+    }
 
-	/**
-	 * Return size of the uncompressed entry.
-	 *
-	 * @return size of entry
-	 */
-	@Override
-	public long getSize() {
-		return BundleFile.secureAction.length(file);
-	}
+    /**
+     * Return size of the uncompressed entry.
+     *
+     * @return size of entry
+     */
+    @Override
+    public long getSize() {
+        return BundleFile.secureAction.length(file);
+    }
 
-	/**
-	 * Return name of the entry.
-	 *
-	 * @return name of entry
-	 */
-	@Override
-	public String getName() {
-		return (name);
-	}
+    /**
+     * Return name of the entry.
+     *
+     * @return name of entry
+     */
+    @Override
+    public String getName() {
+        return (name);
+    }
 
-	/**
-	 * Get the modification time for this BundleEntry.
-	 * <p>
-	 * If the modification time has not been set, this method will return
-	 * <code>-1</code>.
-	 *
-	 * @return last modification time.
-	 */
-	@Override
-	public long getTime() {
-		return BundleFile.secureAction.lastModified(file);
-	}
+    /**
+     * Get the modification time for this BundleEntry.
+     * <p>
+     * If the modification time has not been set, this method will return
+     * <code>-1</code>.
+     *
+     * @return last modification time.
+     */
+    @Override
+    public long getTime() {
+        return BundleFile.secureAction.lastModified(file);
+    }
 
-	@Override
-	public URL getLocalURL() {
-		return getFileURL();
-	}
+    @Override
+    public URL getLocalURL() {
+        return getFileURL();
+    }
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public URL getFileURL() {
-		try {
-			return file.toURL();
-		} catch (MalformedURLException e) {
-			return null;
-		}
-	}
+    @SuppressWarnings("deprecation")
+    @Override
+    public URL getFileURL() {
+        try {
+            return file.toURL();
+        } catch (MalformedURLException e) {
+            return null;
+        }
+    }
 }

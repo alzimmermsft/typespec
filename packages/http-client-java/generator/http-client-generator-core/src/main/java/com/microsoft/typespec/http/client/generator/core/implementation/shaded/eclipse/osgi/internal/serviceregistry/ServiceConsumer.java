@@ -24,50 +24,50 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * object for the current service consumer type.
  */
 public interface ServiceConsumer {
-	/**
-	 * Used for calls from ServiceObjects.
-	 */
-	static ServiceConsumer prototypeConsumer = new ServiceConsumer() {
-		@Override
-		public <S> S getService(ServiceUse<S> use) {
-			return use.newServiceObject();
-		}
+    /**
+     * Used for calls from ServiceObjects.
+     */
+    static ServiceConsumer prototypeConsumer = new ServiceConsumer() {
+        @Override
+        public <S> S getService(ServiceUse<S> use) {
+            return use.newServiceObject();
+        }
 
-		@Override
-		public <S> boolean ungetService(ServiceUse<S> use, S service) {
-			return use.releaseServiceObject(service);
-		}
-	};
+        @Override
+        public <S> boolean ungetService(ServiceUse<S> use, S service) {
+            return use.releaseServiceObject(service);
+        }
+    };
 
-	/**
-	 * Used for calls from BundleContext.
-	 */
-	static ServiceConsumer singletonConsumer = new ServiceConsumer() {
-		@Override
-		public <S> S getService(ServiceUse<S> use) {
-			return use.getService();
-		}
+    /**
+     * Used for calls from BundleContext.
+     */
+    static ServiceConsumer singletonConsumer = new ServiceConsumer() {
+        @Override
+        public <S> S getService(ServiceUse<S> use) {
+            return use.getService();
+        }
 
-		@Override
-		public <S> boolean ungetService(ServiceUse<S> use, S service) {
-			return use.ungetService();
-		}
-	};
+        @Override
+        public <S> boolean ungetService(ServiceUse<S> use, S service) {
+            return use.ungetService();
+        }
+    };
 
-	/**
-	 * Get a service for the consumer.
-	 *
-	 * @param use Service Use object to get the service from.
-	 * @return The obtained service.
-	 */
-	<S> S getService(ServiceUse<S> use);
+    /**
+     * Get a service for the consumer.
+     *
+     * @param use Service Use object to get the service from.
+     * @return The obtained service.
+     */
+    <S> S getService(ServiceUse<S> use);
 
-	/**
-	 * Unget the service for the consumer.
-	 *
-	 * @param use     Service Use object to unget the service from.
-	 * @param service The Service to unget.
-	 * @return true if the service was ungotten, false otherwise.
-	 */
-	<S> boolean ungetService(ServiceUse<S> use, S service);
+    /**
+     * Unget the service for the consumer.
+     *
+     * @param use Service Use object to unget the service from.
+     * @param service The Service to unget.
+     * @return true if the service was ungotten, false otherwise.
+     */
+    <S> boolean ungetService(ServiceUse<S> use, S service);
 }

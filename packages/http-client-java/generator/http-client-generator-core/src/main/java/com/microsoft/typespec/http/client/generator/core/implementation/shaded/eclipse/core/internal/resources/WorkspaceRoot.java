@@ -54,23 +54,8 @@ public class WorkspaceRoot extends Container implements IWorkspaceRoot {
     }
 
     @Override
-    public void delete(boolean force, IProgressMonitor monitor) throws CoreException {
-        int updateFlags = force ? IResource.FORCE : IResource.NONE;
-        delete(updateFlags, monitor);
-    }
-
-    @Override
     public boolean exists(int flags, boolean checkType) {
         return true;
-    }
-
-    @Override
-    public String getDefaultCharset(boolean checkImplicit) {
-        if (checkImplicit) {
-            return ResourcesPlugin.getEncoding();
-        }
-        String enc = ResourcesPlugin.getPlugin().getPluginPreferences().getString(ResourcesPlugin.PREF_ENCODING);
-        return enc == null || enc.length() == 0 ? null : enc;
     }
 
     @Override
@@ -227,10 +212,5 @@ public class WorkspaceRoot extends Container implements IWorkspaceRoot {
         }
         // can't set local time for root
         return value;
-    }
-
-    @Override
-    public void touch(IProgressMonitor monitor) {
-        // do nothing for the workspace root
     }
 }

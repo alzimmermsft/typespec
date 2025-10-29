@@ -21,50 +21,50 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 /**
  * Reflects the context of code analysis, keeping track of enclosing
- *	try statements, exception handlers, etc...
+ * try statements, exception handlers, etc...
  */
 public class SwitchFlowContext extends FlowContext {
 
-	public BranchLabel breakLabel;
-	public UnconditionalFlowInfo initsOnBreak = FlowInfo.DEAD_END;
+    public BranchLabel breakLabel;
+    public UnconditionalFlowInfo initsOnBreak = FlowInfo.DEAD_END;
 
-public SwitchFlowContext(FlowContext parent, ASTNode associatedNode, BranchLabel breakLabel, boolean isPreTest, boolean inheritNullFieldChecks) {
-	super(parent, associatedNode, inheritNullFieldChecks);
-	this.breakLabel = breakLabel;
-	if (isPreTest && parent.conditionalLevel > -1) {
-		this.conditionalLevel++;
-	}
-}
+    public SwitchFlowContext(FlowContext parent, ASTNode associatedNode, BranchLabel breakLabel, boolean isPreTest,
+        boolean inheritNullFieldChecks) {
+        super(parent, associatedNode, inheritNullFieldChecks);
+        this.breakLabel = breakLabel;
+        if (isPreTest && parent.conditionalLevel > -1) {
+            this.conditionalLevel++;
+        }
+    }
 
-@Override
-public BranchLabel breakLabel() {
-	return this.breakLabel;
-}
+    @Override
+    public BranchLabel breakLabel() {
+        return this.breakLabel;
+    }
 
-@Override
-public String individualToString() {
-	StringBuilder buffer = new StringBuilder("Switch flow context"); //$NON-NLS-1$
-	buffer.append("[initsOnBreak -").append(this.initsOnBreak.toString()).append(']'); //$NON-NLS-1$
-	return buffer.toString();
-}
+    @Override
+    public String individualToString() {
+        StringBuilder buffer = new StringBuilder("Switch flow context"); //$NON-NLS-1$
+        buffer.append("[initsOnBreak -").append(this.initsOnBreak.toString()).append(']'); //$NON-NLS-1$
+        return buffer.toString();
+    }
 
-@Override
-public boolean isBreakable() {
-	return true;
-}
+    @Override
+    public boolean isBreakable() {
+        return true;
+    }
 
-@Override
-public boolean isExplicitYieldable() {
-	return this.associatedNode instanceof SwitchExpression;
-}
+    @Override
+    public boolean isExplicitYieldable() {
+        return this.associatedNode instanceof SwitchExpression;
+    }
 
-@Override
-public void recordBreakFrom(FlowInfo flowInfo) {
-	if ((this.initsOnBreak.tagBits & FlowInfo.UNREACHABLE_OR_DEAD) == 0) {
-		this.initsOnBreak = this.initsOnBreak.mergedWith(flowInfo.unconditionalInits());
-	}
-	else {
-		this.initsOnBreak = flowInfo.unconditionalCopy();
-	}
-}
+    @Override
+    public void recordBreakFrom(FlowInfo flowInfo) {
+        if ((this.initsOnBreak.tagBits & FlowInfo.UNREACHABLE_OR_DEAD) == 0) {
+            this.initsOnBreak = this.initsOnBreak.mergedWith(flowInfo.unconditionalInits());
+        } else {
+            this.initsOnBreak = flowInfo.unconditionalCopy();
+        }
+    }
 }

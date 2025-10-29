@@ -27,31 +27,32 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
 public class VerifyException extends RuntimeException {
-  /** Constructs a {@code VerifyException} with no message. */
-  public VerifyException() {}
+    /** Constructs a {@code VerifyException} with no message. */
+    public VerifyException() {
+    }
 
-  /** Constructs a {@code VerifyException} with the message {@code message}. */
-  public VerifyException(@CheckForNull String message) {
-    super(message);
-  }
+    /** Constructs a {@code VerifyException} with the message {@code message}. */
+    public VerifyException(@CheckForNull String message) {
+        super(message);
+    }
 
-  /**
-   * Constructs a {@code VerifyException} with the cause {@code cause} and a message that is {@code
-   * null} if {@code cause} is null, and {@code cause.toString()} otherwise.
-   *
-   * @since 19.0
-   */
-  public VerifyException(@CheckForNull Throwable cause) {
-    super(cause);
-  }
+    /**
+     * Constructs a {@code VerifyException} with the cause {@code cause} and a message that is {@code
+     * null} if {@code cause} is null, and {@code cause.toString()} otherwise.
+     *
+     * @since 19.0
+     */
+    public VerifyException(@CheckForNull Throwable cause) {
+        super(cause);
+    }
 
-  /**
-   * Constructs a {@code VerifyException} with the message {@code message} and the cause {@code
-   * cause}.
-   *
-   * @since 19.0
-   */
-  public VerifyException(@CheckForNull String message, @CheckForNull Throwable cause) {
-    super(message, cause);
-  }
+    /**
+     * Constructs a {@code VerifyException} with the message {@code message} and the cause {@code
+     * cause}.
+     *
+     * @since 19.0
+     */
+    public VerifyException(@CheckForNull String message, @CheckForNull Throwable cause) {
+        super(message, cause);
+    }
 }

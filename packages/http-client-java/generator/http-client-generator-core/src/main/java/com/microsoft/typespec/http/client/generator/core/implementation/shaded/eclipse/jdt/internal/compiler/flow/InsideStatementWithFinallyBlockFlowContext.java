@@ -18,49 +18,47 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 /**
  * Reflects the context of code analysis, keeping track of enclosing
- *	try statements, exception handlers, etc...
+ * try statements, exception handlers, etc...
  */
 public class InsideStatementWithFinallyBlockFlowContext extends TryFlowContext {
 
-	public UnconditionalFlowInfo initsOnReturn;
+    public UnconditionalFlowInfo initsOnReturn;
 
-public InsideStatementWithFinallyBlockFlowContext(
-	FlowContext parent,
-	ASTNode associatedNode) {
-	super(parent, associatedNode);
-	this.initsOnReturn = FlowInfo.DEAD_END;
-}
+    public InsideStatementWithFinallyBlockFlowContext(FlowContext parent, ASTNode associatedNode) {
+        super(parent, associatedNode);
+        this.initsOnReturn = FlowInfo.DEAD_END;
+    }
 
-@Override
-public String individualToString() {
-	StringBuilder buffer = new StringBuilder("Inside StatementWithFinallyBlock flow context"); //$NON-NLS-1$
-	buffer.append("[initsOnReturn -").append(this.initsOnReturn.toString()).append(']'); //$NON-NLS-1$
-	return buffer.toString();
-}
+    @Override
+    public String individualToString() {
+        StringBuilder buffer = new StringBuilder("Inside StatementWithFinallyBlock flow context"); //$NON-NLS-1$
+        buffer.append("[initsOnReturn -").append(this.initsOnReturn.toString()).append(']'); //$NON-NLS-1$
+        return buffer.toString();
+    }
 
-@Override
-public UnconditionalFlowInfo initsOnReturn(){
-	return this.initsOnReturn;
-}
+    @Override
+    public UnconditionalFlowInfo initsOnReturn() {
+        return this.initsOnReturn;
+    }
 
-@Override
-public boolean isNonReturningContext() {
-	return ((StatementWithFinallyBlock) this.associatedNode).isFinallyBlockEscaping();
-}
+    @Override
+    public boolean isNonReturningContext() {
+        return ((StatementWithFinallyBlock) this.associatedNode).isFinallyBlockEscaping();
+    }
 
-@Override
-public void recordReturnFrom(UnconditionalFlowInfo flowInfo) {
-	if ((flowInfo.tagBits & FlowInfo.UNREACHABLE_OR_DEAD) == 0)	{
-	if (this.initsOnReturn == FlowInfo.DEAD_END) {
-		this.initsOnReturn = (UnconditionalFlowInfo) flowInfo.copy();
-	} else {
-		this.initsOnReturn = this.initsOnReturn.mergedWith(flowInfo);
-	}
-	}
-}
+    @Override
+    public void recordReturnFrom(UnconditionalFlowInfo flowInfo) {
+        if ((flowInfo.tagBits & FlowInfo.UNREACHABLE_OR_DEAD) == 0) {
+            if (this.initsOnReturn == FlowInfo.DEAD_END) {
+                this.initsOnReturn = (UnconditionalFlowInfo) flowInfo.copy();
+            } else {
+                this.initsOnReturn = this.initsOnReturn.mergedWith(flowInfo);
+            }
+        }
+    }
 
-@Override
-public StatementWithFinallyBlock statementWithFinallyBlock() {
-	return (StatementWithFinallyBlock) this.associatedNode;
-}
+    @Override
+    public StatementWithFinallyBlock statementWithFinallyBlock() {
+        return (StatementWithFinallyBlock) this.associatedNode;
+    }
 }

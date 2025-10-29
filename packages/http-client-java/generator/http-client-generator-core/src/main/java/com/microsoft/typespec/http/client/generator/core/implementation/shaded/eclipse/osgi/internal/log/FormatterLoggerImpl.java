@@ -14,13 +14,13 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.log.admin.LoggerContext;
 
 public class FormatterLoggerImpl extends LoggerImpl implements FormatterLogger {
-	public FormatterLoggerImpl(ExtendedLogServiceImpl logServiceImpl, String name, LoggerContext loggerContext) {
-		super(logServiceImpl, name, loggerContext);
-	}
+    public FormatterLoggerImpl(ExtendedLogServiceImpl logServiceImpl, String name, LoggerContext loggerContext) {
+        super(logServiceImpl, name, loggerContext);
+    }
 
-	@Override
-	String formatMessage(String format, Arguments processedArguments) {
-		return String.format(format, processedArguments.arguments());
-	}
+    @Override
+    String formatMessage(String format, Arguments processedArguments) {
+        return String.format(format, processedArguments.arguments());
+    }
 
 }

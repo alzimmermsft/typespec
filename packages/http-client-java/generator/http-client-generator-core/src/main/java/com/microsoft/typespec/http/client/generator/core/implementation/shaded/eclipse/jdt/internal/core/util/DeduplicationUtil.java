@@ -15,82 +15,82 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaElement;
 import java.util.ArrayList;
 import java.util.List;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaElement;
 
 /** Utility to provide deduplication by best effort. **/
 public final class DeduplicationUtil {
-	private DeduplicationUtil() {
-	}
+    private DeduplicationUtil() {
+    }
 
-	private static final WeakHashSet<Object> objectCache = new WeakHashSet<>();
-	private static final WeakHashSet<String> stringSymbols = new WeakHashSet<>();
-	private static final WeakHashSetOfCharArray charArraySymbols = new WeakHashSetOfCharArray();
+    private static final WeakHashSet<Object> objectCache = new WeakHashSet<>();
+    private static final WeakHashSet<String> stringSymbols = new WeakHashSet<>();
+    private static final WeakHashSetOfCharArray charArraySymbols = new WeakHashSetOfCharArray();
 
-	@SuppressWarnings("unchecked")
-	public static <T> T internObject(T obj) {
-		synchronized (objectCache) {
-			return (T) objectCache.add(obj);
-		}
-	}
+    @SuppressWarnings("unchecked")
+    public static <T> T internObject(T obj) {
+        synchronized (objectCache) {
+            return (T) objectCache.add(obj);
+        }
+    }
 
-	public static char[] intern(char[] array) {
-		synchronized (charArraySymbols) {
-			return charArraySymbols.add(array);
-		}
-	}
+    public static char[] intern(char[] array) {
+        synchronized (charArraySymbols) {
+            return charArraySymbols.add(array);
+        }
+    }
 
-	public static String toString(char[] array) {
-		synchronized (stringSymbols) {
-			return stringSymbols.add(new String(array));
-		}
-	}
+    public static String toString(char[] array) {
+        synchronized (stringSymbols) {
+            return stringSymbols.add(new String(array));
+        }
+    }
 
-	/*
-	 * Used as a replacement for String#intern() that could prevent garbage collection of strings on some VMs.
-	 */
-	public static String intern(String s) {
-		if (s == null) {
-			return null;
-		}
-		synchronized (stringSymbols) {
-			return stringSymbols.add(s);
-		}
-	}
+    /*
+     * Used as a replacement for String#intern() that could prevent garbage collection of strings on some VMs.
+     */
+    public static String intern(String s) {
+        if (s == null) {
+            return null;
+        }
+        synchronized (stringSymbols) {
+            return stringSymbols.add(s);
+        }
+    }
 
-	public static String[] intern(String[] a) {
-		if (a.length == 0) {
-			return JavaElement.NO_STRINGS;
-		}
-		synchronized (stringSymbols) {
-			for (int j = 0; j < a.length; j++) {
-				a[j] = a[j] == null ? null : stringSymbols.add(a[j]);
-			}
-			return a;
-		}
-	}
+    public static String[] intern(String[] a) {
+        if (a.length == 0) {
+            return JavaElement.NO_STRINGS;
+        }
+        synchronized (stringSymbols) {
+            for (int j = 0; j < a.length; j++) {
+                a[j] = a[j] == null ? null : stringSymbols.add(a[j]);
+            }
+            return a;
+        }
+    }
 
-	/** interns the elements and the list as whole **/
-	public static List<String> intern(List<String> a) {
-		if (a.size() == 0) {
-			return List.of();
-		}
-		synchronized (objectCache) {
-			Object existing = objectCache.get(a);
-			if (existing instanceof List l) {
-				@SuppressWarnings("unchecked")
-				List<String> existingList = l;
-				return existingList;
-			}
-		}
+    /** interns the elements and the list as whole **/
+    public static List<String> intern(List<String> a) {
+        if (a.size() == 0) {
+            return List.of();
+        }
+        synchronized (objectCache) {
+            Object existing = objectCache.get(a);
+            if (existing instanceof List l) {
+                @SuppressWarnings("unchecked")
+                List<String> existingList = l;
+                return existingList;
+            }
+        }
 
-		ArrayList<String> result= new ArrayList<>(a.size());
-		synchronized (stringSymbols) {
-			for (String s:a) {
-				result.add(s == null ? null :stringSymbols.add(s));
-			}
-		}
-		return internObject(List.copyOf(result));
-	}
+        ArrayList<String> result = new ArrayList<>(a.size());
+        synchronized (stringSymbols) {
+            for (String s : a) {
+                result.add(s == null ? null : stringSymbols.add(s));
+            }
+        }
+        return internObject(List.copyOf(result));
+    }
 }

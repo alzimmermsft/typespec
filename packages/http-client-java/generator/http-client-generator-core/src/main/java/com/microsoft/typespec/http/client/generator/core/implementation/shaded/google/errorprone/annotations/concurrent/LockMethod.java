@@ -32,15 +32,15 @@ import java.lang.annotation.Target;
  * <p>The arguments determine which locks the annotated method acquires:
  *
  * <ul>
- *   <li><code>field-name</code>: The lock is referenced by the final instance field specified by
- *       <em>field-name</em>.
- *   <li><code>class-name.this.field-name</code>: For inner classes, it may be necessary to
- *       disambiguate 'this'; the <em>class-name.this</em> designation allows you to specify which
- *       'this' reference is intended.
- *   <li><code>class-name.field-name</code>: The lock is referenced by the static final field
- *       specified by <em>class-name.field-name</em>.
- *   <li><code>method-name()</code>: The lock object is returned by calling the named nullary
- *       method.
+ * <li><code>field-name</code>: The lock is referenced by the final instance field specified by
+ * <em>field-name</em>.
+ * <li><code>class-name.this.field-name</code>: For inner classes, it may be necessary to
+ * disambiguate 'this'; the <em>class-name.this</em> designation allows you to specify which
+ * 'this' reference is intended.
+ * <li><code>class-name.field-name</code>: The lock is referenced by the static final field
+ * specified by <em>class-name.field-name</em>.
+ * <li><code>method-name()</code>: The lock object is returned by calling the named nullary
+ * method.
  * </ul>
  *
  * @deprecated the correctness of this annotation is not enforced; it will soon be removed.
@@ -49,5 +49,5 @@ import java.lang.annotation.Target;
 @Retention(CLASS)
 @Deprecated
 public @interface LockMethod {
-  String[] value();
+    String[] value();
 }

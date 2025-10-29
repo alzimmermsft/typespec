@@ -30,7 +30,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinCrypt.CRYPT_ATTRIBUTE;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinCrypt.CRYPT_SIGN_MESSAGE_PARA;
 
-
 public abstract class WinCryptUtil {
 
     public static class MANAGED_CRYPT_SIGN_MESSAGE_PARA extends CRYPT_SIGN_MESSAGE_PARA {

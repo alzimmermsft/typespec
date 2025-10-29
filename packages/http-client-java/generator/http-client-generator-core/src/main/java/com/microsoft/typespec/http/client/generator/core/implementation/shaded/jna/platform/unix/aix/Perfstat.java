@@ -50,16 +50,87 @@ public interface Perfstat extends Library {
         public byte[] name = new byte[IDENTIFIER_LENGTH];
     }
 
-    @FieldOrder({ "ncpus", "ncpus_cfg", "description", "processorHZ", "user", "sys", "idle", "wait", "pswitch",
-            "syscall", "sysread", "syswrite", "sysfork", "sysexec", "readch", "writech", "devintrs", "softintrs",
-            "lbolt", "loadavg", "runque", "swpque", "bread", "bwrite", "lread", "lwrite", "phread", "phwrite", "runocc",
-            "swpocc", "iget", "namei", "dirblk", "msg", "sema", "rcvint", "xmtint", "mdmint", "tty_rawinch",
-            "tty_caninch", "tty_rawoutch", "ksched", "koverf", "kexit", "rbread", "rcread", "rbwrt", "rcwrt", "traps",
-            "ncpus_high", "puser", "psys", "pidle", "pwait", "decrintrs", "mpcrintrs", "mpcsintrs", "phantintrs",
-            "idle_donated_purr", "idle_donated_spurr", "busy_donated_purr", "busy_donated_spurr", "idle_stolen_purr",
-            "idle_stolen_spurr", "busy_stolen_purr", "busy_stolen_spurr", "iowait", "physio", "twait", "hpi", "hpit",
-            "puser_spurr", "psys_spurr", "pidle_spurr", "pwait_spurr", "spurrflag", "version", "tb_last",
-            "purr_coalescing", "spurr_coalescing" })
+    @FieldOrder({
+        "ncpus",
+        "ncpus_cfg",
+        "description",
+        "processorHZ",
+        "user",
+        "sys",
+        "idle",
+        "wait",
+        "pswitch",
+        "syscall",
+        "sysread",
+        "syswrite",
+        "sysfork",
+        "sysexec",
+        "readch",
+        "writech",
+        "devintrs",
+        "softintrs",
+        "lbolt",
+        "loadavg",
+        "runque",
+        "swpque",
+        "bread",
+        "bwrite",
+        "lread",
+        "lwrite",
+        "phread",
+        "phwrite",
+        "runocc",
+        "swpocc",
+        "iget",
+        "namei",
+        "dirblk",
+        "msg",
+        "sema",
+        "rcvint",
+        "xmtint",
+        "mdmint",
+        "tty_rawinch",
+        "tty_caninch",
+        "tty_rawoutch",
+        "ksched",
+        "koverf",
+        "kexit",
+        "rbread",
+        "rcread",
+        "rbwrt",
+        "rcwrt",
+        "traps",
+        "ncpus_high",
+        "puser",
+        "psys",
+        "pidle",
+        "pwait",
+        "decrintrs",
+        "mpcrintrs",
+        "mpcsintrs",
+        "phantintrs",
+        "idle_donated_purr",
+        "idle_donated_spurr",
+        "busy_donated_purr",
+        "busy_donated_spurr",
+        "idle_stolen_purr",
+        "idle_stolen_spurr",
+        "busy_stolen_purr",
+        "busy_stolen_spurr",
+        "iowait",
+        "physio",
+        "twait",
+        "hpi",
+        "hpit",
+        "puser_spurr",
+        "psys_spurr",
+        "pidle_spurr",
+        "pwait_spurr",
+        "spurrflag",
+        "version",
+        "tb_last",
+        "purr_coalescing",
+        "spurr_coalescing" })
     class perfstat_cpu_total_t extends Structure {
         public int ncpus; // number of active logical processors
         public int ncpus_cfg; // number of configured processors
@@ -156,15 +227,77 @@ public interface Perfstat extends Library {
                                       // cycles consumed to coalesce data else set to zero.
     }
 
-    @FieldOrder({ "name", "user", "sys", "idle", "wait", "pswitch", "syscall", "sysread", "syswrite", "sysfork",
-            "sysexec", "readch", "writech", "bread", "bwrite", "lread", "lwrite", "phread", "phwrite", "iget", "namei",
-            "dirblk", "msg", "sema", "minfaults", "majfaults", "puser", "psys", "pidle", "pwait", "redisp_sd0",
-            "redisp_sd1", "redisp_sd2", "redisp_sd3", "redisp_sd4", "redisp_sd5", "migration_push", "migration_S3grq",
-            "migration_S3pul", "invol_cswitch", "vol_cswitch", "runque", "bound", "decrintrs", "mpcrintrs", "mpcsintrs",
-            "devintrs", "softintrs", "phantintrs", "idle_donated_purr", "idle_donated_spurr", "busy_donated_purr",
-            "busy_donated_spurr", "idle_stolen_purr", "idle_stolen_spurr", "busy_stolen_purr", "busy_stolen_spurr",
-            "hpi", "hpit", "puser_spurr", "psys_spurr", "pidle_spurr", "pwait_spurr", "spurrflag", "localdispatch",
-            "neardispatch", "fardispatch", "cswitches", "version", "tb_last" })
+    @FieldOrder({
+        "name",
+        "user",
+        "sys",
+        "idle",
+        "wait",
+        "pswitch",
+        "syscall",
+        "sysread",
+        "syswrite",
+        "sysfork",
+        "sysexec",
+        "readch",
+        "writech",
+        "bread",
+        "bwrite",
+        "lread",
+        "lwrite",
+        "phread",
+        "phwrite",
+        "iget",
+        "namei",
+        "dirblk",
+        "msg",
+        "sema",
+        "minfaults",
+        "majfaults",
+        "puser",
+        "psys",
+        "pidle",
+        "pwait",
+        "redisp_sd0",
+        "redisp_sd1",
+        "redisp_sd2",
+        "redisp_sd3",
+        "redisp_sd4",
+        "redisp_sd5",
+        "migration_push",
+        "migration_S3grq",
+        "migration_S3pul",
+        "invol_cswitch",
+        "vol_cswitch",
+        "runque",
+        "bound",
+        "decrintrs",
+        "mpcrintrs",
+        "mpcsintrs",
+        "devintrs",
+        "softintrs",
+        "phantintrs",
+        "idle_donated_purr",
+        "idle_donated_spurr",
+        "busy_donated_purr",
+        "busy_donated_spurr",
+        "idle_stolen_purr",
+        "idle_stolen_spurr",
+        "busy_stolen_purr",
+        "busy_stolen_spurr",
+        "hpi",
+        "hpit",
+        "puser_spurr",
+        "psys_spurr",
+        "pidle_spurr",
+        "pwait_spurr",
+        "spurrflag",
+        "localdispatch",
+        "neardispatch",
+        "fardispatch",
+        "cswitches",
+        "version",
+        "tb_last" })
     class perfstat_cpu_t extends Structure {
         public byte[] name = new byte[IDENTIFIER_LENGTH]; // logical processor name (cpu0, cpu1, ..)
         public long user; // raw number of clock ticks spent in user mode
@@ -247,12 +380,51 @@ public interface Perfstat extends Library {
         public long tb_last; // timebase counter
     }
 
-    @FieldOrder({ "virt_total", "real_total", "real_free", "real_pinned", "real_inuse", "pgbad", "pgexct", "pgins",
-            "pgouts", "pgspins", "pgspouts", "scans", "cycles", "pgsteals", "numperm", "pgsp_total", "pgsp_free",
-            "pgsp_rsvd", "real_system", "real_user", "real_process", "virt_active", "iome", "iomu", "iohwm", "pmem",
-            "comprsd_total", "comprsd_wseg_pgs", "cpgins", "cpgouts", "true_size", "expanded_memory",
-            "comprsd_wseg_size", "target_cpool_size", "max_cpool_size", "min_ucpool_size", "cpool_size", "ucpool_size",
-            "cpool_inuse", "ucpool_inuse", "version", "real_avail", "bytes_coalesced", "bytes_coalesced_mempool" })
+    @FieldOrder({
+        "virt_total",
+        "real_total",
+        "real_free",
+        "real_pinned",
+        "real_inuse",
+        "pgbad",
+        "pgexct",
+        "pgins",
+        "pgouts",
+        "pgspins",
+        "pgspouts",
+        "scans",
+        "cycles",
+        "pgsteals",
+        "numperm",
+        "pgsp_total",
+        "pgsp_free",
+        "pgsp_rsvd",
+        "real_system",
+        "real_user",
+        "real_process",
+        "virt_active",
+        "iome",
+        "iomu",
+        "iohwm",
+        "pmem",
+        "comprsd_total",
+        "comprsd_wseg_pgs",
+        "cpgins",
+        "cpgouts",
+        "true_size",
+        "expanded_memory",
+        "comprsd_wseg_size",
+        "target_cpool_size",
+        "max_cpool_size",
+        "min_ucpool_size",
+        "cpool_size",
+        "ucpool_size",
+        "cpool_inuse",
+        "ucpool_inuse",
+        "version",
+        "real_avail",
+        "bytes_coalesced",
+        "bytes_coalesced_mempool" })
     class perfstat_memory_total_t extends Structure {
         public long virt_total; // total virtual memory (in 4KB pages)
         public long real_total; // total real memory (in 4KB pages)
@@ -317,11 +489,36 @@ public interface Perfstat extends Library {
                                              // set to zero.
     }
 
-    @FieldOrder({ "version", "pid", "proc_name", "proc_priority", "num_threads", "proc_uid", "proc_classid",
-            "proc_size", "proc_real_mem_data", "proc_real_mem_text", "proc_virt_mem_data", "proc_virt_mem_text",
-            "shared_lib_data_size", "heap_size", "real_inuse", "virt_inuse", "pinned", "pgsp_inuse", "filepages",
-            "real_inuse_map", "virt_inuse_map", "pinned_inuse_map", "ucpu_time", "scpu_time", "last_timebase",
-            "inBytes", "outBytes", "inOps", "outOps" })
+    @FieldOrder({
+        "version",
+        "pid",
+        "proc_name",
+        "proc_priority",
+        "num_threads",
+        "proc_uid",
+        "proc_classid",
+        "proc_size",
+        "proc_real_mem_data",
+        "proc_real_mem_text",
+        "proc_virt_mem_data",
+        "proc_virt_mem_text",
+        "shared_lib_data_size",
+        "heap_size",
+        "real_inuse",
+        "virt_inuse",
+        "pinned",
+        "pgsp_inuse",
+        "filepages",
+        "real_inuse_map",
+        "virt_inuse_map",
+        "pinned_inuse_map",
+        "ucpu_time",
+        "scpu_time",
+        "last_timebase",
+        "inBytes",
+        "outBytes",
+        "inOps",
+        "outOps" })
     class perfstat_process_t extends Structure {
         public long version; // version number (1, 2, etc.,)
         public long pid; // Process ID
@@ -361,10 +558,41 @@ public interface Perfstat extends Library {
         public long outOps; // Out Operations from Disk
     }
 
-    @FieldOrder({ "name", "description", "vgname", "size", "free", "bsize", "xrate", "xfers", "wblks", "rblks",
-            "qdepth", "time", "adapter", "paths_count", "q_full", "rserv", "rtimeout", "rfailed", "min_rserv",
-            "max_rserv", "wserv", "wtimeout", "wfailed", "min_wserv", "max_wserv", "wq_depth", "wq_sampled", "wq_time",
-            "wq_min_time", "wq_max_time", "q_sampled", "wpar_id", "version", "dk_type" })
+    @FieldOrder({
+        "name",
+        "description",
+        "vgname",
+        "size",
+        "free",
+        "bsize",
+        "xrate",
+        "xfers",
+        "wblks",
+        "rblks",
+        "qdepth",
+        "time",
+        "adapter",
+        "paths_count",
+        "q_full",
+        "rserv",
+        "rtimeout",
+        "rfailed",
+        "min_rserv",
+        "max_rserv",
+        "wserv",
+        "wtimeout",
+        "wfailed",
+        "min_wserv",
+        "max_wserv",
+        "wq_depth",
+        "wq_sampled",
+        "wq_time",
+        "wq_min_time",
+        "wq_max_time",
+        "q_sampled",
+        "wpar_id",
+        "version",
+        "dk_type" })
     class perfstat_disk_t extends Structure {
         public byte[] name = new byte[IDENTIFIER_LENGTH]; // name of the disk
         public byte[] description = new byte[IDENTIFIER_LENGTH]; // disk description (from ODM)
@@ -414,12 +642,43 @@ public interface Perfstat extends Library {
         public long desired;
     }
 
-    @FieldOrder({ "version", "partitionname", "nodename", "conf", "partitionnum", "groupid", "processorFamily",
-            "processorModel", "machineID", "processorMHz", "numProcessors", "OSName", "OSVersion", "OSBuild", "lcpus",
-            "smtthreads", "drives", "nw_adapters", "cpucap", "cpucap_weightage", "entitled_proc_capacity", "vcpus",
-            "processor_poolid", "activecpusinpool", "cpupool_weightage", "sharedpcpu", "maxpoolcap", "entpoolcap",
-            "mem", "mem_weightage", "totiomement", "mempoolid", "hyperpgsize", "exp_mem", "targetmemexpfactor",
-            "targetmemexpsize" })
+    @FieldOrder({
+        "version",
+        "partitionname",
+        "nodename",
+        "conf",
+        "partitionnum",
+        "groupid",
+        "processorFamily",
+        "processorModel",
+        "machineID",
+        "processorMHz",
+        "numProcessors",
+        "OSName",
+        "OSVersion",
+        "OSBuild",
+        "lcpus",
+        "smtthreads",
+        "drives",
+        "nw_adapters",
+        "cpucap",
+        "cpucap_weightage",
+        "entitled_proc_capacity",
+        "vcpus",
+        "processor_poolid",
+        "activecpusinpool",
+        "cpupool_weightage",
+        "sharedpcpu",
+        "maxpoolcap",
+        "entpoolcap",
+        "mem",
+        "mem_weightage",
+        "totiomement",
+        "mempoolid",
+        "hyperpgsize",
+        "exp_mem",
+        "targetmemexpfactor",
+        "targetmemexpsize" })
     class perfstat_partition_config_t extends Structure {
         public long version; // Version number
         public byte[] partitionname = new byte[64]; // Partition Name
@@ -477,8 +736,23 @@ public interface Perfstat extends Library {
         public long targetmemexpsize; // Expanded Memory Size in MB
     }
 
-    @FieldOrder({ "name", "description", "type", "mtu", "ipackets", "ibytes", "ierrors", "opackets", "obytes",
-            "oerrors", "collisions", "bitrate", "xmitdrops", "version", "if_iqdrops", "if_arpdrops" })
+    @FieldOrder({
+        "name",
+        "description",
+        "type",
+        "mtu",
+        "ipackets",
+        "ibytes",
+        "ierrors",
+        "opackets",
+        "obytes",
+        "oerrors",
+        "collisions",
+        "bitrate",
+        "xmitdrops",
+        "version",
+        "if_iqdrops",
+        "if_arpdrops" })
     class perfstat_netinterface_t extends Structure {
         public byte[] name = new byte[IDENTIFIER_LENGTH]; // name of the interface
         public byte[] description = new byte[IDENTIFIER_LENGTH]; // interface description
@@ -595,8 +869,17 @@ public interface Perfstat extends Library {
             public AnonymousStructRPCclientdgram dgram;
         }
 
-        @FieldOrder({ "calls", "badcalls", "badxids", "timeouts", "newcreds", "badverfs", "timers", "nomem", "cantconn",
-                "interrupts" })
+        @FieldOrder({
+            "calls",
+            "badcalls",
+            "badxids",
+            "timeouts",
+            "newcreds",
+            "badverfs",
+            "timers",
+            "nomem",
+            "cantconn",
+            "interrupts" })
         public static class AnonymousStructRPCclientstream extends Structure {
             public long calls; // total NFS client RPC connection-oriented calls
             public long badcalls; // rejected NFS client RPC calls
@@ -610,8 +893,17 @@ public interface Perfstat extends Library {
             public long interrupts; // NFS client RPC calls fail due to interrupt
         }
 
-        @FieldOrder({ "calls", "badcalls", "retrans", "badxids", "timeouts", "newcreds", "badverfs", "timers", "nomem",
-                "cantsend" })
+        @FieldOrder({
+            "calls",
+            "badcalls",
+            "retrans",
+            "badxids",
+            "timeouts",
+            "newcreds",
+            "badverfs",
+            "timers",
+            "nomem",
+            "cantsend" })
         public static class AnonymousStructRPCclientdgram extends Structure {
             public long calls; // total NFS client RPC connectionless calls
             public long badcalls; // rejected NFS client RPC calls
@@ -681,8 +973,26 @@ public interface Perfstat extends Library {
             public AnonymousStructNFSv2server server;
         }
 
-        @FieldOrder({ "calls", "nullreq", "getattr", "setattr", "root", "lookup", "readlink", "read", "writecache",
-                "write", "create", "remove", "rename", "link", "symlink", "mkdir", "rmdir", "readdir", "statfs" })
+        @FieldOrder({
+            "calls",
+            "nullreq",
+            "getattr",
+            "setattr",
+            "root",
+            "lookup",
+            "readlink",
+            "read",
+            "writecache",
+            "write",
+            "create",
+            "remove",
+            "rename",
+            "link",
+            "symlink",
+            "mkdir",
+            "rmdir",
+            "readdir",
+            "statfs" })
         public static class AnonymousStructNFSv2client extends Structure {
             public long calls; // NFS V2 client requests
             public long nullreq; // NFS V2 client null requests
@@ -705,8 +1015,26 @@ public interface Perfstat extends Library {
             public long statfs; // NFS V2 client file stat requests
         }
 
-        @FieldOrder({ "calls", "nullreq", "getattr", "setattr", "root", "lookup", "readlink", "read", "writecache",
-                "write", "create", "remove", "rename", "link", "symlink", "mkdir", "rmdir", "readdir", "statfs" })
+        @FieldOrder({
+            "calls",
+            "nullreq",
+            "getattr",
+            "setattr",
+            "root",
+            "lookup",
+            "readlink",
+            "read",
+            "writecache",
+            "write",
+            "create",
+            "remove",
+            "rename",
+            "link",
+            "symlink",
+            "mkdir",
+            "rmdir",
+            "readdir",
+            "statfs" })
         public static class AnonymousStructNFSv2server extends Structure {
             public long calls; // NFS V2 server requests
             public long nullreq; // NFS V2 server null requests
@@ -735,9 +1063,30 @@ public interface Perfstat extends Library {
             public AnonymousStructNFSv3server server;
         }
 
-        @FieldOrder({ "calls", "nullreq", "getattr", "setattr", "lookup", "access", "readlink", "read", "write",
-                "create", "mkdir", "symlink", "mknod", "remove", "rmdir", "rename", "link", "readdir", "readdirplus",
-                "fsstat", "fsinfo", "pathconf", "commit" })
+        @FieldOrder({
+            "calls",
+            "nullreq",
+            "getattr",
+            "setattr",
+            "lookup",
+            "access",
+            "readlink",
+            "read",
+            "write",
+            "create",
+            "mkdir",
+            "symlink",
+            "mknod",
+            "remove",
+            "rmdir",
+            "rename",
+            "link",
+            "readdir",
+            "readdirplus",
+            "fsstat",
+            "fsinfo",
+            "pathconf",
+            "commit" })
         public static class AnonymousStructNFSv3client extends Structure {
             public long calls; // NFS V3 client calls
             public long nullreq; // NFS V3 client null requests
@@ -764,9 +1113,30 @@ public interface Perfstat extends Library {
             public long commit; // NFS V3 client commit requests
         }
 
-        @FieldOrder({ "calls", "nullreq", "getattr", "setattr", "lookup", "access", "readlink", "read", "write",
-                "create", "mkdir", "symlink", "mknod", "remove", "rmdir", "rename", "link", "readdir", "readdirplus",
-                "fsstat", "fsinfo", "pathconf", "commit" })
+        @FieldOrder({
+            "calls",
+            "nullreq",
+            "getattr",
+            "setattr",
+            "lookup",
+            "access",
+            "readlink",
+            "read",
+            "write",
+            "create",
+            "mkdir",
+            "symlink",
+            "mknod",
+            "remove",
+            "rmdir",
+            "rename",
+            "link",
+            "readdir",
+            "readdirplus",
+            "fsstat",
+            "fsinfo",
+            "pathconf",
+            "commit" })
         public static class AnonymousStructNFSv3server extends Structure {
             public long calls; // NFS V3 server requests
             public long nullreq; // NFS V3 server null requests
@@ -799,11 +1169,49 @@ public interface Perfstat extends Library {
             public AnonymousStructNFSv4server server;
         }
 
-        @FieldOrder({ "operations", "nullreq", "getattr", "setattr", "lookup", "access", "readlink", "read", "write",
-                "create", "mkdir", "symlink", "mknod", "remove", "rmdir", "rename", "link", "readdir", "statfs",
-                "finfo", "commit", "open", "open_confirm", "open_downgrade", "close", "lock", "unlock", "lock_test",
-                "set_clientid", "renew", "client_confirm", "secinfo", "release_lock", "replicate", "pcl_stat",
-                "acl_stat_l", "pcl_stat_l", "acl_read", "pcl_read", "acl_write", "pcl_write", "delegreturn" })
+        @FieldOrder({
+            "operations",
+            "nullreq",
+            "getattr",
+            "setattr",
+            "lookup",
+            "access",
+            "readlink",
+            "read",
+            "write",
+            "create",
+            "mkdir",
+            "symlink",
+            "mknod",
+            "remove",
+            "rmdir",
+            "rename",
+            "link",
+            "readdir",
+            "statfs",
+            "finfo",
+            "commit",
+            "open",
+            "open_confirm",
+            "open_downgrade",
+            "close",
+            "lock",
+            "unlock",
+            "lock_test",
+            "set_clientid",
+            "renew",
+            "client_confirm",
+            "secinfo",
+            "release_lock",
+            "replicate",
+            "pcl_stat",
+            "acl_stat_l",
+            "pcl_stat_l",
+            "acl_read",
+            "pcl_read",
+            "acl_write",
+            "pcl_write",
+            "delegreturn" })
         public static class AnonymousStructNFSv4client extends Structure {
             public long operations; // NFS V4 client operations
             public long nullreq; // NFS V4 client null operations
@@ -849,12 +1257,47 @@ public interface Perfstat extends Library {
             public long delegreturn; // NFS V4 client delegreturn operations
         }
 
-        @FieldOrder({ "nullreq", "compound", "operations", "access", "close", "commit", "create", "delegpurge",
-                "delegreturn", "getattr", "getfh", "link", "lock", "lockt", "locku", "lookup", "lookupp", "nverify",
-                "open", "openattr", "open_confirm", "open_downgrade", "putfh", "putpubfh", "putrootfh", "read",
-                "readdir", "readlink", "remove", "rename", "renew", "restorefh", "savefh", "secinfo",
-                "setattr",
-                "set_clientid", "clientid_confirm", "verify", "write", "release_lock" })
+        @FieldOrder({
+            "nullreq",
+            "compound",
+            "operations",
+            "access",
+            "close",
+            "commit",
+            "create",
+            "delegpurge",
+            "delegreturn",
+            "getattr",
+            "getfh",
+            "link",
+            "lock",
+            "lockt",
+            "locku",
+            "lookup",
+            "lookupp",
+            "nverify",
+            "open",
+            "openattr",
+            "open_confirm",
+            "open_downgrade",
+            "putfh",
+            "putpubfh",
+            "putrootfh",
+            "read",
+            "readdir",
+            "readlink",
+            "remove",
+            "rename",
+            "renew",
+            "restorefh",
+            "savefh",
+            "secinfo",
+            "setattr",
+            "set_clientid",
+            "clientid_confirm",
+            "verify",
+            "write",
+            "release_lock" })
         public static class AnonymousStructNFSv4server extends Structure {
             public long nullreq; // NFS V4 server null calls
             public long compound; // NFS V4 server compound calls
@@ -903,15 +1346,15 @@ public interface Perfstat extends Library {
      * Retrieves total processor usage metrics
      *
      * @param name
-     *            Reserved for future use, must be NULL
+     * Reserved for future use, must be NULL
      * @param cpu
-     *            Populated with structure
+     * Populated with structure
      * @param sizeof_struct
-     *            Should be set to sizeof(perfstat_cpu_total_t)
+     * Should be set to sizeof(perfstat_cpu_total_t)
      * @param desired_number
-     *            Reserved for future use, must be set to 0 or 1
+     * Reserved for future use, must be set to 0 or 1
      * @return The return value is -1 in case of errors. Otherwise, the number of
-     *         structures copied is returned. This is always 1.
+     * structures copied is returned. This is always 1.
      */
     int perfstat_cpu_total(perfstat_id_t name, perfstat_cpu_total_t cpu, int sizeof_struct, int desired_number);
 
@@ -919,16 +1362,16 @@ public interface Perfstat extends Library {
      * Retrieves individual processor usage metrics
      *
      * @param name
-     *            Structure containing empty string when collecting all cpu stats,
-     *            or null to count CPUs
+     * Structure containing empty string when collecting all cpu stats,
+     * or null to count CPUs
      * @param cpu
-     *            Populated with structures, or null to count CPUs
+     * Populated with structures, or null to count CPUs
      * @param sizeof_struct
-     *            Should be set to sizeof(perfstat_cpu_t)
+     * Should be set to sizeof(perfstat_cpu_t)
      * @param desired_number
-     *            Set to 0 to count CPUs, set to number of cpus to return otherwise
+     * Set to 0 to count CPUs, set to number of cpus to return otherwise
      * @return The return value is -1 in case of errors. Otherwise, the number of
-     *         structures copied is returned.
+     * structures copied is returned.
      */
     int perfstat_cpu(perfstat_id_t name, perfstat_cpu_t[] cpu, int sizeof_struct, int desired_number);
 
@@ -936,15 +1379,15 @@ public interface Perfstat extends Library {
      * Retrieves total memory-related metrics
      *
      * @param name
-     *            Reserved for future use, must be NULL
+     * Reserved for future use, must be NULL
      * @param mem
-     *            Populated with structure
+     * Populated with structure
      * @param sizeof_struct
-     *            Should be set to sizeof(perfstat_memory_total_t)
+     * Should be set to sizeof(perfstat_memory_total_t)
      * @param desired_number
-     *            Reserved for future use, must be set to 0 or 1
+     * Reserved for future use, must be set to 0 or 1
      * @return The return value is -1 in case of errors. Otherwise, the number of
-     *         structures copied is returned. This is always 1.
+     * structures copied is returned. This is always 1.
      */
     int perfstat_memory_total(perfstat_id_t name, perfstat_memory_total_t mem, int sizeof_struct, int desired_number);
 
@@ -952,17 +1395,17 @@ public interface Perfstat extends Library {
      * Retrieves process-related metrics
      *
      * @param name
-     *            Structure containing empty string when collecting all process
-     *            stats, or null to count processes
+     * Structure containing empty string when collecting all process
+     * stats, or null to count processes
      * @param procs
-     *            Populated with structure
+     * Populated with structure
      * @param sizeof_struct
-     *            Should be set to sizeof(perfstat_process_t)
+     * Should be set to sizeof(perfstat_process_t)
      * @param desired_number
-     *            Set to 0 to count processes, set to number of processes to return
-     *            otherwise
+     * Set to 0 to count processes, set to number of processes to return
+     * otherwise
      * @return The return value is -1 in case of errors. Otherwise, the number of
-     *         structures copied is returned.
+     * structures copied is returned.
      */
     int perfstat_process(perfstat_id_t name, perfstat_process_t[] procs, int sizeof_struct, int desired_number);
 
@@ -970,17 +1413,17 @@ public interface Perfstat extends Library {
      * Retrieves disk statistics
      *
      * @param name
-     *            Structure containing empty string when collecting all disk stats,
-     *            or null to count block disks
+     * Structure containing empty string when collecting all disk stats,
+     * or null to count block disks
      * @param disks
-     *            Populated with structures, or null to count disks
+     * Populated with structures, or null to count disks
      * @param sizeof_struct
-     *            Should be set to sizeof(perfstat_disk_t)
+     * Should be set to sizeof(perfstat_disk_t)
      * @param desired_number
-     *            Set to 0 to count disks, set to number of disks to return
-     *            otherwise
+     * Set to 0 to count disks, set to number of disks to return
+     * otherwise
      * @return The return value is -1 in case of errors. Otherwise, the number of
-     *         structures copied is returned.
+     * structures copied is returned.
      */
     int perfstat_disk(perfstat_id_t name, perfstat_disk_t[] disks, int sizeof_struct, int desired_number);
 
@@ -988,53 +1431,53 @@ public interface Perfstat extends Library {
      * Retrieves total memory-related metrics
      *
      * @param name
-     *            Reserved for future use, must be NULL
+     * Reserved for future use, must be NULL
      * @param config
-     *            Populated with structure
+     * Populated with structure
      * @param sizeof_struct
-     *            Should be set to sizeof(perfstat_partition_config_t)
+     * Should be set to sizeof(perfstat_partition_config_t)
      * @param desired_number
-     *            Reserved for future use, must be set to 0 or 1
+     * Reserved for future use, must be set to 0 or 1
      * @return The return value is -1 in case of errors. Otherwise, the number of
-     *         structures copied is returned. This is always 1.
+     * structures copied is returned. This is always 1.
      */
     int perfstat_partition_config(perfstat_id_t name, perfstat_partition_config_t config, int sizeof_struct,
-            int desired_number);
+        int desired_number);
 
     /**
      * Retrieves network interfaces
      *
      * @param name
-     *            Structure containing empty string when collecting all interface
-     *            stats, or null to count interfaces
+     * Structure containing empty string when collecting all interface
+     * stats, or null to count interfaces
      * @param netints
-     *            Populated with structures, or null to count interfaces
+     * Populated with structures, or null to count interfaces
      * @param sizeof_struct
-     *            Should be set to sizeof(perfstat_netinterface_t)
+     * Should be set to sizeof(perfstat_netinterface_t)
      * @param desired_number
-     *            Set to 0 to count network interfaces, set to number of interfaces
-     *            to return otherwise
+     * Set to 0 to count network interfaces, set to number of interfaces
+     * to return otherwise
      * @return The return value is -1 in case of errors. Otherwise, the number of
-     *         structures copied is returned.
+     * structures copied is returned.
      */
     int perfstat_netinterface(perfstat_id_t name, perfstat_netinterface_t[] netints, int sizeof_struct,
-            int desired_number);
+        int desired_number);
 
     /**
      * Retrieves protocol data
      *
      * @param name
-     *            Structure containing empty string when collecting all protocol
-     *            stats, or null to count stats
+     * Structure containing empty string when collecting all protocol
+     * stats, or null to count stats
      * @param protocols
-     *            Populated with structures, or null to count protocols
+     * Populated with structures, or null to count protocols
      * @param sizeof_struct
-     *            Should be set to sizeof(perfstat_protocol_t)
+     * Should be set to sizeof(perfstat_protocol_t)
      * @param desired_number
-     *            Set to 0 to count protocols, set to number of protocols to return
-     *            otherwise
+     * Set to 0 to count protocols, set to number of protocols to return
+     * otherwise
      * @return The return value is -1 in case of errors. Otherwise, the number of
-     *         structures copied is returned.
+     * structures copied is returned.
      */
     int perfstat_protocol(perfstat_id_t name, perfstat_protocol_t[] protocols, int sizeof_struct, int desired_number);
 }

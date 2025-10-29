@@ -25,46 +25,45 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class AnnotationComponent extends ClassFileStruct implements IAnnotationComponent {
 
-	private final int componentNameIndex;
-	private char[] componentName;
-	private final IAnnotationComponentValue componentValue;
-	private int readOffset;
+    private final int componentNameIndex;
+    private char[] componentName;
+    private final IAnnotationComponentValue componentValue;
+    private int readOffset;
 
-	public AnnotationComponent(
-			byte[] classFileBytes,
-			IConstantPool constantPool,
-			int offset) throws ClassFormatException {
-		final int nameIndex = u2At(classFileBytes, 0, offset);
-		this.componentNameIndex = nameIndex;
-		if (nameIndex != 0) {
-			IConstantPoolEntry constantPoolEntry = constantPool.decodeEntry(nameIndex);
-			if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Utf8) {
-				throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
-			}
-			this.componentName = constantPoolEntry.getUtf8Value();
-		}
-		this.readOffset = 2;
-		AnnotationComponentValue value = new AnnotationComponentValue(classFileBytes, constantPool, offset + this.readOffset);
-		this.componentValue = value;
-		this.readOffset += value.sizeInBytes();
-	}
+    public AnnotationComponent(byte[] classFileBytes, IConstantPool constantPool, int offset)
+        throws ClassFormatException {
+        final int nameIndex = u2At(classFileBytes, 0, offset);
+        this.componentNameIndex = nameIndex;
+        if (nameIndex != 0) {
+            IConstantPoolEntry constantPoolEntry = constantPool.decodeEntry(nameIndex);
+            if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Utf8) {
+                throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
+            }
+            this.componentName = constantPoolEntry.getUtf8Value();
+        }
+        this.readOffset = 2;
+        AnnotationComponentValue value
+            = new AnnotationComponentValue(classFileBytes, constantPool, offset + this.readOffset);
+        this.componentValue = value;
+        this.readOffset += value.sizeInBytes();
+    }
 
-	@Override
-	public int getComponentNameIndex() {
-		return this.componentNameIndex;
-	}
+    @Override
+    public int getComponentNameIndex() {
+        return this.componentNameIndex;
+    }
 
-	@Override
-	public char[] getComponentName() {
-		return this.componentName;
-	}
+    @Override
+    public char[] getComponentName() {
+        return this.componentName;
+    }
 
-	@Override
-	public IAnnotationComponentValue getComponentValue() {
-		return this.componentValue;
-	}
+    @Override
+    public IAnnotationComponentValue getComponentValue() {
+        return this.componentValue;
+    }
 
-	int sizeInBytes() {
-		return this.readOffset;
-	}
+    int sizeInBytes() {
+        return this.readOffset;
+    }
 }

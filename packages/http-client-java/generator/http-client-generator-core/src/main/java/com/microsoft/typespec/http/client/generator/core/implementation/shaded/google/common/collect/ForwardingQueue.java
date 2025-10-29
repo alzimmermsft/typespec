@@ -16,12 +16,12 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.util.NoSuchElementException;
 import java.util.Queue;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A queue which forwards all its method calls to another queue. Subclasses should override one or
@@ -47,88 +47,88 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
-public abstract class ForwardingQueue<E extends @Nullable Object> extends ForwardingCollection<E>
-    implements Queue<E> {
+public abstract class ForwardingQueue<E extends @Nullable Object> extends ForwardingCollection<E> implements Queue<E> {
 
-  /** Constructor for use by subclasses. */
-  protected ForwardingQueue() {}
-
-  @Override
-  protected abstract Queue<E> delegate();
-
-  @CanIgnoreReturnValue // TODO(cpovirk): Consider removing this?
-  @Override
-  public boolean offer(@ParametricNullness E o) {
-    return delegate().offer(o);
-  }
-
-  @CanIgnoreReturnValue // TODO(cpovirk): Consider removing this?
-  @Override
-  @CheckForNull
-  public E poll() {
-    return delegate().poll();
-  }
-
-  @CanIgnoreReturnValue
-  @Override
-  @ParametricNullness
-  public E remove() {
-    return delegate().remove();
-  }
-
-  @Override
-  @CheckForNull
-  public E peek() {
-    return delegate().peek();
-  }
-
-  @Override
-  @ParametricNullness
-  public E element() {
-    return delegate().element();
-  }
-
-  /**
-   * A sensible definition of {@link #offer} in terms of {@link #add}. If you override {@link #add},
-   * you may wish to override {@link #offer} to forward to this implementation.
-   *
-   * @since 7.0
-   */
-  protected boolean standardOffer(@ParametricNullness E e) {
-    try {
-      return add(e);
-    } catch (IllegalStateException caught) {
-      return false;
+    /** Constructor for use by subclasses. */
+    protected ForwardingQueue() {
     }
-  }
 
-  /**
-   * A sensible definition of {@link #peek} in terms of {@link #element}. If you override {@link
-   * #element}, you may wish to override {@link #peek} to forward to this implementation.
-   *
-   * @since 7.0
-   */
-  @CheckForNull
-  protected E standardPeek() {
-    try {
-      return element();
-    } catch (NoSuchElementException caught) {
-      return null;
-    }
-  }
+    @Override
+    protected abstract Queue<E> delegate();
 
-  /**
-   * A sensible definition of {@link #poll} in terms of {@link #remove}. If you override {@link
-   * #remove}, you may wish to override {@link #poll} to forward to this implementation.
-   *
-   * @since 7.0
-   */
-  @CheckForNull
-  protected E standardPoll() {
-    try {
-      return remove();
-    } catch (NoSuchElementException caught) {
-      return null;
+    @CanIgnoreReturnValue // TODO(cpovirk): Consider removing this?
+    @Override
+    public boolean offer(@ParametricNullness E o) {
+        return delegate().offer(o);
     }
-  }
+
+    @CanIgnoreReturnValue // TODO(cpovirk): Consider removing this?
+    @Override
+    @CheckForNull
+    public E poll() {
+        return delegate().poll();
+    }
+
+    @CanIgnoreReturnValue
+    @Override
+    @ParametricNullness
+    public E remove() {
+        return delegate().remove();
+    }
+
+    @Override
+    @CheckForNull
+    public E peek() {
+        return delegate().peek();
+    }
+
+    @Override
+    @ParametricNullness
+    public E element() {
+        return delegate().element();
+    }
+
+    /**
+     * A sensible definition of {@link #offer} in terms of {@link #add}. If you override {@link #add},
+     * you may wish to override {@link #offer} to forward to this implementation.
+     *
+     * @since 7.0
+     */
+    protected boolean standardOffer(@ParametricNullness E e) {
+        try {
+            return add(e);
+        } catch (IllegalStateException caught) {
+            return false;
+        }
+    }
+
+    /**
+     * A sensible definition of {@link #peek} in terms of {@link #element}. If you override {@link
+     * #element}, you may wish to override {@link #peek} to forward to this implementation.
+     *
+     * @since 7.0
+     */
+    @CheckForNull
+    protected E standardPeek() {
+        try {
+            return element();
+        } catch (NoSuchElementException caught) {
+            return null;
+        }
+    }
+
+    /**
+     * A sensible definition of {@link #poll} in terms of {@link #remove}. If you override {@link
+     * #remove}, you may wish to override {@link #poll} to forward to this implementation.
+     *
+     * @since 7.0
+     */
+    @CheckForNull
+    protected E standardPoll() {
+        try {
+            return remove();
+        } catch (NoSuchElementException caught) {
+            return null;
+        }
+    }
 }

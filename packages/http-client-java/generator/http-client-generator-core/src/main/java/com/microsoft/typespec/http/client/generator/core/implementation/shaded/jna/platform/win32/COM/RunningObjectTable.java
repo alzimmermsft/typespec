@@ -28,7 +28,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinBase.FILETIME;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.DWORD;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.DWORDByReference;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HRESULT;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.PointerByReference;
 
@@ -52,8 +51,8 @@ public class RunningObjectTable extends Unknown implements IRunningObjectTable {
     public HRESULT Register(DWORD grfFlags, Pointer punkObject, Pointer pmkObjectName, DWORDByReference pdwRegister) {
         final int vTableId = 3;
 
-        HRESULT hr = (HRESULT) this._invokeNativeObject(vTableId, new Object[]{this.getPointer(),
-            grfFlags, punkObject, pmkObjectName, pdwRegister}, HRESULT.class);
+        HRESULT hr = (HRESULT) this._invokeNativeObject(vTableId,
+            new Object[] { this.getPointer(), grfFlags, punkObject, pmkObjectName, pdwRegister }, HRESULT.class);
 
         return hr;
     }
@@ -62,8 +61,8 @@ public class RunningObjectTable extends Unknown implements IRunningObjectTable {
     public HRESULT Revoke(DWORD dwRegister) {
         final int vTableId = 4;
 
-        HRESULT hr = (HRESULT) this._invokeNativeObject(vTableId, new Object[]{this.getPointer(),
-            dwRegister}, HRESULT.class);
+        HRESULT hr = (HRESULT) this._invokeNativeObject(vTableId, new Object[] { this.getPointer(), dwRegister },
+            HRESULT.class);
 
         return hr;
     }
@@ -72,8 +71,8 @@ public class RunningObjectTable extends Unknown implements IRunningObjectTable {
     public HRESULT IsRunning(Pointer pmkObjectName) {
         final int vTableId = 5;
 
-        HRESULT hr = (HRESULT) this._invokeNativeObject(vTableId, new Object[]{this.getPointer(),
-            pmkObjectName}, HRESULT.class);
+        HRESULT hr = (HRESULT) this._invokeNativeObject(vTableId, new Object[] { this.getPointer(), pmkObjectName },
+            HRESULT.class);
 
         return hr;
     }
@@ -82,8 +81,8 @@ public class RunningObjectTable extends Unknown implements IRunningObjectTable {
     public HRESULT GetObject(Pointer pmkObjectName, PointerByReference ppunkObject) {
         final int vTableId = 6;
 
-        HRESULT hr = (HRESULT) this._invokeNativeObject(vTableId, new Object[]{this.getPointer(),
-            pmkObjectName, ppunkObject}, HRESULT.class);
+        HRESULT hr = (HRESULT) this._invokeNativeObject(vTableId,
+            new Object[] { this.getPointer(), pmkObjectName, ppunkObject }, HRESULT.class);
 
         return hr;
     }
@@ -92,8 +91,8 @@ public class RunningObjectTable extends Unknown implements IRunningObjectTable {
     public HRESULT NoteChangeTime(DWORD dwRegister, FILETIME pfiletime) {
         final int vTableId = 7;
 
-        HRESULT hr = (HRESULT) this._invokeNativeObject(vTableId, new Object[]{this.getPointer(),
-            dwRegister, pfiletime}, HRESULT.class);
+        HRESULT hr = (HRESULT) this._invokeNativeObject(vTableId,
+            new Object[] { this.getPointer(), dwRegister, pfiletime }, HRESULT.class);
 
         return hr;
     }
@@ -102,8 +101,8 @@ public class RunningObjectTable extends Unknown implements IRunningObjectTable {
     public HRESULT GetTimeOfLastChange(Pointer pmkObjectName, FILETIME.ByReference pfiletime) {
         final int vTableId = 8;
 
-        HRESULT hr = (HRESULT) this._invokeNativeObject(vTableId, new Object[]{this.getPointer(),
-            pmkObjectName, pfiletime}, HRESULT.class);
+        HRESULT hr = (HRESULT) this._invokeNativeObject(vTableId,
+            new Object[] { this.getPointer(), pmkObjectName, pfiletime }, HRESULT.class);
 
         return hr;
     }
@@ -112,8 +111,8 @@ public class RunningObjectTable extends Unknown implements IRunningObjectTable {
     public HRESULT EnumRunning(PointerByReference ppenumMoniker) {
         final int vTableId = 9;
 
-        HRESULT hr = (HRESULT) this._invokeNativeObject(vTableId, new Object[]{this.getPointer(),
-            ppenumMoniker}, HRESULT.class);
+        HRESULT hr = (HRESULT) this._invokeNativeObject(vTableId, new Object[] { this.getPointer(), ppenumMoniker },
+            HRESULT.class);
 
         return hr;
     }

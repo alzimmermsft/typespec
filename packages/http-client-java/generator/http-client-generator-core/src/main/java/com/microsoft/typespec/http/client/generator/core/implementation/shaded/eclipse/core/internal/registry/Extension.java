@@ -69,15 +69,6 @@ public class Extension extends RegistryObject {
         return simpleId == null ? null : this.getNamespaceIdentifier() + '.' + simpleId;
     }
 
-    void setExtensionPointIdentifier(String value) {
-        ensureExtraInformationType();
-        ((String[]) extraInformation)[XPT_NAME] = value;
-    }
-
-    void setSimpleIdentifier(String value) {
-        simpleId = value;
-    }
-
     private String[] getExtraData() {
         // The extension has been created by parsing, or does not have any extra data
         if (noExtraData()) {
@@ -107,11 +98,6 @@ public class Extension extends RegistryObject {
         return s;
     }
 
-    void setLabel(String value) {
-        ensureExtraInformationType();
-        ((String[]) extraInformation)[LABEL] = value;
-    }
-
     String getContributorId() {
         String s = getExtraData()[CONTRIBUTOR_ID];
         if (s == null) {
@@ -124,42 +110,13 @@ public class Extension extends RegistryObject {
         return registry.getObjectManager().getContributor(getContributorId());
     }
 
-    void setContributorId(String value) {
-        ensureExtraInformationType();
-        ((String[]) extraInformation)[CONTRIBUTOR_ID] = value;
-    }
-
     public String getNamespaceIdentifier() {
         return namespaceIdentifier;
-    }
-
-    void setNamespaceIdentifier(String value) {
-        namespaceIdentifier = value;
     }
 
     @Override
     public String toString() {
         return getUniqueIdentifier() + " -> " + getExtensionPointIdentifier(); //$NON-NLS-1$
-    }
-
-    /**
-     * At the end of this method, extra information will be a string[]
-     */
-    private void ensureExtraInformationType() {
-        if (extraInformation instanceof SoftReference) {
-            extraInformation = ((SoftReference<?>) extraInformation).get();
-        }
-        if (extraInformation == null) {
-            extraInformation = new String[EXTRA_SIZE];
-        }
-    }
-
-    String getLabelAsIs() {
-        String s = getExtraData()[LABEL];
-        if (s == null) {
-            return ""; //$NON-NLS-1$
-        }
-        return s;
     }
 
     String getLabel(String locale) {

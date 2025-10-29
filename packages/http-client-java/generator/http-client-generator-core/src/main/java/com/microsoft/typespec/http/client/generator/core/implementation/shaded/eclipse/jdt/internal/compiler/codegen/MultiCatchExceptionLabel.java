@@ -23,44 +23,49 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class MultiCatchExceptionLabel extends ExceptionLabel {
 
-	ExceptionLabel[] exceptionLabels;
+    ExceptionLabel[] exceptionLabels;
 
-	public MultiCatchExceptionLabel(CodeStream codeStream, TypeBinding exceptionType) {
-		super(codeStream, exceptionType);
-	}
+    public MultiCatchExceptionLabel(CodeStream codeStream, TypeBinding exceptionType) {
+        super(codeStream, exceptionType);
+    }
 
-	public void initialize(UnionTypeReference typeReference, Annotation [] annotations) {
-		TypeReference[] typeReferences = typeReference.typeReferences;
-		int length = typeReferences.length;
-		this.exceptionLabels = new ExceptionLabel[length];
-		for (int i = 0; i < length; i++) {
-			this.exceptionLabels[i] = new ExceptionLabel(this.codeStream, typeReferences[i].resolvedType, typeReferences[i], i == 0 ? annotations : null);
-		}
-	}
-	@Override
-	public void place() {
-		for (ExceptionLabel exceptionLabel : this.exceptionLabels) {
-			exceptionLabel.place();
-		}
-	}
-	@Override
-	public void placeEnd() {
-		for (ExceptionLabel exceptionLabel : this.exceptionLabels) {
-			exceptionLabel.placeEnd();
-		}
-	}
-	@Override
-	public void placeStart() {
-		for (ExceptionLabel exceptionLabel : this.exceptionLabels) {
-			exceptionLabel.placeStart();
-		}
-	}
-	@Override
-	public int getCount() {
-		int temp = 0;
-		for (ExceptionLabel exceptionLabel : this.exceptionLabels) {
-			temp += exceptionLabel.getCount();
-		}
-		return temp;
-	}
+    public void initialize(UnionTypeReference typeReference, Annotation[] annotations) {
+        TypeReference[] typeReferences = typeReference.typeReferences;
+        int length = typeReferences.length;
+        this.exceptionLabels = new ExceptionLabel[length];
+        for (int i = 0; i < length; i++) {
+            this.exceptionLabels[i] = new ExceptionLabel(this.codeStream, typeReferences[i].resolvedType,
+                typeReferences[i], i == 0 ? annotations : null);
+        }
+    }
+
+    @Override
+    public void place() {
+        for (ExceptionLabel exceptionLabel : this.exceptionLabels) {
+            exceptionLabel.place();
+        }
+    }
+
+    @Override
+    public void placeEnd() {
+        for (ExceptionLabel exceptionLabel : this.exceptionLabels) {
+            exceptionLabel.placeEnd();
+        }
+    }
+
+    @Override
+    public void placeStart() {
+        for (ExceptionLabel exceptionLabel : this.exceptionLabels) {
+            exceptionLabel.placeStart();
+        }
+    }
+
+    @Override
+    public int getCount() {
+        int temp = 0;
+        for (ExceptionLabel exceptionLabel : this.exceptionLabels) {
+            temp += exceptionLabel.getCount();
+        }
+        return temp;
+    }
 }

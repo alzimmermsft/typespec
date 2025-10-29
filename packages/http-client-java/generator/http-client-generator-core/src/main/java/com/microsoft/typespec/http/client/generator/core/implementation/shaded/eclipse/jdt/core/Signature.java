@@ -1291,16 +1291,15 @@ public final class Signature {
     public static char[] createMethodSignature(char[][] parameterTypes, char[] returnType) {
         int parameterTypesLength = parameterTypes.length;
         int parameterLength = 0;
-        for (int i = 0; i < parameterTypesLength; i++) {
-            parameterLength += parameterTypes[i].length;
+        for (char[] type : parameterTypes) {
+            parameterLength += type.length;
 
         }
         int returnTypeLength = returnType.length;
         char[] result = new char[1 + parameterLength + 1 + returnTypeLength];
         result[0] = C_PARAM_START;
         int index = 1;
-        for (int i = 0; i < parameterTypesLength; i++) {
-            char[] parameterType = parameterTypes[i];
+        for (char[] parameterType : parameterTypes) {
             int length = parameterType.length;
             System.arraycopy(parameterType, 0, result, index, length);
             index += length;
@@ -1346,17 +1345,17 @@ public final class Signature {
                                                                      // trailing colon
         }
         int boundsSize = 0;
-        for (int i = 0; i < length; i++) {
-            boundsSize += boundSignatures[i].length + 1;
+        for (char[] signature : boundSignatures) {
+            boundsSize += signature.length + 1;
         }
         int nameLength = typeParameterName.length;
         char[] result = new char[nameLength + boundsSize];
         System.arraycopy(typeParameterName, 0, result, 0, nameLength);
         int index = nameLength;
-        for (int i = 0; i < length; i++) {
+        for (char[] boundSignature : boundSignatures) {
             result[index++] = C_COLON;
-            int boundLength = boundSignatures[i].length;
-            System.arraycopy(boundSignatures[i], 0, result, index, boundLength);
+            int boundLength = boundSignature.length;
+            System.arraycopy(boundSignature, 0, result, index, boundLength);
             index += boundLength;
         }
         return result;
@@ -1679,18 +1678,6 @@ public final class Signature {
     }
 
     /**
-     * Returns the array count (array nesting depth) of the given type signature.
-     *
-     * @param typeSignature the type signature
-     * @return the array nesting depth, or 0 if not an array
-     * @exception IllegalArgumentException if the signature is not syntactically
-     * correct
-     */
-    public static int getArrayCount(String typeSignature) throws IllegalArgumentException {
-        return getArrayCount(typeSignature.toCharArray());
-    }
-
-    /**
      * Returns the type signature without any array nesting.
      * <p>
      * For example:
@@ -1738,96 +1725,6 @@ public final class Signature {
         char[] signature = typeSignature.toCharArray();
         char[] elementType = getElementType(signature);
         return signature == elementType ? typeSignature : new String(elementType);
-    }
-
-    /**
-     * Extracts the type bounds' signatures from the given intersection type signature.
-     * Returns an empty array if the type signature is not an intersection type signature.
-     *
-     * @param intersectionTypeSignature the intersection type signature
-     * @return the signatures of the type bounds
-     * @exception IllegalArgumentException if the signature is syntactically incorrect
-     *
-     * @since 3.7.1
-     */
-    public static char[][] getIntersectionTypeBounds(char[] intersectionTypeSignature) throws IllegalArgumentException {
-        if (getTypeSignatureKind(intersectionTypeSignature) != INTERSECTION_TYPE_SIGNATURE) {
-            return CharOperation.NO_CHAR_CHAR;
-        }
-        ArrayList args = new ArrayList();
-        int i = 1; // skip the '|'
-        int length = intersectionTypeSignature.length;
-        for (;;) {
-            int e = Util.scanClassTypeSignature(intersectionTypeSignature, i);
-            if (e < 0) {
-                throw new IllegalArgumentException("Invalid format"); //$NON-NLS-1$
-            }
-            args.add(CharOperation.subarray(intersectionTypeSignature, i, e + 1));
-            if (e == length - 1) {
-                int size = args.size();
-                char[][] result = new char[size][];
-                args.toArray(result);
-                return result;
-            } else if (intersectionTypeSignature[e + 1] != C_COLON) {
-                throw new IllegalArgumentException("Invalid format"); //$NON-NLS-1$
-            }
-            i = e + 2; // add one to skip C_COLON
-        }
-    }
-
-    private static char[][] getUnionTypeBounds(char[] unionTypeSignature) throws IllegalArgumentException {
-        if (getTypeSignatureKind(unionTypeSignature) != UNION_TYPE_SIGNATURE) {
-            return CharOperation.NO_CHAR_CHAR;
-        }
-        ArrayList args = new ArrayList();
-        int i = 1; // skip the '|'
-        int length = unionTypeSignature.length;
-        for (;;) {
-            int e = Util.scanClassTypeSignature(unionTypeSignature, i);
-            if (e < 0) {
-                throw new IllegalArgumentException("Invalid format"); //$NON-NLS-1$
-            }
-            args.add(CharOperation.subarray(unionTypeSignature, i, e + 1));
-            if (e == length - 1) {
-                int size = args.size();
-                char[][] result = new char[size][];
-                args.toArray(result);
-                return result;
-            } else if (unionTypeSignature[e + 1] != C_COLON) {
-                throw new IllegalArgumentException("Invalid format"); //$NON-NLS-1$
-            }
-            i = e + 2; // add one to skip C_COLON
-        }
-    }
-
-    /**
-     * Extracts the type bounds' signatures from the given intersection type signature.
-     * Returns an empty array if the type signature is not an intersection type signature.
-     *
-     * @param intersectionTypeSignature the intersection type signature
-     * @return the signatures of the type bounds
-     * @exception IllegalArgumentException if the signature is syntactically incorrect
-     *
-     * @since 3.7.1
-     */
-    public static String[] getIntersectionTypeBounds(String intersectionTypeSignature) throws IllegalArgumentException {
-        char[][] args = getIntersectionTypeBounds(intersectionTypeSignature.toCharArray());
-        return CharOperation.toStrings(args);
-    }
-
-    /**
-     * Extracts the type bounds' signatures from the given union type signature.
-     * Returns an empty array if the type signature is not an union type signature.
-     *
-     * @param unionSignature the union type signature
-     * @return the signatures of the type bounds
-     * @exception IllegalArgumentException if the signature is syntactically incorrect
-     *
-     * @since 3.14
-     */
-    public static String[] getUnionTypeBounds(String unionSignature) throws IllegalArgumentException {
-        char[][] args = getUnionTypeBounds(unionSignature.toCharArray());
-        return CharOperation.toStrings(args);
     }
 
     /**
@@ -2047,8 +1944,9 @@ public final class Signature {
         char[] qualifiedType = Signature.toCharArray(typeSignature);
 
         int dotCount = 0;
-        indexFound: for (int i = 0; i < typeSignature.length; i++) {
-            switch (typeSignature[i]) {
+        indexFound:
+        for (char c : typeSignature) {
+            switch (c) {
                 case C_DOT:
                     dotCount++;
                     break;
@@ -2117,8 +2015,9 @@ public final class Signature {
         char[] qualifiedType = Signature.toCharArray(typeSignature);
 
         int dotCount = 0;
-        indexFound: for (int i = 0; i < typeSignature.length; i++) {
-            switch (typeSignature[i]) {
+        indexFound:
+        for (char c : typeSignature) {
+            switch (c) {
                 case C_DOT:
                     dotCount++;
                     break;
@@ -2451,7 +2350,7 @@ public final class Signature {
             return CharOperation.NO_CHAR_CHAR;
         int count = 1; // start to count generic end/start peers
         int start = length - 2;
-        while (start >= 0 && count > 0) {
+        while (count > 0) {
             switch (parameterizedTypeSignature[--start]) {
                 case C_GENERIC_START:
                     count--;
@@ -2462,8 +2361,6 @@ public final class Signature {
                     break;
             }
         }
-        if (start < 0) // invalid number of generic start/end
-            throw new IllegalArgumentException(String.valueOf(parameterizedTypeSignature));
         ArrayList args = new ArrayList();
         int p = start + 1;
         while (true) {
@@ -2610,22 +2507,6 @@ public final class Signature {
         result[0] = classBound;
         System.arraycopy(interfaceBounds, 0, result, 1, interfaceBounds.length);
         return result;
-    }
-
-    /**
-     * Extracts the class and interface bounds from the given formal type
-     * parameter signature. The class bound, if present, is listed before
-     * the interface bounds. The signature is expected to be dot-based.
-     *
-     * @param formalTypeParameterSignature the formal type parameter signature
-     * @return the (possibly empty) list of type signatures for the bounds
-     * @exception IllegalArgumentException if the signature is syntactically
-     * incorrect
-     * @since 3.0
-     */
-    public static String[] getTypeParameterBounds(String formalTypeParameterSignature) throws IllegalArgumentException {
-        char[][] bounds = getTypeParameterBounds(formalTypeParameterSignature.toCharArray());
-        return CharOperation.toStrings(bounds);
     }
 
     /**
@@ -2889,36 +2770,6 @@ public final class Signature {
     }
 
     /**
-     * Removes any capture information from the given type or method signature
-     * and returns the resulting signature.
-     * Returns the type or method signature itself if no capture information is
-     * present.
-     * <p>
-     * For example:
-     * 
-     * <pre>
-     * <code>
-     * removeCapture("LTest&lt;!+Ljava.lang.Throwable;&gt;;")
-     * will return: "LTest&lt;+Ljava.lang.Throwable;&gt;;"
-     * </code>
-     * </pre>
-     *
-     * @param methodOrTypeSignature the signature which may have been captured
-     * @return a new signature without capture information or the signature itself
-     * if no specific capture information is present
-     * @exception NullPointerException if <code>methodOrTypeSignature</code> is null
-     *
-     * @since 3.1
-     */
-    public static String removeCapture(String methodOrTypeSignature) {
-        char[] array = methodOrTypeSignature.toCharArray();
-        char[] result = removeCapture(array);
-        if (array == result)
-            return methodOrTypeSignature;
-        return new String(result);
-    }
-
-    /**
      * Converts the given type signature to a readable string. The signature is expected to
      * be dot-based.
      *
@@ -3076,75 +2927,6 @@ public final class Signature {
         char[] result = new char[buffer.length()];
         buffer.getChars(0, buffer.length(), result, 0);
         return result;
-    }
-
-    /**
-     * Converts the given array of qualified name segments to a qualified name.
-     * <p>
-     * For example:
-     * 
-     * <pre>
-     * <code>
-     * toQualifiedName({{'j', 'a', 'v', 'a'}, {'l', 'a', 'n', 'g'}, {'O', 'b', 'j', 'e', 'c', 't'}}) -> {'j', 'a', 'v', 'a', '.', 'l', 'a', 'n', 'g', '.', 'O', 'b', 'j', 'e', 'c', 't'}
-     * toQualifiedName({{'O', 'b', 'j', 'e', 'c', 't'}}) -> {'O', 'b', 'j', 'e', 'c', 't'}
-     * toQualifiedName({{}}) -> {}
-     * </code>
-     * </pre>
-     *
-     * @param segments the list of name segments, possibly empty
-     * @return the dot-separated qualified name, or the empty string
-     *
-     * @since 2.0
-     */
-    public static char[] toQualifiedName(char[][] segments) {
-        int length = segments.length;
-        if (length == 0)
-            return CharOperation.NO_CHAR;
-        if (length == 1)
-            return segments[0];
-
-        int resultLength = 0;
-        for (int i = 0; i < length; i++) {
-            resultLength += segments[i].length + 1;
-        }
-        resultLength--;
-        char[] result = new char[resultLength];
-        int index = 0;
-        for (int i = 0; i < length; i++) {
-            char[] segment = segments[i];
-            int segmentLength = segment.length;
-            System.arraycopy(segment, 0, result, index, segmentLength);
-            index += segmentLength;
-            if (i != length - 1) {
-                result[index++] = C_DOT;
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Converts the given array of qualified name segments to a qualified name.
-     * <p>
-     * For example:
-     * 
-     * <pre>
-     * <code>
-     * toQualifiedName(new String[] {"java", "lang", "Object"}) -> "java.lang.Object"
-     * toQualifiedName(new String[] {"Object"}) -> "Object"
-     * toQualifiedName(new String[0]) -> ""
-     * </code>
-     * </pre>
-     *
-     * @param segments the list of name segments, possibly empty
-     * @return the dot-separated qualified name, or the empty string
-     */
-    public static String toQualifiedName(String[] segments) {
-        int length = segments.length;
-        char[][] charArrays = new char[length][];
-        for (int i = 0; i < length; i++) {
-            charArrays[i] = segments[i].toCharArray();
-        }
-        return new String(toQualifiedName(charArrays));
     }
 
     /**

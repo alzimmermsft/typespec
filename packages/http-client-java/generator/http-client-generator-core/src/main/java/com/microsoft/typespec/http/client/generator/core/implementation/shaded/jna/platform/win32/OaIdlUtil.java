@@ -22,10 +22,6 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.DATE;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.SAFEARRAY;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VARIANT;
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VT_BOOL;
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VT_BSTR;
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VT_CY;
@@ -48,6 +44,11 @@ import static com.microsoft.typespec.http.client.generator.core.implementation.s
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VT_UINT;
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VT_UNKNOWN;
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VT_VARIANT;
+
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.DATE;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.SAFEARRAY;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VARIANT;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WTypes.BSTR;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.SCODE;
 import java.lang.reflect.Array;
@@ -133,11 +134,13 @@ public abstract class OaIdlUtil {
                 case VT_I1:
                     sourceArray = dataPointer.getByteArray(0, elementCount);
                     break;
+
                 case VT_BOOL:
                 case VT_UI2:
                 case VT_I2:
                     sourceArray = dataPointer.getShortArray(0, elementCount);
                     break;
+
                 case VT_UI4:
                 case VT_UINT:
                 case VT_I4:
@@ -145,20 +148,25 @@ public abstract class OaIdlUtil {
                 case VT_ERROR:
                     sourceArray = dataPointer.getIntArray(0, elementCount);
                     break;
+
                 case VT_R4:
                     sourceArray = dataPointer.getFloatArray(0, elementCount);
                     break;
+
                 case VT_R8:
                 case VT_DATE:
                     sourceArray = dataPointer.getDoubleArray(0, elementCount);
                     break;
+
                 case VT_BSTR:
                     sourceArray = dataPointer.getPointerArray(0, elementCount);
                     break;
+
                 case VT_VARIANT:
                     VARIANT variant = new VARIANT(dataPointer);
                     sourceArray = variant.toArray(elementCount);
                     break;
+
                 case VT_UNKNOWN:
                 case VT_DISPATCH:
                 case VT_CY:
@@ -179,7 +187,8 @@ public abstract class OaIdlUtil {
         }
     }
 
-    private static void toPrimitiveArray(Object dataArray, Object targetArray, int[] elements, int[] cumElements, int varType, int[] currentIdx) {
+    private static void toPrimitiveArray(Object dataArray, Object targetArray, int[] elements, int[] cumElements,
+        int varType, int[] currentIdx) {
         int dimIdx = currentIdx.length;
         int[] subIdx = new int[currentIdx.length + 1];
         System.arraycopy(currentIdx, 0, subIdx, 0, dimIdx);
@@ -196,35 +205,44 @@ public abstract class OaIdlUtil {
                     case VT_BOOL:
                         Array.set(targetArray, targetPos, Array.getShort(dataArray, offset) != 0);
                         break;
+
                     case VT_UI1:
                     case VT_I1:
                         Array.set(targetArray, targetPos, Array.getByte(dataArray, offset));
                         break;
+
                     case VT_UI2:
                     case VT_I2:
                         Array.set(targetArray, targetPos, Array.getShort(dataArray, offset));
                         break;
+
                     case VT_UI4:
                     case VT_UINT:
                     case VT_I4:
                     case VT_INT:
                         Array.set(targetArray, targetPos, Array.getInt(dataArray, offset));
                         break;
+
                     case VT_ERROR:
                         Array.set(targetArray, targetPos, new SCODE(Array.getInt(dataArray, offset)));
                         break;
+
                     case VT_R4:
                         Array.set(targetArray, targetPos, Array.getFloat(dataArray, offset));
                         break;
+
                     case VT_R8:
                         Array.set(targetArray, targetPos, Array.getDouble(dataArray, offset));
                         break;
+
                     case VT_DATE:
                         Array.set(targetArray, targetPos, new DATE(Array.getDouble(dataArray, offset)).getAsJavaDate());
                         break;
+
                     case VT_BSTR:
                         Array.set(targetArray, targetPos, new BSTR((Pointer) Array.get(dataArray, offset)).getValue());
                         break;
+
                     case VT_VARIANT:
                         VARIANT holder = (VARIANT) Array.get(dataArray, offset);
                         switch (holder.getVarType().intValue()) {
@@ -232,42 +250,54 @@ public abstract class OaIdlUtil {
                             case VT_EMPTY:
                                 Array.set(targetArray, targetPos, null);
                                 break;
+
                             case VT_BOOL:
                                 Array.set(targetArray, targetPos, holder.booleanValue());
                                 break;
+
                             case VT_UI1:
                             case VT_I1:
                                 Array.set(targetArray, targetPos, holder.byteValue());
                                 break;
+
                             case VT_UI2:
                             case VT_I2:
                                 Array.set(targetArray, targetPos, holder.shortValue());
                                 break;
+
                             case VT_UI4:
                             case VT_UINT:
                             case VT_I4:
                             case VT_INT:
                                 Array.set(targetArray, targetPos, holder.intValue());
                                 break;
+
                             case VT_ERROR:
                                 Array.set(targetArray, targetPos, new SCODE(holder.intValue()));
                                 break;
+
                             case VT_R4:
                                 Array.set(targetArray, targetPos, holder.floatValue());
                                 break;
+
                             case VT_R8:
                                 Array.set(targetArray, targetPos, holder.doubleValue());
                                 break;
+
                             case VT_DATE:
                                 Array.set(targetArray, targetPos, holder.dateValue());
                                 break;
+
                             case VT_BSTR:
                                 Array.set(targetArray, targetPos, holder.stringValue());
                                 break;
+
                             default:
-                                throw new IllegalStateException("Type not supported: " + holder.getVarType().intValue());
+                                throw new IllegalStateException(
+                                    "Type not supported: " + holder.getVarType().intValue());
                         }
                         break;
+
                     case VT_UNKNOWN:
                     case VT_DISPATCH:
                     case VT_CY:

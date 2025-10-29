@@ -21,32 +21,30 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 /**
  * Default implementation of IConstantValueAttribute.
  */
-public class ConstantValueAttribute
-	extends ClassFileAttribute
-	implements IConstantValueAttribute {
+public class ConstantValueAttribute extends ClassFileAttribute implements IConstantValueAttribute {
 
-	private final int constantValueIndex;
-	private final IConstantPoolEntry constantPoolEntry;
+    private final int constantValueIndex;
+    private final IConstantPoolEntry constantPoolEntry;
 
+    ConstantValueAttribute(byte[] classFileBytes, IConstantPool constantPool, int offset) throws ClassFormatException {
+        super(classFileBytes, constantPool, offset);
+        this.constantValueIndex = u2At(classFileBytes, 6, offset);
+        this.constantPoolEntry = constantPool.decodeEntry(this.constantValueIndex);
+    }
 
-	ConstantValueAttribute(byte[] classFileBytes, IConstantPool constantPool, int offset) throws ClassFormatException {
-		super(classFileBytes, constantPool, offset);
-		this.constantValueIndex = u2At(classFileBytes, 6, offset);
-		this.constantPoolEntry = constantPool.decodeEntry(this.constantValueIndex);
-	}
-	/**
-	 * @see IConstantValueAttribute#getConstantValue()
-	 */
-	@Override
-	public IConstantPoolEntry getConstantValue() {
-		return this.constantPoolEntry;
-	}
+    /**
+     * @see IConstantValueAttribute#getConstantValue()
+     */
+    @Override
+    public IConstantPoolEntry getConstantValue() {
+        return this.constantPoolEntry;
+    }
 
-	/**
-	 * @see IConstantValueAttribute#getConstantValueIndex()
-	 */
-	@Override
-	public int getConstantValueIndex() {
-		return this.constantValueIndex;
-	}
+    /**
+     * @see IConstantValueAttribute#getConstantValueIndex()
+     */
+    @Override
+    public int getConstantValueIndex() {
+        return this.constantValueIndex;
+    }
 }

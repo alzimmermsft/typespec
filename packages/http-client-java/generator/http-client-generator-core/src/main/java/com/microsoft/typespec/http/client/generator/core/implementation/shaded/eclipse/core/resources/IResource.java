@@ -18,13 +18,11 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IAdaptable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.OperationCanceledException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Platform;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.QualifiedName;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.jobs.ISchedulingRule;
+
 import java.net.URI;
 import java.util.Map;
 
@@ -69,17 +67,11 @@ import java.util.Map;
  * <li><i>Phantom</i> resources represent incoming additions or outgoing deletions
  * which have yet to be reconciled with a synchronization partner. </li>
  * </ul>
- * <p>
- * Resources implement the {@link IAdaptable} interface;
- * extensions are managed by the platform's adapter manager.
- * </p>
  *
- * @see IWorkspace
- * @see Platform#getAdapterManager()
  * @noimplement This interface is not intended to be implemented by clients.
  * @noextend This interface is not intended to be extended by clients.
  */
-public interface IResource extends IAdaptable, ISchedulingRule {
+public interface IResource extends ISchedulingRule {
 
     /*
      * ====================================================================
@@ -149,105 +141,13 @@ public interface IResource extends IAdaptable, ISchedulingRule {
      */
 
     /**
-     * Update flag constant (bit mask value 1) indicating that the operation
-     * should proceed even if the resource is out of sync with the local file
-     * system.
-     *
-     * @since 2.0
-     */
-    int FORCE = 0x1;
-
-    /**
-     * Update flag constant (bit mask value 2) indicating that the operation
-     * should maintain local history by taking snapshots of the contents of
-     * files just before being overwritten or deleted.
-     *
-     * @see IFile#getHistory(IProgressMonitor)
-     * @since 2.0
-     */
-    int KEEP_HISTORY = 0x2;
-
-    /**
-     * Update flag constant (bit mask value 4) indicating that the operation
-     * should delete the files and folders of a project.
-     * <p>
-     * Deleting a project that is open ordinarily deletes all its files and folders,
-     * whereas deleting a project that is closed retains its files and folders.
-     * Specifying <code>ALWAYS_DELETE_PROJECT_CONTENT</code> indicates that the contents
-     * of a project are to be deleted regardless of whether the project is open or closed
-     * at the time; specifying <code>NEVER_DELETE_PROJECT_CONTENT</code> indicates that
-     * the contents of a project are to be retained regardless of whether the project
-     * is open or closed at the time.
-     * </p>
-     *
-     * @see #NEVER_DELETE_PROJECT_CONTENT
-     * @since 2.0
-     */
-    int ALWAYS_DELETE_PROJECT_CONTENT = 0x4;
-
-    /**
-     * Update flag constant (bit mask value 8) indicating that the operation
-     * should preserve the files and folders of a project.
-     * <p>
-     * Deleting a project that is open ordinarily deletes all its files and folders,
-     * whereas deleting a project that is closed retains its files and folders.
-     * Specifying <code>ALWAYS_DELETE_PROJECT_CONTENT</code> indicates that the contents
-     * of a project are to be deleted regardless of whether the project is open or closed
-     * at the time; specifying <code>NEVER_DELETE_PROJECT_CONTENT</code> indicates that
-     * the contents of a project are to be retained regardless of whether the project
-     * is open or closed at the time.
-     * </p>
-     *
-     * @see #ALWAYS_DELETE_PROJECT_CONTENT
-     * @since 2.0
-     */
-    int NEVER_DELETE_PROJECT_CONTENT = 0x8;
-
-    /**
-     * Update flag constant (bit mask value 16) indicating that the link creation
-     * should proceed even if the local file system file or directory is missing.
-     * 
-     * @since 2.1
-     */
-    int ALLOW_MISSING_LOCAL = 0x10;
-
-    /**
-     * Update flag constant (bit mask value 32) indicating that a copy or move
-     * operation should only copy the link, rather than copy the underlying
-     * contents of the linked resource.
-     * 
-     * @since 2.1
-     */
-    int SHALLOW = 0x20;
-
-    /**
      * Update flag constant (bit mask value 64) indicating that setting the
      * project description should not attempt to configure and de-configure
      * natures.
      *
-     * @see IProject#setDescription(IProjectDescription, int, IProgressMonitor)
      * @since 3.0
      */
     int AVOID_NATURE_CONFIG = 0x40;
-
-    /**
-     * Update flag constant (bit mask value 128) indicating that opening a project
-     * or creating a linked folder should refresh in the background.
-     *
-     * @see IProject#open(int, IProgressMonitor)
-     * @see IFolder#createLink(URI, int, IProgressMonitor)
-     * @since 3.1
-     */
-    int BACKGROUND_REFRESH = 0x80;
-
-    /**
-     * Update flag constant (bit mask value 256) indicating that a
-     * resource should be replaced with a resource of the same name
-     * at a different file system location.
-     *
-     * @since 3.2
-     */
-    int REPLACE = 0x100;
 
     /**
      * Update flag constant (bit mask value 512) indicating that ancestor
@@ -257,38 +157,6 @@ public interface IResource extends IAdaptable, ISchedulingRule {
      * @since 3.2
      */
     int CHECK_ANCESTORS = 0x200;
-
-    /**
-     * Update flag constant (bit mask value 0x400) indicating that a
-     * resource should be marked as derived.
-     *
-     * @since 3.2
-     */
-    int DERIVED = 0x400;
-
-    /**
-     * Update flag constant (bit mask value 0x800) indicating that a
-     * resource should be marked as team private.
-     * 
-     * @since 3.2
-     */
-    int TEAM_PRIVATE = 0x800;
-
-    /**
-     * Update flag constant (bit mask value 0x1000) indicating that a
-     * resource should be marked as a hidden resource.
-     *
-     * @since 3.4
-     */
-    int HIDDEN = 0x1000;
-
-    /**
-     * Update flag constant (bit mask value 0x2000) indicating that a
-     * resource should be marked as a virtual resource.
-     *
-     * @since 3.6
-     */
-    int VIRTUAL = 0x2000;
 
     /*
      * ====================================================================
@@ -388,13 +256,6 @@ public interface IResource extends IAdaptable, ISchedulingRule {
      * this resource does not exist.</li>
      * <li> The visitor failed with this exception.</li>
      * </ul>
-     * @see IContainer#INCLUDE_PHANTOMS
-     * @see IContainer#INCLUDE_TEAM_PRIVATE_MEMBERS
-     * @see IContainer#INCLUDE_HIDDEN
-     * @see IContainer#DO_NOT_CHECK_EXISTENCE
-     * @see IResource#isPhantom()
-     * @see IResource#isTeamPrivateMember()
-     * @see IResourceProxyVisitor#visit(IResourceProxy)
      * @since 2.1
      */
     void accept(IResourceProxyVisitor visitor, int memberFlags) throws CoreException;
@@ -465,16 +326,6 @@ public interface IResource extends IAdaptable, ISchedulingRule {
      * this resource does not exist.</li>
      * <li> The visitor failed with this exception.</li>
      * </ul>
-     * @see IContainer#INCLUDE_PHANTOMS
-     * @see IContainer#INCLUDE_TEAM_PRIVATE_MEMBERS
-     * @see IContainer#INCLUDE_HIDDEN
-     * @see IContainer#DO_NOT_CHECK_EXISTENCE
-     * @see IResource#isPhantom()
-     * @see IResource#isTeamPrivateMember()
-     * @see IResource#DEPTH_ZERO
-     * @see IResource#DEPTH_ONE
-     * @see IResource#DEPTH_INFINITE
-     * @see IResourceProxyVisitor#visit(IResourceProxy)
      * @since 3.8
      */
     void accept(IResourceProxyVisitor visitor, int depth, int memberFlags) throws CoreException;
@@ -495,8 +346,6 @@ public interface IResource extends IAdaptable, ISchedulingRule {
      * <li> This resource does not exist.</li>
      * <li> The visitor failed with this exception.</li>
      * </ul>
-     * @see IResourceVisitor#visit(IResource)
-     * @see #accept(IResourceVisitor,int,int)
      */
     void accept(IResourceVisitor visitor) throws CoreException;
 
@@ -605,34 +454,9 @@ public interface IResource extends IAdaptable, ISchedulingRule {
      * this resource does not exist.</li>
      * <li> The visitor failed with this exception.</li>
      * </ul>
-     * @see IContainer#INCLUDE_PHANTOMS
-     * @see IContainer#INCLUDE_TEAM_PRIVATE_MEMBERS
-     * @see IContainer#INCLUDE_HIDDEN
-     * @see IContainer#EXCLUDE_DERIVED
-     * @see IContainer#DO_NOT_CHECK_EXISTENCE
-     * @see IResource#isDerived()
-     * @see IResource#isPhantom()
-     * @see IResource#isTeamPrivateMember()
-     * @see IResource#isHidden()
-     * @see IResource#DEPTH_ZERO
-     * @see IResource#DEPTH_ONE
-     * @see IResource#DEPTH_INFINITE
-     * @see IResourceVisitor#visit(IResource)
      * @since 2.0
      */
     void accept(IResourceVisitor visitor, int depth, int memberFlags) throws CoreException;
-
-    /**
-     * Removes the local history of this resource and its descendents.
-     * <p>
-     * This operation is long-running; progress and cancellation are provided
-     * by the given progress monitor.
-     * </p>
-     * 
-     * @param monitor a progress monitor, or <code>null</code> if progress
-     * reporting and cancellation are not desired
-     */
-    void clearHistory(IProgressMonitor monitor) throws CoreException;
 
     /**
      * Creates and returns the marker with the specified type on this resource.
@@ -684,142 +508,6 @@ public interface IResource extends IAdaptable, ISchedulingRule {
         marker.setAttributes(attributes);
         return marker;
     }
-
-    /**
-     * Deletes this resource from the workspace.
-     * <p>
-     * This is a convenience method, fully equivalent to:
-     * </p>
-     * 
-     * <pre>
-     * delete(force ? FORCE : IResource.NONE, monitor);
-     * </pre>
-     * 
-     * <p>
-     * This method changes resources; these changes will be reported
-     * in a subsequent resource change event.
-     * </p>
-     * <p>
-     * This method is long-running; progress and cancellation are provided
-     * by the given progress monitor.
-     * </p>
-     *
-     * @param force a flag controlling whether resources that are not
-     * in sync with the local file system will be tolerated
-     * @param monitor a progress monitor, or <code>null</code> if progress
-     * reporting is not desired
-     * @exception CoreException if this method fails. Reasons include:
-     * <ul>
-     * <li> This resource could not be deleted for some reason.</li>
-     * <li> This resource or one of its descendents is out of sync with the local file system
-     * and <code>force</code> is <code>false</code>.</li>
-     * <li> Resource changes are disallowed during certain types of resource change
-     * event notification. See <code>IResourceChangeEvent</code> for more details.</li>
-     * </ul>
-     * @exception OperationCanceledException if the operation is canceled.
-     * Cancellation can occur even if no progress monitor is provided.
-     */
-    void delete(boolean force, IProgressMonitor monitor) throws CoreException;
-
-    /**
-     * Deletes this resource from the workspace.
-     * Deletion applies recursively to all members of this resource in a "best-
-     * effort" fashion. That is, all resources which can be deleted are deleted.
-     * Resources which could not be deleted are noted in a thrown exception. The
-     * method does not fail if resources do not exist; it fails only if resources
-     * could not be deleted.
-     * <p>
-     * Deleting a non-linked resource also deletes its contents from the local file
-     * system. In the case of a file or folder resource, the corresponding file or
-     * directory in the local file system is deleted. Deleting an open project
-     * recursively deletes its members; deleting a closed project just gets rid of
-     * the project itself (closed projects have no members); files in the project's
-     * local content area are retained; referenced projects are unaffected.
-     * </p>
-     * <p>
-     * Deleting a linked resource does not delete its contents from the file system,
-     * it just removes that resource and its children from the workspace. Deleting
-     * children of linked resources does remove the contents from the file system.
-     * </p>
-     * <p>
-     * Deleting a resource also deletes its session and persistent properties and
-     * markers.
-     * </p>
-     * <p>
-     * Deleting a non-project resource which has sync information converts the
-     * resource to a phantom and retains the sync information for future use.
-     * </p>
-     * <p>
-     * Deleting the workspace root resource recursively deletes all projects,
-     * and removes all markers, properties, sync info and other data related to the
-     * workspace root; the root resource itself is not deleted, however.
-     * </p>
-     * <p>
-     * This method changes resources; these changes will be reported
-     * in a subsequent resource change event.
-     * </p>
-     * <p>
-     * This method is long-running; progress and cancellation are provided
-     * by the given progress monitor.
-     * </p>
-     * <p>
-     * The {@link #FORCE} update flag controls how this method deals with
-     * cases where the workspace is not completely in sync with the local
-     * file system. If {@link #FORCE} is not specified, the method will only
-     * attempt to delete files and directories in the local file system that
-     * correspond to, and are in sync with, resources in the workspace; it will fail
-     * if it encounters a file or directory in the file system that is out of sync
-     * with the workspace. This option ensures there is no unintended data loss;
-     * it is the recommended setting. However, if {@link #FORCE} is specified,
-     * the method will ruthlessly attempt to delete corresponding files and
-     * directories in the local file system, including ones that have been recently
-     * updated or created.
-     * </p>
-     * <p>
-     * The {@link #KEEP_HISTORY} update flag controls whether or not files that
-     * are about to be deleted from the local file system have their current
-     * contents saved in the workspace's local history. The local history mechanism
-     * serves as a safety net to help the user recover from mistakes that might
-     * otherwise result in data loss. Specifying {@link #KEEP_HISTORY} is
-     * recommended except in circumstances where past states of the files are of no
-     * conceivable interest to the user. Note that local history is maintained
-     * with each individual project, and gets discarded when a project is deleted
-     * from the workspace. Hence {@link #KEEP_HISTORY} is only really applicable
-     * when deleting files and folders, but not projects.
-     * </p>
-     * <p>
-     * The {@link #ALWAYS_DELETE_PROJECT_CONTENT} update flag controls how
-     * project deletions are handled. If {@link #ALWAYS_DELETE_PROJECT_CONTENT}
-     * is specified, then the files and folders in a project's local content area
-     * are deleted, regardless of whether the project is open or closed;
-     * {@link #FORCE} is assumed regardless of whether it is specified. If
-     * {@link #NEVER_DELETE_PROJECT_CONTENT} is specified, then the files and
-     * folders in a project's local content area are retained, regardless of whether
-     * the project is open or closed; the {@link #FORCE} flag is ignored. If
-     * neither of these flags is specified, files and folders in a project's local
-     * content area from open projects (subject to the {@link #FORCE} flag), but
-     * never from closed projects.
-     * </p>
-     *
-     * @param updateFlags bit-wise or of update flag constants (
-     * {@link #FORCE}, {@link #KEEP_HISTORY},
-     * {@link #ALWAYS_DELETE_PROJECT_CONTENT},
-     * and {@link #NEVER_DELETE_PROJECT_CONTENT})
-     * @param monitor a progress monitor, or <code>null</code> if progress
-     * reporting is not desired
-     * @exception CoreException if this method fails. Reasons include:
-     * <ul>
-     * <li> This resource could not be deleted for some reason.</li>
-     * <li> This resource or one of its descendents is out of sync with the local file system
-     * and {@link #FORCE} is not specified.</li>
-     * <li> Resource changes are disallowed during certain types of resource change
-     * event notification. See <code>IResourceChangeEvent</code> for more details.</li>
-     * </ul>
-     * @exception OperationCanceledException if the operation is canceled.
-     * Cancellation can occur even if no progress monitor is provided.
-     * @since 2.0
-     */
-    void delete(int updateFlags, IProgressMonitor monitor) throws CoreException;
 
     /**
      * Deletes all markers on this resource of the given type, and,
@@ -1085,8 +773,6 @@ public interface IResource extends IAdaptable, ISchedulingRule {
      *
      * @return the modification stamp, or {@link #NULL_STAMP} if this resource either does
      * not exist or exists as a closed project
-     * @see IResource#NULL_STAMP
-     * @see #revertModificationStamp(long)
      */
     long getModificationStamp();
 
@@ -1149,7 +835,6 @@ public interface IResource extends IAdaptable, ISchedulingRule {
      * <li> This resource is not local.</li>
      * <li> This resource is a project that is not open.</li>
      * </ul>
-     * @see #setPersistentProperty(QualifiedName, String)
      */
     String getPersistentProperty(QualifiedName key) throws CoreException;
 
@@ -1195,46 +880,6 @@ public interface IResource extends IAdaptable, ISchedulingRule {
     IPath getProjectRelativePath();
 
     /**
-     * Returns the file system location of this resource, or <code>null</code> if no
-     * path can be determined. The returned path will either be an absolute file
-     * system path, or a relative path whose first segment is the name of a
-     * workspace path variable.
-     * <p>
-     * If this resource is an existing project, the returned path will be equal to
-     * the location path in the project description. If this resource is a linked
-     * resource in an open project, the returned path will be equal to the location
-     * path supplied when the linked resource was created. In all other cases, this
-     * method returns the same value as {@link #getLocation()}.
-     * </p>
-     *
-     * @return the raw path of this resource in the local file system, or
-     * <code>null</code> if no path can be determined
-     * @since 2.1
-     */
-    IPath getRawLocation();
-
-    /**
-     * Returns the raw location of this resource, or <code>null</code> if no
-     * path can be determined. The returned path will either be an absolute URI,
-     * or a relative URI whose first path segment is the name of a workspace path variable.
-     * Since the returned location may contain unresolved variables, the resulting URI
-     * is typically only suitable for display. To access or manipulate the actual resource
-     * backing location, clients should obtain the resolved location using {@link #getLocationURI()}.
-     * <p>
-     * If this resource is an existing project, the returned location will be equal to
-     * the location URI in the project description. If this resource is a linked
-     * resource in an open project, the returned location will be equal to the location URI
-     * supplied when the linked resource was created. In all other cases, this
-     * method returns the same value as {@link #getLocationURI()}.
-     * </p>
-     *
-     * @return the raw location of this resource, or <code>null</code> if no
-     * location can be determined
-     * @since 3.2
-     */
-    URI getRawLocationURI();
-
-    /**
      * Gets this resource's extended attributes from the file system,
      * or <code>null</code> if the attributes could not be obtained.
      * <p>
@@ -1270,23 +915,6 @@ public interface IResource extends IAdaptable, ISchedulingRule {
      * @since 3.1
      */
     ResourceAttributes getResourceAttributes();
-
-    /**
-     * Returns the value of the session property of this resource identified
-     * by the given key, or <code>null</code> if this resource has no such property.
-     *
-     * @param key the qualified name of the property
-     * @return the value of the session property,
-     * or <code>null</code> if this resource has no such property
-     * @exception CoreException if this method fails. Reasons include:
-     * <ul>
-     * <li> This resource does not exist.</li>
-     * <li> This resource is not local.</li>
-     * <li> This resource is a project that is not open.</li>
-     * </ul>
-     * @see #setSessionProperty(QualifiedName, Object)
-     */
-    Object getSessionProperty(QualifiedName key) throws CoreException;
 
     /**
      * Returns the type of this resource.
@@ -1342,7 +970,6 @@ public interface IResource extends IAdaptable, ISchedulingRule {
      *
      * @return <code>true</code> if this resource is marked as derived, and
      * <code>false</code> otherwise
-     * @see #setDerived(boolean)
      * @since 2.0
      */
     boolean isDerived();
@@ -1362,7 +989,6 @@ public interface IResource extends IAdaptable, ISchedulingRule {
      *
      * @param options bit-wise or of option flag constants (only {@link #CHECK_ANCESTORS} is applicable)
      * @return <code>true</code> if this resource subtree is derived, and <code>false</code> otherwise
-     * @see IResource#setDerived(boolean)
      * @since 3.4
      */
     boolean isDerived(int options);
@@ -1430,8 +1056,6 @@ public interface IResource extends IAdaptable, ISchedulingRule {
      *
      * @return <code>true</code> if this resource is virtual, and
      * <code>false</code> otherwise
-     * @see IFile#create(java.io.InputStream, int, IProgressMonitor)
-     * @see #VIRTUAL
      * @since 3.6
      */
     boolean isVirtual();
@@ -1503,60 +1127,8 @@ public interface IResource extends IAdaptable, ISchedulingRule {
      *
      * @return <code>true</code> if this resource is a phantom resource, and
      * <code>false</code> otherwise
-     * @see #exists()
-     * @see IContainer#members(boolean)
-     * @see IContainer#findMember(String, boolean)
-     * @see IContainer#findMember(IPath, boolean)
-     * @see ISynchronizer
      */
     boolean isPhantom();
-
-    /**
-     * Returns whether this resource is marked as read-only in the file system.
-     *
-     * @return <code>true</code> if this resource is read-only,
-     * <code>false</code> otherwise
-     * @deprecated use {@link #getResourceAttributes()}
-     */
-    @Deprecated
-    boolean isReadOnly();
-
-    /**
-     * Refreshes the resource hierarchy from this resource and its
-     * children (to the specified depth) relative to the local file system.
-     * Creations, deletions, and changes detected in the local file system
-     * will be reflected in the workspace's resource tree.
-     * This resource need not exist or be local.
-     * <p>
-     * This method may discover changes to resources; any such
-     * changes will be reported in a subsequent resource change event.
-     * </p>
-     * <p>
-     * If a new file or directory is discovered in the local file
-     * system at or below the location of this resource,
-     * any parent folders required to contain the new
-     * resource in the workspace will also be created automatically as required.
-     * </p>
-     * <p>
-     * This method is long-running; progress and cancellation are provided
-     * by the given progress monitor.
-     * </p>
-     *
-     * @param depth valid values are {@link #DEPTH_ZERO}, {@link #DEPTH_ONE}, or {@link #DEPTH_INFINITE}
-     * @param monitor a progress monitor, or <code>null</code> if progress reporting is not desired
-     * @exception CoreException if this method fails. Reasons include:
-     * <ul>
-     * <li> Resource changes are disallowed during certain types of resource change
-     * event notification. See <code>IResourceChangeEvent</code> for more details.</li>
-     * </ul>
-     * @exception OperationCanceledException if the operation is canceled.
-     * Cancellation can occur even if no progress monitor is provided.
-     * @see IResource#DEPTH_ZERO
-     * @see IResource#DEPTH_ONE
-     * @see IResource#DEPTH_INFINITE
-     * @see IResourceRuleFactory#refreshRule(IResource)
-     */
-    void refreshLocal(int depth, IProgressMonitor monitor) throws CoreException;
 
     /**
      * Sets whether this resource and its members are hidden in the resource tree.
@@ -1614,39 +1186,6 @@ public interface IResource extends IAdaptable, ISchedulingRule {
     long setLocalTimeStamp(long value) throws CoreException;
 
     /**
-     * Sets the value of the persistent property of this resource identified
-     * by the given key. If the supplied value is <code>null</code>,
-     * the persistent property is removed from this resource. The change
-     * is made immediately on disk.
-     * <p>
-     * Persistent properties are intended to be used by plug-ins to store
-     * resource-specific information that should be persisted across platform sessions.
-     * The value of a persistent property is a string that must be short -
-     * 2KB or less in length. Unlike session properties, persistent properties are
-     * stored on disk and maintained across workspace shutdown and restart.
-     * </p>
-     * <p>
-     * The qualifier part of the property name must be the unique identifier
-     * of the declaring plug-in (e.g. <code>"com.example.plugin"</code>).
-     * </p>
-     *
-     * @param key the qualified name of the property
-     * @param value the string value of the property,
-     * or <code>null</code> if the property is to be removed
-     * @exception CoreException if this method fails. Reasons include:
-     * <ul>
-     * <li> This resource does not exist.</li>
-     * <li> This resource is not local.</li>
-     * <li> This resource is a project that is not open.</li>
-     * <li> Resource changes are disallowed during certain types of resource change
-     * event notification. See <code>IResourceChangeEvent</code> for more details.</li>
-     * </ul>
-     * @see #getPersistentProperty(QualifiedName)
-     * @see #isLocal(int)
-     */
-    void setPersistentProperty(QualifiedName key, String value) throws CoreException;
-
-    /**
      * Sets this resource with the given extended attributes. This sets the
      * attributes in the file system. Only attributes that are supported by
      * the underlying file system will be set.
@@ -1680,66 +1219,4 @@ public interface IResource extends IAdaptable, ISchedulingRule {
      */
     void setResourceAttributes(ResourceAttributes attributes) throws CoreException;
 
-    /**
-     * Sets the value of the session property of this resource identified
-     * by the given key. If the supplied value is <code>null</code>,
-     * the session property is removed from this resource.
-     * <p>
-     * Sessions properties are intended to be used as a caching mechanism
-     * by ISV plug-ins. They allow key-object associations to be stored with
-     * existing resources in the workspace. These key-value associations are
-     * maintained in memory (at all times), and the information is lost when a
-     * resource is deleted from the workspace, when the parent project
-     * is closed, or when the workspace is closed.
-     * </p>
-     * <p>
-     * The qualifier part of the property name must be the unique identifier
-     * of the declaring plug-in (e.g. <code>"com.example.plugin"</code>).
-     * </p>
-     *
-     * @param key the qualified name of the property
-     * @param value the value of the session property,
-     * or <code>null</code> if the property is to be removed
-     * @exception CoreException if this method fails. Reasons include:
-     * <ul>
-     * <li> This resource does not exist.</li>
-     * <li> This resource is not local.</li>
-     * <li> This resource is a project that is not open.</li>
-     * <li> Resource changes are disallowed during certain types of resource change
-     * event notification. See <code>IResourceChangeEvent</code> for more details.</li>
-     * </ul>
-     * @see #getSessionProperty(QualifiedName)
-     */
-    void setSessionProperty(QualifiedName key, Object value) throws CoreException;
-
-    /**
-     * Marks this resource as having changed even though its content
-     * may not have changed. This method can be used to trigger
-     * the rebuilding of resources/structures derived from this resource.
-     * Touching the workspace root has no effect.
-     * <p>
-     * This method changes resources; these changes will be reported
-     * in a subsequent resource change event. If the resource is a project,
-     * the change event will indicate a description change.
-     * </p>
-     * <p>
-     * This method is long-running; progress and cancellation are provided
-     * by the given progress monitor.
-     * </p>
-     *
-     * @param monitor a progress monitor, or <code>null</code> if progress reporting is not desired
-     * @exception CoreException if this method fails. Reasons include:
-     * <ul>
-     * <li> This resource does not exist.</li>
-     * <li> This resource is not local.</li>
-     * <li> Resource changes are disallowed during certain types of resource change
-     * event notification. See <code>IResourceChangeEvent</code> for more details.</li>
-     * </ul>
-     * @exception OperationCanceledException if the operation is canceled.
-     * Cancellation can occur even if no progress monitor is provided.
-     * @see IResourceRuleFactory#modifyRule(IResource)
-     * @see IResourceDelta#CONTENT
-     * @see IResourceDelta#DESCRIPTION
-     */
-    void touch(IProgressMonitor monitor) throws CoreException;
 }

@@ -29,19 +29,25 @@ import java.lang.annotation.Target;
  * <p>
  * Notes:
  * <ul>
- *   <li>Invalid attributes are reported as errors.</li>
- *   <li><b>readwrite</b>, <b>strong</b> (when using ARC), and <b>atomic</b> attributes are removed
- *     since they are defaults.</li>
- *   <li>Strings will include the <b>copy</b> attribute.</li>
+ * <li>Invalid attributes are reported as errors.</li>
+ * <li><b>readwrite</b>, <b>strong</b> (when using ARC), and <b>atomic</b> attributes are removed
+ * since they are defaults.</li>
+ * <li>Strings will include the <b>copy</b> attribute.</li>
  * </ul>
  * Example:
+ * 
  * <pre>
  * class Foo {
- *   &#64;Property("copy, nonatomic") protected String bar;
- * }</pre>
+ *     &#64;Property("copy, nonatomic")
+ *     protected String bar;
+ * }
+ * </pre>
+ * 
  * generates:
+ * 
  * <pre>
- * &#64;property (copy, nonatomic) NSString *bar;</pre>
+ * &#64;property (copy, nonatomic) NSString *bar;
+ * </pre>
  *
  * @author Harry Cheung
  */
@@ -49,5 +55,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.FIELD)
 public @interface Property {
-  String value() default "";
+    String value() default "";
 }

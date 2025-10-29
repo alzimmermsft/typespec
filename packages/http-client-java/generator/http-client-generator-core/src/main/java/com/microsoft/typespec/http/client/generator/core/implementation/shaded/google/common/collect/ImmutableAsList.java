@@ -19,10 +19,10 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtIncompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.J2ktIncompatible;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 
 /**
  * List returned by {@link ImmutableCollection#asList} that delegates {@code contains} checks to the
@@ -35,57 +35,57 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 @SuppressWarnings("serial")
 @ElementTypesAreNonnullByDefault
 abstract class ImmutableAsList<E> extends ImmutableList<E> {
-  abstract ImmutableCollection<E> delegateCollection();
+    abstract ImmutableCollection<E> delegateCollection();
 
-  @Override
-  public boolean contains(@CheckForNull Object target) {
-    // The collection's contains() is at least as fast as ImmutableList's
-    // and is often faster.
-    return delegateCollection().contains(target);
-  }
-
-  @Override
-  public int size() {
-    return delegateCollection().size();
-  }
-
-  @Override
-  public boolean isEmpty() {
-    return delegateCollection().isEmpty();
-  }
-
-  @Override
-  boolean isPartialView() {
-    return delegateCollection().isPartialView();
-  }
-
-  /** Serialized form that leads to the same performance as the original list. */
-  @GwtIncompatible // serialization
-  @J2ktIncompatible
-  static class SerializedForm implements Serializable {
-    final ImmutableCollection<?> collection;
-
-    SerializedForm(ImmutableCollection<?> collection) {
-      this.collection = collection;
+    @Override
+    public boolean contains(@CheckForNull Object target) {
+        // The collection's contains() is at least as fast as ImmutableList's
+        // and is often faster.
+        return delegateCollection().contains(target);
     }
 
-    Object readResolve() {
-      return collection.asList();
+    @Override
+    public int size() {
+        return delegateCollection().size();
     }
 
-    private static final long serialVersionUID = 0;
-  }
+    @Override
+    public boolean isEmpty() {
+        return delegateCollection().isEmpty();
+    }
 
-  @GwtIncompatible // serialization
-  @J2ktIncompatible
-  private void readObject(ObjectInputStream stream) throws InvalidObjectException {
-    throw new InvalidObjectException("Use SerializedForm");
-  }
+    @Override
+    boolean isPartialView() {
+        return delegateCollection().isPartialView();
+    }
 
-  @GwtIncompatible // serialization
-  @J2ktIncompatible
-  @Override
-  Object writeReplace() {
-    return new SerializedForm(delegateCollection());
-  }
+    /** Serialized form that leads to the same performance as the original list. */
+    @GwtIncompatible // serialization
+    @J2ktIncompatible
+    static class SerializedForm implements Serializable {
+        final ImmutableCollection<?> collection;
+
+        SerializedForm(ImmutableCollection<?> collection) {
+            this.collection = collection;
+        }
+
+        Object readResolve() {
+            return collection.asList();
+        }
+
+        private static final long serialVersionUID = 0;
+    }
+
+    @GwtIncompatible // serialization
+    @J2ktIncompatible
+    private void readObject(ObjectInputStream stream) throws InvalidObjectException {
+        throw new InvalidObjectException("Use SerializedForm");
+    }
+
+    @GwtIncompatible // serialization
+    @J2ktIncompatible
+    @Override
+    Object writeReplace() {
+        return new SerializedForm(delegateCollection());
+    }
 }

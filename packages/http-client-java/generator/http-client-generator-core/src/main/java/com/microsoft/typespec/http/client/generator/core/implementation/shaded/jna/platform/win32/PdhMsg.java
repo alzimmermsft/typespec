@@ -25,8 +25,10 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 /**
  * PDH specific error codes
+ * 
  * @author Lyor Goldstein
- * @see <A HREF="https:/**msdn.microsoft.com/en-us/library/windows/desktop/aa373046(v=vs.85).aspx">Performance Data Helper Error Codes</A>
+ * @see <A HREF="https:/**msdn.microsoft.com/en-us/library/windows/desktop/aa373046(v=vs.85).aspx">Performance Data
+ * Helper Error Codes</A>
  */
 public interface PdhMsg {
     /** Returned data is valid. */
@@ -37,9 +39,15 @@ public interface PdhMsg {
     public static final int PDH_CSTATUS_NO_MACHINE = 0x800007D0;
     /** The specified instance is not present. */
     public static final int PDH_CSTATUS_NO_INSTANCE = 0x800007D1;
-    /** There is more data to return than would fit in the supplied buffer. Allocate a larger buffer and call the function again. */
+    /**
+     * There is more data to return than would fit in the supplied buffer. Allocate a larger buffer and call the
+     * function again.
+     */
     public static final int PDH_MORE_DATA = 0x800007D2;
-    /** The data item has been added to the query but has not been validated nor accessed. No other status information on this data item is available. */
+    /**
+     * The data item has been added to the query but has not been validated nor accessed. No other status information on
+     * this data item is available.
+     */
     public static final int PDH_CSTATUS_ITEM_NOT_VALIDATED = 0x800007D3;
     /** The selected operation should be retried. */
     public static final int PDH_RETRY = 0x800007D4;
@@ -64,7 +72,7 @@ public interface PdhMsg {
     /** The specified counter could not be found. */
     public static final int PDH_CSTATUS_NO_COUNTER = 0xC0000BB9;
     /** The returned data is not valid. */
-    public static final int PDH_CSTATUS_INVALID_DATA= 0xC0000BBA;
+    public static final int PDH_CSTATUS_INVALID_DATA = 0xC0000BBA;
     /** A PDH function could not allocate enough temporary memory to complete the operation. */
     public static final int PDH_MEMORY_ALLOCATION_FAILURE = 0xC0000BBB;
     /** The handle is not a valid PDH object. */
@@ -149,9 +157,11 @@ public interface PdhMsg {
     public static final int PDH_SQL_FETCH_FAILED = 0xC0000BE3;
     /** Call to SQLRowCount failed with %1. */
     public static final int PDH_SQL_ROWCOUNT_FAILED = 0xC0000BE4;
-    /** Call to SQLMoreResults failed with %1.
-    public static final int PDH_SQL_MORE_RESULTS_FAILED = 0xC0000BE5;
-    /** Call to SQLConnect failed with %1. */
+    /**
+     * Call to SQLMoreResults failed with %1.
+     * public static final int PDH_SQL_MORE_RESULTS_FAILED = 0xC0000BE5;
+     * /** Call to SQLConnect failed with %1.
+     */
     public static final int PDH_SQL_CONNECT_FAILED = 0xC0000BE6;
     /** Call to SQLBindCol failed with %1. */
     public static final int PDH_SQL_BIND_FAILED = 0xC0000BE7;

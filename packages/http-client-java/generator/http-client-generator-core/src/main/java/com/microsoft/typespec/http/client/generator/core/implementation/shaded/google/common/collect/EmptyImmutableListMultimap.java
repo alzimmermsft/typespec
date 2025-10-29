@@ -27,26 +27,26 @@ import java.util.Collection;
 @GwtCompatible(serializable = true)
 @ElementTypesAreNonnullByDefault
 class EmptyImmutableListMultimap extends ImmutableListMultimap<Object, Object> {
-  static final EmptyImmutableListMultimap INSTANCE = new EmptyImmutableListMultimap();
+    static final EmptyImmutableListMultimap INSTANCE = new EmptyImmutableListMultimap();
 
-  private EmptyImmutableListMultimap() {
-    super(ImmutableMap.<Object, ImmutableList<Object>>of(), 0);
-  }
+    private EmptyImmutableListMultimap() {
+        super(ImmutableMap.<Object, ImmutableList<Object>>of(), 0);
+    }
 
-  /*
-   * TODO(b/242884182): Figure out why this helps produce the same class file when we compile most
-   * of common.collect a second time with the results of the first compilation on the classpath. Or
-   * just back this out once we stop doing that (which we'll do after our internal GWT setup
-   * changes).
-   */
-  @Override
-  public ImmutableMap<Object, Collection<Object>> asMap() {
-    return super.asMap();
-  }
+    /*
+     * TODO(b/242884182): Figure out why this helps produce the same class file when we compile most
+     * of common.collect a second time with the results of the first compilation on the classpath. Or
+     * just back this out once we stop doing that (which we'll do after our internal GWT setup
+     * changes).
+     */
+    @Override
+    public ImmutableMap<Object, Collection<Object>> asMap() {
+        return super.asMap();
+    }
 
-  private Object readResolve() {
-    return INSTANCE; // preserve singleton property
-  }
+    private Object readResolve() {
+        return INSTANCE; // preserve singleton property
+    }
 
-  private static final long serialVersionUID = 0;
+    private static final long serialVersionUID = 0;
 }

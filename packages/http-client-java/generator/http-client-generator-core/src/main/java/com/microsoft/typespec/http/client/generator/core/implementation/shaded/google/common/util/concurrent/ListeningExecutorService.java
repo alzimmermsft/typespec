@@ -16,6 +16,7 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.util.concurrent.Internal.toNanosSaturated;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtIncompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.J2ktIncompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.DoNotMock;
@@ -29,7 +30,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An {@link ExecutorService} that returns {@link ListenableFuture} instances. To create an instance
@@ -39,110 +39,106 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  * @author Chris Povirk
  * @since 10.0
  */
-@DoNotMock(
-    "Use TestingExecutors.sameThreadScheduledExecutor, or wrap a real Executor from "
-        + "java.util.concurrent.Executors with MoreExecutors.listeningDecorator")
+@DoNotMock("Use TestingExecutors.sameThreadScheduledExecutor, or wrap a real Executor from "
+    + "java.util.concurrent.Executors with MoreExecutors.listeningDecorator")
 @GwtIncompatible
 @ElementTypesAreNonnullByDefault
 public interface ListeningExecutorService extends ExecutorService {
-  /**
-   * @return a {@code ListenableFuture} representing pending completion of the task
-   * @throws RejectedExecutionException {@inheritDoc}
-   */
-  @Override
-  <T extends @Nullable Object> ListenableFuture<T> submit(Callable<T> task);
+    /**
+     * @return a {@code ListenableFuture} representing pending completion of the task
+     * @throws RejectedExecutionException {@inheritDoc}
+     */
+    @Override
+    <T extends @Nullable Object> ListenableFuture<T> submit(Callable<T> task);
 
-  /**
-   * @return a {@code ListenableFuture} representing pending completion of the task
-   * @throws RejectedExecutionException {@inheritDoc}
-   */
-  @Override
-  ListenableFuture<?> submit(Runnable task);
+    /**
+     * @return a {@code ListenableFuture} representing pending completion of the task
+     * @throws RejectedExecutionException {@inheritDoc}
+     */
+    @Override
+    ListenableFuture<?> submit(Runnable task);
 
-  /**
-   * @return a {@code ListenableFuture} representing pending completion of the task
-   * @throws RejectedExecutionException {@inheritDoc}
-   */
-  @Override
-  <T extends @Nullable Object> ListenableFuture<T> submit(
-      Runnable task, @ParametricNullness T result);
+    /**
+     * @return a {@code ListenableFuture} representing pending completion of the task
+     * @throws RejectedExecutionException {@inheritDoc}
+     */
+    @Override
+    <T extends @Nullable Object> ListenableFuture<T> submit(Runnable task, @ParametricNullness T result);
 
-  /**
-   * {@inheritDoc}
-   *
-   * <p>All elements in the returned list must be {@link ListenableFuture} instances. The easiest
-   * way to obtain a {@code List<ListenableFuture<T>>} from this method is an unchecked (but safe)
-   * cast:
-   *
-   * <pre>
-   *   {@code @SuppressWarnings("unchecked") // guaranteed by invokeAll contract}
-   *   {@code List<ListenableFuture<T>> futures = (List) executor.invokeAll(tasks);}
-   * </pre>
-   *
-   * @return A list of {@code ListenableFuture} instances representing the tasks, in the same
-   *     sequential order as produced by the iterator for the given task list, each of which has
-   *     completed.
-   * @throws RejectedExecutionException {@inheritDoc}
-   * @throws NullPointerException if any task is null
-   */
-  @Override
-  <T extends @Nullable Object> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks)
-      throws InterruptedException;
+    /**
+     * {@inheritDoc}
+     *
+     * <p>All elements in the returned list must be {@link ListenableFuture} instances. The easiest
+     * way to obtain a {@code List<ListenableFuture<T>>} from this method is an unchecked (but safe)
+     * cast:
+     *
+     * <pre>
+     *   {@code @SuppressWarnings("unchecked") // guaranteed by invokeAll contract}
+     *   {@code List<ListenableFuture<T>> futures = (List) executor.invokeAll(tasks);}
+     * </pre>
+     *
+     * @return A list of {@code ListenableFuture} instances representing the tasks, in the same
+     * sequential order as produced by the iterator for the given task list, each of which has
+     * completed.
+     * @throws RejectedExecutionException {@inheritDoc}
+     * @throws NullPointerException if any task is null
+     */
+    @Override
+    <T extends @Nullable Object> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks)
+        throws InterruptedException;
 
-  /**
-   * {@inheritDoc}
-   *
-   * <p>All elements in the returned list must be {@link ListenableFuture} instances. The easiest
-   * way to obtain a {@code List<ListenableFuture<T>>} from this method is an unchecked (but safe)
-   * cast:
-   *
-   * <pre>
-   *   {@code @SuppressWarnings("unchecked") // guaranteed by invokeAll contract}
-   *   {@code List<ListenableFuture<T>> futures = (List) executor.invokeAll(tasks, timeout, unit);}
-   * </pre>
-   *
-   * @return a list of {@code ListenableFuture} instances representing the tasks, in the same
-   *     sequential order as produced by the iterator for the given task list. If the operation did
-   *     not time out, each task will have completed. If it did time out, some of these tasks will
-   *     not have completed.
-   * @throws RejectedExecutionException {@inheritDoc}
-   * @throws NullPointerException if any task is null
-   */
-  @Override
-  <T extends @Nullable Object> List<Future<T>> invokeAll(
-      Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit)
-      throws InterruptedException;
+    /**
+     * {@inheritDoc}
+     *
+     * <p>All elements in the returned list must be {@link ListenableFuture} instances. The easiest
+     * way to obtain a {@code List<ListenableFuture<T>>} from this method is an unchecked (but safe)
+     * cast:
+     *
+     * <pre>
+     *   {@code @SuppressWarnings("unchecked") // guaranteed by invokeAll contract}
+     *   {@code List<ListenableFuture<T>> futures = (List) executor.invokeAll(tasks, timeout, unit);}
+     * </pre>
+     *
+     * @return a list of {@code ListenableFuture} instances representing the tasks, in the same
+     * sequential order as produced by the iterator for the given task list. If the operation did
+     * not time out, each task will have completed. If it did time out, some of these tasks will
+     * not have completed.
+     * @throws RejectedExecutionException {@inheritDoc}
+     * @throws NullPointerException if any task is null
+     */
+    @Override
+    <T extends @Nullable Object> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout,
+        TimeUnit unit) throws InterruptedException;
 
-  /**
-   * Duration-based overload of {@link #invokeAll(Collection, long, TimeUnit)}.
-   *
-   * @since 32.1.0
-   */
-  @J2ktIncompatible
-  default <T extends @Nullable Object> List<Future<T>> invokeAll(
-      Collection<? extends Callable<T>> tasks, Duration timeout) throws InterruptedException {
-    return invokeAll(tasks, toNanosSaturated(timeout), TimeUnit.NANOSECONDS);
-  }
+    /**
+     * Duration-based overload of {@link #invokeAll(Collection, long, TimeUnit)}.
+     *
+     * @since 32.1.0
+     */
+    @J2ktIncompatible
+    default <T extends @Nullable Object> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks,
+        Duration timeout) throws InterruptedException {
+        return invokeAll(tasks, toNanosSaturated(timeout), TimeUnit.NANOSECONDS);
+    }
 
-  /**
-   * Duration-based overload of {@link #invokeAny(Collection, long, TimeUnit)}.
-   *
-   * @since 32.1.0
-   */
-  @J2ktIncompatible
-  default <T extends @Nullable Object> T invokeAny(
-      Collection<? extends Callable<T>> tasks, Duration timeout)
-      throws InterruptedException, ExecutionException, TimeoutException {
-    return invokeAny(tasks, toNanosSaturated(timeout), TimeUnit.NANOSECONDS);
-  }
+    /**
+     * Duration-based overload of {@link #invokeAny(Collection, long, TimeUnit)}.
+     *
+     * @since 32.1.0
+     */
+    @J2ktIncompatible
+    default <T extends @Nullable Object> T invokeAny(Collection<? extends Callable<T>> tasks, Duration timeout)
+        throws InterruptedException, ExecutionException, TimeoutException {
+        return invokeAny(tasks, toNanosSaturated(timeout), TimeUnit.NANOSECONDS);
+    }
 
-  /**
-   * Duration-based overload of {@link #awaitTermination(long, TimeUnit)}.
-   *
-   * @since 32.1.0
-   */
-  @J2ktIncompatible
-  default boolean awaitTermination(Duration timeout) throws InterruptedException {
-    return awaitTermination(toNanosSaturated(timeout), TimeUnit.NANOSECONDS);
-  }
+    /**
+     * Duration-based overload of {@link #awaitTermination(long, TimeUnit)}.
+     *
+     * @since 32.1.0
+     */
+    @J2ktIncompatible
+    default boolean awaitTermination(Duration timeout) throws InterruptedException {
+        return awaitTermination(toNanosSaturated(timeout), TimeUnit.NANOSECONDS);
+    }
 }

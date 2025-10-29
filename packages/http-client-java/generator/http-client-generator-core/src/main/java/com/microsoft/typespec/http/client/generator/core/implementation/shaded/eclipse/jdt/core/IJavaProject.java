@@ -23,7 +23,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.eval.IEvaluationContext;
+
 import java.util.Map;
 
 /**
@@ -121,23 +121,6 @@ public interface IJavaProject extends IParent, IJavaElement, IOpenable {
      * @since 3.0
      */
     IJavaElement findElement(IPath path, WorkingCopyOwner owner) throws JavaModelException;
-
-    /**
-     * Returns the first existing package fragment on this project's classpath
-     * whose path matches the given (absolute) path, or <code>null</code> if none
-     * exist.
-     * The path can be:
-     * - internal to the workbench: "/Project/src"
-     * - external to the workbench: "c:/jdk/classes.zip/java/lang"
-     * 
-     * @param path the given absolute path
-     * @exception JavaModelException if this project does not exist or if an
-     * exception occurs while accessing its corresponding resource
-     * @return the first existing package fragment on this project's classpath
-     * whose path matches the given (absolute) path, or <code>null</code> if none
-     * exist
-     */
-    IPackageFragment findPackageFragment(IPath path) throws JavaModelException;
 
     /**
      * Returns the existing package fragment root on this project's classpath
@@ -440,94 +423,6 @@ public interface IJavaProject extends IParent, IJavaElement, IOpenable {
      * @see IClasspathEntry
      */
     IClasspathEntry[] getResolvedClasspath(boolean ignoreUnresolvedEntry) throws JavaModelException;
-
-    /**
-     * Creates a new evaluation context.
-     * 
-     * @return a new evaluation context.
-     */
-    IEvaluationContext newEvaluationContext();
-
-    /**
-     * Returns the default output location for the project as defined by its <code>.classpath</code> file from disk, or
-     * <code>null</code>
-     * if unable to read the file.
-     * <p>
-     * This output location may differ from the in-memory one returned by <code>getOutputLocation</code>, in case the
-     * automatic reconciliation mechanism has not been performed yet. Usually, any change to the <code>.classpath</code>
-     * file
-     * is automatically noticed and reconciled at the next resource change notification event.
-     * However, if the file is modified within an operation, where this change needs to be taken into account before the
-     * operation ends, then the output location from disk can be read using this method, and further assigned to the
-     * project
-     * using <code>setRawClasspath(...)</code>.
-     * </p>
-     * <p>
-     * The default output location is where class files are ordinarily generated
-     * (and resource files, copied). Each source classpath entry can also
-     * specify an output location for the generated class files (and copied
-     * resource files) corresponding to compilation units under that source
-     * folder. This makes it possible to arrange generated class files for
-     * different source folders in different output folders, and not
-     * necessarily the default output folder. This means that the generated
-     * class files for the project may end up scattered across several folders,
-     * rather than all in the default output folder (which is more standard).
-     * </p><p>
-     * In order to manually force a project classpath refresh, one can simply assign the project classpath using the
-     * result of this
-     * method, as follows:
-     * <code>proj.setRawClasspath(proj.readRawClasspath(), proj.readOutputLocation(), monitor)</code>
-     * (note that the <code>readRawClasspath/readOutputLocation</code> methods could return <code>null</code>).
-     * </p>
-     * 
-     * @return the workspace-relative absolute path of the default output folder
-     * @see #getOutputLocation()
-     * @since 3.0
-     */
-    IPath readOutputLocation();
-
-    /**
-     * Returns the raw classpath for the project as defined by its
-     * <code>.classpath</code> file from disk, or <code>null</code>
-     * if unable to read the file.
-     * <p>
-     * This classpath may differ from the in-memory classpath returned by
-     * <code>getRawClasspath</code>, in case the automatic reconciliation
-     * mechanism has not been performed yet. Usually, any change to the
-     * <code>.classpath</code> file is automatically noticed and reconciled at
-     * the next resource change notification event. However, if the file is
-     * modified within an operation, where this change needs to be taken into
-     * account before the operation ends, then the classpath from disk can be
-     * read using this method, and further assigned to the project using
-     * <code>setRawClasspath(...)</code>.
-     * </p>
-     * <p>
-     * Classpath variable and classpath container entries can be resolved using
-     * the helper method <code>getResolvedClasspath</code>; classpath variable
-     * entries also can be resolved individually using
-     * <code>JavaCore#getClasspathVariable</code>).
-     * </p>
-     * <p>
-     * Note that no check is performed whether the project has the Java nature
-     * set, allowing an existing <code>.classpath</code> file to be considered
-     * independantly (unlike <code>getRawClasspath</code> which requires the
-     * Java nature to be associated with the project).
-     * </p>
-     * <p>
-     * In order to manually force a project classpath refresh, one can simply
-     * assign the project classpath using the result of this method, as follows:
-     * <code>proj.setRawClasspath(proj.readRawClasspath(), proj.readOutputLocation(), monitor)</code>
-     * (note that the <code>readRawClasspath/readOutputLocation</code> methods
-     * could return <code>null</code>).
-     * </p>
-     *
-     * @return the raw classpath from disk for the project, as a list of
-     * classpath entries
-     * @see #getRawClasspath()
-     * @see IClasspathEntry
-     * @since 3.0
-     */
-    IClasspathEntry[] readRawClasspath();
 
     /**
      * Returns the classpath entry that refers to the given path or <code>null</code> if there is no reference to the

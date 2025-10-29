@@ -15,8 +15,8 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
-import java.util.Set;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
+import java.util.Set;
 
 /**
  * ImmutableSet implementation backed by a JDK HashSet, used to defend against apparent hash
@@ -28,31 +28,31 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 @GwtCompatible(serializable = true)
 @ElementTypesAreNonnullByDefault
 final class JdkBackedImmutableSet<E> extends IndexedImmutableSet<E> {
-  private final Set<?> delegate;
-  private final ImmutableList<E> delegateList;
+    private final Set<?> delegate;
+    private final ImmutableList<E> delegateList;
 
-  JdkBackedImmutableSet(Set<?> delegate, ImmutableList<E> delegateList) {
-    this.delegate = delegate;
-    this.delegateList = delegateList;
-  }
+    JdkBackedImmutableSet(Set<?> delegate, ImmutableList<E> delegateList) {
+        this.delegate = delegate;
+        this.delegateList = delegateList;
+    }
 
-  @Override
-  E get(int index) {
-    return delegateList.get(index);
-  }
+    @Override
+    E get(int index) {
+        return delegateList.get(index);
+    }
 
-  @Override
-  public boolean contains(@CheckForNull Object object) {
-    return delegate.contains(object);
-  }
+    @Override
+    public boolean contains(@CheckForNull Object object) {
+        return delegate.contains(object);
+    }
 
-  @Override
-  boolean isPartialView() {
-    return false;
-  }
+    @Override
+    boolean isPartialView() {
+        return false;
+    }
 
-  @Override
-  public int size() {
-    return delegateList.size();
-  }
+    @Override
+    public int size() {
+        return delegateList.size();
+    }
 }

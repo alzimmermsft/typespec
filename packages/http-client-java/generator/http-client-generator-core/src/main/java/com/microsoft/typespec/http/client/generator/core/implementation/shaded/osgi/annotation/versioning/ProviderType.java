@@ -57,14 +57,12 @@ import java.lang.annotation.Target;
  * that package must require the package's exact major and minor version.
  * 
  * @see <a href= "https://docs.osgi.org/whitepaper/semantic-versioning/" >
- *      Semantic Versioning</a>
+ * Semantic Versioning</a>
  * @author $Id: e185903da522dd7b8e6a656eaf5f1548534a961e $
  */
 @Documented
 @Retention(RetentionPolicy.CLASS)
-@Target({
-		ElementType.TYPE, ElementType.PACKAGE
-})
+@Target({ ElementType.TYPE, ElementType.PACKAGE })
 public @interface ProviderType {
-	// marker annotation
+    // marker annotation
 }

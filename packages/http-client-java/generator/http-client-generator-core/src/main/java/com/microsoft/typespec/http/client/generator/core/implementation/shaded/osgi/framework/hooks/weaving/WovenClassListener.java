@@ -51,21 +51,21 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 @ConsumerType
 public interface WovenClassListener {
-	/**
-	 * Receives notification that a {@link WovenClass woven class} has completed
-	 * a state transition.
-	 * 
-	 * <p>
-	 * The listener will be notified when a woven class has entered the
-	 * {@link WovenClass#TRANSFORMED TRANSFORMED}, {@link WovenClass#DEFINED
-	 * DEFINED}, {@link WovenClass#TRANSFORMING_FAILED TRANSFORMING_FAILED} and
-	 * {@link WovenClass#DEFINE_FAILED DEFINE_FAILED} states.
-	 * 
-	 * <p>
-	 * If this method throws any exception, the Framework must log the exception
-	 * but otherwise ignore it.
-	 * 
-	 * @param wovenClass The woven class that completed a state transition.
-	 */
-	public void modified(WovenClass wovenClass);
+    /**
+     * Receives notification that a {@link WovenClass woven class} has completed
+     * a state transition.
+     * 
+     * <p>
+     * The listener will be notified when a woven class has entered the
+     * {@link WovenClass#TRANSFORMED TRANSFORMED}, {@link WovenClass#DEFINED
+     * DEFINED}, {@link WovenClass#TRANSFORMING_FAILED TRANSFORMING_FAILED} and
+     * {@link WovenClass#DEFINE_FAILED DEFINE_FAILED} states.
+     * 
+     * <p>
+     * If this method throws any exception, the Framework must log the exception
+     * but otherwise ignore it.
+     * 
+     * @param wovenClass The woven class that completed a state transition.
+     */
+    public void modified(WovenClass wovenClass);
 }

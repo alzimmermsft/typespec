@@ -28,6 +28,7 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 /**
  * An interface for enum that can be combined to a
  * set based on an integer value
+ * 
  * @author Martin Steiger
  */
 public interface FlagEnum {

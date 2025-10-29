@@ -24,21 +24,21 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.g
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
 abstract class CommonPattern {
-  public abstract CommonMatcher matcher(CharSequence t);
+    public abstract CommonMatcher matcher(CharSequence t);
 
-  public abstract String pattern();
+    public abstract String pattern();
 
-  public abstract int flags();
+    public abstract int flags();
 
-  // Re-declare this as abstract to force subclasses to override.
-  @Override
-  public abstract String toString();
+    // Re-declare this as abstract to force subclasses to override.
+    @Override
+    public abstract String toString();
 
-  public static CommonPattern compile(String pattern) {
-    return Platform.compilePattern(pattern);
-  }
+    public static CommonPattern compile(String pattern) {
+        return Platform.compilePattern(pattern);
+    }
 
-  public static boolean isPcreLike() {
-    return Platform.patternCompilerIsPcreLike();
-  }
+    public static boolean isPcreLike() {
+        return Platform.patternCompilerIsPcreLike();
+    }
 }

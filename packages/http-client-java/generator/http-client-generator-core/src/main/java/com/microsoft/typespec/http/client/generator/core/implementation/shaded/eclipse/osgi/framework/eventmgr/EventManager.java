@@ -28,6 +28,7 @@ import java.util.Set;
  *
  * <p>This example uses the fictitious SomeEvent class and shows how to use this package
  * to deliver a SomeEvent to a set of SomeEventListeners.
+ * 
  * <pre>
  *
  * 	// Create an EventManager with a name for an asynchronous event dispatch thread
@@ -97,193 +98,195 @@ import java.util.Set;
  *
  * <p> The highly dynamic nature of the OSGi framework had necessitated these features for
  * proper and efficient event delivery.
+ * 
  * @since 3.1
  * @noextend This class is not intended to be subclassed by clients.
  */
 
 public class EventManager {
     /**
-	 * EventThread for asynchronous dispatch of events.
-	 * Access to this field must be protected by a synchronized region.
-	 */
-	private EventThread<?, ?, ?> thread;
+     * EventThread for asynchronous dispatch of events.
+     * Access to this field must be protected by a synchronized region.
+     */
+    private EventThread<?, ?, ?> thread;
 
-	/**
-	 * Once closed, an attempt to create a new EventThread will result in an
-	 * IllegalStateException.
-	 */
-	private boolean closed;
+    /**
+     * Once closed, an attempt to create a new EventThread will result in an
+     * IllegalStateException.
+     */
+    private boolean closed;
 
-	/**
-	 * Thread name used for asynchronous event delivery
-	 */
-	protected final String threadName;
+    /**
+     * Thread name used for asynchronous event delivery
+     */
+    protected final String threadName;
 
-	/**
-	 * The thread group used for asynchronous event delivery
-	 */
-	protected final ThreadGroup threadGroup;
+    /**
+     * The thread group used for asynchronous event delivery
+     */
+    protected final ThreadGroup threadGroup;
 
-	/**
-	 * EventManager constructor. An EventManager object is responsible for
-	 * the delivery of events to listeners via an EventDispatcher.
-	 */
-	public EventManager() {
-		this(null, null);
-	}
+    /**
+     * EventManager constructor. An EventManager object is responsible for
+     * the delivery of events to listeners via an EventDispatcher.
+     */
+    public EventManager() {
+        this(null, null);
+    }
 
-	/**
-	 * EventManager constructor. An EventManager object is responsible for
-	 * the delivery of events to listeners via an EventDispatcher.
-	 *
-	 * @param threadName The name to give the event thread associated with
-	 * this EventManager.  A <code>null</code> value is allowed.
-	 */
-	public EventManager(String threadName) {
-		this(threadName, null);
-	}
+    /**
+     * EventManager constructor. An EventManager object is responsible for
+     * the delivery of events to listeners via an EventDispatcher.
+     *
+     * @param threadName The name to give the event thread associated with
+     * this EventManager. A <code>null</code> value is allowed.
+     */
+    public EventManager(String threadName) {
+        this(threadName, null);
+    }
 
-	/**
-	 * EventManager constructor. An EventManager object is responsible for
-	 * the delivery of events to listeners via an EventDispatcher.
-	 *
-	 * @param threadName The name to give the event thread associated with
-	 * this EventManager.  A <code>null</code> value is allowed.
-	 * @param threadGroup The thread group to use for the asynchronous event
-	 * thread associated with this EventManager. A <code>null</code> value is allowed.
-	 * @since 3.4
-	 */
-	public EventManager(String threadName, ThreadGroup threadGroup) {
-		thread = null;
-		closed = false;
-		this.threadName = threadName;
-		this.threadGroup = threadGroup;
-	}
+    /**
+     * EventManager constructor. An EventManager object is responsible for
+     * the delivery of events to listeners via an EventDispatcher.
+     *
+     * @param threadName The name to give the event thread associated with
+     * this EventManager. A <code>null</code> value is allowed.
+     * @param threadGroup The thread group to use for the asynchronous event
+     * thread associated with this EventManager. A <code>null</code> value is allowed.
+     * @since 3.4
+     */
+    public EventManager(String threadName, ThreadGroup threadGroup) {
+        thread = null;
+        closed = false;
+        this.threadName = threadName;
+        this.threadGroup = threadGroup;
+    }
 
-	/**
-	 * This method can be called to release any resources associated with this
-	 * EventManager.
-	 * <p>
-	 * Closing this EventManager while it is asynchronously delivering events
-	 * may cause some events to not be delivered before the async event dispatch
-	 * thread terminates.
-	 */
-	public synchronized void close() {
-		if (closed) {
-			return;
-		}
-		if (thread != null) {
-			thread.close();
-			thread = null;
-		}
-		closed = true;
-	}
+    /**
+     * This method can be called to release any resources associated with this
+     * EventManager.
+     * <p>
+     * Closing this EventManager while it is asynchronously delivering events
+     * may cause some events to not be delivered before the async event dispatch
+     * thread terminates.
+     */
+    public synchronized void close() {
+        if (closed) {
+            return;
+        }
+        if (thread != null) {
+            thread.close();
+            thread = null;
+        }
+        closed = true;
+    }
 
-	/**
-	 * Returns the EventThread to use for dispatching events asynchronously for
-	 * this EventManager.
-	 *
-	 * @return EventThread to use for dispatching events asynchronously for
-	 * this EventManager.
-	 */
-	synchronized <K, V, E> EventThread<K, V, E> getEventThread() {
-		if (closed) {
-			throw new IllegalStateException();
-		}
-		if (thread == null) {
-			/* if there is no thread, then create a new one */
-			thread = AccessController.doPrivileged((PrivilegedAction<EventThread<K, V, E>>) () -> {
-				EventThread<K, V, E> t = new EventThread<>(threadGroup, threadName);
-				return t;
-			});
-			/* start the new thread */
-			thread.start();
-		}
+    /**
+     * Returns the EventThread to use for dispatching events asynchronously for
+     * this EventManager.
+     *
+     * @return EventThread to use for dispatching events asynchronously for
+     * this EventManager.
+     */
+    synchronized <K, V, E> EventThread<K, V, E> getEventThread() {
+        if (closed) {
+            throw new IllegalStateException();
+        }
+        if (thread == null) {
+            /* if there is no thread, then create a new one */
+            thread = AccessController.doPrivileged((PrivilegedAction<EventThread<K, V, E>>) () -> {
+                EventThread<K, V, E> t = new EventThread<>(threadGroup, threadName);
+                return t;
+            });
+            /* start the new thread */
+            thread.start();
+        }
 
-		@SuppressWarnings("unchecked")
-		EventThread<K, V, E> result = (EventThread<K, V, E>) thread;
-		return result;
-	}
+        @SuppressWarnings("unchecked")
+        EventThread<K, V, E> result = (EventThread<K, V, E>) thread;
+        return result;
+    }
 
-	/**
-	 * This package private class is used for asynchronously dispatching events.
-	 */
+    /**
+     * This package private class is used for asynchronously dispatching events.
+     */
 
-	static class EventThread<K, V, E> extends Thread {
-		private static int nextThreadNumber;
-
-		/**
-		 * Queued is a nested top-level (non-member) class. This class
-		 * represents the items which are placed on the asynch dispatch queue.
-		 * This class is private.
-		 */
-		private static class Queued<K, V, E> {
-			/** listener list for this event */
-			final Set<Map.Entry<K, V>> listeners;
-			/** dispatcher of this event */
-			final EventDispatcher<K, V, E> dispatcher;
-			/** action for this event */
-			final int action;
-			/** object for this event */
-			final E object;
-			/** next item in event queue */
-			Queued<K, V, E> next;
-
-			/**
-			 * Constructor for event queue item
-			 *
-			 * @param l Listener list for this event
-			 * @param d Dispatcher for this event
-			 * @param a Action for this event
-			 * @param o Object for this event
-			 */
-			Queued(Set<Map.Entry<K, V>> l, EventDispatcher<K, V, E> d, int a, E o) {
-				listeners = l;
-				dispatcher = d;
-				action = a;
-				object = o;
-				next = null;
-			}
-		}
-
-		/** item at the head of the event queue */
-		private Queued<K, V, E> head;
-		/** item at the tail of the event queue */
-		private Queued<K, V, E> tail;
-		/** if false the thread must terminate */
-		private volatile boolean running;
-
-		/**
-		 * Constructor for the event thread.
-		 * @param threadName Name of the EventThread
-		 */
-		EventThread(ThreadGroup threadGroup, String threadName) {
-			super(threadGroup, threadName == null ? getNextName() : threadName);
-			running = true;
-			head = null;
-			tail = null;
-
-			setDaemon(true); /* Mark thread as daemon thread */
-		}
-
-		private static synchronized String getNextName() {
-			return "EventManagerThread-" + nextThreadNumber++; //$NON-NLS-1$
-		}
+    static class EventThread<K, V, E> extends Thread {
+        private static int nextThreadNumber;
 
         /**
-		 * Stop thread.
-		 */
-		void close() {
-			running = false;
-			interrupt();
-		}
+         * Queued is a nested top-level (non-member) class. This class
+         * represents the items which are placed on the asynch dispatch queue.
+         * This class is private.
+         */
+        private static class Queued<K, V, E> {
+            /** listener list for this event */
+            final Set<Map.Entry<K, V>> listeners;
+            /** dispatcher of this event */
+            final EventDispatcher<K, V, E> dispatcher;
+            /** action for this event */
+            final int action;
+            /** object for this event */
+            final E object;
+            /** next item in event queue */
+            Queued<K, V, E> next;
 
-		/**
-		 * This method pulls events from
-		 * the queue and dispatches them.
-		 */
-		@Override
-		public void run() {
+            /**
+             * Constructor for event queue item
+             *
+             * @param l Listener list for this event
+             * @param d Dispatcher for this event
+             * @param a Action for this event
+             * @param o Object for this event
+             */
+            Queued(Set<Map.Entry<K, V>> l, EventDispatcher<K, V, E> d, int a, E o) {
+                listeners = l;
+                dispatcher = d;
+                action = a;
+                object = o;
+                next = null;
+            }
+        }
+
+        /** item at the head of the event queue */
+        private Queued<K, V, E> head;
+        /** item at the tail of the event queue */
+        private Queued<K, V, E> tail;
+        /** if false the thread must terminate */
+        private volatile boolean running;
+
+        /**
+         * Constructor for the event thread.
+         * 
+         * @param threadName Name of the EventThread
+         */
+        EventThread(ThreadGroup threadGroup, String threadName) {
+            super(threadGroup, threadName == null ? getNextName() : threadName);
+            running = true;
+            head = null;
+            tail = null;
+
+            setDaemon(true); /* Mark thread as daemon thread */
+        }
+
+        private static synchronized String getNextName() {
+            return "EventManagerThread-" + nextThreadNumber++; //$NON-NLS-1$
+        }
+
+        /**
+         * Stop thread.
+         */
+        void close() {
+            running = false;
+            interrupt();
+        }
+
+        /**
+         * This method pulls events from
+         * the queue and dispatches them.
+         */
+        @Override
+        public void run() {
             while (true) {
                 Queued<K, V, E> item = getNextEvent();
                 if (item == null) {
@@ -293,64 +296,64 @@ public class EventManager {
             }
         }
 
-		/**
-		 * This methods takes the input parameters and creates a Queued
-		 * object and queues it.
-		 * The thread is notified.
-		 *
-		 * @param l Listener list for this event
-		 * @param d Dispatcher for this event
-		 * @param a Action for this event
-		 * @param o Object for this event
-		 */
-		synchronized void postEvent(Set<Map.Entry<K, V>> l, EventDispatcher<K, V, E> d, int a, E o) {
-			if (!isAlive()) { /* If the thread is not alive, throw an exception */
-				throw new IllegalStateException();
-			}
+        /**
+         * This methods takes the input parameters and creates a Queued
+         * object and queues it.
+         * The thread is notified.
+         *
+         * @param l Listener list for this event
+         * @param d Dispatcher for this event
+         * @param a Action for this event
+         * @param o Object for this event
+         */
+        synchronized void postEvent(Set<Map.Entry<K, V>> l, EventDispatcher<K, V, E> d, int a, E o) {
+            if (!isAlive()) { /* If the thread is not alive, throw an exception */
+                throw new IllegalStateException();
+            }
 
-			Queued<K, V, E> item = new Queued<>(l, d, a, o);
+            Queued<K, V, E> item = new Queued<>(l, d, a, o);
 
-			if (head == null) /* if the queue was empty */
-			{
-				head = item;
-				tail = item;
-			} else /* else add to end of queue */
-			{
-				tail.next = item;
-				tail = item;
-			}
+            if (head == null) /* if the queue was empty */
+            {
+                head = item;
+                tail = item;
+            } else /* else add to end of queue */
+            {
+                tail.next = item;
+                tail = item;
+            }
 
-			notify();
-		}
+            notify();
+        }
 
-		/**
-		 * This method is called by the thread to remove
-		 * items from the queue so that they can be dispatched to their listeners.
-		 * If the queue is empty, the thread waits.
-		 *
-		 * @return The Queued removed from the top of the queue or null
-		 * if the thread has been requested to stop.
-		 */
-		private synchronized Queued<K, V, E> getNextEvent() {
-			while (running && (head == null)) {
-				try {
-					wait();
-				} catch (InterruptedException e) {
-					// If interrupted, we will loop back up and check running
-				}
-			}
+        /**
+         * This method is called by the thread to remove
+         * items from the queue so that they can be dispatched to their listeners.
+         * If the queue is empty, the thread waits.
+         *
+         * @return The Queued removed from the top of the queue or null
+         * if the thread has been requested to stop.
+         */
+        private synchronized Queued<K, V, E> getNextEvent() {
+            while (running && (head == null)) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    // If interrupted, we will loop back up and check running
+                }
+            }
 
-			if (!running) { /* if we are stopping */
-				return null;
-			}
+            if (!running) { /* if we are stopping */
+                return null;
+            }
 
-			Queued<K, V, E> item = head;
-			head = item.next;
-			if (head == null) {
-				tail = null;
-			}
+            Queued<K, V, E> item = head;
+            head = item.next;
+            if (head == null) {
+                tail = null;
+            }
 
-			return item;
-		}
-	}
+            return item;
+        }
+    }
 }

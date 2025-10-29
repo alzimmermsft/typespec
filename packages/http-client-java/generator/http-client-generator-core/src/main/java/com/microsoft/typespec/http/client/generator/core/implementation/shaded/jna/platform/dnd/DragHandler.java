@@ -23,6 +23,13 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.dnd;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.swing.Icon;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.swing.JColorChooser;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.swing.JFileChooser;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.swing.JList;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.swing.JTable;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.swing.JTree;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.swing.text.JTextComponent;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Platform;
 import java.awt.AlphaComposite;
 import java.awt.Component;
@@ -53,21 +60,18 @@ import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.swing.Icon;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.swing.JColorChooser;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.swing.JFileChooser;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.swing.JList;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.swing.JTable;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.swing.JTree;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.swing.text.JTextComponent;
-
-/** Provides simplified drag handling for a component.
+/**
+ * Provides simplified drag handling for a component.
  * Usage:<br>
- * <pre><code>
+ * 
+ * <pre>
+ * <code>
  * int actions = DnDConstants.MOVE_OR_COPY;
  * Component component = ...;
  * DragHandler handler = new DragHandler(component, actions);
- * </code></pre>
+ * </code>
+ * </pre>
+ * 
  * <ul>
  * <li>Supports painting an arbitrary {@link Icon} with transparency to
  * represent the item being dragged (restricted to the {@link java.awt.Window}
@@ -83,8 +87,8 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
  * The bug</a> is fixed in java 1.6.
  * <li>Disallow drops to targets if the non-default (user-requested) action
  * is not supported by the target, e.g. the user requests a "copy" when the
- * target only supports "move".  This is generally the responsibility of the
- * drop handler, which decides whether or not to accept a drag.  The DragHandler
+ * target only supports "move". This is generally the responsibility of the
+ * drop handler, which decides whether or not to accept a drag. The DragHandler
  * provides static modifier state information since the drop handler doesn't
  * have access to it.
  * </ul>
@@ -110,8 +114,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 // only the image needs to change (for standard components, e.g. tree cells,
 // table cells, etc.)
 
-public abstract class DragHandler
-    implements DragSourceListener, DragSourceMotionListener, DragGestureListener {
+public abstract class DragHandler implements DragSourceListener, DragSourceMotionListener, DragGestureListener {
 
     private static final Logger LOG = Logger.getLogger(DragHandler.class.getName());
 
@@ -121,12 +124,14 @@ public abstract class DragHandler
     /** Default transparency for ghosting. */
     public static final float DEFAULT_GHOST_ALPHA = 0.5f;
 
-    /** {@link #getModifiers} returns this value when the current
+    /**
+     * {@link #getModifiers} returns this value when the current
      * modifiers state is unknown.
      */
     public static final int UNKNOWN_MODIFIERS = -1;
 
-    /** {@link #getTransferable} returns this value when
+    /**
+     * {@link #getTransferable} returns this value when
      * the current {@link Transferable} is unknown.
      */
     public static final Transferable UNKNOWN_TRANSFERABLE = null;
@@ -145,34 +150,35 @@ public abstract class DragHandler
     static final int MOVE_MASK = InputEvent.SHIFT_DOWN_MASK;
     static final boolean OSX = Platform.isMac();
     /** Modifier mask for a user-requested copy. */
-    static final int COPY_MASK =
-        OSX ? InputEvent.ALT_DOWN_MASK : InputEvent.CTRL_DOWN_MASK;
+    static final int COPY_MASK = OSX ? InputEvent.ALT_DOWN_MASK : InputEvent.CTRL_DOWN_MASK;
     /** Modifier mask for a user-requested link. */
-    static final int LINK_MASK =
-        OSX ? InputEvent.ALT_DOWN_MASK|InputEvent.META_DOWN_MASK
-            : InputEvent.CTRL_DOWN_MASK|InputEvent.SHIFT_DOWN_MASK;
+    static final int LINK_MASK = OSX
+        ? InputEvent.ALT_DOWN_MASK | InputEvent.META_DOWN_MASK
+        : InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK;
     /** Modifier mask for any user-requested action. */
-    static final int KEY_MASK =
-        InputEvent.ALT_DOWN_MASK|InputEvent.META_DOWN_MASK
-        |InputEvent.CTRL_DOWN_MASK|InputEvent.SHIFT_DOWN_MASK
-        |InputEvent.ALT_GRAPH_DOWN_MASK;
+    static final int KEY_MASK = InputEvent.ALT_DOWN_MASK | InputEvent.META_DOWN_MASK | InputEvent.CTRL_DOWN_MASK
+        | InputEvent.SHIFT_DOWN_MASK | InputEvent.ALT_GRAPH_DOWN_MASK;
 
     private static int modifiers = UNKNOWN_MODIFIERS;
     private static Transferable transferable = UNKNOWN_TRANSFERABLE;
 
-    /** Used to communicate modifier state to {@link DropHandler}.  Note that
+    /**
+     * Used to communicate modifier state to {@link DropHandler}. Note that
      * this field will only be accurate when a {@link DragHandler} in
-     * the same VM started the drag.  Otherwise, {@link #UNKNOWN_MODIFIERS}
+     * the same VM started the drag. Otherwise, {@link #UNKNOWN_MODIFIERS}
      * will be returned.
+     * 
      * @return Current drag modifiers.
      */
     static int getModifiers() {
         return modifiers;
     }
 
-    /** Used to communicate the current {@link Transferable} during a drag,
-     * if available.  Work around absence of access to the data when dragging
+    /**
+     * Used to communicate the current {@link Transferable} during a drag,
+     * if available. Work around absence of access to the data when dragging
      * pre-1.5.
+     * 
      * @param e event
      * @return {@link Transferable} representation of the item being dragged.
      */
@@ -197,8 +203,10 @@ public abstract class DragHandler
     private Dimension maxGhostSize = MAX_GHOST_SIZE;
     private float ghostAlpha = DEFAULT_GHOST_ALPHA;
 
-    /** Enable drags from the given component, supporting the actions in
+    /**
+     * Enable drags from the given component, supporting the actions in
      * the given action mask.
+     * 
      * @param dragSource source of the drag.
      * @param actions actions which should be supported.
      */
@@ -210,22 +218,21 @@ public abstract class DragHandler
             if (alpha != null) {
                 try {
                     ghostAlpha = Float.parseFloat(alpha);
+                } catch (NumberFormatException e) {
                 }
-                catch(NumberFormatException e) { }
             }
             String max = System.getProperty("DragHandler.maxDragImageSize");
             if (max != null) {
                 String[] size = max.split("x");
                 if (size.length == 2) {
                     try {
-                        maxGhostSize = new Dimension(Integer.parseInt(size[0]),
-                                                     Integer.parseInt(size[1]));
+                        maxGhostSize = new Dimension(Integer.parseInt(size[0]), Integer.parseInt(size[1]));
+                    } catch (NumberFormatException e) {
                     }
-                    catch(NumberFormatException e) { }
                 }
             }
+        } catch (SecurityException e) {
         }
-        catch(SecurityException e) { }
         // Avoid having more than one gesture recognizer active
         disableSwingDragSupport(dragSource);
         DragSource src = DragSource.getDefaultDragSource();
@@ -234,28 +241,25 @@ public abstract class DragHandler
 
     private void disableSwingDragSupport(Component comp) {
         if (comp instanceof JTree) {
-            ((JTree)comp).setDragEnabled(false);
-        }
-        else if (comp instanceof JList) {
-            ((JList)comp).setDragEnabled(false);
-        }
-        else if (comp instanceof JTable) {
-            ((JTable)comp).setDragEnabled(false);
-        }
-        else if (comp instanceof JTextComponent) {
-            ((JTextComponent)comp).setDragEnabled(false);
-        }
-        else if (comp instanceof JColorChooser) {
-            ((JColorChooser)comp).setDragEnabled(false);
-        }
-        else if (comp instanceof JFileChooser) {
-            ((JFileChooser)comp).setDragEnabled(false);
+            ((JTree) comp).setDragEnabled(false);
+        } else if (comp instanceof JList) {
+            ((JList) comp).setDragEnabled(false);
+        } else if (comp instanceof JTable) {
+            ((JTable) comp).setDragEnabled(false);
+        } else if (comp instanceof JTextComponent) {
+            ((JTextComponent) comp).setDragEnabled(false);
+        } else if (comp instanceof JColorChooser) {
+            ((JColorChooser) comp).setDragEnabled(false);
+        } else if (comp instanceof JFileChooser) {
+            ((JFileChooser) comp).setDragEnabled(false);
         }
     }
 
-    /** Override to control whether a drag is started.  The default
+    /**
+     * Override to control whether a drag is started. The default
      * implementation disallows the drag if the user is applying modifiers
      * and the user-requested action is not supported.
+     * 
      * @param e event
      * @return Whether to allow a drag
      */
@@ -270,22 +274,29 @@ public abstract class DragHandler
         return true;
     }
 
-    /** Update the modifiers hint.
+    /**
+     * Update the modifiers hint.
+     * 
      * @param mods Current modifiers
      */
     protected void setModifiers(int mods) {
         modifiers = mods;
     }
-    /** Override to provide an appropriate {@link Transferable} representing
+
+    /**
+     * Override to provide an appropriate {@link Transferable} representing
      * the data being dragged.
+     * 
      * @param e event
      * @return {@link Transferable} representation of item being dragged.
      */
     protected abstract Transferable getTransferable(DragGestureEvent e);
 
-    /** Override this to provide a custom image.  The {@link Icon}
+    /**
+     * Override this to provide a custom image. The {@link Icon}
      * returned by this method by default is <code>null</code>, which results
      * in no drag image.
+     * 
      * @param e event
      * @param srcOffset set this to be the offset from the drag source
      * component's upper left corner to the image's upper left corner.
@@ -299,20 +310,24 @@ public abstract class DragHandler
         return null;
     }
 
-    /** Override to perform any decoration of the target at the start of a drag,
+    /**
+     * Override to perform any decoration of the target at the start of a drag,
      * if desired.
+     * 
      * @param e event
      */
-    protected void dragStarted(DragGestureEvent e) { }
+    protected void dragStarted(DragGestureEvent e) {
+    }
 
-    /** Called when a user drag gesture is recognized.  This method is
+    /**
+     * Called when a user drag gesture is recognized. This method is
      * responsible for initiating the drag operation.
+     * 
      * @param e event
      */
     @Override
     public void dragGestureRecognized(DragGestureEvent e) {
-        if ((e.getDragAction() & supportedActions) != 0
-            && canDrag(e)) {
+        if ((e.getDragAction() & supportedActions) != 0 && canDrag(e)) {
             setModifiers(e.getTriggerEvent().getModifiersEx() & KEY_MASK);
             Transferable transferable = getTransferable(e);
             if (transferable == null)
@@ -322,22 +337,18 @@ public abstract class DragHandler
                 Icon icon = getDragIcon(e, srcOffset);
                 Point origin = e.getDragOrigin();
                 // offset of the image origin from the cursor
-                imageOffset = new Point(srcOffset.x - origin.x,
-                                        srcOffset.y - origin.y);
+                imageOffset = new Point(srcOffset.x - origin.x, srcOffset.y - origin.y);
                 Icon dragIcon = scaleDragIcon(icon, imageOffset);
                 Cursor cursor = null;
                 if (dragIcon != null && DragSource.isDragImageSupported()) {
                     GraphicsConfiguration gc = e.getComponent().getGraphicsConfiguration();
-                    e.startDrag(cursor, createDragImage(gc, dragIcon),
-                                imageOffset, transferable, this);
-                }
-                else {
+                    e.startDrag(cursor, createDragImage(gc, dragIcon), imageOffset, transferable, this);
+                } else {
                     if (dragIcon != null) {
                         Point screen = dragSource.getLocationOnScreen();
                         screen.translate(origin.x, origin.y);
                         Point cursorOffset = new Point(-imageOffset.x, -imageOffset.y);
-                        ghost = new GhostedDragImage(dragSource, dragIcon,
-                                                     getImageLocation(screen), cursorOffset);
+                        ghost = new GhostedDragImage(dragSource, dragIcon, getImageLocation(screen), cursorOffset);
                         ghost.setAlpha(ghostAlpha);
                     }
                     e.startDrag(cursor, transferable, this);
@@ -346,8 +357,7 @@ public abstract class DragHandler
                 moved = false;
                 e.getDragSource().addDragSourceMotionListener(this);
                 DragHandler.transferable = transferable;
-            }
-            catch (InvalidDnDOperationException ex) {
+            } catch (InvalidDnDOperationException ex) {
                 if (ghost != null) {
                     ghost.dispose();
                     ghost = null;
@@ -356,31 +366,36 @@ public abstract class DragHandler
         }
     }
 
-    /** Change the size of the given drag icon, if appropriate.  When using
+    /**
+     * Change the size of the given drag icon, if appropriate. When using
      * a differently-sized drag icon, we also need to adjust the cursor offset within
      * the icon.
+     * 
      * @param icon Icon to be scaled.
      * @param imageOffset Modified to account for the new icon's size.
      * @return Scaled {@link Icon}, or the original if there was no change.
      */
     protected Icon scaleDragIcon(Icon icon, Point imageOffset) {
         /*
-        if (icon != null && maxGhostSize != null) {
-            if (icon.getIconWidth() > maxGhostSize.width
-                || icon.getIconHeight() > maxGhostSize.height) {
-                Icon scaled = new ScaledIcon(icon, maxGhostSize.width,
-                                             maxGhostSize.height);
-                double scale = (double)scaled.getIconWidth()/icon.getIconWidth();
-                imageOffset.x *= scale;
-                imageOffset.y *= scale;
-                return scaled;
-            }
-        }*/
+         * if (icon != null && maxGhostSize != null) {
+         * if (icon.getIconWidth() > maxGhostSize.width
+         * || icon.getIconHeight() > maxGhostSize.height) {
+         * Icon scaled = new ScaledIcon(icon, maxGhostSize.width,
+         * maxGhostSize.height);
+         * double scale = (double)scaled.getIconWidth()/icon.getIconWidth();
+         * imageOffset.x *= scale;
+         * imageOffset.y *= scale;
+         * return scaled;
+         * }
+         * }
+         */
         return icon;
     }
 
-    /** Create an image from the given icon.  The image is provided to the
+    /**
+     * Create an image from the given icon. The image is provided to the
      * native handler if drag images are supported natively.
+     * 
      * @param gc current graphics configuration.
      * @param icon Icon on which to base the drag image.
      * @return image based on the given icon.
@@ -389,7 +404,7 @@ public abstract class DragHandler
         int w = icon.getIconWidth();
         int h = icon.getIconHeight();
         BufferedImage image = gc.createCompatibleImage(w, h, Transparency.TRANSLUCENT);
-        Graphics2D g = (Graphics2D)image.getGraphics();
+        Graphics2D g = (Graphics2D) image.getGraphics();
         g.setComposite(AlphaComposite.Clear);
         g.fillRect(0, 0, w, h);
         // Ignore pixels in the buffered image
@@ -403,27 +418,31 @@ public abstract class DragHandler
     private int reduce(int actions) {
         if ((actions & MOVE) != 0 && actions != MOVE) {
             return MOVE;
-        }
-        else if ((actions & COPY) != 0 && actions != COPY) {
+        } else if ((actions & COPY) != 0 && actions != COPY) {
             return COPY;
         }
         return actions;
     }
 
     protected Cursor getCursorForAction(int actualAction) {
-        switch(actualAction) {
+        switch (actualAction) {
             case MOVE:
                 return DragSource.DefaultMoveDrop;
+
             case COPY:
                 return DragSource.DefaultCopyDrop;
+
             case LINK:
                 return DragSource.DefaultLinkDrop;
+
             default:
                 return DragSource.DefaultMoveNoDrop;
         }
     }
 
-    /** Returns the first available action supported by source and target.
+    /**
+     * Returns the first available action supported by source and target.
+     * 
      * @param targetActions current actions requested
      * @return subset of actions supported based on the input
      */
@@ -431,30 +450,34 @@ public abstract class DragHandler
         return reduce(supportedActions & targetActions);
     }
 
-    /** Get the currently requested drop action.
+    /**
+     * Get the currently requested drop action.
+     * 
      * @param ev event
      * @return effective drop action
      */
     protected int getDropAction(DragSourceEvent ev) {
         if (ev instanceof DragSourceDragEvent) {
-            DragSourceDragEvent e = (DragSourceDragEvent)ev;
+            DragSourceDragEvent e = (DragSourceDragEvent) ev;
             return e.getDropAction();
         }
         if (ev instanceof DragSourceDropEvent) {
-            return ((DragSourceDropEvent)ev).getDropAction();
+            return ((DragSourceDropEvent) ev).getDropAction();
         }
         return NONE;
     }
 
-    /** Pick a different drop action if the target doesn't support the current
+    /**
+     * Pick a different drop action if the target doesn't support the current
      * one and there are no modifiers.
+     * 
      * @param ev event
      * @return effective drop action
      */
     protected int adjustDropAction(DragSourceEvent ev) {
         int action = getDropAction(ev);
         if (ev instanceof DragSourceDragEvent) {
-            DragSourceDragEvent e = (DragSourceDragEvent)ev;
+            DragSourceDragEvent e = (DragSourceDragEvent) ev;
             if (action == NONE) {
                 int mods = e.getGestureModifiersEx() & KEY_MASK;
                 if (mods == 0) {
@@ -467,6 +490,7 @@ public abstract class DragHandler
 
     /**
      * Hook to update the cursor on various {@link DragSourceEvent} updates.
+     * 
      * @param ev event
      */
     protected void updateCursor(DragSourceEvent ev) {
@@ -477,18 +501,35 @@ public abstract class DragHandler
     }
 
     static String actionString(int action) {
-        switch(action) {
-            case MOVE: return "MOVE";
-            case MOVE|COPY: return "MOVE|COPY";
-            case MOVE|LINK: return "MOVE|LINK";
-            case MOVE|COPY|LINK: return "MOVE|COPY|LINK";
-            case COPY: return "COPY";
-            case COPY|LINK: return "COPY|LINK";
-            case LINK: return "LINK";
-            default: return "NONE";
+        switch (action) {
+            case MOVE:
+                return "MOVE";
+
+            case MOVE | COPY:
+                return "MOVE|COPY";
+
+            case MOVE | LINK:
+                return "MOVE|LINK";
+
+            case MOVE | COPY | LINK:
+                return "MOVE|COPY|LINK";
+
+            case COPY:
+                return "COPY";
+
+            case COPY | LINK:
+                return "COPY|LINK";
+
+            case LINK:
+                return "LINK";
+
+            default:
+                return "NONE";
         }
     }
+
     private String lastAction;
+
     private void describe(String type, DragSourceEvent e) {
         if (LOG.isLoggable(Level.FINE)) {
             StringBuilder msgBuilder = new StringBuilder();
@@ -496,7 +537,7 @@ public abstract class DragHandler
             msgBuilder.append(type);
             DragSourceContext ds = e.getDragSourceContext();
             if (e instanceof DragSourceDragEvent) {
-                DragSourceDragEvent ev = (DragSourceDragEvent)e;
+                DragSourceDragEvent ev = (DragSourceDragEvent) e;
                 msgBuilder.append(": src=");
                 msgBuilder.append(actionString(ds.getSourceActions()));
                 msgBuilder.append(" usr=");
@@ -507,8 +548,7 @@ public abstract class DragHandler
                 msgBuilder.append(actionString(ev.getDropAction()));
                 msgBuilder.append(" mods=");
                 msgBuilder.append(ev.getGestureModifiersEx());
-            }
-            else {
+            } else {
                 msgBuilder.append(": e=");
                 msgBuilder.append(e);
             }
@@ -528,8 +568,7 @@ public abstract class DragHandler
         if (ghost != null) {
             if (e.getDropSuccess()) {
                 ghost.dispose();
-            }
-            else {
+            } else {
                 ghost.returnToOrigin();
             }
             ghost = null;
@@ -557,6 +596,7 @@ public abstract class DragHandler
     // which has reports "0" for the available target actions (1.4+?)
     // filed a bug for this
     private boolean moved;
+
     @Override
     public void dragMouseMoved(DragSourceDragEvent e) {
         describe("move", e);

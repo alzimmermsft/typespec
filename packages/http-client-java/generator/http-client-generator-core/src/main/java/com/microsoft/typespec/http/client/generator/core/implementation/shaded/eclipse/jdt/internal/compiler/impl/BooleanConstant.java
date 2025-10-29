@@ -15,65 +15,65 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 public class BooleanConstant extends Constant {
 
-	public static final char[] TRUE_STRING = "TRUE".toCharArray(); //$NON-NLS-1$
-	public static final char[] FALSE_STRING = "FALSE".toCharArray(); //$NON-NLS-1$
+    public static final char[] TRUE_STRING = "TRUE".toCharArray(); //$NON-NLS-1$
+    public static final char[] FALSE_STRING = "FALSE".toCharArray(); //$NON-NLS-1$
 
-	private final boolean value;
+    private final boolean value;
 
-	private static final BooleanConstant TRUE = new BooleanConstant(true);
-	private static final BooleanConstant FALSE = new BooleanConstant(false);
+    private static final BooleanConstant TRUE = new BooleanConstant(true);
+    private static final BooleanConstant FALSE = new BooleanConstant(false);
 
-	public static Constant fromValue(boolean value) {
-		return value ? BooleanConstant.TRUE : BooleanConstant.FALSE;
-	}
+    public static Constant fromValue(boolean value) {
+        return value ? BooleanConstant.TRUE : BooleanConstant.FALSE;
+    }
 
-	private BooleanConstant(boolean value) {
-		this.value = value;
-	}
+    private BooleanConstant(boolean value) {
+        this.value = value;
+    }
 
-	@Override
-	public boolean booleanValue() {
-		return this.value;
-	}
+    @Override
+    public boolean booleanValue() {
+        return this.value;
+    }
 
-	@Override
-	public int intValue() {
-		return this.value ? 1 : 0;
-	}
+    @Override
+    public int intValue() {
+        return this.value ? 1 : 0;
+    }
 
-	@Override
-	public String stringValue() {
-		// spec 15.17.11
-		return String.valueOf(this.value);
-	}
+    @Override
+    public String stringValue() {
+        // spec 15.17.11
+        return String.valueOf(this.value);
+    }
 
-	@Override
-	public String toString() {
-		return "(boolean)" + this.value; //$NON-NLS-1$
-	}
+    @Override
+    public String toString() {
+        return "(boolean)" + this.value; //$NON-NLS-1$
+    }
 
-	@Override
-	public int typeID() {
-		return T_boolean;
-	}
+    @Override
+    public int typeID() {
+        return T_boolean;
+    }
 
-	@Override
-	public int hashCode() {
-		return this.value ? 1231 : 1237;
-	}
+    @Override
+    public int hashCode() {
+        return this.value ? 1231 : 1237;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		// cannot be true anymore as the first test would have returned true
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        // cannot be true anymore as the first test would have returned true
+        return false;
+    }
 }

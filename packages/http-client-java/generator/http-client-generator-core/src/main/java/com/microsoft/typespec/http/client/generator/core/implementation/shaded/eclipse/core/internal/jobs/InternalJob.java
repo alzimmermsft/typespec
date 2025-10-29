@@ -59,7 +59,6 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
     // flag mask bits
     private static final int M_STATE = 0xFF;
     private static final int M_SYSTEM = 0x0100;
-    private static final int M_USER = 0x0200;
 
     /*
      * flag on a job indicating that it was about to run, but has been canceled
@@ -334,10 +333,6 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
         return (flags & M_RUN_CANCELED) != 0;
     }
 
-    protected boolean isBlocking() {
-        return manager.isBlocking(this);
-    }
-
     /**
      * Returns true if this job conflicts with the given job, and false otherwise.
      */
@@ -355,10 +350,6 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
 
     protected boolean isSystem() {
         return (flags & M_SYSTEM) != 0;
-    }
-
-    protected boolean isUser() {
-        return (flags & M_USER) != 0;
     }
 
     protected void join() throws InterruptedException {
@@ -544,22 +535,6 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
         this.thread = thread;
     }
 
-    protected void setUser(boolean value) {
-        synchronized (jobStateLock) {
-            if (getState() != Job.NONE) {
-                throw new IllegalStateException();
-            }
-            flags = value ? flags | M_USER : flags & ~M_USER;
-        }
-    }
-
-    protected void setJobGroup(JobGroup jobGroup) {
-        if (getState() != Job.NONE) {
-            throw new IllegalStateException("Setting job group of an already scheduled job is not allowed"); //$NON-NLS-1$
-        }
-        this.jobGroup = jobGroup;
-    }
-
     protected boolean shouldSchedule() {
         return true;
     }
@@ -568,17 +543,9 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
         return manager.sleep(this);
     }
 
-    protected Job yieldRule(IProgressMonitor progressMonitor) {
-        return manager.yieldRule(this, progressMonitor);
-    }
-
     @Override
     public String toString() {
         return getName() + "(" + jobNumber + ")"; //$NON-NLS-1$//$NON-NLS-2$
-    }
-
-    protected void wakeUp(long delay) {
-        manager.wakeUp(this, delay);
     }
 
     /**

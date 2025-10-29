@@ -25,30 +25,30 @@
  * <h3>String utilities</h3>
  *
  * <ul>
- *   <li>{@link Ascii}
- *   <li>{@link CaseFormat}
- *   <li>{@link CharMatcher}
- *   <li>{@link Splitter}
- *   <li>{@link Strings}
+ * <li>{@link Ascii}
+ * <li>{@link CaseFormat}
+ * <li>{@link CharMatcher}
+ * <li>{@link Splitter}
+ * <li>{@link Strings}
  * </ul>
  *
  * <h3>Function types</h3>
  *
  * <ul>
- *   <li>{@link Converter}
- *   <li>{@link Equivalence}
+ * <li>{@link Converter}
+ * <li>{@link Equivalence}
  * </ul>
  *
  * <h3>Other</h3>
  *
  * <ul>
- *   <li>{@link Enums}
- *   <li>{@link MoreObjects}
- *   <li>{@link Preconditions}
- *   <li>{@link StandardSystemProperty}
- *   <li>{@link Stopwatch}
- *   <li>{@link Throwables}
- *   <li>{@link Verify}
+ * <li>{@link Enums}
+ * <li>{@link MoreObjects}
+ * <li>{@link Preconditions}
+ * <li>{@link StandardSystemProperty}
+ * <li>{@link Stopwatch}
+ * <li>{@link Throwables}
+ * <li>{@link Verify}
  * </ul>
  *
  * <h3>The rest</h3>

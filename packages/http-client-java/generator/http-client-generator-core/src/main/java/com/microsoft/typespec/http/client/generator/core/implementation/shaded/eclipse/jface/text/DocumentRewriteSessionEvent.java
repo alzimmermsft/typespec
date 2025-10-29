@@ -15,7 +15,6 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
 
-
 /**
  * Description of the state of document rewrite sessions.
  *
@@ -26,60 +25,60 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class DocumentRewriteSessionEvent {
 
-	public final static Object SESSION_START= new Object();
-	public final static Object SESSION_STOP= new Object();
+    public final static Object SESSION_START = new Object();
+    public final static Object SESSION_STOP = new Object();
 
-	/** The changed document */
-	public IDocument fDocument;
-	/** The session */
-	public DocumentRewriteSession fSession;
-	/** The change type */
-	public Object fChangeType;
+    /** The changed document */
+    public IDocument fDocument;
+    /** The session */
+    public DocumentRewriteSession fSession;
+    /** The change type */
+    public Object fChangeType;
 
-	/**
-	 * Creates a new document event.
-	 *
-	 * @param doc the changed document
-	 * @param session the session
-	 * @param changeType the change type. This is either
-	 *            {@link DocumentRewriteSessionEvent#SESSION_START} or
-	 *            {@link DocumentRewriteSessionEvent#SESSION_STOP}.
-	 */
-	public DocumentRewriteSessionEvent(IDocument doc, DocumentRewriteSession session, Object changeType) {
-		Assert.isNotNull(doc);
-		Assert.isNotNull(session);
+    /**
+     * Creates a new document event.
+     *
+     * @param doc the changed document
+     * @param session the session
+     * @param changeType the change type. This is either
+     * {@link DocumentRewriteSessionEvent#SESSION_START} or
+     * {@link DocumentRewriteSessionEvent#SESSION_STOP}.
+     */
+    public DocumentRewriteSessionEvent(IDocument doc, DocumentRewriteSession session, Object changeType) {
+        Assert.isNotNull(doc);
+        Assert.isNotNull(session);
 
-		fDocument= doc;
-		fSession= session;
-		fChangeType= changeType;
-	}
+        fDocument = doc;
+        fSession = session;
+        fChangeType = changeType;
+    }
 
-	/**
-	 * Returns the changed document.
-	 *
-	 * @return the changed document
-	 */
-	public IDocument getDocument() {
-		return fDocument;
-	}
+    /**
+     * Returns the changed document.
+     *
+     * @return the changed document
+     */
+    public IDocument getDocument() {
+        return fDocument;
+    }
 
-	/**
-	 * Returns the change type of this event. This is either
-	 * {@link DocumentRewriteSessionEvent#SESSION_START}or
-	 * {@link DocumentRewriteSessionEvent#SESSION_STOP}.
-	 *
-	 * @return the change type of this event
-	 */
-	public Object getChangeType() {
-		return fChangeType;
-	}
+    /**
+     * Returns the change type of this event. This is either
+     * {@link DocumentRewriteSessionEvent#SESSION_START}or
+     * {@link DocumentRewriteSessionEvent#SESSION_STOP}.
+     *
+     * @return the change type of this event
+     */
+    public Object getChangeType() {
+        return fChangeType;
+    }
 
-	/**
-	 * Returns the rewrite session.
-	 *
-	 * @return the rewrite session
-	 */
-	public DocumentRewriteSession getSession() {
-		return fSession;
-	}
+    /**
+     * Returns the rewrite session.
+     *
+     * @return the rewrite session
+     */
+    public DocumentRewriteSession getSession() {
+        return fSession;
+    }
 }

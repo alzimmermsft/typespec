@@ -18,44 +18,37 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver;
 
-import java.util.Map;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Capability;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Resource;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.resolver.HostedCapability;
+import java.util.Map;
 
-class SimpleHostedCapability implements HostedCapability
-{
+class SimpleHostedCapability implements HostedCapability {
     private final Resource m_host;
     private final Capability m_cap;
 
-    SimpleHostedCapability(Resource host, Capability cap)
-    {
+    SimpleHostedCapability(Resource host, Capability cap) {
         m_host = host;
         m_cap = cap;
     }
 
-    public Resource getResource()
-    {
+    public Resource getResource() {
         return m_host;
     }
 
-    public Capability getDeclaredCapability()
-    {
+    public Capability getDeclaredCapability() {
         return m_cap;
     }
 
-    public String getNamespace()
-    {
+    public String getNamespace() {
         return m_cap.getNamespace();
     }
 
-    public Map<String, String> getDirectives()
-    {
+    public Map<String, String> getDirectives() {
         return m_cap.getDirectives();
     }
 
-    public Map<String, Object> getAttributes()
-    {
+    public Map<String, Object> getAttributes() {
         return m_cap.getAttributes();
     }
 }

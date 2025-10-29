@@ -214,24 +214,24 @@ public abstract class UnixFileNatives {
         return (libattr & attr) != 0;
     }
 
-    private static final native void initializeStructStatFieldIDs();
+    private static native void initializeStructStatFieldIDs();
 
-    private static final native int chmod(byte[] path, int mode);
+    private static native int chmod(byte[] path, int mode);
 
-    private static final native int chflags(byte[] path, int flags);
+    private static native int chflags(byte[] path, int flags);
 
-    private static final native int stat(byte[] path, StructStat buf);
+    private static native int stat(byte[] path, StructStat buf);
 
-    private static final native int lstat(byte[] path, StructStat buf);
+    private static native int lstat(byte[] path, StructStat buf);
 
-    private static final native int readlink(byte[] path, byte[] buf, long bufsiz);
+    private static native int readlink(byte[] path, byte[] buf, long bufsiz);
 
-    private static final native int errno();
+    private static native int errno();
 
-    private static final native int libattr();
+    private static native int libattr();
 
-    private static final native byte[] tounicode(char[] buf);
+    private static native byte[] tounicode(char[] buf);
 
-    private static final native int getflag(byte[] buf);
+    private static native int getflag(byte[] buf);
 
 }

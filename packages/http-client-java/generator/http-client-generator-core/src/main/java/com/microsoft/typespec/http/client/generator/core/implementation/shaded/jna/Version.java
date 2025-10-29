@@ -22,6 +22,7 @@
  * containing JNA, in file "AL2.0".
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna;
+
 interface Version {
     // Buildsystem replaces variables and compiled class will hold the right value
     String VERSION = "TEMPLATE";

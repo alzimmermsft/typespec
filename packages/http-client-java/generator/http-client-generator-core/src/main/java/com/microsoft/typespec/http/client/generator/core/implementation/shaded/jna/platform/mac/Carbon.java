@@ -25,16 +25,14 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.mac;
 
-import java.nio.IntBuffer;
-import java.util.List;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Library;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Callback;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Library;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure.FieldOrder;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.PointerByReference;
+import java.nio.IntBuffer;
 
 /**
  * Author: Denis Tulskiy
@@ -50,6 +48,7 @@ public interface Carbon extends Library {
 
     /**
      * Obtains the event target reference for the standard toolbox dispatcher
+     * 
      * @return event dispatcher reference
      */
     Pointer GetEventDispatcherTarget();
@@ -57,17 +56,20 @@ public interface Carbon extends Library {
     /**
      * Installs an event handler on a specified event target.
      */
-    int InstallEventHandler(Pointer inTarget, EventHandlerProcPtr inHandler, int inNumTypes, EventTypeSpec[] inList, Pointer inUserData, PointerByReference outRef);
+    int InstallEventHandler(Pointer inTarget, EventHandlerProcPtr inHandler, int inNumTypes, EventTypeSpec[] inList,
+        Pointer inUserData, PointerByReference outRef);
 
     /**
      * Registers a global hot key.
      */
-    int RegisterEventHotKey(int inHotKeyCode, int inHotKeyModifiers, EventHotKeyID.ByValue inHotKeyID, Pointer inTarget, int inOptions, PointerByReference outRef);
+    int RegisterEventHotKey(int inHotKeyCode, int inHotKeyModifiers, EventHotKeyID.ByValue inHotKeyID, Pointer inTarget,
+        int inOptions, PointerByReference outRef);
 
     /**
      * Obtains a parameter from the specified event.
      */
-    int GetEventParameter(Pointer inEvent, int inName, int inDesiredType, Pointer outActualType, int inBufferSize, IntBuffer outActualSize, EventHotKeyID outData);
+    int GetEventParameter(Pointer inEvent, int inName, int inDesiredType, Pointer outActualType, int inBufferSize,
+        IntBuffer outActualSize, EventHotKeyID outData);
 
     /**
      * Removes the specified event handler
@@ -79,18 +81,19 @@ public interface Carbon extends Library {
      */
     int UnregisterEventHotKey(Pointer inHotKey);
 
-    @FieldOrder({"eventClass", "eventKind"})
+    @FieldOrder({ "eventClass", "eventKind" })
     public class EventTypeSpec extends Structure {
         public int eventClass;
         public int eventKind;
     }
 
-    @FieldOrder({"signature", "id"})
+    @FieldOrder({ "signature", "id" })
     public static class EventHotKeyID extends Structure {
         public int signature;
         public int id;
 
-        public static class ByValue extends EventHotKeyID implements Structure.ByValue { }
+        public static class ByValue extends EventHotKeyID implements Structure.ByValue {
+        }
     }
 
     public static interface EventHandlerProcPtr extends Callback {

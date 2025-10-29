@@ -36,6 +36,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 
 /**
  * Shell32 Utility API.
+ * 
  * @author dblock[at]dblock.org
  * @author markus[at]headcrashing[dot]eu
  */
@@ -52,8 +53,7 @@ public abstract class Shell32Util {
      */
     public static String getFolderPath(HWND hwnd, int nFolder, DWORD dwFlags) {
         char[] pszPath = new char[WinDef.MAX_PATH];
-        HRESULT hr = Shell32.INSTANCE.SHGetFolderPath(hwnd,
-                nFolder, null, dwFlags, pszPath);
+        HRESULT hr = Shell32.INSTANCE.SHGetFolderPath(hwnd, nFolder, null, dwFlags, pszPath);
         if (!hr.equals(W32Errors.S_OK)) {
             throw new Win32Exception(hr);
         }
@@ -74,22 +74,21 @@ public abstract class Shell32Util {
     /**
      * Retrieves the full path of a known folder identified by the folder's KNOWNFOLDERID. This function replaces
      * {@link #getFolderPath}. That older function is now simply a wrapper for getKnownFolderPath
+     * 
      * @param guid the KNOWNFOLDERS GUID as defined in {@link KnownFolders}
      * @return the path of the known folder. The returned path does not include a trailing backslash. For example,
-     *        "C:\Users" is returned rather than "C:\Users\".
+     * "C:\Users" is returned rather than "C:\Users\".
      * @throws Win32Exception if the guid references a KNOWNFOLDERID which does not have a path (such as a folder marked
-     *        as KF_CATEGORY_VIRTUAL) or that the KNOWNFOLDERID is not present on the system. Not all KNOWNFOLDERID values are
-     *        present on all systems.
+     * as KF_CATEGORY_VIRTUAL) or that the KNOWNFOLDERID is not present on the system. Not all KNOWNFOLDERID values are
+     * present on all systems.
      */
-    public static String getKnownFolderPath(GUID guid) throws Win32Exception
-    {
+    public static String getKnownFolderPath(GUID guid) throws Win32Exception {
         int flags = ShlObj.KNOWN_FOLDER_FLAG.NONE.getFlag();
         PointerByReference outPath = new PointerByReference();
         HANDLE token = null;
         HRESULT hr = Shell32.INSTANCE.SHGetKnownFolderPath(guid, flags, token, outPath);
 
-        if (!W32Errors.SUCCEEDED(hr.intValue()))
-        {
+        if (!W32Errors.SUCCEEDED(hr.intValue())) {
             throw new Win32Exception(hr);
         }
 
@@ -103,10 +102,11 @@ public abstract class Shell32Util {
      * Retrieves the path of a special folder, identified by its CSIDL.
      *
      * @param csidl
-     *            A CSIDL that identifies the folder of interest. If a virtual folder is specified, this function will fail.
+     * A CSIDL that identifies the folder of interest. If a virtual folder is specified, this function will fail.
      * @param create
-     *            Indicates whether the folder should be created if it does not already exist. If this value is nonzero, the folder is created. If this value is
-     *            zero, the folder is not created.
+     * Indicates whether the folder should be created if it does not already exist. If this value is nonzero, the folder
+     * is created. If this value is
+     * zero, the folder is not created.
      * @return The drive and path of the specified folder
      */
     public static final String getSpecialFolderPath(final int csidl, final boolean create) {
@@ -121,9 +121,9 @@ public abstract class Shell32Util {
      * line arguments.
      *
      * @param cmdLine
-     *            A string that contains the full command line. If this parameter is
-     *            an empty string the function returns the path to the current
-     *            executable file.
+     * A string that contains the full command line. If this parameter is
+     * an empty string the function returns the path to the current
+     * executable file.
      * @return An array of strings, similar to {@code argv}.
      */
     public static final String[] CommandLineToArgv(String cmdLine) {

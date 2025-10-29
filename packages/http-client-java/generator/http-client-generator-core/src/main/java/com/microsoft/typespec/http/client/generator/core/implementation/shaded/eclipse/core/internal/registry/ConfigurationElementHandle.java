@@ -29,10 +29,6 @@ public class ConfigurationElementHandle extends Handle implements IConfiguration
         return (ConfigurationElement) objectManager.getObject(getId(), RegistryObjectManager.CONFIGURATION_ELEMENT);
     }
 
-    protected boolean shouldPersist() {
-        return getConfigurationElement().shouldPersist();
-    }
-
     @Override
     public String getAttribute(String propertyName) {
         return getConfigurationElement().getAttribute(propertyName);
@@ -41,11 +37,6 @@ public class ConfigurationElementHandle extends Handle implements IConfiguration
     @Override
     public String getAttribute(String attrName, String locale) {
         return getConfigurationElement().getAttribute(attrName, locale);
-    }
-
-    @Override
-    public String[] getAttributeNames() {
-        return getConfigurationElement().getAttributeNames();
     }
 
     @Override

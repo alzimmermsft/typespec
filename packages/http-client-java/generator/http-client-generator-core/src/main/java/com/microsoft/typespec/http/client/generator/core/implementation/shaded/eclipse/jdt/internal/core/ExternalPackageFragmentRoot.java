@@ -13,12 +13,12 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
-import java.io.File;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaElement;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IPackageFragmentRoot;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
+import java.io.File;
 
 /**
  * A package fragment root that corresponds to an external class folder.
@@ -28,108 +28,112 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class ExternalPackageFragmentRoot extends PackageFragmentRoot {
 
-	/**
-	 * The path to the external folder
-	 * (an OS path)
-	 */
-	protected final IPath externalPath;
-
-	/**
-	 * Constructs a package fragment root which is the root of the Java package directory hierarchy
-	 * based on an external folder that is not contained in a <code>IJavaProject</code> and
-	 * does not have an associated <code>IResource</code>.
-	 */
-	protected ExternalPackageFragmentRoot(IPath externalPath, JavaProject project) {
-		super(null, project);
-		this.externalPath = externalPath;
-	}
-
-	protected ExternalPackageFragmentRoot(IResource linkedFolder, IPath externalPath, JavaProject project) {
-		super(linkedFolder, project);
-		this.externalPath = externalPath == null ? linkedFolder.getLocation() : externalPath;
-	}
+    /**
+     * The path to the external folder
+     * (an OS path)
+     */
+    protected final IPath externalPath;
 
     /**
-	 * Returns true if this handle represents the same external folder
-	 * as the given handle.
-	 *
-	 * @see Object#equals
-	 */
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o instanceof ExternalPackageFragmentRoot other) {
-			return this.externalPath.equals(other.externalPath);
-		}
-		return false;
-	}
+     * Constructs a package fragment root which is the root of the Java package directory hierarchy
+     * based on an external folder that is not contained in a <code>IJavaProject</code> and
+     * does not have an associated <code>IResource</code>.
+     */
+    protected ExternalPackageFragmentRoot(IPath externalPath, JavaProject project) {
+        super(null, project);
+        this.externalPath = externalPath;
+    }
 
-	@Override
-	protected int calculateHashCode() {
-		return this.externalPath.hashCode();
-	}
+    protected ExternalPackageFragmentRoot(IResource linkedFolder, IPath externalPath, JavaProject project) {
+        super(linkedFolder, project);
+        this.externalPath = externalPath == null ? linkedFolder.getLocation() : externalPath;
+    }
 
-	@Override
-	public String getElementName() {
-		return this.externalPath.lastSegment();
-	}
-	/**
-	 * @see IPackageFragmentRoot
-	 */
-	@Override
-	public int getKind() {
-		return IPackageFragmentRoot.K_BINARY;
-	}
-	@Override
-	int internalKind() throws JavaModelException {
-		return IPackageFragmentRoot.K_BINARY;
-	}
-	/**
-	 * @see IPackageFragmentRoot
-	 */
-	@Override
-	public IPath getPath() {
-		return this.externalPath;
-	}
+    /**
+     * Returns true if this handle represents the same external folder
+     * as the given handle.
+     *
+     * @see Object#equals
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o instanceof ExternalPackageFragmentRoot other) {
+            return this.externalPath.equals(other.externalPath);
+        }
+        return false;
+    }
 
-	/**
-	 * @see IJavaElement
-	 */
-	@Override
-	public IResource getUnderlyingResource() throws JavaModelException {
-		return null;
-	}
-	/**
-	 * @see IPackageFragmentRoot
-	 */
-	@Override
-	public boolean isExternal() {
-		return true;
-	}
+    @Override
+    protected int calculateHashCode() {
+        return this.externalPath.hashCode();
+    }
 
-	@Override
-	public IResource resource(PackageFragmentRoot root) {
-		if (this.resource == null)
-			return this.resource = JavaModelManager.getExternalManager().getFolder(this.externalPath);
-		return super.resource(root);
-	}
+    @Override
+    public String getElementName() {
+        return this.externalPath.lastSegment();
+    }
 
-	@Override
-	protected boolean resourceExists(IResource underlyingResource) {
-		if (underlyingResource == null)
-			return false;
-		IPath location = underlyingResource.getLocation();
-		if (location == null)
-			return false;
-		File file = location.toFile();
-		if (file == null)
-			return false;
-		return file.exists();
-	}
+    /**
+     * @see IPackageFragmentRoot
+     */
+    @Override
+    public int getKind() {
+        return IPackageFragmentRoot.K_BINARY;
+    }
 
-	@Override
-	protected void toStringAncestors(StringBuilder buffer) {
-		// don't show project as it is irrelevant for external folders.
-	}
+    @Override
+    int internalKind() throws JavaModelException {
+        return IPackageFragmentRoot.K_BINARY;
+    }
+
+    /**
+     * @see IPackageFragmentRoot
+     */
+    @Override
+    public IPath getPath() {
+        return this.externalPath;
+    }
+
+    /**
+     * @see IJavaElement
+     */
+    @Override
+    public IResource getUnderlyingResource() throws JavaModelException {
+        return null;
+    }
+
+    /**
+     * @see IPackageFragmentRoot
+     */
+    @Override
+    public boolean isExternal() {
+        return true;
+    }
+
+    @Override
+    public IResource resource(PackageFragmentRoot root) {
+        if (this.resource == null)
+            return this.resource = JavaModelManager.getExternalManager().getFolder(this.externalPath);
+        return super.resource(root);
+    }
+
+    @Override
+    protected boolean resourceExists(IResource underlyingResource) {
+        if (underlyingResource == null)
+            return false;
+        IPath location = underlyingResource.getLocation();
+        if (location == null)
+            return false;
+        File file = location.toFile();
+        if (file == null)
+            return false;
+        return file.exists();
+    }
+
+    @Override
+    protected void toStringAncestors(StringBuilder buffer) {
+        // don't show project as it is irrelevant for external folders.
+    }
 }

@@ -125,8 +125,4 @@ public class ProjectVariableProviderManager {
         return Map.copyOf(d);
     }
 
-    public Descriptor findDescriptor(String name) {
-        Descriptor result = descriptors.get(name);
-        return result;
-    }
 }

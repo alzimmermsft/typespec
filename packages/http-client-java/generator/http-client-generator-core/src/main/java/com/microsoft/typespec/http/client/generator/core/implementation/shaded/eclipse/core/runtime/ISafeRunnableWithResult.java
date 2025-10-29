@@ -48,5 +48,5 @@ public interface ISafeRunnableWithResult<T> extends ISafeRunnable {
      * @exception Exception if a problem occurred while running this method
      * @see SafeRunner#run(ISafeRunnable)
      */
-    public T runWithResult() throws Exception;
+    T runWithResult() throws Exception;
 }

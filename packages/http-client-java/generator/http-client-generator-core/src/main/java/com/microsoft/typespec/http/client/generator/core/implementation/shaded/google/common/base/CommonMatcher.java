@@ -24,15 +24,15 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.g
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
 abstract class CommonMatcher {
-  public abstract boolean matches();
+    public abstract boolean matches();
 
-  public abstract boolean find();
+    public abstract boolean find();
 
-  public abstract boolean find(int index);
+    public abstract boolean find(int index);
 
-  public abstract String replaceAll(String replacement);
+    public abstract String replaceAll(String replacement);
 
-  public abstract int end();
+    public abstract int end();
 
-  public abstract int start();
+    public abstract int start();
 }

@@ -13,9 +13,9 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.internal.provisional.verifier;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Bundle;
 import java.io.File;
 import java.io.IOException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Bundle;
 
 /**
  * A factory used to create certificate verifiers.
@@ -27,22 +27,22 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  * </p>
  */
 public interface CertificateVerifierFactory {
-	/**
-	 * Creates a certificate verifier for the specified content of a repository
-	 * 
-	 * @param content the content of the repository
-	 * @return a certificate verifier for the specified content of a repository
-	 * @throws IOException if an IO exception occurs while reading the repository
-	 */
-	public CertificateVerifier getVerifier(File content) throws IOException;
+    /**
+     * Creates a certificate verifier for the specified content of a repository
+     * 
+     * @param content the content of the repository
+     * @return a certificate verifier for the specified content of a repository
+     * @throws IOException if an IO exception occurs while reading the repository
+     */
+    public CertificateVerifier getVerifier(File content) throws IOException;
 
-	/**
-	 * Returns a certificate verifier for the specified bundle.
-	 * 
-	 * @param bundle the bundle to get a verifier for
-	 * @return a certificate verifier for the specified bundle.
-	 * @throws IOException if an IO exception occurs while reading the bundle
-	 *                     content
-	 */
-	public CertificateVerifier getVerifier(Bundle bundle) throws IOException;
+    /**
+     * Returns a certificate verifier for the specified bundle.
+     * 
+     * @param bundle the bundle to get a verifier for
+     * @return a certificate verifier for the specified bundle.
+     * @throws IOException if an IO exception occurs while reading the bundle
+     * content
+     */
+    public CertificateVerifier getVerifier(Bundle bundle) throws IOException;
 }

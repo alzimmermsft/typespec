@@ -14,8 +14,8 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 
 /**
  * Legacy version of {@link java.util.function.Supplier java.util.function.Supplier}. Semantically,
@@ -39,13 +39,13 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @FunctionalInterface
 @ElementTypesAreNonnullByDefault
 public interface Supplier<T extends @Nullable Object> extends java.util.function.Supplier<T> {
-  /**
-   * Retrieves an instance of the appropriate type. The returned object may or may not be a new
-   * instance, depending on the implementation.
-   *
-   * @return an instance of the appropriate type
-   */
-  @Override
-  @ParametricNullness
-  T get();
+    /**
+     * Retrieves an instance of the appropriate type. The returned object may or may not be a new
+     * instance, depending on the implementation.
+     *
+     * @return an instance of the appropriate type
+     */
+    @Override
+    @ParametricNullness
+    T get();
 }

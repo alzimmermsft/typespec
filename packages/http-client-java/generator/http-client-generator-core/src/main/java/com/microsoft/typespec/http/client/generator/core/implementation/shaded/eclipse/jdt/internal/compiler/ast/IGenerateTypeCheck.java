@@ -25,89 +25,88 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 interface IGenerateTypeCheck {
 
-	default void generateTypeCheck(TypeBinding providedType, TypeReference expectedTypeRef, BlockScope scope, CodeStream codeStream, PrimitiveConversionRoute route) {
-		switch (route) {
-			case IDENTITY_CONVERSION -> {
-				consumeProvidedValue(providedType, codeStream);
-				codeStream.iconst_1();
-				setPatternIsTotalType();
-			}
-			case WIDENING_PRIMITIVE_CONVERSION,
-			NARROWING_PRIMITVE_CONVERSION,
-			WIDENING_AND_NARROWING_PRIMITIVE_CONVERSION -> {
-				generateExactConversions(providedType, expectedTypeRef.resolvedType, scope, codeStream);
-				setPatternIsTotalType();
-			}
-			case BOXING_CONVERSION,
-			BOXING_CONVERSION_AND_WIDENING_REFERENCE_CONVERSION -> {
-				consumeProvidedValue(providedType, codeStream);
-				codeStream.iconst_1();
-				setPatternIsTotalType();
-			}
-			case WIDENING_REFERENCE_AND_UNBOXING_COVERSION,
-			WIDENING_REFERENCE_AND_UNBOXING_COVERSION_AND_WIDENING_PRIMITIVE_CONVERSION -> {
-				codeStream.instance_of(scope.getJavaLangObject());
-				setPatternIsTotalType();
-			}
-			case NARROWING_AND_UNBOXING_CONVERSION -> {
-				TypeBinding boxType = scope.environment().computeBoxingType(expectedTypeRef.resolvedType);
-				codeStream.instance_of(expectedTypeRef, boxType);
-			}
-			case UNBOXING_CONVERSION -> {
-				codeStream.instance_of(scope.getJavaLangObject());
-				setPatternIsTotalType();
-			}
-			case UNBOXING_AND_WIDENING_PRIMITIVE_CONVERSION -> {
-				codeStream.dup();
-				codeStream.instance_of(providedType);
-				BranchLabel iLabel = new BranchLabel(codeStream);
-				BranchLabel postCheck = new BranchLabel(codeStream);
+    default void generateTypeCheck(TypeBinding providedType, TypeReference expectedTypeRef, BlockScope scope,
+        CodeStream codeStream, PrimitiveConversionRoute route) {
+        switch (route) {
+            case IDENTITY_CONVERSION -> {
+                consumeProvidedValue(providedType, codeStream);
+                codeStream.iconst_1();
+                setPatternIsTotalType();
+            }
+            case WIDENING_PRIMITIVE_CONVERSION, NARROWING_PRIMITVE_CONVERSION, WIDENING_AND_NARROWING_PRIMITIVE_CONVERSION -> {
+                generateExactConversions(providedType, expectedTypeRef.resolvedType, scope, codeStream);
+                setPatternIsTotalType();
+            }
+            case BOXING_CONVERSION, BOXING_CONVERSION_AND_WIDENING_REFERENCE_CONVERSION -> {
+                consumeProvidedValue(providedType, codeStream);
+                codeStream.iconst_1();
+                setPatternIsTotalType();
+            }
+            case WIDENING_REFERENCE_AND_UNBOXING_COVERSION, WIDENING_REFERENCE_AND_UNBOXING_COVERSION_AND_WIDENING_PRIMITIVE_CONVERSION -> {
+                codeStream.instance_of(scope.getJavaLangObject());
+                setPatternIsTotalType();
+            }
+            case NARROWING_AND_UNBOXING_CONVERSION -> {
+                TypeBinding boxType = scope.environment().computeBoxingType(expectedTypeRef.resolvedType);
+                codeStream.instance_of(expectedTypeRef, boxType);
+            }
+            case UNBOXING_CONVERSION -> {
+                codeStream.instance_of(scope.getJavaLangObject());
+                setPatternIsTotalType();
+            }
+            case UNBOXING_AND_WIDENING_PRIMITIVE_CONVERSION -> {
+                codeStream.dup();
+                codeStream.instance_of(providedType);
+                BranchLabel iLabel = new BranchLabel(codeStream);
+                BranchLabel postCheck = new BranchLabel(codeStream);
 
-				codeStream.ifne(iLabel);
-				codeStream.pop();
-				codeStream.iconst_0();
-				codeStream.goto_(postCheck);
+                codeStream.ifne(iLabel);
+                codeStream.pop();
+                codeStream.iconst_0();
+                codeStream.goto_(postCheck);
 
-				iLabel.place();
-				codeStream.checkcast(providedType);
-				TypeBinding unboxedType = scope.environment().computeBoxingType(providedType);
-				codeStream.generateUnboxingConversion(unboxedType.id);
-				int expectedTypeId = expectedTypeRef.resolvedType.id;
-				int unboxedProvidedTypeId = unboxedType.id;
-				if (BaseTypeBinding.isExactWidening(expectedTypeId, unboxedProvidedTypeId)) {
-					codeStream.pop();
-					codeStream.iconst_1();
-				} else {
-					codeStream.invokeExactConversionsSupport(BaseTypeBinding.getRightToLeft(expectedTypeId, unboxedProvidedTypeId));
-				}
+                iLabel.place();
+                codeStream.checkcast(providedType);
+                TypeBinding unboxedType = scope.environment().computeBoxingType(providedType);
+                codeStream.generateUnboxingConversion(unboxedType.id);
+                int expectedTypeId = expectedTypeRef.resolvedType.id;
+                int unboxedProvidedTypeId = unboxedType.id;
+                if (BaseTypeBinding.isExactWidening(expectedTypeId, unboxedProvidedTypeId)) {
+                    codeStream.pop();
+                    codeStream.iconst_1();
+                } else {
+                    codeStream.invokeExactConversionsSupport(
+                        BaseTypeBinding.getRightToLeft(expectedTypeId, unboxedProvidedTypeId));
+                }
 
-				codeStream.goto_(postCheck);
-				postCheck.place();
-				setPatternIsTotalType();
-			}
-			case NO_CONVERSION_ROUTE -> {
-				codeStream.instance_of(expectedTypeRef, expectedTypeRef.resolvedType);
-				break;
-			}
-			default -> {
-				throw new IllegalArgumentException("Unexpected conversion route "+route); //$NON-NLS-1$
-			}
-		}
-	}
+                codeStream.goto_(postCheck);
+                postCheck.place();
+                setPatternIsTotalType();
+            }
+            case NO_CONVERSION_ROUTE -> {
+                codeStream.instance_of(expectedTypeRef, expectedTypeRef.resolvedType);
+                break;
+            }
+            default -> {
+                throw new IllegalArgumentException("Unexpected conversion route " + route); //$NON-NLS-1$
+            }
+        }
+    }
 
-	/* Overridden in InstanceOfExpression */
-	default void consumeProvidedValue(TypeBinding provided, CodeStream codeStream) {
-		codeStream.pop(provided);
-	}
+    /* Overridden in InstanceOfExpression */
+    default void consumeProvidedValue(TypeBinding provided, CodeStream codeStream) {
+        codeStream.pop(provided);
+    }
 
-	void setPatternIsTotalType();
+    void setPatternIsTotalType();
 
-	default void generateExactConversions(TypeBinding provided, TypeBinding expected, BlockScope scope, CodeStream codeStream) {
-		if (BaseTypeBinding.isExactWidening(expected.id, provided.id)) {
-			consumeProvidedValue(provided, codeStream);
-			codeStream.iconst_1();
-		} else {
-			codeStream.invokeExactConversionsSupport(BaseTypeBinding.getRightToLeft(expected.id, provided.id));
-		}
-	}
+    default void generateExactConversions(TypeBinding provided, TypeBinding expected, BlockScope scope,
+        CodeStream codeStream) {
+        if (BaseTypeBinding.isExactWidening(expected.id, provided.id)) {
+            consumeProvidedValue(provided, codeStream);
+            codeStream.iconst_1();
+        } else {
+            codeStream.invokeExactConversionsSupport(BaseTypeBinding.getRightToLeft(expected.id, provided.id));
+        }
+    }
 }

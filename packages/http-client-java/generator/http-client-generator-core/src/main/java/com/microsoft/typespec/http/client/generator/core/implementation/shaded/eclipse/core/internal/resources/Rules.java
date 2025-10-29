@@ -16,21 +16,25 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.resources;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.events.ILifecycleListener;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.events.LifecycleEvent;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.*;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResourceRuleFactory;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IWorkspaceRoot;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.team.ResourceRuleFactory;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.team.TeamHook;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.jobs.ISchedulingRule;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.jobs.MultiRule;
-import java.util.*;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 /**
  * Class for calculating scheduling rules for resource changing operations.
  * This factory delegates to the TeamHook to obtain an appropriate factory
  * for the resource that the operation is proposing to modify.
  */
-class Rules implements IResourceRuleFactory, ILifecycleListener {
+class Rules implements IResourceRuleFactory {
     private final IResourceRuleFactory defaultFactory;
     /**
      * Map of project names to the factory for that project.
@@ -47,16 +51,6 @@ class Rules implements IResourceRuleFactory, ILifecycleListener {
             /* because constructors are protected */};
         this.root = workspace.getRoot();
         this.teamHook = workspace.getTeamHook();
-        workspace.addLifecycleListener(this);
-    }
-
-    /**
-     * Obtains the scheduling rule from the appropriate factory for a build operation.
-     */
-    @Override
-    public ISchedulingRule buildRule() {
-        // team hook currently cannot change this rule
-        return root;
     }
 
     /**
@@ -110,19 +104,6 @@ class Rules implements IResourceRuleFactory, ILifecycleListener {
         return fac;
     }
 
-    @Override
-    public void handleEvent(LifecycleEvent event) {
-        // clear resource rule factory for projects that are about to be closed
-        // or deleted. It is ok to do this during a PRE event because the rule
-        // has already been obtained at this point.
-        switch (event.kind) {
-            case LifecycleEvent.PRE_PROJECT_CLOSE:
-            case LifecycleEvent.PRE_PROJECT_DELETE:
-            case LifecycleEvent.PRE_PROJECT_MOVE:
-                setRuleFactory((IProject) event.resource, null);
-        }
-    }
-
     /**
      * Obtains the scheduling rule from the appropriate factory for a charset change operation.
      */
@@ -132,15 +113,6 @@ class Rules implements IResourceRuleFactory, ILifecycleListener {
             return null;
         }
         return factoryFor(resource).charsetRule(resource);
-    }
-
-    /**
-     * Obtains the scheduling rule from the appropriate factory for a derived flag change operation.
-     */
-    @Override
-    public ISchedulingRule derivedRule(IResource resource) {
-        // team hook currently cannot change this rule
-        return null;
     }
 
     /**
@@ -187,18 +159,6 @@ class Rules implements IResourceRuleFactory, ILifecycleListener {
             return root;
         }
         return factoryFor(resource).refreshRule(resource);
-    }
-
-    /*
-     * (non-javadoc)
-     * Implements TeamHook#setRuleFactory
-     */
-    void setRuleFactory(IProject project, IResourceRuleFactory factory) {
-        if (factory == null) {
-            projectsToRules.remove(project.getName());
-        } else {
-            projectsToRules.put(project.getName(), factory);
-        }
     }
 
     /**

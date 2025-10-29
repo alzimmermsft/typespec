@@ -24,8 +24,6 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
-import java.io.UnsupportedEncodingException;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Memory;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
@@ -33,6 +31,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.USHORT;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.ByReference;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Constant defined in WTypes.h
@@ -67,10 +66,8 @@ public interface WTypes {
     public static int CLSCTX_APPCONTAINER = 0x400000;
     public static int CLSCTX_ACTIVATE_AAA_AS_IU = 0x800000;
     public static int CLSCTX_PS_DLL = 0x80000000;
-    public static int CLSCTX_SERVER = CLSCTX_INPROC_SERVER
-            | CLSCTX_LOCAL_SERVER | CLSCTX_REMOTE_SERVER;
-    public static int CLSCTX_ALL = CLSCTX_INPROC_SERVER | CLSCTX_INPROC_HANDLER
-            | CLSCTX_LOCAL_SERVER;
+    public static int CLSCTX_SERVER = CLSCTX_INPROC_SERVER | CLSCTX_LOCAL_SERVER | CLSCTX_REMOTE_SERVER;
+    public static int CLSCTX_ALL = CLSCTX_INPROC_SERVER | CLSCTX_INPROC_HANDLER | CLSCTX_LOCAL_SERVER;
 
     /**
      * BSTR wrapper.
@@ -111,7 +108,7 @@ public interface WTypes {
          * {@link OleAuto#SysFreeString(BSTR)}
          *
          * @param pointer
-         *            A pointer to the string
+         * A pointer to the string
          */
         public BSTR(Pointer pointer) {
             super(pointer);
@@ -119,7 +116,7 @@ public interface WTypes {
 
         /**
          * @deprecated Use {@link OleAuto#SysAllocString(String)} and
-         *             {@link OleAuto#SysFreeString(BSTR)}
+         * {@link OleAuto#SysFreeString(BSTR)}
          */
         @Deprecated
         public BSTR(String value) {
@@ -132,7 +129,7 @@ public interface WTypes {
          */
         @Deprecated
         public void setValue(String value) {
-            if(value == null) {
+            if (value == null) {
                 value = "";
             }
             try {
@@ -152,7 +149,7 @@ public interface WTypes {
         public String getValue() {
             try {
                 Pointer pointer = this.getPointer();
-                if(pointer == null) {
+                if (pointer == null) {
                     return "";
                 }
                 int stringLength = pointer.getInt(-4);
@@ -180,8 +177,8 @@ public interface WTypes {
          * {@link BSTR}.
          *
          * @param value
-         *            The BSTR to be referenced. Only the pointer is stored as a
-         *            reference.
+         * The BSTR to be referenced. Only the pointer is stored as a
+         * reference.
          */
         public BSTRByReference(BSTR value) {
             this();
@@ -195,8 +192,8 @@ public interface WTypes {
          * {@link BSTR}.
          *
          * @param value
-         *            The BSTR to be referenced. Only the pointer is stored as a
-         *            reference.
+         * The BSTR to be referenced. Only the pointer is stored as a
+         * reference.
          */
         public void setValue(BSTR value) {
             this.getPointer().setPointer(0, value.getPointer());
@@ -208,7 +205,7 @@ public interface WTypes {
          * which may also free the underlying native memory.
          *
          * @return A new {@link BSTR} object corresponding to the memory referenced by
-         *         this object.
+         * this object.
          */
         public BSTR getValue() {
             return new BSTR(getPointer().getPointer(0));
@@ -218,7 +215,7 @@ public interface WTypes {
          * Returns the String represented by the referenced {@link BSTR}.
          *
          * @return the referenced String, if the reference is not {@code null},
-         *         {@code null} otherwise.
+         * {@code null} otherwise.
          */
         public String getString() {
             BSTR b = this.getValue();
@@ -227,8 +224,7 @@ public interface WTypes {
     }
 
     public static class LPSTR extends PointerType {
-        public static class ByReference extends LPSTR implements
-                Structure.ByReference {
+        public static class ByReference extends LPSTR implements Structure.ByReference {
         }
 
         public LPSTR() {
@@ -264,8 +260,7 @@ public interface WTypes {
     }
 
     public static class LPWSTR extends PointerType {
-        public static class ByReference extends LPWSTR implements
-                Structure.ByReference {
+        public static class ByReference extends LPWSTR implements Structure.ByReference {
         }
 
         public LPWSTR() {
@@ -301,8 +296,7 @@ public interface WTypes {
     }
 
     public static class LPOLESTR extends PointerType {
-        public static class ByReference extends LPOLESTR implements
-                Structure.ByReference {
+        public static class ByReference extends LPOLESTR implements Structure.ByReference {
         }
 
         public LPOLESTR() {

@@ -32,12 +32,12 @@ import java.lang.annotation.Target;
  * that satisfies one of the following conditions:
  *
  * <ol>
- *   <li>The expression is one for which the Java compiler can determine a constant value at compile
- *       time, or
- *   <li>the expression consists of the literal {@code null}, or
- *   <li>the expression consists of a single identifier, where the identifier is a formal method
- *       parameter or class field that is declared {@code final} and has the {@link
- *       CompileTimeConstant} annotation.
+ * <li>The expression is one for which the Java compiler can determine a constant value at compile
+ * time, or
+ * <li>the expression consists of the literal {@code null}, or
+ * <li>the expression consists of a single identifier, where the identifier is a formal method
+ * parameter or class field that is declared {@code final} and has the {@link
+ * CompileTimeConstant} annotation.
  * </ol>
  *
  * <p>This constraint on call sites of methods or constructors that have one or more formal
@@ -45,40 +45,51 @@ import java.lang.annotation.Target;
  *
  * <p>For example, the following code snippet is legal:
  *
- * <pre>{@code
- * public class C {
- *   private static final String S = "Hello";
- *   void m(@CompileTimeConstant final String s) { }
- *   void n(@CompileTimeConstant final String t) {
- *     m(S + " World!");
- *     m(null);
- *     m(t);
- *   }
+ * <pre>
+ * {
+ *     &#64;code
+ *     public class C {
+ *         private static final String S = "Hello";
+ * 
+ *         void m(@CompileTimeConstant final String s) {
+ *         }
+ * 
+ *         void n(@CompileTimeConstant final String t) {
+ *             m(S + " World!");
+ *             m(null);
+ *             m(t);
+ *         }
+ *     }
  * }
- * }</pre>
+ * </pre>
  *
  * <p>In contrast, the following is illegal:
  *
- * <pre>{@code
- * public class C {
- *   void m(@CompileTimeConstant final String s) { }
- *   void n(String t) {
- *     m(t);
- *   }
+ * <pre>
+ * {
+ *     &#64;code
+ *     public class C {
+ *         void m(@CompileTimeConstant final String s) {
+ *         }
+ * 
+ *         void n(String t) {
+ *             m(t);
+ *         }
+ *     }
  * }
- * }</pre>
+ * </pre>
  *
  * <p>When a class field is annotated with the {@link CompileTimeConstant} type annotation, the
  * field must also be declared to be {@code final}, and the corresponding initialised value must be
  * an expression that satisfies one of the following conditions:
  *
  * <ol>
- *   <li>The expression is one for which the Java compiler can determine a constant value at compile
- *       time, or
- *   <li>the expression consists of the literal {@code null}, or
- *   <li>the expression consists of a single identifier, where the identifier is a formal method
- *       parameter or class field that is declared {@code final} and has the {@link
- *       CompileTimeConstant} annotation.
+ * <li>The expression is one for which the Java compiler can determine a constant value at compile
+ * time, or
+ * <li>the expression consists of the literal {@code null}, or
+ * <li>the expression consists of a single identifier, where the identifier is a formal method
+ * parameter or class field that is declared {@code final} and has the {@link
+ * CompileTimeConstant} annotation.
  * </ol>
  *
  * <p>This constraint on fields with this annotation is enforced by <a
@@ -86,7 +97,8 @@ import java.lang.annotation.Target;
  *
  * <p>For example, the following code snippet is legal:
  *
- * <pre>{@code
+ * <pre>
+ * {@code
  * public class C {
  *   \@CompileTimeConstant final String S;
  *   public C(@CompileTimeConstant String s) {
@@ -97,11 +109,13 @@ import java.lang.annotation.Target;
  *     m(S);
  *   }
  * }
- * }</pre>
+ * }
+ * </pre>
  *
  * <p>In contrast, the following are illegal:
  *
- * <pre>{@code
+ * <pre>
+ * {@code
  * public class C {
  *   \@CompileTimeConstant String S;
  *   public C(@CompileTimeConstant String s) {
@@ -112,16 +126,19 @@ import java.lang.annotation.Target;
  *     m(S);
  *   }
  * }
- * }</pre>
+ * }
+ * </pre>
  *
- * <pre>{@code
+ * <pre>
+ * {@code
  * public class C {
  *   \@CompileTimeConstant final String S;
  *   public C(String s) {
  *     this.S = s;
  *   }
  * }
- * }</pre>
+ * }
+ * </pre>
  *
  * <p>Compile-time constant values are implicitly under the control of the trust domain of the
  * application whose source code they are part of. Hence, this annotation is useful to constrain the
@@ -135,5 +152,6 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(CLASS)
-@Target({ElementType.PARAMETER, ElementType.FIELD})
-public @interface CompileTimeConstant {}
+@Target({ ElementType.PARAMETER, ElementType.FIELD })
+public @interface CompileTimeConstant {
+}

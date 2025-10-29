@@ -22,42 +22,40 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * Default implementation of IPermittedSubclassesAttribute.
  */
 public class PermittedSubclassesAttribute extends ClassFileAttribute implements IPermittedSubclassesAttribute {
-	private static final IPermittedSubclassesAttributeEntry[] NO_ENTRIES = new IPermittedSubclassesAttributeEntry[0];
+    private static final IPermittedSubclassesAttributeEntry[] NO_ENTRIES = new IPermittedSubclassesAttributeEntry[0];
 
-	private final int permittedSubclassesCount;
-	private IPermittedSubclassesAttributeEntry[] entries;
+    private final int permittedSubclassesCount;
+    private IPermittedSubclassesAttributeEntry[] entries;
 
-	/**
-	 * Constructor for PermittedSubclassesAttribute.
-	 */
-	public PermittedSubclassesAttribute(
-		byte[] classFileBytes,
-		IConstantPool constantPool,
-		int offset)
-		throws ClassFormatException {
-		super(classFileBytes, constantPool, offset);
-		this.permittedSubclassesCount = u2At(classFileBytes, 6, offset);
-		final int length = this.permittedSubclassesCount;
-		if (length != 0) {
-			int readOffset = 8;
-			this.entries = new IPermittedSubclassesAttributeEntry[length];
-			for (int i = 0; i < length; i++) {
-				this.entries[i] = new PermittedSubclassesAttributeEntry(classFileBytes, constantPool, offset + readOffset);
-				readOffset += 2;
-			}
-		} else {
-			this.entries = NO_ENTRIES;
-		}
-	}
+    /**
+     * Constructor for PermittedSubclassesAttribute.
+     */
+    public PermittedSubclassesAttribute(byte[] classFileBytes, IConstantPool constantPool, int offset)
+        throws ClassFormatException {
+        super(classFileBytes, constantPool, offset);
+        this.permittedSubclassesCount = u2At(classFileBytes, 6, offset);
+        final int length = this.permittedSubclassesCount;
+        if (length != 0) {
+            int readOffset = 8;
+            this.entries = new IPermittedSubclassesAttributeEntry[length];
+            for (int i = 0; i < length; i++) {
+                this.entries[i]
+                    = new PermittedSubclassesAttributeEntry(classFileBytes, constantPool, offset + readOffset);
+                readOffset += 2;
+            }
+        } else {
+            this.entries = NO_ENTRIES;
+        }
+    }
 
-	@Override
-	public int getNumberOfPermittedSubclasses() {
-		return this.permittedSubclassesCount;
-	}
+    @Override
+    public int getNumberOfPermittedSubclasses() {
+        return this.permittedSubclassesCount;
+    }
 
-	@Override
-	public IPermittedSubclassesAttributeEntry[] getPermittedSubclassAttributesEntries() {
-		return this.entries;
-	}
+    @Override
+    public IPermittedSubclassesAttributeEntry[] getPermittedSubclassAttributesEntries() {
+        return this.entries;
+    }
 
 }

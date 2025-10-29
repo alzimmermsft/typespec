@@ -13,7 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.templates;
 
-
 /**
  * A simple template variable resolver, which always evaluates to a defined string.
  * <p>
@@ -24,42 +23,42 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public class SimpleTemplateVariableResolver extends TemplateVariableResolver {
 
-	/** The string to which this variable evaluates. */
-	private String fEvaluationString;
+    /** The string to which this variable evaluates. */
+    private String fEvaluationString;
 
-	/*
-	 * @see TemplateVariableResolver#TemplateVariableResolver(String, String)
-	 */
-	protected SimpleTemplateVariableResolver(String type, String description) {
-		super(type, description);
-	}
+    /*
+     * @see TemplateVariableResolver#TemplateVariableResolver(String, String)
+     */
+    protected SimpleTemplateVariableResolver(String type, String description) {
+        super(type, description);
+    }
 
-	/**
-	 * Sets the string to which this variable evaluates.
-	 *
-	 * @param evaluationString the evaluation string, may be <code>null</code>.
-	 */
-	public final void setEvaluationString(String evaluationString) {
-		fEvaluationString= evaluationString;
-	}
+    /**
+     * Sets the string to which this variable evaluates.
+     *
+     * @param evaluationString the evaluation string, may be <code>null</code>.
+     */
+    public final void setEvaluationString(String evaluationString) {
+        fEvaluationString = evaluationString;
+    }
 
-	/*
-	 * @see TemplateVariableResolver#evaluate(TemplateContext)
-	 */
-	@Override
-	protected String resolve(TemplateContext context) {
-		return fEvaluationString;
-	}
+    /*
+     * @see TemplateVariableResolver#evaluate(TemplateContext)
+     */
+    @Override
+    protected String resolve(TemplateContext context) {
+        return fEvaluationString;
+    }
 
-	/**
-	 * Returns always <code>true</code>, since simple variables are normally
-	 * unambiguous.
-	 *
-	 * @param context {@inheritDoc}
-	 * @return <code>true</code>
-	 */
-	@Override
-	protected boolean isUnambiguous(TemplateContext context) {
-		return true;
-	}
+    /**
+     * Returns always <code>true</code>, since simple variables are normally
+     * unambiguous.
+     *
+     * @param context {@inheritDoc}
+     * @return <code>true</code>
+     */
+    @Override
+    protected boolean isUnambiguous(TemplateContext context) {
+        return true;
+    }
 }

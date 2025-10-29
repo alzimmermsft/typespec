@@ -31,17 +31,17 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 public class FrameworkStartLevelDTO extends DTO {
     /**
-	 * The active start level value for the framework.
-	 * 
-	 * @see FrameworkStartLevel#getStartLevel()
-	 */
+     * The active start level value for the framework.
+     * 
+     * @see FrameworkStartLevel#getStartLevel()
+     */
     public int startLevel;
 
     /**
-	 * The initial start level value that is assigned to a bundle when it is
-	 * first installed.
-	 * 
-	 * @see FrameworkStartLevel#getInitialBundleStartLevel()
-	 */
+     * The initial start level value that is assigned to a bundle when it is
+     * first installed.
+     * 
+     * @see FrameworkStartLevel#getInitialBundleStartLevel()
+     */
     public int initialBundleStartLevel;
 }

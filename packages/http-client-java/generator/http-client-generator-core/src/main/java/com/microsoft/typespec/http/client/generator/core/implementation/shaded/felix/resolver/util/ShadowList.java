@@ -18,18 +18,16 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver.util;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Capability;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.resolver.HostedCapability;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.resolver.ResolveContext;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public class ShadowList extends CandidateSelector
-{
+public class ShadowList extends CandidateSelector {
     public static ShadowList createShadowList(CandidateSelector original) {
-        if (original instanceof ShadowList)
-        {
+        if (original instanceof ShadowList) {
             throw new IllegalArgumentException("Cannot create a ShadowList using another ShadowList.");
         }
         return new ShadowList(original.unmodifiable, original.unmodifiable, original.isUnmodifiable);
@@ -41,8 +39,7 @@ public class ShadowList extends CandidateSelector
 
     private final List<Capability> m_original;
 
-    private ShadowList(CandidateSelector shadow, List<Capability> original)
-    {
+    private ShadowList(CandidateSelector shadow, List<Capability> original) {
         super(shadow);
         m_original = original;
     }
@@ -56,11 +53,11 @@ public class ShadowList extends CandidateSelector
         return new ShadowList(this, m_original);
     }
 
-    public void insertHostedCapability(ResolveContext context, HostedCapability wrappedCapability, HostedCapability toInsertCapability) {
+    public void insertHostedCapability(ResolveContext context, HostedCapability wrappedCapability,
+        HostedCapability toInsertCapability) {
         checkModifiable();
         int removeIdx = m_original.indexOf(toInsertCapability.getDeclaredCapability());
-        if (removeIdx != -1)
-        {
+        if (removeIdx != -1) {
             m_original.remove(removeIdx);
             unmodifiable.remove(removeIdx);
         }

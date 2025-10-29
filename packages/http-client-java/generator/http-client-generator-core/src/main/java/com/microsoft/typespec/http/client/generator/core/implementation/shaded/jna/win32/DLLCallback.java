@@ -25,7 +25,8 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Callback;
 
-/** Indicate that the callback needs to appear to be within a DLL.  The
+/**
+ * Indicate that the callback needs to appear to be within a DLL. The
  * effective DLL module handle may be obtained by TODO.
  * Use this interface when your callback must reside within a DLL (hooks set
  * via <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms644990(v=vs.85).aspx">SetWindowsHook</a>,

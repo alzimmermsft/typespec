@@ -23,67 +23,66 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * This class describes an entry in the exception table attribute according
  * to the JVM specifications.
  */
-public class ExceptionTableEntry
-	extends ClassFileStruct
-	implements IExceptionTableEntry {
+public class ExceptionTableEntry extends ClassFileStruct implements IExceptionTableEntry {
 
-	private final int startPC;
-	private final int endPC;
-	private final int handlerPC;
-	private final int catchTypeIndex;
-	private char[] catchType;
+    private final int startPC;
+    private final int endPC;
+    private final int handlerPC;
+    private final int catchTypeIndex;
+    private char[] catchType;
 
-	ExceptionTableEntry(byte[] classFileBytes, IConstantPool constantPool, int offset) throws ClassFormatException {
-		this.startPC = u2At(classFileBytes, 0, offset);
-		this.endPC = u2At(classFileBytes, 2, offset);
-		this.handlerPC = u2At(classFileBytes, 4, offset);
-		this.catchTypeIndex = u2At(classFileBytes, 6, offset);
-		if (this.catchTypeIndex != 0) {
-			IConstantPoolEntry constantPoolEntry = constantPool.decodeEntry(this.catchTypeIndex);
-			if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Class) {
-				throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
-			}
-			this.catchType = constantPoolEntry.getClassInfoName();
-		}
-	}
-	/**
-	 * @see IExceptionTableEntry#getStartPC()
-	 */
-	@Override
-	public int getStartPC() {
-		return this.startPC;
-	}
+    ExceptionTableEntry(byte[] classFileBytes, IConstantPool constantPool, int offset) throws ClassFormatException {
+        this.startPC = u2At(classFileBytes, 0, offset);
+        this.endPC = u2At(classFileBytes, 2, offset);
+        this.handlerPC = u2At(classFileBytes, 4, offset);
+        this.catchTypeIndex = u2At(classFileBytes, 6, offset);
+        if (this.catchTypeIndex != 0) {
+            IConstantPoolEntry constantPoolEntry = constantPool.decodeEntry(this.catchTypeIndex);
+            if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Class) {
+                throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
+            }
+            this.catchType = constantPoolEntry.getClassInfoName();
+        }
+    }
 
-	/**
-	 * @see IExceptionTableEntry#getEndPC()
-	 */
-	@Override
-	public int getEndPC() {
-		return this.endPC;
-	}
+    /**
+     * @see IExceptionTableEntry#getStartPC()
+     */
+    @Override
+    public int getStartPC() {
+        return this.startPC;
+    }
 
-	/**
-	 * @see IExceptionTableEntry#getHandlerPC()
-	 */
-	@Override
-	public int getHandlerPC() {
-		return this.handlerPC;
-	}
+    /**
+     * @see IExceptionTableEntry#getEndPC()
+     */
+    @Override
+    public int getEndPC() {
+        return this.endPC;
+    }
 
-	/**
-	 * @see IExceptionTableEntry#getCatchTypeIndex()
-	 */
-	@Override
-	public int getCatchTypeIndex() {
-		return this.catchTypeIndex;
-	}
+    /**
+     * @see IExceptionTableEntry#getHandlerPC()
+     */
+    @Override
+    public int getHandlerPC() {
+        return this.handlerPC;
+    }
 
-	/**
-	 * @see IExceptionTableEntry#getCatchType()
-	 */
-	@Override
-	public char[] getCatchType() {
-		return this.catchType;
-	}
+    /**
+     * @see IExceptionTableEntry#getCatchTypeIndex()
+     */
+    @Override
+    public int getCatchTypeIndex() {
+        return this.catchTypeIndex;
+    }
+
+    /**
+     * @see IExceptionTableEntry#getCatchType()
+     */
+    @Override
+    public char[] getCatchType() {
+        return this.catchType;
+    }
 
 }

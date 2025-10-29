@@ -44,8 +44,7 @@ public class TlbCmdlineArgs extends Hashtable<String, String> implements TlbCons
     public String getRequiredParam(String key) {
         String param = this.getParam(key);
         if (param == null)
-            throw new TlbParameterNotFoundException(
-                    "Commandline parameter not found: " + key);
+            throw new TlbParameterNotFoundException("Commandline parameter not found: " + key);
 
         return param;
     }
@@ -56,11 +55,11 @@ public class TlbCmdlineArgs extends Hashtable<String, String> implements TlbCons
 
         for (int i = 0; i < args.length;) {
             String cmdName = args[i];
-            String cmdValue = args[i+1];
+            String cmdValue = args[i + 1];
             if (cmdName.startsWith("-") && !cmdValue.startsWith("-")) {
                 this.put(cmdName.substring(1), cmdValue);
-                i+=2;
-            }else {
+                i += 2;
+            } else {
                 this.showCmdHelp();
                 break;
             }
@@ -76,41 +75,25 @@ public class TlbCmdlineArgs extends Hashtable<String, String> implements TlbCons
     }
 
     public String getBindingMode() {
-        if(this.containsKey(CMD_ARG_BINDING_MODE))
+        if (this.containsKey(CMD_ARG_BINDING_MODE))
             return this.getParam(CMD_ARG_BINDING_MODE);
         else
             return BINDING_MODE_VTABLE;
     }
 
     public void showCmdHelp() {
-        String helpStr = "usage: TlbImp [-tlb.id -tlb.major.version -tlb.minor.version] [-tlb.file] [-bind.mode vTable, dispId] [-output.dir]"
-                + CRCR
-                + "options:"
-                + CR
-                + "-tlb.id               The guid of the type library."
-                + CR
-                + "-tlb.major.version    The major version of the type library."
-                + CR
-                + "-tlb.minor.version    The minor version of the type library."
-                + CR
-                + "-tlb.file             The file name containing the type library."
-                + CR
-                + "-bind.mode            The binding mode used to create the Java code."
-                + CR
-                + "-output.dir           The optional output directory, default is the user temp directory."
-                + CRCR
-                + "samples:"
-                + CR
-                + "Microsoft Shell Controls And Automation:"
-                + CR
-                + "-tlb.file shell32.dll"
-                + CR
-                + "-tlb.id {50A7E9B0-70EF-11D1-B75A-00A0C90564FE} -tlb.major.version 1 -tlb.minor.version 0"
-                + CRCR
-                + "Microsoft Word 12.0 Object Library:"
-                + CR
-                + "-tlb.id {00020905-0000-0000-C000-000000000046} -tlb.major.version 8 -tlb.minor.version 4"
-                + CRCR;
+        String helpStr
+            = "usage: TlbImp [-tlb.id -tlb.major.version -tlb.minor.version] [-tlb.file] [-bind.mode vTable, dispId] [-output.dir]"
+                + CRCR + "options:" + CR + "-tlb.id               The guid of the type library." + CR
+                + "-tlb.major.version    The major version of the type library." + CR
+                + "-tlb.minor.version    The minor version of the type library." + CR
+                + "-tlb.file             The file name containing the type library." + CR
+                + "-bind.mode            The binding mode used to create the Java code." + CR
+                + "-output.dir           The optional output directory, default is the user temp directory." + CRCR
+                + "samples:" + CR + "Microsoft Shell Controls And Automation:" + CR + "-tlb.file shell32.dll" + CR
+                + "-tlb.id {50A7E9B0-70EF-11D1-B75A-00A0C90564FE} -tlb.major.version 1 -tlb.minor.version 0" + CRCR
+                + "Microsoft Word 12.0 Object Library:" + CR
+                + "-tlb.id {00020905-0000-0000-C000-000000000046} -tlb.major.version 8 -tlb.minor.version 4" + CRCR;
 
         System.out.println(helpStr);
         System.exit(0);

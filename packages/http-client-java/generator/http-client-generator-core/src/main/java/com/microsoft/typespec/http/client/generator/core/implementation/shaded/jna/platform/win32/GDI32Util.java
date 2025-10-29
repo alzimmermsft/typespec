@@ -23,6 +23,14 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Memory;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.HBITMAP;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.HDC;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.HWND;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.RECT;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinGDI.BITMAPINFO;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HANDLE;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
@@ -30,20 +38,6 @@ import java.awt.image.DataBufferInt;
 import java.awt.image.DirectColorModel;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Memory;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.GDI32;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.User32;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Win32Exception;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.HBITMAP;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.HDC;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.HWND;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.RECT;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinError;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinGDI;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinGDI.BITMAPINFO;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HANDLE;
 
 /**
  * GDI32 utility API.
@@ -56,8 +50,7 @@ public class GDI32Util {
     private static final int[] SCREENSHOT_BAND_MASKS = {
         SCREENSHOT_COLOR_MODEL.getRedMask(),
         SCREENSHOT_COLOR_MODEL.getGreenMask(),
-        SCREENSHOT_COLOR_MODEL.getBlueMask()
-    };
+        SCREENSHOT_COLOR_MODEL.getBlueMask() };
 
     /**
      * Takes a screenshot of the given window
@@ -65,10 +58,10 @@ public class GDI32Util {
      * @param target The window to target
      *
      * @return the window captured as a screenshot, or null if the BufferedImage
-     *         doesn't construct properly
+     * doesn't construct properly
      *
      * @throws IllegalStateException if the rectangle from GetWindowRect has a
-     *                               width and/or height of 0. <br>
+     * width and/or height of 0. <br>
      * if the device context acquired from the original HWND doesn't release
      * properly
      */
@@ -82,7 +75,8 @@ public class GDI32Util {
         int windowHeight = jRectangle.height;
 
         if (windowWidth == 0 || windowHeight == 0) {
-            throw new IllegalStateException("Window width and/or height were 0 even though GetWindowRect did not appear to fail.");
+            throw new IllegalStateException(
+                "Window width and/or height were 0 even though GetWindowRect did not appear to fail.");
         }
 
         HDC hdcTarget = User32.INSTANCE.GetDC(target);
@@ -133,8 +127,8 @@ public class GDI32Util {
             bmi.bmiHeader.biCompression = WinGDI.BI_RGB;
 
             Memory buffer = new Memory(windowWidth * windowHeight * 4);
-            int resultOfDrawing = GDI32.INSTANCE.GetDIBits(hdcTarget, hBitmap, 0, windowHeight, buffer, bmi,
-                    WinGDI.DIB_RGB_COLORS);
+            int resultOfDrawing
+                = GDI32.INSTANCE.GetDIBits(hdcTarget, hBitmap, 0, windowHeight, buffer, bmi, WinGDI.DIB_RGB_COLORS);
             if (resultOfDrawing == 0 || resultOfDrawing == WinError.ERROR_INVALID_PARAMETER) {
                 throw new Win32Exception(Native.getLastError());
             }
@@ -142,7 +136,7 @@ public class GDI32Util {
             int bufferSize = windowWidth * windowHeight;
             DataBuffer dataBuffer = new DataBufferInt(buffer.getIntArray(0, bufferSize), bufferSize);
             WritableRaster raster = Raster.createPackedRaster(dataBuffer, windowWidth, windowHeight, windowWidth,
-                    SCREENSHOT_BAND_MASKS, null);
+                SCREENSHOT_BAND_MASKS, null);
             image = new BufferedImage(SCREENSHOT_COLOR_MODEL, raster, false, null);
 
         } catch (Win32Exception e) {

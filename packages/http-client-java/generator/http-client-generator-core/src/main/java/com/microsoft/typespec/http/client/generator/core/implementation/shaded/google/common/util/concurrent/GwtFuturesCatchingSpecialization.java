@@ -19,7 +19,8 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.g
 
 /**
  * Hidden superclass of {@link Futures} that provides us a place to declare special GWT versions of
- * the {@link Futures#catching(ListenableFuture, Class, com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Function,
+ * the
+ * {@link Futures#catching(ListenableFuture, Class, com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Function,
  * java.util.concurrent.Executor) Futures.catching} family of methods. Those versions have slightly
  * different signatures.
  */
@@ -27,9 +28,9 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.g
 @J2ktIncompatible // Super-sourced
 @ElementTypesAreNonnullByDefault
 abstract class GwtFuturesCatchingSpecialization {
-  /*
-   * This server copy of the class is empty. The corresponding GWT copy contains alternative
-   * versions of catching() and catchingAsync() with slightly different signatures from the ones
-   * found in Futures.java.
-   */
+    /*
+     * This server copy of the class is empty. The corresponding GWT copy contains alternative
+     * versions of catching() and catchingAsync() with slightly different signatures from the ones
+     * found in Futures.java.
+     */
 }

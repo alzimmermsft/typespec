@@ -18,36 +18,28 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver;
 
-import java.util.List;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.namespace.PackageNamespace;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Capability;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Requirement;
+import java.util.List;
 
-class Blame
-{
+class Blame {
     public final Capability m_cap;
     public final List<Requirement> m_reqs;
 
-    public Blame(Capability cap, List<Requirement> reqs)
-    {
+    public Blame(Capability cap, List<Requirement> reqs) {
         m_cap = cap;
         m_reqs = reqs;
     }
 
     @Override
-    public String toString()
-    {
-        return m_cap.getResource()
-            + "." + m_cap.getAttributes().get(PackageNamespace.PACKAGE_NAMESPACE)
-            + (((m_reqs == null) || m_reqs.isEmpty())
-            ? " NO BLAME"
-            : " BLAMED ON " + m_reqs);
+    public String toString() {
+        return m_cap.getResource() + "." + m_cap.getAttributes().get(PackageNamespace.PACKAGE_NAMESPACE)
+            + (((m_reqs == null) || m_reqs.isEmpty()) ? " NO BLAME" : " BLAMED ON " + m_reqs);
     }
 
     @Override
-    public boolean equals(Object o)
-    {
-        return (o instanceof Blame) && m_reqs.equals(((Blame) o).m_reqs)
-            && m_cap.equals(((Blame) o).m_cap);
+    public boolean equals(Object o) {
+        return (o instanceof Blame) && m_reqs.equals(((Blame) o).m_reqs) && m_cap.equals(((Blame) o).m_cap);
     }
 }

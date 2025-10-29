@@ -78,7 +78,7 @@ public interface WinRas {
      * The RASEAPINFO structure contains user-specific Extensible Authentication Protocol (EAP) information.
      * Use RASEAPINFO to pass this information to the RasDial function.
      */
-    @FieldOrder({"dwSizeofEapInfo", "pbEapInfo"})
+    @FieldOrder({ "dwSizeofEapInfo", "pbEapInfo" })
     public static class RASEAPINFO extends Structure {
 
         public RASEAPINFO() {
@@ -126,7 +126,7 @@ public interface WinRas {
      * The RASDEVSPECIFICINFO structure is used to send a cookie for server
      * validation and bypass point-to-point (PPP) authentication.
      */
-    @FieldOrder({"dwSize", "pbDevSpecificInfo"})
+    @FieldOrder({ "dwSize", "pbDevSpecificInfo" })
     public static class RASDEVSPECIFICINFO extends Structure {
 
         public RASDEVSPECIFICINFO() {
@@ -176,7 +176,15 @@ public interface WinRas {
      * RasDial, RasDial uses the default settings that are noted in the
      * following descriptions.
      */
-    @FieldOrder({"dwSize", "dwfOptions", "hwndParent", "reserved", "reserved1", "RasEapInfo", "fSkipPppAuth", "RasDevSpecificInfo"})
+    @FieldOrder({
+        "dwSize",
+        "dwfOptions",
+        "hwndParent",
+        "reserved",
+        "reserved1",
+        "RasEapInfo",
+        "fSkipPppAuth",
+        "RasDevSpecificInfo" })
     public static class RASDIALEXTENSIONS extends Structure {
 
         public RASDIALEXTENSIONS() {
@@ -241,7 +249,14 @@ public interface WinRas {
      * The RASDIALPARAMS structure contains parameters that are used by RasDial
      * to establish a remote access connection.
      */
-    @FieldOrder({"dwSize", "szEntryName", "szPhoneNumber", "szCallbackNumber", "szUserName", "szPassword", "szDomain"})
+    @FieldOrder({
+        "dwSize",
+        "szEntryName",
+        "szPhoneNumber",
+        "szCallbackNumber",
+        "szUserName",
+        "szPassword",
+        "szDomain" })
     public static class RASDIALPARAMS extends Structure {
 
         public RASDIALPARAMS() {
@@ -308,7 +323,18 @@ public interface WinRas {
      * connection. The RasEnumConnections function returns an array of RASCONN
      * structures.
      */
-    @FieldOrder({"dwSize", "hrasconn", "szEntryName", "szDeviceType", "szDeviceName", "szPhonebook", "dwSubEntry", "guidEntry", "dwFlags", "luid", "guidCorrelationId"})
+    @FieldOrder({
+        "dwSize",
+        "hrasconn",
+        "szEntryName",
+        "szDeviceType",
+        "szDeviceName",
+        "szPhonebook",
+        "dwSubEntry",
+        "guidEntry",
+        "dwFlags",
+        "luid",
+        "guidCorrelationId" })
     public static class RASCONN extends Structure {
 
         public RASCONN() {
@@ -389,7 +415,22 @@ public interface WinRas {
      * The RAS_STATS structure stores the statistics for a single-link RAS
      * connection, or for one of the links in a multilink RAS connection.
      */
-    @FieldOrder({"dwSize", "dwBytesXmited", "dwBytesRcved", "dwFramesXmited", "dwFramesRcved", "dwCrcErr", "dwTimeoutErr", "dwAlignmentErr", "dwHardwareOverrunErr", "dwFramingErr", "dwBufferOverrunErr", "dwCompressionRatioIn", "dwCompressionRatioOut", "dwBps", "dwConnectDuration"})
+    @FieldOrder({
+        "dwSize",
+        "dwBytesXmited",
+        "dwBytesRcved",
+        "dwFramesXmited",
+        "dwFramesRcved",
+        "dwCrcErr",
+        "dwTimeoutErr",
+        "dwAlignmentErr",
+        "dwHardwareOverrunErr",
+        "dwFramingErr",
+        "dwBufferOverrunErr",
+        "dwCompressionRatioIn",
+        "dwCompressionRatioOut",
+        "dwBps",
+        "dwConnectDuration" })
     public static class RAS_STATS extends Structure {
 
         public RAS_STATS() {
@@ -473,7 +514,7 @@ public interface WinRas {
      * This RASTUNNELENDPOINT structure is used to define the end-point of a
      * virtual private network (VPN) tunnel.
      */
-    @FieldOrder({"addr"})
+    @FieldOrder({ "addr" })
     public static class RASIPV4ADDR extends Structure {
 
         public RASIPV4ADDR() {
@@ -494,7 +535,7 @@ public interface WinRas {
     /**
      * This RASTUNNELENDPOINT structure is used to define the end-point of a virtual private network (VPN) tunnel.
      */
-    @FieldOrder({"addr"})
+    @FieldOrder({ "addr" })
     public static class RASIPV6ADDR extends Structure {
         public RASIPV6ADDR() {
             super();
@@ -514,7 +555,7 @@ public interface WinRas {
     /**
      * The RASPPPIP structure contains the result of a PPP IP projection operation.
      */
-    @FieldOrder({"dwSize", "dwError", "szIpAddress",    "szServerIpAddress", "dwOptions", "dwServerOptions"})
+    @FieldOrder({ "dwSize", "dwError", "szIpAddress", "szServerIpAddress", "dwOptions", "dwServerOptions" })
     public static class RASPPPIP extends Structure {
         public RASPPPIP() {
             super();
@@ -530,12 +571,14 @@ public interface WinRas {
         }
 
         /**
-         * A value that specifies the size, in bytes, of the structure. This member must be set before it is used in a function call.
+         * A value that specifies the size, in bytes, of the structure. This member must be set before it is used in a
+         * function call.
          */
         public int dwSize;
         /**
          * A value that specifies the result of the PPP control protocol negotiation. A value of zero indicates success.
-         * A non-zero value indicates failure, and indicates the fatal error that occurred during the control protocol negotiation.
+         * A non-zero value indicates failure, and indicates the fatal error that occurred during the control protocol
+         * negotiation.
          */
         public int dwError;
         /**
@@ -546,8 +589,10 @@ public interface WinRas {
         /**
          * An array that contains a null-terminated string that is the server's IP address on the RAS connection.
          * This string is in a.b.c.d form.
-         * PPP does not require that servers provide this address, but servers will consistently return the address anyway.
-         * Other PPP vendors may not provide the address. If the address is not available, this member returns an empty string, "".
+         * PPP does not require that servers provide this address, but servers will consistently return the address
+         * anyway.
+         * Other PPP vendors may not provide the address. If the address is not available, this member returns an empty
+         * string, "".
          */
         public char[] szServerIpAddress = new char[RAS_MaxIpAddress + 1];
         /**
@@ -563,7 +608,7 @@ public interface WinRas {
     /**
      * This RASTUNNELENDPOINT structure is used to define the end-point of a virtual private network (VPN) tunnel.
      */
-    @FieldOrder({"dwType", "u"})
+    @FieldOrder({ "dwType", "u" })
     public static class RASTUNNELENDPOINT extends Structure {
         public RASTUNNELENDPOINT() {
             super();
@@ -575,7 +620,7 @@ public interface WinRas {
         }
 
         public static class UNION extends Union {
-            public static class ByReference extends UNION  implements Structure.ByReference {
+            public static class ByReference extends UNION implements Structure.ByReference {
 
             }
 
@@ -600,9 +645,11 @@ public interface WinRas {
                 case RASTUNNELENDPOINT_IPv4:
                     u.setType(RASIPV4ADDR.class);
                     break;
+
                 case RASTUNNELENDPOINT_IPv6:
                     u.setType(RASIPV6ADDR.class);
                     break;
+
                 default:
                     u.setType(RASIPV4ADDR.class);
                     break;
@@ -613,9 +660,19 @@ public interface WinRas {
     }
 
     /**
-     * The RASCONNSTATUS structure describes the current status of a remote access connection. It is returned by the RasGetConnectStatus function.
+     * The RASCONNSTATUS structure describes the current status of a remote access connection. It is returned by the
+     * RasGetConnectStatus function.
      */
-    @FieldOrder({"dwSize", "rasconnstate", "dwError", "szDeviceType", "szDeviceName", "szPhoneNumber", "localEndPoint", "remoteEndPoint", "rasconnsubstate"})
+    @FieldOrder({
+        "dwSize",
+        "rasconnstate",
+        "dwError",
+        "szDeviceType",
+        "szDeviceName",
+        "szPhoneNumber",
+        "localEndPoint",
+        "remoteEndPoint",
+        "rasconnsubstate" })
     public static class RASCONNSTATUS extends Structure {
         public RASCONNSTATUS() {
             super();
@@ -642,8 +699,10 @@ public interface WinRas {
          */
         public int dwError;
         /**
-         * A string that specifies the type of the current device, if available. For example, common device types supported by
-         * RAS are "modem", "pad", "switch", "ISDN", or "null". See RASENTRY for a complete list of possible device types.
+         * A string that specifies the type of the current device, if available. For example, common device types
+         * supported by
+         * RAS are "modem", "pad", "switch", "ISDN", or "null". See RASENTRY for a complete list of possible device
+         * types.
          */
         public char[] szDeviceType = new char[RAS_MaxDeviceType + 1];
         /**
@@ -657,23 +716,27 @@ public interface WinRas {
          */
         public char[] szPhoneNumber = new char[RAS_MaxPhoneNumber + 1];
         /**
-         * A RASTUNNELENDPOINT structure that contains the local client endpoint information of a virtual private network (VPN) endpoint.
+         * A RASTUNNELENDPOINT structure that contains the local client endpoint information of a virtual private
+         * network (VPN) endpoint.
          */
         public RASTUNNELENDPOINT localEndPoint;
         /**
-         * A RASTUNNELENDPOINT structure that contains the remote server endpoint information of a virtual private network (VPN) endpoint.
+         * A RASTUNNELENDPOINT structure that contains the remote server endpoint information of a virtual private
+         * network (VPN) endpoint.
          */
         public RASTUNNELENDPOINT remoteEndPoint;
         /**
-         * A RASCONNSUBSTATE enumeration that specifies state information of an Internet Key Exchange version 2 (IKEv2) VPN tunnel.
+         * A RASCONNSUBSTATE enumeration that specifies state information of an Internet Key Exchange version 2 (IKEv2)
+         * VPN tunnel.
          */
         public int rasconnsubstate;
     }
 
     /**
-     * The RASCREDENTIALS structure is used with the RasGetCredentials and RasSetCredentials functions to specify the user credentials associated with a RAS phone-book entry.
+     * The RASCREDENTIALS structure is used with the RasGetCredentials and RasSetCredentials functions to specify the
+     * user credentials associated with a RAS phone-book entry.
      */
-    @FieldOrder({"dwSize", "dwMask", "szUserName", "szPassword", "szDomain"})
+    @FieldOrder({ "dwSize", "dwMask", "szUserName", "szPassword", "szDomain" })
     public static class RASCREDENTIALS extends Structure {
         public RASCREDENTIALS() {
             super();
@@ -693,7 +756,8 @@ public interface WinRas {
          */
         public int dwSize;
         /**
-         * Specifies a set of bit flags. These flags indicate the members of this structure that are valid. On input, set the flags to indicate the members of interest.
+         * Specifies a set of bit flags. These flags indicate the members of this structure that are valid. On input,
+         * set the flags to indicate the members of interest.
          */
         public int dwMask;
         /**
@@ -712,9 +776,10 @@ public interface WinRas {
 
     /**
      * The RASIPADDR structure contains an IP address of the form "a.b.c.d".
-     * The RASENTRY structure uses this structure to specify the IP addresses of various servers associated with an entry in a RAS phone book.
+     * The RASENTRY structure uses this structure to specify the IP addresses of various servers associated with an
+     * entry in a RAS phone book.
      */
-    @FieldOrder({"addr"})
+    @FieldOrder({ "addr" })
     public static class RASIPADDR extends Structure {
         public RASIPADDR() {
             super();
@@ -732,13 +797,62 @@ public interface WinRas {
      * The RASENTRY structure describes a phone-book entry. The RasSetEntryProperties and RasGetEntryProperties
      * functions use this structure to set and retrieve the properties of a phone-book entry.
      */
-    @FieldOrder({"dwSize", "dwfOptions", "dwCountryID", "dwCountryCode", "szAreaCode", "szLocalPhoneNumber", "dwAlternateOffset",
-            "ipaddr", "ipaddrDns", "ipaddrDnsAlt", "ipaddrWins", "ipaddrWinsAlt", "dwFrameSize", "dwfNetProtocols", "dwFramingProtocol",
-            "szScript", "szAutodialDll", "szAutodialFunc", "szDeviceType", "szDeviceName", "szX25PadType", "szX25Address", "szX25Facilities", "szX25UserData",
-            "dwChannels", "dwReserved1", "dwReserved2", "dwSubEntries", "dwDialMode", "dwDialExtraPercent", "dwDialExtraSampleSeconds", "dwHangUpExtraPercent",
-            "dwHangUpExtraSampleSeconds", "dwIdleDisconnectSeconds", "dwType", "dwEncryptionType", "dwCustomAuthKey", "guidId", "szCustomDialDll",
-            "dwVpnStrategy", "dwfOptions2", "dwfOptions3", "szDnsSuffix", "dwTcpWindowSize", "szPrerequisitePbk", "szPrerequisiteEntry", "dwRedialCount",
-            "dwRedialPause", "ipv6addrDns", "ipv6addrDnsAlt", "dwIPv4InterfaceMetric", "dwIPv6InterfaceMetric", "ipv6addr", "dwIPv6PrefixLength", "dwNetworkOutageTime"})
+    @FieldOrder({
+        "dwSize",
+        "dwfOptions",
+        "dwCountryID",
+        "dwCountryCode",
+        "szAreaCode",
+        "szLocalPhoneNumber",
+        "dwAlternateOffset",
+        "ipaddr",
+        "ipaddrDns",
+        "ipaddrDnsAlt",
+        "ipaddrWins",
+        "ipaddrWinsAlt",
+        "dwFrameSize",
+        "dwfNetProtocols",
+        "dwFramingProtocol",
+        "szScript",
+        "szAutodialDll",
+        "szAutodialFunc",
+        "szDeviceType",
+        "szDeviceName",
+        "szX25PadType",
+        "szX25Address",
+        "szX25Facilities",
+        "szX25UserData",
+        "dwChannels",
+        "dwReserved1",
+        "dwReserved2",
+        "dwSubEntries",
+        "dwDialMode",
+        "dwDialExtraPercent",
+        "dwDialExtraSampleSeconds",
+        "dwHangUpExtraPercent",
+        "dwHangUpExtraSampleSeconds",
+        "dwIdleDisconnectSeconds",
+        "dwType",
+        "dwEncryptionType",
+        "dwCustomAuthKey",
+        "guidId",
+        "szCustomDialDll",
+        "dwVpnStrategy",
+        "dwfOptions2",
+        "dwfOptions3",
+        "szDnsSuffix",
+        "dwTcpWindowSize",
+        "szPrerequisitePbk",
+        "szPrerequisiteEntry",
+        "dwRedialCount",
+        "dwRedialPause",
+        "ipv6addrDns",
+        "ipv6addrDnsAlt",
+        "dwIPv4InterfaceMetric",
+        "dwIPv6InterfaceMetric",
+        "ipv6addr",
+        "dwIPv6PrefixLength",
+        "dwNetworkOutageTime" })
     public static class RASENTRY extends Structure {
         public RASENTRY() {
             super();
@@ -764,7 +878,8 @@ public interface WinRas {
         public int dwfOptions;
         /**
          * Specifies the TAPI country/region identifier. Use the RasGetCountryInfo function to enumerate
-         * country/region identifiers. This member is ignored unless the dwfOptions member specifies the RASEO_UseCountryAndAreaCodes flag.
+         * country/region identifiers. This member is ignored unless the dwfOptions member specifies the
+         * RASEO_UseCountryAndAreaCodes flag.
          */
         public int dwCountryID;
         /**
@@ -787,14 +902,18 @@ public interface WinRas {
          */
         public char[] szLocalPhoneNumber = new char[RAS_MaxPhoneNumber + 1];
         /**
-         * Specifies the offset, in bytes, from the beginning of the structure to a list of consecutive null-terminated strings.
-         * The last string is terminated by two consecutive null characters. The strings are alternate phone numbers that RAS
+         * Specifies the offset, in bytes, from the beginning of the structure to a list of consecutive null-terminated
+         * strings.
+         * The last string is terminated by two consecutive null characters. The strings are alternate phone numbers
+         * that RAS
          * dials in the order listed if the primary number (see szLocalPhoneNumber) fails to connect.
-         * The alternate phone number strings are ANSI or Unicode, depending on whether you use the ANSI or Unicode version of the structure.
+         * The alternate phone number strings are ANSI or Unicode, depending on whether you use the ANSI or Unicode
+         * version of the structure.
          */
         public int dwAlternateOffset;
         /**
-         * Specifies the IP address to be used while this connection is active. This member is ignored unless dwfOptions specifies the RASEO_SpecificIpAddr flag.
+         * Specifies the IP address to be used while this connection is active. This member is ignored unless dwfOptions
+         * specifies the RASEO_SpecificIpAddr flag.
          */
         public RASIPADDR ipaddr;
         /**
@@ -827,7 +946,8 @@ public interface WinRas {
          */
         public int dwfNetProtocols;
         /**
-         * Specifies the framing protocol used by the server. PPP is the emerging standard. SLIP is used mainly in UNIX environments.
+         * Specifies the framing protocol used by the server. PPP is the emerging standard. SLIP is used mainly in UNIX
+         * environments.
          * This member can be one of the following flags.
          */
         public int dwFramingProtocol;
@@ -838,19 +958,23 @@ public interface WinRas {
         public char[] szScript = new char[MAX_PATH];
         /**
          * Windows 2000 or later: This member is no longer supported. The szCustomDialDll member of the
-         * RASENTRY structure specifies the path to the custom-dial DLL. For more information on custom dialers, see RAS Custom Dialers.
+         * RASENTRY structure specifies the path to the custom-dial DLL. For more information on custom dialers, see RAS
+         * Custom Dialers.
          */
         public char[] szAutodialDll = new char[MAX_PATH];
         /**
-         * Windows 2000 or later: This member is no longer supported. See RAS Custom Dialers for more information on custom dialers.
+         * Windows 2000 or later: This member is no longer supported. See RAS Custom Dialers for more information on
+         * custom dialers.
          */
         public char[] szAutodialFunc = new char[MAX_PATH];
         /**
-         * Specifies a null-terminated string that indicates the RAS device type referenced by szDeviceName. This member can be one of the following string constants.
+         * Specifies a null-terminated string that indicates the RAS device type referenced by szDeviceName. This member
+         * can be one of the following string constants.
          */
         public char[] szDeviceType = new char[RAS_MaxDeviceType + 1];
         /**
-         * Contains a null-terminated string that contains the name of a TAPI device to use with this phone-book entry, for example,
+         * Contains a null-terminated string that contains the name of a TAPI device to use with this phone-book entry,
+         * for example,
          * "XYZ Corp 28800 External". To enumerate all available RAS-capable devices, use the RasEnumDevices function.
          */
         public char[] szDeviceName = new char[RAS_MaxDeviceName + 1];
@@ -898,18 +1022,21 @@ public interface WinRas {
         public int dwDialMode;
         /**
          * Specifies a percent of the total bandwidth available from the currently connected subentries.
-         * RAS dials an additional subentry when the total bandwidth used exceeds dwDialExtraPercent percent of the available
+         * RAS dials an additional subentry when the total bandwidth used exceeds dwDialExtraPercent percent of the
+         * available
          * bandwidth for at least dwDialExtraSampleSeconds seconds.
          */
         public int dwDialExtraPercent;
         /**
-         * Specifies the number of seconds that current bandwidth usage must exceed the threshold specified by dwDialExtraPercent
+         * Specifies the number of seconds that current bandwidth usage must exceed the threshold specified by
+         * dwDialExtraPercent
          * before RAS dials an additional subentry.
          */
         public int dwDialExtraSampleSeconds;
         /**
          * Specifies a percent of the total bandwidth available from the currently connected subentries.
-         * RAS terminates (hangs up) an existing subentry connection when total bandwidth used is less than dwHangUpExtraPercent
+         * RAS terminates (hangs up) an existing subentry connection when total bandwidth used is less than
+         * dwHangUpExtraPercent
          * percent of the available bandwidth for at least dwHangUpExtraSampleSeconds seconds.
          */
         public int dwHangUpExtraPercent;
@@ -930,11 +1057,13 @@ public interface WinRas {
         public int dwType;
         /**
          * The type of encryption to use with the connection. The encryption is either provided by
-         * IPSec (for L2TP/IPSec connections) or by Microsoft Point-to-Point Encryption (MPPE). This member can be one of the following values.
+         * IPSec (for L2TP/IPSec connections) or by Microsoft Point-to-Point Encryption (MPPE). This member can be one
+         * of the following values.
          */
         public int dwEncryptionType;
         /**
-         * This member is used for Extensible Authentication Protocol (EAP). This member contains the authentication key provided to the EAP vendor.
+         * This member is used for Extensible Authentication Protocol (EAP). This member contains the authentication key
+         * provided to the EAP vendor.
          */
         public int dwCustomAuthKey;
         /**
@@ -942,9 +1071,12 @@ public interface WinRas {
          */
         public GUID guidId;
         /**
-         * A null-terminated string that contains the full path and file name for the dynamic link library (DLL) that implements the custom-dialing functions.
-         * This DLL should export Unicode versions of functions named RasCustomDial, RasCustomHangup, RasCustomEntryDlg, and
-         * RasCustomDialDlg. These functions should have prototypes RasCustomDialFn and RasCustomHangUpFn as defined in Ras.h,
+         * A null-terminated string that contains the full path and file name for the dynamic link library (DLL) that
+         * implements the custom-dialing functions.
+         * This DLL should export Unicode versions of functions named RasCustomDial, RasCustomHangup, RasCustomEntryDlg,
+         * and
+         * RasCustomDialDlg. These functions should have prototypes RasCustomDialFn and RasCustomHangUpFn as defined in
+         * Ras.h,
          * and RasCustomDialDlgFn and RasCustomEntryDlgFn as defined in Rasdlg.h.
          */
         public char[] szCustomDialDll = new char[MAX_PATH];
@@ -973,7 +1105,8 @@ public interface WinRas {
         public int dwTcpWindowSize;
         /**
          * Pointer to a null-terminated string that specifies the full path and file name of a phone-book (PBK) file.
-         * This phone-book file contains the entry specified by the szPrerequisiteEntry member. This member is used only for VPN connections.
+         * This phone-book file contains the entry specified by the szPrerequisiteEntry member. This member is used only
+         * for VPN connections.
          */
         public char[] szPrerequisitePbk = new char[MAX_PATH];
         /**
@@ -1027,6 +1160,7 @@ public interface WinRas {
      * The asynchronous dial calback interface
      */
     public interface RasDialFunc2 extends StdCallCallback {
-        public int dialNotification(int dwCallbackId, int dwSubEntry, HANDLE hrasconn, int unMsg, int rascs, int dwError, int dwExtendedError);
+        public int dialNotification(int dwCallbackId, int dwSubEntry, HANDLE hrasconn, int unMsg, int rascs,
+            int dwError, int dwExtendedError);
     }
 }

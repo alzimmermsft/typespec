@@ -16,10 +16,10 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.ListIterator;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A list iterator which forwards all its method calls to another list iterator. Subclasses should
@@ -38,44 +38,45 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
-public abstract class ForwardingListIterator<E extends @Nullable Object>
-    extends ForwardingIterator<E> implements ListIterator<E> {
+public abstract class ForwardingListIterator<E extends @Nullable Object> extends ForwardingIterator<E>
+    implements ListIterator<E> {
 
-  /** Constructor for use by subclasses. */
-  protected ForwardingListIterator() {}
+    /** Constructor for use by subclasses. */
+    protected ForwardingListIterator() {
+    }
 
-  @Override
-  protected abstract ListIterator<E> delegate();
+    @Override
+    protected abstract ListIterator<E> delegate();
 
-  @Override
-  public void add(@ParametricNullness E element) {
-    delegate().add(element);
-  }
+    @Override
+    public void add(@ParametricNullness E element) {
+        delegate().add(element);
+    }
 
-  @Override
-  public boolean hasPrevious() {
-    return delegate().hasPrevious();
-  }
+    @Override
+    public boolean hasPrevious() {
+        return delegate().hasPrevious();
+    }
 
-  @Override
-  public int nextIndex() {
-    return delegate().nextIndex();
-  }
+    @Override
+    public int nextIndex() {
+        return delegate().nextIndex();
+    }
 
-  @CanIgnoreReturnValue
-  @Override
-  @ParametricNullness
-  public E previous() {
-    return delegate().previous();
-  }
+    @CanIgnoreReturnValue
+    @Override
+    @ParametricNullness
+    public E previous() {
+        return delegate().previous();
+    }
 
-  @Override
-  public int previousIndex() {
-    return delegate().previousIndex();
-  }
+    @Override
+    public int previousIndex() {
+        return delegate().previousIndex();
+    }
 
-  @Override
-  public void set(@ParametricNullness E element) {
-    delegate().set(element);
-  }
+    @Override
+    public void set(@ParametricNullness E element) {
+        delegate().set(element);
+    }
 }

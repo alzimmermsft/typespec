@@ -57,24 +57,24 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 @ProviderType
 public interface LoggerAdmin {
-	/**
-	 * Logger Admin service property to associate the Logger Admin service with
-	 * a {@link LoggerFactory} service.
-	 * <p>
-	 * This service property is set to the {@code service.id} for the
-	 * {@link LoggerFactory} service administered by this Logger Admin.
-	 * <p>
-	 * The value of this service property must be of type {@code Long}.
-	 */
-	String LOG_SERVICE_ID = "osgi.log.service.id";
+    /**
+     * Logger Admin service property to associate the Logger Admin service with
+     * a {@link LoggerFactory} service.
+     * <p>
+     * This service property is set to the {@code service.id} for the
+     * {@link LoggerFactory} service administered by this Logger Admin.
+     * <p>
+     * The value of this service property must be of type {@code Long}.
+     */
+    String LOG_SERVICE_ID = "osgi.log.service.id";
 
-	/**
-	 * Get the Logger Context for the specified name.
-	 * 
-	 * @param name The name of the Logger Context. Can be {@code null} to
-	 *            specify the root Logger Context.
-	 * @return The Logger Context for the specified name. The returned Logger
-	 *         Context may be {@link LoggerContext#isEmpty() empty}.
-	 */
-	LoggerContext getLoggerContext(String name);
+    /**
+     * Get the Logger Context for the specified name.
+     * 
+     * @param name The name of the Logger Context. Can be {@code null} to
+     * specify the root Logger Context.
+     * @return The Logger Context for the specified name. The returned Logger
+     * Context may be {@link LoggerContext#isEmpty() empty}.
+     */
+    LoggerContext getLoggerContext(String name);
 }

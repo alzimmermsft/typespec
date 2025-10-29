@@ -31,424 +31,469 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class AnnotatableTypeSystem extends TypeSystem {
 
-	private final boolean isAnnotationBasedNullAnalysisEnabled;
+    private final boolean isAnnotationBasedNullAnalysisEnabled;
 
-	public AnnotatableTypeSystem(LookupEnvironment environment) {
-		super(environment);
-		this.environment = environment;
-		this.isAnnotationBasedNullAnalysisEnabled = environment.globalOptions.isAnnotationBasedNullAnalysisEnabled;
-	}
+    public AnnotatableTypeSystem(LookupEnvironment environment) {
+        super(environment);
+        this.environment = environment;
+        this.isAnnotationBasedNullAnalysisEnabled = environment.globalOptions.isAnnotationBasedNullAnalysisEnabled;
+    }
 
-	// Given a type, return all its annotated variants: parameter may be annotated.
-	@Override
-	public TypeBinding[] getAnnotatedTypes(TypeBinding type) {
+    // Given a type, return all its annotated variants: parameter may be annotated.
+    @Override
+    public TypeBinding[] getAnnotatedTypes(TypeBinding type) {
 
-		TypeBinding[] derivedTypes = getDerivedTypes(type);
-		final int length = derivedTypes.length;
-		TypeBinding [] annotatedVersions = new TypeBinding[length];
-		int versions = 0;
-		for (int i = 0; i < length; i++) {
-			final TypeBinding derivedType = derivedTypes[i];
-			if (derivedType == null)
-				break;
-			if (!derivedType.hasTypeAnnotations())
-				continue;
-			if (derivedType.id == type.id)
-				annotatedVersions[versions++] = derivedType;
-		}
+        TypeBinding[] derivedTypes = getDerivedTypes(type);
+        final int length = derivedTypes.length;
+        TypeBinding[] annotatedVersions = new TypeBinding[length];
+        int versions = 0;
+        for (int i = 0; i < length; i++) {
+            final TypeBinding derivedType = derivedTypes[i];
+            if (derivedType == null)
+                break;
+            if (!derivedType.hasTypeAnnotations())
+                continue;
+            if (derivedType.id == type.id)
+                annotatedVersions[versions++] = derivedType;
+        }
 
-		if (versions != length)
-			System.arraycopy(annotatedVersions, 0, annotatedVersions = new TypeBinding[versions], 0, versions);
-		return annotatedVersions;
-	}
+        if (versions != length)
+            System.arraycopy(annotatedVersions, 0, annotatedVersions = new TypeBinding[versions], 0, versions);
+        return annotatedVersions;
+    }
 
-	/* This method replaces the version that used to sit in LE. The parameter `annotations' is a flattened sequence of annotations,
-	   where each dimension's annotations end with a sentinel null. Leaf type can be an already annotated type.
+    /*
+     * This method replaces the version that used to sit in LE. The parameter `annotations' is a flattened sequence of
+     * annotations,
+     * where each dimension's annotations end with a sentinel null. Leaf type can be an already annotated type.
+     * 
+     * See ArrayBinding.swapUnresolved for further special case handling if incoming leafType is a URB that would
+     * resolve to a raw
+     * type later.
+     */
+    @Override
+    public ArrayBinding getArrayType(TypeBinding leafType, int dimensions, AnnotationBinding[] annotations) {
+        if (leafType instanceof ArrayBinding) { // substitution attempts can cause this, don't create array of arrays.
+            dimensions += leafType.dimensions();
+            AnnotationBinding[] leafAnnotations = leafType.getTypeAnnotations();
+            leafType = leafType.leafComponentType();
+            AnnotationBinding[] allAnnotations = new AnnotationBinding[leafAnnotations.length + annotations.length + 1];
+            System.arraycopy(annotations, 0, allAnnotations, 0, annotations.length);
+            System.arraycopy(leafAnnotations, 0, allAnnotations, annotations.length + 1 /* leave a null */,
+                leafAnnotations.length);
+            annotations = allAnnotations;
+        }
+        ArrayBinding nakedType = null;
+        TypeBinding[] derivedTypes = getDerivedTypes(leafType);
+        for (TypeBinding derivedType : derivedTypes) {
+            if (derivedType == null)
+                break;
+            if (!derivedType.isArrayType() || derivedType.dimensions() != dimensions || derivedType.leafComponentType() != leafType) //$IDENTITY-COMPARISON$
+                continue;
+            if (Util.effectivelyEqual(derivedType.getTypeAnnotations(), annotations))
+                return (ArrayBinding) derivedType;
+            if (!derivedType.hasTypeAnnotations())
+                nakedType = (ArrayBinding) derivedType;
+        }
+        if (nakedType == null)
+            nakedType = super.getArrayType(leafType, dimensions);
 
-	   See ArrayBinding.swapUnresolved for further special case handling if incoming leafType is a URB that would resolve to a raw
-	   type later.
-	*/
-	@Override
-	public ArrayBinding getArrayType(TypeBinding leafType, int dimensions, AnnotationBinding [] annotations) {
-		if (leafType instanceof ArrayBinding) { // substitution attempts can cause this, don't create array of arrays.
-			dimensions += leafType.dimensions();
-			AnnotationBinding[] leafAnnotations = leafType.getTypeAnnotations();
-			leafType = leafType.leafComponentType();
-			AnnotationBinding [] allAnnotations = new AnnotationBinding[leafAnnotations.length + annotations.length + 1];
-			System.arraycopy(annotations, 0, allAnnotations, 0, annotations.length);
-			System.arraycopy(leafAnnotations, 0, allAnnotations, annotations.length + 1 /* leave a null */, leafAnnotations.length);
-			annotations = allAnnotations;
-		}
-		ArrayBinding nakedType = null;
-		TypeBinding[] derivedTypes = getDerivedTypes(leafType);
-		for (TypeBinding derivedType : derivedTypes) {
-			if (derivedType == null) break;
-			if (!derivedType.isArrayType() || derivedType.dimensions() != dimensions || derivedType.leafComponentType() != leafType) //$IDENTITY-COMPARISON$
-				continue;
-			if (Util.effectivelyEqual(derivedType.getTypeAnnotations(), annotations))
-				return (ArrayBinding) derivedType;
-			if (!derivedType.hasTypeAnnotations())
-				nakedType = (ArrayBinding) derivedType;
-		}
-		if (nakedType == null)
-			nakedType = super.getArrayType(leafType, dimensions);
+        if (!haveTypeAnnotations(leafType, annotations))
+            return nakedType;
 
-		if (!haveTypeAnnotations(leafType, annotations))
-			return nakedType;
+        ArrayBinding arrayType = new ArrayBinding(leafType, dimensions, this.environment);
+        arrayType.id = nakedType.id;
+        arrayType.setTypeAnnotations(annotations, this.isAnnotationBasedNullAnalysisEnabled);
+        return (ArrayBinding) cacheDerivedType(leafType, nakedType, arrayType);
+    }
 
-		ArrayBinding arrayType = new ArrayBinding(leafType, dimensions, this.environment);
-		arrayType.id = nakedType.id;
-		arrayType.setTypeAnnotations(annotations, this.isAnnotationBasedNullAnalysisEnabled);
-		return (ArrayBinding) cacheDerivedType(leafType, nakedType, arrayType);
-	}
+    @Override
+    public ArrayBinding getArrayType(TypeBinding leaftType, int dimensions) {
+        return getArrayType(leaftType, dimensions, Binding.NO_ANNOTATIONS);
+    }
 
-	@Override
-	public ArrayBinding getArrayType(TypeBinding leaftType, int dimensions) {
-		return getArrayType(leaftType, dimensions, Binding.NO_ANNOTATIONS);
-	}
+    @Override
+    public ReferenceBinding getMemberType(ReferenceBinding memberType, ReferenceBinding enclosingType) {
+        if (!haveTypeAnnotations(memberType, enclosingType))
+            return super.getMemberType(memberType, enclosingType);
+        return (ReferenceBinding) getAnnotatedType(memberType, enclosingType, memberType.getTypeAnnotations());
+    }
 
-	@Override
-	public ReferenceBinding getMemberType(ReferenceBinding memberType, ReferenceBinding enclosingType) {
-		if (!haveTypeAnnotations(memberType, enclosingType))
-			return super.getMemberType(memberType, enclosingType);
-		return (ReferenceBinding) getAnnotatedType(memberType, enclosingType, memberType.getTypeAnnotations());
-	}
+    @Override
+    public ParameterizedTypeBinding getParameterizedType(ReferenceBinding genericType, TypeBinding[] typeArguments,
+        ReferenceBinding enclosingType, AnnotationBinding[] annotations) {
 
-	@Override
-	public ParameterizedTypeBinding getParameterizedType(ReferenceBinding genericType, TypeBinding[] typeArguments, ReferenceBinding enclosingType, AnnotationBinding [] annotations) {
+        if (genericType.hasTypeAnnotations())   // @NonNull (List<String>) and not (@NonNull List)<String>
+            throw new IllegalStateException();
 
-		if (genericType.hasTypeAnnotations())   // @NonNull (List<String>) and not (@NonNull List)<String>
-			throw new IllegalStateException();
+        ParameterizedTypeBinding parameterizedType
+            = this.parameterizedTypes.get(genericType, typeArguments, enclosingType, annotations);
+        if (parameterizedType != null)
+            return parameterizedType;
 
-		ParameterizedTypeBinding parameterizedType = this.parameterizedTypes.get(genericType, typeArguments, enclosingType, annotations);
-		if (parameterizedType != null)
-			return parameterizedType;
+        ParameterizedTypeBinding nakedType = super.getParameterizedType(genericType, typeArguments, enclosingType);
 
-		ParameterizedTypeBinding nakedType = super.getParameterizedType(genericType, typeArguments, enclosingType);
+        if (!haveTypeAnnotations(genericType, enclosingType, typeArguments, annotations))
+            return nakedType;
 
-		if (!haveTypeAnnotations(genericType, enclosingType, typeArguments, annotations))
-			return nakedType;
+        parameterizedType = new ParameterizedTypeBinding(genericType, typeArguments, enclosingType, this.environment);
+        parameterizedType.id = nakedType.id;
+        parameterizedType.setTypeAnnotations(annotations, this.isAnnotationBasedNullAnalysisEnabled);
+        this.parameterizedTypes.put(genericType, typeArguments, enclosingType, parameterizedType);
+        return (ParameterizedTypeBinding) cacheDerivedType(genericType, nakedType, parameterizedType);
+    }
 
-		parameterizedType = new ParameterizedTypeBinding(genericType, typeArguments, enclosingType, this.environment);
-		parameterizedType.id = nakedType.id;
-		parameterizedType.setTypeAnnotations(annotations, this.isAnnotationBasedNullAnalysisEnabled);
-		this.parameterizedTypes.put(genericType, typeArguments, enclosingType, parameterizedType);
-		return (ParameterizedTypeBinding) cacheDerivedType(genericType, nakedType, parameterizedType);
-	}
+    @Override
+    public ParameterizedTypeBinding getParameterizedType(ReferenceBinding genericType, TypeBinding[] typeArguments,
+        ReferenceBinding enclosingType) {
+        return getParameterizedType(genericType, typeArguments, enclosingType, Binding.NO_ANNOTATIONS);
+    }
 
-	@Override
-	public ParameterizedTypeBinding getParameterizedType(ReferenceBinding genericType, TypeBinding[] typeArguments, ReferenceBinding enclosingType) {
-		return getParameterizedType(genericType, typeArguments, enclosingType, Binding.NO_ANNOTATIONS);
-	}
+    @Override
+    public RawTypeBinding getRawType(ReferenceBinding genericType, ReferenceBinding enclosingType,
+        AnnotationBinding[] annotations) {
+        if (genericType.hasTypeAnnotations())
+            throw new IllegalStateException();
+        if (!genericType.hasEnclosingInstanceContext() && enclosingType != null) {
+            enclosingType = (ReferenceBinding) enclosingType.original();
+        }
 
-	@Override
-	public RawTypeBinding getRawType(ReferenceBinding genericType, ReferenceBinding enclosingType, AnnotationBinding [] annotations) {
-		if (genericType.hasTypeAnnotations())
-			throw new IllegalStateException();
-		if (!genericType.hasEnclosingInstanceContext() && enclosingType != null) {
-			enclosingType = (ReferenceBinding) enclosingType.original();
-		}
+        RawTypeBinding nakedType = null;
+        TypeBinding[] derivedTypes = getDerivedTypes(genericType);
+        for (TypeBinding derivedType : derivedTypes) {
+            if (derivedType == null)
+                break;
+            if (!derivedType.isRawType() || derivedType.actualType() != genericType || derivedType.enclosingType() != enclosingType) //$IDENTITY-COMPARISON$
+                continue;
+            if (Util.effectivelyEqual(derivedType.getTypeAnnotations(), annotations))
+                return (RawTypeBinding) derivedType;
+            if (!derivedType.hasTypeAnnotations())
+                nakedType = (RawTypeBinding) derivedType;
+        }
+        if (nakedType == null)
+            nakedType = super.getRawType(genericType, enclosingType);
 
-		RawTypeBinding nakedType = null;
-		TypeBinding[] derivedTypes = getDerivedTypes(genericType);
-		for (TypeBinding derivedType : derivedTypes) {
-			if (derivedType == null)
-				break;
-			if (!derivedType.isRawType() || derivedType.actualType() != genericType || derivedType.enclosingType() != enclosingType) //$IDENTITY-COMPARISON$
-				continue;
-			if (Util.effectivelyEqual(derivedType.getTypeAnnotations(), annotations))
-				return (RawTypeBinding) derivedType;
-			if (!derivedType.hasTypeAnnotations())
-				nakedType = (RawTypeBinding) derivedType;
-		}
-		if (nakedType == null)
-			nakedType = super.getRawType(genericType, enclosingType);
+        if (!haveTypeAnnotations(genericType, enclosingType, null, annotations))
+            return nakedType;
 
-		if (!haveTypeAnnotations(genericType, enclosingType, null, annotations))
-			return nakedType;
+        RawTypeBinding rawType = new RawTypeBinding(genericType, enclosingType, this.environment);
+        rawType.id = nakedType.id;
+        rawType.setTypeAnnotations(annotations, this.isAnnotationBasedNullAnalysisEnabled);
+        return (RawTypeBinding) cacheDerivedType(genericType, nakedType, rawType);
+    }
 
-		RawTypeBinding rawType = new RawTypeBinding(genericType, enclosingType, this.environment);
-		rawType.id = nakedType.id;
-		rawType.setTypeAnnotations(annotations, this.isAnnotationBasedNullAnalysisEnabled);
-		return (RawTypeBinding) cacheDerivedType(genericType, nakedType, rawType);
-	}
+    @Override
+    public RawTypeBinding getRawType(ReferenceBinding genericType, ReferenceBinding enclosingType) {
+        return getRawType(genericType, enclosingType, Binding.NO_ANNOTATIONS);
+    }
 
-	@Override
-	public RawTypeBinding getRawType(ReferenceBinding genericType, ReferenceBinding enclosingType) {
-		return getRawType(genericType, enclosingType, Binding.NO_ANNOTATIONS);
-	}
+    @Override
+    public WildcardBinding getWildcard(ReferenceBinding genericType, int rank, TypeBinding bound,
+        TypeBinding[] otherBounds, int boundKind, AnnotationBinding[] annotations) {
 
-	@Override
-	public WildcardBinding getWildcard(ReferenceBinding genericType, int rank, TypeBinding bound, TypeBinding[] otherBounds, int boundKind, AnnotationBinding [] annotations) {
+        if (genericType == null) // pseudo wildcard denoting composite bounds for lub computation
+            genericType = ReferenceBinding.LUB_GENERIC;
 
-		if (genericType == null) // pseudo wildcard denoting composite bounds for lub computation
-			genericType = ReferenceBinding.LUB_GENERIC;
+        if (genericType.hasTypeAnnotations())
+            throw new IllegalStateException();
 
-		if (genericType.hasTypeAnnotations())
-			throw new IllegalStateException();
+        WildcardBinding nakedType = null;
+        boolean useDerivedTypesOfBound = bound instanceof TypeVariableBinding
+            || (bound instanceof ParameterizedTypeBinding && !(bound instanceof RawTypeBinding));
+        TypeBinding[] derivedTypes = getDerivedTypes(useDerivedTypesOfBound ? bound : genericType);
+        for (TypeBinding derivedType : derivedTypes) {
+            if (derivedType == null)
+                break;
+            if (!derivedType.isWildcard() || derivedType.actualType() != genericType || derivedType.rank() != rank) //$IDENTITY-COMPARISON$
+                continue;
+            if (derivedType.boundKind() != boundKind || derivedType.bound() != bound || !Util.effectivelyEqual(derivedType.additionalBounds(), otherBounds)) //$IDENTITY-COMPARISON$
+                continue;
+            if (Util.effectivelyEqual(derivedType.getTypeAnnotations(), annotations))
+                return (WildcardBinding) derivedType;
+            if (!derivedType.hasTypeAnnotations())
+                nakedType = (WildcardBinding) derivedType;
+        }
 
-		WildcardBinding nakedType = null;
-		boolean useDerivedTypesOfBound = bound instanceof TypeVariableBinding || (bound instanceof ParameterizedTypeBinding && !(bound instanceof RawTypeBinding)) ;
-		TypeBinding[] derivedTypes = getDerivedTypes(useDerivedTypesOfBound ? bound : genericType);
-		for (TypeBinding derivedType : derivedTypes) {
-			if (derivedType == null)
-				break;
-			if (!derivedType.isWildcard() || derivedType.actualType() != genericType || derivedType.rank() != rank) //$IDENTITY-COMPARISON$
-				continue;
-			if (derivedType.boundKind() != boundKind || derivedType.bound() != bound || !Util.effectivelyEqual(derivedType.additionalBounds(), otherBounds)) //$IDENTITY-COMPARISON$
-				continue;
-			if (Util.effectivelyEqual(derivedType.getTypeAnnotations(), annotations))
-				return (WildcardBinding) derivedType;
-			if (!derivedType.hasTypeAnnotations())
-				nakedType = (WildcardBinding) derivedType;
-		}
+        if (nakedType == null)
+            nakedType = super.getWildcard(genericType, rank, bound, otherBounds, boundKind);
 
-		if (nakedType == null)
-			nakedType = super.getWildcard(genericType, rank, bound, otherBounds, boundKind);
+        if (!haveTypeAnnotations(genericType, bound, otherBounds, annotations))
+            return nakedType;
 
-		if (!haveTypeAnnotations(genericType, bound, otherBounds, annotations))
-			return nakedType;
+        WildcardBinding wildcard
+            = new WildcardBinding(genericType, rank, bound, otherBounds, boundKind, this.environment);
+        wildcard.id = nakedType.id;
+        wildcard.setTypeAnnotations(annotations, this.isAnnotationBasedNullAnalysisEnabled);
+        return (WildcardBinding) cacheDerivedType(useDerivedTypesOfBound ? bound : genericType, nakedType, wildcard);
+    }
 
-		WildcardBinding wildcard = new WildcardBinding(genericType, rank, bound, otherBounds, boundKind, this.environment);
-		wildcard.id = nakedType.id;
-		wildcard.setTypeAnnotations(annotations, this.isAnnotationBasedNullAnalysisEnabled);
-		return (WildcardBinding) cacheDerivedType(useDerivedTypesOfBound ? bound : genericType, nakedType, wildcard);
-	}
+    @Override
+    public WildcardBinding getWildcard(ReferenceBinding genericType, int rank, TypeBinding bound,
+        TypeBinding[] otherBounds, int boundKind) {
+        return getWildcard(genericType, rank, bound, otherBounds, boundKind, Binding.NO_ANNOTATIONS);
+    }
 
-	@Override
-	public WildcardBinding getWildcard(ReferenceBinding genericType, int rank, TypeBinding bound, TypeBinding[] otherBounds, int boundKind) {
-		return getWildcard(genericType, rank, bound, otherBounds, boundKind, Binding.NO_ANNOTATIONS);
-	}
+    /*
+     * Take a type and apply annotations to various components of it. By construction when we see the type
+     * reference @Outer Outer.@Middle Middle.@Inner Inner,
+     * we first construct the binding for Outer.Middle.Inner and then annotate various parts of it. Likewise for PQTR's
+     * binding.
+     */
+    @Override
+    public TypeBinding getAnnotatedType(TypeBinding type, AnnotationBinding[][] annotations) {
 
-	/* Take a type and apply annotations to various components of it. By construction when we see the type reference @Outer Outer.@Middle Middle.@Inner Inner,
-	   we first construct the binding for Outer.Middle.Inner and then annotate various parts of it. Likewise for PQTR's binding.
-	*/
-	@Override
-	public TypeBinding getAnnotatedType(TypeBinding type, AnnotationBinding[][] annotations) {
+        if (type == null || !type.isValidBinding() || annotations == null || annotations.length == 0)
+            return type;
 
-		if (type == null || !type.isValidBinding() || annotations == null || annotations.length == 0)
-			return type;
+        TypeBinding annotatedType = null;
+        switch (type.kind()) {
+            case Binding.ARRAY_TYPE:
+                ArrayBinding arrayBinding = (ArrayBinding) type;
+                annotatedType = getArrayType(arrayBinding.leafComponentType, arrayBinding.dimensions,
+                    flattenedAnnotations(annotations));
+                break;
 
-		TypeBinding annotatedType = null;
-		switch (type.kind()) {
-			case Binding.ARRAY_TYPE:
-				ArrayBinding arrayBinding = (ArrayBinding) type;
-				annotatedType = getArrayType(arrayBinding.leafComponentType, arrayBinding.dimensions, flattenedAnnotations(annotations));
-				break;
-			case Binding.BASE_TYPE:
-			case Binding.TYPE:
-			case Binding.GENERIC_TYPE:
-			case Binding.PARAMETERIZED_TYPE:
-			case Binding.RAW_TYPE:
-			case Binding.TYPE_PARAMETER:
-			case Binding.WILDCARD_TYPE:
-			case Binding.INTERSECTION_TYPE:
-			case Binding.INTERSECTION_TYPE18:
-				/* Taking the binding of QTR as an example, there could be different annotatable components, but we come in a with a single binding, e.g:
-				   @T Z;                                      type => Z  annotations => [[@T]]
-				   @T Y.@T Z                                  type => Z  annotations => [[@T][@T]]
-				   @T X.@T Y.@T Z                             type => Z  annotations => [[@T][@T][@T]]
-				   java.lang.@T X.@T Y.@T Z                   type => Z  annotations => [[][][@T][@T][@T]]
-				   in all these cases the incoming type binding is for Z, but annotations are for different levels. We need to align their layout for proper attribution.
-				 */
+            case Binding.BASE_TYPE:
+            case Binding.TYPE:
+            case Binding.GENERIC_TYPE:
+            case Binding.PARAMETERIZED_TYPE:
+            case Binding.RAW_TYPE:
+            case Binding.TYPE_PARAMETER:
+            case Binding.WILDCARD_TYPE:
+            case Binding.INTERSECTION_TYPE:
+            case Binding.INTERSECTION_TYPE18:
+                /*
+                 * Taking the binding of QTR as an example, there could be different annotatable components, but we come
+                 * in a with a single binding, e.g:
+                 * 
+                 * @T Z; type => Z annotations => [[@T]]
+                 * 
+                 * @T Y.@T Z type => Z annotations => [[@T][@T]]
+                 * 
+                 * @T X.@T Y.@T Z type => Z annotations => [[@T][@T][@T]]
+                 * java.lang.@T X.@T Y.@T Z type => Z annotations => [[][][@T][@T][@T]]
+                 * in all these cases the incoming type binding is for Z, but annotations are for different levels. We
+                 * need to align their layout for proper attribution.
+                 */
 
-				if (type.isUnresolvedType() && CharOperation.indexOf('$', type.sourceName()) > 0)
-				    type = BinaryTypeBinding.resolveType(type, this.environment, true); // must resolve member types before asking for enclosingType
+                if (type.isUnresolvedType() && CharOperation.indexOf('$', type.sourceName()) > 0)
+                    type = BinaryTypeBinding.resolveType(type, this.environment, true); // must resolve member types
+                                                                                        // before asking for
+                                                                                        // enclosingType
 
-				int levels = type.depth() + 1;
-				TypeBinding [] types = new TypeBinding[levels];
-				types[--levels] = type;
-				TypeBinding enclosingType = type.enclosingType();
-				while (enclosingType != null) {
-					types[--levels] = enclosingType;
-					enclosingType = enclosingType.enclosingType();
-				}
-				// Locate the outermost type being annotated. Beware annotations.length could be > types.length (for package qualified names in QTR/PQTR)
-				levels = annotations.length;
-				int i, j = types.length - levels;
-				for (i = 0 ; i < levels; i++, j++) {
-					if (annotations[i] != null && annotations[i].length > 0)
-						break;
-				}
-				if (i == levels) // empty annotations array ?
-					return type;
-				if (j < 0) // Not kosher, broken type that is not flagged as invalid while reporting compilation error ? don't touch.
-					return type;
-				// types[j] is the first component being annotated. Its annotations are annotations[i]
-				for (enclosingType = j == 0 ? null : types[j - 1]; i < levels; i++, j++) {
-					final TypeBinding currentType = types[j];
-					// while handling annotations from SE7 locations, take care not to drop existing annotations.
-					AnnotationBinding [] currentAnnotations = annotations[i] != null && annotations[i].length > 0 ? annotations[i] : currentType.getTypeAnnotations();
-					annotatedType = getAnnotatedType(currentType, enclosingType, currentAnnotations);
-					enclosingType = annotatedType;
-				}
-				break;
-			default:
-				throw new IllegalStateException();
-		}
-		return annotatedType;
-	}
+                int levels = type.depth() + 1;
+                TypeBinding[] types = new TypeBinding[levels];
+                types[--levels] = type;
+                TypeBinding enclosingType = type.enclosingType();
+                while (enclosingType != null) {
+                    types[--levels] = enclosingType;
+                    enclosingType = enclosingType.enclosingType();
+                }
+                // Locate the outermost type being annotated. Beware annotations.length could be > types.length (for
+                // package qualified names in QTR/PQTR)
+                levels = annotations.length;
+                int i, j = types.length - levels;
+                for (i = 0; i < levels; i++, j++) {
+                    if (annotations[i] != null && annotations[i].length > 0)
+                        break;
+                }
+                if (i == levels) // empty annotations array ?
+                    return type;
+                if (j < 0) // Not kosher, broken type that is not flagged as invalid while reporting compilation error ?
+                           // don't touch.
+                    return type;
+                // types[j] is the first component being annotated. Its annotations are annotations[i]
+                for (enclosingType = j == 0 ? null : types[j - 1]; i < levels; i++, j++) {
+                    final TypeBinding currentType = types[j];
+                    // while handling annotations from SE7 locations, take care not to drop existing annotations.
+                    AnnotationBinding[] currentAnnotations = annotations[i] != null && annotations[i].length > 0
+                        ? annotations[i]
+                        : currentType.getTypeAnnotations();
+                    annotatedType = getAnnotatedType(currentType, enclosingType, currentAnnotations);
+                    enclosingType = annotatedType;
+                }
+                break;
 
-	/* Private method for public APIs. Create an annotated version of the type. To materialize the annotated version, we can't use new since
-	   this is a general purpose method designed to deal type bindings of all types. "Clone" the incoming type, specializing for any enclosing type
-	   that may itself be possibly be annotated. This is so the binding for @Outer Outer.Inner != Outer.@Inner Inner != @Outer Outer.@Inner Inner.
-	   Likewise so the bindings for @Readonly List<@NonNull String> != @Readonly List<@Nullable String> != @Readonly List<@Interned String>
-	*/
-	private TypeBinding getAnnotatedType(TypeBinding type, TypeBinding enclosingType, AnnotationBinding[] annotations) {
-		if (type.kind() == Binding.PARAMETERIZED_TYPE) {
-			return getParameterizedType(type.actualType(), type.typeArguments(), (ReferenceBinding) enclosingType, annotations);
-		}
-		TypeBinding nakedType = null;
-		TypeBinding[] derivedTypes = getDerivedTypes(type);
-		for (TypeBinding derivedType : derivedTypes) {
-			if (derivedType == null) break;
+            default:
+                throw new IllegalStateException();
+        }
+        return annotatedType;
+    }
 
-			if (derivedType.enclosingType() != enclosingType || !Util.effectivelyEqual(derivedType.typeArguments(), type.typeArguments())) //$IDENTITY-COMPARISON$
-				continue;
+    /*
+     * Private method for public APIs. Create an annotated version of the type. To materialize the annotated version, we
+     * can't use new since
+     * this is a general purpose method designed to deal type bindings of all types. "Clone" the incoming type,
+     * specializing for any enclosing type
+     * that may itself be possibly be annotated. This is so the binding for @Outer Outer.Inner != Outer.@Inner Inner
+     * != @Outer Outer.@Inner Inner.
+     * Likewise so the bindings for @Readonly List<@NonNull String> != @Readonly List<@Nullable String> != @Readonly
+     * List<@Interned String>
+     */
+    private TypeBinding getAnnotatedType(TypeBinding type, TypeBinding enclosingType, AnnotationBinding[] annotations) {
+        if (type.kind() == Binding.PARAMETERIZED_TYPE) {
+            return getParameterizedType(type.actualType(), type.typeArguments(), (ReferenceBinding) enclosingType,
+                annotations);
+        }
+        TypeBinding nakedType = null;
+        TypeBinding[] derivedTypes = getDerivedTypes(type);
+        for (TypeBinding derivedType : derivedTypes) {
+            if (derivedType == null)
+                break;
 
-			switch(type.kind()) {
-				case Binding.ARRAY_TYPE:
-					if (!derivedType.isArrayType() || derivedType.dimensions() != type.dimensions() || derivedType.leafComponentType() != type.leafComponentType()) //$IDENTITY-COMPARISON$
-						continue;
-					break;
-				case Binding.RAW_TYPE:
-					if (!derivedType.isRawType() || derivedType.actualType() != type.actualType()) //$IDENTITY-COMPARISON$
-						continue;
-					break;
-				case Binding.INTERSECTION_TYPE:
-				case Binding.WILDCARD_TYPE:
-					if (!derivedType.isWildcard() || derivedType.actualType() != type.actualType() || derivedType.rank() != type.rank() || derivedType.boundKind() != type.boundKind()) //$IDENTITY-COMPARISON$
-						continue;
-					if (derivedType.bound() != type.bound() || !Util.effectivelyEqual(derivedType.additionalBounds(), type.additionalBounds())) //$IDENTITY-COMPARISON$
-						continue;
-					break;
-				default:
-					switch(derivedType.kind()) {
-						case Binding.ARRAY_TYPE:
-						case Binding.RAW_TYPE:
-						case Binding.WILDCARD_TYPE:
-						case Binding.INTERSECTION_TYPE18:
-						case Binding.INTERSECTION_TYPE:
-							continue;
-					}
-					break;
-			}
-			if (Util.effectivelyEqual(derivedType.getTypeAnnotations(), annotations)) {
-				return derivedType;
-			}
-			if (!derivedType.hasTypeAnnotations())
-				nakedType = derivedType;
-		}
-		if (nakedType == null)
-			nakedType = getUnannotatedType(type);
+            if (derivedType.enclosingType() != enclosingType || !Util.effectivelyEqual(derivedType.typeArguments(), type.typeArguments())) //$IDENTITY-COMPARISON$
+                continue;
 
-		if (!haveTypeAnnotations(type, enclosingType, null, annotations))
-			return nakedType;
+            switch (type.kind()) {
+                case Binding.ARRAY_TYPE:
+                    if (!derivedType.isArrayType() || derivedType.dimensions() != type.dimensions() || derivedType.leafComponentType() != type.leafComponentType()) //$IDENTITY-COMPARISON$
+                        continue;
+                    break;
 
-		TypeBinding annotatedType = type.clone(enclosingType);
-		annotatedType.id = nakedType.id;
-		annotatedType.setTypeAnnotations(annotations, this.isAnnotationBasedNullAnalysisEnabled);
-		if (this.isAnnotationBasedNullAnalysisEnabled && (annotatedType.tagBits & TagBits.AnnotationNullMASK) == 0) {
-			// propagate nullness unless overridden in 'annotations':
-			annotatedType.tagBits |= type.tagBits & TagBits.AnnotationNullMASK;
-		}
-		TypeBinding keyType;
-		switch (type.kind()) {
-			case Binding.ARRAY_TYPE:
-				keyType = type.leafComponentType();
-				break;
-			case Binding.RAW_TYPE:
-			case Binding.WILDCARD_TYPE:
-				keyType = type.actualType();
-				break;
-			default:
-				keyType = nakedType;
-				break;
-		}
-		return cacheDerivedType(keyType, nakedType, annotatedType);
-	}
+                case Binding.RAW_TYPE:
+                    if (!derivedType.isRawType() || derivedType.actualType() != type.actualType()) //$IDENTITY-COMPARISON$
+                        continue;
+                    break;
 
-	private boolean haveTypeAnnotations(TypeBinding baseType, TypeBinding someType, TypeBinding[] someTypes, AnnotationBinding[] annotations) {
-		if (baseType != null && baseType.hasTypeAnnotations())
-			return true;
-		if (someType != null && someType.hasTypeAnnotations())
-			return true;
-		for (int i = 0, length = annotations == null ? 0 : annotations.length; i < length; i++)
-			if (annotations [i] != null)
-				return true;
-		for (int i = 0, length = someTypes == null ? 0 : someTypes.length; i < length; i++)
-			if (someTypes[i].hasTypeAnnotations())
-				return true;
-		return false;
-	}
+                case Binding.INTERSECTION_TYPE:
+                case Binding.WILDCARD_TYPE:
+                    if (!derivedType.isWildcard() || derivedType.actualType() != type.actualType() || derivedType.rank() != type.rank() || derivedType.boundKind() != type.boundKind()) //$IDENTITY-COMPARISON$
+                        continue;
+                    if (derivedType.bound() != type.bound() || !Util.effectivelyEqual(derivedType.additionalBounds(), type.additionalBounds())) //$IDENTITY-COMPARISON$
+                        continue;
+                    break;
 
-	private boolean haveTypeAnnotations(TypeBinding leafType, AnnotationBinding[] annotations) {
-		return haveTypeAnnotations(leafType, null, null, annotations);
-	}
+                default:
+                    switch (derivedType.kind()) {
+                        case Binding.ARRAY_TYPE:
+                        case Binding.RAW_TYPE:
+                        case Binding.WILDCARD_TYPE:
+                        case Binding.INTERSECTION_TYPE18:
+                        case Binding.INTERSECTION_TYPE:
+                            continue;
+                    }
+                    break;
+            }
+            if (Util.effectivelyEqual(derivedType.getTypeAnnotations(), annotations)) {
+                return derivedType;
+            }
+            if (!derivedType.hasTypeAnnotations())
+                nakedType = derivedType;
+        }
+        if (nakedType == null)
+            nakedType = getUnannotatedType(type);
 
-	private boolean haveTypeAnnotations(TypeBinding memberType, TypeBinding enclosingType) {
-		return haveTypeAnnotations(memberType, enclosingType, null, null);
-	}
+        if (!haveTypeAnnotations(type, enclosingType, null, annotations))
+            return nakedType;
 
-	/* Utility method to "flatten" annotations. For multidimensional arrays, we encode the annotations into a flat array
-	   where a null separates the annotations of dimension n from dimension n - 1 as well as dimenion n + 1. There is a
-	   final null always.
-	*/
-	static AnnotationBinding [] flattenedAnnotations (AnnotationBinding [][] annotations) {
+        TypeBinding annotatedType = type.clone(enclosingType);
+        annotatedType.id = nakedType.id;
+        annotatedType.setTypeAnnotations(annotations, this.isAnnotationBasedNullAnalysisEnabled);
+        if (this.isAnnotationBasedNullAnalysisEnabled && (annotatedType.tagBits & TagBits.AnnotationNullMASK) == 0) {
+            // propagate nullness unless overridden in 'annotations':
+            annotatedType.tagBits |= type.tagBits & TagBits.AnnotationNullMASK;
+        }
+        TypeBinding keyType;
+        switch (type.kind()) {
+            case Binding.ARRAY_TYPE:
+                keyType = type.leafComponentType();
+                break;
 
-		if (annotations == null || annotations.length == 0)
-			return Binding.NO_ANNOTATIONS;
+            case Binding.RAW_TYPE:
+            case Binding.WILDCARD_TYPE:
+                keyType = type.actualType();
+                break;
 
-		int levels = annotations.length;
-		int length = levels;
-		for (int i = 0; i < levels; i++) {
-			length += annotations[i] == null ? 0 : annotations[i].length;
-		}
-		if (length == 0)
-			return Binding.NO_ANNOTATIONS;
+            default:
+                keyType = nakedType;
+                break;
+        }
+        return cacheDerivedType(keyType, nakedType, annotatedType);
+    }
 
-		AnnotationBinding[] series = new AnnotationBinding [length];
-		int index = 0;
-		for (int i = 0; i < levels; i++) {
-			final int annotationsLength = annotations[i] == null ? 0 : annotations[i].length;
-			if (annotationsLength > 0) {
-				System.arraycopy(annotations[i], 0, series, index, annotationsLength);
-				index += annotationsLength;
-			}
-			series[index++] = null;
-		}
-		if (index != length)
-			throw new IllegalStateException();
-		return series;
-	}
+    private boolean haveTypeAnnotations(TypeBinding baseType, TypeBinding someType, TypeBinding[] someTypes,
+        AnnotationBinding[] annotations) {
+        if (baseType != null && baseType.hasTypeAnnotations())
+            return true;
+        if (someType != null && someType.hasTypeAnnotations())
+            return true;
+        for (int i = 0, length = annotations == null ? 0 : annotations.length; i < length; i++)
+            if (annotations[i] != null)
+                return true;
+        for (int i = 0, length = someTypes == null ? 0 : someTypes.length; i < length; i++)
+            if (someTypes[i].hasTypeAnnotations())
+                return true;
+        return false;
+    }
 
-	/**
-	 * Forcefully register the given type as a derived type.
-	 * If it itself is already registered as the key unannotated type of its family,
-	 * create a clone to play that role from now on and swap types in the types cache.
-	 */
-	@Override
-	public void forceRegisterAsDerived(TypeVariableBinding derived) {
-		int id = derived.id;
-		TypeBinding[] derivedTypes = getDerivedTypes(derived);
-		if (id != TypeIds.NoId && derivedTypes != null) {
-			TypeBinding unannotated = derivedTypes[0];
-			if (unannotated == derived) { //$IDENTITY-COMPARISON$
-				// was previously registered as unannotated, replace by a fresh clone to remain unannotated:
-				derivedTypes[0] = unannotated = derived.clone(null);
-				if (derived.updateWhenSettingTypeAnnotations != null) {
-					derived.updateWhenSettingTypeAnnotations.accept((TypeVariableBinding) unannotated);
-				}
-			}
-			// proceed as normal:
-			cacheDerivedType(unannotated, derived);
-		} else {
-			throw new IllegalStateException("Type was not yet registered as expected: "+derived); //$NON-NLS-1$
-		}
-	}
+    private boolean haveTypeAnnotations(TypeBinding leafType, AnnotationBinding[] annotations) {
+        return haveTypeAnnotations(leafType, null, null, annotations);
+    }
 
-	@Override
-	public boolean isAnnotatedTypeSystem() {
-		return true;
-	}
+    private boolean haveTypeAnnotations(TypeBinding memberType, TypeBinding enclosingType) {
+        return haveTypeAnnotations(memberType, enclosingType, null, null);
+    }
+
+    /*
+     * Utility method to "flatten" annotations. For multidimensional arrays, we encode the annotations into a flat array
+     * where a null separates the annotations of dimension n from dimension n - 1 as well as dimenion n + 1. There is a
+     * final null always.
+     */
+    static AnnotationBinding[] flattenedAnnotations(AnnotationBinding[][] annotations) {
+
+        if (annotations == null || annotations.length == 0)
+            return Binding.NO_ANNOTATIONS;
+
+        int levels = annotations.length;
+        int length = levels;
+        for (int i = 0; i < levels; i++) {
+            length += annotations[i] == null ? 0 : annotations[i].length;
+        }
+        if (length == 0)
+            return Binding.NO_ANNOTATIONS;
+
+        AnnotationBinding[] series = new AnnotationBinding[length];
+        int index = 0;
+        for (int i = 0; i < levels; i++) {
+            final int annotationsLength = annotations[i] == null ? 0 : annotations[i].length;
+            if (annotationsLength > 0) {
+                System.arraycopy(annotations[i], 0, series, index, annotationsLength);
+                index += annotationsLength;
+            }
+            series[index++] = null;
+        }
+        if (index != length)
+            throw new IllegalStateException();
+        return series;
+    }
+
+    /**
+     * Forcefully register the given type as a derived type.
+     * If it itself is already registered as the key unannotated type of its family,
+     * create a clone to play that role from now on and swap types in the types cache.
+     */
+    @Override
+    public void forceRegisterAsDerived(TypeVariableBinding derived) {
+        int id = derived.id;
+        TypeBinding[] derivedTypes = getDerivedTypes(derived);
+        if (id != TypeIds.NoId && derivedTypes != null) {
+            TypeBinding unannotated = derivedTypes[0];
+            if (unannotated == derived) { //$IDENTITY-COMPARISON$
+// was previously registered as unannotated, replace by a fresh clone to remain unannotated:
+                derivedTypes[0] = unannotated = derived.clone(null);
+                if (derived.updateWhenSettingTypeAnnotations != null) {
+                    derived.updateWhenSettingTypeAnnotations.accept((TypeVariableBinding) unannotated);
+                }
+            }
+            // proceed as normal:
+            cacheDerivedType(unannotated, derived);
+        } else {
+            throw new IllegalStateException("Type was not yet registered as expected: " + derived); //$NON-NLS-1$
+        }
+    }
+
+    @Override
+    public boolean isAnnotatedTypeSystem() {
+        return true;
+    }
 }

@@ -18,31 +18,31 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver.util;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Capability;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Capability;
 
 public class CandidateSelector {
 
-    public static final CandidateSelector EMPTY = new CandidateSelector(Collections.emptyList(),
-            new AtomicBoolean(true)) {
-        @Override
-        public CandidateSelector copy() {
-            return this;
-        }
+    public static final CandidateSelector EMPTY
+        = new CandidateSelector(Collections.emptyList(), new AtomicBoolean(true)) {
+            @Override
+            public CandidateSelector copy() {
+                return this;
+            }
 
-        @Override
-        public CandidateSelector copyWith(List<Capability> candidates) {
-            return this;
-        }
-        
-        @Override
-        public boolean isEmpty() {
-        	return true;
-        }
-    };
+            @Override
+            public CandidateSelector copyWith(List<Capability> candidates) {
+                return this;
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return true;
+            }
+        };
 
     protected final AtomicBoolean isUnmodifiable;
     protected final List<Capability> unmodifiable;

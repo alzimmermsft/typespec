@@ -18,32 +18,33 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class NestHostAttribute extends ClassFileAttribute implements INestHostAttribute {
 
-	private final int hostIndex;
-	private final char[] hostName;
+    private final int hostIndex;
+    private final char[] hostName;
 
-	public NestHostAttribute(byte[] classFileBytes, IConstantPool constantPool, int offset)
-			throws ClassFormatException {
-		super(classFileBytes, constantPool, offset);
-		int index = u2At(classFileBytes, 6, offset);
-		this.hostIndex = index;
-		IConstantPoolEntry constantPoolEntry = constantPool.decodeEntry(index);
-		if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Class) {
-			throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
-		}
-		this.hostName = constantPoolEntry.getClassInfoName();
-	}
+    public NestHostAttribute(byte[] classFileBytes, IConstantPool constantPool, int offset)
+        throws ClassFormatException {
+        super(classFileBytes, constantPool, offset);
+        int index = u2At(classFileBytes, 6, offset);
+        this.hostIndex = index;
+        IConstantPoolEntry constantPoolEntry = constantPool.decodeEntry(index);
+        if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Class) {
+            throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
+        }
+        this.hostName = constantPoolEntry.getClassInfoName();
+    }
 
-	@Override
-	public char[] getNestHostName() {
-		return this.hostName;
-	}
+    @Override
+    public char[] getNestHostName() {
+        return this.hostName;
+    }
 
-	@Override
-	public int getNestHostIndex() {
-		return this.hostIndex;
-	}
-	@Override
-	public String toString() {
-		return new String(this.hostName);
-	}
+    @Override
+    public int getNestHostIndex() {
+        return this.hostIndex;
+    }
+
+    @Override
+    public String toString() {
+        return new String(this.hostName);
+    }
 }

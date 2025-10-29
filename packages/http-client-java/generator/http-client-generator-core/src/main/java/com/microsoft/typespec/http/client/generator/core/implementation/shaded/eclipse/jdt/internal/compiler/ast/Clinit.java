@@ -37,382 +37,373 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.problem.AbortMethod;
 
 public class Clinit extends AbstractMethodDeclaration {
-	private static int ENUM_CONSTANTS_THRESHOLD = 2000;
+    private static int ENUM_CONSTANTS_THRESHOLD = 2000;
 
-	private FieldBinding assertionSyntheticFieldBinding = null;
+    private FieldBinding assertionSyntheticFieldBinding = null;
 
-	public Clinit(CompilationResult compilationResult) {
-		super(compilationResult);
-		this.modifiers = 0;
-		this.selector = TypeConstants.CLINIT;
-	}
+    public Clinit(CompilationResult compilationResult) {
+        super(compilationResult);
+        this.modifiers = 0;
+        this.selector = TypeConstants.CLINIT;
+    }
 
-	public void analyseCode(
-		ClassScope classScope,
-		InitializationFlowContext staticInitializerFlowContext,
-		FlowInfo flowInfo) {
+    public void analyseCode(ClassScope classScope, InitializationFlowContext staticInitializerFlowContext,
+        FlowInfo flowInfo) {
 
-		if (this.ignoreFurtherInvestigation)
-			return;
-		try {
-			ExceptionHandlingFlowContext clinitContext =
-				new ExceptionHandlingFlowContext(
-					staticInitializerFlowContext.parent,
-					this,
-					Binding.NO_EXCEPTIONS,
-					staticInitializerFlowContext,
-					this.scope,
-					FlowInfo.DEAD_END);
+        if (this.ignoreFurtherInvestigation)
+            return;
+        try {
+            ExceptionHandlingFlowContext clinitContext
+                = new ExceptionHandlingFlowContext(staticInitializerFlowContext.parent, this, Binding.NO_EXCEPTIONS,
+                    staticInitializerFlowContext, this.scope, FlowInfo.DEAD_END);
 
-			// check for missing returning path
-			if ((flowInfo.tagBits & FlowInfo.UNREACHABLE_OR_DEAD) == 0) {
-				this.bits |= ASTNode.NeedFreeReturn;
-			}
+            // check for missing returning path
+            if ((flowInfo.tagBits & FlowInfo.UNREACHABLE_OR_DEAD) == 0) {
+                this.bits |= ASTNode.NeedFreeReturn;
+            }
 
-			// check missing blank final field initializations
-			flowInfo = flowInfo.mergedWith(staticInitializerFlowContext.initsOnReturn);
-			FieldBinding[] fields = this.scope.enclosingSourceType().fields();
-			for (FieldBinding field : fields) {
-				if (field.isStatic()) {
-					if (!flowInfo.isDefinitelyAssigned(field)) {
-						if (field.isFinal()) {
-							this.scope.problemReporter().uninitializedBlankFinalField(
-									field,
-									this.scope.referenceType().declarationOf(field.original()));
-							// can complain against the field decl, since only one <clinit>
-						} else if (field.isNonNull()) {
-							this.scope.problemReporter().uninitializedNonNullField(
-									field,
-									this.scope.referenceType().declarationOf(field.original()));
-						}
-					}
-				}
-			}
-			// check static initializers thrown exceptions
-			staticInitializerFlowContext.checkInitializerExceptions(
-				this.scope,
-				clinitContext,
-				flowInfo);
-		} catch (AbortMethod e) {
-			this.ignoreFurtherInvestigation = true;
-		}
-	}
+            // check missing blank final field initializations
+            flowInfo = flowInfo.mergedWith(staticInitializerFlowContext.initsOnReturn);
+            FieldBinding[] fields = this.scope.enclosingSourceType().fields();
+            for (FieldBinding field : fields) {
+                if (field.isStatic()) {
+                    if (!flowInfo.isDefinitelyAssigned(field)) {
+                        if (field.isFinal()) {
+                            this.scope.problemReporter()
+                                .uninitializedBlankFinalField(field,
+                                    this.scope.referenceType().declarationOf(field.original()));
+                            // can complain against the field decl, since only one <clinit>
+                        } else if (field.isNonNull()) {
+                            this.scope.problemReporter()
+                                .uninitializedNonNullField(field,
+                                    this.scope.referenceType().declarationOf(field.original()));
+                        }
+                    }
+                }
+            }
+            // check static initializers thrown exceptions
+            staticInitializerFlowContext.checkInitializerExceptions(this.scope, clinitContext, flowInfo);
+        } catch (AbortMethod e) {
+            this.ignoreFurtherInvestigation = true;
+        }
+    }
 
-	/**
-	 * Bytecode generation for a {@code <clinit>} method
-	 *
-	 * @param classScope org.eclipse.jdt.internal.compiler.lookup.ClassScope
-	 * @param classFile org.eclipse.jdt.internal.compiler.codegen.ClassFile
-	 */
-	@Override
-	public void generateCode(ClassScope classScope, ClassFile classFile) {
+    /**
+     * Bytecode generation for a {@code <clinit>} method
+     *
+     * @param classScope org.eclipse.jdt.internal.compiler.lookup.ClassScope
+     * @param classFile org.eclipse.jdt.internal.compiler.codegen.ClassFile
+     */
+    @Override
+    public void generateCode(ClassScope classScope, ClassFile classFile) {
 
-		int clinitOffset = 0;
-		if (this.ignoreFurtherInvestigation) {
-			// should never have to add any <clinit> problem method
-			return;
-		}
-		CompilationResult unitResult = null;
-		int problemCount = 0;
-		if (classScope != null) {
-			TypeDeclaration referenceContext = classScope.referenceContext;
-			if (referenceContext != null) {
-				unitResult = referenceContext.compilationResult();
-				problemCount = unitResult.problemCount;
-			}
-		}
-		boolean restart = false;
-		do {
-			try {
-				clinitOffset = classFile.contentsOffset;
-				this.generateCode(classScope, classFile, clinitOffset);
-				restart = false;
-			} catch (AbortMethod e) {
-				// should never occur
-				// the clinit referenceContext is the type declaration
-				// All clinit problems will be reported against the type: AbortType instead of AbortMethod
-				// reset the contentsOffset to the value before generating the clinit code
-				// decrement the number of method info as well.
-				// This is done in the addProblemMethod and addProblemConstructor for other
-				// cases.
-				if (e.compilationResult == CodeStream.RESTART_IN_WIDE_MODE) {
-					// a branch target required a goto_w, restart code gen in wide mode.
-					classFile.contentsOffset = clinitOffset;
-					classFile.methodCount--;
-					classFile.codeStream.resetInWideMode(); // request wide mode
-					// reset the problem count to prevent reporting the same warning twice
-					if (unitResult != null) {
-						unitResult.problemCount = problemCount;
-					}
-					// restart method generation
-					restart = true;
-				} else if (e.compilationResult == CodeStream.RESTART_CODE_GEN_FOR_UNUSED_LOCALS_MODE) {
-					classFile.contentsOffset = clinitOffset;
-					classFile.methodCount--;
-					classFile.codeStream.resetForCodeGenUnusedLocals();
-					// reset the problem count to prevent reporting the same warning twice
-					if (unitResult != null) {
-						unitResult.problemCount = problemCount;
-					}
-					// restart method generation
-					restart = true;
-				} else {
-					// produce a problem method accounting for this fatal error
-					classFile.contentsOffset = clinitOffset;
-					classFile.methodCount--;
-					restart = false;
-				}
-			}
-		} while (restart);
-	}
+        int clinitOffset = 0;
+        if (this.ignoreFurtherInvestigation) {
+            // should never have to add any <clinit> problem method
+            return;
+        }
+        CompilationResult unitResult = null;
+        int problemCount = 0;
+        if (classScope != null) {
+            TypeDeclaration referenceContext = classScope.referenceContext;
+            if (referenceContext != null) {
+                unitResult = referenceContext.compilationResult();
+                problemCount = unitResult.problemCount;
+            }
+        }
+        boolean restart = false;
+        do {
+            try {
+                clinitOffset = classFile.contentsOffset;
+                this.generateCode(classScope, classFile, clinitOffset);
+                restart = false;
+            } catch (AbortMethod e) {
+                // should never occur
+                // the clinit referenceContext is the type declaration
+                // All clinit problems will be reported against the type: AbortType instead of AbortMethod
+                // reset the contentsOffset to the value before generating the clinit code
+                // decrement the number of method info as well.
+                // This is done in the addProblemMethod and addProblemConstructor for other
+                // cases.
+                if (e.compilationResult == CodeStream.RESTART_IN_WIDE_MODE) {
+                    // a branch target required a goto_w, restart code gen in wide mode.
+                    classFile.contentsOffset = clinitOffset;
+                    classFile.methodCount--;
+                    classFile.codeStream.resetInWideMode(); // request wide mode
+                    // reset the problem count to prevent reporting the same warning twice
+                    if (unitResult != null) {
+                        unitResult.problemCount = problemCount;
+                    }
+                    // restart method generation
+                    restart = true;
+                } else if (e.compilationResult == CodeStream.RESTART_CODE_GEN_FOR_UNUSED_LOCALS_MODE) {
+                    classFile.contentsOffset = clinitOffset;
+                    classFile.methodCount--;
+                    classFile.codeStream.resetForCodeGenUnusedLocals();
+                    // reset the problem count to prevent reporting the same warning twice
+                    if (unitResult != null) {
+                        unitResult.problemCount = problemCount;
+                    }
+                    // restart method generation
+                    restart = true;
+                } else {
+                    // produce a problem method accounting for this fatal error
+                    classFile.contentsOffset = clinitOffset;
+                    classFile.methodCount--;
+                    restart = false;
+                }
+            }
+        } while (restart);
+    }
 
-	/**
-	 * Bytecode generation for a <clinit> method
-	 *
-	 * @param classScope org.eclipse.jdt.internal.compiler.lookup.ClassScope
-	 * @param classFile org.eclipse.jdt.internal.compiler.codegen.ClassFile
-	 */
-	private void generateCode(
-		ClassScope classScope,
-		ClassFile classFile,
-		int clinitOffset) {
+    /**
+     * Bytecode generation for a <clinit> method
+     *
+     * @param classScope org.eclipse.jdt.internal.compiler.lookup.ClassScope
+     * @param classFile org.eclipse.jdt.internal.compiler.codegen.ClassFile
+     */
+    private void generateCode(ClassScope classScope, ClassFile classFile, int clinitOffset) {
 
-		ConstantPool constantPool = classFile.constantPool;
-		int constantPoolOffset = constantPool.currentOffset;
-		int constantPoolIndex = constantPool.currentIndex;
-		classFile.generateMethodInfoHeaderForClinit();
-		int codeAttributeOffset = classFile.contentsOffset;
-		classFile.generateCodeAttributeHeader();
-		CodeStream codeStream = classFile.codeStream;
-		resolve(classScope);
+        ConstantPool constantPool = classFile.constantPool;
+        int constantPoolOffset = constantPool.currentOffset;
+        int constantPoolIndex = constantPool.currentIndex;
+        classFile.generateMethodInfoHeaderForClinit();
+        int codeAttributeOffset = classFile.contentsOffset;
+        classFile.generateCodeAttributeHeader();
+        CodeStream codeStream = classFile.codeStream;
+        resolve(classScope);
 
-		codeStream.reset(this, classFile);
-		TypeDeclaration declaringType = classScope.referenceContext;
-		codeStream.pushPatternAccessTrapScope(this.scope);
+        codeStream.reset(this, classFile);
+        TypeDeclaration declaringType = classScope.referenceContext;
+        codeStream.pushPatternAccessTrapScope(this.scope);
 
-		// initialize local positions - including initializer scope.
-		MethodScope staticInitializerScope = declaringType.staticInitializerScope;
-		staticInitializerScope.computeLocalVariablePositions(0, codeStream);
+        // initialize local positions - including initializer scope.
+        MethodScope staticInitializerScope = declaringType.staticInitializerScope;
+        staticInitializerScope.computeLocalVariablePositions(0, codeStream);
 
-		// 1.4 feature
-		// This has to be done before any other initialization
-		if (this.assertionSyntheticFieldBinding != null) {
-			// generate code related to the activation of assertion for this class
-			codeStream.generateClassLiteralAccessForType(
-					classScope,
-					classScope.outerMostClassScope().enclosingSourceType());
-			codeStream.invokeJavaLangClassDesiredAssertionStatus();
-			BranchLabel falseLabel = new BranchLabel(codeStream);
-			codeStream.ifne(falseLabel);
-			codeStream.iconst_1();
-			BranchLabel jumpLabel = new BranchLabel(codeStream);
-			codeStream.goto_(jumpLabel);
-			falseLabel.place();
-			codeStream.iconst_0();
-			jumpLabel.place();
-			codeStream.fieldAccess(Opcodes.OPC_putstatic, this.assertionSyntheticFieldBinding, null /* default declaringClass */);
-		}
-		boolean isJava9 = classScope.compilerOptions().complianceLevel >= ClassFileConstants.JDK9;
-		// generate static fields/initializers/enum constants
-		final FieldDeclaration[] fieldDeclarations = declaringType.fields;
-		int sourcePosition = -1;
-		int remainingFieldCount = 0;
-		if (TypeDeclaration.kind(declaringType.modifiers) == TypeDeclaration.ENUM_DECL) {
-			int enumCount = declaringType.enumConstantsCounter;
-			if (!isJava9 && enumCount > ENUM_CONSTANTS_THRESHOLD) {
-				// generate synthetic methods to initialize all the enum constants
-				int begin = -1;
-				int count = 0;
-				if (fieldDeclarations != null) {
-					int max = fieldDeclarations.length;
-					for (int i = 0; i < max; i++) {
-						FieldDeclaration fieldDecl = fieldDeclarations[i];
-						if (fieldDecl.isStatic()) {
-							if (fieldDecl.getKind() == AbstractVariableDeclaration.ENUM_CONSTANT) {
-								if (begin == -1) {
-									begin = i;
-								}
-								count++;
-								if (count > ENUM_CONSTANTS_THRESHOLD) {
-									SyntheticMethodBinding syntheticMethod = declaringType.binding.addSyntheticMethodForEnumInitialization(begin, i);
-									codeStream.invoke(Opcodes.OPC_invokestatic, syntheticMethod, null /* default declaringClass */);
-									begin = i;
-									count = 1;
-								}
-							} else {
-								remainingFieldCount++;
-							}
-						}
-					}
-					if (count != 0) {
-						// add last synthetic method
-						SyntheticMethodBinding syntheticMethod = declaringType.binding.addSyntheticMethodForEnumInitialization(begin, max);
-						codeStream.invoke(Opcodes.OPC_invokestatic, syntheticMethod, null /* default declaringClass */);
-					}
-				}
-			} else if (fieldDeclarations != null) {
-				for (FieldDeclaration fieldDecl : fieldDeclarations) {
-					if (fieldDecl.isStatic()) {
-						if (fieldDecl.getKind() == AbstractVariableDeclaration.ENUM_CONSTANT) {
-							fieldDecl.generateCode(staticInitializerScope, codeStream);
-						} else {
-							remainingFieldCount++;
-						}
-					}
-				}
-			}
-			// enum need to initialize $VALUES synthetic cache of enum constants
-			// $VALUES := new <EnumType>[<enumCount>]
-			codeStream.generateInlinedValue(enumCount);
-			codeStream.anewarray(declaringType.binding);
-			if (enumCount > 0) {
-				if (fieldDeclarations != null) {
-					for (FieldDeclaration fieldDecl : fieldDeclarations) {
-						// $VALUES[i] = <enum-constant-i>
-						if (fieldDecl.getKind() == AbstractVariableDeclaration.ENUM_CONSTANT) {
-							codeStream.dup();
-							codeStream.generateInlinedValue(fieldDecl.binding.id);
-							codeStream.fieldAccess(Opcodes.OPC_getstatic, fieldDecl.binding, null /* default declaringClass */);
-							codeStream.aastore();
-						}
-					}
-				}
-			}
-			codeStream.fieldAccess(Opcodes.OPC_putstatic, declaringType.enumValuesSyntheticfield, null /* default declaringClass */);
-			if (remainingFieldCount != 0) {
-				// if fields that are not enum constants need to be generated (static initializer/static field)
-				for (int i = 0, max = fieldDeclarations.length; i < max && remainingFieldCount >= 0; i++) {
-					FieldDeclaration fieldDecl = fieldDeclarations[i];
-					switch (fieldDecl.getKind()) {
-						case AbstractVariableDeclaration.ENUM_CONSTANT :
-							break;
-						case AbstractVariableDeclaration.INITIALIZER :
-							if (!fieldDecl.isStatic()) {
-								break;
-							}
-							remainingFieldCount--;
-							sourcePosition = ((Initializer) fieldDecl).block.sourceEnd;
-							fieldDecl.generateCode(staticInitializerScope, codeStream);
-							break;
-						case AbstractVariableDeclaration.FIELD :
-							if (!fieldDecl.binding.isStatic()) {
-								break;
-							}
-							remainingFieldCount--;
-							sourcePosition = fieldDecl.declarationEnd;
-							fieldDecl.generateCode(staticInitializerScope, codeStream);
-							break;
-					}
-				}
-			}
-		} else {
-			if (fieldDeclarations != null) {
-				for (FieldDeclaration fieldDecl : fieldDeclarations) {
-					switch (fieldDecl.getKind()) {
-						case AbstractVariableDeclaration.INITIALIZER :
-							if (!fieldDecl.isStatic())
-								break;
-							sourcePosition = ((Initializer) fieldDecl).block.sourceEnd;
-							fieldDecl.generateCode(staticInitializerScope, codeStream);
-							break;
-						case AbstractVariableDeclaration.FIELD :
-							if (!fieldDecl.binding.isStatic())
-								break;
-							sourcePosition = fieldDecl.declarationEnd;
-							fieldDecl.generateCode(staticInitializerScope, codeStream);
-							break;
-					}
-				}
-			}
-			if (isJava9) {
-				declaringType.binding.generateSyntheticFinalFieldInitialization(codeStream);
-			}
-		}
+        // 1.4 feature
+        // This has to be done before any other initialization
+        if (this.assertionSyntheticFieldBinding != null) {
+            // generate code related to the activation of assertion for this class
+            codeStream.generateClassLiteralAccessForType(classScope,
+                classScope.outerMostClassScope().enclosingSourceType());
+            codeStream.invokeJavaLangClassDesiredAssertionStatus();
+            BranchLabel falseLabel = new BranchLabel(codeStream);
+            codeStream.ifne(falseLabel);
+            codeStream.iconst_1();
+            BranchLabel jumpLabel = new BranchLabel(codeStream);
+            codeStream.goto_(jumpLabel);
+            falseLabel.place();
+            codeStream.iconst_0();
+            jumpLabel.place();
+            codeStream.fieldAccess(Opcodes.OPC_putstatic, this.assertionSyntheticFieldBinding,
+                null /* default declaringClass */);
+        }
+        boolean isJava9 = classScope.compilerOptions().complianceLevel >= ClassFileConstants.JDK9;
+        // generate static fields/initializers/enum constants
+        final FieldDeclaration[] fieldDeclarations = declaringType.fields;
+        int sourcePosition = -1;
+        int remainingFieldCount = 0;
+        if (TypeDeclaration.kind(declaringType.modifiers) == TypeDeclaration.ENUM_DECL) {
+            int enumCount = declaringType.enumConstantsCounter;
+            if (!isJava9 && enumCount > ENUM_CONSTANTS_THRESHOLD) {
+                // generate synthetic methods to initialize all the enum constants
+                int begin = -1;
+                int count = 0;
+                if (fieldDeclarations != null) {
+                    int max = fieldDeclarations.length;
+                    for (int i = 0; i < max; i++) {
+                        FieldDeclaration fieldDecl = fieldDeclarations[i];
+                        if (fieldDecl.isStatic()) {
+                            if (fieldDecl.getKind() == AbstractVariableDeclaration.ENUM_CONSTANT) {
+                                if (begin == -1) {
+                                    begin = i;
+                                }
+                                count++;
+                                if (count > ENUM_CONSTANTS_THRESHOLD) {
+                                    SyntheticMethodBinding syntheticMethod
+                                        = declaringType.binding.addSyntheticMethodForEnumInitialization(begin, i);
+                                    codeStream.invoke(Opcodes.OPC_invokestatic, syntheticMethod,
+                                        null /* default declaringClass */);
+                                    begin = i;
+                                    count = 1;
+                                }
+                            } else {
+                                remainingFieldCount++;
+                            }
+                        }
+                    }
+                    if (count != 0) {
+                        // add last synthetic method
+                        SyntheticMethodBinding syntheticMethod
+                            = declaringType.binding.addSyntheticMethodForEnumInitialization(begin, max);
+                        codeStream.invoke(Opcodes.OPC_invokestatic, syntheticMethod, null /* default declaringClass */);
+                    }
+                }
+            } else if (fieldDeclarations != null) {
+                for (FieldDeclaration fieldDecl : fieldDeclarations) {
+                    if (fieldDecl.isStatic()) {
+                        if (fieldDecl.getKind() == AbstractVariableDeclaration.ENUM_CONSTANT) {
+                            fieldDecl.generateCode(staticInitializerScope, codeStream);
+                        } else {
+                            remainingFieldCount++;
+                        }
+                    }
+                }
+            }
+            // enum need to initialize $VALUES synthetic cache of enum constants
+            // $VALUES := new <EnumType>[<enumCount>]
+            codeStream.generateInlinedValue(enumCount);
+            codeStream.anewarray(declaringType.binding);
+            if (enumCount > 0) {
+                if (fieldDeclarations != null) {
+                    for (FieldDeclaration fieldDecl : fieldDeclarations) {
+                        // $VALUES[i] = <enum-constant-i>
+                        if (fieldDecl.getKind() == AbstractVariableDeclaration.ENUM_CONSTANT) {
+                            codeStream.dup();
+                            codeStream.generateInlinedValue(fieldDecl.binding.id);
+                            codeStream.fieldAccess(Opcodes.OPC_getstatic, fieldDecl.binding,
+                                null /* default declaringClass */);
+                            codeStream.aastore();
+                        }
+                    }
+                }
+            }
+            codeStream.fieldAccess(Opcodes.OPC_putstatic, declaringType.enumValuesSyntheticfield,
+                null /* default declaringClass */);
+            if (remainingFieldCount != 0) {
+                // if fields that are not enum constants need to be generated (static initializer/static field)
+                for (int i = 0, max = fieldDeclarations.length; i < max && remainingFieldCount >= 0; i++) {
+                    FieldDeclaration fieldDecl = fieldDeclarations[i];
+                    switch (fieldDecl.getKind()) {
+                        case AbstractVariableDeclaration.ENUM_CONSTANT:
+                            break;
 
-		if (codeStream.position == 0) {
-			// do not need to output a Clinit if no bytecodes
-			// so we reset the offset inside the byte array contents.
-			classFile.contentsOffset = clinitOffset;
-			// like we don't addd a method we need to undo the increment on the method count
-			classFile.methodCount--;
-			// reset the constant pool to its state before the clinit
-			constantPool.resetForClinit(constantPoolIndex, constantPoolOffset);
-		} else {
-			if ((this.bits & ASTNode.NeedFreeReturn) != 0) {
-				int before = codeStream.position;
-				codeStream.return_();
-				if (sourcePosition != -1) {
-					// expand the last initializer variables to include the trailing return
-					codeStream.recordPositionsFrom(before, sourcePosition);
-				}
-			}
-			// See https://github.com/eclipse-jdt/eclipse.jdt.core/issues/1796#issuecomment-1933458054
-			codeStream.handleRecordAccessorExceptions(this.scope);
-			// Record the end of the clinit: point to the declaration of the class
-			codeStream.recordPositionsFrom(0, declaringType.sourceStart);
-			classFile.completeCodeAttributeForClinit(codeAttributeOffset, classScope);
-		}
-		// the following block must happen after constantPool.resetForClinit()
-		if (TypeDeclaration.kind(declaringType.modifiers) != TypeDeclaration.ENUM_DECL
-				&& fieldDeclarations != null) {
-			int constantFlags = ClassFileConstants.AccStatic | ClassFileConstants.AccFinal;
-			for (FieldDeclaration fieldDecl : fieldDeclarations) {
-				if ((fieldDecl.modifiers & constantFlags) == constantFlags
-						&& fieldDecl.initialization != null) {
-					NameReference.emitDeclaringClassOfConstant(fieldDecl.initialization, codeStream);
-				}
-			}
-		}
-	}
+                        case AbstractVariableDeclaration.INITIALIZER:
+                            if (!fieldDecl.isStatic()) {
+                                break;
+                            }
+                            remainingFieldCount--;
+                            sourcePosition = ((Initializer) fieldDecl).block.sourceEnd;
+                            fieldDecl.generateCode(staticInitializerScope, codeStream);
+                            break;
 
-	@Override
-	public boolean isClinit() {
+                        case AbstractVariableDeclaration.FIELD:
+                            if (!fieldDecl.binding.isStatic()) {
+                                break;
+                            }
+                            remainingFieldCount--;
+                            sourcePosition = fieldDecl.declarationEnd;
+                            fieldDecl.generateCode(staticInitializerScope, codeStream);
+                            break;
+                    }
+                }
+            }
+        } else {
+            if (fieldDeclarations != null) {
+                for (FieldDeclaration fieldDecl : fieldDeclarations) {
+                    switch (fieldDecl.getKind()) {
+                        case AbstractVariableDeclaration.INITIALIZER:
+                            if (!fieldDecl.isStatic())
+                                break;
+                            sourcePosition = ((Initializer) fieldDecl).block.sourceEnd;
+                            fieldDecl.generateCode(staticInitializerScope, codeStream);
+                            break;
 
-		return true;
-	}
+                        case AbstractVariableDeclaration.FIELD:
+                            if (!fieldDecl.binding.isStatic())
+                                break;
+                            sourcePosition = fieldDecl.declarationEnd;
+                            fieldDecl.generateCode(staticInitializerScope, codeStream);
+                            break;
+                    }
+                }
+            }
+            if (isJava9) {
+                declaringType.binding.generateSyntheticFinalFieldInitialization(codeStream);
+            }
+        }
 
-	@Override
-	public boolean isInitializationMethod() {
+        if (codeStream.position == 0) {
+            // do not need to output a Clinit if no bytecodes
+            // so we reset the offset inside the byte array contents.
+            classFile.contentsOffset = clinitOffset;
+            // like we don't addd a method we need to undo the increment on the method count
+            classFile.methodCount--;
+            // reset the constant pool to its state before the clinit
+            constantPool.resetForClinit(constantPoolIndex, constantPoolOffset);
+        } else {
+            if ((this.bits & ASTNode.NeedFreeReturn) != 0) {
+                int before = codeStream.position;
+                codeStream.return_();
+                if (sourcePosition != -1) {
+                    // expand the last initializer variables to include the trailing return
+                    codeStream.recordPositionsFrom(before, sourcePosition);
+                }
+            }
+            // See https://github.com/eclipse-jdt/eclipse.jdt.core/issues/1796#issuecomment-1933458054
+            codeStream.handleRecordAccessorExceptions(this.scope);
+            // Record the end of the clinit: point to the declaration of the class
+            codeStream.recordPositionsFrom(0, declaringType.sourceStart);
+            classFile.completeCodeAttributeForClinit(codeAttributeOffset, classScope);
+        }
+        // the following block must happen after constantPool.resetForClinit()
+        if (TypeDeclaration.kind(declaringType.modifiers) != TypeDeclaration.ENUM_DECL && fieldDeclarations != null) {
+            int constantFlags = ClassFileConstants.AccStatic | ClassFileConstants.AccFinal;
+            for (FieldDeclaration fieldDecl : fieldDeclarations) {
+                if ((fieldDecl.modifiers & constantFlags) == constantFlags && fieldDecl.initialization != null) {
+                    NameReference.emitDeclaringClassOfConstant(fieldDecl.initialization, codeStream);
+                }
+            }
+        }
+    }
 
-		return true;
-	}
+    @Override
+    public boolean isClinit() {
 
-	@Override
-	public boolean isStatic() {
+        return true;
+    }
 
-		return true;
-	}
+    @Override
+    public boolean isInitializationMethod() {
 
-	@Override
-	public void parseStatements(Parser parser, CompilationUnitDeclaration unit) {
-		//the clinit is filled by hand ....
-	}
+        return true;
+    }
 
-	@Override
-	public StringBuilder print(int tab, StringBuilder output) {
+    @Override
+    public boolean isStatic() {
 
-		printIndent(tab, output).append("<clinit>()"); //$NON-NLS-1$
-		printBody(tab + 1, output);
-		return output;
-	}
+        return true;
+    }
 
-	@Override
-	public void resolve(ClassScope classScope) {
+    @Override
+    public void parseStatements(Parser parser, CompilationUnitDeclaration unit) {
+        // the clinit is filled by hand ....
+    }
 
-		this.scope = new MethodScope(classScope, classScope.referenceContext, true);
-	}
+    @Override
+    public StringBuilder print(int tab, StringBuilder output) {
 
-	@Override
-	public void traverse(
-		ASTVisitor visitor,
-		ClassScope classScope) {
+        printIndent(tab, output).append("<clinit>()"); //$NON-NLS-1$
+        printBody(tab + 1, output);
+        return output;
+    }
 
-		visitor.visit(this, classScope);
-		visitor.endVisit(this, classScope);
-	}
+    @Override
+    public void resolve(ClassScope classScope) {
 
-	public void setAssertionSupport(FieldBinding assertionSyntheticFieldBinding) {
-		this.assertionSyntheticFieldBinding = assertionSyntheticFieldBinding;
-	}
+        this.scope = new MethodScope(classScope, classScope.referenceContext, true);
+    }
+
+    @Override
+    public void traverse(ASTVisitor visitor, ClassScope classScope) {
+
+        visitor.visit(this, classScope);
+        visitor.endVisit(this, classScope);
+    }
+
+    public void setAssertionSupport(FieldBinding assertionSyntheticFieldBinding) {
+        this.assertionSyntheticFieldBinding = assertionSyntheticFieldBinding;
+    }
 
 }

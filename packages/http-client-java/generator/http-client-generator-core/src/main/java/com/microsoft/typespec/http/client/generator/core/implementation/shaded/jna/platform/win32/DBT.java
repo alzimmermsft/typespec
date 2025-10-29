@@ -76,8 +76,7 @@ public interface DBT {
     int DBT_CUSTOMEVENT = 0x8006;
 
     /** The guid devinterface usb device. */
-    GUID GUID_DEVINTERFACE_USB_DEVICE = new GUID(
-            "{A5DCBF10-6530-11D2-901F-00C04FB951ED}");
+    GUID GUID_DEVINTERFACE_USB_DEVICE = new GUID("{A5DCBF10-6530-11D2-901F-00C04FB951ED}");
 
     /** The guid devinterface hid. */
     GUID GUID_DEVINTERFACE_HID = new GUID("{4D1E55B2-F16F-11CF-88CB-001111000030}");
@@ -94,7 +93,7 @@ public interface DBT {
     /**
      * The Class DEV_BROADCAST_HDR.
      */
-    @FieldOrder({"dbch_size", "dbch_devicetype", "dbch_reserved"})
+    @FieldOrder({ "dbch_size", "dbch_devicetype", "dbch_reserved" })
     public class DEV_BROADCAST_HDR extends Structure {
         /** The dbch_size. */
         public int dbch_size;
@@ -116,7 +115,7 @@ public interface DBT {
          * Instantiates a new dev broadcast hdr.
          *
          * @param pointer
-         *            the pointer
+         * the pointer
          */
         public DEV_BROADCAST_HDR(long pointer) {
             this(new Pointer(pointer));
@@ -126,7 +125,7 @@ public interface DBT {
          * Instantiates a new dev broadcast hdr.
          *
          * @param memory
-         *            the memory
+         * the memory
          */
         public DEV_BROADCAST_HDR(Pointer memory) {
             super(memory);
@@ -158,7 +157,7 @@ public interface DBT {
     /**
      * The Class DEV_BROADCAST_OEM.
      */
-    @FieldOrder({"dbco_size", "dbco_devicetype", "dbco_reserved", "dbco_identifier", "dbco_suppfunc"})
+    @FieldOrder({ "dbco_size", "dbco_devicetype", "dbco_reserved", "dbco_identifier", "dbco_suppfunc" })
     public class DEV_BROADCAST_OEM extends Structure {
         /** The dbco_size. */
         public int dbco_size;
@@ -186,7 +185,7 @@ public interface DBT {
          * Instantiates a new dev broadcast oem.
          *
          * @param memory
-         *            the memory
+         * the memory
          */
         public DEV_BROADCAST_OEM(Pointer memory) {
             super(memory);
@@ -197,7 +196,7 @@ public interface DBT {
     /**
      * The Class DEV_BROADCAST_DEVNODE.
      */
-    @FieldOrder({"dbcd_size", "dbcd_devicetype", "dbcd_reserved", "dbcd_devnode"})
+    @FieldOrder({ "dbcd_size", "dbcd_devicetype", "dbcd_reserved", "dbcd_devnode" })
     public class DEV_BROADCAST_DEVNODE extends Structure {
         /** The dbcd_size. */
         public int dbcd_size;
@@ -222,7 +221,7 @@ public interface DBT {
          * Instantiates a new dev broadcast devnode.
          *
          * @param memory
-         *            the memory
+         * the memory
          */
         public DEV_BROADCAST_DEVNODE(Pointer memory) {
             super(memory);
@@ -233,7 +232,7 @@ public interface DBT {
     /**
      * The Class DEV_BROADCAST_VOLUME.
      */
-    @FieldOrder({"dbcv_size", "dbcv_devicetype", "dbcv_reserved", "dbcv_unitmask", "dbcv_flags"})
+    @FieldOrder({ "dbcv_size", "dbcv_devicetype", "dbcv_reserved", "dbcv_unitmask", "dbcv_flags" })
     public class DEV_BROADCAST_VOLUME extends Structure {
         /** The dbcv_size. */
         public int dbcv_size;
@@ -261,7 +260,7 @@ public interface DBT {
          * Instantiates a new dev broadcast volume.
          *
          * @param memory
-         *            the memory
+         * the memory
          */
         public DEV_BROADCAST_VOLUME(Pointer memory) {
             super(memory);
@@ -278,7 +277,7 @@ public interface DBT {
     /**
      * The Class DEV_BROADCAST_PORT.
      */
-    @FieldOrder({"dbcp_size", "dbcp_devicetype", "dbcp_reserved", "dbcp_name"})
+    @FieldOrder({ "dbcp_size", "dbcp_devicetype", "dbcp_reserved", "dbcp_name" })
     public class DEV_BROADCAST_PORT extends Structure {
         /** The dbcp_size. */
         public int dbcp_size;
@@ -303,7 +302,7 @@ public interface DBT {
          * Instantiates a new dev broadcast port.
          *
          * @param memory
-         *            the memory
+         * the memory
          */
         public DEV_BROADCAST_PORT(Pointer memory) {
             super(memory);
@@ -323,7 +322,7 @@ public interface DBT {
          * @return the dbcp_name
          */
         public String getDbcpName() {
-            if(W32APITypeMapper.DEFAULT == W32APITypeMapper.ASCII) {
+            if (W32APITypeMapper.DEFAULT == W32APITypeMapper.ASCII) {
                 return Native.toString(this.dbcp_name);
             } else {
                 try {
@@ -340,8 +339,7 @@ public interface DBT {
     /**
      * The Class DEV_BROADCAST_NET.
      */
-    @FieldOrder({"dbcn_size", "dbcn_devicetype",
-                "dbcn_reserved", "dbcn_resource", "dbcn_flags"})
+    @FieldOrder({ "dbcn_size", "dbcn_devicetype", "dbcn_reserved", "dbcn_resource", "dbcn_flags" })
     public class DEV_BROADCAST_NET extends Structure {
         /** The dbcn_size. */
         public int dbcn_size;
@@ -369,7 +367,7 @@ public interface DBT {
          * Instantiates a new dev broadcast net.
          *
          * @param memory
-         *            the memory
+         * the memory
          */
         public DEV_BROADCAST_NET(Pointer memory) {
             super(memory);
@@ -380,8 +378,7 @@ public interface DBT {
     /**
      * The Class DEV_BROADCAST_DEVICEINTERFACE.
      */
-    @FieldOrder({"dbcc_size", "dbcc_devicetype",
-        "dbcc_reserved", "dbcc_classguid", "dbcc_name"})
+    @FieldOrder({ "dbcc_size", "dbcc_devicetype", "dbcc_reserved", "dbcc_classguid", "dbcc_name" })
     public class DEV_BROADCAST_DEVICEINTERFACE extends Structure {
         /** The dbcc_size. */
         public int dbcc_size;
@@ -409,7 +406,7 @@ public interface DBT {
          * Dev broadcast hdr.
          *
          * @param pointer
-         *            the pointer
+         * the pointer
          */
         public DEV_BROADCAST_DEVICEINTERFACE(long pointer) {
             this(new Pointer(pointer));
@@ -419,7 +416,7 @@ public interface DBT {
          * Instantiates a new dev broadcast deviceinterface.
          *
          * @param memory
-         *            the memory
+         * the memory
          */
         public DEV_BROADCAST_DEVICEINTERFACE(Pointer memory) {
             super(memory);
@@ -428,8 +425,9 @@ public interface DBT {
 
         @Override
         public void read() {
-            if(W32APITypeMapper.DEFAULT == W32APITypeMapper.ASCII) {
-                Logger.getLogger(DBT.class.getName()).warning("DEV_BROADCAST_DEVICEINTERFACE must not be used with w32.ascii = true!");
+            if (W32APITypeMapper.DEFAULT == W32APITypeMapper.ASCII) {
+                Logger.getLogger(DBT.class.getName())
+                    .warning("DEV_BROADCAST_DEVICEINTERFACE must not be used with w32.ascii = true!");
             }
             int size = getPointer().getInt(0); // Read dbcc_size (first field in structure)
             // figure out how long dbcc_name should be based on the size
@@ -451,8 +449,15 @@ public interface DBT {
     /**
      * The Class DEV_BROADCAST_HANDLE.
      */
-    @FieldOrder({"dbch_size", "dbch_devicetype", "dbch_reserved", "dbch_handle",
-        "dbch_hdevnotify", "dbch_eventguid", "dbch_nameoffset", "dbch_data"})
+    @FieldOrder({
+        "dbch_size",
+        "dbch_devicetype",
+        "dbch_reserved",
+        "dbch_handle",
+        "dbch_hdevnotify",
+        "dbch_eventguid",
+        "dbch_nameoffset",
+        "dbch_data" })
     public class DEV_BROADCAST_HANDLE extends Structure {
         /** The dbch_size. */
         public int dbch_size;
@@ -489,7 +494,7 @@ public interface DBT {
          * Instantiates a new dev broadcast handle.
          *
          * @param memory
-         *            the memory
+         * the memory
          */
         public DEV_BROADCAST_HANDLE(Pointer memory) {
             super(memory);

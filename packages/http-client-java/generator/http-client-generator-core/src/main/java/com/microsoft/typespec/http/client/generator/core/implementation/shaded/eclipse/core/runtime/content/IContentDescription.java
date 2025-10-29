@@ -13,7 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.content;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.content.IContentConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.QualifiedName;
 
 /**
@@ -44,19 +43,9 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * This interface is not intended to be implemented by clients.
  * </p>
  *
- * @see IContentDescriber
  * @since 3.0
  */
 public interface IContentDescription {
-    /**
-     * Key for the "charset" property.
-     */
-    QualifiedName CHARSET = new QualifiedName(IContentConstants.RUNTIME_NAME, "charset"); //$NON-NLS-1$
-    /**
-     * Key for the "byte order mark" property. This property is only meaningful
-     * when describing byte streams.
-     */
-    QualifiedName BYTE_ORDER_MARK = new QualifiedName(IContentConstants.RUNTIME_NAME, "bom"); //$NON-NLS-1$
     /**
      * Options constant meaning that all properties should be described.
      */
@@ -78,17 +67,6 @@ public interface IContentDescription {
     byte[] BOM_UTF_16LE = { (byte) 0xFF, (byte) 0xFE };
 
     /**
-     * Returns whether the given property is requested to be described. This
-     * method is intended to allow content describers to determine which
-     * properties should be described.
-     *
-     * @param key a key for the property to be verified
-     * @return <code>true</code> if the property is to be described,
-     * <code>false</code> otherwise
-     */
-    boolean isRequested(QualifiedName key);
-
-    /**
      * Returns the charset name to be used when reading the contents
      * described by this object.
      * <p>
@@ -102,14 +80,6 @@ public interface IContentDescription {
      * @return a charset name, or <code>null</code>
      */
     String getCharset();
-
-    /**
-     * Returns the content type detected. Returns <code>null</code> if the
-     * content type could not be determined.
-     *
-     * @return the corresponding content type, or <code>null</code>
-     */
-    IContentType getContentType();
 
     /**
      * Returns the value of custom property set by the content describer,

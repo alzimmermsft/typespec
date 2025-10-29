@@ -13,54 +13,51 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.batch;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.AccessRuleSet;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.Util;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.AccessRuleSet;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.Util;
 
 public class ClasspathSourceJar extends ClasspathJar {
-	private final String encoding;
+    private final String encoding;
 
-	public ClasspathSourceJar(File file, boolean closeZipFileAtEnd,
-			AccessRuleSet accessRuleSet, String encoding,
-			String destinationPath) {
-		super(file, closeZipFileAtEnd, accessRuleSet, destinationPath);
-		this.encoding = encoding;
-	}
+    public ClasspathSourceJar(File file, boolean closeZipFileAtEnd, AccessRuleSet accessRuleSet, String encoding,
+        String destinationPath) {
+        super(file, closeZipFileAtEnd, accessRuleSet, destinationPath);
+        this.encoding = encoding;
+    }
 
-	@Override
-	public NameEnvironmentAnswer findClass(char[] typeName, String qualifiedPackageName, String moduleName, String qualifiedBinaryFileName, boolean asBinaryOnly) {
-		if (!isPackage(qualifiedPackageName, moduleName))
-			return null; // most common case
+    @Override
+    public NameEnvironmentAnswer findClass(char[] typeName, String qualifiedPackageName, String moduleName,
+        String qualifiedBinaryFileName, boolean asBinaryOnly) {
+        if (!isPackage(qualifiedPackageName, moduleName))
+            return null; // most common case
 
-		ZipEntry sourceEntry = this.zipFile.getEntry(qualifiedBinaryFileName.substring(0, qualifiedBinaryFileName.length() - 6)  + SUFFIX_STRING_java);
-		if (sourceEntry != null) {
-			try {
-				char[] contents = null;
-				try (InputStream stream = this.zipFile.getInputStream(sourceEntry)) {
-					contents = Util.getInputStreamAsCharArray(stream, this.encoding);
-				}
-				CompilationUnit compilationUnit = new CompilationUnit(
-					contents,
-					qualifiedBinaryFileName.substring(0, qualifiedBinaryFileName.length() - 6) + SUFFIX_STRING_java,
-					this.encoding,
-					this.destinationPath);
-				compilationUnit.module = this.module == null ? null : this.module.name();
-				return new NameEnvironmentAnswer(
-					compilationUnit,
-					fetchAccessRestriction(qualifiedBinaryFileName));
-			} catch (IOException e) {
-				// treat as if source file is missing
-			}
-		}
-		return null;
-	}
+        ZipEntry sourceEntry = this.zipFile
+            .getEntry(qualifiedBinaryFileName.substring(0, qualifiedBinaryFileName.length() - 6) + SUFFIX_STRING_java);
+        if (sourceEntry != null) {
+            try {
+                char[] contents = null;
+                try (InputStream stream = this.zipFile.getInputStream(sourceEntry)) {
+                    contents = Util.getInputStreamAsCharArray(stream, this.encoding);
+                }
+                CompilationUnit compilationUnit = new CompilationUnit(contents,
+                    qualifiedBinaryFileName.substring(0, qualifiedBinaryFileName.length() - 6) + SUFFIX_STRING_java,
+                    this.encoding, this.destinationPath);
+                compilationUnit.module = this.module == null ? null : this.module.name();
+                return new NameEnvironmentAnswer(compilationUnit, fetchAccessRestriction(qualifiedBinaryFileName));
+            } catch (IOException e) {
+                // treat as if source file is missing
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public int getMode() {
-		return SOURCE;
-	}
+    @Override
+    public int getMode() {
+        return SOURCE;
+    }
 }

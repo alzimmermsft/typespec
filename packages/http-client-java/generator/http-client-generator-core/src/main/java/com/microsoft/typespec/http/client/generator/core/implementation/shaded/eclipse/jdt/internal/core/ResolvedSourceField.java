@@ -19,44 +19,46 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public class ResolvedSourceField extends SourceField {
 
-	private final String uniqueKey;
+    private final String uniqueKey;
 
-	/*
-	 * See class comments.
-	 */
-	public ResolvedSourceField(JavaElement parent, String name, String uniqueKey) {
-		super(parent, name);
-		this.uniqueKey = uniqueKey;
-	}
-	public ResolvedSourceField(JavaElement parent, String name, String uniqueKey, int occurrenceCount) {
-		super(parent, name, occurrenceCount);
-		this.uniqueKey = uniqueKey;
-	}
-	@Override
-	public String getKey() {
-		return this.uniqueKey;
-	}
+    /*
+     * See class comments.
+     */
+    public ResolvedSourceField(JavaElement parent, String name, String uniqueKey) {
+        super(parent, name);
+        this.uniqueKey = uniqueKey;
+    }
 
-	@Override
-	public boolean isResolved() {
-		return true;
-	}
+    public ResolvedSourceField(JavaElement parent, String name, String uniqueKey, int occurrenceCount) {
+        super(parent, name, occurrenceCount);
+        this.uniqueKey = uniqueKey;
+    }
 
-	/**
-	 * for debugging only
-	 */
-	@Override
-	protected void toStringInfo(int tab, StringBuilder buffer, Object info, boolean showResolvedInfo) {
-		super.toStringInfo(tab, buffer, info, showResolvedInfo);
-		if (showResolvedInfo) {
-			buffer.append(" {key="); //$NON-NLS-1$
-			buffer.append(this.getKey());
-			buffer.append("}"); //$NON-NLS-1$
-		}
-	}
+    @Override
+    public String getKey() {
+        return this.uniqueKey;
+    }
 
-	@Override
-	public SourceField unresolved() {
-		return new SourceField(this.getParent(), this.name, this.getOccurrenceCount());
-	}
+    @Override
+    public boolean isResolved() {
+        return true;
+    }
+
+    /**
+     * for debugging only
+     */
+    @Override
+    protected void toStringInfo(int tab, StringBuilder buffer, Object info, boolean showResolvedInfo) {
+        super.toStringInfo(tab, buffer, info, showResolvedInfo);
+        if (showResolvedInfo) {
+            buffer.append(" {key="); //$NON-NLS-1$
+            buffer.append(this.getKey());
+            buffer.append("}"); //$NON-NLS-1$
+        }
+    }
+
+    @Override
+    public SourceField unresolved() {
+        return new SourceField(this.getParent(), this.name, this.getOccurrenceCount());
+    }
 }

@@ -23,29 +23,29 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM;
 
+import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VT_ARRAY;
+import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VT_DISPATCH;
+import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VT_UNKNOWN;
+import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VT_VECTOR;
+
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.WString;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.Wbemcli.IEnumWbemClassObject;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.Wbemcli.IWbemClassObject;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.Wbemcli.IWbemLocator;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.Wbemcli.IWbemServices;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Ole32;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OleAuto;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VARIANT;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HRESULT;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.IntByReference;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.WString;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Ole32;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OleAuto;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VARIANT;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HRESULT;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.Wbemcli.IEnumWbemClassObject;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.Wbemcli.IWbemClassObject;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.Wbemcli.IWbemLocator;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.Wbemcli.IWbemServices;
-import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VT_ARRAY;
-import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VT_DISPATCH;
-import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VT_UNKNOWN;
-import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VT_VECTOR;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.IntByReference;
 
 /**
  * Utility class providing access to Windows Management Interface (WMI) via COM.
@@ -82,13 +82,13 @@ public class WbemcliUtil {
          * Instantiate a WmiQuery.
          *
          * @param nameSpace
-         *            The WMI namespace to use.
+         * The WMI namespace to use.
          * @param wmiClassName
-         *            The WMI class to use. Optionally include a WQL WHERE
-         *            clause with filters results to properties matching the
-         *            input.
+         * The WMI class to use. Optionally include a WQL WHERE
+         * clause with filters results to properties matching the
+         * input.
          * @param propertyEnum
-         *            An enum for type mapping.
+         * An enum for type mapping.
          */
         public WmiQuery(String nameSpace, String wmiClassName, Class<T> propertyEnum) {
             super();
@@ -101,7 +101,7 @@ public class WbemcliUtil {
          * Instantiate a WMI Query in the default namespace
          *
          * @param wmiClassName The WMI Class to use. May include a WHERE clause
-         *                     with filtering conditions.
+         * with filtering conditions.
          * @param propertyEnum An Enum that contains the properties to query
          */
         public WmiQuery(String wmiClassName, Class<T> propertyEnum) {
@@ -124,7 +124,7 @@ public class WbemcliUtil {
 
         /**
          * @param nameSpace
-         *            The namespace to set
+         * The namespace to set
          */
         public void setNameSpace(String nameSpace) {
             this.nameSpace = nameSpace;
@@ -139,7 +139,7 @@ public class WbemcliUtil {
 
         /**
          * @param wmiClassName
-         *            The classname to set
+         * The classname to set
          */
         public void setWmiClassName(String wmiClassName) {
             this.wmiClassName = wmiClassName;
@@ -149,7 +149,7 @@ public class WbemcliUtil {
          * Query WMI for values, with no timeout.
          *
          * @return a WmiResult object containing the query results, wrapping an
-         *         EnumMap
+         * EnumMap
          */
         public WmiResult<T> execute() {
             try {
@@ -163,16 +163,16 @@ public class WbemcliUtil {
          * Query WMI for values, with a specified timeout.
          *
          * @param timeout
-         *            Number of milliseconds to wait for results before timing
-         *            out. If {@link IEnumWbemClassObject#WBEM_INFINITE} (-1),
-         *            will always wait for results. If a timeout occurs, throws
-         *            a {@link TimeoutException}.
+         * Number of milliseconds to wait for results before timing
+         * out. If {@link IEnumWbemClassObject#WBEM_INFINITE} (-1),
+         * will always wait for results. If a timeout occurs, throws
+         * a {@link TimeoutException}.
          *
          * @return a WmiResult object containing the query results, wrapping an
-         *         EnumMap
+         * EnumMap
          *
          * @throws TimeoutException
-         *             if the query times out before completion
+         * if the query times out before completion
          */
         public WmiResult<T> execute(int timeout) throws TimeoutException {
             // Idiot check
@@ -206,9 +206,9 @@ public class WbemcliUtil {
          * enumerated in the forward direction only.
          *
          * @param svc
-         *            A WbemServices object to make the calls
+         * A WbemServices object to make the calls
          * @param query
-         *            A WmiQuery object encapsulating the details of the query
+         * A WmiQuery object encapsulating the details of the query
          *
          * @return An enumerator to receive the results of the query
          */
@@ -226,7 +226,7 @@ public class WbemcliUtil {
             // Send the query. The flags allow us to return immediately and begin
             // enumerating in the forward direction as results come in.
             return svc.ExecQuery("WQL", sb.toString().replaceAll("\\\\", "\\\\\\\\"),
-                    Wbemcli.WBEM_FLAG_FORWARD_ONLY | Wbemcli.WBEM_FLAG_RETURN_IMMEDIATELY, null);
+                Wbemcli.WBEM_FLAG_FORWARD_ONLY | Wbemcli.WBEM_FLAG_RETURN_IMMEDIATELY, null);
         }
 
         /*-
@@ -265,25 +265,25 @@ public class WbemcliUtil {
          * direction only.
          *
          * @param enumerator
-         *            The enumerator with the results
+         * The enumerator with the results
          * @param propertyEnum
-         *            The enum containing the properties to enumerate, which are
-         *            the keys to the WmiResult map
+         * The enum containing the properties to enumerate, which are
+         * the keys to the WmiResult map
          * @param timeout
-         *            Number of milliseconds to wait for results before timing
-         *            out. If {@link IEnumWbemClassObject#WBEM_INFINITE} (-1),
-         *            will always wait for results.
+         * Number of milliseconds to wait for results before timing
+         * out. If {@link IEnumWbemClassObject#WBEM_INFINITE} (-1),
+         * will always wait for results.
          *
          * @return A WmiResult object encapsulating an EnumMap which will hold
-         *         the results. Values, that are not supported by this helper
-         *         ({@code Dispatch}, {@code Unknown}, {@code SAFEARRAY}) are
-         *         not returned and reported as {@code null}.
+         * the results. Values, that are not supported by this helper
+         * ({@code Dispatch}, {@code Unknown}, {@code SAFEARRAY}) are
+         * not returned and reported as {@code null}.
          *
          * @throws TimeoutException
-         *             if the query times out before completion
+         * if the query times out before completion
          */
         private static <T extends Enum<T>> WmiResult<T> enumerateProperties(IEnumWbemClassObject enumerator,
-                Class<T> propertyEnum, int timeout) throws TimeoutException {
+            Class<T> propertyEnum, int timeout) throws TimeoutException {
             WmiResult<T> values = INSTANCE.new WmiResult<>(propertyEnum);
             // Step 7: -------------------------------------------------
             // Get the data from the query in step 6 -------------------
@@ -324,34 +324,42 @@ public class WbemcliUtil {
                         case Variant.VT_BSTR:
                             values.add(vtType, cimType, property, pVal.stringValue());
                             break;
+
                         case Variant.VT_I4:
                             values.add(vtType, cimType, property, pVal.intValue());
                             break;
+
                         case Variant.VT_UI1:
                             values.add(vtType, cimType, property, pVal.byteValue());
                             break;
+
                         case Variant.VT_I2:
                             values.add(vtType, cimType, property, pVal.shortValue());
                             break;
+
                         case Variant.VT_BOOL:
                             values.add(vtType, cimType, property, pVal.booleanValue());
                             break;
+
                         case Variant.VT_R4:
                             values.add(vtType, cimType, property, pVal.floatValue());
                             break;
+
                         case Variant.VT_R8:
                             values.add(vtType, cimType, property, pVal.doubleValue());
                             break;
+
                         case Variant.VT_EMPTY:
                         case Variant.VT_NULL:
                             values.add(vtType, cimType, property, null);
                             break;
+
                         // Unimplemented type. User must cast
                         default:
-                            if(((vtType & VT_ARRAY) == VT_ARRAY) ||
-                                ((vtType & VT_UNKNOWN) == VT_UNKNOWN)||
-                                ((vtType & VT_DISPATCH) == VT_DISPATCH)||
-                                ((vtType & VT_VECTOR) == VT_VECTOR)) {
+                            if (((vtType & VT_ARRAY) == VT_ARRAY)
+                                || ((vtType & VT_UNKNOWN) == VT_UNKNOWN)
+                                || ((vtType & VT_DISPATCH) == VT_DISPATCH)
+                                || ((vtType & VT_VECTOR) == VT_VECTOR)) {
                                 values.add(vtType, cimType, property, null);
                             } else {
                                 values.add(vtType, cimType, property, pVal.getValue());
@@ -378,7 +386,7 @@ public class WbemcliUtil {
 
         /**
          * @param propertyEnum
-         *            The enum associated with this map
+         * The enum associated with this map
          */
         public WmiResult(Class<T> propertyEnum) {
             propertyMap = new EnumMap<>(propertyEnum);
@@ -399,9 +407,9 @@ public class WbemcliUtil {
          * Class of the returned Object.
          *
          * @param property
-         *            The property (column) to fetch
+         * The property (column) to fetch
          * @param index
-         *            The index (row) to fetch
+         * The index (row) to fetch
          * @return The Object containing the specified value, which may be null
          */
         public Object getValue(T property, int index) {
@@ -414,7 +422,7 @@ public class WbemcliUtil {
          * {@link Variant} interface.
          *
          * @param property
-         *            The property (column) whose type to fetch
+         * The property (column) whose type to fetch
          * @return An integer representing the Variant type
          */
         public int getVtType(T property) {
@@ -426,7 +434,7 @@ public class WbemcliUtil {
          * a CIM_* constant in the {@link Wbemcli} interface.
          *
          * @param property
-         *            The property (column) whose type to fetch
+         * The property (column) whose type to fetch
          * @return An integer representing the CIM type
          */
         public int getCIMType(T property) {
@@ -437,13 +445,13 @@ public class WbemcliUtil {
          * Adds a value to the WmiResult at the next index for that property
          *
          * @param vtType
-         *            The Variant type of this object
+         * The Variant type of this object
          * @param cimType
-         *            The CIM type of this property
+         * The CIM type of this property
          * @param property
-         *            The property (column) to store
+         * The property (column) to store
          * @param o
-         *            The object to store
+         * The object to store
          */
         private void add(int vtType, int cimType, T property, Object o) {
             this.propertyMap.get(property).add(o);
@@ -470,13 +478,12 @@ public class WbemcliUtil {
         }
     }
 
-
     /**
      * Determine if WMI has the requested namespace. Some namespaces only exist
      * on newer versions of Windows.
      *
      * @param namespace
-     *            The namespace to test
+     * The namespace to test
      * @return true if the namespace exists, false otherwise
      */
     public static boolean hasNamespace(String namespace) {
@@ -512,10 +519,10 @@ public class WbemcliUtil {
      * namespace
      *
      * @param namespace
-     *            The namespace to connect to
+     * The namespace to connect to
      * @return A service representing the connected namespace, which can be
-     *         queried. This service may be re-used for multiple queries and
-     *         should be released by the user
+     * queried. This service may be re-used for multiple queries and
+     * should be released by the user
      */
     public static IWbemServices connectServer(String namespace) {
         // Step 3: ---------------------------------------------------
@@ -537,7 +544,7 @@ public class WbemcliUtil {
         // Step 5: --------------------------------------------------
         // Set security levels on the proxy -------------------------
         HRESULT hres = Ole32.INSTANCE.CoSetProxyBlanket(services, Ole32.RPC_C_AUTHN_WINNT, Ole32.RPC_C_AUTHZ_NONE, null,
-                Ole32.RPC_C_AUTHN_LEVEL_CALL, Ole32.RPC_C_IMP_LEVEL_IMPERSONATE, null, Ole32.EOAC_NONE);
+            Ole32.RPC_C_AUTHN_LEVEL_CALL, Ole32.RPC_C_IMP_LEVEL_IMPERSONATE, null, Ole32.EOAC_NONE);
         if (COMUtils.FAILED(hres)) {
             services.Release();
             throw new COMException("Could not set proxy blanket.", hres);

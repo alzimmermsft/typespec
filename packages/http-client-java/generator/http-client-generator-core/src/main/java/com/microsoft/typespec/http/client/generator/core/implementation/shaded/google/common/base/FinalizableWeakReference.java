@@ -16,9 +16,9 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtIncompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.J2ktIncompatible;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 
 /**
  * Weak reference with a {@code finalizeReferent()} method which a background thread invokes after
@@ -31,16 +31,15 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 @J2ktIncompatible
 @GwtIncompatible
 @ElementTypesAreNonnullByDefault
-public abstract class FinalizableWeakReference<T> extends WeakReference<T>
-    implements FinalizableReference {
-  /**
-   * Constructs a new finalizable weak reference.
-   *
-   * @param referent to weakly reference
-   * @param queue that should finalize the referent
-   */
-  protected FinalizableWeakReference(@CheckForNull T referent, FinalizableReferenceQueue queue) {
-    super(referent, queue.queue);
-    queue.cleanUp();
-  }
+public abstract class FinalizableWeakReference<T> extends WeakReference<T> implements FinalizableReference {
+    /**
+     * Constructs a new finalizable weak reference.
+     *
+     * @param referent to weakly reference
+     * @param queue that should finalize the referent
+     */
+    protected FinalizableWeakReference(@CheckForNull T referent, FinalizableReferenceQueue queue) {
+        super(referent, queue.queue);
+        queue.cleanUp();
+    }
 }

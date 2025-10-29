@@ -16,76 +16,75 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
-import java.io.Serializable;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.NonNull;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
+import java.io.Serializable;
 
 /** An ordering that treats {@code null} as less than all other values. */
 @GwtCompatible(serializable = true)
 @ElementTypesAreNonnullByDefault
-final class NullsFirstOrdering<T extends @Nullable Object> extends Ordering<@Nullable T>
-    implements Serializable {
-  final Ordering<? super T> ordering;
+final class NullsFirstOrdering<T extends @Nullable Object> extends Ordering<@Nullable T> implements Serializable {
+    final Ordering<? super T> ordering;
 
-  NullsFirstOrdering(Ordering<? super T> ordering) {
-    this.ordering = ordering;
-  }
-
-  @Override
-  public int compare(@CheckForNull T left, @CheckForNull T right) {
-    if (left == right) {
-      return 0;
+    NullsFirstOrdering(Ordering<? super T> ordering) {
+        this.ordering = ordering;
     }
-    if (left == null) {
-      return RIGHT_IS_GREATER;
+
+    @Override
+    public int compare(@CheckForNull T left, @CheckForNull T right) {
+        if (left == right) {
+            return 0;
+        }
+        if (left == null) {
+            return RIGHT_IS_GREATER;
+        }
+        if (right == null) {
+            return LEFT_IS_GREATER;
+        }
+        return ordering.compare(left, right);
     }
-    if (right == null) {
-      return LEFT_IS_GREATER;
+
+    @Override
+    @SuppressWarnings("nullness") // should be safe, but not sure if we can avoid the warning
+    public <S extends @Nullable T> Ordering<S> reverse() {
+        // ordering.reverse() might be optimized, so let it do its thing
+        return ordering.<T>reverse().<@NonNull S>nullsLast();
     }
-    return ordering.compare(left, right);
-  }
 
-  @Override
-  @SuppressWarnings("nullness") // should be safe, but not sure if we can avoid the warning
-  public <S extends @Nullable T> Ordering<S> reverse() {
-    // ordering.reverse() might be optimized, so let it do its thing
-    return ordering.<T>reverse().<@NonNull S>nullsLast();
-  }
-
-  @SuppressWarnings("unchecked") // still need the right way to explain this
-  @Override
-  public <S extends @Nullable T> Ordering<@Nullable S> nullsFirst() {
-    return (Ordering<@Nullable S>) this;
-  }
-
-  @Override
-  public <S extends @Nullable T> Ordering<@Nullable S> nullsLast() {
-    return ordering.<@NonNull S>nullsLast();
-  }
-
-  @Override
-  public boolean equals(@CheckForNull Object object) {
-    if (object == this) {
-      return true;
+    @SuppressWarnings("unchecked") // still need the right way to explain this
+    @Override
+    public <S extends @Nullable T> Ordering<@Nullable S> nullsFirst() {
+        return (Ordering<@Nullable S>) this;
     }
-    if (object instanceof NullsFirstOrdering) {
-      NullsFirstOrdering<?> that = (NullsFirstOrdering<?>) object;
-      return this.ordering.equals(that.ordering);
+
+    @Override
+    public <S extends @Nullable T> Ordering<@Nullable S> nullsLast() {
+        return ordering.<@NonNull S>nullsLast();
     }
-    return false;
-  }
 
-  @Override
-  public int hashCode() {
-    return ordering.hashCode() ^ 957692532; // meaningless
-  }
+    @Override
+    public boolean equals(@CheckForNull Object object) {
+        if (object == this) {
+            return true;
+        }
+        if (object instanceof NullsFirstOrdering) {
+            NullsFirstOrdering<?> that = (NullsFirstOrdering<?>) object;
+            return this.ordering.equals(that.ordering);
+        }
+        return false;
+    }
 
-  @Override
-  public String toString() {
-    return ordering + ".nullsFirst()";
-  }
+    @Override
+    public int hashCode() {
+        return ordering.hashCode() ^ 957692532; // meaningless
+    }
 
-  private static final long serialVersionUID = 0;
+    @Override
+    public String toString() {
+        return ordering + ".nullsFirst()";
+    }
+
+    private static final long serialVersionUID = 0;
 }

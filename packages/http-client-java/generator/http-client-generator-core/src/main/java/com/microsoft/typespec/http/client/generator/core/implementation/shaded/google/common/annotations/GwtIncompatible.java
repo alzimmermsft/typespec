@@ -31,17 +31,17 @@ import java.lang.annotation.Target;
  * @author Charles Fry
  */
 @Retention(RetentionPolicy.CLASS)
-@Target({ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
+@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD })
 @Documented
 @GwtCompatible
 public @interface GwtIncompatible {
-  /**
-   * Describes why the annotated element is incompatible with GWT. Since this is generally due to a
-   * dependence on a type/method which GWT doesn't support, it is sufficient to simply reference the
-   * unsupported type/method. E.g. "Class.isInstance".
-   *
-   * <p>As of Guava 20.0, this value is optional. We encourage authors who wish to describe why an
-   * API is {@code @GwtIncompatible} to instead leave an implementation comment.
-   */
-  String value() default "";
+    /**
+     * Describes why the annotated element is incompatible with GWT. Since this is generally due to a
+     * dependence on a type/method which GWT doesn't support, it is sufficient to simply reference the
+     * unsupported type/method. E.g. "Class.isInstance".
+     *
+     * <p>As of Guava 20.0, this value is optional. We encourage authors who wish to describe why an
+     * API is {@code @GwtIncompatible} to instead leave an implementation comment.
+     */
+    String value() default "";
 }

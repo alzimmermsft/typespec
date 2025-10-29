@@ -34,10 +34,6 @@ public class BaseExtensionHandle extends Handle implements IExtension {
         return (Extension) objectManager.getObject(getId(), RegistryObjectManager.EXTENSION);
     }
 
-    protected boolean shouldPersist() {
-        return getExtension().shouldPersist();
-    }
-
     // Method left for backward compatiblity only
     @Override
     public String getNamespace() {
@@ -54,10 +50,6 @@ public class BaseExtensionHandle extends Handle implements IExtension {
         return getExtension().getContributor();
     }
 
-    String getContributorId() {
-        return getExtension().getContributorId();
-    }
-
     @Override
     public String getExtensionPointUniqueIdentifier() {
         return getExtension().getExtensionPointIdentifier();
@@ -66,10 +58,6 @@ public class BaseExtensionHandle extends Handle implements IExtension {
     @Override
     public String getLabel() {
         return getExtension().getLabel();
-    }
-
-    public String getLabelAsIs() {
-        return getExtension().getLabelAsIs();
     }
 
     @Override

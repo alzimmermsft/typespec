@@ -27,20 +27,21 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure.FieldOrder;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HANDLE;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.HBITMAP;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.RECT;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HANDLE;
 
 /**
  * Ported from WinGDI.h.
  * Microsoft Windows SDK 6.0A.
+ * 
  * @author dblock[at]dblock.org
  * @author Andreas "PAX" L&uuml;ck, onkelpax-git[at]yahoo.de
  */
 public interface WinGDI {
     int RDH_RECTANGLES = 1;
 
-    @FieldOrder({"dwSize", "iType", "nCount", "nRgnSize", "rcBound"})
+    @FieldOrder({ "dwSize", "iType", "nCount", "nRgnSize", "rcBound" })
     class RGNDATAHEADER extends Structure {
         public int dwSize = size();
         public int iType = RDH_RECTANGLES; // required
@@ -49,7 +50,7 @@ public interface WinGDI {
         public RECT rcBound;
     }
 
-    @FieldOrder({"rdh", "Buffer"})
+    @FieldOrder({ "rdh", "Buffer" })
     class RGNDATA extends Structure {
         public RGNDATAHEADER rdh;
         public byte[] Buffer;
@@ -57,6 +58,7 @@ public interface WinGDI {
         public RGNDATA() {
             this(1);
         }
+
         public RGNDATA(int bufferSize) {
             Buffer = new byte[bufferSize];
             allocateMemory();
@@ -108,9 +110,18 @@ public interface WinGDI {
     int PFD_GENERIC_ACCELERATED = 0x00001000;
     int PFD_SUPPORT_DIRECTDRAW = 0x00002000;
 
-    @FieldOrder({"biSize", "biWidth", "biHeight", "biPlanes", "biBitCount",
-        "biCompression", "biSizeImage", "biXPelsPerMeter", "biYPelsPerMeter",
-        "biClrUsed", "biClrImportant"})
+    @FieldOrder({
+        "biSize",
+        "biWidth",
+        "biHeight",
+        "biPlanes",
+        "biBitCount",
+        "biCompression",
+        "biSizeImage",
+        "biXPelsPerMeter",
+        "biYPelsPerMeter",
+        "biClrUsed",
+        "biClrImportant" })
     class BITMAPINFOHEADER extends Structure {
         public int biSize = size();
         public int biWidth;
@@ -125,7 +136,7 @@ public interface WinGDI {
         public int biClrImportant;
     }
 
-    @FieldOrder({"rgbBlue", "rgbGreen", "rgbRed", "rgbReserved"})
+    @FieldOrder({ "rgbBlue", "rgbGreen", "rgbRed", "rgbReserved" })
     class RGBQUAD extends Structure {
         public byte rgbBlue;
         public byte rgbGreen;
@@ -133,20 +144,22 @@ public interface WinGDI {
         public byte rgbReserved = 0;
     }
 
-    @FieldOrder({"bmiHeader", "bmiColors"})
+    @FieldOrder({ "bmiHeader", "bmiColors" })
     class BITMAPINFO extends Structure {
 
         public BITMAPINFOHEADER bmiHeader = new BITMAPINFOHEADER();
         public RGBQUAD[] bmiColors = new RGBQUAD[1];
+
         public BITMAPINFO() {
             this(1);
         }
+
         public BITMAPINFO(int size) {
             bmiColors = new RGBQUAD[size];
         }
     }
 
-    @FieldOrder({"fIcon", "xHotspot", "yHotspot", "hbmMask", "hbmColor"})
+    @FieldOrder({ "fIcon", "xHotspot", "yHotspot", "hbmMask", "hbmColor" })
     class ICONINFO extends Structure {
         public boolean fIcon;
         public int xHotspot;
@@ -155,7 +168,7 @@ public interface WinGDI {
         public HBITMAP hbmColor;
     }
 
-    @FieldOrder({"bmType", "bmWidth", "bmHeight", "bmWidthBytes", "bmPlanes", "bmBitsPixel", "bmBits"})
+    @FieldOrder({ "bmType", "bmWidth", "bmHeight", "bmWidthBytes", "bmPlanes", "bmBitsPixel", "bmBits" })
     class BITMAP extends Structure {
         public NativeLong bmType;
         public NativeLong bmWidth;
@@ -166,13 +179,13 @@ public interface WinGDI {
         public Pointer bmBits;
     }
 
-    @FieldOrder({"dsBm", "dsBmih", "dsBitfields", "dshSection", "dsOffset"})
+    @FieldOrder({ "dsBm", "dsBmih", "dsBitfields", "dshSection", "dsOffset" })
     class DIBSECTION extends Structure {
-        public BITMAP           dsBm;
+        public BITMAP dsBm;
         public BITMAPINFOHEADER dsBmih;
-        public int[]            dsBitfields = new int[3];
-        public HANDLE           dshSection;
-        public int              dsOffset;
+        public int[] dsBitfields = new int[3];
+        public HANDLE dshSection;
+        public int dsOffset;
     }
 
     int DIB_RGB_COLORS = 0;
@@ -181,10 +194,33 @@ public interface WinGDI {
     /**
      * The PIXELFORMATDESCRIPTOR structure describes the pixel format of a drawing surface.
      */
-    @FieldOrder({"nSize", "nVersion", "dwFlags", "iPixelType",
-        "cColorBits", "cRedBits", "cRedShift", "cGreenBits", "cGreenShift", "cBlueBits", "cBlueShift", "cAlphaBits", "cAlphaShift",
-        "cAccumBits", "cAccumRedBits", "cAccumGreenBits", "cAccumBlueBits", "cAccumAlphaBits",
-        "cDepthBits", "cStencilBits", "cAuxBuffers", "iLayerType", "bReserved", "dwLayerMask", "dwVisibleMask", "dwDamageMask"})
+    @FieldOrder({
+        "nSize",
+        "nVersion",
+        "dwFlags",
+        "iPixelType",
+        "cColorBits",
+        "cRedBits",
+        "cRedShift",
+        "cGreenBits",
+        "cGreenShift",
+        "cBlueBits",
+        "cBlueShift",
+        "cAlphaBits",
+        "cAlphaShift",
+        "cAccumBits",
+        "cAccumRedBits",
+        "cAccumGreenBits",
+        "cAccumBlueBits",
+        "cAccumAlphaBits",
+        "cDepthBits",
+        "cStencilBits",
+        "cAuxBuffers",
+        "iLayerType",
+        "bReserved",
+        "dwLayerMask",
+        "dwVisibleMask",
+        "dwDamageMask" })
     class PIXELFORMATDESCRIPTOR extends Structure {
         public PIXELFORMATDESCRIPTOR() {
             nSize = (short) size();
@@ -201,11 +237,11 @@ public interface WinGDI {
         /**
          * Specifies the size of this data structure. This value should be set to sizeof(PIXELFORMATDESCRIPTOR).
          */
-        public short  nSize;
+        public short nSize;
         /**
          * Specifies the version of this data structure. This value should be set to 1.
          */
-        public short  nVersion;
+        public short nVersion;
         /**
          * A set of bit flags that specify properties of the pixel buffer.
          */
@@ -213,83 +249,83 @@ public interface WinGDI {
         /**
          * Specifies the type of pixel data.
          */
-        public byte  iPixelType;
+        public byte iPixelType;
         /**
          * Specifies the number of color bitplanes in each color buffer.
          */
-        public byte  cColorBits;
+        public byte cColorBits;
         /**
          * Specifies the number of red bitplanes in each RGBA color buffer.
          */
-        public byte  cRedBits;
+        public byte cRedBits;
         /**
          * Specifies the shift count for red bitplanes in each RGBA color buffer.
          */
-        public byte  cRedShift;
+        public byte cRedShift;
         /**
          * Specifies the number of green bitplanes in each RGBA color buffer.
          */
-        public byte  cGreenBits;
+        public byte cGreenBits;
         /**
          * Specifies the shift count for green bitplanes in each RGBA color buffer.
          */
-        public byte  cGreenShift;
+        public byte cGreenShift;
         /**
          * Specifies the number of blue bitplanes in each RGBA color buffer.
          */
-        public byte  cBlueBits;
+        public byte cBlueBits;
         /**
          * Specifies the shift count for blue bitplanes in each RGBA color buffer.
          */
-        public byte  cBlueShift;
+        public byte cBlueShift;
         /**
          * Specifies the number of alpha bitplanes in each RGBA color buffer. Alpha bitplanes are not supported.
          */
-        public byte  cAlphaBits;
+        public byte cAlphaBits;
         /**
          * Specifies the shift count for alpha bitplanes in each RGBA color buffer. Alpha bitplanes are not supported.
          */
-        public byte  cAlphaShift;
+        public byte cAlphaShift;
         /**
          * Specifies the total number of bitplanes in the accumulation buffer.
          */
-        public byte  cAccumBits;
+        public byte cAccumBits;
         /**
          * Specifies the number of red bitplanes in the accumulation buffer.
          */
-        public byte  cAccumRedBits;
+        public byte cAccumRedBits;
         /**
          * Specifies the number of green bitplanes in the accumulation buffer.
          */
-        public byte  cAccumGreenBits;
+        public byte cAccumGreenBits;
         /**
          * Specifies the number of blue bitplanes in the accumulation buffer.
          */
-        public byte  cAccumBlueBits;
+        public byte cAccumBlueBits;
         /**
          * Specifies the number of alpha bitplanes in the accumulation buffer.
          */
-        public byte  cAccumAlphaBits;
+        public byte cAccumAlphaBits;
         /**
          * Specifies the depth of the depth (z-axis) buffer.
          */
-        public byte  cDepthBits;
+        public byte cDepthBits;
         /**
          * Specifies the depth of the stencil buffer.
          */
-        public byte  cStencilBits;
+        public byte cStencilBits;
         /**
          * Specifies the number of auxiliary buffers. Auxiliary buffers are not supported.
          */
-        public byte  cAuxBuffers;
+        public byte cAuxBuffers;
         /**
          * Ignored. Earlier implementations of OpenGL used this member, but it is no longer used.
          */
-        public byte  iLayerType;
+        public byte iLayerType;
         /**
          * Specifies the number of overlay and underlay planes.
          */
-        public byte  bReserved;
+        public byte bReserved;
         /**
          * Ignored. Earlier implementations of OpenGL used this member, but it is no longer used.
          */

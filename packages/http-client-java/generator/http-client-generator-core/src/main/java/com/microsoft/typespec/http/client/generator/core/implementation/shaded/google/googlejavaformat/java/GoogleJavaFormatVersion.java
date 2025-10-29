@@ -16,7 +16,7 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 class GoogleJavaFormatVersion {
 
-  static String version() {
-    return "1.28.0";
-  }
+    static String version() {
+        return "1.28.0";
+    }
 }

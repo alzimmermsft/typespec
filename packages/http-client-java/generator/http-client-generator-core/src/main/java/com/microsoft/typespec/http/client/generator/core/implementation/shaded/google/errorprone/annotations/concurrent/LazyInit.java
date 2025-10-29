@@ -30,9 +30,10 @@ import java.lang.annotation.Target;
  * then, always using the pattern as presented in the {@code getData} method of this sample code
  * below:
  *
- * <pre>{@code
+ * <pre>
+ * {@code
  * private final String source;
- * @LazyInit private String data;
+ * &#64;LazyInit private String data;
  *
  * public String getData() {
  *   String local = data;
@@ -45,7 +46,8 @@ import java.lang.annotation.Target;
  * private static String expensiveCalculation(String string) {
  *   return string.replaceAll(" ", "_");
  * }
- * }</pre>
+ * }
+ * </pre>
  *
  * <p>The need for using the {@code local} variable is detailed in
  * http://jeremymanson.blogspot.com/2008/12/benign-data-races-in-java.html (see, particularly, the
@@ -60,7 +62,8 @@ import java.lang.annotation.Target;
  * unless you really understand this <b>and</b> you really need the performance benefits of
  * introducing the data race, do not use this construct.
  */
-@IncompatibleModifiers(modifier = {Modifier.FINAL})
+@IncompatibleModifiers(modifier = { Modifier.FINAL })
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface LazyInit {}
+public @interface LazyInit {
+}

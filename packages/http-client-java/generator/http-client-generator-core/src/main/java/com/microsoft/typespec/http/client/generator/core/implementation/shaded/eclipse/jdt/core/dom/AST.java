@@ -14,16 +14,13 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.dom;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IClassFile;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.ICompilationUnit;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaProject;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaCore;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.parser.Scanner;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.IDocument;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.text.edits.TextEdit;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -604,8 +601,7 @@ public final class AST {
     private static final List<Integer> UNSUPPORTED_VERSIONS = List.of(JLS2, JLS3, JLS4);
     private static final List<Integer> SUPPORTED_VERSIONS;
     static {
-        List<Integer> temp = new ArrayList<>();
-        temp.addAll(ALL_VERSIONS);
+        List<Integer> temp = new ArrayList<>(ALL_VERSIONS);
         temp.removeAll(UNSUPPORTED_VERSIONS);
         SUPPORTED_VERSIONS = Collections.unmodifiableList(temp);
     }
@@ -615,124 +611,9 @@ public final class AST {
      */
     static final int RESOLVED_BINDINGS = 0x80000000;
 
-    private static Map<String, Long> jdkLevelMap = getLevelMapTable();
+    private static final Map<String, Long> jdkLevelMap = getLevelMapTable();
 
-    private static Map<String, Integer> apiLevelMap = getApiLevelMapTable();
-
-    /**
-     * Internal method.
-     * <p>
-     * This method converts the given internal compiler AST for the given source string
-     * into a compilation unit. This method is not intended to be called by clients.
-     * </p>
-     *
-     * @param level the API level; one of the <code>JLS*</code> level constants
-     * @param compilationUnitDeclaration an internal AST node for a compilation unit declaration
-     * @param source the string of the Java compilation unit
-     * @param options compiler options
-     * @param workingCopy the working copy that the AST is created from
-     * @param monitor the progress monitor used to report progress and request cancellation,
-     * or <code>null</code> if none
-     * @param isResolved whether the given compilation unit declaration is resolved
-     * @return the compilation unit node
-     * @deprecated Use org.eclipse.jdt.core.dom.AST.convertCompilationUnit(int, CompilationUnitDeclaration, Map,
-     * boolean, CompilationUnit, int, IProgressMonitor) instead
-     * @noreference This method is not intended to be referenced by clients.
-     */
-    public static CompilationUnit convertCompilationUnit(int level,
-        com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration compilationUnitDeclaration,
-        char[] source, Map options, boolean isResolved,
-        com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.CompilationUnit workingCopy,
-        int reconcileFlags, IProgressMonitor monitor) {
-        return null;
-    }
-
-    /**
-     * Internal method.
-     * <p>
-     * This method converts the given internal compiler AST for the given source string
-     * into a compilation unit. This method is not intended to be called by clients.
-     * </p>
-     *
-     * @param level the API level; one of the <code>JLS*</code> level constants
-     * @param compilationUnitDeclaration an internal AST node for a compilation unit declaration
-     * @param options compiler options
-     * @param workingCopy the working copy that the AST is created from
-     * @param monitor the progress monitor used to report progress and request cancellation,
-     * or <code>null</code> if none
-     * @param isResolved whether the given compilation unit declaration is resolved
-     * @return the compilation unit node
-     * @since 3.4
-     * @noreference This method is not intended to be referenced by clients.
-     */
-    public static CompilationUnit convertCompilationUnit(int level,
-        com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration compilationUnitDeclaration,
-        Map options, boolean isResolved,
-        com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.CompilationUnit workingCopy,
-        int reconcileFlags, IProgressMonitor monitor) {
-
-        ASTConverter converter = new ASTConverter(options, isResolved, monitor);
-        AST ast = AST.newAST(level, JavaCore.ENABLED.equals(options.get(JavaCore.COMPILER_PB_ENABLE_PREVIEW_FEATURES)));
-        String sourceModeSetting = (String) options.get(JavaCore.COMPILER_SOURCE);
-        long sourceLevel = CompilerOptions.versionToJdkLevel(sourceModeSetting);
-        if (sourceLevel == 0) {
-            // unknown sourceModeSetting
-            sourceLevel = CompilerOptions.getFirstSupportedJdkLevel();
-        }
-        ast.scanner.sourceLevel = sourceLevel;
-        String compliance = (String) options.get(JavaCore.COMPILER_COMPLIANCE);
-        long complianceLevel = CompilerOptions.versionToJdkLevel(compliance);
-        if (complianceLevel == 0) {
-            // unknown sourceModeSetting
-            complianceLevel = sourceLevel;
-        }
-        ast.scanner.complianceLevel = complianceLevel;
-        ast.scanner.previewEnabled = JavaCore.ENABLED.equals(options.get(JavaCore.COMPILER_PB_ENABLE_PREVIEW_FEATURES));
-        int savedDefaultNodeFlag = ast.getDefaultNodeFlag();
-        ast.setDefaultNodeFlag(ASTNode.ORIGINAL);
-        BindingResolver resolver = null;
-        if (isResolved) {
-            resolver = new DefaultBindingResolver(compilationUnitDeclaration.scope, workingCopy.owner,
-                new DefaultBindingResolver.BindingTables(), false, true);
-            ((DefaultBindingResolver) resolver).isRecoveringBindings
-                = (reconcileFlags & ICompilationUnit.ENABLE_BINDINGS_RECOVERY) != 0;
-            ast.setFlag(AST.RESOLVED_BINDINGS);
-        } else {
-            resolver = new BindingResolver();
-        }
-        ast.setFlag(reconcileFlags);
-        ast.setBindingResolver(resolver);
-        converter.setAST(ast);
-
-        CompilationUnit unit = converter.convert(compilationUnitDeclaration, workingCopy.getContents());
-        unit.setLineEndTable(compilationUnitDeclaration.compilationResult.getLineSeparatorPositions());
-        unit.setTypeRoot(workingCopy.originalFromClone());
-        ast.setDefaultNodeFlag(savedDefaultNodeFlag);
-        return unit;
-    }
-
-    /**
-     * Creates a new Java abstract syntax tree
-     * (AST) following the specified set of API rules.
-     * <p>
-     * Clients should use this method specifying {@link #getJLSLatest} as the
-     * AST level in all cases, even when dealing with source of earlier JDK versions.
-     * </p>
-     *
-     * @param level the API level; one of the <code>JLS*</code> level constants
-     * @return new AST instance following the specified set of API rules.
-     * @exception IllegalArgumentException if:
-     * <ul>
-     * <li>the API level is not one of the <code>JLS*</code> level constants</li>
-     * </ul>
-     * @deprecated Clients should port their code to use the latest JLS* AST API and call
-     * {@link #newAST(int, boolean) AST.newAST(AST.getJLSLatest(), false)} instead of using this constructor.
-     * @since 3.0
-     */
-    @Deprecated
-    public static AST newAST(int level) {
-        return new AST(level, false);
-    }
+    private static final Map<String, Integer> apiLevelMap = getApiLevelMapTable();
 
     /**
      * Creates a new Java abstract syntax tree
@@ -753,311 +634,6 @@ public final class AST {
      */
     public static AST newAST(int level, boolean previewEnabled) {
         return new AST(level, previewEnabled);
-    }
-
-    /**
-     * Creates a new Java abstract syntax tree
-     * Following option keys are significant:
-     * <ul>
-     * <li><code>"com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.source"</code>
-     * indicates the api level and source compatibility mode (as per <code>JavaCore</code>) - defaults to 1.8
-     * <ul>
-     * <li>
-     * <li><code>"1.8"</code> implies the respective source JDK level 1.8 and api level {@link #JLS8}.</li>
-     * <li><code>"9", "10", "11" up to "23"</code> implies the respective JDK levels 9, 10, 11 up to 23
-     * and api levels {@link #JLS9}, {@link #JLS10}, {@link #JLS11} up to {@link #JLS23}.</li>
-     * <li>Additional legal values may be added later.</li>
-     * </ul>
-     * </li>
-     * <li><code>"com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.problem.enablePreviewFeatures"</code>
-     * -
-     * indicates whether the preview is enabled or disabled
-     * legal values are <code>"enabled"</code> and <code>"disabled"</code> implying preview enabled and disabled
-     * respectively.
-     * preview enabling has an effect only with the latest ast level.
-     * </li>
-     * </ul>
-     *
-     * @param options the table of options
-     * @see JavaCore#getDefaultOptions()
-     * @since 3.20
-     */
-    public static AST newAST(Map<String, String> options) {
-        return new AST(options);
-    }
-
-    /**
-     * Parses the given string as a Java compilation unit and creates and
-     * returns a corresponding abstract syntax tree.
-     * <p>
-     * The returned compilation unit node is the root node of a new AST.
-     * Each node in the subtree carries source range(s) information relating back
-     * to positions in the given source string (the given source string itself
-     * is not remembered with the AST).
-     * The source range usually begins at the first character of the first token
-     * corresponding to the node; leading whitespace and comments are <b>not</b>
-     * included. The source range usually extends through the last character of
-     * the last token corresponding to the node; trailing whitespace and
-     * comments are <b>not</b> included. There are a handful of exceptions
-     * (including compilation units and the various body declarations); the
-     * specification for these node type spells out the details.
-     * Source ranges nest properly: the source range for a child is always
-     * within the source range of its parent, and the source ranges of sibling
-     * nodes never overlap.
-     * If a syntax error is detected while parsing, the relevant node(s) of the
-     * tree will be flagged as <code>MALFORMED</code>.
-     * </p>
-     * <p>
-     * This method does not compute binding information; all <code>resolveBinding</code>
-     * methods applied to nodes of the resulting AST return <code>null</code>.
-     * </p>
-     *
-     * @param source the string to be parsed as a Java compilation unit
-     * @return the compilation unit node
-     * @see ASTNode#getFlags()
-     * @see ASTNode#MALFORMED
-     * @see ASTNode#getStartPosition()
-     * @see ASTNode#getLength()
-     * @since 2.0
-     * @deprecated Use {@link ASTParser} instead.
-     */
-    public static CompilationUnit parseCompilationUnit(char[] source) {
-        if (source == null) {
-            throw new IllegalArgumentException();
-        }
-        ASTParser c = ASTParser.newParser(AST.JLS2);
-        c.setSource(source);
-        ASTNode result = c.createAST(null);
-        return (CompilationUnit) result;
-    }
-
-    /**
-     * Parses the given string as the hypothetical contents of the named
-     * compilation unit and creates and returns a corresponding abstract syntax tree.
-     * <p>
-     * The returned compilation unit node is the root node of a new AST.
-     * Each node in the subtree carries source range(s) information relating back
-     * to positions in the given source string (the given source string itself
-     * is not remembered with the AST).
-     * The source range usually begins at the first character of the first token
-     * corresponding to the node; leading whitespace and comments are <b>not</b>
-     * included. The source range usually extends through the last character of
-     * the last token corresponding to the node; trailing whitespace and
-     * comments are <b>not</b> included. There are a handful of exceptions
-     * (including compilation units and the various body declarations); the
-     * specification for these node type spells out the details.
-     * Source ranges nest properly: the source range for a child is always
-     * within the source range of its parent, and the source ranges of sibling
-     * nodes never overlap.
-     * If a syntax error is detected while parsing, the relevant node(s) of the
-     * tree will be flagged as <code>MALFORMED</code>.
-     * </p>
-     * <p>
-     * If the given project is not <code>null</code>, the various names
-     * and types appearing in the compilation unit can be resolved to "bindings"
-     * by calling the <code>resolveBinding</code> methods. These bindings
-     * draw connections between the different parts of a program, and
-     * generally afford a more powerful vantage point for clients who wish to
-     * analyze a program's structure more deeply. These bindings come at a
-     * considerable cost in both time and space, however, and should not be
-     * requested frivolously. The additional space is not reclaimed until the
-     * AST, all its nodes, and all its bindings become garbage. So it is very
-     * important to not retain any of these objects longer than absolutely
-     * necessary. Bindings are resolved at the time the AST is created. Subsequent
-     * modifications to the AST do not affect the bindings returned by
-     * <code>resolveBinding</code> methods in any way; these methods return the
-     * same binding as before the AST was modified (including modifications
-     * that rearrange subtrees by reparenting nodes).
-     * If the given project is <code>null</code>, the analysis
-     * does not go beyond parsing and building the tree, and all
-     * <code>resolveBinding</code> methods return <code>null</code> from the
-     * outset.
-     * </p>
-     * <p>
-     * The name of the compilation unit must be supplied for resolving bindings.
-     * This name should be suffixed by a dot ('.') followed by one of the
-     * {@link JavaCore#getJavaLikeExtensions() Java-like extensions}
-     * and match the name of the main
-     * (public) class or interface declared in the source. For example, if the source
-     * declares a public class named "Foo", the name of the compilation can be
-     * "Foo.java". For the purposes of resolving bindings, types declared in the
-     * source string hide types by the same name available through the classpath
-     * of the given project.
-     * </p>
-     *
-     * @param source the string to be parsed as a Java compilation unit
-     * @param unitName the name of the compilation unit that would contain the source
-     * string, or <code>null</code> if <code>javaProject</code> is also <code>null</code>
-     * @param project the Java project used to resolve names, or
-     * <code>null</code> if bindings are not resolved
-     * @return the compilation unit node
-     * @see ASTNode#getFlags()
-     * @see ASTNode#MALFORMED
-     * @see ASTNode#getStartPosition()
-     * @see ASTNode#getLength()
-     * @since 2.0
-     * @deprecated Use {@link ASTParser} instead.
-     */
-    public static CompilationUnit parseCompilationUnit(char[] source, String unitName, IJavaProject project) {
-
-        if (source == null) {
-            throw new IllegalArgumentException();
-        }
-        ASTParser astParser = ASTParser.newParser(AST.JLS2);
-        astParser.setSource(source);
-        astParser.setUnitName(unitName);
-        astParser.setProject(project);
-        astParser.setResolveBindings(project != null);
-        ASTNode result = astParser.createAST(null);
-        return (CompilationUnit) result;
-    }
-
-    /**
-     * Parses the source string corresponding to the given Java class file
-     * element and creates and returns a corresponding abstract syntax tree.
-     * The source string is obtained from the Java model element using
-     * <code>IClassFile.getSource()</code>, and is only available for a class
-     * files with attached source.
-     * <p>
-     * The returned compilation unit node is the root node of a new AST.
-     * Each node in the subtree carries source range(s) information relating back
-     * to positions in the source string (the source string is not remembered
-     * with the AST).
-     * The source range usually begins at the first character of the first token
-     * corresponding to the node; leading whitespace and comments are <b>not</b>
-     * included. The source range usually extends through the last character of
-     * the last token corresponding to the node; trailing whitespace and
-     * comments are <b>not</b> included. There are a handful of exceptions
-     * (including compilation units and the various body declarations); the
-     * specification for these node type spells out the details.
-     * Source ranges nest properly: the source range for a child is always
-     * within the source range of its parent, and the source ranges of sibling
-     * nodes never overlap.
-     * If a syntax error is detected while parsing, the relevant node(s) of the
-     * tree will be flagged as <code>MALFORMED</code>.
-     * </p>
-     * <p>
-     * If <code>resolveBindings</code> is <code>true</code>, the various names
-     * and types appearing in the compilation unit can be resolved to "bindings"
-     * by calling the <code>resolveBinding</code> methods. These bindings
-     * draw connections between the different parts of a program, and
-     * generally afford a more powerful vantage point for clients who wish to
-     * analyze a program's structure more deeply. These bindings come at a
-     * considerable cost in both time and space, however, and should not be
-     * requested frivolously. The additional space is not reclaimed until the
-     * AST, all its nodes, and all its bindings become garbage. So it is very
-     * important to not retain any of these objects longer than absolutely
-     * necessary. Bindings are resolved at the time the AST is created. Subsequent
-     * modifications to the AST do not affect the bindings returned by
-     * <code>resolveBinding</code> methods in any way; these methods return the
-     * same binding as before the AST was modified (including modifications
-     * that rearrange subtrees by reparenting nodes).
-     * If <code>resolveBindings</code> is <code>false</code>, the analysis
-     * does not go beyond parsing and building the tree, and all
-     * <code>resolveBinding</code> methods return <code>null</code> from the
-     * outset.
-     * </p>
-     *
-     * @param classFile the Java model class file whose corresponding source code is to be parsed
-     * @param resolveBindings <code>true</code> if bindings are wanted,
-     * and <code>false</code> if bindings are not of interest
-     * @return the compilation unit node
-     * @exception IllegalArgumentException if the given Java element does not
-     * exist or if its source string cannot be obtained
-     * @see ASTNode#getFlags()
-     * @see ASTNode#MALFORMED
-     * @see ASTNode#getStartPosition()
-     * @see ASTNode#getLength()
-     * @since 2.1
-     * @deprecated Use {@link ASTParser} instead.
-     */
-    public static CompilationUnit parseCompilationUnit(IClassFile classFile, boolean resolveBindings) {
-
-        if (classFile == null) {
-            throw new IllegalArgumentException();
-        }
-        try {
-            ASTParser c = ASTParser.newParser(AST.JLS2);
-            c.setSource(classFile);
-            c.setResolveBindings(resolveBindings);
-            ASTNode result = c.createAST(null);
-            return (CompilationUnit) result;
-        } catch (IllegalStateException e) {
-            // convert ASTParser's complaints into old form
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * Parses the source string of the given Java model compilation unit element
-     * and creates and returns a corresponding abstract syntax tree. The source
-     * string is obtained from the Java model element using
-     * <code>ICompilationUnit.getSource()</code>.
-     * <p>
-     * The returned compilation unit node is the root node of a new AST.
-     * Each node in the subtree carries source range(s) information relating back
-     * to positions in the source string (the source string is not remembered
-     * with the AST).
-     * The source range usually begins at the first character of the first token
-     * corresponding to the node; leading whitespace and comments are <b>not</b>
-     * included. The source range usually extends through the last character of
-     * the last token corresponding to the node; trailing whitespace and
-     * comments are <b>not</b> included. There are a handful of exceptions
-     * (including compilation units and the various body declarations); the
-     * specification for these node type spells out the details.
-     * Source ranges nest properly: the source range for a child is always
-     * within the source range of its parent, and the source ranges of sibling
-     * nodes never overlap.
-     * If a syntax error is detected while parsing, the relevant node(s) of the
-     * tree will be flagged as <code>MALFORMED</code>.
-     * </p>
-     * <p>
-     * If <code>resolveBindings</code> is <code>true</code>, the various names
-     * and types appearing in the compilation unit can be resolved to "bindings"
-     * by calling the <code>resolveBinding</code> methods. These bindings
-     * draw connections between the different parts of a program, and
-     * generally afford a more powerful vantage point for clients who wish to
-     * analyze a program's structure more deeply. These bindings come at a
-     * considerable cost in both time and space, however, and should not be
-     * requested frivolously. The additional space is not reclaimed until the
-     * AST, all its nodes, and all its bindings become garbage. So it is very
-     * important to not retain any of these objects longer than absolutely
-     * necessary. Bindings are resolved at the time the AST is created. Subsequent
-     * modifications to the AST do not affect the bindings returned by
-     * <code>resolveBinding</code> methods in any way; these methods return the
-     * same binding as before the AST was modified (including modifications
-     * that rearrange subtrees by reparenting nodes).
-     * If <code>resolveBindings</code> is <code>false</code>, the analysis
-     * does not go beyond parsing and building the tree, and all
-     * <code>resolveBinding</code> methods return <code>null</code> from the
-     * outset.
-     * </p>
-     *
-     * @param unit the Java model compilation unit whose source code is to be parsed
-     * @param resolveBindings <code>true</code> if bindings are wanted,
-     * and <code>false</code> if bindings are not of interest
-     * @return the compilation unit node
-     * @exception IllegalArgumentException if the given Java element does not
-     * exist or if its source string cannot be obtained
-     * @see ASTNode#getFlags()
-     * @see ASTNode#MALFORMED
-     * @see ASTNode#getStartPosition()
-     * @see ASTNode#getLength()
-     * @since 2.0
-     * @deprecated Use {@link ASTParser} instead.
-     */
-    public static CompilationUnit parseCompilationUnit(ICompilationUnit unit, boolean resolveBindings) {
-
-        try {
-            ASTParser c = ASTParser.newParser(AST.JLS2);
-            c.setSource(unit);
-            c.setResolveBindings(resolveBindings);
-            ASTNode result = c.createAST(null);
-            return (CompilationUnit) result;
-        } catch (IllegalStateException e) {
-            // convert ASTParser's complaints into old form
-            throw new IllegalArgumentException(e);
-        }
     }
 
     /**
@@ -1148,18 +724,6 @@ public final class AST {
     private final Object[] THIS_AST = new Object[] { this };
 
     /**
-     * Creates a new, empty abstract syntax tree using default options.
-     *
-     * @see JavaCore#getDefaultOptions()
-     * @deprecated Clients should port their code to use the latest JLS* AST API and call
-     * {@link #newAST(int, boolean) AST.newAST(AST.getJLSLatest, false)} instead of using this constructor.
-     */
-    @Deprecated
-    public AST() {
-        this(JavaCore.getDefaultOptions());
-    }
-
-    /**
      * Creates a new Java abstract syntax tree
      * (AST) following the specified set of API rules.
      *
@@ -1246,9 +810,8 @@ public final class AST {
             JavaCore.ENABLED.equals(options.get(JavaCore.COMPILER_PB_ENABLE_PREVIEW_FEATURES)));
 
         long sourceLevel = AST.jdkLevelMap.get(options.get(JavaCore.COMPILER_SOURCE));
-        long complianceLevel = sourceLevel;
         this.scanner = new Scanner(true /* comment */, true /* whitespace */, false /* nls */,
-            sourceLevel /* sourceLevel */, complianceLevel /* complianceLevel */, null/* taskTag */,
+            sourceLevel /* sourceLevel */, sourceLevel /* complianceLevel */, null/* taskTag */,
             null/* taskPriorities */, true/* taskCaseSensitive */, this.previewEnabled /* isPreviewEnabled */);
     }
 
@@ -1417,36 +980,6 @@ public final class AST {
         return this.eventHandler;
     }
 
-    /**
-     * Returns true if the ast tree was created with bindings recovery, false otherwise
-     *
-     * @return true if the ast tree was created with bindings recovery, false otherwise
-     * @since 3.3
-     */
-    public boolean hasBindingsRecovery() {
-        return (this.bits & ICompilationUnit.ENABLE_BINDINGS_RECOVERY) != 0;
-    }
-
-    /**
-     * Returns true if the ast tree was created with bindings, false otherwise
-     *
-     * @return true if the ast tree was created with bindings, false otherwise
-     * @since 3.3
-     */
-    public boolean hasResolvedBindings() {
-        return (this.bits & RESOLVED_BINDINGS) != 0;
-    }
-
-    /**
-     * Returns true if the ast tree was created with statements recovery, false otherwise
-     *
-     * @return true if the ast tree was created with statements recovery, false otherwise
-     * @since 3.3
-     */
-    public boolean hasStatementsRecovery() {
-        return (this.bits & ICompilationUnit.ENABLE_STATEMENTS_RECOVERY) != 0;
-    }
-
     /*
      * (omit javadoc for this method)
      * This method is a copy of setName(String[]) that doesn't do any validation.
@@ -1542,102 +1075,7 @@ public final class AST {
      * @since 3.1
      */
     public AnnotationTypeDeclaration newAnnotationTypeDeclaration() {
-        AnnotationTypeDeclaration result = new AnnotationTypeDeclaration(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented annotation type
-     * member declaration node for an unspecified, but legal,
-     * member name and type; no modifiers; no javadoc;
-     * and no default value.
-     *
-     * @return a new unparented annotation type member declaration node
-     * @exception UnsupportedOperationException if this operation is used in
-     * a JLS2 AST
-     * @since 3.1
-     */
-    public AnnotationTypeMemberDeclaration newAnnotationTypeMemberDeclaration() {
-        AnnotationTypeMemberDeclaration result = new AnnotationTypeMemberDeclaration(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented anonymous class declaration
-     * node owned by this AST. By default, the body declaration list is empty.
-     *
-     * @return a new unparented anonymous class declaration node
-     */
-    public AnonymousClassDeclaration newAnonymousClassDeclaration() {
-        AnonymousClassDeclaration result = new AnonymousClassDeclaration(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented array access expression node
-     * owned by this AST. By default, the array and index expression are
-     * both unspecified (but legal).
-     *
-     * @return a new unparented array access expression node
-     */
-    public ArrayAccess newArrayAccess() {
-        ArrayAccess result = new ArrayAccess(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented array creation expression node
-     * owned by this AST. By default, the array type is an unspecified
-     * 1-dimensional array, the list of dimensions is empty, and there is no
-     * array initializer.
-     * <p>
-     * Examples:
-     * 
-     * <pre>
-     * <code>
-     * // new String[len]
-     * ArrayCreation ac1 = ast.newArrayCreation();
-     * ac1.setType(
-     *    ast.newArrayType(
-     *       ast.newSimpleType(ast.newSimpleName("String"))));
-     * ac1.dimensions().add(ast.newSimpleName("len"));
-     *
-     * // new double[7][24][]
-     * ArrayCreation ac2 = ast.newArrayCreation();
-     * ac2.setType(
-     *    ast.newArrayType(
-     *       ast.newPrimitiveType(PrimitiveType.DOUBLE), 3));
-     * ac2.dimensions().add(ast.newNumberLiteral("7"));
-     * ac2.dimensions().add(ast.newNumberLiteral("24"));
-     *
-     * // new int[] {1, 2}
-     * ArrayCreation ac3 = ast.newArrayCreation();
-     * ac3.setType(
-     *    ast.newArrayType(
-     *       ast.newPrimitiveType(PrimitiveType.INT)));
-     * ArrayInitializer ai = ast.newArrayInitializer();
-     * ac3.setInitializer(ai);
-     * ai.expressions().add(ast.newNumberLiteral("1"));
-     * ai.expressions().add(ast.newNumberLiteral("2"));
-     * </code>
-     * </pre>
-     *
-     * @return a new unparented array creation expression node
-     */
-    public ArrayCreation newArrayCreation() {
-        ArrayCreation result = new ArrayCreation(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented array initializer node
-     * owned by this AST. By default, the initializer has no expressions.
-     *
-     * @return a new unparented array initializer node
-     */
-    public ArrayInitializer newArrayInitializer() {
-        ArrayInitializer result = new ArrayInitializer(this);
-        return result;
+        return new AnnotationTypeDeclaration(this);
     }
 
     /**
@@ -1725,30 +1163,6 @@ public final class AST {
     }
 
     /**
-     * Creates a new unparented assert statement node owned by this AST.
-     * By default, the first expression is unspecified, but legal, and has no
-     * message expression.
-     *
-     * @return a new unparented assert statement node
-     */
-    public AssertStatement newAssertStatement() {
-        return new AssertStatement(this);
-    }
-
-    /**
-     * Creates and returns a new unparented assignment expression node
-     * owned by this AST. By default, the assignment operator is "=" and
-     * the left and right hand side expressions are unspecified, but
-     * legal, names.
-     *
-     * @return a new unparented assignment expression node
-     */
-    public Assignment newAssignment() {
-        Assignment result = new Assignment(this);
-        return result;
-    }
-
-    /**
      * Creates an unparented block node owned by this AST, for an empty list
      * of statements.
      *
@@ -1756,115 +1170,6 @@ public final class AST {
      */
     public Block newBlock() {
         return new Block(this);
-    }
-
-    /**
-     * Creates and returns a new block comment placeholder node.
-     * <p>
-     * Note that this node type is used to recording the source
-     * range where a comment was found in the source string.
-     * These comment nodes are normally found (only) in
-     * {@linkplain CompilationUnit#getCommentList()
-     * the comment table} for parsed compilation units.
-     * </p>
-     *
-     * @return a new unparented block comment node
-     * @since 3.0
-     */
-    public BlockComment newBlockComment() {
-        BlockComment result = new BlockComment(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented boolean literal node.
-     * <p>
-     * For example, the assignment expression <code>foo = true</code>
-     * is generated by the following snippet:
-     * 
-     * <pre>
-     * <code>
-     * Assignment e= ast.newAssignment();
-     * e.setLeftHandSide(ast.newSimpleName("foo"));
-     * e.setRightHandSide(ast.newBooleanLiteral(true));
-     * </code>
-     * </pre>
-     *
-     * @param value the boolean value
-     * @return a new unparented boolean literal node
-     */
-    public BooleanLiteral newBooleanLiteral(boolean value) {
-        BooleanLiteral result = new BooleanLiteral(this);
-        result.setBooleanValue(value);
-        return result;
-    }
-
-    /**
-     * Creates an unparented break statement node owned by this AST.
-     * The break statement has no label/identifier/expression and is not implicit.
-     *
-     * @return a new unparented break statement node
-     */
-    public BreakStatement newBreakStatement() {
-        return new BreakStatement(this);
-    }
-
-    /**
-     * Creates and returns a new unparented default case expression node.
-     *
-     * @return a new unparented default case expression node
-     * @since 3.28
-     */
-    public CaseDefaultExpression newCaseDefaultExpression() {
-        CaseDefaultExpression result = new CaseDefaultExpression(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented cast expression node
-     * owned by this AST. By default, the type and expression are unspecified
-     * (but legal).
-     *
-     * @return a new unparented cast expression node
-     */
-    public CastExpression newCastExpression() {
-        CastExpression result = new CastExpression(this);
-        return result;
-    }
-
-    /**
-     * Creates a new unparented catch clause node owned by this AST.
-     * By default, the catch clause declares an unspecified, but legal,
-     * exception declaration and has an empty block.
-     *
-     * @return a new unparented catch clause node
-     */
-    public CatchClause newCatchClause() {
-        return new CatchClause(this);
-    }
-
-    /**
-     * Creates and returns a new unparented character literal node.
-     * Initially the node has an unspecified character literal.
-     *
-     * @return a new unparented character literal node
-     */
-    public CharacterLiteral newCharacterLiteral() {
-        return new CharacterLiteral(this);
-    }
-
-    /**
-     * Creates and returns a new unparented class instance creation
-     * ("new") expression node owned by this AST. By default,
-     * there is no qualifying expression, no type parameters,
-     * an unspecified (but legal) type name, an empty list of
-     * arguments, and does not declare an anonymous class declaration.
-     *
-     * @return a new unparented class instance creation expression node
-     */
-    public ClassInstanceCreation newClassInstanceCreation() {
-        ClassInstanceCreation result = new ClassInstanceCreation(this);
-        return result;
     }
 
     // =============================== DECLARATIONS ===========================
@@ -1877,152 +1182,6 @@ public final class AST {
      */
     public CompilationUnit newCompilationUnit() {
         return new CompilationUnit(this);
-    }
-
-    /**
-     * Creates and returns a new unparented conditional expression node
-     * owned by this AST. By default, the condition and both expressions
-     * are unspecified (but legal).
-     *
-     * @return a new unparented array conditional expression node
-     */
-    public ConditionalExpression newConditionalExpression() {
-        ConditionalExpression result = new ConditionalExpression(this);
-        return result;
-    }
-
-    /**
-     * Creates an unparented alternate constructor ("this(...);") invocation
-     * statement node owned by this AST. By default, the lists of arguments
-     * and type arguments are both empty.
-     * <p>
-     * Note that this type of node is a Statement, whereas a regular
-     * method invocation is an Expression. The only valid use of these
-     * statements are as the first statement of a constructor body.
-     * </p>
-     *
-     * @return a new unparented alternate constructor invocation statement node
-     */
-    public ConstructorInvocation newConstructorInvocation() {
-        ConstructorInvocation result = new ConstructorInvocation(this);
-        return result;
-    }
-
-    /**
-     * Creates an unparented continue statement node owned by this AST.
-     * The continue statement has no label.
-     *
-     * @return a new unparented continue statement node
-     */
-    public ContinueStatement newContinueStatement() {
-        return new ContinueStatement(this);
-    }
-
-    /**
-     * Creates an unparented creation reference node owned by this AST.
-     * By default, the type is unspecified (but legal), and there are no type arguments.
-     *
-     * @return a new unparented creation reference expression node
-     * @exception UnsupportedOperationException if this operation is used in a JLS2, JLS3 or JLS4 AST
-     * @since 3.10
-     */
-    public CreationReference newCreationReference() {
-        CreationReference result = new CreationReference(this);
-        return result;
-    }
-
-    /**
-     * Creates a new unparented do statement node owned by this AST.
-     * By default, the expression is unspecified (but legal), and
-     * the body statement is an empty block.
-     *
-     * @return a new unparented do statement node
-     */
-    public DoStatement newDoStatement() {
-        return new DoStatement(this);
-    }
-
-    /**
-     * Creates a new unparented empty statement node owned by this AST.
-     *
-     * @return a new unparented empty statement node
-     */
-    public EmptyStatement newEmptyStatement() {
-        return new EmptyStatement(this);
-    }
-
-    /**
-     * Creates a new unparented enhanced for statement node owned by this AST.
-     * By default, the paramter and expression are unspecified
-     * but legal subtrees, and the body is an empty block.
-     *
-     * @return a new unparented throw statement node
-     * @exception UnsupportedOperationException if this operation is used in
-     * a JLS2 AST
-     * @since 3.1
-     */
-    public EnhancedForStatement newEnhancedForStatement() {
-        return new EnhancedForStatement(this);
-    }
-
-    /**
-     * Creates an unparented enum constant declaration node owned by this AST.
-     * The name of the constant is an unspecified, but legal, name;
-     * no doc comment; no modifiers or annotations; no arguments;
-     * and does not declare an anonymous class.
-     *
-     * @return a new unparented enum constant declaration node
-     * @exception UnsupportedOperationException if this operation is used in
-     * a JLS2 AST
-     * @since 3.1
-     */
-    public EnumConstantDeclaration newEnumConstantDeclaration() {
-        EnumConstantDeclaration result = new EnumConstantDeclaration(this);
-        return result;
-    }
-
-    /**
-     * Creates an unparented enum declaration node owned by this AST.
-     * The name of the enum is an unspecified, but legal, name;
-     * no doc comment; no modifiers or annotations;
-     * no superinterfaces; and empty lists of enum constants
-     * and body declarations.
-     *
-     * @return a new unparented enum declaration node
-     * @exception UnsupportedOperationException if this operation is used in
-     * a JLS2 AST
-     * @since 3.1
-     */
-    public EnumDeclaration newEnumDeclaration() {
-        EnumDeclaration result = new EnumDeclaration(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented exports directive
-     * node for an unspecified, but legal, name; no target modules
-     *
-     * @return a new unparented exports directive node
-     * @exception UnsupportedOperationException if this operation is used in an AST with level less than JLS9
-     * @since 3.14
-     */
-    public ExportsDirective newExportsStatement() {
-        ExportsDirective result = new ExportsDirective(this);
-        return result;
-    }
-
-    /**
-     * Creates an unparented expression method reference node owned by this AST.
-     * By default, the expression and method name are unspecified (but legal),
-     * and there are no type arguments.
-     *
-     * @return a new unparented expression method reference expression node
-     * @exception UnsupportedOperationException if this operation is used in a JLS2, JLS3 or JLS4 AST
-     * @since 3.10
-     */
-    public ExpressionMethodReference newExpressionMethodReference() {
-        ExpressionMethodReference result = new ExpressionMethodReference(this);
-        return result;
     }
 
     /**
@@ -2065,110 +1224,7 @@ public final class AST {
      * @since 3.10
      */
     public Dimension newDimension() {
-        Dimension result = new Dimension(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented field access expression node
-     * owned by this AST. By default, the expression and field are both
-     * unspecified, but legal, names.
-     *
-     * @return a new unparented field access expression node
-     */
-    public FieldAccess newFieldAccess() {
-        FieldAccess result = new FieldAccess(this);
-        return result;
-    }
-
-    /**
-     * Creates a new unparented field declaration node owned by this AST,
-     * for the given variable declaration fragment. By default, there are no
-     * modifiers, no doc comment, and the base type is unspecified
-     * (but legal).
-     * <p>
-     * This method can be used to wrap a variable declaration fragment
-     * (<code>VariableDeclarationFragment</code>) into a field declaration
-     * suitable for inclusion in the body of a type declaration
-     * (<code>FieldDeclaration</code> implements <code>BodyDeclaration</code>).
-     * Additional variable declaration fragments can be added afterwards.
-     * </p>
-     *
-     * @param fragment the variable declaration fragment
-     * @return a new unparented field declaration node
-     * @exception IllegalArgumentException if:
-     * <ul>
-     * <li>the node belongs to a different AST</li>
-     * <li>the node already has a parent</li>
-     * <li>the given fragment is null</li>
-     * </ul>
-     */
-    public FieldDeclaration newFieldDeclaration(VariableDeclarationFragment fragment) {
-        if (fragment == null) {
-            throw new IllegalArgumentException();
-        }
-        FieldDeclaration result = new FieldDeclaration(this);
-        result.fragments().add(fragment);
-        return result;
-    }
-
-    /**
-     * Creates a new unparented for statement node owned by this AST.
-     * By default, there are no initializers, no condition expression,
-     * no updaters, and the body is an empty block.
-     *
-     * @return a new unparented for statement node
-     */
-    public ForStatement newForStatement() {
-        return new ForStatement(this);
-    }
-
-    /**
-     * Creates and returns a new unparented guarded pattern node with an
-     * unspecified pattern variable name and a null expression.
-     *
-     * @return a new unparented guarded pattern node
-     * @since 3.28
-     */
-    public GuardedPattern newGuardedPattern() {
-        GuardedPattern result = new GuardedPattern(this);
-        return result;
-    }
-
-    /**
-     * Creates a new unparented if statement node owned by this AST.
-     * By default, the expression is unspecified (but legal),
-     * the then statement is an empty block, and there is no else statement.
-     *
-     * @return a new unparented if statement node
-     */
-    public IfStatement newIfStatement() {
-        return new IfStatement(this);
-    }
-
-    /**
-     * Creates an unparented import declaration node owned by this AST.
-     * The import declaration initially contains a single-type import
-     * of a type with an unspecified name.
-     *
-     * @return the new unparented import declaration node
-     */
-    public ImportDeclaration newImportDeclaration() {
-        ImportDeclaration result = new ImportDeclaration(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented infix expression node
-     * owned by this AST. By default, the operator and left and right
-     * operand are unspecified (but legal), and there are no extended
-     * operands.
-     *
-     * @return a new unparented infix expression node
-     */
-    public InfixExpression newInfixExpression() {
-        InfixExpression result = new InfixExpression(this);
-        return result;
+        return new Dimension(this);
     }
 
     /**
@@ -2179,33 +1235,7 @@ public final class AST {
      * @return a new unparented initializer node
      */
     public Initializer newInitializer() {
-        Initializer result = new Initializer(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented instanceof expression node
-     * owned by this AST. By default, the operator and left and right
-     * operand are unspecified (but legal).
-     *
-     * @return a new unparented instanceof expression node
-     */
-    public InstanceofExpression newInstanceofExpression() {
-        InstanceofExpression result = new InstanceofExpression(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new doc comment node.
-     * Initially the new node has an empty list of tag elements
-     * (and, for backwards compatability, an unspecified, but legal,
-     * doc comment string)
-     *
-     * @return a new unparented doc comment node
-     */
-    public Javadoc newJavadoc() {
-        Javadoc result = new Javadoc(this);
-        return result;
+        return new Initializer(this);
     }
 
     /**
@@ -2218,8 +1248,7 @@ public final class AST {
      * @since 3.30
      */
     public JavaDocRegion newJavaDocRegion() {
-        JavaDocRegion result = new JavaDocRegion(this);
-        return result;
+        return new JavaDocRegion(this);
     }
 
     /**
@@ -2234,64 +1263,7 @@ public final class AST {
      * @since 3.31
      */
     public JavaDocTextElement newJavaDocTextElement() {
-        JavaDocTextElement result = new JavaDocTextElement(this);
-        return result;
-    }
-
-    /**
-     * Creates a new unparented labeled statement node owned by this AST.
-     * By default, the label and statement are both unspecified, but legal.
-     *
-     * @return a new unparented labeled statement node
-     */
-    public LabeledStatement newLabeledStatement() {
-        return new LabeledStatement(this);
-    }
-
-    /**
-     * Creates an unparented lambda expression node owned by this AST.
-     * By default, the new lambda expression has parentheses enabled, contains an empty argument
-     * list, and the body is an empty block.
-     *
-     * @return a new unparented lambda expression node
-     * @exception UnsupportedOperationException if this operation is used in a JLS2, JLS3 or JLS4 AST
-     * @since 3.10
-     */
-    public LambdaExpression newLambdaExpression() {
-        LambdaExpression result = new LambdaExpression(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new line comment placeholder node.
-     * <p>
-     * Note that this node type is used to recording the source
-     * range where a comment was found in the source string.
-     * These comment nodes are normally found (only) in
-     * {@linkplain CompilationUnit#getCommentList()
-     * the comment table} for parsed compilation units.
-     * </p>
-     *
-     * @return a new unparented line comment node
-     * @since 3.0
-     */
-    public LineComment newLineComment() {
-        LineComment result = new LineComment(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented marker annotation node with
-     * an unspecified type name.
-     *
-     * @return a new unparented marker annotation node
-     * @exception UnsupportedOperationException if this operation is used in
-     * a JLS2 AST
-     * @since 3.1
-     */
-    public MarkerAnnotation newMarkerAnnotation() {
-        MarkerAnnotation result = new MarkerAnnotation(this);
-        return result;
+        return new JavaDocTextElement(this);
     }
 
     /**
@@ -2307,58 +1279,10 @@ public final class AST {
      * @since 3.0
      */
     public MemberRef newMemberRef() {
-        MemberRef result = new MemberRef(this);
-        return result;
+        return new MemberRef(this);
     }
 
     // =============================== COMMENTS ===========================
-
-    /**
-     * Creates and returns a new unparented member value pair node with
-     * an unspecified member name and value.
-     *
-     * @return a new unparented member value pair node
-     * @exception UnsupportedOperationException if this operation is used in
-     * a JLS2 AST
-     * @since 3.1
-     */
-    public MemberValuePair newMemberValuePair() {
-        MemberValuePair result = new MemberValuePair(this);
-        return result;
-    }
-
-    /**
-     * Creates an unparented method declaration node owned by this AST.
-     * By default, the declaration is for a method of an unspecified, but
-     * legal, name; no modifiers; no doc comment; no parameters; return
-     * type void; no extra array dimensions; no thrown exceptions; and no
-     * body (as opposed to an empty body).
-     * <p>
-     * To create a constructor, use this method and then call
-     * <code>MethodDeclaration.setConstructor(true)</code> and
-     * <code>MethodDeclaration.setName(className)</code>.
-     * </p>
-     *
-     * @return a new unparented method declaration node
-     */
-    public MethodDeclaration newMethodDeclaration() {
-        MethodDeclaration result = new MethodDeclaration(this);
-        result.setConstructor(false);
-        return result;
-    }
-
-    /**
-     * Creates an unparented method invocation expression node owned by this
-     * AST. By default, the name of the method is unspecified (but legal)
-     * there is no receiver expression, no type arguments, and the list of
-     * arguments is empty.
-     *
-     * @return a new unparented method invocation expression node
-     */
-    public MethodInvocation newMethodInvocation() {
-        MethodInvocation result = new MethodInvocation(this);
-        return result;
-    }
 
     /**
      * Creates and returns a new method reference node.
@@ -2374,8 +1298,7 @@ public final class AST {
      * @since 3.0
      */
     public MethodRef newMethodRef() {
-        MethodRef result = new MethodRef(this);
-        return result;
+        return new MethodRef(this);
     }
 
     /**
@@ -2391,8 +1314,7 @@ public final class AST {
      * @since 3.0
      */
     public MethodRefParameter newMethodRefParameter() {
-        MethodRefParameter result = new MethodRefParameter(this);
-        return result;
+        return new MethodRefParameter(this);
     }
 
     /**
@@ -2408,23 +1330,6 @@ public final class AST {
      */
     public Modifier newModifier(Modifier.ModifierKeyword keyword) {
         Modifier result = new Modifier(this);
-        result.setKeyword(keyword);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented module modifier node for the given
-     * module modifier.
-     *
-     * @param keyword one of the module modifier keyword constants
-     * @return a new unparented module modifier node
-     * @exception IllegalArgumentException if the primitive type code is invalid
-     * @exception UnsupportedOperationException if this operation is used in
-     * an AST with level less than JLS9
-     * @since 3.14
-     */
-    public ModuleModifier newModuleModifier(ModuleModifier.ModuleModifierKeyword keyword) {
-        ModuleModifier result = new ModuleModifier(this);
         result.setKeyword(keyword);
         return result;
     }
@@ -2513,8 +1418,7 @@ public final class AST {
      * @since 3.14
      */
     public ModuleDeclaration newModuleDeclaration() {
-        ModuleDeclaration result = new ModuleDeclaration(this);
-        return result;
+        return new ModuleDeclaration(this);
     }
 
     /**
@@ -2606,44 +1510,6 @@ public final class AST {
     }
 
     /**
-     * Creates and returns a new unparented name qualified type node with
-     * the given qualifier and name.
-     *
-     * @param qualifier the name qualifier name node
-     * @param name the simple name being qualified
-     * @return a new unparented qualified type node
-     * @exception IllegalArgumentException if:
-     * <ul>
-     * <li>the node belongs to a different AST</li>
-     * <li>the node already has a parent</li>
-     * </ul>
-     * @exception UnsupportedOperationException if this operation is used in
-     * a JLS2, JLS3 and JLS4 AST
-     * @since 3.10
-     */
-    public NameQualifiedType newNameQualifiedType(Name qualifier, SimpleName name) {
-        NameQualifiedType result = new NameQualifiedType(this);
-        result.setQualifier(qualifier);
-        result.setName(name);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented normal annotation node with
-     * an unspecified type name and an empty list of member value
-     * pairs.
-     *
-     * @return a new unparented normal annotation node
-     * @exception UnsupportedOperationException if this operation is used in
-     * a JLS2 AST
-     * @since 3.1
-     */
-    public NormalAnnotation newNormalAnnotation() {
-        NormalAnnotation result = new NormalAnnotation(this);
-        return result;
-    }
-
-    /**
      * Creates and returns a new unparented null literal node.
      *
      * @return a new unparented null literal node
@@ -2659,130 +1525,7 @@ public final class AST {
      * @since 3.28
      */
     public NullPattern newNullPattern() {
-        NullPattern result = new NullPattern(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented number literal node.
-     * Initially the number literal token is <code>"0"</code>.
-     *
-     * @return a new unparented number literal node
-     */
-    public NumberLiteral newNumberLiteral() {
-        NumberLiteral result = new NumberLiteral(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented number literal node.
-     *
-     * @param literal the token for the numeric literal as it would
-     * appear in Java source code
-     * @return a new unparented number literal node
-     * @exception IllegalArgumentException if the literal is null
-     */
-    public NumberLiteral newNumberLiteral(String literal) {
-        if (literal == null) {
-            throw new IllegalArgumentException();
-        }
-        NumberLiteral result = new NumberLiteral(this);
-        result.setToken(literal);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented opens directive
-     * node for an unspecified, but legal, name; no target modules
-     *
-     * @return a new unparented opens directive node
-     * @exception UnsupportedOperationException if this operation is used in an AST with level less than JLS9
-     * @since 3.14
-     */
-    public OpensDirective newOpensDirective() {
-        OpensDirective result = new OpensDirective(this);
-        return result;
-    }
-
-    /**
-     * Creates an unparented package declaration node owned by this AST.
-     * The package declaration initially declares a package with an
-     * unspecified name.
-     *
-     * @return the new unparented package declaration node
-     */
-    public PackageDeclaration newPackageDeclaration() {
-        PackageDeclaration result = new PackageDeclaration(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented parameterized type node with the
-     * given type and an empty list of type arguments.
-     *
-     * @param type the type that is parameterized
-     * @return a new unparented parameterized type node
-     * @exception IllegalArgumentException if:
-     * <ul>
-     * <li>the node belongs to a different AST</li>
-     * <li>the node already has a parent</li>
-     * </ul>
-     * @exception UnsupportedOperationException if this operation is used in
-     * a JLS2 AST
-     * @since 3.1
-     */
-    public ParameterizedType newParameterizedType(Type type) {
-        ParameterizedType result = new ParameterizedType(this);
-        result.setType(type);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented parenthesized expression node
-     * owned by this AST. By default, the expression is unspecified (but legal).
-     *
-     * @return a new unparented parenthesized expression node
-     */
-    public ParenthesizedExpression newParenthesizedExpression() {
-        ParenthesizedExpression result = new ParenthesizedExpression(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented instanceof expression node
-     * owned by this AST. By default, the operator and left and right
-     * operand are unspecified (but legal).
-     *
-     * @return a new unparented instanceof expression node
-     * @since 3.26
-     */
-    public PatternInstanceofExpression newPatternInstanceofExpression() {
-        PatternInstanceofExpression result = new PatternInstanceofExpression(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented postfix expression node
-     * owned by this AST. By default, the operator and operand are
-     * unspecified (but legal).
-     *
-     * @return a new unparented postfix expression node
-     */
-    public PostfixExpression newPostfixExpression() {
-        PostfixExpression result = new PostfixExpression(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented prefix expression node
-     * owned by this AST. By default, the operator and operand are
-     * unspecified (but legal).
-     *
-     * @return a new unparented prefix expression node
-     */
-    public PrefixExpression newPrefixExpression() {
-        PrefixExpression result = new PrefixExpression(this);
-        return result;
+        return new NullPattern(this);
     }
 
     /**
@@ -2797,19 +1540,6 @@ public final class AST {
     public PrimitiveType newPrimitiveType(PrimitiveType.Code typeCode) {
         PrimitiveType result = new PrimitiveType(this);
         result.setPrimitiveTypeCode(typeCode);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented provides directive
-     * node for an unspecified, but legal, type; no target types
-     *
-     * @return a new unparented provides directive node
-     * @exception UnsupportedOperationException if this operation is used in an AST with level less than JLS9
-     * @since 3.14
-     */
-    public ProvidesDirective newProvidesDirective() {
-        ProvidesDirective result = new ProvidesDirective(this);
         return result;
     }
 
@@ -2832,90 +1562,6 @@ public final class AST {
         result.setName(name);
         return result;
 
-    }
-
-    /**
-     * Creates and returns a new unparented qualified type node with
-     * the given qualifier type and name.
-     *
-     * @param qualifier the qualifier type node
-     * @param name the simple name being qualified
-     * @return a new unparented qualified type node
-     * @exception IllegalArgumentException if:
-     * <ul>
-     * <li>the node belongs to a different AST</li>
-     * <li>the node already has a parent</li>
-     * </ul>
-     * @exception UnsupportedOperationException if this operation is used in
-     * a JLS2 AST
-     * @since 3.1
-     */
-    public QualifiedType newQualifiedType(Type qualifier, SimpleName name) {
-        QualifiedType result = new QualifiedType(this);
-        result.setQualifier(qualifier);
-        result.setName(name);
-        return result;
-    }
-
-    /**
-     * Creates an unparented record declaration node owned by this AST.
-     * The name of the class is an unspecified, but legal, name;
-     * no modifiers; no doc comment; no superclass or superinterfaces;
-     * and an empty record body.
-     *
-     * @return a new unparented type declaration node
-     * @exception UnsupportedOperationException if this operation is used in an AST with level less than JLS16
-     * @since 3.23
-     */
-    public RecordDeclaration newRecordDeclaration() {
-        RecordDeclaration result = new RecordDeclaration(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented type pattern node with an
-     * unspecified pattern variable.
-     *
-     * @return a new unparented type pattern node
-     * @since 3.32
-     */
-    public RecordPattern newRecordPattern() {
-        RecordPattern result = new RecordPattern(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented `either or multi-pattern` node
-     *
-     * @return a new unparented `either or multi-pattern` node
-     * @since 3.38
-     */
-    public EitherOrMultiPattern newEitherOrMultiPattern() {
-        EitherOrMultiPattern result = new EitherOrMultiPattern(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented requires directive
-     * node for an unspecified, but legal, name;
-     *
-     * @return a new unparented requires directive node
-     * @exception UnsupportedOperationException if this operation is used in an AST with level less than JLS9
-     * @since 3.14
-     */
-    public RequiresDirective newRequiresDirective() {
-        RequiresDirective result = new RequiresDirective(this);
-        return result;
-    }
-
-    /**
-     * Creates a new unparented return statement node owned by this AST.
-     * By default, the return statement has no expression.
-     *
-     * @return a new unparented return statement node
-     */
-    public ReturnStatement newReturnStatement() {
-        return new ReturnStatement(this);
     }
 
     // =============================== NAMES ===========================
@@ -2961,20 +1607,6 @@ public final class AST {
     }
 
     /**
-     * Creates and returns a new unparented single member annotation node with
-     * an unspecified type name and value.
-     *
-     * @return a new unparented single member annotation node
-     * @exception UnsupportedOperationException if this operation is used in
-     * a JLS2 AST
-     * @since 3.1
-     */
-    public SingleMemberAnnotation newSingleMemberAnnotation() {
-        SingleMemberAnnotation result = new SingleMemberAnnotation(this);
-        return result;
-    }
-
-    /**
      * Creates an unparented single variable declaration node owned by this AST.
      * By default, the declaration is for a variable with an unspecified, but
      * legal, name and type; no modifiers; no array dimensions after the
@@ -2983,121 +1615,10 @@ public final class AST {
      * @return a new unparented single variable declaration node
      */
     public SingleVariableDeclaration newSingleVariableDeclaration() {
-        SingleVariableDeclaration result = new SingleVariableDeclaration(this);
-        return result;
+        return new SingleVariableDeclaration(this);
     }
 
     // =============================== EXPRESSIONS ===========================
-    /**
-     * Creates and returns a new unparented string literal node for
-     * the empty string literal.
-     *
-     * @return a new unparented string literal node
-     */
-    public StringLiteral newStringLiteral() {
-        return new StringLiteral(this);
-    }
-
-    /**
-     * Creates an unparented alternate super constructor ("super(...);")
-     * invocation statement node owned by this AST. By default, there is no
-     * qualifier, no type arguments, and the list of arguments is empty.
-     * <p>
-     * Note that this type of node is a Statement, whereas a regular
-     * super method invocation is an Expression. The only valid use of these
-     * statements are as the first statement of a constructor body.
-     * </p>
-     *
-     * @return a new unparented super constructor invocation statement node
-     */
-    public SuperConstructorInvocation newSuperConstructorInvocation() {
-        SuperConstructorInvocation result = new SuperConstructorInvocation(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented super field access expression node
-     * owned by this AST. By default, the expression and field are both
-     * unspecified, but legal, names.
-     *
-     * @return a new unparented super field access expression node
-     */
-    public SuperFieldAccess newSuperFieldAccess() {
-        SuperFieldAccess result = new SuperFieldAccess(this);
-        return result;
-    }
-
-    /**
-     * Creates an unparented "super" method invocation expression node owned by
-     * this AST. By default, the name of the method is unspecified (but legal),
-     * there is no qualifier, no type arguments, and the list of arguments is empty.
-     *
-     * @return a new unparented "super" method invocation
-     * expression node
-     */
-    public SuperMethodInvocation newSuperMethodInvocation() {
-        SuperMethodInvocation result = new SuperMethodInvocation(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented super method reference node owned by
-     * this AST. By default, the name of the method is unspecified (but legal),
-     * and there is no qualifier and no type arguments.
-     *
-     * @return a new unparented super method reference node
-     * @since 3.10
-     */
-    public SuperMethodReference newSuperMethodReference() {
-        SuperMethodReference result = new SuperMethodReference(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented switch expression node
-     * owned by this AST. By default, the expression is unspecified, but legal,
-     * and there are no statements or switch cases.
-     *
-     * @return a new unparented labeled switch expression node
-     * @since 3.18
-     */
-    public SwitchExpression newSwitchExpression() {
-        SwitchExpression result = new SwitchExpression(this);
-        return result;
-    }
-
-    /**
-     * Creates a new unparented switch case statement node owned by
-     * this AST. By default, the node has no expression, but legal, and
-     * switchLabeledRule is false which indicates ":".
-     *
-     * @return a new unparented switch case node
-     */
-    public SwitchCase newSwitchCase() {
-        return new SwitchCase(this);
-    }
-
-    /**
-     * Creates a new unparented switch statement node owned by this AST.
-     * By default, the expression is unspecified, but legal, and there are
-     * no statements or switch cases.
-     *
-     * @return a new unparented labeled statement node
-     */
-    public SwitchStatement newSwitchStatement() {
-        return new SwitchStatement(this);
-    }
-
-    /**
-     * Creates a new unparented synchronized statement node owned by this AST.
-     * By default, the expression is unspecified, but legal, and the body is
-     * an empty block.
-     *
-     * @return a new unparented synchronized statement node
-     */
-    public SynchronizedStatement newSynchronizedStatement() {
-        return new SynchronizedStatement(this);
-    }
 
     /**
      * Creates and returns a new tag element node.
@@ -3111,8 +1632,7 @@ public final class AST {
      * @since 3.0
      */
     public TagElement newTagElement() {
-        TagElement result = new TagElement(this);
-        return result;
+        return new TagElement(this);
     }
 
     /**
@@ -3127,19 +1647,7 @@ public final class AST {
      * @since 3.30
      */
     public TagProperty newTagProperty() {
-        TagProperty result = new TagProperty(this);
-        return result;
-    }
-
-    /**
-     * Creates an unparented yield statement node owned by this AST. The yield statement has no
-     * label/identifier/expression and is not implicit.
-     *
-     * @return a new unparented yield statement node
-     * @since 3.24
-     */
-    public TextBlock newTextBlock() {
-        return new TextBlock(this);
+        return new TagProperty(this);
     }
 
     /**
@@ -3154,53 +1662,7 @@ public final class AST {
      * @since 3.0
      */
     public TextElement newTextElement() {
-        TextElement result = new TextElement(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented "this" expression node
-     * owned by this AST. By default, there is no qualifier.
-     *
-     * @return a new unparented "this" expression node
-     */
-    public ThisExpression newThisExpression() {
-        ThisExpression result = new ThisExpression(this);
-        return result;
-    }
-
-    /**
-     * Creates a new unparented throw statement node owned by this AST.
-     * By default, the expression is unspecified, but legal.
-     *
-     * @return a new unparented throw statement node
-     */
-    public ThrowStatement newThrowStatement() {
-        return new ThrowStatement(this);
-    }
-
-    /**
-     * Creates a new unparented try statement node owned by this AST.
-     * By default, the try statement has no resources, an empty block, no catch
-     * clauses, and no finally block.
-     *
-     * @return a new unparented try statement node
-     */
-    public TryStatement newTryStatement() {
-        return new TryStatement(this);
-    }
-
-    /**
-     * Creates an unparented class declaration node owned by this AST.
-     * The name of the class is an unspecified, but legal, name;
-     * no modifiers; no doc comment; no superclass or superinterfaces;
-     * and an empty class body.
-     *
-     * @return a new unparented type declaration node
-     * @since 3.40
-     */
-    public ImplicitTypeDeclaration newImplicitTypeDeclaration() {
-        return new ImplicitTypeDeclaration(this);
+        return new TextElement(this);
     }
 
     /**
@@ -3222,178 +1684,6 @@ public final class AST {
     }
 
     /**
-     * Creates a new unparented local type declaration statement node
-     * owned by this AST, for the given type declaration.
-     * <p>
-     * This method can be used to convert any kind of type declaration
-     * (<code>AbstractTypeDeclaration</code>) into a statement
-     * (<code>Statement</code>) by wrapping it.
-     * </p>
-     *
-     * @param decl the type declaration
-     * @return a new unparented local type declaration statement node
-     * @exception IllegalArgumentException if:
-     * <ul>
-     * <li>the node belongs to a different AST</li>
-     * <li>the node already has a parent</li>
-     * </ul>
-     * @since 3.0
-     */
-    public TypeDeclarationStatement newTypeDeclarationStatement(AbstractTypeDeclaration decl) {
-        TypeDeclarationStatement result = new TypeDeclarationStatement(this);
-        if (this.apiLevel == AST.JLS2) {
-            result.internalSetTypeDeclaration((TypeDeclaration) decl);
-        }
-        if (this.apiLevel >= AST.JLS3) {
-            result.setDeclaration(decl);
-        }
-        return result;
-    }
-
-    /**
-     * Creates a new unparented local type declaration statement node
-     * owned by this AST, for the given type declaration.
-     * <p>
-     * This method can be used to convert a type declaration
-     * (<code>TypeDeclaration</code>) into a statement
-     * (<code>Statement</code>) by wrapping it.
-     * </p>
-     *
-     * @param decl the type declaration
-     * @return a new unparented local type declaration statement node
-     * @exception IllegalArgumentException if:
-     * <ul>
-     * <li>the node belongs to a different AST</li>
-     * <li>the node already has a parent</li>
-     * </ul>
-     */
-    public TypeDeclarationStatement newTypeDeclarationStatement(TypeDeclaration decl) {
-        TypeDeclarationStatement result = new TypeDeclarationStatement(this);
-        result.setDeclaration(decl);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented type literal expression node
-     * owned by this AST. By default, the type is unspecified (but legal).
-     *
-     * @return a new unparented type literal node
-     */
-    public TypeLiteral newTypeLiteral() {
-        TypeLiteral result = new TypeLiteral(this);
-        return result;
-    }
-
-    /**
-     * Creates an unparented type method reference node owned by this AST.
-     * By default, the type and method name are unspecified (but legal),
-     * and there are no type arguments.
-     *
-     * @return a new unparented type method reference node
-     * @exception UnsupportedOperationException if this operation is used in a JLS2, JLS3 or JLS4 AST
-     * @since 3.10
-     */
-    public TypeMethodReference newTypeMethodReference() {
-        TypeMethodReference result = new TypeMethodReference(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented type parameter type node with an
-     * unspecified type variable name and an empty list of type bounds.
-     *
-     * @return a new unparented type parameter node
-     * @exception UnsupportedOperationException if this operation is used in
-     * a JLS2 AST
-     * @since 3.1
-     */
-    public TypeParameter newTypeParameter() {
-        TypeParameter result = new TypeParameter(this);
-        return result;
-    }
-
-    /**
-     * Creates and returns a new unparented type pattern node with an
-     * unspecified pattern variable.
-     *
-     * @return a new unparented type pattern node
-     * @since 3.28
-     */
-    public TypePattern newTypePattern() {
-        TypePattern result = new TypePattern(this);
-        return result;
-    }
-
-    /**
-     * Creates a new unparented union type node owned by this AST.
-     * By default, the union type has no types.
-     *
-     * @return a new unparented UnionType node
-     * @exception UnsupportedOperationException if this operation is used in
-     * a JLS2 or JLS3 AST
-     * @since 3.7.1
-     */
-    public UnionType newUnionType() {
-        return new UnionType(this);
-    }
-
-    /**
-     * Creates and returns a new unparented uses directive
-     * node for an unspecified, but legal, name;
-     *
-     * @return a new unparented uses directive node
-     * @exception UnsupportedOperationException if this operation is used in level less than JLS9
-     * @since 3.14
-     */
-    public UsesDirective newUsesDirective() {
-        UsesDirective result = new UsesDirective(this);
-        return result;
-    }
-
-    /**
-     * Creates a new unparented intersection type node owned by this AST.
-     * By default, the intersection type has no types.
-     *
-     * @return a new unparented IntersectionType node
-     * @exception UnsupportedOperationException if this operation is used in
-     * a JLS2, JLS3 or JLS4 AST
-     * @since 3.10
-     */
-    public IntersectionType newIntersectionType() {
-        return new IntersectionType(this);
-    }
-
-    /**
-     * Creates a new unparented local variable declaration expression node
-     * owned by this AST, for the given variable declaration fragment. By
-     * default, there are no modifiers and the base type is unspecified
-     * (but legal).
-     * <p>
-     * This method can be used to convert a variable declaration fragment
-     * (<code>VariableDeclarationFragment</code>) into an expression
-     * (<code>Expression</code>) by wrapping it. Additional variable
-     * declaration fragments can be added afterwards.
-     * </p>
-     *
-     * @param fragment the first variable declaration fragment
-     * @return a new unparented variable declaration expression node
-     * @exception IllegalArgumentException if:
-     * <ul>
-     * <li>the node belongs to a different AST</li>
-     * <li>the node already has a parent</li>
-     * <li>the given fragment is null</li>
-     * </ul>
-     */
-    public VariableDeclarationExpression newVariableDeclarationExpression(VariableDeclarationFragment fragment) {
-        if (fragment == null) {
-            throw new IllegalArgumentException();
-        }
-        VariableDeclarationExpression result = new VariableDeclarationExpression(this);
-        result.fragments().add(fragment);
-        return result;
-    }
-
-    /**
      * Creates an unparented variable declaration fragment node owned by this
      * AST. By default, the fragment is for a variable with an unspecified, but
      * legal, name; no extra array dimensions; and no initializer.
@@ -3401,51 +1691,10 @@ public final class AST {
      * @return a new unparented variable declaration fragment node
      */
     public VariableDeclarationFragment newVariableDeclarationFragment() {
-        VariableDeclarationFragment result = new VariableDeclarationFragment(this);
-        return result;
+        return new VariableDeclarationFragment(this);
     }
 
     // =============================== STATEMENTS ===========================
-    /**
-     * Creates a new unparented local variable declaration statement node
-     * owned by this AST, for the given variable declaration fragment.
-     * By default, there are no modifiers and the base type is unspecified
-     * (but legal).
-     * <p>
-     * This method can be used to convert a variable declaration fragment
-     * (<code>VariableDeclarationFragment</code>) into a statement
-     * (<code>Statement</code>) by wrapping it. Additional variable
-     * declaration fragments can be added afterwards.
-     * </p>
-     *
-     * @param fragment the variable declaration fragment
-     * @return a new unparented variable declaration statement node
-     * @exception IllegalArgumentException if:
-     * <ul>
-     * <li>the node belongs to a different AST</li>
-     * <li>the node already has a parent</li>
-     * <li>the variable declaration fragment is null</li>
-     * </ul>
-     */
-    public VariableDeclarationStatement newVariableDeclarationStatement(VariableDeclarationFragment fragment) {
-        if (fragment == null) {
-            throw new IllegalArgumentException();
-        }
-        VariableDeclarationStatement result = new VariableDeclarationStatement(this);
-        result.fragments().add(fragment);
-        return result;
-    }
-
-    /**
-     * Creates a new unparented while statement node owned by this AST.
-     * By default, the expression is unspecified (but legal), and
-     * the body statement is an empty block.
-     *
-     * @return a new unparented while statement node
-     */
-    public WhileStatement newWhileStatement() {
-        return new WhileStatement(this);
-    }
 
     /**
      * Creates and returns a new unparented wildcard type node with no
@@ -3457,19 +1706,7 @@ public final class AST {
      * @since 3.1
      */
     public WildcardType newWildcardType() {
-        WildcardType result = new WildcardType(this);
-        return result;
-    }
-
-    /**
-     * Creates an unparented yield statement node owned by this AST. The yield statement has no
-     * label/identifier/expression and is not implicit.
-     *
-     * @return a new unparented yield statement node
-     * @since 3.24
-     */
-    public YieldStatement newYieldStatement() {
-        return new YieldStatement(this);
+        return new WildcardType(this);
     }
 
     /**
@@ -3941,19 +2178,6 @@ public final class AST {
     }
 
     /**
-     * Checks that this AST operation is only used when
-     * building level JLS2 ASTs.
-     * 
-     * @exception UnsupportedOperationException
-     * @since 3.0
-     */
-    void supportedOnlyIn2() {
-        if (this.apiLevel != AST.JLS2) {
-            throw new UnsupportedOperationException("Operation not supported in JLS2 AST"); //$NON-NLS-1$
-        }
-    }
-
-    /**
      * Checks that this AST operation is not used when
      * building level JLS2 ASTs.
      * 
@@ -4007,29 +2231,6 @@ public final class AST {
      */
     public static List<Integer> getAllVersions() {
         return ALL_VERSIONS;
-    }
-
-    /**
-     * Returns all {@link AST}{@code #JLS*} levels fully supported by JDT in the order of their
-     * introduction. For e.g., {@link AST#JLS8} appears before {@link AST#JLS10}
-     *
-     * @return all available versions
-     * @since 3.41
-     */
-    public static List<Integer> getAllSupportedVersions() {
-        return SUPPORTED_VERSIONS;
-    }
-
-    /**
-     * Not all known JLS versions are fully supported by JDT. This method answers if the given Java source
-     * version is fully supported.
-     *
-     * @return {@code true} if the given string represents Java language standard version is fully supported
-     * @see #getAllSupportedVersions()
-     * @since 3.41
-     */
-    public static boolean isSupportedVersion(int version) {
-        return SUPPORTED_VERSIONS.contains(version);
     }
 
 }

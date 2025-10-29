@@ -17,65 +17,62 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.util.IConstantPool;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.util.IStackMapFrame;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.util.IStackMapTableAttribute;
+
 /**
  * Default implementation of IStackMapTableAttribute.
+ * 
  * @see IStackMapTableAttribute
  */
-public class StackMapTableAttribute
-	extends ClassFileAttribute
-	implements IStackMapTableAttribute {
+public class StackMapTableAttribute extends ClassFileAttribute implements IStackMapTableAttribute {
 
-	private static final IStackMapFrame[] NO_FRAMES = new IStackMapFrame[0];
-	private static final byte[] NO_ENTRIES = new byte[0];
+    private static final IStackMapFrame[] NO_FRAMES = new IStackMapFrame[0];
+    private static final byte[] NO_ENTRIES = new byte[0];
 
-	private final int numberOfEntries;
-	private IStackMapFrame[] frames;
+    private final int numberOfEntries;
+    private IStackMapFrame[] frames;
 
-	private byte[] bytes;
+    private byte[] bytes;
 
-	/**
-	 * Constructor for LineNumberAttribute.
-	 */
-	public StackMapTableAttribute(
-			byte[] classFileBytes,
-			IConstantPool constantPool,
-			int offset)
-			throws ClassFormatException {
-		super(classFileBytes, constantPool, offset);
+    /**
+     * Constructor for LineNumberAttribute.
+     */
+    public StackMapTableAttribute(byte[] classFileBytes, IConstantPool constantPool, int offset)
+        throws ClassFormatException {
+        super(classFileBytes, constantPool, offset);
 
-		final int length = u2At(classFileBytes, 6, offset);
-		this.numberOfEntries = length;
-		if (length != 0) {
-			int readOffset = 8;
-			this.frames = new IStackMapFrame[length];
-			for (int i = 0; i < length; i++) {
-				StackMapFrame frame = new StackMapFrame(classFileBytes, constantPool, offset + readOffset);
-				this.frames[i] = frame;
-				readOffset += frame.sizeInBytes();
-			}
-		} else {
-			this.frames = NO_FRAMES;
-		}
-		final int byteLength = u4At(classFileBytes, 2, offset);
+        final int length = u2At(classFileBytes, 6, offset);
+        this.numberOfEntries = length;
+        if (length != 0) {
+            int readOffset = 8;
+            this.frames = new IStackMapFrame[length];
+            for (int i = 0; i < length; i++) {
+                StackMapFrame frame = new StackMapFrame(classFileBytes, constantPool, offset + readOffset);
+                this.frames[i] = frame;
+                readOffset += frame.sizeInBytes();
+            }
+        } else {
+            this.frames = NO_FRAMES;
+        }
+        final int byteLength = u4At(classFileBytes, 2, offset);
 
-		if (length != 0) {
-			System.arraycopy(classFileBytes, offset + 6, this.bytes = new byte[byteLength], 0, byteLength);
-		} else {
-			this.bytes = NO_ENTRIES;
-		}
-	}
+        if (length != 0) {
+            System.arraycopy(classFileBytes, offset + 6, this.bytes = new byte[byteLength], 0, byteLength);
+        } else {
+            this.bytes = NO_ENTRIES;
+        }
+    }
 
-	@Override
-	public int getNumberOfEntries() {
-		return this.numberOfEntries;
-	}
+    @Override
+    public int getNumberOfEntries() {
+        return this.numberOfEntries;
+    }
 
-	@Override
-	public IStackMapFrame[] getStackMapFrame() {
-		return this.frames;
-	}
+    @Override
+    public IStackMapFrame[] getStackMapFrame() {
+        return this.frames;
+    }
 
-	public byte[] getBytes() {
-		return this.bytes;
-	}
+    public byte[] getBytes() {
+        return this.bytes;
+    }
 }

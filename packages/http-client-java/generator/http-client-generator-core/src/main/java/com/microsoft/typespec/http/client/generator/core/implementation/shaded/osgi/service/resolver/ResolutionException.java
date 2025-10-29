@@ -16,10 +16,10 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.resolver;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Requirement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Requirement;
 
 /**
  * Indicates failure to resolve a set of requirements.
@@ -38,67 +38,68 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 public class ResolutionException extends Exception {
 
-	private static final long				serialVersionUID	= 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final transient Collection<Requirement>	unresolvedRequirements;
+    private final transient Collection<Requirement> unresolvedRequirements;
 
-	/**
-	 * Create a {@code ResolutionException} with the specified message, cause
-	 * and unresolved requirements.
-	 * 
-	 * @param message The message.
-	 * @param cause The cause of this exception.
-	 * @param unresolvedRequirements The unresolved mandatory requirements from
-	 *        mandatory resources or {@code null} if no unresolved requirements
-	 *        information is provided.
-	 */
-	public ResolutionException(String message, Throwable cause, Collection<Requirement> unresolvedRequirements) {
-		super(message, cause);
-		if ((unresolvedRequirements == null) || unresolvedRequirements.isEmpty()) {
-			this.unresolvedRequirements = null;
-		} else {
-			this.unresolvedRequirements = Collections.unmodifiableCollection(new ArrayList<Requirement>(unresolvedRequirements));
-		}
-	}
+    /**
+     * Create a {@code ResolutionException} with the specified message, cause
+     * and unresolved requirements.
+     * 
+     * @param message The message.
+     * @param cause The cause of this exception.
+     * @param unresolvedRequirements The unresolved mandatory requirements from
+     * mandatory resources or {@code null} if no unresolved requirements
+     * information is provided.
+     */
+    public ResolutionException(String message, Throwable cause, Collection<Requirement> unresolvedRequirements) {
+        super(message, cause);
+        if ((unresolvedRequirements == null) || unresolvedRequirements.isEmpty()) {
+            this.unresolvedRequirements = null;
+        } else {
+            this.unresolvedRequirements
+                = Collections.unmodifiableCollection(new ArrayList<Requirement>(unresolvedRequirements));
+        }
+    }
 
-	/**
-	 * Create a {@code ResolutionException} with the specified message.
-	 * 
-	 * @param message The message.
-	 */
-	public ResolutionException(String message) {
-		super(message);
-		unresolvedRequirements = null;
-	}
+    /**
+     * Create a {@code ResolutionException} with the specified message.
+     * 
+     * @param message The message.
+     */
+    public ResolutionException(String message) {
+        super(message);
+        unresolvedRequirements = null;
+    }
 
-	/**
-	 * Create a {@code ResolutionException} with the specified cause.
-	 * 
-	 * @param cause The cause of this exception.
-	 */
-	public ResolutionException(Throwable cause) {
-		super(cause);
-		unresolvedRequirements = null;
-	}
+    /**
+     * Create a {@code ResolutionException} with the specified cause.
+     * 
+     * @param cause The cause of this exception.
+     */
+    public ResolutionException(Throwable cause) {
+        super(cause);
+        unresolvedRequirements = null;
+    }
 
-	@SuppressWarnings("unchecked")
-	private static Collection<Requirement> emptyCollection() {
-		return Collections.EMPTY_LIST;
-	}
+    @SuppressWarnings("unchecked")
+    private static Collection<Requirement> emptyCollection() {
+        return Collections.EMPTY_LIST;
+    }
 
-	/**
-	 * Return the unresolved requirements, if any, for this exception.
-	 * 
-	 * <p>
-	 * The unresolved requirements are provided for informational purposes and
-	 * the specific set of unresolved requirements that are provided after a
-	 * resolve failure is not defined.
-	 * 
-	 * @return A collection of the unresolved requirements for this exception.
-	 *         The returned collection may be empty if no unresolved
-	 *         requirements information is available.
-	 */
-	public Collection<Requirement> getUnresolvedRequirements() {
-		return (unresolvedRequirements != null) ? unresolvedRequirements : emptyCollection();
-	}
+    /**
+     * Return the unresolved requirements, if any, for this exception.
+     * 
+     * <p>
+     * The unresolved requirements are provided for informational purposes and
+     * the specific set of unresolved requirements that are provided after a
+     * resolve failure is not defined.
+     * 
+     * @return A collection of the unresolved requirements for this exception.
+     * The returned collection may be empty if no unresolved
+     * requirements information is available.
+     */
+    public Collection<Requirement> getUnresolvedRequirements() {
+        return (unresolvedRequirements != null) ? unresolvedRequirements : emptyCollection();
+    }
 }

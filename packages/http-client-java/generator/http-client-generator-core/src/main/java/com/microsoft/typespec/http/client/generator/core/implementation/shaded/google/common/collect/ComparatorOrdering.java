@@ -18,49 +18,48 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Preconditions.checkNotNull;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.io.Serializable;
 import java.util.Comparator;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /** An ordering for a pre-existing comparator. */
 @GwtCompatible(serializable = true)
 @ElementTypesAreNonnullByDefault
-final class ComparatorOrdering<T extends @Nullable Object> extends Ordering<T>
-    implements Serializable {
-  final Comparator<T> comparator;
+final class ComparatorOrdering<T extends @Nullable Object> extends Ordering<T> implements Serializable {
+    final Comparator<T> comparator;
 
-  ComparatorOrdering(Comparator<T> comparator) {
-    this.comparator = checkNotNull(comparator);
-  }
-
-  @Override
-  public int compare(@ParametricNullness T a, @ParametricNullness T b) {
-    return comparator.compare(a, b);
-  }
-
-  @Override
-  public boolean equals(@CheckForNull Object object) {
-    if (object == this) {
-      return true;
+    ComparatorOrdering(Comparator<T> comparator) {
+        this.comparator = checkNotNull(comparator);
     }
-    if (object instanceof ComparatorOrdering) {
-      ComparatorOrdering<?> that = (ComparatorOrdering<?>) object;
-      return this.comparator.equals(that.comparator);
+
+    @Override
+    public int compare(@ParametricNullness T a, @ParametricNullness T b) {
+        return comparator.compare(a, b);
     }
-    return false;
-  }
 
-  @Override
-  public int hashCode() {
-    return comparator.hashCode();
-  }
+    @Override
+    public boolean equals(@CheckForNull Object object) {
+        if (object == this) {
+            return true;
+        }
+        if (object instanceof ComparatorOrdering) {
+            ComparatorOrdering<?> that = (ComparatorOrdering<?>) object;
+            return this.comparator.equals(that.comparator);
+        }
+        return false;
+    }
 
-  @Override
-  public String toString() {
-    return comparator.toString();
-  }
+    @Override
+    public int hashCode() {
+        return comparator.hashCode();
+    }
 
-  private static final long serialVersionUID = 0;
+    @Override
+    public String toString() {
+        return comparator.toString();
+    }
+
+    private static final long serialVersionUID = 0;
 }

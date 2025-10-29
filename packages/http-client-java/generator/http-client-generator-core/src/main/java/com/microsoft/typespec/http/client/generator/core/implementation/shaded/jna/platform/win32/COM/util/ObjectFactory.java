@@ -23,26 +23,24 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.util;
 
-import java.lang.reflect.Proxy;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Guid.CLSID;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Guid.GUID;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Ole32;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OleAuto;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WTypes;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.COMException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.COMUtils;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.Dispatch;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IDispatch;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IDispatchCallback;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.util.annotation.ComObject;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Guid.CLSID;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Guid.GUID;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Kernel32;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Ole32;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OleAuto;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WTypes;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.LCID;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HRESULT;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.PointerByReference;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -77,8 +75,8 @@ public class ObjectFactory {
         HRESULT hr = Ole32.INSTANCE.GetRunningObjectTable(new WinDef.DWORD(0), rotPtr);
 
         COMUtils.checkRC(hr);
-        com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.RunningObjectTable raw = new com.sun.jna.platform.win32.COM.RunningObjectTable(
-            rotPtr.getValue());
+        com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.RunningObjectTable raw
+            = new com.sun.jna.platform.win32.COM.RunningObjectTable(rotPtr.getValue());
         IRunningObjectTable rot = new RunningObjectTable(raw, this);
         return rot;
     }
@@ -91,7 +89,7 @@ public class ObjectFactory {
         assert COMUtils.comIsInitialized() : "COM not initialized";
 
         ProxyObject jop = new ProxyObject(comInterface, dispatch, this);
-        Object proxy = Proxy.newProxyInstance(comInterface.getClassLoader(), new Class<?>[]{comInterface}, jop);
+        Object proxy = Proxy.newProxyInstance(comInterface.getClassLoader(), new Class<?>[] { comInterface }, jop);
         T result = comInterface.cast(proxy);
         return result;
     }
@@ -111,14 +109,14 @@ public class ObjectFactory {
         final GUID guid = this.discoverClsId(comObectAnnotation);
 
         final PointerByReference ptrDisp = new PointerByReference();
-        HRESULT hr = Ole32.INSTANCE.CoCreateInstance(guid, null,
-            WTypes.CLSCTX_SERVER, IDispatch.IID_IDISPATCH, ptrDisp);
+        HRESULT hr
+            = Ole32.INSTANCE.CoCreateInstance(guid, null, WTypes.CLSCTX_SERVER, IDispatch.IID_IDISPATCH, ptrDisp);
 
         COMUtils.checkRC(hr);
         Dispatch d = new Dispatch(ptrDisp.getValue());
         T t = this.createProxy(comInterface, d);
-        //CoCreateInstance returns a pointer to COM object with a +1 reference count, so we must drop one
-        //Note: the createProxy adds one
+        // CoCreateInstance returns a pointer to COM object with a +1 reference count, so we must drop one
+        // Note: the createProxy adds one
         int n = d.Release();
         return t;
     }
@@ -143,8 +141,8 @@ public class ObjectFactory {
         COMUtils.checkRC(hr);
         Dispatch d = new Dispatch(ptrDisp.getValue());
         T t = this.createProxy(comInterface, d);
-        //GetActiveObject returns a pointer to COM object with a +1 reference count, so we must drop one
-        //Note: the createProxy adds one
+        // GetActiveObject returns a pointer to COM object with a +1 reference count, so we must drop one
+        // Note: the createProxy adds one
         d.Release();
 
         return t;
@@ -169,7 +167,8 @@ public class ObjectFactory {
         }
     }
 
-    IDispatchCallback createDispatchCallback(Class<?> comEventCallbackInterface, IComEventCallbackListener comEventCallbackListener) {
+    IDispatchCallback createDispatchCallback(Class<?> comEventCallbackInterface,
+        IComEventCallbackListener comEventCallbackListener) {
         return new CallbackProxy(this, comEventCallbackInterface, comEventCallbackListener);
     }
 
@@ -225,7 +224,7 @@ public class ObjectFactory {
      * Retrieve the LCID to be used for COM calls.
      *
      * @return If {@code setLCID} is not called retrieves the users default
-     *         locale, else the set LCID.
+     * locale, else the set LCID.
      */
     public LCID getLCID() {
         if (LCID != null) {

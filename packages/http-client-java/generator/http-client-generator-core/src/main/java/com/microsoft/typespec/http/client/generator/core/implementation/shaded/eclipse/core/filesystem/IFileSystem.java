@@ -14,7 +14,10 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.filesystem;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.filesystem.provider.FileSystem;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.*;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
+
 import java.net.URI;
 
 /**
@@ -25,13 +28,12 @@ import java.net.URI;
  * File systems are registered using the "filesystems" extension point.
  * </p>
  *
- * @see EFS#getFileSystem(String)
  * @since org.eclipse.core.filesystem 1.0
  * @noimplement This interface is not intended to be implemented by clients. File system
  * implementations must subclass {@link FileSystem} rather than implementing
  * this interface directly.
  */
-public interface IFileSystem extends IAdaptable {
+public interface IFileSystem {
 
     /**
      * Returns the file attributes supported by this file system. This value

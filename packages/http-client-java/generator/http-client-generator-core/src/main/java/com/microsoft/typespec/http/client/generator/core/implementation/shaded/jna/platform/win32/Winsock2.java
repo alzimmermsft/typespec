@@ -74,7 +74,8 @@ public interface Winsock2 extends Library {
      *
      * @param name A bytearray that receives the local host name.
      * @param namelen The length, in bytes, of the buffer pointed to by the name parameter.
-     * @return If no error occurs, gethostname returns zero. Otherwise, it returns SOCKET_ERROR and a specific error code can be retrieved by calling WSAGetLastError.
+     * @return If no error occurs, gethostname returns zero. Otherwise, it returns SOCKET_ERROR and a specific error
+     * code can be retrieved by calling WSAGetLastError.
      */
     public int gethostname(byte[] name, int namelen);
 

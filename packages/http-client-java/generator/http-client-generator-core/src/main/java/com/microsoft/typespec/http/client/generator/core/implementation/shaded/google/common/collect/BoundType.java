@@ -26,18 +26,17 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.g
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
 public enum BoundType {
-  /** The endpoint value <i>is not</i> considered part of the set ("exclusive"). */
-  OPEN(false),
-  CLOSED(true);
+    /** The endpoint value <i>is not</i> considered part of the set ("exclusive"). */
+    OPEN(false), CLOSED(true);
 
-  final boolean inclusive;
+    final boolean inclusive;
 
-  BoundType(boolean inclusive) {
-    this.inclusive = inclusive;
-  }
+    BoundType(boolean inclusive) {
+        this.inclusive = inclusive;
+    }
 
-  /** Returns the bound type corresponding to a boolean value for inclusivity. */
-  static BoundType forBoolean(boolean inclusive) {
-    return inclusive ? CLOSED : OPEN;
-  }
+    /** Returns the bound type corresponding to a boolean value for inclusivity. */
+    static BoundType forBoolean(boolean inclusive) {
+        return inclusive ? CLOSED : OPEN;
+    }
 }

@@ -27,36 +27,42 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/** Handle native array of <code>char*</code> or <code>wchar_t*</code> type
+/**
+ * Handle native array of <code>char*</code> or <code>wchar_t*</code> type
  * by managing allocation/disposal of native strings within an array of
- * pointers.  An extra NULL pointer is always added to the end of the native
+ * pointers. An extra NULL pointer is always added to the end of the native
  * pointer array for convenience.
  */
 public class StringArray extends Memory implements Function.PostCallRead {
     private String encoding;
     private List<NativeString> natives = new ArrayList<>();
     private Object[] original;
+
     /** Create a native array of strings. */
     public StringArray(String[] strings) {
         this(strings, false);
     }
+
     /** Create a native array of strings. */
     public StringArray(String[] strings, boolean wide) {
-        this((Object[])strings, wide ? NativeString.WIDE_STRING : Native.getDefaultStringEncoding());
+        this((Object[]) strings, wide ? NativeString.WIDE_STRING : Native.getDefaultStringEncoding());
     }
+
     /** Create a native array of strings using the given encoding. */
     public StringArray(String[] strings, String encoding) {
-        this((Object[])strings, encoding);
+        this((Object[]) strings, encoding);
     }
+
     /** Create a native array of wide strings. */
     public StringArray(WString[] strings) {
         this(strings, NativeString.WIDE_STRING);
     }
+
     private StringArray(Object[] strings, String encoding) {
         super((strings.length + 1) * Native.POINTER_SIZE);
         this.original = strings;
         this.encoding = encoding;
-        for (int i=0;i < strings.length;i++) {
+        for (int i = 0; i < strings.length; i++) {
             Pointer p = null;
             if (strings[i] != null) {
                 NativeString ns = new NativeString(strings[i].toString(), encoding);
@@ -67,17 +73,19 @@ public class StringArray extends Memory implements Function.PostCallRead {
         }
         setPointer(Native.POINTER_SIZE * strings.length, null);
     }
+
     /** Read back from native memory. */
     @Override
     public void read() {
         boolean returnWide = original instanceof WString[];
         boolean wide = NativeString.WIDE_STRING.equals(encoding);
-        for (int si=0;si < original.length;si++) {
+        for (int si = 0; si < original.length; si++) {
             Pointer p = getPointer(si * Native.POINTER_SIZE);
             Object s = null;
             if (p != null) {
                 s = wide ? p.getWideString(0) : p.getString(0, encoding);
-                if (returnWide) s = new WString((String)s);
+                if (returnWide)
+                    s = new WString((String) s);
             }
             original[si] = s;
         }

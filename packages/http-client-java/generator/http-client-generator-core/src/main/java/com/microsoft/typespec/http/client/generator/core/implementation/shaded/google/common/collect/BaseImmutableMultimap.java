@@ -23,4 +23,5 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.g
  */
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
-abstract class BaseImmutableMultimap<K, V> extends AbstractMultimap<K, V> {}
+abstract class BaseImmutableMultimap<K, V> extends AbstractMultimap<K, V> {
+}

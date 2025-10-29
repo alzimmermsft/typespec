@@ -45,33 +45,8 @@ public class BaseExtensionPointHandle extends Handle implements IExtensionPoint 
     }
 
     @Override
-    public String getNamespaceIdentifier() {
-        return getExtensionPoint().getNamespace();
-    }
-
-    @Override
     public IContributor getContributor() {
         return getExtensionPoint().getContributor();
-    }
-
-    protected boolean shouldPersist() {
-        return getExtensionPoint().shouldPersist();
-    }
-
-    @Override
-    public IExtension getExtension(String extensionId) {
-        if (extensionId == null) {
-            return null;
-        }
-        for (int element : getExtensionPoint().getRawChildren()) {
-            // Here we directly get the object because it avoids the creation of garbage and
-            // because we'll need the object anyway to compare the value
-            if (extensionId.equals(((Extension) objectManager.getObject(element, RegistryObjectManager.EXTENSION))
-                .getUniqueIdentifier())) {
-                return (ExtensionHandle) objectManager.getHandle(element, RegistryObjectManager.EXTENSION);
-            }
-        }
-        return null;
     }
 
     @Override
@@ -92,10 +67,6 @@ public class BaseExtensionPointHandle extends Handle implements IExtensionPoint 
         return result.toArray(new IConfigurationElement[result.size()]);
     }
 
-    public String getLabelAsIs() {
-        return getExtensionPoint().getLabelAsIs();
-    }
-
     @Override
     public String getLabel() {
         return getExtensionPoint().getLabel();
@@ -104,16 +75,6 @@ public class BaseExtensionPointHandle extends Handle implements IExtensionPoint 
     @Override
     public String getLabel(String locale) {
         return getExtensionPoint().getLabel(locale);
-    }
-
-    @Override
-    public String getSchemaReference() {
-        return getExtensionPoint().getSchemaReference();
-    }
-
-    @Override
-    public String getSimpleIdentifier() {
-        return getExtensionPoint().getSimpleIdentifier();
     }
 
     @Override

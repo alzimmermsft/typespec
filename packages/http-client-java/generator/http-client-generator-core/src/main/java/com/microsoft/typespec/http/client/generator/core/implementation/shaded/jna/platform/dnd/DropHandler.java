@@ -43,13 +43,18 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/** Provides simplified drop handling for a component.
+/**
+ * Provides simplified drop handling for a component.
  * Usage:<br>
- * <pre><code>
+ * 
+ * <pre>
+ * <code>
  * int actions = DnDConstants.MOVE_OR_COPY;
  * Component component = ...;
  * DropHandler handler = new DropHandler(component, actions);
- * </code></pre>
+ * </code>
+ * </pre>
+ * 
  * <ul>
  * <li>Accept drops where the action is the default (i.e. no modifiers) but
  * the intersection of source and target actions is <i>not</i> the default.
@@ -72,7 +77,7 @@ import java.util.logging.Logger;
  * <li>{@link #isSupported(DataFlavor[])} determines if there are any supported
  * flavors
  * <li>{@link #getDropActionsForFlavors(DataFlavor[])} reduces the supported
- * actions based on available flavors.  For instance, a text field for file
+ * actions based on available flavors. For instance, a text field for file
  * paths might support {@link DnDConstants#ACTION_COPY_OR_MOVE} on a plain
  * string, but {@link DnDConstants#ACTION_LINK} might be the only action
  * supported on a file.
@@ -107,9 +112,11 @@ public abstract class DropHandler implements DropTargetListener {
     private boolean active = true;
     private DropTargetPainter painter;
 
-    /** Create a handler that allows the given set of actions.  If using
+    /**
+     * Create a handler that allows the given set of actions. If using
      * this constructor, you will need to override {@link #isSupported} to
      * indicate which data flavors are allowed.
+     * 
      * @param c target component
      * @param acceptedActions accepted actions
      */
@@ -117,8 +124,10 @@ public abstract class DropHandler implements DropTargetListener {
         this(c, acceptedActions, new DataFlavor[0]);
     }
 
-    /** Enable handling of drops, indicating what actions and flavors are
+    /**
+     * Enable handling of drops, indicating what actions and flavors are
      * acceptable.
+     * 
      * @param c The component to receive drops
      * @param acceptedActions Allowed actions for drops
      * @param acceptedFlavors Allowed data flavors for drops
@@ -128,16 +137,18 @@ public abstract class DropHandler implements DropTargetListener {
         this(c, acceptedActions, acceptedFlavors, null);
     }
 
-    /** Enable handling of drops, indicating what actions and flavors are
+    /**
+     * Enable handling of drops, indicating what actions and flavors are
      * acceptable, and providing a painter for drop target feedback.
+     * 
      * @param c The component to receive drops
      * @param acceptedActions Allowed actions for drops
      * @param acceptedFlavors Allowed data flavors for drops
      * @param painter Painter to handle drop target feedback
      * @see #paintDropTarget
      */
-    public DropHandler(final Component c, int acceptedActions,
-                       DataFlavor[] acceptedFlavors, DropTargetPainter painter) {
+    public DropHandler(final Component c, int acceptedActions, DataFlavor[] acceptedFlavors,
+        DropTargetPainter painter) {
         this.acceptedActions = acceptedActions;
         this.acceptedFlavors = Arrays.asList(acceptedFlavors);
         this.painter = painter;
@@ -151,10 +162,14 @@ public abstract class DropHandler implements DropTargetListener {
     /**
      * @return Whether this drop target is active.
      */
-    public boolean isActive() { return active; }
+    public boolean isActive() {
+        return active;
+    }
 
-    /** Set whether this handler (and thus its drop target) will accept
+    /**
+     * Set whether this handler (and thus its drop target) will accept
      * any drops.
+     * 
      * @param active whether this handler should accept drops.
      */
     public void setActive(boolean active) {
@@ -164,10 +179,12 @@ public abstract class DropHandler implements DropTargetListener {
         }
     }
 
-    /** Indicate the actions available for the given list of data flavors.
+    /**
+     * Indicate the actions available for the given list of data flavors.
      * Override this method if the acceptable drop actions depend
-     * on the currently available {@link DataFlavor}.  The default returns
+     * on the currently available {@link DataFlavor}. The default returns
      * the accepted actions passed into the constructor.
+     * 
      * @param dataFlavors currently available flavors
      * @return currently acceptable actions.
      * @see #getDropAction(DropTargetEvent, int, int, int)
@@ -177,14 +194,16 @@ public abstract class DropHandler implements DropTargetListener {
         return acceptedActions;
     }
 
-    /** Calculate the effective action.  The default implementation
+    /**
+     * Calculate the effective action. The default implementation
      * checks whether any {@link DataFlavor}s are supported, and if so,
      * will change the current action from {@link DnDConstants#ACTION_NONE} to
-     * something in common between the source and destination.  Refuse
+     * something in common between the source and destination. Refuse
      * user-requested actions if they are not supported (rather than silently
      * accepting a non-user-requested action, which is the Java's DnD default
-     * behavior).  The drop action is forced to {@link DnDConstants#ACTION_NONE}
+     * behavior). The drop action is forced to {@link DnDConstants#ACTION_NONE}
      * if there is no supported data flavor.
+     * 
      * @param e {@link DropTargetEvent}
      * @return effective drop action
      * @see #isSupported(DataFlavor[])
@@ -198,14 +217,13 @@ public abstract class DropHandler implements DropTargetListener {
         Point location = null;
         DataFlavor[] flavors = new DataFlavor[0];
         if (e instanceof DropTargetDragEvent) {
-            DropTargetDragEvent ev = (DropTargetDragEvent)e;
+            DropTargetDragEvent ev = (DropTargetDragEvent) e;
             currentAction = ev.getDropAction();
             sourceActions = ev.getSourceActions();
             flavors = ev.getCurrentDataFlavors();
             location = ev.getLocation();
-        }
-        else if (e instanceof DropTargetDropEvent) {
-            DropTargetDropEvent ev = (DropTargetDropEvent)e;
+        } else if (e instanceof DropTargetDropEvent) {
+            DropTargetDropEvent ev = (DropTargetDropEvent) e;
             currentAction = ev.getDropAction();
             sourceActions = ev.getSourceActions();
             flavors = ev.getCurrentDataFlavors();
@@ -223,31 +241,31 @@ public abstract class DropHandler implements DropTargetListener {
         return DragHandler.NONE;
     }
 
-    /* Adjust the drop action depending on whether the
+    /*
+     * Adjust the drop action depending on whether the
      * current action is the default or a specific user-requested action.
      * The default implementation will change the current action from
      * {@link DnDConstants#ACTION_NONE} if there are actions in
-     * common between the source and destination.  It will refuse user-requested
+     * common between the source and destination. It will refuse user-requested
      * actions if they are not supported (rather than silently accepting
      * a non-user-requested action, which is the behavior of Swing's default
      * drop handlers).<p>
      * You can override this method if you wish to adjust the action based
      * on the the drag location; if you wish to deny drops based on location,
-     * override {@link #canDrop} instead.  If you wish to adjust
+     * override {@link #canDrop} instead. If you wish to adjust
      * the action based on the available data flavors, override
      * {@link #getDropActionsForFlavor} instead.
+     * 
      * @see #getDropActionsForFlavor
+     * 
      * @see #canDrop(DropTargetEvent, int, Point)
      */
-    protected int getDropAction(DropTargetEvent e, int currentAction,
-                                int sourceActions, int acceptedActions) {
+    protected int getDropAction(DropTargetEvent e, int currentAction, int sourceActions, int acceptedActions) {
         boolean modifiersActive = modifiersActive(currentAction);
-        if ((currentAction & acceptedActions) == DragHandler.NONE
-            && !modifiersActive) {
+        if ((currentAction & acceptedActions) == DragHandler.NONE && !modifiersActive) {
             int action = acceptedActions & sourceActions;
             currentAction = action;
-        }
-        else if (modifiersActive) {
+        } else if (modifiersActive) {
             int action = currentAction & acceptedActions & sourceActions;
             if (action != currentAction) {
                 currentAction = action;
@@ -256,18 +274,19 @@ public abstract class DropHandler implements DropTargetListener {
         return currentAction;
     }
 
-    /** Returns whether there are key modifiers active ,
+    /**
+     * Returns whether there are key modifiers active ,
      * or false if they can't be determined.
      * We use the DragHandler hint, if available, or fall back to whether
      * the drop action is other than the default (move).
+     * 
      * @param dropAction requested action.
      * @return whether any modifiers are active.
      */
     protected boolean modifiersActive(int dropAction) {
         int mods = DragHandler.getModifiers();
         if (mods == DragHandler.UNKNOWN_MODIFIERS) {
-            if (dropAction == DragHandler.LINK
-                || dropAction == DragHandler.COPY) {
+            if (dropAction == DragHandler.LINK || dropAction == DragHandler.COPY) {
                 return true;
             }
             // Can't (yet) distinguish between a forced and a default move
@@ -278,8 +297,9 @@ public abstract class DropHandler implements DropTargetListener {
     }
 
     private String lastAction;
+
     private void describe(String type, DropTargetEvent e) {
-        if(LOG.isLoggable(Level.FINE)) {
+        if (LOG.isLoggable(Level.FINE)) {
             StringBuilder msgBuilder = new StringBuilder();
             msgBuilder.append("drop: ");
             msgBuilder.append(type);
@@ -293,11 +313,10 @@ public abstract class DropHandler implements DropTargetListener {
                 msgBuilder.append(DragHandler.actionString(dt.getDefaultActions()));
                 msgBuilder.append(" act=");
                 msgBuilder.append(DragHandler.actionString(ev.getDropAction()));
-            }
-            else if (e instanceof DropTargetDropEvent) {
+            } else if (e instanceof DropTargetDropEvent) {
                 DropTargetContext dtc = e.getDropTargetContext();
                 DropTarget dt = dtc.getDropTarget();
-                DropTargetDropEvent ev = (DropTargetDropEvent)e;
+                DropTargetDropEvent ev = (DropTargetDropEvent) e;
                 msgBuilder.append(": src=");
                 msgBuilder.append(DragHandler.actionString(ev.getSourceActions()));
                 msgBuilder.append(" tgt=");
@@ -313,8 +332,10 @@ public abstract class DropHandler implements DropTargetListener {
         }
     }
 
-    /** Accept or reject the drag represented by the given event.  Returns
+    /**
+     * Accept or reject the drag represented by the given event. Returns
      * the action determined by {@link #getDropAction(DropTargetEvent)}.
+     * 
      * @param e event
      * @return resulting action
      */
@@ -324,8 +345,7 @@ public abstract class DropHandler implements DropTargetListener {
             // NOTE: the action argument (as of 1.5+) is only passed
             // to the DropTargetContextPeer, *not* the drag source
             e.acceptDrag(action);
-        }
-        else {
+        } else {
             e.rejectDrag();
         }
         return action;
@@ -358,7 +378,8 @@ public abstract class DropHandler implements DropTargetListener {
         paintDropTarget(e, action, e.getLocation());
     }
 
-    /** Indicates the user has initiated a drop.  The default performs all
+    /**
+     * Indicates the user has initiated a drop. The default performs all
      * standard drop validity checking and handling, then invokes
      * {@link #drop(DropTargetDropEvent,int)} if the drop looks acceptable.
      */
@@ -381,9 +402,11 @@ public abstract class DropHandler implements DropTargetListener {
         paintDropTarget(e, DragHandler.NONE, e.getLocation());
     }
 
-    /** Return whether any of the flavors in the given list are accepted.
+    /**
+     * Return whether any of the flavors in the given list are accepted.
      * The list is compared against the accepted list provided in the
      * constructor.
+     * 
      * @param flavors list of transfer flavors to check
      * @return whether any of the given flavors are supported
      */
@@ -393,15 +416,17 @@ public abstract class DropHandler implements DropTargetListener {
         return !set.isEmpty();
     }
 
-    /** Update the appearance of the target component.  Normally the decoration
+    /**
+     * Update the appearance of the target component. Normally the decoration
      * should be painted only if the event is an instance of
      * {@link DropTargetDragEvent} with an action that is not
-     * {@link DragHandler#NONE}.  Otherwise the decoration should be removed
+     * {@link DragHandler#NONE}. Otherwise the decoration should be removed
      * or hidden.
      * <p>
      * For an easy way to highlight the drop target, consider using a single
      * instance of <code>AbstractComponentDecorator</code> and moving it
      * according to the intended drop location.
+     * 
      * @param e The drop target event
      * @param action The action for the drop
      * @param location The intended drop location, or null if there is none
@@ -412,11 +437,13 @@ public abstract class DropHandler implements DropTargetListener {
         }
     }
 
-    /** Indicate whether the given drop action is acceptable at the given
-     * location.  This method is the last check performed by
+    /**
+     * Indicate whether the given drop action is acceptable at the given
+     * location. This method is the last check performed by
      * {@link #getDropAction(DropTargetEvent)}.
      * You may override this method to refuse drops on certain areas
-     * within the drop target component.  The default always returns true.
+     * within the drop target component. The default always returns true.
+     * 
      * @param e event
      * @param action requested action
      * @param location requested drop location
@@ -426,13 +453,15 @@ public abstract class DropHandler implements DropTargetListener {
         return true;
     }
 
-    /** Handle an incoming drop with the given action.  The action passed in
+    /**
+     * Handle an incoming drop with the given action. The action passed in
      * might be different from {@link DropTargetDropEvent#getDropAction},
      * for instance, if there are no modifiers and the default action is not
-     * supported.  Calling {@link DropTargetDropEvent#dropComplete} is
+     * supported. Calling {@link DropTargetDropEvent#dropComplete} is
      * recommended as soon as the {@link Transferable} data is obtained; this
      * allows the drag source to reset the cursor and any drag images which
      * may be in effect.
+     * 
      * @param e event
      * @param action requested drop type
      * @throws UnsupportedFlavorException dropped item has no supported flavors

@@ -18,16 +18,16 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.Multisets.setCountImpl;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.concurrent.LazyInit;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.j2objc.annotations.WeakOuter;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * This class provides a skeletal implementation of the {@link Multiset} interface. A new multiset
@@ -44,191 +44,194 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
-abstract class AbstractMultiset<E extends @Nullable Object> extends AbstractCollection<E>
-    implements Multiset<E> {
-  // Query Operations
+abstract class AbstractMultiset<E extends @Nullable Object> extends AbstractCollection<E> implements Multiset<E> {
+    // Query Operations
 
-  @Override
-  public boolean isEmpty() {
-    return entrySet().isEmpty();
-  }
-
-  @Override
-  public boolean contains(@CheckForNull Object element) {
-    return count(element) > 0;
-  }
-
-  // Modification Operations
-  @CanIgnoreReturnValue
-  @Override
-  public final boolean add(@ParametricNullness E element) {
-    add(element, 1);
-    return true;
-  }
-
-  @CanIgnoreReturnValue
-  @Override
-  public int add(@ParametricNullness E element, int occurrences) {
-    throw new UnsupportedOperationException();
-  }
-
-  @CanIgnoreReturnValue
-  @Override
-  public final boolean remove(@CheckForNull Object element) {
-    return remove(element, 1) > 0;
-  }
-
-  @CanIgnoreReturnValue
-  @Override
-  public int remove(@CheckForNull Object element, int occurrences) {
-    throw new UnsupportedOperationException();
-  }
-
-  @CanIgnoreReturnValue
-  @Override
-  public int setCount(@ParametricNullness E element, int count) {
-    return setCountImpl(this, element, count);
-  }
-
-  @CanIgnoreReturnValue
-  @Override
-  public boolean setCount(@ParametricNullness E element, int oldCount, int newCount) {
-    return setCountImpl(this, element, oldCount, newCount);
-  }
-
-  // Bulk Operations
-
-  /**
-   * {@inheritDoc}
-   *
-   * <p>This implementation is highly efficient when {@code elementsToAdd} is itself a {@link
-   * Multiset}.
-   */
-  @CanIgnoreReturnValue
-  @Override
-  public final boolean addAll(Collection<? extends E> elementsToAdd) {
-    return Multisets.addAllImpl(this, elementsToAdd);
-  }
-
-  @CanIgnoreReturnValue
-  @Override
-  public final boolean removeAll(Collection<?> elementsToRemove) {
-    return Multisets.removeAllImpl(this, elementsToRemove);
-  }
-
-  @CanIgnoreReturnValue
-  @Override
-  public final boolean retainAll(Collection<?> elementsToRetain) {
-    return Multisets.retainAllImpl(this, elementsToRetain);
-  }
-
-  @Override
-  public abstract void clear();
-
-  // Views
-
-  @LazyInit @CheckForNull private transient Set<E> elementSet;
-
-  @Override
-  public Set<E> elementSet() {
-    Set<E> result = elementSet;
-    if (result == null) {
-      elementSet = result = createElementSet();
-    }
-    return result;
-  }
-
-  /**
-   * Creates a new instance of this multiset's element set, which will be returned by {@link
-   * #elementSet()}.
-   */
-  Set<E> createElementSet() {
-    return new ElementSet();
-  }
-
-  @WeakOuter
-  class ElementSet extends Multisets.ElementSet<E> {
     @Override
-    Multiset<E> multiset() {
-      return AbstractMultiset.this;
+    public boolean isEmpty() {
+        return entrySet().isEmpty();
     }
 
     @Override
-    public Iterator<E> iterator() {
-      return elementIterator();
+    public boolean contains(@CheckForNull Object element) {
+        return count(element) > 0;
     }
-  }
 
-  abstract Iterator<E> elementIterator();
-
-  @LazyInit @CheckForNull private transient Set<Entry<E>> entrySet;
-
-  @Override
-  public Set<Entry<E>> entrySet() {
-    Set<Entry<E>> result = entrySet;
-    if (result == null) {
-      entrySet = result = createEntrySet();
-    }
-    return result;
-  }
-
-  @WeakOuter
-  class EntrySet extends Multisets.EntrySet<E> {
+    // Modification Operations
+    @CanIgnoreReturnValue
     @Override
-    Multiset<E> multiset() {
-      return AbstractMultiset.this;
+    public final boolean add(@ParametricNullness E element) {
+        add(element, 1);
+        return true;
+    }
+
+    @CanIgnoreReturnValue
+    @Override
+    public int add(@ParametricNullness E element, int occurrences) {
+        throw new UnsupportedOperationException();
+    }
+
+    @CanIgnoreReturnValue
+    @Override
+    public final boolean remove(@CheckForNull Object element) {
+        return remove(element, 1) > 0;
+    }
+
+    @CanIgnoreReturnValue
+    @Override
+    public int remove(@CheckForNull Object element, int occurrences) {
+        throw new UnsupportedOperationException();
+    }
+
+    @CanIgnoreReturnValue
+    @Override
+    public int setCount(@ParametricNullness E element, int count) {
+        return setCountImpl(this, element, count);
+    }
+
+    @CanIgnoreReturnValue
+    @Override
+    public boolean setCount(@ParametricNullness E element, int oldCount, int newCount) {
+        return setCountImpl(this, element, oldCount, newCount);
+    }
+
+    // Bulk Operations
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>This implementation is highly efficient when {@code elementsToAdd} is itself a {@link
+     * Multiset}.
+     */
+    @CanIgnoreReturnValue
+    @Override
+    public final boolean addAll(Collection<? extends E> elementsToAdd) {
+        return Multisets.addAllImpl(this, elementsToAdd);
+    }
+
+    @CanIgnoreReturnValue
+    @Override
+    public final boolean removeAll(Collection<?> elementsToRemove) {
+        return Multisets.removeAllImpl(this, elementsToRemove);
+    }
+
+    @CanIgnoreReturnValue
+    @Override
+    public final boolean retainAll(Collection<?> elementsToRetain) {
+        return Multisets.retainAllImpl(this, elementsToRetain);
     }
 
     @Override
-    public Iterator<Entry<E>> iterator() {
-      return entryIterator();
-    }
+    public abstract void clear();
+
+    // Views
+
+    @LazyInit
+    @CheckForNull
+    private transient Set<E> elementSet;
 
     @Override
-    public int size() {
-      return distinctElements();
+    public Set<E> elementSet() {
+        Set<E> result = elementSet;
+        if (result == null) {
+            elementSet = result = createElementSet();
+        }
+        return result;
     }
-  }
 
-  Set<Entry<E>> createEntrySet() {
-    return new EntrySet();
-  }
+    /**
+     * Creates a new instance of this multiset's element set, which will be returned by {@link
+     * #elementSet()}.
+     */
+    Set<E> createElementSet() {
+        return new ElementSet();
+    }
 
-  abstract Iterator<Entry<E>> entryIterator();
+    @WeakOuter
+    class ElementSet extends Multisets.ElementSet<E> {
+        @Override
+        Multiset<E> multiset() {
+            return AbstractMultiset.this;
+        }
 
-  abstract int distinctElements();
+        @Override
+        public Iterator<E> iterator() {
+            return elementIterator();
+        }
+    }
 
-  // Object methods
+    abstract Iterator<E> elementIterator();
 
-  /**
-   * {@inheritDoc}
-   *
-   * <p>This implementation returns {@code true} if {@code object} is a multiset of the same size
-   * and if, for each element, the two multisets have the same count.
-   */
-  @Override
-  public final boolean equals(@CheckForNull Object object) {
-    return Multisets.equalsImpl(this, object);
-  }
+    @LazyInit
+    @CheckForNull
+    private transient Set<Entry<E>> entrySet;
 
-  /**
-   * {@inheritDoc}
-   *
-   * <p>This implementation returns the hash code of {@link Multiset#entrySet()}.
-   */
-  @Override
-  public final int hashCode() {
-    return entrySet().hashCode();
-  }
+    @Override
+    public Set<Entry<E>> entrySet() {
+        Set<Entry<E>> result = entrySet;
+        if (result == null) {
+            entrySet = result = createEntrySet();
+        }
+        return result;
+    }
 
-  /**
-   * {@inheritDoc}
-   *
-   * <p>This implementation returns the result of invoking {@code toString} on {@link
-   * Multiset#entrySet()}.
-   */
-  @Override
-  public final String toString() {
-    return entrySet().toString();
-  }
+    @WeakOuter
+    class EntrySet extends Multisets.EntrySet<E> {
+        @Override
+        Multiset<E> multiset() {
+            return AbstractMultiset.this;
+        }
+
+        @Override
+        public Iterator<Entry<E>> iterator() {
+            return entryIterator();
+        }
+
+        @Override
+        public int size() {
+            return distinctElements();
+        }
+    }
+
+    Set<Entry<E>> createEntrySet() {
+        return new EntrySet();
+    }
+
+    abstract Iterator<Entry<E>> entryIterator();
+
+    abstract int distinctElements();
+
+    // Object methods
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>This implementation returns {@code true} if {@code object} is a multiset of the same size
+     * and if, for each element, the two multisets have the same count.
+     */
+    @Override
+    public final boolean equals(@CheckForNull Object object) {
+        return Multisets.equalsImpl(this, object);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>This implementation returns the hash code of {@link Multiset#entrySet()}.
+     */
+    @Override
+    public final int hashCode() {
+        return entrySet().hashCode();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>This implementation returns the result of invoking {@code toString} on {@link
+     * Multiset#entrySet()}.
+     */
+    @Override
+    public final String toString() {
+        return entrySet().toString();
+    }
 }

@@ -13,10 +13,8 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.projection;
 
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.BadLocationException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.IRegion;
-
 
 /**
  * Internal interface for defining the exact subset of
@@ -28,28 +26,28 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 interface IMinimalMapping {
 
-	/*
-	 * @see org.eclipse.jface.text.IDocumentInformationMapping#getCoverage()
-	 */
-	IRegion getCoverage();
+    /*
+     * @see org.eclipse.jface.text.IDocumentInformationMapping#getCoverage()
+     */
+    IRegion getCoverage();
 
-	/*
-	 * @see org.eclipse.jface.text.IDocumentInformationMapping#toOriginRegion(IRegion)
-	 */
-	IRegion toOriginRegion(IRegion region) throws BadLocationException;
+    /*
+     * @see org.eclipse.jface.text.IDocumentInformationMapping#toOriginRegion(IRegion)
+     */
+    IRegion toOriginRegion(IRegion region) throws BadLocationException;
 
-	/*
-	 * @see org.eclipse.jface.text.IDocumentInformationMapping#toOriginOffset(int)
-	 */
-	int toOriginOffset(int offset) throws BadLocationException;
+    /*
+     * @see org.eclipse.jface.text.IDocumentInformationMapping#toOriginOffset(int)
+     */
+    int toOriginOffset(int offset) throws BadLocationException;
 
-	/*
-	 * @see org.eclipse.jface.text.IDocumentInformationMappingExtension#toExactOriginRegions(IRegion)
-	 */
-	IRegion[] toExactOriginRegions(IRegion region) throws BadLocationException;
+    /*
+     * @see org.eclipse.jface.text.IDocumentInformationMappingExtension#toExactOriginRegions(IRegion)
+     */
+    IRegion[] toExactOriginRegions(IRegion region) throws BadLocationException;
 
-	/*
-	 * @see org.eclipse.jface.text.IDocumentInformationMappingExtension#getImageLength()
-	 */
-	int getImageLength();
+    /*
+     * @see org.eclipse.jface.text.IDocumentInformationMappingExtension#getImageLength()
+     */
+    int getImageLength();
 }

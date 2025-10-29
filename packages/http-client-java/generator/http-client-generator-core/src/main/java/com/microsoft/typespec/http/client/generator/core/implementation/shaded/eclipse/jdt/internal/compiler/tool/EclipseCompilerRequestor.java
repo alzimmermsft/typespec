@@ -14,32 +14,33 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.tool;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.DiagnosticListener;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.JavaFileObject;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CategorizedProblem;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.CompilationResult;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.batch.BatchCompilerRequestor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.batch.Main;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.DiagnosticListener;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.JavaFileObject;
 
 public class EclipseCompilerRequestor extends BatchCompilerRequestor {
 
     private final DiagnosticListener<? super JavaFileObject> diagnosticListener;
     private final DefaultProblemFactory problemFactory;
 
-    public EclipseCompilerRequestor(Main compiler, DiagnosticListener<? super JavaFileObject> diagnosticListener, DefaultProblemFactory problemFactory) {
+    public EclipseCompilerRequestor(Main compiler, DiagnosticListener<? super JavaFileObject> diagnosticListener,
+        DefaultProblemFactory problemFactory) {
         super(compiler);
         this.diagnosticListener = diagnosticListener;
         this.problemFactory = problemFactory;
     }
 
     @Override
-	protected void reportProblems(CompilationResult result) {
-    	if (this.diagnosticListener != null) {
-    		for (CategorizedProblem problem : result.getAllProblems()) {
+    protected void reportProblems(CompilationResult result) {
+        if (this.diagnosticListener != null) {
+            for (CategorizedProblem problem : result.getAllProblems()) {
                 EclipseDiagnostic diagnostic = EclipseDiagnostic.newInstance(problem, this.problemFactory);
                 this.diagnosticListener.report(diagnostic);
             }
-    	}
+        }
     }
 }

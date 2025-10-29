@@ -27,22 +27,20 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * Exception representing a non-zero error code returned in either
  * <code><a href="http://www.opengroup.org/onlinepubs/009695399/functions/errno.html">errno</a></code>
  * or <code><a href="http://msdn.microsoft.com/en-us/library/ms679360(VS.85).aspx">GetLastError()</a></code>.
-*/
+ */
 public class LastErrorException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     private int errorCode;
 
     private static String formatMessage(int code) {
-        return Platform.isWindows()
-            ? "GetLastError() returned " + code
-            : "errno was " + code;
+        return Platform.isWindows() ? "GetLastError() returned " + code : "errno was " + code;
     }
 
     private static String parseMessage(String m) {
         try {
             return formatMessage(Integer.parseInt(m));
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return m;
         }
     }
@@ -61,7 +59,7 @@ public class LastErrorException extends RuntimeException {
                 msg = msg.substring(1, msg.indexOf("]"));
             }
             this.errorCode = Integer.parseInt(msg);
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             this.errorCode = -1;
         }
     }

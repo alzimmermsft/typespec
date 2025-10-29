@@ -21,50 +21,54 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.problem.AbortCompilation;
 
-
 public class CancelableNameEnvironment extends SearchableEnvironment implements INameEnvironmentWithProgress {
-	private IProgressMonitor monitor;
+    private IProgressMonitor monitor;
 
-	public CancelableNameEnvironment(JavaProject project, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaModelException {
-		this(project, owner, monitor, false, JavaProject.NO_RELEASE);
-	}
-	public CancelableNameEnvironment(JavaProject project, WorkingCopyOwner owner, IProgressMonitor monitor, boolean excludeTestCode, int release) throws JavaModelException {
-		super(project, owner, excludeTestCode, release);
-		setMonitor(monitor);
-	}
+    public CancelableNameEnvironment(JavaProject project, WorkingCopyOwner owner, IProgressMonitor monitor)
+        throws JavaModelException {
+        this(project, owner, monitor, false, JavaProject.NO_RELEASE);
+    }
 
-	private void checkCanceled() {
-		if (this.monitor != null && this.monitor.isCanceled()) {
-			if (NameLookup.VERBOSE)
-				System.out.println(Thread.currentThread() + " CANCELLING LOOKUP "); //$NON-NLS-1$
-			throw new AbortCompilation(true/*silent*/, new OperationCanceledException());
-		}
-	}
+    public CancelableNameEnvironment(JavaProject project, WorkingCopyOwner owner, IProgressMonitor monitor,
+        boolean excludeTestCode, int release) throws JavaModelException {
+        super(project, owner, excludeTestCode, release);
+        setMonitor(monitor);
+    }
 
-	@Override
-	public void findPackages(char[] prefix, ISearchRequestor requestor) {
-		checkCanceled();
-		super.findPackages(prefix, requestor);
-	}
+    private void checkCanceled() {
+        if (this.monitor != null && this.monitor.isCanceled()) {
+            if (NameLookup.VERBOSE)
+                System.out.println(Thread.currentThread() + " CANCELLING LOOKUP "); //$NON-NLS-1$
+            throw new AbortCompilation(true/* silent */, new OperationCanceledException());
+        }
+    }
 
-	@Override
-	public NameEnvironmentAnswer findType(char[] name, char[][] packageName) {
-		checkCanceled();
-		return super.findType(name, packageName);
-	}
+    @Override
+    public void findPackages(char[] prefix, ISearchRequestor requestor) {
+        checkCanceled();
+        super.findPackages(prefix, requestor);
+    }
 
-	@Override
-	public NameEnvironmentAnswer findType(char[][] compoundTypeName) {
-		checkCanceled();
-		return super.findType(compoundTypeName);
-	}
-	@Override
-	public NameEnvironmentAnswer findType(char[] typeName, char[][] packageName, boolean searchWithSecondaryTypes, char[] moduleName) {
-		return findType(typeName, packageName, moduleName);
-	}
+    @Override
+    public NameEnvironmentAnswer findType(char[] name, char[][] packageName) {
+        checkCanceled();
+        return super.findType(name, packageName);
+    }
 
-	@Override
-	public void setMonitor(IProgressMonitor monitor) {
-		this.monitor = monitor;
-	}
+    @Override
+    public NameEnvironmentAnswer findType(char[][] compoundTypeName) {
+        checkCanceled();
+        return super.findType(compoundTypeName);
+    }
+
+    @Override
+    public NameEnvironmentAnswer findType(char[] typeName, char[][] packageName, boolean searchWithSecondaryTypes,
+        char[] moduleName) {
+        return findType(typeName, packageName, moduleName);
+    }
+
+    @Override
+    public void setMonitor(IProgressMonitor monitor) {
+        this.monitor = monitor;
+    }
 }

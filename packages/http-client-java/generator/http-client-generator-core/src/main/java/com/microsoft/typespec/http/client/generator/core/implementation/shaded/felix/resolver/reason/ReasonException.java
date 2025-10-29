@@ -18,10 +18,9 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver.reason;
 
-import java.util.Collection;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Requirement;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.resolver.ResolutionException;
+import java.util.Collection;
 
 /**
  * An exception that holds the reason for a resolution failure.
@@ -82,7 +81,8 @@ public class ReasonException extends ResolutionException {
 
     private static final long serialVersionUID = -5276675175114379539L;
 
-    public ReasonException(Reason reason, String message, Throwable cause, Collection<Requirement> unresolvedRequirements) {
+    public ReasonException(Reason reason, String message, Throwable cause,
+        Collection<Requirement> unresolvedRequirements) {
         super(message, cause, unresolvedRequirements);
         this.reason = reason;
     }

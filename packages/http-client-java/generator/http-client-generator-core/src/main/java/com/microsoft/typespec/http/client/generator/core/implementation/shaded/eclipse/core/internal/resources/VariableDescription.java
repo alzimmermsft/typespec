@@ -14,8 +14,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.resources;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
-
 public class VariableDescription implements Comparable<VariableDescription> {
     private String name;
     private String value;
@@ -23,14 +21,6 @@ public class VariableDescription implements Comparable<VariableDescription> {
     public VariableDescription() {
         this.name = ""; //$NON-NLS-1$
         this.value = ""; //$NON-NLS-1$
-    }
-
-    public VariableDescription(String name, String value) {
-        super();
-        Assert.isNotNull(name);
-        Assert.isNotNull(value);
-        this.name = name;
-        this.value = value;
     }
 
     @Override

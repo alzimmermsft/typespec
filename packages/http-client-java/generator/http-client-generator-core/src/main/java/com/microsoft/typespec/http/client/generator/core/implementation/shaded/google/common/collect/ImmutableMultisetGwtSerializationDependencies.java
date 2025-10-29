@@ -38,4 +38,5 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.g
  */
 @GwtCompatible(emulated = true)
 @ElementTypesAreNonnullByDefault
-abstract class ImmutableMultisetGwtSerializationDependencies<E> extends ImmutableCollection<E> {}
+abstract class ImmutableMultisetGwtSerializationDependencies<E> extends ImmutableCollection<E> {
+}

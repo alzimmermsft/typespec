@@ -16,13 +16,13 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.Multisets.UnmodifiableMultiset;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.concurrent.LazyInit;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.util.Comparator;
 import java.util.NavigableSet;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Implementation of {@link Multisets#unmodifiableSortedMultiset(SortedMultiset)}, split out into
@@ -35,86 +35,85 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @ElementTypesAreNonnullByDefault
 final class UnmodifiableSortedMultiset<E extends @Nullable Object> extends UnmodifiableMultiset<E>
     implements SortedMultiset<E> {
-  UnmodifiableSortedMultiset(SortedMultiset<E> delegate) {
-    super(delegate);
-  }
-
-  @Override
-  protected SortedMultiset<E> delegate() {
-    return (SortedMultiset<E>) super.delegate();
-  }
-
-  @Override
-  public Comparator<? super E> comparator() {
-    return delegate().comparator();
-  }
-
-  @Override
-  NavigableSet<E> createElementSet() {
-    return Sets.unmodifiableNavigableSet(delegate().elementSet());
-  }
-
-  @Override
-  public NavigableSet<E> elementSet() {
-    return (NavigableSet<E>) super.elementSet();
-  }
-
-  @LazyInit @CheckForNull private transient UnmodifiableSortedMultiset<E> descendingMultiset;
-
-  @Override
-  public SortedMultiset<E> descendingMultiset() {
-    UnmodifiableSortedMultiset<E> result = descendingMultiset;
-    if (result == null) {
-      result = new UnmodifiableSortedMultiset<>(delegate().descendingMultiset());
-      result.descendingMultiset = this;
-      return descendingMultiset = result;
+    UnmodifiableSortedMultiset(SortedMultiset<E> delegate) {
+        super(delegate);
     }
-    return result;
-  }
 
-  @Override
-  @CheckForNull
-  public Entry<E> firstEntry() {
-    return delegate().firstEntry();
-  }
+    @Override
+    protected SortedMultiset<E> delegate() {
+        return (SortedMultiset<E>) super.delegate();
+    }
 
-  @Override
-  @CheckForNull
-  public Entry<E> lastEntry() {
-    return delegate().lastEntry();
-  }
+    @Override
+    public Comparator<? super E> comparator() {
+        return delegate().comparator();
+    }
 
-  @Override
-  @CheckForNull
-  public Entry<E> pollFirstEntry() {
-    throw new UnsupportedOperationException();
-  }
+    @Override
+    NavigableSet<E> createElementSet() {
+        return Sets.unmodifiableNavigableSet(delegate().elementSet());
+    }
 
-  @Override
-  @CheckForNull
-  public Entry<E> pollLastEntry() {
-    throw new UnsupportedOperationException();
-  }
+    @Override
+    public NavigableSet<E> elementSet() {
+        return (NavigableSet<E>) super.elementSet();
+    }
 
-  @Override
-  public SortedMultiset<E> headMultiset(@ParametricNullness E upperBound, BoundType boundType) {
-    return Multisets.unmodifiableSortedMultiset(delegate().headMultiset(upperBound, boundType));
-  }
+    @LazyInit
+    @CheckForNull
+    private transient UnmodifiableSortedMultiset<E> descendingMultiset;
 
-  @Override
-  public SortedMultiset<E> subMultiset(
-      @ParametricNullness E lowerBound,
-      BoundType lowerBoundType,
-      @ParametricNullness E upperBound,
-      BoundType upperBoundType) {
-    return Multisets.unmodifiableSortedMultiset(
-        delegate().subMultiset(lowerBound, lowerBoundType, upperBound, upperBoundType));
-  }
+    @Override
+    public SortedMultiset<E> descendingMultiset() {
+        UnmodifiableSortedMultiset<E> result = descendingMultiset;
+        if (result == null) {
+            result = new UnmodifiableSortedMultiset<>(delegate().descendingMultiset());
+            result.descendingMultiset = this;
+            return descendingMultiset = result;
+        }
+        return result;
+    }
 
-  @Override
-  public SortedMultiset<E> tailMultiset(@ParametricNullness E lowerBound, BoundType boundType) {
-    return Multisets.unmodifiableSortedMultiset(delegate().tailMultiset(lowerBound, boundType));
-  }
+    @Override
+    @CheckForNull
+    public Entry<E> firstEntry() {
+        return delegate().firstEntry();
+    }
 
-  private static final long serialVersionUID = 0;
+    @Override
+    @CheckForNull
+    public Entry<E> lastEntry() {
+        return delegate().lastEntry();
+    }
+
+    @Override
+    @CheckForNull
+    public Entry<E> pollFirstEntry() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    @CheckForNull
+    public Entry<E> pollLastEntry() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public SortedMultiset<E> headMultiset(@ParametricNullness E upperBound, BoundType boundType) {
+        return Multisets.unmodifiableSortedMultiset(delegate().headMultiset(upperBound, boundType));
+    }
+
+    @Override
+    public SortedMultiset<E> subMultiset(@ParametricNullness E lowerBound, BoundType lowerBoundType,
+        @ParametricNullness E upperBound, BoundType upperBoundType) {
+        return Multisets
+            .unmodifiableSortedMultiset(delegate().subMultiset(lowerBound, lowerBoundType, upperBound, upperBoundType));
+    }
+
+    @Override
+    public SortedMultiset<E> tailMultiset(@ParametricNullness E lowerBound, BoundType boundType) {
+        return Multisets.unmodifiableSortedMultiset(delegate().tailMultiset(lowerBound, boundType));
+    }
+
+    private static final long serialVersionUID = 0;
 }

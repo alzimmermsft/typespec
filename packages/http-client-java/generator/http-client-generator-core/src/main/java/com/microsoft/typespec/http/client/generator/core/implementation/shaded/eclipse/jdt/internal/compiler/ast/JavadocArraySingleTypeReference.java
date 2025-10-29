@@ -19,36 +19,41 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.Scope;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 
-
 public class JavadocArraySingleTypeReference extends ArrayTypeReference {
 
-	public JavadocArraySingleTypeReference(char[] name, int dim, long pos) {
-		super(name, dim, pos);
-		this.bits |= InsideJavadoc;
-	}
+    public JavadocArraySingleTypeReference(char[] name, int dim, long pos) {
+        super(name, dim, pos);
+        this.bits |= InsideJavadoc;
+    }
 
-	@Override
-	protected void reportInvalidType(Scope scope) {
-		scope.problemReporter().javadocInvalidType(this, this.resolvedType, scope.getDeclarationModifiers());
-	}
-	@Override
-	protected void reportDeprecatedType(TypeBinding type, Scope scope) {
-		scope.problemReporter().javadocDeprecatedType(type, this, scope.getDeclarationModifiers());
-	}
+    @Override
+    protected void reportInvalidType(Scope scope) {
+        scope.problemReporter().javadocInvalidType(this, this.resolvedType, scope.getDeclarationModifiers());
+    }
 
-	/* (non-Javadoc)
-	 * Redefine to capture javadoc specific signatures
-	 * @see org.eclipse.jdt.internal.compiler.ast.ASTNode#traverse(com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ASTVisitor, com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.BlockScope)
-	 */
-	@Override
-	public void traverse(ASTVisitor visitor, BlockScope scope) {
-		visitor.visit(this, scope);
-		visitor.endVisit(this, scope);
-	}
+    @Override
+    protected void reportDeprecatedType(TypeBinding type, Scope scope) {
+        scope.problemReporter().javadocDeprecatedType(type, this, scope.getDeclarationModifiers());
+    }
 
-	@Override
-	public void traverse(ASTVisitor visitor, ClassScope scope) {
-		visitor.visit(this, scope);
-		visitor.endVisit(this, scope);
-	}
+    /*
+     * (non-Javadoc)
+     * Redefine to capture javadoc specific signatures
+     * 
+     * @see org.eclipse.jdt.internal.compiler.ast.ASTNode#traverse(com.microsoft.typespec.http.client.generator.core.
+     * implementation.shaded.eclipse.jdt.internal.compiler.ASTVisitor,
+     * com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.
+     * BlockScope)
+     */
+    @Override
+    public void traverse(ASTVisitor visitor, BlockScope scope) {
+        visitor.visit(this, scope);
+        visitor.endVisit(this, scope);
+    }
+
+    @Override
+    public void traverse(ASTVisitor visitor, ClassScope scope) {
+        visitor.visit(this, scope);
+        visitor.endVisit(this, scope);
+    }
 }

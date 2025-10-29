@@ -13,13 +13,13 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.storage.bundlefile;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.container.Module;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.internal.hookregistry.BundleFileWrapperFactoryHook;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.storage.BundleInfo;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.container.Module;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.internal.hookregistry.BundleFileWrapperFactoryHook;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.storage.BundleInfo;
 
 /**
  * A {@link BundleFile bundle file} decorator.
@@ -32,67 +32,53 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * </p>
  */
 public class BundleFileWrapper extends BundleFile {
-	private final BundleFile bundleFile;
+    private final BundleFile bundleFile;
 
-	/**
-	 * Creates a new <code>BundleFileWrapper</code> instance wrapping the given
-	 * {@link BundleFile bundle file}.
-	 *
-	 * @param bundleFile - The bundle file to wrap.
-	 * @throws NullPointerException - If the bundle file is <code>null</code>.
-	 */
-	public BundleFileWrapper(BundleFile bundleFile) {
-		super(bundleFile.getBaseFile());
-		this.bundleFile = bundleFile;
-	}
+    /**
+     * Creates a new <code>BundleFileWrapper</code> instance wrapping the given
+     * {@link BundleFile bundle file}.
+     *
+     * @param bundleFile - The bundle file to wrap.
+     * @throws NullPointerException - If the bundle file is <code>null</code>.
+     */
+    public BundleFileWrapper(BundleFile bundleFile) {
+        super(bundleFile.getBaseFile());
+        this.bundleFile = bundleFile;
+    }
 
-	@Override
-	public File getFile(String path, boolean nativeCode) {
-		return bundleFile.getFile(path, nativeCode);
-	}
+    @Override
+    public File getFile(String path, boolean nativeCode) {
+        return bundleFile.getFile(path, nativeCode);
+    }
 
-	@Override
-	public BundleEntry getEntry(String path) {
-		return bundleFile.getEntry(path);
-	}
+    @Override
+    public BundleEntry getEntry(String path) {
+        return bundleFile.getEntry(path);
+    }
 
-	@Override
-	public Enumeration<String> getEntryPaths(String path) {
-		return bundleFile.getEntryPaths(path);
-	}
+    @Override
+    public Enumeration<String> getEntryPaths(String path) {
+        return bundleFile.getEntryPaths(path);
+    }
 
-	@Override
-	public Enumeration<String> getEntryPaths(String path, boolean recurse) {
-		return bundleFile.getEntryPaths(path, recurse);
-	}
+    @Override
+    public Enumeration<String> getEntryPaths(String path, boolean recurse) {
+        return bundleFile.getEntryPaths(path, recurse);
+    }
 
-	/**
-	 * Get the wrapped bundle file.
-	 *
-	 * @return The wrapped bundle file.
-	 */
-	public BundleFile getBundleFile() {
-		return bundleFile;
-	}
+    @Override
+    public void close() throws IOException {
+        bundleFile.close();
+    }
 
-	@Override
-	public void close() throws IOException {
-		bundleFile.close();
-	}
+    @Override
+    public void open() throws IOException {
+        bundleFile.open();
+    }
 
-	@Override
-	public void open() throws IOException {
-		bundleFile.open();
-	}
-
-	@Override
-	public boolean containsDir(String dir) {
-		return bundleFile.containsDir(dir);
-	}
-
-	@Override
-	protected URL createResourceURL(BundleEntry bundleEntry, Module hostModule, int index, String path) {
-		return bundleFile.createResourceURL(bundleEntry, hostModule, index, path);
-	}
+    @Override
+    public boolean containsDir(String dir) {
+        return bundleFile.containsDir(dir);
+    }
 
 }

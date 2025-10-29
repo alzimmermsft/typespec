@@ -26,7 +26,8 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IDispatch;
 
 /**
- * IF you want to access the underlying raw (com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IDispatch) object
+ * IF you want to access the underlying raw
+ * (com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IDispatch) object
  * then have your @ComObject or @ComInterface interface extends this interface.
  *
  */

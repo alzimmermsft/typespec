@@ -53,7 +53,7 @@ public final class RegistryContributor implements IContributor {
      * are expected to be unique in the workspace. If contributor does not rely on a
      * host, this value should be the same as the actual contributor ID.
      */
-    private String hostId;
+    private final String hostId;
 
     /**
      * Name of the entity "in charge" of the contributor (e.g.
@@ -61,7 +61,7 @@ public final class RegistryContributor implements IContributor {
      * does not rely on a host, this
      * value should be the same as the actual contributor name.
      */
-    private String hostName;
+    private final String hostName;
 
     /**
      * Constructor for the registry contributor.
@@ -110,16 +110,6 @@ public final class RegistryContributor implements IContributor {
             this.hostId = actualId;
             this.hostName = actualName;
         }
-    }
-
-    /**
-     * Provides actual ID associated with the registry contributor (e.g., "12"). IDs
-     * are expected to be unique in the workspace.
-     *
-     * @return actual ID of the registry contributor
-     */
-    public String getActualId() {
-        return actualContributorId;
     }
 
     /**

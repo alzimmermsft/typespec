@@ -18,85 +18,69 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver;
 
-import java.util.Map;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Namespace;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Requirement;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Resource;
+import java.util.Map;
 
-public class WrappedRequirement implements Requirement
-{
+public class WrappedRequirement implements Requirement {
     private final Resource m_host;
     private final Requirement m_req;
 
-    public WrappedRequirement(Resource host, Requirement req)
-    {
+    public WrappedRequirement(Resource host, Requirement req) {
         m_host = host;
         m_req = req;
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
-        if (obj == null)
-        {
+    public boolean equals(Object obj) {
+        if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass())
-        {
+        if (getClass() != obj.getClass()) {
             return false;
         }
         final WrappedRequirement other = (WrappedRequirement) obj;
-        if (m_host != other.m_host && (m_host == null || !m_host.equals(other.m_host)))
-        {
+        if (m_host != other.m_host && (m_host == null || !m_host.equals(other.m_host))) {
             return false;
         }
-        if (m_req != other.m_req && (m_req == null || !m_req.equals(other.m_req)))
-        {
+        if (m_req != other.m_req && (m_req == null || !m_req.equals(other.m_req))) {
             return false;
         }
         return true;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int hash = 7;
         hash = 37 * hash + (m_host != null ? m_host.hashCode() : 0);
         hash = 37 * hash + (m_req != null ? m_req.hashCode() : 0);
         return hash;
     }
 
-    public Requirement getDeclaredRequirement()
-    {
+    public Requirement getDeclaredRequirement() {
         return m_req;
     }
 
-    public Resource getResource()
-    {
+    public Resource getResource() {
         return m_host;
     }
 
-    public String getNamespace()
-    {
+    public String getNamespace() {
         return m_req.getNamespace();
     }
 
-    public Map<String, String> getDirectives()
-    {
+    public Map<String, String> getDirectives() {
         return m_req.getDirectives();
     }
 
-    public Map<String, Object> getAttributes()
-    {
+    public Map<String, Object> getAttributes() {
         return m_req.getAttributes();
     }
 
     @Override
-    public String toString()
-    {
-        return "[" + m_host + "] "
-            + getNamespace()
-            + "; "
+    public String toString() {
+        return "[" + m_host + "] " + getNamespace() + "; "
             + getDirectives().get(Namespace.REQUIREMENT_FILTER_DIRECTIVE);
     }
 }

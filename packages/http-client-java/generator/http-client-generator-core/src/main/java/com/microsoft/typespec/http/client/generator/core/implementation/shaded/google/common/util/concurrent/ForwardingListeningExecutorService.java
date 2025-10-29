@@ -14,10 +14,10 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.util.concurrent;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtIncompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.J2ktIncompatible;
 import java.util.concurrent.Callable;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A listening executor service which forwards all its method calls to another listening executor
@@ -37,25 +37,25 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @ElementTypesAreNonnullByDefault
 public abstract class ForwardingListeningExecutorService extends ForwardingExecutorService
     implements ListeningExecutorService {
-  /** Constructor for use by subclasses. */
-  protected ForwardingListeningExecutorService() {}
+    /** Constructor for use by subclasses. */
+    protected ForwardingListeningExecutorService() {
+    }
 
-  @Override
-  protected abstract ListeningExecutorService delegate();
+    @Override
+    protected abstract ListeningExecutorService delegate();
 
-  @Override
-  public <T extends @Nullable Object> ListenableFuture<T> submit(Callable<T> task) {
-    return delegate().submit(task);
-  }
+    @Override
+    public <T extends @Nullable Object> ListenableFuture<T> submit(Callable<T> task) {
+        return delegate().submit(task);
+    }
 
-  @Override
-  public ListenableFuture<?> submit(Runnable task) {
-    return delegate().submit(task);
-  }
+    @Override
+    public ListenableFuture<?> submit(Runnable task) {
+        return delegate().submit(task);
+    }
 
-  @Override
-  public <T extends @Nullable Object> ListenableFuture<T> submit(
-      Runnable task, @ParametricNullness T result) {
-    return delegate().submit(task, result);
-  }
+    @Override
+    public <T extends @Nullable Object> ListenableFuture<T> submit(Runnable task, @ParametricNullness T result) {
+        return delegate().submit(task, result);
+    }
 }

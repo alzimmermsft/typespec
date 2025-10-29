@@ -24,17 +24,17 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 @GwtCompatible(emulated = true)
 @ElementTypesAreNonnullByDefault
 final class Platform {
-  static boolean isInstanceOfThrowableClass(
-      @CheckForNull Throwable t, Class<? extends Throwable> expectedClass) {
-    return expectedClass.isInstance(t);
-  }
-
-  static void restoreInterruptIfIsInterruptedException(Throwable t) {
-    checkNotNull(t); // to satisfy NullPointerTester
-    if (t instanceof InterruptedException) {
-      currentThread().interrupt();
+    static boolean isInstanceOfThrowableClass(@CheckForNull Throwable t, Class<? extends Throwable> expectedClass) {
+        return expectedClass.isInstance(t);
     }
-  }
 
-  private Platform() {}
+    static void restoreInterruptIfIsInterruptedException(Throwable t) {
+        checkNotNull(t); // to satisfy NullPointerTester
+        if (t instanceof InterruptedException) {
+            currentThread().interrupt();
+        }
+    }
+
+    private Platform() {
+    }
 }

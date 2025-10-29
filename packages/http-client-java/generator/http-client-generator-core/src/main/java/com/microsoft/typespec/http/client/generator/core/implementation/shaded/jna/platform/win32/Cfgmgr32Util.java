@@ -56,8 +56,8 @@ public abstract class Cfgmgr32Util {
      * calls to CM_Get_Device_ID, and returns the received string.
      *
      * @param devInst
-     *            Caller-supplied device instance handle that is bound to the local
-     *            machine.
+     * Caller-supplied device instance handle that is bound to the local
+     * machine.
      * @return The device instance ID string.
      * @throws Cfgmgr32Exception
      */
@@ -107,31 +107,31 @@ public abstract class Cfgmgr32Util {
      * the appropriate type.
      *
      * @param devInst
-     *            Caller-supplied device instance handle that is bound to the local
-     *            machine.
+     * Caller-supplied device instance handle that is bound to the local
+     * machine.
      * @param ulProperty
-     *            A {@code CM_DRP_}-prefixed constant value that identifies the
-     *            device property to be obtained from the registry. These constants
-     *            are defined in Cfgmgr32.h.
+     * A {@code CM_DRP_}-prefixed constant value that identifies the
+     * device property to be obtained from the registry. These constants
+     * are defined in Cfgmgr32.h.
      * @return An {@link Object} containing the specified registry property for the
-     *         device.
-     *         <p>
-     *         If the property is of type {@link WinNT#REG_SZ}, a
-     *         {@link String} is returned.
-     *         <p>
-     *         If the property is of type {@link WinNT#REG_MULTI_SZ}, an array of
-     *         {@link String} is returned.
-     *         <p>
-     *         If the property is of type {@link WinNT#REG_DWORD}, an
-     *         {@link Integer} is returned.
-     *         <p>
-     *         If the property is of type {@link WinNT#REG_BINARY}, an array of
-     *         {@link Byte} is returned.
-     *         <p>
-     *         If no value exists for this property (error
-     *         {@link Cfgmgr32#CR_NO_SUCH_VALUE}), returns {@code null}.
+     * device.
+     * <p>
+     * If the property is of type {@link WinNT#REG_SZ}, a
+     * {@link String} is returned.
+     * <p>
+     * If the property is of type {@link WinNT#REG_MULTI_SZ}, an array of
+     * {@link String} is returned.
+     * <p>
+     * If the property is of type {@link WinNT#REG_DWORD}, an
+     * {@link Integer} is returned.
+     * <p>
+     * If the property is of type {@link WinNT#REG_BINARY}, an array of
+     * {@link Byte} is returned.
+     * <p>
+     * If no value exists for this property (error
+     * {@link Cfgmgr32#CR_NO_SUCH_VALUE}), returns {@code null}.
      * @throws Cfgmgr32Exception
-     *             on any errors other than {@link Cfgmgr32#CR_NO_SUCH_VALUE}
+     * on any errors other than {@link Cfgmgr32#CR_NO_SUCH_VALUE}
      */
     public static Object CM_Get_DevNode_Registry_Property(int devInst, int ulProperty) throws Cfgmgr32Exception {
 
@@ -167,22 +167,27 @@ public abstract class Cfgmgr32Util {
                 if (buffer == null) {
                     return "";
                 }
-                return W32APITypeMapper.DEFAULT == W32APITypeMapper.UNICODE ? buffer.getWideString(0)
-                        : buffer.getString(0);
+                return W32APITypeMapper.DEFAULT == W32APITypeMapper.UNICODE
+                    ? buffer.getWideString(0)
+                    : buffer.getString(0);
+
             case WinNT.REG_MULTI_SZ:
                 // Convert buffer to String Array
                 if (buffer == null) {
                     return new String[0];
                 }
                 return Advapi32Util.regMultiSzBufferToStringArray(buffer);
+
             case WinNT.REG_DWORD:
                 // Convert buffer to int
                 if (buffer == null) {
                     return 0;
                 }
                 return buffer.getInt(0);
+
             case WinNT.REG_NONE:
                 return null;
+
             default:
                 // Intended for WinNT.REG_BINARY but safe default for any data
                 if (buffer == null) {

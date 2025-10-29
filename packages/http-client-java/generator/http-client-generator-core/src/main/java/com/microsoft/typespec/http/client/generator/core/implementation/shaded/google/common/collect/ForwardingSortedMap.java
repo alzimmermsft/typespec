@@ -18,12 +18,12 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Preconditions.checkArgument;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.util.Comparator;
 import java.util.NoSuchElementException;
 import java.util.SortedMap;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A sorted map which forwards all its method calls to another sorted map. Subclasses should
@@ -54,101 +54,101 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @ElementTypesAreNonnullByDefault
 public abstract class ForwardingSortedMap<K extends @Nullable Object, V extends @Nullable Object>
     extends ForwardingMap<K, V> implements SortedMap<K, V> {
-  // TODO(lowasser): identify places where thread safety is actually lost
+    // TODO(lowasser): identify places where thread safety is actually lost
 
-  /** Constructor for use by subclasses. */
-  protected ForwardingSortedMap() {}
-
-  @Override
-  protected abstract SortedMap<K, V> delegate();
-
-  @Override
-  @CheckForNull
-  public Comparator<? super K> comparator() {
-    return delegate().comparator();
-  }
-
-  @Override
-  @ParametricNullness
-  public K firstKey() {
-    return delegate().firstKey();
-  }
-
-  @Override
-  public SortedMap<K, V> headMap(@ParametricNullness K toKey) {
-    return delegate().headMap(toKey);
-  }
-
-  @Override
-  @ParametricNullness
-  public K lastKey() {
-    return delegate().lastKey();
-  }
-
-  @Override
-  public SortedMap<K, V> subMap(@ParametricNullness K fromKey, @ParametricNullness K toKey) {
-    return delegate().subMap(fromKey, toKey);
-  }
-
-  @Override
-  public SortedMap<K, V> tailMap(@ParametricNullness K fromKey) {
-    return delegate().tailMap(fromKey);
-  }
-
-  /**
-   * A sensible implementation of {@link SortedMap#keySet} in terms of the methods of {@code
-   * ForwardingSortedMap}. In many cases, you may wish to override {@link
-   * ForwardingSortedMap#keySet} to forward to this implementation or a subclass thereof.
-   *
-   * @since 15.0
-   */
-  protected class StandardKeySet extends Maps.SortedKeySet<K, V> {
     /** Constructor for use by subclasses. */
-    public StandardKeySet() {
-      super(ForwardingSortedMap.this);
+    protected ForwardingSortedMap() {
     }
-  }
 
-  // unsafe, but worst case is a CCE or NPE is thrown, which callers will be expecting
-  @SuppressWarnings({"unchecked", "nullness"})
-  static int unsafeCompare(
-      @CheckForNull Comparator<?> comparator, @CheckForNull Object o1, @CheckForNull Object o2) {
-    if (comparator == null) {
-      return ((Comparable<@Nullable Object>) o1).compareTo(o2);
-    } else {
-      return ((Comparator<@Nullable Object>) comparator).compare(o1, o2);
+    @Override
+    protected abstract SortedMap<K, V> delegate();
+
+    @Override
+    @CheckForNull
+    public Comparator<? super K> comparator() {
+        return delegate().comparator();
     }
-  }
 
-  /**
-   * A sensible definition of {@link #containsKey} in terms of the {@code firstKey()} method of
-   * {@link #tailMap}. If you override {@link #tailMap}, you may wish to override {@link
-   * #containsKey} to forward to this implementation.
-   *
-   * @since 7.0
-   */
-  @Override
-  protected boolean standardContainsKey(@CheckForNull Object key) {
-    try {
-      // any CCE or NPE will be caught
-      @SuppressWarnings({"unchecked", "nullness"})
-      SortedMap<@Nullable Object, V> self = (SortedMap<@Nullable Object, V>) this;
-      Object ceilingKey = self.tailMap(key).firstKey();
-      return unsafeCompare(comparator(), ceilingKey, key) == 0;
-    } catch (ClassCastException | NoSuchElementException | NullPointerException e) {
-      return false;
+    @Override
+    @ParametricNullness
+    public K firstKey() {
+        return delegate().firstKey();
     }
-  }
 
-  /**
-   * A sensible default implementation of {@link #subMap(Object, Object)} in terms of {@link
-   * #headMap(Object)} and {@link #tailMap(Object)}. In some situations, you may wish to override
-   * {@link #subMap(Object, Object)} to forward to this implementation.
-   *
-   * @since 7.0
-   */
-  protected SortedMap<K, V> standardSubMap(K fromKey, K toKey) {
-    checkArgument(unsafeCompare(comparator(), fromKey, toKey) <= 0, "fromKey must be <= toKey");
-    return tailMap(fromKey).headMap(toKey);
-  }
+    @Override
+    public SortedMap<K, V> headMap(@ParametricNullness K toKey) {
+        return delegate().headMap(toKey);
+    }
+
+    @Override
+    @ParametricNullness
+    public K lastKey() {
+        return delegate().lastKey();
+    }
+
+    @Override
+    public SortedMap<K, V> subMap(@ParametricNullness K fromKey, @ParametricNullness K toKey) {
+        return delegate().subMap(fromKey, toKey);
+    }
+
+    @Override
+    public SortedMap<K, V> tailMap(@ParametricNullness K fromKey) {
+        return delegate().tailMap(fromKey);
+    }
+
+    /**
+     * A sensible implementation of {@link SortedMap#keySet} in terms of the methods of {@code
+     * ForwardingSortedMap}. In many cases, you may wish to override {@link
+     * ForwardingSortedMap#keySet} to forward to this implementation or a subclass thereof.
+     *
+     * @since 15.0
+     */
+    protected class StandardKeySet extends Maps.SortedKeySet<K, V> {
+        /** Constructor for use by subclasses. */
+        public StandardKeySet() {
+            super(ForwardingSortedMap.this);
+        }
+    }
+
+    // unsafe, but worst case is a CCE or NPE is thrown, which callers will be expecting
+    @SuppressWarnings({ "unchecked", "nullness" })
+    static int unsafeCompare(@CheckForNull Comparator<?> comparator, @CheckForNull Object o1, @CheckForNull Object o2) {
+        if (comparator == null) {
+            return ((Comparable<@Nullable Object>) o1).compareTo(o2);
+        } else {
+            return ((Comparator<@Nullable Object>) comparator).compare(o1, o2);
+        }
+    }
+
+    /**
+     * A sensible definition of {@link #containsKey} in terms of the {@code firstKey()} method of
+     * {@link #tailMap}. If you override {@link #tailMap}, you may wish to override {@link
+     * #containsKey} to forward to this implementation.
+     *
+     * @since 7.0
+     */
+    @Override
+    protected boolean standardContainsKey(@CheckForNull Object key) {
+        try {
+            // any CCE or NPE will be caught
+            @SuppressWarnings({ "unchecked", "nullness" })
+            SortedMap<@Nullable Object, V> self = (SortedMap<@Nullable Object, V>) this;
+            Object ceilingKey = self.tailMap(key).firstKey();
+            return unsafeCompare(comparator(), ceilingKey, key) == 0;
+        } catch (ClassCastException | NoSuchElementException | NullPointerException e) {
+            return false;
+        }
+    }
+
+    /**
+     * A sensible default implementation of {@link #subMap(Object, Object)} in terms of {@link
+     * #headMap(Object)} and {@link #tailMap(Object)}. In some situations, you may wish to override
+     * {@link #subMap(Object, Object)} to forward to this implementation.
+     *
+     * @since 7.0
+     */
+    protected SortedMap<K, V> standardSubMap(K fromKey, K toKey) {
+        checkArgument(unsafeCompare(comparator(), fromKey, toKey) <= 0, "fromKey must be <= toKey");
+        return tailMap(fromKey).headMap(toKey);
+    }
 }

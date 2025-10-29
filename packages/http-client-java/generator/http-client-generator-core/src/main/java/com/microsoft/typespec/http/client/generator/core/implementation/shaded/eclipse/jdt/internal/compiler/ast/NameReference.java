@@ -33,120 +33,120 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public abstract class NameReference extends Reference implements InvocationSite {
 
-	public Binding binding; //may be aTypeBinding-aFieldBinding-aLocalVariableBinding
+    public Binding binding; // may be aTypeBinding-aFieldBinding-aLocalVariableBinding
 
-	public TypeBinding actualReceiverType;	// modified receiver type - actual one according to namelookup
+    public TypeBinding actualReceiverType;	// modified receiver type - actual one according to namelookup
 
-	//the error printing
-	//some name reference are build as name reference but
-	//only used as type reference. When it happens, instead of
-	//creating a new object (aTypeReference) we just flag a boolean
-	//This concesion is valuable while there are cases when the NameReference
-	//will be a TypeReference (static message sends.....) and there is
-	//no changeClass in java.
-public NameReference() {
-	this.bits |= Binding.TYPE | Binding.VARIABLE; // restrictiveFlag
-}
+    // the error printing
+    // some name reference are build as name reference but
+    // only used as type reference. When it happens, instead of
+    // creating a new object (aTypeReference) we just flag a boolean
+    // This concesion is valuable while there are cases when the NameReference
+    // will be a TypeReference (static message sends.....) and there is
+    // no changeClass in java.
+    public NameReference() {
+        this.bits |= Binding.TYPE | Binding.VARIABLE; // restrictiveFlag
+    }
 
-/**
- * Creates a constant pool entry which is not needed by the VM but might help tools.
- * See https://bugs.openjdk.org/browse/JDK-7153958
- */
-public void emitDeclaringClassOfConstant(CodeStream codeStream) {
-	if (this.constant != Constant.NotAConstant && this.binding instanceof FieldBinding f) {
-		codeStream.constantPool.literalIndexForType(f.declaringClass);
-	}
-}
-/**
- * Creates a constant pool entry for each constant reference within expr.
- * This is not needed by the VM but might help tools.
- * See https://bugs.openjdk.org/browse/JDK-7153958
- */
-public static void emitDeclaringClassOfConstant(Expression expr, CodeStream codeStream) {
-	if (expr instanceof Literal)
-		return;
-	expr.traverse(
-		new ASTVisitor() {
-			@Override
-			public boolean visit(SingleNameReference nameReference, BlockScope scope) {
-				nameReference.emitDeclaringClassOfConstant(codeStream);
-				return false;
-			}
-			@Override
-			public boolean visit(QualifiedNameReference nameReference, BlockScope scope) {
-				nameReference.emitDeclaringClassOfConstant(codeStream);
-				return false;
-			}
-		},
-		(BlockScope) null
-	);
-}
+    /**
+     * Creates a constant pool entry which is not needed by the VM but might help tools.
+     * See https://bugs.openjdk.org/browse/JDK-7153958
+     */
+    public void emitDeclaringClassOfConstant(CodeStream codeStream) {
+        if (this.constant != Constant.NotAConstant && this.binding instanceof FieldBinding f) {
+            codeStream.constantPool.literalIndexForType(f.declaringClass);
+        }
+    }
 
-/**
- * Use this method only when sure that the current reference is <strong>not</strong>
- * a chain of several fields (QualifiedNameReference with more than one field).
- * Otherwise use {@link #lastFieldBinding()}.
- */
-@Override
-public FieldBinding fieldBinding() {
-	//this method should be sent ONLY after a check against isFieldReference()
-	//check its use doing senders.........
-	return (FieldBinding) this.binding ;
-}
+    /**
+     * Creates a constant pool entry for each constant reference within expr.
+     * This is not needed by the VM but might help tools.
+     * See https://bugs.openjdk.org/browse/JDK-7153958
+     */
+    public static void emitDeclaringClassOfConstant(Expression expr, CodeStream codeStream) {
+        if (expr instanceof Literal)
+            return;
+        expr.traverse(new ASTVisitor() {
+            @Override
+            public boolean visit(SingleNameReference nameReference, BlockScope scope) {
+                nameReference.emitDeclaringClassOfConstant(codeStream);
+                return false;
+            }
 
-@Override
-public FieldBinding lastFieldBinding() {
-	if ((this.bits & ASTNode.RestrictiveFlagMASK) == Binding.FIELD)
-		return fieldBinding(); // most subclasses only refer to one field anyway
-	return null;
-}
+            @Override
+            public boolean visit(QualifiedNameReference nameReference, BlockScope scope) {
+                nameReference.emitDeclaringClassOfConstant(codeStream);
+                return false;
+            }
+        }, (BlockScope) null);
+    }
 
-@Override
-public InferenceContext18 freshInferenceContext(Scope scope) {
-	return null;
-}
+    /**
+     * Use this method only when sure that the current reference is <strong>not</strong>
+     * a chain of several fields (QualifiedNameReference with more than one field).
+     * Otherwise use {@link #lastFieldBinding()}.
+     */
+    @Override
+    public FieldBinding fieldBinding() {
+        // this method should be sent ONLY after a check against isFieldReference()
+        // check its use doing senders.........
+        return (FieldBinding) this.binding;
+    }
 
-@Override
-public boolean isSuperAccess() {
-	return false;
-}
+    @Override
+    public FieldBinding lastFieldBinding() {
+        if ((this.bits & ASTNode.RestrictiveFlagMASK) == Binding.FIELD)
+            return fieldBinding(); // most subclasses only refer to one field anyway
+        return null;
+    }
 
-@Override
-public boolean isTypeAccess() {
-	// null is acceptable when we are resolving the first part of a reference
-	return this.binding == null || (this.binding.kind() & Binding.TYPE) != 0;
-}
+    @Override
+    public InferenceContext18 freshInferenceContext(Scope scope) {
+        return null;
+    }
 
-@Override
-public boolean isTypeReference() {
-	return this.binding instanceof ReferenceBinding;
-}
+    @Override
+    public boolean isSuperAccess() {
+        return false;
+    }
 
-@Override
-public void setActualReceiverType(ReferenceBinding receiverType) {
-	if (receiverType == null) return; // error scenario only
-	this.actualReceiverType = receiverType;
-}
+    @Override
+    public boolean isTypeAccess() {
+        // null is acceptable when we are resolving the first part of a reference
+        return this.binding == null || (this.binding.kind() & Binding.TYPE) != 0;
+    }
 
-@Override
-public void setDepth(int depth) {
-	this.bits &= ~DepthMASK; // flush previous depth if any
-	if (depth > 0) {
-		this.bits |= (depth & 0xFF) << DepthSHIFT; // encoded on 8 bits
-	}
-}
+    @Override
+    public boolean isTypeReference() {
+        return this.binding instanceof ReferenceBinding;
+    }
 
-@Override
-public void setFieldIndex(int index){
-	// ignored
-}
+    @Override
+    public void setActualReceiverType(ReferenceBinding receiverType) {
+        if (receiverType == null)
+            return; // error scenario only
+        this.actualReceiverType = receiverType;
+    }
 
-public abstract String unboundReferenceErrorName();
+    @Override
+    public void setDepth(int depth) {
+        this.bits &= ~DepthMASK; // flush previous depth if any
+        if (depth > 0) {
+            this.bits |= (depth & 0xFF) << DepthSHIFT; // encoded on 8 bits
+        }
+    }
 
-public abstract char[][] getName();
+    @Override
+    public void setFieldIndex(int index) {
+        // ignored
+    }
 
-@Override
-public boolean isType() {
-	return (this.bits & Binding.TYPE) != 0;
-}
+    public abstract String unboundReferenceErrorName();
+
+    public abstract char[][] getName();
+
+    @Override
+    public boolean isType() {
+        return (this.bits & Binding.TYPE) != 0;
+    }
 }

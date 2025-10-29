@@ -24,9 +24,8 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform;
 
-import java.awt.Rectangle;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.HWND;
+import java.awt.Rectangle;
 
 /**
  * Holds some general information about a window.
@@ -41,17 +40,16 @@ public class DesktopWindow {
 
     /**
      * @param hwnd
-     *            The associated window handle for this window.
+     * The associated window handle for this window.
      * @param title
-     *            The title text of the window.
+     * The title text of the window.
      * @param filePath
-     *            The full file path to the main process that created the
-     *            window.
+     * The full file path to the main process that created the
+     * window.
      * @param locAndSize
-     *            The window's location on screen and its dimensions.
+     * The window's location on screen and its dimensions.
      */
-    public DesktopWindow(final HWND hwnd, final String title,
-                         final String filePath, final Rectangle locAndSize) {
+    public DesktopWindow(final HWND hwnd, final String title, final String filePath, final Rectangle locAndSize) {
         this.hwnd = hwnd;
         this.title = title;
         this.filePath = filePath;

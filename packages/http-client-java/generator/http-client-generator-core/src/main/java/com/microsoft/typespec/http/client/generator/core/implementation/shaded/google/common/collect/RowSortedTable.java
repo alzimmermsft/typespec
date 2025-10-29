@@ -16,12 +16,12 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Interface that extends {@code Table} and whose rows are sorted.
@@ -35,24 +35,23 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
-public interface RowSortedTable<
-        R extends @Nullable Object, C extends @Nullable Object, V extends @Nullable Object>
+public interface RowSortedTable<R extends @Nullable Object, C extends @Nullable Object, V extends @Nullable Object>
     extends Table<R, C, V> {
-  /**
-   * {@inheritDoc}
-   *
-   * <p>This method returns a {@link SortedSet}, instead of the {@code Set} specified in the {@link
-   * Table} interface.
-   */
-  @Override
-  SortedSet<R> rowKeySet();
+    /**
+     * {@inheritDoc}
+     *
+     * <p>This method returns a {@link SortedSet}, instead of the {@code Set} specified in the {@link
+     * Table} interface.
+     */
+    @Override
+    SortedSet<R> rowKeySet();
 
-  /**
-   * {@inheritDoc}
-   *
-   * <p>This method returns a {@link SortedMap}, instead of the {@code Map} specified in the {@link
-   * Table} interface.
-   */
-  @Override
-  SortedMap<R, Map<C, V>> rowMap();
+    /**
+     * {@inheritDoc}
+     *
+     * <p>This method returns a {@link SortedMap}, instead of the {@code Map} specified in the {@link
+     * Table} interface.
+     */
+    @Override
+    SortedMap<R, Map<C, V>> rowMap();
 }

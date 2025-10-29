@@ -30,47 +30,47 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.g
  */
 @ElementTypesAreNonnullByDefault
 final class StandardMutableGraph<N> extends ForwardingGraph<N> implements MutableGraph<N> {
-  private final MutableValueGraph<N, Presence> backingValueGraph;
+    private final MutableValueGraph<N, Presence> backingValueGraph;
 
-  /** Constructs a {@link MutableGraph} with the properties specified in {@code builder}. */
-  StandardMutableGraph(AbstractGraphBuilder<? super N> builder) {
-    this.backingValueGraph = new StandardMutableValueGraph<>(builder);
-  }
+    /** Constructs a {@link MutableGraph} with the properties specified in {@code builder}. */
+    StandardMutableGraph(AbstractGraphBuilder<? super N> builder) {
+        this.backingValueGraph = new StandardMutableValueGraph<>(builder);
+    }
 
-  @Override
-  BaseGraph<N> delegate() {
-    return backingValueGraph;
-  }
+    @Override
+    BaseGraph<N> delegate() {
+        return backingValueGraph;
+    }
 
-  @Override
-  public boolean addNode(N node) {
-    return backingValueGraph.addNode(node);
-  }
+    @Override
+    public boolean addNode(N node) {
+        return backingValueGraph.addNode(node);
+    }
 
-  @Override
-  public boolean putEdge(N nodeU, N nodeV) {
-    return backingValueGraph.putEdgeValue(nodeU, nodeV, Presence.EDGE_EXISTS) == null;
-  }
+    @Override
+    public boolean putEdge(N nodeU, N nodeV) {
+        return backingValueGraph.putEdgeValue(nodeU, nodeV, Presence.EDGE_EXISTS) == null;
+    }
 
-  @Override
-  public boolean putEdge(EndpointPair<N> endpoints) {
-    validateEndpoints(endpoints);
-    return putEdge(endpoints.nodeU(), endpoints.nodeV());
-  }
+    @Override
+    public boolean putEdge(EndpointPair<N> endpoints) {
+        validateEndpoints(endpoints);
+        return putEdge(endpoints.nodeU(), endpoints.nodeV());
+    }
 
-  @Override
-  public boolean removeNode(N node) {
-    return backingValueGraph.removeNode(node);
-  }
+    @Override
+    public boolean removeNode(N node) {
+        return backingValueGraph.removeNode(node);
+    }
 
-  @Override
-  public boolean removeEdge(N nodeU, N nodeV) {
-    return backingValueGraph.removeEdge(nodeU, nodeV) != null;
-  }
+    @Override
+    public boolean removeEdge(N nodeU, N nodeV) {
+        return backingValueGraph.removeEdge(nodeU, nodeV) != null;
+    }
 
-  @Override
-  public boolean removeEdge(EndpointPair<N> endpoints) {
-    validateEndpoints(endpoints);
-    return removeEdge(endpoints.nodeU(), endpoints.nodeV());
-  }
+    @Override
+    public boolean removeEdge(EndpointPair<N> endpoints) {
+        validateEndpoints(endpoints);
+        return removeEdge(endpoints.nodeU(), endpoints.nodeV());
+    }
 }

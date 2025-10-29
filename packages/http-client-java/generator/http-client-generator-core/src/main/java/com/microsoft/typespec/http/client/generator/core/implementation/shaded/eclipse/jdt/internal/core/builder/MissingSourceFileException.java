@@ -18,10 +18,10 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public class MissingSourceFileException extends RuntimeException {
 
-	protected String missingSourceFile;
-	private static final long serialVersionUID = -1416609004971115719L; // backward compatible
+    protected String missingSourceFile;
+    private static final long serialVersionUID = -1416609004971115719L; // backward compatible
 
-public MissingSourceFileException(String missingSourceFile) {
-	this.missingSourceFile = missingSourceFile;
-}
+    public MissingSourceFileException(String missingSourceFile) {
+        this.missingSourceFile = missingSourceFile;
+    }
 }

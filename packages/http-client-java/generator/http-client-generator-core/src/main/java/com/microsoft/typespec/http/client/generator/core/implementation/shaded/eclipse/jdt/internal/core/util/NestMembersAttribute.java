@@ -19,42 +19,39 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * Default implementation of INestMembersAttribute.
  */
 public class NestMembersAttribute extends ClassFileAttribute implements INestMembersAttribute {
-	private static final INestMemberAttributeEntry[] NO_ENTRIES = new INestMemberAttributeEntry[0];
+    private static final INestMemberAttributeEntry[] NO_ENTRIES = new INestMemberAttributeEntry[0];
 
-	private final int nestMembers;
-	private INestMemberAttributeEntry[] entries;
+    private final int nestMembers;
+    private INestMemberAttributeEntry[] entries;
 
-	/**
-	 * Constructor for NestMembersAttribute.
-	 */
-	public NestMembersAttribute(
-		byte[] classFileBytes,
-		IConstantPool constantPool,
-		int offset)
-		throws ClassFormatException {
-		super(classFileBytes, constantPool, offset);
-		this.nestMembers = u2At(classFileBytes, 6, offset);
-		final int length = this.nestMembers;
-		if (length != 0) {
-			int readOffset = 8;
-			this.entries = new INestMemberAttributeEntry[length];
-			for (int i = 0; i < length; i++) {
-				this.entries[i] = new NestMembersAttributeEntry(classFileBytes, constantPool, offset + readOffset);
-				readOffset += 2;
-			}
-		} else {
-			this.entries = NO_ENTRIES;
-		}
-	}
+    /**
+     * Constructor for NestMembersAttribute.
+     */
+    public NestMembersAttribute(byte[] classFileBytes, IConstantPool constantPool, int offset)
+        throws ClassFormatException {
+        super(classFileBytes, constantPool, offset);
+        this.nestMembers = u2At(classFileBytes, 6, offset);
+        final int length = this.nestMembers;
+        if (length != 0) {
+            int readOffset = 8;
+            this.entries = new INestMemberAttributeEntry[length];
+            for (int i = 0; i < length; i++) {
+                this.entries[i] = new NestMembersAttributeEntry(classFileBytes, constantPool, offset + readOffset);
+                readOffset += 2;
+            }
+        } else {
+            this.entries = NO_ENTRIES;
+        }
+    }
 
-	@Override
-	public int getNumberOfNestMembers() {
-		return this.nestMembers;
-	}
+    @Override
+    public int getNumberOfNestMembers() {
+        return this.nestMembers;
+    }
 
-	@Override
-	public INestMemberAttributeEntry[] getNestMemberAttributesEntries() {
-		return this.entries;
-	}
+    @Override
+    public INestMemberAttributeEntry[] getNestMemberAttributesEntries() {
+        return this.entries;
+    }
 
 }

@@ -33,16 +33,12 @@ public class FilterDescription implements IResourceFilterDescription, Comparable
      */
     private int type;
 
-    private FileInfoMatcherDescription matcherDescription;
+    private final FileInfoMatcherDescription matcherDescription;
 
     /**
      * The resource that this filter is applied to
      */
     private IResource resource;
-
-    public FilterDescription() {
-        this.type = -1;
-    }
 
     public FilterDescription(IResource resource, int type, FileInfoMatcherDescription matcherDescription) {
         super();
@@ -96,10 +92,6 @@ public class FilterDescription implements IResourceFilterDescription, Comparable
     @Override
     public FileInfoMatcherDescription getFileInfoMatcherDescription() {
         return matcherDescription;
-    }
-
-    public void setFileInfoMatcherDescription(FileInfoMatcherDescription matcherDescription) {
-        this.matcherDescription = matcherDescription;
     }
 
     @Override

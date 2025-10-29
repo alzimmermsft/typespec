@@ -15,13 +15,13 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.apt.model;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.type.PrimitiveType;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.type.TypeKind;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.type.TypeVisitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.BaseTypeBinding;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeIds;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.type.PrimitiveType;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.type.TypeKind;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.type.TypeVisitor;
 
 /**
  *
@@ -29,61 +29,68 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class PrimitiveTypeImpl extends TypeMirrorImpl implements PrimitiveType {
 
-	public final static PrimitiveTypeImpl BOOLEAN = new PrimitiveTypeImpl(TypeBinding.BOOLEAN);
-	public final static PrimitiveTypeImpl BYTE = new PrimitiveTypeImpl(TypeBinding.BYTE);
-	public final static PrimitiveTypeImpl CHAR = new PrimitiveTypeImpl(TypeBinding.CHAR);
-	public final static PrimitiveTypeImpl DOUBLE = new PrimitiveTypeImpl(TypeBinding.DOUBLE);
-	public final static PrimitiveTypeImpl FLOAT = new PrimitiveTypeImpl(TypeBinding.FLOAT);
-	public final static PrimitiveTypeImpl INT = new PrimitiveTypeImpl(TypeBinding.INT);
-	public final static PrimitiveTypeImpl LONG = new PrimitiveTypeImpl(TypeBinding.LONG);
-	public final static PrimitiveTypeImpl SHORT = new PrimitiveTypeImpl(TypeBinding.SHORT);
+    public final static PrimitiveTypeImpl BOOLEAN = new PrimitiveTypeImpl(TypeBinding.BOOLEAN);
+    public final static PrimitiveTypeImpl BYTE = new PrimitiveTypeImpl(TypeBinding.BYTE);
+    public final static PrimitiveTypeImpl CHAR = new PrimitiveTypeImpl(TypeBinding.CHAR);
+    public final static PrimitiveTypeImpl DOUBLE = new PrimitiveTypeImpl(TypeBinding.DOUBLE);
+    public final static PrimitiveTypeImpl FLOAT = new PrimitiveTypeImpl(TypeBinding.FLOAT);
+    public final static PrimitiveTypeImpl INT = new PrimitiveTypeImpl(TypeBinding.INT);
+    public final static PrimitiveTypeImpl LONG = new PrimitiveTypeImpl(TypeBinding.LONG);
+    public final static PrimitiveTypeImpl SHORT = new PrimitiveTypeImpl(TypeBinding.SHORT);
 
-	/**
-	 * Clients should call {@link Factory#getPrimitiveType(TypeKind)},
-	 * rather than creating new objects.
-	 */
-	private PrimitiveTypeImpl(BaseTypeBinding binding) {
-		// Primitive types do not need an environment!
-		super(null, binding);
-	}
+    /**
+     * Clients should call {@link Factory#getPrimitiveType(TypeKind)},
+     * rather than creating new objects.
+     */
+    private PrimitiveTypeImpl(BaseTypeBinding binding) {
+        // Primitive types do not need an environment!
+        super(null, binding);
+    }
 
-	PrimitiveTypeImpl(BaseProcessingEnvImpl env, BaseTypeBinding binding) {
-		// From Java 8, base type bindings can hold annotations and hence need the environment.
-		super(env, binding);
-	}
+    PrimitiveTypeImpl(BaseProcessingEnvImpl env, BaseTypeBinding binding) {
+        // From Java 8, base type bindings can hold annotations and hence need the environment.
+        super(env, binding);
+    }
 
-	@Override
-	public <R, P> R accept(TypeVisitor<R, P> v, P p)
-	{
-		return v.visitPrimitive(this, p);
-	}
+    @Override
+    public <R, P> R accept(TypeVisitor<R, P> v, P p) {
+        return v.visitPrimitive(this, p);
+    }
 
-	@Override
-	public TypeKind getKind() {
-		return getKind((BaseTypeBinding)this._binding);
-	}
+    @Override
+    public TypeKind getKind() {
+        return getKind((BaseTypeBinding) this._binding);
+    }
 
-	public static TypeKind getKind(BaseTypeBinding binding) {
-		switch (binding.id) {
-		case TypeIds.T_boolean:
-			return TypeKind.BOOLEAN;
-		case TypeIds.T_byte:
-			return TypeKind.BYTE;
-		case TypeIds.T_char:
-			return TypeKind.CHAR;
-		case TypeIds.T_double:
-			return TypeKind.DOUBLE;
-		case TypeIds.T_float:
-			return TypeKind.FLOAT;
-		case TypeIds.T_int:
-			return TypeKind.INT;
-		case TypeIds.T_long:
-			return TypeKind.LONG;
-		case TypeIds.T_short:
-			return TypeKind.SHORT;
-		default:
-			throw new IllegalArgumentException("BaseTypeBinding of unexpected id " + binding.id); //$NON-NLS-1$
-		}
-	}
+    public static TypeKind getKind(BaseTypeBinding binding) {
+        switch (binding.id) {
+            case TypeIds.T_boolean:
+                return TypeKind.BOOLEAN;
+
+            case TypeIds.T_byte:
+                return TypeKind.BYTE;
+
+            case TypeIds.T_char:
+                return TypeKind.CHAR;
+
+            case TypeIds.T_double:
+                return TypeKind.DOUBLE;
+
+            case TypeIds.T_float:
+                return TypeKind.FLOAT;
+
+            case TypeIds.T_int:
+                return TypeKind.INT;
+
+            case TypeIds.T_long:
+                return TypeKind.LONG;
+
+            case TypeIds.T_short:
+                return TypeKind.SHORT;
+
+            default:
+                throw new IllegalArgumentException("BaseTypeBinding of unexpected id " + binding.id); //$NON-NLS-1$
+        }
+    }
 
 }

@@ -18,16 +18,15 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver.util.ArrayMap;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver.util.OpenHashMap;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Capability;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Resource;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
-public class Packages
-{
+public class Packages {
     public final OpenHashMap<String, Blame> m_exportedPkgs;
     public final OpenHashMap<String, Blame> m_substitePkgs;
     public final OpenHashMap<String, List<Blame>> m_importedPkgs;
@@ -36,8 +35,7 @@ public class Packages
     public final OpenHashMap<Capability, Set<Capability>> m_sources;
 
     @SuppressWarnings("serial")
-    public Packages(Resource resource)
-    {
+    public Packages(Resource resource) {
         int nbCaps = resource.getCapabilities(null).size();
         int nbReqs = resource.getRequirements(null).size();
 

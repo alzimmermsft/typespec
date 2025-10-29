@@ -21,38 +21,34 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * Default implementation of {@link IRecordAttribute}.
  */
 public class RecordAttribute extends ClassFileAttribute implements IRecordAttribute {
-	private static final IComponentInfo[] NO_ENTRIES = new IComponentInfo[0];
+    private static final IComponentInfo[] NO_ENTRIES = new IComponentInfo[0];
 
-	private final int nComponents;
-	private IComponentInfo[] entries;
+    private final int nComponents;
+    private IComponentInfo[] entries;
 
-	public RecordAttribute(
-		byte[] classFileBytes,
-		IConstantPool constantPool,
-		int offset)
-		throws ClassFormatException {
-		super(classFileBytes, constantPool, offset);
-		this.nComponents = u2At(classFileBytes, 6, offset);
-		final int length = this.nComponents;
-		if (length != 0) {
-			int readOffset = 8;
-			this.entries = new IComponentInfo[length];
-			for (int i = 0; i < length; i++) {
-				this.entries[i] = new ComponentInfo(classFileBytes, constantPool, offset + readOffset);
-				readOffset += this.entries[i].sizeInBytes();
-			}
-		} else {
-			this.entries = NO_ENTRIES;
-		}
-	}
+    public RecordAttribute(byte[] classFileBytes, IConstantPool constantPool, int offset) throws ClassFormatException {
+        super(classFileBytes, constantPool, offset);
+        this.nComponents = u2At(classFileBytes, 6, offset);
+        final int length = this.nComponents;
+        if (length != 0) {
+            int readOffset = 8;
+            this.entries = new IComponentInfo[length];
+            for (int i = 0; i < length; i++) {
+                this.entries[i] = new ComponentInfo(classFileBytes, constantPool, offset + readOffset);
+                readOffset += this.entries[i].sizeInBytes();
+            }
+        } else {
+            this.entries = NO_ENTRIES;
+        }
+    }
 
-	@Override
-	public int getNumberOfComponents() {
-		return this.nComponents;
-	}
+    @Override
+    public int getNumberOfComponents() {
+        return this.nComponents;
+    }
 
-	@Override
-	public IComponentInfo[] getComponentInfos() {
-		return this.entries;
-	}
+    @Override
+    public IComponentInfo[] getComponentInfos() {
+        return this.entries;
+    }
 }

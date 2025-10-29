@@ -23,7 +23,6 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM;
 
-
 /**
  * Enables the saving and loading of objects that use a simple serial stream for their storage needs.
  *

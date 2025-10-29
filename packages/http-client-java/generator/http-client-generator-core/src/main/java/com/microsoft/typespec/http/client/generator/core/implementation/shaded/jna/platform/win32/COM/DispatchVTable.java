@@ -42,9 +42,14 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.PointerByReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.win32.StdCallLibrary;
 
-@FieldOrder({"QueryInterfaceCallback", "AddRefCallback", "ReleaseCallback",
-    "GetTypeInfoCountCallback", "GetTypeInfoCallback",
-    "GetIDsOfNamesCallback", "InvokeCallback"})
+@FieldOrder({
+    "QueryInterfaceCallback",
+    "AddRefCallback",
+    "ReleaseCallback",
+    "GetTypeInfoCountCallback",
+    "GetTypeInfoCallback",
+    "GetIDsOfNamesCallback",
+    "InvokeCallback" })
 public class DispatchVTable extends Structure {
     public static class ByReference extends DispatchVTable implements Structure.ByReference {
     }
@@ -79,12 +84,12 @@ public class DispatchVTable extends Structure {
 
     public static interface GetIDsOfNamesCallback extends StdCallLibrary.StdCallCallback {
         WinNT.HRESULT invoke(Pointer thisPointer, REFIID riid, WString[] rgszNames, int cNames, LCID lcid,
-                DISPIDByReference rgDispId);
+            DISPIDByReference rgDispId);
     }
 
     public static interface InvokeCallback extends StdCallLibrary.StdCallCallback {
         WinNT.HRESULT invoke(Pointer thisPointer, DISPID dispIdMember, REFIID riid, LCID lcid, WORD wFlags,
-                DISPPARAMS.ByReference pDispParams, VARIANT.ByReference pVarResult, EXCEPINFO.ByReference pExcepInfo,
-                IntByReference puArgErr);
+            DISPPARAMS.ByReference pDispParams, VARIANT.ByReference pVarResult, EXCEPINFO.ByReference pExcepInfo,
+            IntByReference puArgErr);
     }
 }

@@ -13,8 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.apt.dispatch;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.Element;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.TypeElement;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ASTVisitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.apt.model.ElementImpl;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.apt.model.Factory;
@@ -22,245 +20,239 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.*;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.impl.ReferenceContext;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.*;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.Element;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.TypeElement;
 
 /**
  * This class is used to visit the JDT compiler internal AST to discover annotations,
  * in the course of dispatching to annotation processors.
  */
 public class AnnotationDiscoveryVisitor extends ASTVisitor {
-	final BaseProcessingEnvImpl _env;
-	final Factory _factory;
-	/**
-	 * Collects a many-to-many map of annotation types to
-	 * the elements they appear on.
-	 */
-	final ManyToMany<TypeElement, Element> _annoToElement;
+    final BaseProcessingEnvImpl _env;
+    final Factory _factory;
+    /**
+     * Collects a many-to-many map of annotation types to
+     * the elements they appear on.
+     */
+    final ManyToMany<TypeElement, Element> _annoToElement;
 
-	public AnnotationDiscoveryVisitor(BaseProcessingEnvImpl env) {
-		this._env = env;
-		this._factory = env.getFactory();
-		this._annoToElement = new ManyToMany<>();
-	}
+    public AnnotationDiscoveryVisitor(BaseProcessingEnvImpl env) {
+        this._env = env;
+        this._factory = env.getFactory();
+        this._annoToElement = new ManyToMany<>();
+    }
 
-	@Override
-	public boolean visit(Argument argument, BlockScope scope) {
-		Annotation[] annotations = argument.annotations;
-		ReferenceContext referenceContext = scope.referenceContext();
-		if (referenceContext instanceof AbstractMethodDeclaration) {
-			MethodBinding binding = ((AbstractMethodDeclaration) referenceContext).binding;
-			if (binding != null) {
-				TypeDeclaration typeDeclaration = scope.referenceType();
-				typeDeclaration.binding.resolveTypesFor(binding);
-				if (argument.binding != null) {
-					argument.binding = new AptSourceLocalVariableBinding(argument.binding, binding);
-				}
-			}
-			if (annotations != null && argument.binding != null) {
-				this.resolveAnnotations(
-						scope,
-						annotations,
-						argument.binding);
-			}
-		}
-		return false;
-	}
+    @Override
+    public boolean visit(Argument argument, BlockScope scope) {
+        Annotation[] annotations = argument.annotations;
+        ReferenceContext referenceContext = scope.referenceContext();
+        if (referenceContext instanceof AbstractMethodDeclaration) {
+            MethodBinding binding = ((AbstractMethodDeclaration) referenceContext).binding;
+            if (binding != null) {
+                TypeDeclaration typeDeclaration = scope.referenceType();
+                typeDeclaration.binding.resolveTypesFor(binding);
+                if (argument.binding != null) {
+                    argument.binding = new AptSourceLocalVariableBinding(argument.binding, binding);
+                }
+            }
+            if (annotations != null && argument.binding != null) {
+                this.resolveAnnotations(scope, annotations, argument.binding);
+            }
+        }
+        return false;
+    }
 
-	@Override
-	public boolean visit(ConstructorDeclaration constructorDeclaration, ClassScope scope) {
-		Annotation[] annotations = constructorDeclaration.annotations;
-		if (annotations != null) {
-			MethodBinding constructorBinding = constructorDeclaration.binding;
-			if (constructorBinding == null) {
-				return false;
-			}
-			((SourceTypeBinding) constructorBinding.declaringClass).resolveTypesFor(constructorBinding);
-			this.resolveAnnotations(
-					constructorDeclaration.scope,
-					annotations,
-					constructorBinding);
-		}
+    @Override
+    public boolean visit(ConstructorDeclaration constructorDeclaration, ClassScope scope) {
+        Annotation[] annotations = constructorDeclaration.annotations;
+        if (annotations != null) {
+            MethodBinding constructorBinding = constructorDeclaration.binding;
+            if (constructorBinding == null) {
+                return false;
+            }
+            ((SourceTypeBinding) constructorBinding.declaringClass).resolveTypesFor(constructorBinding);
+            this.resolveAnnotations(constructorDeclaration.scope, annotations, constructorBinding);
+        }
 
-		TypeParameter[] typeParameters = constructorDeclaration.typeParameters;
-		if (typeParameters != null) {
-			int typeParametersLength = typeParameters.length;
-			for (int i = 0; i < typeParametersLength; i++) {
-				typeParameters[i].traverse(this, constructorDeclaration.scope);
-			}
-		}
+        TypeParameter[] typeParameters = constructorDeclaration.typeParameters;
+        if (typeParameters != null) {
+            int typeParametersLength = typeParameters.length;
+            for (int i = 0; i < typeParametersLength; i++) {
+                typeParameters[i].traverse(this, constructorDeclaration.scope);
+            }
+        }
 
-		Argument[] arguments = constructorDeclaration.arguments;
-		if (arguments != null) {
-			int argumentLength = arguments.length;
-			for (int i = 0; i < argumentLength; i++) {
-				arguments[i].traverse(this, constructorDeclaration.scope);
-			}
-		}
-		return false;
-	}
+        Argument[] arguments = constructorDeclaration.arguments;
+        if (arguments != null) {
+            int argumentLength = arguments.length;
+            for (int i = 0; i < argumentLength; i++) {
+                arguments[i].traverse(this, constructorDeclaration.scope);
+            }
+        }
+        return false;
+    }
 
-	@Override
-	public boolean visit(FieldDeclaration fieldDeclaration, MethodScope scope) {
-		Annotation[] annotations = fieldDeclaration.annotations;
-		if (annotations != null) {
-			FieldBinding fieldBinding = fieldDeclaration.binding;
-			if (fieldBinding == null) {
-				return false;
-			}
-			((SourceTypeBinding) fieldBinding.declaringClass).resolveTypeFor(fieldBinding);
-			if (fieldDeclaration.binding == null) {
-				return false;
-			}
-			this.resolveAnnotations(scope, annotations, fieldBinding);
-		}
-		return false;
-	}
+    @Override
+    public boolean visit(FieldDeclaration fieldDeclaration, MethodScope scope) {
+        Annotation[] annotations = fieldDeclaration.annotations;
+        if (annotations != null) {
+            FieldBinding fieldBinding = fieldDeclaration.binding;
+            if (fieldBinding == null) {
+                return false;
+            }
+            ((SourceTypeBinding) fieldBinding.declaringClass).resolveTypeFor(fieldBinding);
+            if (fieldDeclaration.binding == null) {
+                return false;
+            }
+            this.resolveAnnotations(scope, annotations, fieldBinding);
+        }
+        return false;
+    }
 
-	@Override
-	public boolean visit(RecordComponent recordComponent, BlockScope scope) {
-		Annotation[] annotations = recordComponent.annotations;
-		if (annotations != null) {
-			RecordComponentBinding recordComponentBinding = recordComponent.binding;
-			if (recordComponentBinding == null) {
-				return false;
-			}
-			((SourceTypeBinding) recordComponentBinding.declaringRecord).resolveTypeFor(recordComponentBinding);
-			if (recordComponent.binding == null) {
-				return false;
-			}
-			this.resolveAnnotations(scope, annotations, recordComponentBinding);
-		}
-		return false;
-	}
-	@Override
-	public boolean visit(TypeParameter typeParameter, ClassScope scope) {
-		Annotation[] annotations = typeParameter.annotations;
-		if (annotations != null) {
-			TypeVariableBinding binding = typeParameter.binding;
-			if (binding == null) {
-				return false;
-			}
-			this.resolveAnnotations(scope.referenceContext.initializerScope, annotations, binding);
-		}
-		return false;
-	}
+    @Override
+    public boolean visit(RecordComponent recordComponent, BlockScope scope) {
+        Annotation[] annotations = recordComponent.annotations;
+        if (annotations != null) {
+            RecordComponentBinding recordComponentBinding = recordComponent.binding;
+            if (recordComponentBinding == null) {
+                return false;
+            }
+            ((SourceTypeBinding) recordComponentBinding.declaringRecord).resolveTypeFor(recordComponentBinding);
+            if (recordComponent.binding == null) {
+                return false;
+            }
+            this.resolveAnnotations(scope, annotations, recordComponentBinding);
+        }
+        return false;
+    }
 
-	@Override
-	public boolean visit(TypeParameter typeParameter, BlockScope scope) {
-		Annotation[] annotations = typeParameter.annotations;
-		if (annotations != null) {
-			TypeVariableBinding binding = typeParameter.binding;
-			if (binding == null) {
-				return false;
-			}
-			// when we get here, it is guaranteed that class type parameters are connected, but method type parameters may not be.
-			MethodBinding methodBinding = (MethodBinding) binding.declaringElement;
-			((SourceTypeBinding) methodBinding.declaringClass).resolveTypesFor(methodBinding);
-			this.resolveAnnotations(scope, annotations, binding);
-		}
-		return false;
-	}
+    @Override
+    public boolean visit(TypeParameter typeParameter, ClassScope scope) {
+        Annotation[] annotations = typeParameter.annotations;
+        if (annotations != null) {
+            TypeVariableBinding binding = typeParameter.binding;
+            if (binding == null) {
+                return false;
+            }
+            this.resolveAnnotations(scope.referenceContext.initializerScope, annotations, binding);
+        }
+        return false;
+    }
 
-	@Override
-	public boolean visit(MethodDeclaration methodDeclaration, ClassScope scope) {
-		Annotation[] annotations = methodDeclaration.annotations;
-		if (annotations != null) {
-			MethodBinding methodBinding = methodDeclaration.binding;
-			if (methodBinding == null) {
-				return false;
-			}
-			((SourceTypeBinding) methodBinding.declaringClass).resolveTypesFor(methodBinding);
-			this.resolveAnnotations(
-					methodDeclaration.scope,
-					annotations,
-					methodBinding);
-		}
+    @Override
+    public boolean visit(TypeParameter typeParameter, BlockScope scope) {
+        Annotation[] annotations = typeParameter.annotations;
+        if (annotations != null) {
+            TypeVariableBinding binding = typeParameter.binding;
+            if (binding == null) {
+                return false;
+            }
+            // when we get here, it is guaranteed that class type parameters are connected, but method type parameters
+            // may not be.
+            MethodBinding methodBinding = (MethodBinding) binding.declaringElement;
+            ((SourceTypeBinding) methodBinding.declaringClass).resolveTypesFor(methodBinding);
+            this.resolveAnnotations(scope, annotations, binding);
+        }
+        return false;
+    }
 
-		TypeParameter[] typeParameters = methodDeclaration.typeParameters;
-		if (typeParameters != null) {
-			int typeParametersLength = typeParameters.length;
-			for (int i = 0; i < typeParametersLength; i++) {
-				typeParameters[i].traverse(this, methodDeclaration.scope);
-			}
-		}
+    @Override
+    public boolean visit(MethodDeclaration methodDeclaration, ClassScope scope) {
+        Annotation[] annotations = methodDeclaration.annotations;
+        if (annotations != null) {
+            MethodBinding methodBinding = methodDeclaration.binding;
+            if (methodBinding == null) {
+                return false;
+            }
+            ((SourceTypeBinding) methodBinding.declaringClass).resolveTypesFor(methodBinding);
+            this.resolveAnnotations(methodDeclaration.scope, annotations, methodBinding);
+        }
 
-		Argument[] arguments = methodDeclaration.arguments;
-		if (arguments != null) {
-			int argumentLength = arguments.length;
-			for (int i = 0; i < argumentLength; i++) {
-				arguments[i].traverse(this, methodDeclaration.scope);
-			}
-		}
-		return false;
-	}
+        TypeParameter[] typeParameters = methodDeclaration.typeParameters;
+        if (typeParameters != null) {
+            int typeParametersLength = typeParameters.length;
+            for (int i = 0; i < typeParametersLength; i++) {
+                typeParameters[i].traverse(this, methodDeclaration.scope);
+            }
+        }
 
-	@Override
-	public boolean visit(TypeDeclaration memberTypeDeclaration, ClassScope scope) {
-		SourceTypeBinding binding = memberTypeDeclaration.binding;
-		if (binding == null) {
-			return false;
-		}
-		Annotation[] annotations = memberTypeDeclaration.annotations;
-		if (annotations != null) {
-			this.resolveAnnotations(
-					memberTypeDeclaration.staticInitializerScope,
-					annotations,
-					binding);
-		}
-		return true;
-	}
+        Argument[] arguments = methodDeclaration.arguments;
+        if (arguments != null) {
+            int argumentLength = arguments.length;
+            for (int i = 0; i < argumentLength; i++) {
+                arguments[i].traverse(this, methodDeclaration.scope);
+            }
+        }
+        return false;
+    }
 
-	@Override
-	public boolean visit(TypeDeclaration typeDeclaration, CompilationUnitScope scope) {
-		SourceTypeBinding binding = typeDeclaration.binding;
-		if (binding == null) {
-			return false;
-		}
-		Annotation[] annotations = typeDeclaration.annotations;
-		if (annotations != null) {
-			this.resolveAnnotations(
-					typeDeclaration.staticInitializerScope,
-					annotations,
-					binding);
-		}
-		return true;
-	}
-	@Override
-	public boolean visit(ModuleDeclaration module, CompilationUnitScope scope) {
-		ModuleBinding binding = module.binding;
-		if (binding == null) {
-			return false;
-		}
-		//module.resolveTypeDirectives(scope);
-		// The above call also resolvesAnnotations <=== actually this doesn't populate _annoToElement which is what we need
+    @Override
+    public boolean visit(TypeDeclaration memberTypeDeclaration, ClassScope scope) {
+        SourceTypeBinding binding = memberTypeDeclaration.binding;
+        if (binding == null) {
+            return false;
+        }
+        Annotation[] annotations = memberTypeDeclaration.annotations;
+        if (annotations != null) {
+            this.resolveAnnotations(memberTypeDeclaration.staticInitializerScope, annotations, binding);
+        }
+        return true;
+    }
 
-		Annotation[] annotations = module.annotations;
-		if (annotations != null) {
-			this.resolveAnnotations(module.scope, 
-					annotations, 
-					binding);
-		}
-		return true;
-	}
+    @Override
+    public boolean visit(TypeDeclaration typeDeclaration, CompilationUnitScope scope) {
+        SourceTypeBinding binding = typeDeclaration.binding;
+        if (binding == null) {
+            return false;
+        }
+        Annotation[] annotations = typeDeclaration.annotations;
+        if (annotations != null) {
+            this.resolveAnnotations(typeDeclaration.staticInitializerScope, annotations, binding);
+        }
+        return true;
+    }
 
-	private void resolveAnnotations(BlockScope scope, Annotation[] annotations, Binding currentBinding) {
+    @Override
+    public boolean visit(ModuleDeclaration module, CompilationUnitScope scope) {
+        ModuleBinding binding = module.binding;
+        if (binding == null) {
+            return false;
+        }
+        // module.resolveTypeDirectives(scope);
+        // The above call also resolvesAnnotations <=== actually this doesn't populate _annoToElement which is what we
+        // need
 
-		int length = annotations == null ? 0 : annotations.length;
-		if (length == 0)
-			return;
+        Annotation[] annotations = module.annotations;
+        if (annotations != null) {
+            this.resolveAnnotations(module.scope, annotations, binding);
+        }
+        return true;
+    }
 
-		boolean old = scope.insideTypeAnnotation;
-		scope.insideTypeAnnotation = true;
-		currentBinding.getAnnotationTagBits();
-		scope.insideTypeAnnotation = old;
-		ElementImpl element = (ElementImpl) this._factory.newElement(currentBinding);
-		AnnotationBinding [] annotationBindings = element.getPackedAnnotationBindings(); // discovery is never in terms of repeating annotation.
-		for (AnnotationBinding binding : annotationBindings) {
-			ReferenceBinding annotationType = binding.getAnnotationType();
-			if (Annotation.isAnnotationTargetAllowed(scope, annotationType, currentBinding)
-					) { // binding should be resolved, but in case it's not, ignore it: it could have been wrapped into a container.
-				TypeElement anno = (TypeElement)this._factory.newElement(annotationType);
-				this._annoToElement.put(anno, element);
-			}
-		}
-	}
+    private void resolveAnnotations(BlockScope scope, Annotation[] annotations, Binding currentBinding) {
+
+        int length = annotations == null ? 0 : annotations.length;
+        if (length == 0)
+            return;
+
+        boolean old = scope.insideTypeAnnotation;
+        scope.insideTypeAnnotation = true;
+        currentBinding.getAnnotationTagBits();
+        scope.insideTypeAnnotation = old;
+        ElementImpl element = (ElementImpl) this._factory.newElement(currentBinding);
+        AnnotationBinding[] annotationBindings = element.getPackedAnnotationBindings(); // discovery is never in terms
+                                                                                        // of repeating annotation.
+        for (AnnotationBinding binding : annotationBindings) {
+            ReferenceBinding annotationType = binding.getAnnotationType();
+            if (Annotation.isAnnotationTargetAllowed(scope, annotationType, currentBinding)) { // binding should be
+                                                                                               // resolved, but in case
+                                                                                               // it's not, ignore it:
+                                                                                               // it could have been
+                                                                                               // wrapped into a
+                                                                                               // container.
+                TypeElement anno = (TypeElement) this._factory.newElement(annotationType);
+                this._annoToElement.put(anno, element);
+            }
+        }
+    }
 }

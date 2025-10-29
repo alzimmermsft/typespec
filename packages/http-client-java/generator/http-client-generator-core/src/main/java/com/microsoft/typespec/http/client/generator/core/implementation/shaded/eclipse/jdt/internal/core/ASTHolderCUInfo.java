@@ -13,14 +13,14 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
-import java.util.Map;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CategorizedProblem;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.dom.CompilationUnit;
+import java.util.Map;
 
 public class ASTHolderCUInfo extends CompilationUnitElementInfo {
-	public int astLevel;
-	boolean resolveBindings;
-	int reconcileFlags;
-	Map<String, CategorizedProblem[]> problems = null;
-	CompilationUnit ast;
+    public int astLevel;
+    boolean resolveBindings;
+    int reconcileFlags;
+    Map<String, CategorizedProblem[]> problems = null;
+    CompilationUnit ast;
 }

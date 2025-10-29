@@ -25,36 +25,37 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class MarkerAnnotation extends Annotation {
 
-	public MarkerAnnotation(TypeReference type, int sourceStart) {
-		this.type = type;
-		this.sourceStart = sourceStart;
-		this.sourceEnd = type.sourceEnd;
-	}
+    public MarkerAnnotation(TypeReference type, int sourceStart) {
+        this.type = type;
+        this.sourceStart = sourceStart;
+        this.sourceEnd = type.sourceEnd;
+    }
 
-	/**
-	 * @see org.eclipse.jdt.internal.compiler.ast.Annotation#memberValuePairs()
-	 */
-	@Override
-	public MemberValuePair[] memberValuePairs() {
-		return NoValuePairs;
-	}
+    /**
+     * @see org.eclipse.jdt.internal.compiler.ast.Annotation#memberValuePairs()
+     */
+    @Override
+    public MemberValuePair[] memberValuePairs() {
+        return NoValuePairs;
+    }
 
-	@Override
-	public void traverse(ASTVisitor visitor, BlockScope scope) {
-		if (visitor.visit(this, scope)) {
-			if (this.type != null) {
-				this.type.traverse(visitor, scope);
-			}
-		}
-		visitor.endVisit(this, scope);
-	}
-	@Override
-	public void traverse(ASTVisitor visitor, ClassScope scope) {
-		if (visitor.visit(this, scope)) {
-			if (this.type != null) {
-				this.type.traverse(visitor, scope);
-			}
-		}
-		visitor.endVisit(this, scope);
-	}
+    @Override
+    public void traverse(ASTVisitor visitor, BlockScope scope) {
+        if (visitor.visit(this, scope)) {
+            if (this.type != null) {
+                this.type.traverse(visitor, scope);
+            }
+        }
+        visitor.endVisit(this, scope);
+    }
+
+    @Override
+    public void traverse(ASTVisitor visitor, ClassScope scope) {
+        if (visitor.visit(this, scope)) {
+            if (this.type != null) {
+                this.type.traverse(visitor, scope);
+            }
+        }
+        visitor.endVisit(this, scope);
+    }
 }

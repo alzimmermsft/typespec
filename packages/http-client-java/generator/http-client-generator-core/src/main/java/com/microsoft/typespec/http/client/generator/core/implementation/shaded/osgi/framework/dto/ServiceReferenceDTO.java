@@ -16,11 +16,10 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.dto;
 
-import java.util.Map;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.dto.DTO;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Constants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.ServiceReference;
+import java.util.Map;
 
 /**
  * Data Transfer Object for a ServiceReference.
@@ -38,33 +37,33 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 public class ServiceReferenceDTO extends DTO {
     /**
-	 * The id of the service.
-	 * 
-	 * @see Constants#SERVICE_ID
-	 */
-    public long                id;
+     * The id of the service.
+     * 
+     * @see Constants#SERVICE_ID
+     */
+    public long id;
 
     /**
-	 * The id of the bundle that registered the service.
-	 * 
-	 * @see ServiceReference#getBundle()
-	 */
-    public long                bundle;
+     * The id of the bundle that registered the service.
+     * 
+     * @see ServiceReference#getBundle()
+     */
+    public long bundle;
 
     /**
-	 * The properties for the service.
-	 * 
-	 * The value type must be a numerical type, Boolean, String, DTO or an array
-	 * of any of the former.
-	 * 
-	 * @see ServiceReference#getProperty(String)
-	 */
+     * The properties for the service.
+     * 
+     * The value type must be a numerical type, Boolean, String, DTO or an array
+     * of any of the former.
+     * 
+     * @see ServiceReference#getProperty(String)
+     */
     public Map<String, Object> properties;
 
     /**
-	 * The ids of the bundles that are using the service.
-	 * 
-	 * @see ServiceReference#getUsingBundles()
-	 */
-    public long[]              usingBundles;
+     * The ids of the bundles that are using the service.
+     * 
+     * @see ServiceReference#getUsingBundles()
+     */
+    public long[] usingBundles;
 }

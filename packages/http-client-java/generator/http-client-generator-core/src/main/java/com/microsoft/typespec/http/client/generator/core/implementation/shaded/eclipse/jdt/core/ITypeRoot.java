@@ -64,47 +64,4 @@ public interface ITypeRoot extends IJavaElement, IParent, IOpenable, ISourceRefe
      */
     IJavaElement getElementAt(int position) throws JavaModelException;
 
-    /**
-     * Returns a shared working copy on this compilation unit or class file using the given working copy owner to create
-     * the buffer. If this is already a working copy of the given owner, the element itself is returned.
-     * This API can only answer an already existing working copy if it is based on the same
-     * original Java type root AND was using the same working copy owner (that is, as defined by {@link Object#equals}).
-     * <p>
-     * The life time of a shared working copy is as follows:
-     * <ul>
-     * <li>The first call to {@link #getWorkingCopy(WorkingCopyOwner, IProgressMonitor)}
-     * creates a new working copy for this element</li>
-     * <li>Subsequent calls increment an internal counter.</li>
-     * <li>A call to {@link ICompilationUnit#discardWorkingCopy()} decrements the internal counter.</li>
-     * <li>When this counter is 0, the working copy is discarded.
-     * </ul>
-     * So users of this method must discard exactly once the working copy.
-     * <p>
-     * Note that the working copy owner will be used for the life time of the shared working copy, that is if the
-     * working copy is closed then reopened, this owner will be used.
-     * The buffer will be automatically initialized with the original's Java type root content upon creation.
-     * <p>
-     * When the shared working copy instance is created, an ADDED IJavaElementDelta is reported on this
-     * working copy.
-     * </p><p>
-     * A working copy can be created on a not-yet existing compilation unit.
-     * In particular, such a working copy can then be committed in order to create
-     * the corresponding compilation unit.
-     * </p><p>
-     * Note that possible problems of this working copy are reported using this method only
-     * if the given working copy owner returns a problem requestor for this working copy
-     * (see {@link WorkingCopyOwner#getProblemRequestor(ICompilationUnit)}).
-     * </p>
-     *
-     * @param owner the working copy owner that creates a buffer that is used to get the content
-     * of the working copy
-     * @param monitor a progress monitor used to report progress while opening this compilation unit
-     * or <code>null</code> if no progress should be reported
-     * @throws JavaModelException if the contents of this element can
-     * not be determined.
-     * @return a new working copy of this Java type root using the given owner to create
-     * the buffer, or this Java type root if it is already a working copy
-     */
-    ICompilationUnit getWorkingCopy(WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaModelException;
-
 }

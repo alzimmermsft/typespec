@@ -16,7 +16,8 @@ import java.lang.annotation.Target;
  * 
  * <pre>
  * &#064;Documented
- * &#064;TypeQualifierNickname &#064;Pattern("[0-9]{3}-[0-9]{2}-[0-9]{4}") 
+ * &#064;TypeQualifierNickname
+ * &#064;Pattern("[0-9]{3}-[0-9]{2}-[0-9]{4}")
  * &#064;Retention(RetentionPolicy.RUNTIME)
  * public &#064;interface SocialSecurityNumber {
  * }

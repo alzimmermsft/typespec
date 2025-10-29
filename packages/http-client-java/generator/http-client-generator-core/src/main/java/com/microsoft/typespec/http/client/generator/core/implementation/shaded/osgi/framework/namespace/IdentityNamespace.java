@@ -45,128 +45,128 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 public final class IdentityNamespace extends Namespace {
 
-	/**
-	 * Namespace name for identity capabilities and requirements.
-	 * 
-	 * <p>
-	 * Also, the capability attribute used to specify the symbolic name of the
-	 * resource.
-	 */
-	public static final String	IDENTITY_NAMESPACE					= "osgi.identity";
+    /**
+     * Namespace name for identity capabilities and requirements.
+     * 
+     * <p>
+     * Also, the capability attribute used to specify the symbolic name of the
+     * resource.
+     */
+    public static final String IDENTITY_NAMESPACE = "osgi.identity";
 
-	/**
-	 * The capability directive identifying if the resource is a singleton. A
-	 * {@code String} value of &quot;true&quot; indicates the resource is a
-	 * singleton; any other value or {@code null} indicates the resource is not
-	 * a singleton.
-	 */
-	public static final String	CAPABILITY_SINGLETON_DIRECTIVE		= "singleton";
+    /**
+     * The capability directive identifying if the resource is a singleton. A
+     * {@code String} value of &quot;true&quot; indicates the resource is a
+     * singleton; any other value or {@code null} indicates the resource is not
+     * a singleton.
+     */
+    public static final String CAPABILITY_SINGLETON_DIRECTIVE = "singleton";
 
-	/**
-	 * The capability attribute identifying the {@code Version} of the resource
-	 * if one is specified or {@code 0.0.0} if not specified. The value of this
-	 * attribute must be of type {@code Version}.
-	 */
-	public static final String	CAPABILITY_VERSION_ATTRIBUTE		= "version";
+    /**
+     * The capability attribute identifying the {@code Version} of the resource
+     * if one is specified or {@code 0.0.0} if not specified. The value of this
+     * attribute must be of type {@code Version}.
+     */
+    public static final String CAPABILITY_VERSION_ATTRIBUTE = "version";
 
-	/**
-	 * The capability attribute identifying the resource type. If the resource
-	 * has no type then the value {@link #TYPE_UNKNOWN unknown} must be used for
-	 * the attribute.
-	 * 
-	 * @see #TYPE_BUNDLE
-	 * @see #TYPE_FRAGMENT
-	 * @see #TYPE_UNKNOWN
-	 */
-	public static final String	CAPABILITY_TYPE_ATTRIBUTE			= "type";
+    /**
+     * The capability attribute identifying the resource type. If the resource
+     * has no type then the value {@link #TYPE_UNKNOWN unknown} must be used for
+     * the attribute.
+     * 
+     * @see #TYPE_BUNDLE
+     * @see #TYPE_FRAGMENT
+     * @see #TYPE_UNKNOWN
+     */
+    public static final String CAPABILITY_TYPE_ATTRIBUTE = "type";
 
-	/**
-	 * The attribute value identifying the resource
-	 * {@link #CAPABILITY_TYPE_ATTRIBUTE type} as an OSGi bundle.
-	 * 
-	 * @see #CAPABILITY_TYPE_ATTRIBUTE
-	 */
-	public static final String	TYPE_BUNDLE							= "osgi.bundle";
+    /**
+     * The attribute value identifying the resource
+     * {@link #CAPABILITY_TYPE_ATTRIBUTE type} as an OSGi bundle.
+     * 
+     * @see #CAPABILITY_TYPE_ATTRIBUTE
+     */
+    public static final String TYPE_BUNDLE = "osgi.bundle";
 
-	/**
-	 * The attribute value identifying the resource
-	 * {@link #CAPABILITY_TYPE_ATTRIBUTE type} as an OSGi fragment.
-	 * 
-	 * @see #CAPABILITY_TYPE_ATTRIBUTE
-	 */
-	public static final String	TYPE_FRAGMENT						= "osgi.fragment";
+    /**
+     * The attribute value identifying the resource
+     * {@link #CAPABILITY_TYPE_ATTRIBUTE type} as an OSGi fragment.
+     * 
+     * @see #CAPABILITY_TYPE_ATTRIBUTE
+     */
+    public static final String TYPE_FRAGMENT = "osgi.fragment";
 
-	/**
-	 * The attribute value identifying the resource
-	 * {@link #CAPABILITY_TYPE_ATTRIBUTE type} as unknown.
-	 * 
-	 * @see #CAPABILITY_TYPE_ATTRIBUTE
-	 */
-	public static final String	TYPE_UNKNOWN						= "unknown";
+    /**
+     * The attribute value identifying the resource
+     * {@link #CAPABILITY_TYPE_ATTRIBUTE type} as unknown.
+     * 
+     * @see #CAPABILITY_TYPE_ATTRIBUTE
+     */
+    public static final String TYPE_UNKNOWN = "unknown";
 
-	/**
-	 * The attribute value that contains tags for the resource. A tag is used to
-	 * identify an aspect of the resource that is not otherwise expressed by the
-	 * capabilities of the resource. The value of this attribute must be of type
-	 * {@code List<String>}.
-	 * 
-	 * @since 1.2
-	 */
-	public static final String	CAPABILITY_TAGS_ATTRIBUTE			= "tags";
+    /**
+     * The attribute value that contains tags for the resource. A tag is used to
+     * identify an aspect of the resource that is not otherwise expressed by the
+     * capabilities of the resource. The value of this attribute must be of type
+     * {@code List<String>}.
+     * 
+     * @since 1.2
+     */
+    public static final String CAPABILITY_TAGS_ATTRIBUTE = "tags";
 
-	/**
-	 * The capability attribute that contains a human readable copyright notice
-	 * for the resource. See the {@code Bundle-Copyright} manifest header.
-	 */
-	public static final String	CAPABILITY_COPYRIGHT_ATTRIBUTE		= "copyright";
+    /**
+     * The capability attribute that contains a human readable copyright notice
+     * for the resource. See the {@code Bundle-Copyright} manifest header.
+     */
+    public static final String CAPABILITY_COPYRIGHT_ATTRIBUTE = "copyright";
 
-	/**
-	 * The capability attribute that contains a human readable description for
-	 * the resource. See the {@code Bundle-Description} manifest header.
-	 */
-	public static final String	CAPABILITY_DESCRIPTION_ATTRIBUTE	= "description";
+    /**
+     * The capability attribute that contains a human readable description for
+     * the resource. See the {@code Bundle-Description} manifest header.
+     */
+    public static final String CAPABILITY_DESCRIPTION_ATTRIBUTE = "description";
 
-	/**
-	 * The capability attribute that contains the URL to documentation for the
-	 * resource. See the {@code Bundle-DocURL} manifest header.
-	 */
-	public static final String	CAPABILITY_DOCUMENTATION_ATTRIBUTE	= "documentation";
+    /**
+     * The capability attribute that contains the URL to documentation for the
+     * resource. See the {@code Bundle-DocURL} manifest header.
+     */
+    public static final String CAPABILITY_DOCUMENTATION_ATTRIBUTE = "documentation";
 
-	/**
-	 * The capability attribute that contains the URL to the license for the
-	 * resource. See the {@code name} portion of the {@code Bundle-License}
-	 * manifest header.
-	 */
-	public static final String	CAPABILITY_LICENSE_ATTRIBUTE		= "license";
+    /**
+     * The capability attribute that contains the URL to the license for the
+     * resource. See the {@code name} portion of the {@code Bundle-License}
+     * manifest header.
+     */
+    public static final String CAPABILITY_LICENSE_ATTRIBUTE = "license";
 
-	/**
-	 * The requirement directive that classifies the relationship with another
-	 * resource.
-	 * 
-	 * @see #CLASSIFIER_SOURCES
-	 * @see #CLASSIFIER_JAVADOC
-	 */
-	public static final String	REQUIREMENT_CLASSIFIER_DIRECTIVE	= "classifier";
+    /**
+     * The requirement directive that classifies the relationship with another
+     * resource.
+     * 
+     * @see #CLASSIFIER_SOURCES
+     * @see #CLASSIFIER_JAVADOC
+     */
+    public static final String REQUIREMENT_CLASSIFIER_DIRECTIVE = "classifier";
 
-	/**
-	 * The attribute value identifying the resource
-	 * {@link #REQUIREMENT_CLASSIFIER_DIRECTIVE classifier} as an archive
-	 * containing the source code in the same directory layout as the resource.
-	 * 
-	 * @see #REQUIREMENT_CLASSIFIER_DIRECTIVE
-	 */
+    /**
+     * The attribute value identifying the resource
+     * {@link #REQUIREMENT_CLASSIFIER_DIRECTIVE classifier} as an archive
+     * containing the source code in the same directory layout as the resource.
+     * 
+     * @see #REQUIREMENT_CLASSIFIER_DIRECTIVE
+     */
 
-	public static final String	CLASSIFIER_SOURCES					= "sources";
-	/**
-	 * The attribute value identifying the resource
-	 * {@link #REQUIREMENT_CLASSIFIER_DIRECTIVE classifier} as an archive
-	 * containing the javadoc in the same directory layout as the resource.
-	 * 
-	 * @see #REQUIREMENT_CLASSIFIER_DIRECTIVE
-	 */
-	public static final String	CLASSIFIER_JAVADOC					= "javadoc";
+    public static final String CLASSIFIER_SOURCES = "sources";
+    /**
+     * The attribute value identifying the resource
+     * {@link #REQUIREMENT_CLASSIFIER_DIRECTIVE classifier} as an archive
+     * containing the javadoc in the same directory layout as the resource.
+     * 
+     * @see #REQUIREMENT_CLASSIFIER_DIRECTIVE
+     */
+    public static final String CLASSIFIER_JAVADOC = "javadoc";
 
-	private IdentityNamespace() {
-		// empty
-	}
+    private IdentityNamespace() {
+        // empty
+    }
 }

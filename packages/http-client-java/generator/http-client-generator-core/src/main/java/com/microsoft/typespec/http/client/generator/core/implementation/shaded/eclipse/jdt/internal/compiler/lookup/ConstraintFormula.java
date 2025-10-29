@@ -26,42 +26,42 @@ import java.util.Set;
  */
 abstract class ConstraintFormula extends ReductionResult {
 
-	static final List<InferenceVariable> EMPTY_VARIABLE_LIST = Collections.emptyList();
-	static final ConstraintFormula[] NO_CONSTRAINTS = new ConstraintTypeFormula[0];
+    static final List<InferenceVariable> EMPTY_VARIABLE_LIST = Collections.emptyList();
+    static final ConstraintFormula[] NO_CONSTRAINTS = new ConstraintTypeFormula[0];
 
-	// constants for unicode debug output from ASCII source files:
-	static final char LEFT_ANGLE_BRACKET = '\u27E8';
-	static final char RIGHT_ANGLE_BRACKET = '\u27E9';
+    // constants for unicode debug output from ASCII source files:
+    static final char LEFT_ANGLE_BRACKET = '\u27E8';
+    static final char RIGHT_ANGLE_BRACKET = '\u27E9';
 
-	public abstract Object reduce(InferenceContext18 inferenceContext) throws InferenceFailureException;
+    public abstract Object reduce(InferenceContext18 inferenceContext) throws InferenceFailureException;
 
-	Collection<InferenceVariable> inputVariables(InferenceContext18 context) {
-		return EMPTY_VARIABLE_LIST;
-	}
+    Collection<InferenceVariable> inputVariables(InferenceContext18 context) {
+        return EMPTY_VARIABLE_LIST;
+    }
 
-	Collection<InferenceVariable> outputVariables(InferenceContext18 context) {
-		Set<InferenceVariable> variables = new LinkedHashSet<>();
-		this.right.collectInferenceVariables(variables);
-		if (!variables.isEmpty())
-			variables.removeAll(inputVariables(context));
-		return variables;
-	}
+    Collection<InferenceVariable> outputVariables(InferenceContext18 context) {
+        Set<InferenceVariable> variables = new LinkedHashSet<>();
+        this.right.collectInferenceVariables(variables);
+        if (!variables.isEmpty())
+            variables.removeAll(inputVariables(context));
+        return variables;
+    }
 
-	public boolean applySubstitution(BoundSet solutionSet, InferenceVariable[] variables) {
-		for (InferenceVariable variable : variables) {
-			TypeBinding instantiation = solutionSet.getInstantiation(variable, null);
-			if (instantiation == null)
-				return false;
-			this.right = this.right.substituteInferenceVariable(variable, instantiation);
-		}
-		return true;
-	}
+    public boolean applySubstitution(BoundSet solutionSet, InferenceVariable[] variables) {
+        for (InferenceVariable variable : variables) {
+            TypeBinding instantiation = solutionSet.getInstantiation(variable, null);
+            if (instantiation == null)
+                return false;
+            this.right = this.right.substituteInferenceVariable(variable, instantiation);
+        }
+        return true;
+    }
 
-	// for debug toString():
-	protected void appendTypeName(StringBuilder buf, TypeBinding type) {
-		if (type instanceof CaptureBinding18)
-			buf.append(type.toString()); // contains more info than readable name
-		else
-			buf.append(type.readableName());
-	}
+    // for debug toString():
+    protected void appendTypeName(StringBuilder buf, TypeBinding type) {
+        if (type instanceof CaptureBinding18)
+            buf.append(type.toString()); // contains more info than readable name
+        else
+            buf.append(type.readableName());
+    }
 }

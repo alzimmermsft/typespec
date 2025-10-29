@@ -26,5 +26,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.g
 @GwtCompatible(emulated = true)
 @ElementTypesAreNonnullByDefault
 abstract class ForwardingImmutableList<E> {
-  private ForwardingImmutableList() {}
+    private ForwardingImmutableList() {
+    }
 }

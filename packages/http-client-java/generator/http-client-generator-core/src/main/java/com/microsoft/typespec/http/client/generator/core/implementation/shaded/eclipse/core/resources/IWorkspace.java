@@ -16,14 +16,12 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IAdaptable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.ICoreRunnable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IStatus;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.OperationCanceledException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.jobs.ISchedulingRule;
-import java.net.URI;
 
 /**
  * Workspaces are the basis for Eclipse Platform resource management. There is
@@ -110,7 +108,7 @@ import java.net.URI;
  * @noimplement This interface is not intended to be implemented by clients.
  * @noextend This interface is not intended to be extended by clients.
  */
-public interface IWorkspace extends IAdaptable {
+public interface IWorkspace {
     /**
      * flag constant (bit mask value 1) indicating that resource change
      * notifications should be avoided during the invocation of a compound
@@ -120,40 +118,6 @@ public interface IWorkspace extends IAdaptable {
      * @since 3.0
      */
     int AVOID_UPDATE = 1;
-
-    /**
-     * Returns the filter descriptor with the given unique identifier, or
-     * <code>null</code> if there is no such filter.
-     *
-     * @param filterMatcherId the filter matcher extension identifier (e.g.
-     * <code>"com.example.coolFilter"</code>).
-     * @return the filter matcher descriptor, or <code>null</code>
-     * @since 3.6
-     */
-    IFilterMatcherDescriptor getFilterMatcherDescriptor(String filterMatcherId);
-
-    /**
-     * Returns the nature descriptor with the given unique identifier, or
-     * <code>null</code> if there is no such nature.
-     *
-     * @param natureId the nature extension identifier (e.g.
-     * <code>"com.example.coolNature"</code>).
-     * @return the nature descriptor, or <code>null</code>
-     * @since 2.0
-     */
-    IProjectNatureDescriptor getNatureDescriptor(String natureId);
-
-    /**
-     * Returns the workspace description. This object is responsible for
-     * defining workspace preferences. The returned value is a modifiable copy
-     * but changes are not automatically applied to the workspace. In order to
-     * changes take effect, <code>IWorkspace.setDescription</code> needs to be
-     * called. The workspace description values are store in the preference
-     * store.
-     *
-     * @return the workspace description
-     */
-    IWorkspaceDescription getDescription();
 
     /**
      * Returns the root resource of this workspace.
@@ -173,54 +137,15 @@ public interface IWorkspace extends IAdaptable {
     IResourceRuleFactory getRuleFactory();
 
     /**
-     * Returns the synchronizer for this workspace.
-     *
-     * @return the synchronizer
-     * @see ISynchronizer
-     */
-    ISynchronizer getSynchronizer();
-
-    /**
-     * Returns whether this workspace performs autobuilds.
-     *
-     * @return <code>true</code> if autobuilding is on, <code>false</code>
-     * otherwise
-     */
-    boolean isAutoBuilding();
-
-    /**
      * Returns whether the workspace tree is currently locked. Resource changes
      * are disallowed during certain types of resource change event
      * notification. See <code>IResourceChangeEvent</code> for more details.
      *
      * @return boolean <code>true</code> if the workspace tree is locked,
      * <code>false</code> otherwise
-     * @see IResourceChangeEvent
      * @since 2.1
      */
     boolean isTreeLocked();
-
-    /**
-     * Creates and returns a new project description for a project with the
-     * given name. This object is useful when creating, moving or copying
-     * projects.
-     * <p>
-     * The project description is initialized to:
-     * </p>
-     * <ul>
-     * <li>the given project name</li>
-     * <li>no references to other projects</li>
-     * <li>an empty build spec</li>
-     * <li>an empty comment</li>
-     * </ul>
-     * <p>
-     * The returned value is writeable.
-     * </p>
-     *
-     * @param projectName the name of the project
-     * @return a new project description
-     */
-    IProjectDescription newProjectDescription(String projectName);
 
     /**
      * Runs the given action as an atomic workspace operation.
@@ -314,133 +239,6 @@ public interface IWorkspace extends IAdaptable {
     void run(IWorkspaceRunnable action, IProgressMonitor monitor) throws CoreException;
 
     /**
-     * Advises that the caller intends to modify the contents of the given files
-     * in the near future and asks whether modifying all these files would be
-     * reasonable. The files must all exist. This method is used to give the VCM
-     * component an opportunity to check out (or otherwise prepare) the files if
-     * required. (It is provided in this component rather than in the UI so that
-     * "core" (i.e., head-less) clients can use it. Similarly, it is located
-     * outside the VCM component for the convenience of clients that must also
-     * operate in configurations without VCM.)
-     * <p>
-     * A client (such as an editor) should perform a <code>validateEdit</code>
-     * on a file whenever it finds itself in the following position: (a) the
-     * file is marked read-only, and (b) the client believes it likely (not
-     * necessarily certain) that it will modify the file's contents at some
-     * point. A case in point is an editor that has a buffer opened on a file.
-     * When the user starts to dirty the buffer, the editor should check to see
-     * whether the file is read-only. If it is, it should call
-     * <code>validateEdit</code>, and can reasonably expect this call, when
-     * successful, to cause the file to become read-write. An editor should also
-     * be sensitive to a file becoming read-only again even after a successful
-     * <code>validateEdit</code> (e.g., due to the user checking in the file
-     * in a different view); the editor should again call
-     * <code>validateEdit</code> if the file is read-only before attempting to
-     * save the contents of the file.
-     * </p>
-     * <p>
-     * By passing a UI context, the caller indicates that the VCM component may
-     * contact the user to help decide how best to proceed. If no UI context is
-     * provided, the VCM component will make its decision without additional
-     * interaction with the user. If OK is returned, the caller can safely
-     * assume that all of the given files haven been prepared for modification
-     * and that there is good reason to believe that
-     * <code>IFile.setContents</code> (or <code>appendContents</code>)
-     * would be successful on any of them. If the result is not OK, modifying
-     * the given files might not succeed for the reason(s) indicated.
-     * </p>
-     * <p>
-     * If a shell is passed in as the context, the VCM component may bring up a
-     * dialogs to query the user or report difficulties; the shell should be
-     * used to parent any such dialogs; the caller may safely assume that the
-     * reasons for failure will have been made clear to the user. If
-     * {@link IWorkspace#VALIDATE_PROMPT} is passed
-     * as the context, this indicates that the caller does not have access to
-     * a UI context but would still like the user to be prompted if required.
-     * If <code>null</code> is passed, the user should not be contacted; any
-     * failures should be reported via the result; the caller may chose to
-     * present these to the user however they see fit. The ideal implementation
-     * of this method is transactional; no files would be affected unless the
-     * go-ahead could be given. (In practice, there may be no feasible way to
-     * ensure such changes get done atomically.)
-     * </p>
-     * <p>
-     * The method calls <code>FileModificationValidator.validateEdit</code>
-     * for the file modification validator (if provided by the VCM plug-in).
-     * When there is no file modification validator, this method returns a
-     * status with an <code>IResourceStatus.READ_ONLY_LOCAL</code> code if one
-     * of the files is read-only, and a status with an <code>IStatus.OK</code>
-     * code otherwise.
-     * </p>
-     * <p>
-     * This method may be called from any thread. If the UI context is used, it
-     * is the responsibility of the implementor of
-     * <code>FileModificationValidator.validateEdit</code> to interact with
-     * the UI context in an appropriate thread.
-     * </p>
-     *
-     * @param files the files that are to be modified; these files must all
-     * exist in the workspace
-     * @param context either {@link IWorkspace#VALIDATE_PROMPT},
-     * or the
-     * <code>com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.swt.widgets.Shell</code>
-     * that is
-     * to be used to parent any dialogs with the user, or <code>null</code> if
-     * there is no UI context (declared as an <code>Object</code> to avoid any
-     * direct references on the SWT component)
-     * @return a status object that is <code>OK</code> if things are fine,
-     * otherwise a status describing reasons why modifying the given files is not
-     * reasonable. A status with a severity of <code>CANCEL</code> is returned
-     * if the validation was canceled, indicating the edit should not proceed.
-     * @see IResourceRuleFactory#validateEditRule(IResource[])
-     * @since 2.0
-     */
-    IStatus validateEdit(IFile[] files, Object context);
-
-    /**
-     * Validates the given {@link URI} as the location of the given resource on disk.
-     * The location must be either an absolute URI, or a relative URI
-     * whose first segment is the name of a defined workspace path variable.
-     * A link location must obey the following rules:
-     * <ul>
-     * <li>must not overlap with the platform's metadata directory</li>
-     * <li>must not be the same as or a parent of the root directory of the
-     * project the linked resource is contained in</li>
-     * </ul>
-     * <p>
-     * This method also checks that the given resource can legally become a
-     * linked resource. This includes the following restrictions:
-     * <ul>
-     * <li>must have a project as its immediate parent</li>
-     * <li>project natures and the team hook may disallow linked resources on
-     * projects they are associated with</li>
-     * <li>the global workspace preference to disable linking,
-     * <code>ResourcesPlugin.PREF_DISABLE_LINKING</code> must not be set to
-     * &quot;true&quot;</li>
-     * </ul>
-     * <p>
-     * This method will return a status with severity <code>IStatus.ERROR</code>
-     * if the location does not obey the above rules. Also, this method will
-     * return a status with severity <code>IStatus.WARNING</code> if the
-     * location overlaps the location of any existing resource in the workspace.
-     * </p>
-     * <p>
-     * Note: this method does not consider whether files or directories exist in
-     * the file system at the specified location.
-     *
-     * @param resource the resource to validate the location for
-     * @param location the location of the linked resource contents in some file system
-     * @return a status object with code <code>IStatus.OK</code> if the given
-     * location is valid as the linked resource location, otherwise a status
-     * object with severity <code>IStatus.WARNING</code> or
-     * <code>IStatus.ERROR</code> indicating what is wrong with the location
-     * @see IStatus#OK
-     * @see ResourcesPlugin#PREF_DISABLE_LINKING
-     * @since 3.2
-     */
-    IStatus validateLinkLocationURI(IResource resource, URI location);
-
-    /**
      * Validates the given string as the name of a resource valid for one of the
      * given types.
      * <p>
@@ -470,37 +268,6 @@ public interface IWorkspace extends IAdaptable {
      * @see IStatus#OK
      */
     IStatus validateName(String segment, int typeMask);
-
-    /**
-     * Validates the given URI as the location of the given project.
-     * The location must be either an absolute URI, or a relative URI
-     * whose first segment is the name of a defined workspace path variable.
-     * A project location must obey the following rules:
-     * <ul>
-     * <li>must not be the same as another open or closed project</li>
-     * <li>must not occupy the default location for any project, whether existing or not</li>
-     * <li>must not be the same as or a parent of the platform's working directory</li>
-     * <li>must not be the same as or a child of the location of any existing
-     * linked resource in the given project</li>
-     * </ul>
-     * <p>
-     * Note: this method does not consider whether files or directories exist in
-     * the file system at the specified path.
-     * </p>
-     *
-     * @param project the project to validate the location for, can be <code>null</code>
-     * if non default project location is validated
-     * @param location the location of the project contents on disk, or <code>null</code>
-     * if the default project location is used
-     * @return a status object with code <code>IStatus.OK</code> if the given
-     * location is valid as the project content location, otherwise a status
-     * object indicating what is wrong with the location
-     * @see IProjectDescription#getLocationURI()
-     * @see IProjectDescription#setLocationURI(URI)
-     * @see IStatus#OK
-     * @since 3.2
-     */
-    IStatus validateProjectLocationURI(IProject project, URI location);
 
     /**
      * Returns the path variable manager for this workspace.

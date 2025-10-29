@@ -15,45 +15,46 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 public class ResolvedLambdaExpression extends LambdaExpression {
 
-	private final String uniqueKey;
-	private final LambdaExpression unresolved;
+    private final String uniqueKey;
+    private final LambdaExpression unresolved;
 
-	public ResolvedLambdaExpression(JavaElement parent, LambdaExpression unresolved, String uniqueKey) {
-		super(parent, unresolved.interphase, unresolved.sourceStart, unresolved.sourceEnd, unresolved.arrowPosition, unresolved.lambdaMethod);
-		this.uniqueKey = uniqueKey;
-		this.unresolved = unresolved;
-	}
+    public ResolvedLambdaExpression(JavaElement parent, LambdaExpression unresolved, String uniqueKey) {
+        super(parent, unresolved.interphase, unresolved.sourceStart, unresolved.sourceEnd, unresolved.arrowPosition,
+            unresolved.lambdaMethod);
+        this.uniqueKey = uniqueKey;
+        this.unresolved = unresolved;
+    }
 
     @Override
-	public String getKey() {
-		return this.uniqueKey;
-	}
+    public String getKey() {
+        return this.uniqueKey;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		return this.unresolved.equals(o);
-	}
+    @Override
+    public boolean equals(Object o) {
+        return this.unresolved.equals(o);
+    }
 
-	@Override
-	public boolean isResolved() {
-		return true;
-	}
+    @Override
+    public boolean isResolved() {
+        return true;
+    }
 
-	/**
-	 * for debugging only
-	 */
-	@Override
-	protected void toStringInfo(int tab, StringBuilder buffer, Object info, boolean showResolvedInfo) {
-		super.toStringInfo(tab, buffer, info, showResolvedInfo);
-		if (showResolvedInfo) {
-			buffer.append(" {key="); //$NON-NLS-1$
-			buffer.append(this.getKey());
-			buffer.append("}"); //$NON-NLS-1$
-		}
-	}
+    /**
+     * for debugging only
+     */
+    @Override
+    protected void toStringInfo(int tab, StringBuilder buffer, Object info, boolean showResolvedInfo) {
+        super.toStringInfo(tab, buffer, info, showResolvedInfo);
+        if (showResolvedInfo) {
+            buffer.append(" {key="); //$NON-NLS-1$
+            buffer.append(this.getKey());
+            buffer.append("}"); //$NON-NLS-1$
+        }
+    }
 
-	@Override
-	public JavaElement unresolved() {
-		return this.unresolved;
-	}
+    @Override
+    public JavaElement unresolved() {
+        return this.unresolved;
+    }
 }

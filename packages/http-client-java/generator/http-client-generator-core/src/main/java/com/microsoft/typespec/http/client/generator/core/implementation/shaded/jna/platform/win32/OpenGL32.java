@@ -38,8 +38,9 @@ public interface OpenGL32 extends StdCallLibrary {
      * The glGetString function returns a string describing the current OpenGL connection.
      *
      * @param name
-     *            One of the following symbolic constants.
-     * @return The glGetString function returns a pointer to a static string describing some aspect of the current OpenGL connection.
+     * One of the following symbolic constants.
+     * @return The glGetString function returns a pointer to a static string describing some aspect of the current
+     * OpenGL connection.
      */
     String glGetString(int name);
 
@@ -48,7 +49,7 @@ public interface OpenGL32 extends StdCallLibrary {
      * referenced by hdc. The rendering context has the same pixel format as the device context.
      *
      * @param windowDC
-     *            Handle to a device context for which the function creates a suitable OpenGL rendering context.
+     * Handle to a device context for which the function creates a suitable OpenGL rendering context.
      * @return handle to an OpenGL rendering context
      */
     WinDef.HGLRC wglCreateContext(HDC windowDC);
@@ -57,7 +58,7 @@ public interface OpenGL32 extends StdCallLibrary {
      * The wglGetCurrentContext function obtains a handle to the current OpenGL rendering context of the calling thread.
      *
      * @return If the calling thread has a current OpenGL rendering context, wglGetCurrentContext returns a
-     *         handle to that rendering context. Otherwise, the return value is NULL.
+     * handle to that rendering context. Otherwise, the return value is NULL.
      */
     WinDef.HGLRC wglGetCurrentContext();
 
@@ -66,10 +67,10 @@ public interface OpenGL32 extends StdCallLibrary {
      * context. All subsequent OpenGL calls made by the thread are drawn on the device identified by hdc.
      *
      * @param windowDC
-     *            Handle to a device context. Subsequent OpenGL calls made by the calling thread are drawn on the
-     *            device identified by hdc.
+     * Handle to a device context. Subsequent OpenGL calls made by the calling thread are drawn on the
+     * device identified by hdc.
      * @param hglrc
-     *            Handle to an OpenGL rendering context that the function sets as the calling thread's rendering context.
+     * Handle to an OpenGL rendering context that the function sets as the calling thread's rendering context.
      * @return true if successful
      */
     boolean wglMakeCurrent(HDC windowDC, WinDef.HGLRC hglrc);
@@ -78,7 +79,7 @@ public interface OpenGL32 extends StdCallLibrary {
      * The wglDeleteContext function deletes a specified OpenGL rendering context.
      *
      * @param hglrc
-     *            Handle to an OpenGL rendering context that the function will delete.
+     * Handle to an OpenGL rendering context that the function will delete.
      * @return true if successful
      */
     boolean wglDeleteContext(WinDef.HGLRC hglrc);
@@ -88,8 +89,8 @@ public interface OpenGL32 extends StdCallLibrary {
      * current OpenGL rendering context.
      *
      * @param lpszProc
-     *            Points to a null-terminated string that is the name of the extension function.
-     *            The name of the extension function must be identical to a corresponding function implemented by OpenGL.
+     * Points to a null-terminated string that is the name of the extension function.
+     * The name of the extension function must be identical to a corresponding function implemented by OpenGL.
      * @return When the function succeeds, the return value is the address of the extension function.
      */
     Pointer wglGetProcAddress(String lpszProc);

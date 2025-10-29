@@ -17,10 +17,10 @@ import java.util.Collection;
 import java.util.List;
 
 interface ImportAdder {
-	/**
-	 * Returns a new list containing the elements of {@code existingImports} and also containing
-	 * each element of {@code importsToAdd} for which {@code existingImports} does not contain an
-	 * equal element.
-	 */
-	List<ImportName> addImports(Collection<ImportName> existingImports, Collection<ImportName> importsToAdd);
+    /**
+     * Returns a new list containing the elements of {@code existingImports} and also containing
+     * each element of {@code importsToAdd} for which {@code existingImports} does not contain an
+     * equal element.
+     */
+    List<ImportName> addImports(Collection<ImportName> existingImports, Collection<ImportName> importsToAdd);
 }

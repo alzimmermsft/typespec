@@ -20,10 +20,10 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public class AbortIncrementalBuildException extends RuntimeException {
 
-protected String qualifiedTypeName;
-private static final long serialVersionUID = -8874662133883858502L; // backward compatible
+    protected String qualifiedTypeName;
+    private static final long serialVersionUID = -8874662133883858502L; // backward compatible
 
-public AbortIncrementalBuildException(String qualifiedTypeName) {
-	this.qualifiedTypeName = qualifiedTypeName;
-}
+    public AbortIncrementalBuildException(String qualifiedTypeName) {
+        this.qualifiedTypeName = qualifiedTypeName;
+    }
 }

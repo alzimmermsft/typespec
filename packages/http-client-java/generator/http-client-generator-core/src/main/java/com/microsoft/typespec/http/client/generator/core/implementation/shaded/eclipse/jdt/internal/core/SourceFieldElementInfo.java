@@ -22,45 +22,47 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class SourceFieldElementInfo extends AnnotatableInfo implements ISourceField {
 
-	/**
-	 * The type name of this field.
-	 */
-	protected char[] typeName;
+    /**
+     * The type name of this field.
+     */
+    protected char[] typeName;
 
-	/**
-	 * The field's initializer string (if the field is a constant).
-	 */
-	protected char[] initializationSource;
-	protected boolean isRecordComponent;
+    /**
+     * The field's initializer string (if the field is a constant).
+     */
+    protected char[] initializationSource;
+    protected boolean isRecordComponent;
 
-/*
- * Returns the initialization source for this field.
- * Returns null if the field is not a constant or if it has no initialization.
- */
-@Override
-public char[] getInitializationSource() {
-	return this.initializationSource;
-}
-/**
- * Returns the type name of the field.
- */
-@Override
-public char[] getTypeName() {
-	return this.typeName;
-}
-/**
- * Returns the type signature of the field.
- *
- * @see Signature
- */
-protected String getTypeSignature() {
-	return Signature.createTypeSignature(this.typeName, false);
-}
+    /*
+     * Returns the initialization source for this field.
+     * Returns null if the field is not a constant or if it has no initialization.
+     */
+    @Override
+    public char[] getInitializationSource() {
+        return this.initializationSource;
+    }
 
-/**
- * Sets the type name of the field.
- */
-protected void setTypeName(char[] typeName) {
-	this.typeName = typeName;
-}
+    /**
+     * Returns the type name of the field.
+     */
+    @Override
+    public char[] getTypeName() {
+        return this.typeName;
+    }
+
+    /**
+     * Returns the type signature of the field.
+     *
+     * @see Signature
+     */
+    protected String getTypeSignature() {
+        return Signature.createTypeSignature(this.typeName, false);
+    }
+
+    /**
+     * Sets the type name of the field.
+     */
+    protected void setTypeName(char[] typeName) {
+        this.typeName = typeName;
+    }
 }

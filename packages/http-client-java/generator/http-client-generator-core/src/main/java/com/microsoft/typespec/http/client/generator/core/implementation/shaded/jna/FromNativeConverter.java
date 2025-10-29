@@ -26,10 +26,12 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 /** Define conversion from a native type to the appropriate Java type. */
 public interface FromNativeConverter {
-    /** Convert the given native object into its Java representation using
+    /**
+     * Convert the given native object into its Java representation using
      * the given context.
      */
     Object fromNative(Object nativeValue, FromNativeContext context);
+
     /** Indicate the native type used by this converter. */
     Class<?> nativeType();
 }

@@ -21,23 +21,19 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public interface ICompilerFactory {
 
-	/**
-	 * Create a new compiler using the given name environment and compiler options.
-	 *
-	 * @param environment - the type system environment used for resolving types and packages
-	 * @param policy - the error handling policy
-	 * @param compilerConfig - the configuration to control the compiler behavior
-	 * @param requestor - the requestor to receive and persist compilation results
-	 * @param problemFactory - the factory to create problem descriptors
-	 * @param compilationProgress - the CompilationProgress to be used
-	 * @return the new compiler instance
-	 * @see CompilationProgress
-	 */
-	public Compiler newCompiler(INameEnvironment environment,
-			IErrorHandlingPolicy policy,
-			CompilerConfiguration compilerConfig,
-			ICompilerRequestor requestor,
-			IProblemFactory problemFactory,
-			CompilationProgress compilationProgress
-			);
+    /**
+     * Create a new compiler using the given name environment and compiler options.
+     *
+     * @param environment - the type system environment used for resolving types and packages
+     * @param policy - the error handling policy
+     * @param compilerConfig - the configuration to control the compiler behavior
+     * @param requestor - the requestor to receive and persist compilation results
+     * @param problemFactory - the factory to create problem descriptors
+     * @param compilationProgress - the CompilationProgress to be used
+     * @return the new compiler instance
+     * @see CompilationProgress
+     */
+    public Compiler newCompiler(INameEnvironment environment, IErrorHandlingPolicy policy,
+        CompilerConfiguration compilerConfig, ICompilerRequestor requestor, IProblemFactory problemFactory,
+        CompilationProgress compilationProgress);
 }

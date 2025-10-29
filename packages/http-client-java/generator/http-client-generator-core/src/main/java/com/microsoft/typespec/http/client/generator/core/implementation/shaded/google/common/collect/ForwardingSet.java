@@ -18,11 +18,11 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Preconditions.checkNotNull;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.util.Collection;
 import java.util.Set;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A set which forwards all its method calls to another set. Subclasses should override one or more
@@ -48,56 +48,56 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
-public abstract class ForwardingSet<E extends @Nullable Object> extends ForwardingCollection<E>
-    implements Set<E> {
-  // TODO(lowasser): identify places where thread safety is actually lost
+public abstract class ForwardingSet<E extends @Nullable Object> extends ForwardingCollection<E> implements Set<E> {
+    // TODO(lowasser): identify places where thread safety is actually lost
 
-  /** Constructor for use by subclasses. */
-  protected ForwardingSet() {}
+    /** Constructor for use by subclasses. */
+    protected ForwardingSet() {
+    }
 
-  @Override
-  protected abstract Set<E> delegate();
+    @Override
+    protected abstract Set<E> delegate();
 
-  @Override
-  public boolean equals(@CheckForNull Object object) {
-    return object == this || delegate().equals(object);
-  }
+    @Override
+    public boolean equals(@CheckForNull Object object) {
+        return object == this || delegate().equals(object);
+    }
 
-  @Override
-  public int hashCode() {
-    return delegate().hashCode();
-  }
+    @Override
+    public int hashCode() {
+        return delegate().hashCode();
+    }
 
-  /**
-   * A sensible definition of {@link #removeAll} in terms of {@link #iterator} and {@link #remove}.
-   * If you override {@code iterator} or {@code remove}, you may wish to override {@link #removeAll}
-   * to forward to this implementation.
-   *
-   * @since 7.0 (this version overrides the {@code ForwardingCollection} version as of 12.0)
-   */
-  @Override
-  protected boolean standardRemoveAll(Collection<?> collection) {
-    return Sets.removeAllImpl(this, checkNotNull(collection)); // for GWT
-  }
+    /**
+     * A sensible definition of {@link #removeAll} in terms of {@link #iterator} and {@link #remove}.
+     * If you override {@code iterator} or {@code remove}, you may wish to override {@link #removeAll}
+     * to forward to this implementation.
+     *
+     * @since 7.0 (this version overrides the {@code ForwardingCollection} version as of 12.0)
+     */
+    @Override
+    protected boolean standardRemoveAll(Collection<?> collection) {
+        return Sets.removeAllImpl(this, checkNotNull(collection)); // for GWT
+    }
 
-  /**
-   * A sensible definition of {@link #equals} in terms of {@link #size} and {@link #containsAll}. If
-   * you override either of those methods, you may wish to override {@link #equals} to forward to
-   * this implementation.
-   *
-   * @since 7.0
-   */
-  protected boolean standardEquals(@CheckForNull Object object) {
-    return Sets.equalsImpl(this, object);
-  }
+    /**
+     * A sensible definition of {@link #equals} in terms of {@link #size} and {@link #containsAll}. If
+     * you override either of those methods, you may wish to override {@link #equals} to forward to
+     * this implementation.
+     *
+     * @since 7.0
+     */
+    protected boolean standardEquals(@CheckForNull Object object) {
+        return Sets.equalsImpl(this, object);
+    }
 
-  /**
-   * A sensible definition of {@link #hashCode} in terms of {@link #iterator}. If you override
-   * {@link #iterator}, you may wish to override {@link #equals} to forward to this implementation.
-   *
-   * @since 7.0
-   */
-  protected int standardHashCode() {
-    return Sets.hashCodeImpl(this);
-  }
+    /**
+     * A sensible definition of {@link #hashCode} in terms of {@link #iterator}. If you override
+     * {@link #iterator}, you may wish to override {@link #equals} to forward to this implementation.
+     *
+     * @since 7.0
+     */
+    protected int standardHashCode() {
+        return Sets.hashCodeImpl(this);
+    }
 }

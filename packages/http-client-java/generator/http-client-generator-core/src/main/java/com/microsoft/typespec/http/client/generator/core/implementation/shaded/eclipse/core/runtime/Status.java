@@ -15,6 +15,7 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.runtime.LocalizationUtils;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Bundle;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.FrameworkUtil;
 import java.util.Optional;
 
@@ -345,9 +346,9 @@ public class Status implements IStatus {
     private static String identifier(Class<?> caller) {
         return Optional.ofNullable(caller)//
             .flatMap(c -> Optional.ofNullable(FrameworkUtil.getBundle(c)))//
-            .map(b -> b.getSymbolicName())//
+            .map(Bundle::getSymbolicName)//
             .orElseGet(() -> Optional.ofNullable(caller)//
-                .map(c -> c.getName())//
+                .map(Class::getName)//
                 .orElse(unknownId));
     }
 

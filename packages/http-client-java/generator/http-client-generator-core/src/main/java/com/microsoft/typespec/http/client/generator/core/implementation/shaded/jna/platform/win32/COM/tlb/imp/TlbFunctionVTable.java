@@ -23,10 +23,10 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.tlb.imp;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.ELEMDESC;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.FUNCDESC;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeInfoUtil;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeLibUtil;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.ELEMDESC;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.FUNCDESC;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -40,16 +40,16 @@ public class TlbFunctionVTable extends TlbAbstractMethod {
      * Instantiates a new tlb function.
      *
      * @param index
-     *            the index
+     * the index
      * @param typeLibUtil
-     *            the type lib util
+     * the type lib util
      * @param funcDesc
-     *            the func desc
+     * the func desc
      * @param typeInfoUtil
-     *            the type info util
+     * the type info util
      */
-    public TlbFunctionVTable(int count, int index, TypeLibUtil typeLibUtil,
-            FUNCDESC funcDesc, TypeInfoUtil typeInfoUtil) {
+    public TlbFunctionVTable(int count, int index, TypeLibUtil typeLibUtil, FUNCDESC funcDesc,
+        TypeInfoUtil typeInfoUtil) {
         super(index, typeLibUtil, funcDesc, typeInfoUtil);
 
         String[] names = typeInfoUtil.getNames(funcDesc.memid, paramCount + 1);
@@ -61,8 +61,7 @@ public class TlbFunctionVTable extends TlbAbstractMethod {
         for (int i = 0; i < paramCount; i++) {
             ELEMDESC elemdesc = funcDesc.lprgelemdescParam.elemDescArg[i];
             String methodName = names[i + 1].toLowerCase();
-            methodparams += this.getType(elemdesc.tdesc) + " "
-                    + this.replaceJavaKeyword(methodName);
+            methodparams += this.getType(elemdesc.tdesc) + " " + this.replaceJavaKeyword(methodName);
             methodvariables += methodName;
 
             // if there is more than 1 param

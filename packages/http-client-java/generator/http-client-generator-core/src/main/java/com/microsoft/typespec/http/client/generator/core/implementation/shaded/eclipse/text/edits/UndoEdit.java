@@ -13,12 +13,10 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.text.edits;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.BadLocationException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.IDocument;
-
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class encapsulates the reverse changes of an executed text
@@ -35,70 +33,69 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public final class UndoEdit extends TextEdit {
 
-	UndoEdit() {
-		super(0, Integer.MAX_VALUE);
-	}
+    UndoEdit() {
+        super(0, Integer.MAX_VALUE);
+    }
 
-	private UndoEdit(UndoEdit other) {
-		super(other);
-	}
+    private UndoEdit(UndoEdit other) {
+        super(other);
+    }
 
-	@Override
-	void internalAdd(TextEdit child) throws MalformedTreeException {
-		throw new MalformedTreeException(null, this, TextEditMessages.getString("UndoEdit.no_children")); //$NON-NLS-1$
-	}
+    @Override
+    void internalAdd(TextEdit child) throws MalformedTreeException {
+        throw new MalformedTreeException(null, this, TextEditMessages.getString("UndoEdit.no_children")); //$NON-NLS-1$
+    }
 
-	@Override
-	void aboutToBeAdded(TextEdit parent) {
-		throw new MalformedTreeException(parent, this, TextEditMessages.getString("UndoEdit.can_not_be_added")); //$NON-NLS-1$
-	}
+    @Override
+    void aboutToBeAdded(TextEdit parent) {
+        throw new MalformedTreeException(parent, this, TextEditMessages.getString("UndoEdit.can_not_be_added")); //$NON-NLS-1$
+    }
 
-	@Override
-	UndoEdit dispatchPerformEdits(TextEditProcessor processor) throws BadLocationException {
-		return processor.executeUndo();
-	}
+    @Override
+    UndoEdit dispatchPerformEdits(TextEditProcessor processor) throws BadLocationException {
+        return processor.executeUndo();
+    }
 
-	@Override
-	void dispatchCheckIntegrity(TextEditProcessor processor) throws MalformedTreeException {
-		processor.checkIntegrityUndo();
-	}
+    @Override
+    void dispatchCheckIntegrity(TextEditProcessor processor) throws MalformedTreeException {
+        processor.checkIntegrityUndo();
+    }
 
-	@Override
-	protected TextEdit doCopy() {
-		return new UndoEdit(this);
-	}
+    @Override
+    protected TextEdit doCopy() {
+        return new UndoEdit(this);
+    }
 
-	@Override
-	protected void accept0(TextEditVisitor visitor) {
-		boolean visitChildren= visitor.visit(this);
-		if (visitChildren) {
-			acceptChildren(visitor);
-		}
-	}
+    @Override
+    protected void accept0(TextEditVisitor visitor) {
+        boolean visitChildren = visitor.visit(this);
+        if (visitChildren) {
+            acceptChildren(visitor);
+        }
+    }
 
-	@Override
-	int performDocumentUpdating(IDocument document) throws BadLocationException {
-		fDelta= 0;
-		return fDelta;
-	}
+    @Override
+    int performDocumentUpdating(IDocument document) throws BadLocationException {
+        fDelta = 0;
+        return fDelta;
+    }
 
-	void add(ReplaceEdit edit) {
-		List<TextEdit> children= internalGetChildren();
-		if (children == null) {
-			children= new ArrayList<>(2);
-			internalSetChildren(children);
-		}
-		children.add(edit);
-	}
+    void add(ReplaceEdit edit) {
+        List<TextEdit> children = internalGetChildren();
+        if (children == null) {
+            children = new ArrayList<>(2);
+            internalSetChildren(children);
+        }
+        children.add(edit);
+    }
 
-	void defineRegion(int offset, int length) {
-		internalSetOffset(offset);
-		internalSetLength(length);
-	}
+    void defineRegion(int offset, int length) {
+        internalSetOffset(offset);
+        internalSetLength(length);
+    }
 
-	@Override
-	boolean deleteChildren() {
-		return false;
-	}
+    @Override
+    boolean deleteChildren() {
+        return false;
+    }
 }
-

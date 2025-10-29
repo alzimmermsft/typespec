@@ -15,85 +15,85 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 public class ShortConstant extends Constant {
 
-	private final short value;
+    private final short value;
 
-	public static Constant fromValue(short value) {
-		return new ShortConstant(value);
-	}
+    public static Constant fromValue(short value) {
+        return new ShortConstant(value);
+    }
 
-	private ShortConstant(short value) {
-		this.value = value;
-	}
+    private ShortConstant(short value) {
+        this.value = value;
+    }
 
-	@Override
-	public byte byteValue() {
-		return (byte) this.value;
-	}
+    @Override
+    public byte byteValue() {
+        return (byte) this.value;
+    }
 
-	@Override
-	public char charValue() {
-		return (char) this.value;
-	}
+    @Override
+    public char charValue() {
+        return (char) this.value;
+    }
 
-	@Override
-	public double doubleValue() {
-		return this.value; // implicit cast to return type
-	}
+    @Override
+    public double doubleValue() {
+        return this.value; // implicit cast to return type
+    }
 
-	@Override
-	public float floatValue() {
-		return this.value; // implicit cast to return type
-	}
+    @Override
+    public float floatValue() {
+        return this.value; // implicit cast to return type
+    }
 
-	@Override
-	public int intValue() {
-		return this.value; // implicit cast to return type
-	}
+    @Override
+    public int intValue() {
+        return this.value; // implicit cast to return type
+    }
 
-	@Override
-	public long longValue() {
-		return this.value; // implicit cast to return type
-	}
+    @Override
+    public long longValue() {
+        return this.value; // implicit cast to return type
+    }
 
-	@Override
-	public short shortValue() {
-		return this.value;
-	}
+    @Override
+    public short shortValue() {
+        return this.value;
+    }
 
-	@Override
-	public String stringValue() {
-		// spec 15.17.11
-		return String.valueOf(this.value);
-	}
+    @Override
+    public String stringValue() {
+        // spec 15.17.11
+        return String.valueOf(this.value);
+    }
 
-	@Override
-	public String toString() {
+    @Override
+    public String toString() {
 
-		return "(short)" + this.value; //$NON-NLS-1$
-	}
+        return "(short)" + this.value; //$NON-NLS-1$
+    }
 
-	@Override
-	public int typeID() {
-		return T_short;
-	}
+    @Override
+    public int typeID() {
+        return T_short;
+    }
 
-	@Override
-	public int hashCode() {
-		return this.value;
-	}
+    @Override
+    public int hashCode() {
+        return this.value;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		ShortConstant other = (ShortConstant) obj;
-		return this.value == other.value;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        ShortConstant other = (ShortConstant) obj;
+        return this.value == other.value;
+    }
 }

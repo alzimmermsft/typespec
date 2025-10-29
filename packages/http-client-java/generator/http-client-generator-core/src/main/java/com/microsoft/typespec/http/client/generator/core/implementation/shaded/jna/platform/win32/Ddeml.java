@@ -29,19 +29,19 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure.FieldOrder;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.BaseTSD.DWORD_PTR;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.BaseTSD.ULONG_PTR;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.HWND;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.PVOID;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.win32.StdCallLibrary;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.win32.W32APIOptions;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.BOOL;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.DWORD;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.DWORDByReference;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.HWND;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.LPARAM;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.PVOID;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.UINT;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.UINT_PTR;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.WPARAM;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HANDLE;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.SECURITY_QUALITY_OF_SERVICE;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.win32.StdCallLibrary;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.win32.W32APIOptions;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.win32.W32APITypeMapper;
 
 /**
@@ -49,7 +49,8 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
  *
  * <p>Bindings for the DDEML - Dynamic Data Exchange Management Library (DDEML)</p>
  *
- * @see <a href="https://msdn.microsoft.com/de-de/library/windows/desktop/ms648713(v=vs.85).aspx">MSDN: About the DDEML</a>
+ * @see <a href="https://msdn.microsoft.com/de-de/library/windows/desktop/ms648713(v=vs.85).aspx">MSDN: About the
+ * DDEML</a>
  */
 public interface Ddeml extends StdCallLibrary {
 
@@ -70,7 +71,7 @@ public interface Ddeml extends StdCallLibrary {
     /**
      * The following structure is for use with {@link #XTYP_WILDCONNECT} processing.
      */
-    @FieldOrder({"service", "topic"})
+    @FieldOrder({ "service", "topic" })
     public class HSZPAIR extends Structure {
 
         public HSZ service;
@@ -89,8 +90,7 @@ public interface Ddeml extends StdCallLibrary {
      * The following structure is used by {@link #DdeConnect} and {@link #DdeConnectList} and
      * by {@link #XTYP_CONNECT} and {@link #XTYP_WILDCONNECT} callbacks.
      */
-    @FieldOrder({"cb", "wFlags", "wCountryID", "iCodePage", "dwLangID",
-        "dwSecurity", "qos"})
+    @FieldOrder({ "cb", "wFlags", "wCountryID", "iCodePage", "dwLangID", "dwSecurity", "qos" })
     public class CONVCONTEXT extends Structure {
         /**
          * set to sizeof(CONVCONTEXT)
@@ -143,33 +143,47 @@ public interface Ddeml extends StdCallLibrary {
      *
      * @see #DdeQueryConvInfo(HCONV hConv, int idTransaction, CONVINFO pConvInfo)
      */
-    @FieldOrder({"cb", "hUser", "hConvPartner", "hszSvcPartner", "hszServiceReq",
-                "hszTopic", "hszItem", "wFmt", "wType", "wStatus", "wConvst",
-                "wLastError", "hConvList", "ConvCtxt", "hwnd", "hwndPartner"})
+    @FieldOrder({
+        "cb",
+        "hUser",
+        "hConvPartner",
+        "hszSvcPartner",
+        "hszServiceReq",
+        "hszTopic",
+        "hszItem",
+        "wFmt",
+        "wType",
+        "wStatus",
+        "wConvst",
+        "wLastError",
+        "hConvList",
+        "ConvCtxt",
+        "hwnd",
+        "hwndPartner" })
     public class CONVINFO extends Structure {
         /** The structure's size, in bytes. */
         public int cb;
-        /** User specified field  */
+        /** User specified field */
         public DWORD_PTR hUser;
-        /** hConv on other end or 0 if non-ddemgr partner  */
+        /** hConv on other end or 0 if non-ddemgr partner */
         public HCONV hConvPartner;
-        /** App name of partner if obtainable  */
+        /** App name of partner if obtainable */
         public HSZ hszSvcPartner;
-        /** AppName requested for connection  */
+        /** AppName requested for connection */
         public HSZ hszServiceReq;
-        /** Topic name for conversation  */
+        /** Topic name for conversation */
         public HSZ hszTopic;
-        /** Transaction item name or NULL if quiescent  */
+        /** Transaction item name or NULL if quiescent */
         public HSZ hszItem;
-        /** Transaction format or NULL if quiescent  */
+        /** Transaction format or NULL if quiescent */
         public int wFmt;
-        /** XTYP_ for current transaction  */
+        /** XTYP_ for current transaction */
         public int wType;
-        /** ST_ constant for current conversation  */
+        /** ST_ constant for current conversation */
         public int wStatus;
-        /** XST_ constant for current transaction  */
+        /** XST_ constant for current transaction */
         public int wConvst;
-        /** Last transaction error.  */
+        /** Last transaction error. */
         public int wLastError;
         /** Parent hConvList if this conversation is in a list */
         public HCONVLIST hConvList;
@@ -193,9 +207,22 @@ public interface Ddeml extends StdCallLibrary {
      * monitoring transactions that the system passes to the DDE callback
      * functions of other applications.
      */
-    @FieldOrder({"cb", "dwTime", "hTask", "dwRet", "wType", "wFmt", "hConv",
-        "hsz1", "hsz2", "hData", "dwData1", "dwData2", "cc", "cbData",
-        "Data"})
+    @FieldOrder({
+        "cb",
+        "dwTime",
+        "hTask",
+        "dwRet",
+        "wType",
+        "wFmt",
+        "hConv",
+        "hsz1",
+        "hsz2",
+        "hData",
+        "dwData1",
+        "dwData2",
+        "cc",
+        "cbData",
+        "Data" })
     public class MONCBSTRUCT extends Structure {
         /**
          * The structure's size, in bytes.
@@ -286,8 +313,7 @@ public interface Ddeml extends StdCallLibrary {
      * the conversation. Instead, they hold a globally unique pair of values
      * that identify the conversation.</p>
      */
-    @FieldOrder({"cb", "fConnect", "dwTime", "hTask", "hszSvc", "hszTopic",
-                "hConvClient", "hConvServer"})
+    @FieldOrder({ "cb", "fConnect", "dwTime", "hTask", "hszSvc", "hszTopic", "hConvClient", "hConvServer" })
     public class MONCONVSTRUCT extends Structure {
         /**
          * The structure's size, in bytes.
@@ -334,7 +360,7 @@ public interface Ddeml extends StdCallLibrary {
      * A DDE monitoring application can use this structure to monitor errors
      * returned by DDE Management Library functions.
      */
-    @FieldOrder({"cb", "wLastError", "dwTime", "hTask"})
+    @FieldOrder({ "cb", "wLastError", "dwTime", "hTask" })
     public class MONERRSTRUCT extends Structure {
         /**
          * The structure's size, in bytes.
@@ -361,7 +387,7 @@ public interface Ddeml extends StdCallLibrary {
      * DDE monitoring application can use this structure when monitoring the
      * activity of the string manager component of the DDE Management Library.
      */
-    @FieldOrder({"cb", "fsAction", "dwTime", "hsz", "hTask", "str"})
+    @FieldOrder({ "cb", "fsAction", "dwTime", "hsz", "hTask", "str" })
     public class MONHSZSTRUCT extends Structure {
         /**
          * The structure's size, in bytes.
@@ -434,7 +460,7 @@ public interface Ddeml extends StdCallLibrary {
 
         public String getStr() {
             int offset = fieldOffset("str");
-            if(W32APITypeMapper.DEFAULT == W32APITypeMapper.UNICODE) {
+            if (W32APITypeMapper.DEFAULT == W32APITypeMapper.UNICODE) {
                 return getPointer().getWideString(offset);
             } else {
                 return getPointer().getString(offset);
@@ -460,9 +486,19 @@ public interface Ddeml extends StdCallLibrary {
      * the conversation. Instead, they hold a globally unique pair of values
      * that identify the conversation.</p>
      */
-    @FieldOrder({"cb", "dwTime", "hTask", "fEstablished", "fNoData", "hszSvc",
-        "hszTopic", "hszItem", "wFmt", "fServer", "hConvServer",
-        "hConvClient"})
+    @FieldOrder({
+        "cb",
+        "dwTime",
+        "hTask",
+        "fEstablished",
+        "fNoData",
+        "hszSvc",
+        "hszTopic",
+        "hszItem",
+        "wFmt",
+        "fServer",
+        "hConvServer",
+        "hConvClient" })
     public class MONLINKSTRUCT extends Structure {
         /**
          * The structure's size, in bytes.
@@ -522,8 +558,7 @@ public interface Ddeml extends StdCallLibrary {
         public HCONV hConvClient;
     }
 
-    @FieldOrder({"cb", "hwndTo", "dwTime", "hTask", "wMsg", "wParam", "lParam",
-                "dmhd"})
+    @FieldOrder({ "cb", "hwndTo", "dwTime", "hTask", "wMsg", "wParam", "lParam", "dmhd" })
     public class MONMSGSTRUCT extends Structure {
 
         /**
@@ -563,7 +598,7 @@ public interface Ddeml extends StdCallLibrary {
         public DDEML_MSG_HOOK_DATA dmhd;
     }
 
-    @FieldOrder({"uiLo", "uiHi", "cbData", "Data"})
+    @FieldOrder({ "uiLo", "uiHi", "cbData", "Data" })
     public class DDEML_MSG_HOOK_DATA extends Structure {
         /**
          * The unpacked low-order word of the lParam parameter associated with
@@ -758,7 +793,7 @@ public interface Ddeml extends StdCallLibrary {
      * </dl>
      *
      * <p><strong>Return value</strong></p>
-     *<p>
+     * <p>
      * The server should first call the {@link #DdeCreateDataHandle} function to create a
      * data handle that identifies the changed data and then return the handle.
      * The server should return NULL if it is unable to complete the
@@ -935,7 +970,8 @@ public interface Ddeml extends StdCallLibrary {
      * <p><strong>Remarks</strong></p>
      *
      * <p>
-     * This transaction is filtered if the server application specified the {@link #CBF_SKIP_CONNECT_CONFIRMS} flag in the {@link #DdeInitialize} function.
+     * This transaction is filtered if the server application specified the {@link #CBF_SKIP_CONNECT_CONFIRMS} flag in
+     * the {@link #DdeInitialize} function.
      * </p>
      * <p>
      * A server cannot block this transaction type; the CBR_BLOCK return code is ignored.
@@ -951,13 +987,18 @@ public interface Ddeml extends StdCallLibrary {
      * <p><strong>Used Parameters</strong></p>
      * <dl>
      * <dt>uType</dt><dd>The transaction type.</dd>
-     * <dt>uFmt</dt><dd>The format of the data associated with the completed transaction (if applicable) or NULL if no data was exchanged during the transaction.</dd>
+     * <dt>uFmt</dt><dd>The format of the data associated with the completed transaction (if applicable) or NULL if no
+     * data was exchanged during the transaction.</dd>
      * <dt>hConv</dt><dd>A handle to the conversation.</dd>
      * <dt>hsz1</dt><dd>A handle to the topic name involved in the completed transaction.</dd>
      * <dt>hsz2</dt><dd>A handle to the item name involved in the completed transaction.</dd>
-     * <dt>hdata</dt><dd>A handle to the data involved in the completed transaction, if applicable. If the transaction was successful but involved no data, this parameter is TRUE. This parameter is NULL if the transaction was unsuccessful.</dd>
+     * <dt>hdata</dt><dd>A handle to the data involved in the completed transaction, if applicable. If the transaction
+     * was successful but involved no data, this parameter is TRUE. This parameter is NULL if the transaction was
+     * unsuccessful.</dd>
      * <dt>dwData1</dt><dd>The transaction identifier of the completed transaction.</dd>
-     * <dt>dwData2</dt><dd>Any applicable DDE_ status flags in the low word. This parameter provides support for applications dependent on DDE_APPSTATUS bits. It is recommended that applications no longer use these bits — they may not be supported in future versions of the DDEML.</dd>
+     * <dt>dwData2</dt><dd>Any applicable DDE_ status flags in the low word. This parameter provides support for
+     * applications dependent on DDE_APPSTATUS bits. It is recommended that applications no longer use these bits — they
+     * may not be supported in future versions of the DDEML.</dd>
      * </dl>
      *
      * <p><strong>Remarks</strong></p>
@@ -998,7 +1039,8 @@ public interface Ddeml extends StdCallLibrary {
      * <p><strong>Remarks</strong></p>
      *
      * <p>
-     * This transaction is filtered if the server application specified the {@link #CBF_FAIL_POKES} flag in the {@link #DdeInitialize} function.
+     * This transaction is filtered if the server application specified the {@link #CBF_FAIL_POKES} flag in the
+     * {@link #DdeInitialize} function.
      * </p>
      */
     public int XTYP_POKE = 0x0090 | XCLASS_FLAGS;
@@ -1062,7 +1104,7 @@ public interface Ddeml extends StdCallLibrary {
      * <p>
      * This transaction is filtered if the server application specified the
      * {@link #CBF_FAIL_REQUESTS} flag in the {@link #DdeInitialize} function.</p>
-     *<p>
+     * <p>
      * If responding to this transaction requires lengthy processing, the server
      * can return the CBR_BLOCK return code to suspend future transactions on
      * the current conversation and then process the transaction asynchronously.
@@ -1086,18 +1128,18 @@ public interface Ddeml extends StdCallLibrary {
      * instance. If the parameter is 0, the client is a different instance.
      * </dd>
      * </dl>
-
+     * 
      * <p><strong>Remarks</strong></p>
      *
      * <p>
      * This transaction is filtered if the application specified the
      * {@link #CBF_SKIP_DISCONNECTS} flag in the {@link #DdeInitialize} function.</p>
-     *<p>
+     * <p>
      * The application can obtain the status of the terminated conversation by
      * calling the {@link #DdeQueryConvInfo} function while processing this transaction.
      * The conversation handle becomes invalid after the callback function
      * returns.</p>
-     *<p>
+     * <p>
      * An application cannot block this transaction type; the CBR_BLOCK return
      * code is ignored. </p>
      */
@@ -1123,10 +1165,10 @@ public interface Ddeml extends StdCallLibrary {
      * <p>
      * This transaction is filtered if the application specified the
      * {@link #CBF_SKIP_REGISTRATIONS} flag in the {@link #DdeInitialize} function.</p>
-     *<p>
+     * <p>
      * A application cannot block this transaction type; the CBR_BLOCK return
      * code is ignored.</p>
-     *<p>
+     * <p>
      * An application should use the hsz1 parameter to remove the service name
      * from the list of servers available to the user. An application should use
      * the hsz2 parameter to identify which application instance has
@@ -1368,7 +1410,8 @@ public interface Ddeml extends StdCallLibrary {
     public int HDATA_APPOWNED = 0x0001;
 
     public interface DdeCallback extends StdCallCallback {
-        PVOID ddeCallback(int wType, int wFmt, HCONV hConv, HSZ hsz1, HSZ hsz2, HDDEDATA hData, ULONG_PTR lData1, ULONG_PTR lData2);
+        PVOID ddeCallback(int wType, int wFmt, HCONV hConv, HSZ hsz1, HSZ hsz2, HDDEDATA hData, ULONG_PTR lData1,
+            ULONG_PTR lData2);
     }
 
     /**
@@ -1428,7 +1471,7 @@ public interface Ddeml extends StdCallLibrary {
      */
     public int CBF_SKIP_REGISTRATIONS = 0x00080000;
     /**
-     *Prevents the callback function from receiving {@link #XTYP_UNREGISTER}
+     * Prevents the callback function from receiving {@link #XTYP_UNREGISTER}
      * notifications.
      */
     public int CBF_SKIP_UNREGISTRATIONS = 0x00100000;
@@ -1797,9 +1840,9 @@ public interface Ddeml extends StdCallLibrary {
      *
      * <p>If the function fails, the return value is one of the following values:</p>
      * <ul>
-     *   <li>{@link #DMLERR_DLL_USAGE}</li>
-     *   <li>{@link #DMLERR_INVALIDPARAMETER}</li>
-     *   <li>{@link #DMLERR_SYS_ERROR}</li>
+     * <li>{@link #DMLERR_DLL_USAGE}</li>
+     * <li>{@link #DMLERR_INVALIDPARAMETER}</li>
+     * <li>{@link #DMLERR_SYS_ERROR}</li>
      * </ul>
      */
     public int DdeInitialize(DWORDByReference pidInst, DdeCallback fnCallback, int afCmd, int ulRes);
@@ -1856,15 +1899,14 @@ public interface Ddeml extends StdCallLibrary {
      * <p>The {@link #DdeGetLastError} function can be used to get the error code, which
      * can be one of the following values:</p>
      * <ul>
-     *   <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
-     *   <li>{@link #DMLERR_INVALIDPARAMETER}</li>
-     *   <li>{@link #DMLERR_NO_CONV_ESTABLISHED}</li>
-     *   <li>{@link #DMLERR_NO_ERROR}</li>
-     *   <li>{@link #DMLERR_SYS_ERROR}</li>
+     * <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
+     * <li>{@link #DMLERR_INVALIDPARAMETER}</li>
+     * <li>{@link #DMLERR_NO_CONV_ESTABLISHED}</li>
+     * <li>{@link #DMLERR_NO_ERROR}</li>
+     * <li>{@link #DMLERR_SYS_ERROR}</li>
      * </ul>
      */
-    public HCONVLIST DdeConnectList(int idInst, HSZ hszService, HSZ hszTopic,
-            HCONVLIST hConvList, CONVCONTEXT pCC);
+    public HCONVLIST DdeConnectList(int idInst, HSZ hszService, HSZ hszTopic, HCONVLIST hConvList, CONVCONTEXT pCC);
 
     /**
      * Retrieves the next conversation handle in the specified conversation list.
@@ -1879,7 +1921,7 @@ public interface Ddeml extends StdCallLibrary {
      * @return If the list contains any more conversation handles, the return
      * value is the next conversation handle in the list; otherwise, it is 0L.
      */
-    public HCONV DdeQueryNextServer( HCONVLIST hConvList, HCONV hConvPrev);
+    public HCONV DdeQueryNextServer(HCONVLIST hConvList, HCONV hConvPrev);
 
     /**
      * Destroys the specified conversation list and terminates all
@@ -1893,9 +1935,9 @@ public interface Ddeml extends StdCallLibrary {
      * <p>The {@link #DdeGetLastError} function can be used to get the error code,
      * which can be one of the following values:</p>
      * <ul>
-     *   <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
-     *   <li>{@link #DMLERR_INVALIDPARAMETER}</li>
-     *   <li>{@link #DMLERR_NO_ERROR}</li>
+     * <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
+     * <li>{@link #DMLERR_INVALIDPARAMETER}</li>
+     * <li>{@link #DMLERR_NO_ERROR}</li>
      * </ul>
      */
     public boolean DdeDisconnectList(HCONVLIST hConvList);
@@ -1934,13 +1976,13 @@ public interface Ddeml extends StdCallLibrary {
      * be one of the following values:</p>
      *
      * <ul>
-     *   <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
-     *   <li>{@link #DMLERR_INVALIDPARAMETER}</li>
-     *   <li>{@link #DMLERR_NO_CONV_ESTABLISHED}</li>
-     *   <li>{@link #DMLERR_NO_ERROR}</li>
+     * <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
+     * <li>{@link #DMLERR_INVALIDPARAMETER}</li>
+     * <li>{@link #DMLERR_NO_CONV_ESTABLISHED}</li>
+     * <li>{@link #DMLERR_NO_ERROR}</li>
      * </ul>
      */
-    public HCONV DdeConnect( int idInst, HSZ hszService, HSZ hszTopic, CONVCONTEXT pCC);
+    public HCONV DdeConnect(int idInst, HSZ hszService, HSZ hszTopic, CONVCONTEXT pCC);
 
     /**
      * Terminates a conversation started by either the {@link #DdeConnect} or
@@ -1955,12 +1997,12 @@ public interface Ddeml extends StdCallLibrary {
      * The {@link #DdeGetLastError} function can be used to get the error code, which can
      * be one of the following values:</p>
      * <ul>
-     *   <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
-     *   <li>{@link #DMLERR_NO_CONV_ESTABLISHED}</li>
-     *   <li>{@link #DMLERR_NO_ERROR}</li>
+     * <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
+     * <li>{@link #DMLERR_NO_CONV_ESTABLISHED}</li>
+     * <li>{@link #DMLERR_NO_ERROR}</li>
      * </ul>
      */
-    public boolean DdeDisconnect( HCONV hConv);
+    public boolean DdeDisconnect(HCONV hConv);
 
     /**
      * Enables a client Dynamic Data Exchange Management Library (DDEML)
@@ -1982,16 +2024,17 @@ public interface Ddeml extends StdCallLibrary {
      * The {@link #DdeGetLastError} function can be used to get the error code, which can
      * be one of the following values:</p>
      * <ul>
-     *   <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
-     *   <li>{@link #DMLERR_INVALIDPARAMETER}</li>
-     *   <li>{@link #DMLERR_NO_CONV_ESTABLISHED}</li>
-     *   <li>{@link #DMLERR_NO_ERROR}</li>
+     * <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
+     * <li>{@link #DMLERR_INVALIDPARAMETER}</li>
+     * <li>{@link #DMLERR_NO_CONV_ESTABLISHED}</li>
+     * <li>{@link #DMLERR_NO_ERROR}</li>
      * </ul>
      */
-    public HCONV DdeReconnect( HCONV hConv);
+    public HCONV DdeReconnect(HCONV hConv);
 
     /**
-     * Retrieves information about a Dynamic Data Exchange (DDE) transaction and about the conversation in which the transaction takes place.
+     * Retrieves information about a Dynamic Data Exchange (DDE) transaction and about the conversation in which the
+     * transaction takes place.
      *
      * @param hConv A handle to the conversation.
      * @param idTransaction The transaction. For asynchronous transactions, this
@@ -2012,13 +2055,13 @@ public interface Ddeml extends StdCallLibrary {
      * The {@link #DdeGetLastError} function can be used to get the error code, which can
      * be one of the following values:</p>
      * <ul>
-     *   <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
-     *   <li>{@link #DMLERR_NO_CONV_ESTABLISHED}</li>
-     *   <li>{@link #DMLERR_NO_ERROR}</li>
-     *   <li>{@link #DMLERR_UNFOUND_QUEUE_ID}</li>
+     * <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
+     * <li>{@link #DMLERR_NO_CONV_ESTABLISHED}</li>
+     * <li>{@link #DMLERR_NO_ERROR}</li>
+     * <li>{@link #DMLERR_UNFOUND_QUEUE_ID}</li>
      * </ul>
      */
-    public int DdeQueryConvInfo( HCONV hConv, int idTransaction, CONVINFO pConvInfo);
+    public int DdeQueryConvInfo(HCONV hConv, int idTransaction, CONVINFO pConvInfo);
 
     /**
      * Associates an application-defined value with a conversation handle or a
@@ -2038,13 +2081,13 @@ public interface Ddeml extends StdCallLibrary {
      * The {@link #DdeGetLastError} function can be used to get the error code, which can
      * be one of the following values:</p>
      * <ul>
-     *   <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
-     *   <li>{@link #DMLERR_INVALIDPARAMETER}</li>
-     *   <li>{@link #DMLERR_NO_ERROR}</li>
-     *   <li>{@link #DMLERR_UNFOUND_QUEUE_ID}</li>
+     * <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
+     * <li>{@link #DMLERR_INVALIDPARAMETER}</li>
+     * <li>{@link #DMLERR_NO_ERROR}</li>
+     * <li>{@link #DMLERR_UNFOUND_QUEUE_ID}</li>
      * </ul>
      */
-    public boolean DdeSetUserHandle( HCONV hConv, int id, DWORD_PTR hUser);
+    public boolean DdeSetUserHandle(HCONV hConv, int id, DWORD_PTR hUser);
 
     /**
      * Abandons the specified asynchronous transaction and releases all
@@ -2064,10 +2107,10 @@ public interface Ddeml extends StdCallLibrary {
      * The {@link #DdeGetLastError} function can be used to get the error code, which can
      * be one of the following values:</p>
      * <ul>
-     *   <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
-     *   <li>{@link #DMLERR_INVALIDPARAMETER}</li>
-     *   <li>{@link #DMLERR_NO_ERROR}</li>
-     *   <li>{@link #DMLERR_UNFOUND_QUEUE_ID}</li>
+     * <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
+     * <li>{@link #DMLERR_INVALIDPARAMETER}</li>
+     * <li>{@link #DMLERR_NO_ERROR}</li>
+     * <li>{@link #DMLERR_UNFOUND_QUEUE_ID}</li>
      * </ul>
      */
     public boolean DdeAbandonTransaction(int idInst, HCONV hConv, int idTransaction);
@@ -2097,9 +2140,9 @@ public interface Ddeml extends StdCallLibrary {
      * The {@link #DdeGetLastError} function can be used to get the error code, which can
      * be one of the following values:</p>
      * <ul>
-     *   <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
-     *   <li>{@link #DMLERR_DLL_USAGE}</li>
-     *   <li>{@link #DMLERR_NO_ERROR}</li>
+     * <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
+     * <li>{@link #DMLERR_DLL_USAGE}</li>
+     * <li>{@link #DMLERR_NO_ERROR}</li>
      * </ul>
      *
      */
@@ -2127,17 +2170,17 @@ public interface Ddeml extends StdCallLibrary {
      * <p>
      * A server application can disable the following transactions:</p>
      * <ul>
-     *   <li>{@link #XTYP_ADVSTART}</li>
-     *   <li>{@link #XTYP_ADVSTOP}</li>
-     *   <li>{@link #XTYP_EXECUTE}</li>
-     *   <li>{@link #XTYP_POKE}</li>
-     *   <li>{@link #XTYP_REQUEST}</li>
+     * <li>{@link #XTYP_ADVSTART}</li>
+     * <li>{@link #XTYP_ADVSTOP}</li>
+     * <li>{@link #XTYP_EXECUTE}</li>
+     * <li>{@link #XTYP_POKE}</li>
+     * <li>{@link #XTYP_REQUEST}</li>
      * </ul>
      * <p>
      * A client application can disable the following transactions:</p>
      * <ul>
-     *   <li>{@link #XTYP_ADVDATA}</li>
-     *   <li>{@link #XTYP_XACT_COMPLETE}</li>
+     * <li>{@link #XTYP_ADVDATA}</li>
+     * <li>{@link #XTYP_XACT_COMPLETE}</li>
      * </ul>
      * </td></tr>
      * <tr><td>{@link #EC_QUERYWAITING}</td><td>Determines whether any transactions are
@@ -2158,9 +2201,9 @@ public interface Ddeml extends StdCallLibrary {
      * The {@link #DdeGetLastError} function can be used to get the error code, which can
      * be one of the following values:</p>
      * <ul>
-     *   <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
-     *   <li>{@link #DMLERR_INVALIDPARAMETER}</li>
-     *   <li>{@link #DMLERR_NO_ERROR}</li>
+     * <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
+     * <li>{@link #DMLERR_INVALIDPARAMETER}</li>
+     * <li>{@link #DMLERR_NO_ERROR}</li>
      * </ul>
      */
     public boolean DdeEnableCallback(int idInst, HCONV hConv, int wCmd);
@@ -2223,13 +2266,13 @@ public interface Ddeml extends StdCallLibrary {
      * The {@link #DdeGetLastError} function can be used to get the error code, which can
      * be one of the following values:</p>
      * <ul>
-     *   <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
-     *   <li>{@link #DMLERR_DLL_USAGE}</li>
-     *   <li>{@link #DMLERR_INVALIDPARAMETER}</li>
-     *   <li>{@link #DMLERR_NO_ERROR}</li>
+     * <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
+     * <li>{@link #DMLERR_DLL_USAGE}</li>
+     * <li>{@link #DMLERR_INVALIDPARAMETER}</li>
+     * <li>{@link #DMLERR_NO_ERROR}</li>
      * </ul>
      */
-    public HDDEDATA DdeNameService(int idInst,HSZ hsz1, HSZ hsz2, int afCmd);
+    public HDDEDATA DdeNameService(int idInst, HSZ hsz1, HSZ hsz2, int afCmd);
 
     /**
      * Begins a data transaction between a client and a server. Only a Dynamic
@@ -2273,8 +2316,8 @@ public interface Ddeml extends StdCallLibrary {
      * the wFmt value must be either a valid predefined (CF_) DDE format or a
      * valid registered clipboard format.</p>
      *
-     * @param wType     The transaction type. This parameter can be one of the
-     *                  following values.
+     * @param wType The transaction type. This parameter can be one of the
+     * following values.
      *
      * <table>
      * <tr><th>Value</th><th>Meaning</th></tr>
@@ -2327,32 +2370,25 @@ public interface Ddeml extends StdCallLibrary {
      * which can be one of the following values:</p>
      *
      * <ul>
-     *   <li>{@link #DMLERR_ADVACKTIMEOUT}</li>
-     *   <li>{@link #DMLERR_BUSY}</li>
-     *   <li>{@link #DMLERR_DATAACKTIMEOUT}</li>
-     *   <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
-     *   <li>{@link #DMLERR_EXECACKTIMEOUT}</li>
-     *   <li>{@link #DMLERR_INVALIDPARAMETER}</li>
-     *   <li>{@link #DMLERR_MEMORY_ERROR}</li>
-     *   <li>{@link #DMLERR_NO_CONV_ESTABLISHED}</li>
-     *   <li>{@link #DMLERR_NO_ERROR}</li>
-     *   <li>{@link #DMLERR_NOTPROCESSED}</li>
-     *   <li>{@link #DMLERR_POKEACKTIMEOUT}</li>
-     *   <li>{@link #DMLERR_POSTMSG_FAILED}</li>
-     *   <li>{@link #DMLERR_REENTRANCY}</li>
-     *   <li>{@link #DMLERR_SERVER_DIED}</li>
-     *   <li>{@link #DMLERR_UNADVACKTIMEOUT}</li>
+     * <li>{@link #DMLERR_ADVACKTIMEOUT}</li>
+     * <li>{@link #DMLERR_BUSY}</li>
+     * <li>{@link #DMLERR_DATAACKTIMEOUT}</li>
+     * <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
+     * <li>{@link #DMLERR_EXECACKTIMEOUT}</li>
+     * <li>{@link #DMLERR_INVALIDPARAMETER}</li>
+     * <li>{@link #DMLERR_MEMORY_ERROR}</li>
+     * <li>{@link #DMLERR_NO_CONV_ESTABLISHED}</li>
+     * <li>{@link #DMLERR_NO_ERROR}</li>
+     * <li>{@link #DMLERR_NOTPROCESSED}</li>
+     * <li>{@link #DMLERR_POKEACKTIMEOUT}</li>
+     * <li>{@link #DMLERR_POSTMSG_FAILED}</li>
+     * <li>{@link #DMLERR_REENTRANCY}</li>
+     * <li>{@link #DMLERR_SERVER_DIED}</li>
+     * <li>{@link #DMLERR_UNADVACKTIMEOUT}</li>
      * </ul>
      */
-    public HDDEDATA DdeClientTransaction(
-            Pointer pData,
-            int cbData,
-            HCONV hConv,
-            HSZ hszItem,
-            int wFmt,
-            int wType,
-            int dwTimeout,
-            DWORDByReference pdwResult);
+    public HDDEDATA DdeClientTransaction(Pointer pData, int cbData, HCONV hConv, HSZ hszItem, int wFmt, int wType,
+        int dwTimeout, DWORDByReference pdwResult);
 
     /**
      * Creates a Dynamic Data Exchange (DDE) object and fills the object with
@@ -2399,20 +2435,13 @@ public interface Ddeml extends StdCallLibrary {
      * <p>The {@link #DdeGetLastError} function can be used to get the error code,
      * which can be one of the following values:</p>
      * <ul>
-     *   <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
-     *   <li>{@link #DMLERR_INVALIDPARAMETER}</li>
-     *   <li>{@link #DMLERR_MEMORY_ERROR}</li>
-     *   <li>{@link #DMLERR_NO_ERROR}</li>
+     * <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
+     * <li>{@link #DMLERR_INVALIDPARAMETER}</li>
+     * <li>{@link #DMLERR_MEMORY_ERROR}</li>
+     * <li>{@link #DMLERR_NO_ERROR}</li>
      * </ul>
      */
-    public HDDEDATA DdeCreateDataHandle(
-            int idInst,
-            Pointer pSrc,
-            int cb,
-            int cbOff,
-            HSZ hszItem,
-            int wFmt,
-            int afCmd);
+    public HDDEDATA DdeCreateDataHandle(int idInst, Pointer pSrc, int cb, int cbOff, HSZ hszItem, int wFmt, int afCmd);
 
     /**
      * Adds data to the specified Dynamic Data Exchange (DDE) object. An
@@ -2440,10 +2469,10 @@ public interface Ddeml extends StdCallLibrary {
      * <p>The {@link #DdeGetLastError} function can be used to get the error code, which
      * can be one of the following values:</p>
      * <ul>
-     *   <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
-     *   <li>{@link #DMLERR_INVALIDPARAMETER}</li>
-     *   <li>{@link #DMLERR_MEMORY_ERROR}</li>
-     *   <li>{@link #DMLERR_NO_ERROR}</li>
+     * <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
+     * <li>{@link #DMLERR_INVALIDPARAMETER}</li>
+     * <li>{@link #DMLERR_MEMORY_ERROR}</li>
+     * <li>{@link #DMLERR_NO_ERROR}</li>
      * </ul>
      */
     public HDDEDATA DdeAddData(HDDEDATA hData, Pointer pSrc, int cb, int cbOff);
@@ -2475,9 +2504,9 @@ public interface Ddeml extends StdCallLibrary {
      * <p>The {@link #DdeGetLastError} function can be used to get the error code, which
      * can be one of the following values:</p>
      * <ul>
-     *   <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
-     *   <li>{@link #DMLERR_INVALIDPARAMETER}</li>
-     *   <li>{@link #DMLERR_NO_ERROR}</li>
+     * <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
+     * <li>{@link #DMLERR_INVALIDPARAMETER}</li>
+     * <li>{@link #DMLERR_NO_ERROR}</li>
      * </ul>
      */
     public int DdeGetData(HDDEDATA hData, Pointer pDst, int cbMax, int cbOff);
@@ -2501,9 +2530,9 @@ public interface Ddeml extends StdCallLibrary {
      * <p>The {@link #DdeGetLastError} function can be used to get the error code, which can
      * be one of the following values:</p>
      * <ul>
-     *   <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
-     *   <li>{@link #DMLERR_INVALIDPARAMETER}</li>
-     *   <li>{@link #DMLERR_NO_ERROR}</li>
+     * <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
+     * <li>{@link #DMLERR_INVALIDPARAMETER}</li>
+     * <li>{@link #DMLERR_NO_ERROR}</li>
      * </ul>
      */
     public Pointer DdeAccessData(HDDEDATA hData, DWORDByReference pcbDataSize);
@@ -2520,9 +2549,9 @@ public interface Ddeml extends StdCallLibrary {
      * can be one of the following values:</p>
      *
      * <ul>
-     *   <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
-     *   <li>{@link #DMLERR_INVALIDPARAMETER}</li>
-     *   <li>{@link #DMLERR_NO_ERROR}</li>
+     * <li>{@link #DMLERR_DLL_NOT_INITIALIZED}</li>
+     * <li>{@link #DMLERR_INVALIDPARAMETER}</li>
+     * <li>{@link #DMLERR_NO_ERROR}</li>
      * </ul>
      */
     public boolean DdeUnaccessData(HDDEDATA hData);
@@ -2540,8 +2569,8 @@ public interface Ddeml extends StdCallLibrary {
      * <p>The {@link #DdeGetLastError} function can be used to get the error code,
      * which can be one of the following values:</p>
      * <ul>
-     *   <li>{@link #DMLERR_INVALIDPARAMETER}</li>
-     *   <li>{@link #DMLERR_NO_ERROR}</li>
+     * <li>{@link #DMLERR_INVALIDPARAMETER}</li>
+     * <li>{@link #DMLERR_NO_ERROR}</li>
      * </ul>
      */
     public boolean DdeFreeDataHandle(HDDEDATA hData);
@@ -2580,9 +2609,9 @@ public interface Ddeml extends StdCallLibrary {
      * <p>The {@link #DdeGetLastError} function can be used to get the error code, which
      * can be one of the following values:</p>
      * <ul>
-     *   <li>{@link #DMLERR_INVALIDPARAMETER}</li>
-     *   <li>{@link #DMLERR_NO_ERROR}</li>
-     *   <li>{@link #DMLERR_SYS_ERROR}</li>
+     * <li>{@link #DMLERR_INVALIDPARAMETER}</li>
+     * <li>{@link #DMLERR_NO_ERROR}</li>
+     * <li>{@link #DMLERR_SYS_ERROR}</li>
      * </ul>
      */
     public HSZ DdeCreateStringHandle(int idInst, String psz, int iCodePage);

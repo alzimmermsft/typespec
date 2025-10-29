@@ -15,31 +15,34 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast;
 
 public class Receiver extends Argument {
-	public NameReference qualifyingName;
-	public Receiver(char[] name, long posNom, TypeReference typeReference, NameReference qualifyingName, int modifiers) {
-		super(name, posNom, typeReference, modifiers);
-		this.qualifyingName = qualifyingName;
-	}
-	@Override
-	public boolean isReceiver() {
-		return true;
-	}
+    public NameReference qualifyingName;
 
-	@Override
-	public StringBuilder print(int indent, StringBuilder output) {
+    public Receiver(char[] name, long posNom, TypeReference typeReference, NameReference qualifyingName,
+        int modifiers) {
+        super(name, posNom, typeReference, modifiers);
+        this.qualifyingName = qualifyingName;
+    }
 
-		printIndent(indent, output);
-		printModifiers(this.modifiers, output);
+    @Override
+    public boolean isReceiver() {
+        return true;
+    }
 
-		if (this.type == null) {
-			output.append("<no type> "); //$NON-NLS-1$
-		} else {
-			this.type.print(0, output).append(' ');
-		}
-		if (this.qualifyingName != null) {
-			this.qualifyingName.print(indent, output);
-			output.append('.');
-		}
-		return output.append(this.name);
-	}
+    @Override
+    public StringBuilder print(int indent, StringBuilder output) {
+
+        printIndent(indent, output);
+        printModifiers(this.modifiers, output);
+
+        if (this.type == null) {
+            output.append("<no type> "); //$NON-NLS-1$
+        } else {
+            this.type.print(0, output).append(' ');
+        }
+        if (this.qualifyingName != null) {
+            this.qualifyingName.print(indent, output);
+            output.append('.');
+        }
+        return output.append(this.name);
+    }
 }

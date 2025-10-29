@@ -37,4 +37,3 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.resolver;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.Version;
-

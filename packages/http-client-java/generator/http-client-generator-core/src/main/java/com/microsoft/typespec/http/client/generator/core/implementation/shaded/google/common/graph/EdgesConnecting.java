@@ -21,9 +21,9 @@ import static com.microsoft.typespec.http.client.generator.core.implementation.s
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.ImmutableSet;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.Iterators;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.UnmodifiableIterator;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.util.AbstractSet;
 import java.util.Map;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 
 /**
  * A class to represent the set of edges connecting an (implicit) origin node to a target node.
@@ -37,35 +37,33 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 @ElementTypesAreNonnullByDefault
 final class EdgesConnecting<E> extends AbstractSet<E> {
 
-  private final Map<?, E> nodeToOutEdge;
-  private final Object targetNode;
+    private final Map<?, E> nodeToOutEdge;
+    private final Object targetNode;
 
-  EdgesConnecting(Map<?, E> nodeToEdgeMap, Object targetNode) {
-    this.nodeToOutEdge = checkNotNull(nodeToEdgeMap);
-    this.targetNode = checkNotNull(targetNode);
-  }
+    EdgesConnecting(Map<?, E> nodeToEdgeMap, Object targetNode) {
+        this.nodeToOutEdge = checkNotNull(nodeToEdgeMap);
+        this.targetNode = checkNotNull(targetNode);
+    }
 
-  @Override
-  public UnmodifiableIterator<E> iterator() {
-    E connectingEdge = getConnectingEdge();
-    return (connectingEdge == null)
-        ? ImmutableSet.<E>of().iterator()
-        : Iterators.singletonIterator(connectingEdge);
-  }
+    @Override
+    public UnmodifiableIterator<E> iterator() {
+        E connectingEdge = getConnectingEdge();
+        return (connectingEdge == null) ? ImmutableSet.<E>of().iterator() : Iterators.singletonIterator(connectingEdge);
+    }
 
-  @Override
-  public int size() {
-    return getConnectingEdge() == null ? 0 : 1;
-  }
+    @Override
+    public int size() {
+        return getConnectingEdge() == null ? 0 : 1;
+    }
 
-  @Override
-  public boolean contains(@CheckForNull Object edge) {
-    E connectingEdge = getConnectingEdge();
-    return (connectingEdge != null && connectingEdge.equals(edge));
-  }
+    @Override
+    public boolean contains(@CheckForNull Object edge) {
+        E connectingEdge = getConnectingEdge();
+        return (connectingEdge != null && connectingEdge.equals(edge));
+    }
 
-  @CheckForNull
-  private E getConnectingEdge() {
-    return nodeToOutEdge.get(targetNode);
-  }
+    @CheckForNull
+    private E getConnectingEdge() {
+        return nodeToOutEdge.get(targetNode);
+    }
 }

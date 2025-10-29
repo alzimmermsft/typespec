@@ -24,7 +24,6 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.ULONG;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.ULONGByReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HRESULT;
@@ -44,8 +43,8 @@ public class EnumMoniker extends Unknown implements IEnumMoniker {
     public HRESULT Next(ULONG celt, PointerByReference rgelt, ULONGByReference pceltFetched) {
         final int vTableId = 3;
 
-        HRESULT hr = (HRESULT) this._invokeNativeObject(vTableId, new Object[]{this.getPointer(), celt,
-            rgelt, pceltFetched}, HRESULT.class);
+        HRESULT hr = (HRESULT) this._invokeNativeObject(vTableId,
+            new Object[] { this.getPointer(), celt, rgelt, pceltFetched }, HRESULT.class);
 
         return hr;
     }
@@ -54,8 +53,8 @@ public class EnumMoniker extends Unknown implements IEnumMoniker {
     public HRESULT Skip(ULONG celt) {
         final int vTableId = 4;
 
-        HRESULT hr = (HRESULT) this._invokeNativeObject(vTableId, new Object[] { this.getPointer(), celt },
-                HRESULT.class);
+        HRESULT hr
+            = (HRESULT) this._invokeNativeObject(vTableId, new Object[] { this.getPointer(), celt }, HRESULT.class);
 
         return hr;
     }
@@ -64,8 +63,7 @@ public class EnumMoniker extends Unknown implements IEnumMoniker {
     public HRESULT Reset() {
         final int vTableId = 5;
 
-        HRESULT hr = (HRESULT) this._invokeNativeObject(vTableId, new Object[] { this.getPointer(), },
-                HRESULT.class);
+        HRESULT hr = (HRESULT) this._invokeNativeObject(vTableId, new Object[] { this.getPointer(), }, HRESULT.class);
 
         return hr;
     }
@@ -74,8 +72,8 @@ public class EnumMoniker extends Unknown implements IEnumMoniker {
     public HRESULT Clone(PointerByReference ppenum) {
         final int vTableId = 6;
 
-        HRESULT hr = (HRESULT) this._invokeNativeObject(vTableId,
-                new Object[] { this.getPointer(), ppenum }, HRESULT.class);
+        HRESULT hr
+            = (HRESULT) this._invokeNativeObject(vTableId, new Object[] { this.getPointer(), ppenum }, HRESULT.class);
 
         return hr;
     }

@@ -29,9 +29,10 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.ByReference;
 
 /**
-* Based on basetsd.h (various types)
-* @author dblock[at]dblock[dot]org
-*/
+ * Based on basetsd.h (various types)
+ * 
+ * @author dblock[at]dblock[dot]org
+ */
 @SuppressWarnings("serial")
 public interface BaseTSD {
 
@@ -54,8 +55,8 @@ public interface BaseTSD {
     }
 
     /**
-* Signed SIZE_T.
-*/
+     * Signed SIZE_T.
+     */
     public static class SSIZE_T extends LONG_PTR {
         public SSIZE_T() {
             this(0);
@@ -67,8 +68,8 @@ public interface BaseTSD {
     }
 
     /**
-* Unsigned LONG_PTR.
-*/
+     * Unsigned LONG_PTR.
+     */
     public static class ULONG_PTR extends IntegerType {
         public ULONG_PTR() {
             this(0);
@@ -84,35 +85,34 @@ public interface BaseTSD {
     }
 
     /**
-* PULONG_PTR
-*/
+     * PULONG_PTR
+     */
     public static class ULONG_PTRByReference extends ByReference {
         public ULONG_PTRByReference() {
             this(new ULONG_PTR(0));
         }
+
         public ULONG_PTRByReference(ULONG_PTR value) {
             super(Native.POINTER_SIZE);
             setValue(value);
         }
+
         public void setValue(ULONG_PTR value) {
             if (Native.POINTER_SIZE == 4) {
                 getPointer().setInt(0, value.intValue());
-            }
-            else {
+            } else {
                 getPointer().setLong(0, value.longValue());
             }
         }
+
         public ULONG_PTR getValue() {
-            return new ULONG_PTR(Native.POINTER_SIZE == 4
-                                 ? getPointer().getInt(0)
-                                 : getPointer().getLong(0));
+            return new ULONG_PTR(Native.POINTER_SIZE == 4 ? getPointer().getInt(0) : getPointer().getLong(0));
         }
     }
 
-
     /**
-* Unsigned DWORD_PTR.
-*/
+     * Unsigned DWORD_PTR.
+     */
     public static class DWORD_PTR extends IntegerType {
         public DWORD_PTR() {
             this(0);
@@ -124,9 +124,9 @@ public interface BaseTSD {
     }
 
     /**
-* The maximum number of bytes to which a pointer can point.
-* Use for a count that must span the full range of a pointer.
-*/
+     * The maximum number of bytes to which a pointer can point.
+     * Use for a count that must span the full range of a pointer.
+     */
     public static class SIZE_T extends ULONG_PTR {
         public SIZE_T() {
             this(0);

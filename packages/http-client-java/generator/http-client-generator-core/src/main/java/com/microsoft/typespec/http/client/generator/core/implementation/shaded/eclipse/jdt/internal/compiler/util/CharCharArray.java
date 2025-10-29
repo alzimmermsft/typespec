@@ -20,42 +20,42 @@ import java.util.Arrays;
  */
 public final record CharCharArray(char[][] key) implements Comparable<CharCharArray> {
 
-	@Override
-	public int compareTo(CharCharArray other) {
-		// just any technical sort order for Comparable interface used in HashMap https://openjdk.org/jeps/180
-		int d = this.key.length - other.key.length;
-		if (d != 0) {
-			return d;
-		}
-		int length = this.key.length;
-		for (int i = 0; i < length; i++) {
-			int c = Arrays.compare(this.key[i], other.key[i]);
-			if (c != 0) {
-				return c;
-			}
-		}
-		return 0;
-	}
+    @Override
+    public int compareTo(CharCharArray other) {
+        // just any technical sort order for Comparable interface used in HashMap https://openjdk.org/jeps/180
+        int d = this.key.length - other.key.length;
+        if (d != 0) {
+            return d;
+        }
+        int length = this.key.length;
+        for (int i = 0; i < length; i++) {
+            int c = Arrays.compare(this.key[i], other.key[i]);
+            if (c != 0) {
+                return c;
+            }
+        }
+        return 0;
+    }
 
-	public char[][] getKey() {
-		return this.key;
-	}
+    public char[][] getKey() {
+        return this.key;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof CharCharArray other) {
-			return Arrays.deepEquals(this.key, other.key);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof CharCharArray other) {
+            return Arrays.deepEquals(this.key, other.key);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Arrays.deepHashCode(this.key);
-	}
+    @Override
+    public int hashCode() {
+        return Arrays.deepHashCode(this.key);
+    }
 
-	@Override
-	public String toString() {
-		return Arrays.deepToString(this.key);
-	}
+    @Override
+    public String toString() {
+        return Arrays.deepToString(this.key);
+    }
 }

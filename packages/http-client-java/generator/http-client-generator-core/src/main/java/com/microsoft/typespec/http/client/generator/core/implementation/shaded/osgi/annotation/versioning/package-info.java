@@ -22,9 +22,8 @@
  * This package is not used at runtime.
  *
  * @see <a href= "https://docs.osgi.org/whitepaper/semantic-versioning/" >
- *      Semantic Versioning</a>
+ * Semantic Versioning</a>
  * @author $Id: 322b26069473b0ea06a29cd95992327b9fd65ddf $
  */
 @Version("1.1.2")
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning;
-

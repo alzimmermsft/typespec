@@ -20,10 +20,10 @@ import static java.util.Objects.requireNonNull;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.Beta;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.Maps;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 
 /**
  * This class provides a skeletal implementation of {@link ValueGraph}. It is recommended to extend
@@ -39,122 +39,113 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
  */
 @Beta
 @ElementTypesAreNonnullByDefault
-public abstract class AbstractValueGraph<N, V> extends AbstractBaseGraph<N>
-    implements ValueGraph<N, V> {
+public abstract class AbstractValueGraph<N, V> extends AbstractBaseGraph<N> implements ValueGraph<N, V> {
 
-  @Override
-  public Graph<N> asGraph() {
-    return new AbstractGraph<N>() {
-      @Override
-      public Set<N> nodes() {
-        return AbstractValueGraph.this.nodes();
-      }
+    @Override
+    public Graph<N> asGraph() {
+        return new AbstractGraph<N>() {
+            @Override
+            public Set<N> nodes() {
+                return AbstractValueGraph.this.nodes();
+            }
 
-      @Override
-      public Set<EndpointPair<N>> edges() {
-        return AbstractValueGraph.this.edges();
-      }
+            @Override
+            public Set<EndpointPair<N>> edges() {
+                return AbstractValueGraph.this.edges();
+            }
 
-      @Override
-      public boolean isDirected() {
-        return AbstractValueGraph.this.isDirected();
-      }
+            @Override
+            public boolean isDirected() {
+                return AbstractValueGraph.this.isDirected();
+            }
 
-      @Override
-      public boolean allowsSelfLoops() {
-        return AbstractValueGraph.this.allowsSelfLoops();
-      }
+            @Override
+            public boolean allowsSelfLoops() {
+                return AbstractValueGraph.this.allowsSelfLoops();
+            }
 
-      @Override
-      public ElementOrder<N> nodeOrder() {
-        return AbstractValueGraph.this.nodeOrder();
-      }
+            @Override
+            public ElementOrder<N> nodeOrder() {
+                return AbstractValueGraph.this.nodeOrder();
+            }
 
-      @Override
-      public ElementOrder<N> incidentEdgeOrder() {
-        return AbstractValueGraph.this.incidentEdgeOrder();
-      }
+            @Override
+            public ElementOrder<N> incidentEdgeOrder() {
+                return AbstractValueGraph.this.incidentEdgeOrder();
+            }
 
-      @Override
-      public Set<N> adjacentNodes(N node) {
-        return AbstractValueGraph.this.adjacentNodes(node);
-      }
+            @Override
+            public Set<N> adjacentNodes(N node) {
+                return AbstractValueGraph.this.adjacentNodes(node);
+            }
 
-      @Override
-      public Set<N> predecessors(N node) {
-        return AbstractValueGraph.this.predecessors(node);
-      }
+            @Override
+            public Set<N> predecessors(N node) {
+                return AbstractValueGraph.this.predecessors(node);
+            }
 
-      @Override
-      public Set<N> successors(N node) {
-        return AbstractValueGraph.this.successors(node);
-      }
+            @Override
+            public Set<N> successors(N node) {
+                return AbstractValueGraph.this.successors(node);
+            }
 
-      @Override
-      public int degree(N node) {
-        return AbstractValueGraph.this.degree(node);
-      }
+            @Override
+            public int degree(N node) {
+                return AbstractValueGraph.this.degree(node);
+            }
 
-      @Override
-      public int inDegree(N node) {
-        return AbstractValueGraph.this.inDegree(node);
-      }
+            @Override
+            public int inDegree(N node) {
+                return AbstractValueGraph.this.inDegree(node);
+            }
 
-      @Override
-      public int outDegree(N node) {
-        return AbstractValueGraph.this.outDegree(node);
-      }
-    };
-  }
-
-  @Override
-  public Optional<V> edgeValue(N nodeU, N nodeV) {
-    return Optional.ofNullable(edgeValueOrDefault(nodeU, nodeV, null));
-  }
-
-  @Override
-  public Optional<V> edgeValue(EndpointPair<N> endpoints) {
-    return Optional.ofNullable(edgeValueOrDefault(endpoints, null));
-  }
-
-  @Override
-  public final boolean equals(@CheckForNull Object obj) {
-    if (obj == this) {
-      return true;
+            @Override
+            public int outDegree(N node) {
+                return AbstractValueGraph.this.outDegree(node);
+            }
+        };
     }
-    if (!(obj instanceof ValueGraph)) {
-      return false;
+
+    @Override
+    public Optional<V> edgeValue(N nodeU, N nodeV) {
+        return Optional.ofNullable(edgeValueOrDefault(nodeU, nodeV, null));
     }
-    ValueGraph<?, ?> other = (ValueGraph<?, ?>) obj;
 
-    return isDirected() == other.isDirected()
-        && nodes().equals(other.nodes())
-        && edgeValueMap(this).equals(edgeValueMap(other));
-  }
+    @Override
+    public Optional<V> edgeValue(EndpointPair<N> endpoints) {
+        return Optional.ofNullable(edgeValueOrDefault(endpoints, null));
+    }
 
-  @Override
-  public final int hashCode() {
-    return edgeValueMap(this).hashCode();
-  }
+    @Override
+    public final boolean equals(@CheckForNull Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof ValueGraph)) {
+            return false;
+        }
+        ValueGraph<?, ?> other = (ValueGraph<?, ?>) obj;
 
-  /** Returns a string representation of this graph. */
-  @Override
-  public String toString() {
-    return "isDirected: "
-        + isDirected()
-        + ", allowsSelfLoops: "
-        + allowsSelfLoops()
-        + ", nodes: "
-        + nodes()
-        + ", edges: "
-        + edgeValueMap(this);
-  }
+        return isDirected() == other.isDirected()
+            && nodes().equals(other.nodes())
+            && edgeValueMap(this).equals(edgeValueMap(other));
+    }
 
-  private static <N, V> Map<EndpointPair<N>, V> edgeValueMap(final ValueGraph<N, V> graph) {
-    return Maps.asMap(
-        graph.edges(),
-        edge ->
-            // requireNonNull is safe because the endpoint pair comes from the graph.
-            requireNonNull(graph.edgeValueOrDefault(edge.nodeU(), edge.nodeV(), null)));
-  }
+    @Override
+    public final int hashCode() {
+        return edgeValueMap(this).hashCode();
+    }
+
+    /** Returns a string representation of this graph. */
+    @Override
+    public String toString() {
+        return "isDirected: " + isDirected() + ", allowsSelfLoops: " + allowsSelfLoops() + ", nodes: " + nodes()
+            + ", edges: " + edgeValueMap(this);
+    }
+
+    private static <N, V> Map<EndpointPair<N>, V> edgeValueMap(final ValueGraph<N, V> graph) {
+        return Maps.asMap(graph.edges(), edge ->
+        // requireNonNull is safe because the endpoint pair comes from the graph.
+        requireNonNull(graph.edgeValueOrDefault(edge.nodeU(), edge.nodeV(), null)));
+    }
 }

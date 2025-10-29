@@ -18,6 +18,7 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.CollectPreconditions.checkNonnegative;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtIncompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.J2ktIncompatible;
@@ -30,7 +31,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Implementation of {@code Multimap} that uses an {@code ArrayList} to store the values for a given
@@ -63,117 +63,116 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @ElementTypesAreNonnullByDefault
 public final class ArrayListMultimap<K extends @Nullable Object, V extends @Nullable Object>
     extends ArrayListMultimapGwtSerializationDependencies<K, V> {
-  // Default from ArrayList
-  private static final int DEFAULT_VALUES_PER_KEY = 3;
+    // Default from ArrayList
+    private static final int DEFAULT_VALUES_PER_KEY = 3;
 
-  @VisibleForTesting transient int expectedValuesPerKey;
+    @VisibleForTesting
+    transient int expectedValuesPerKey;
 
-  /**
-   * Creates a new, empty {@code ArrayListMultimap} with the default initial capacities.
-   *
-   * <p>This method will soon be deprecated in favor of {@code
-   * MultimapBuilder.hashKeys().arrayListValues().build()}.
-   */
-  public static <K extends @Nullable Object, V extends @Nullable Object>
-      ArrayListMultimap<K, V> create() {
-    return new ArrayListMultimap<>();
-  }
-
-  /**
-   * Constructs an empty {@code ArrayListMultimap} with enough capacity to hold the specified
-   * numbers of keys and values without resizing.
-   *
-   * <p>This method will soon be deprecated in favor of {@code
-   * MultimapBuilder.hashKeys(expectedKeys).arrayListValues(expectedValuesPerKey).build()}.
-   *
-   * @param expectedKeys the expected number of distinct keys
-   * @param expectedValuesPerKey the expected average number of values per key
-   * @throws IllegalArgumentException if {@code expectedKeys} or {@code expectedValuesPerKey} is
-   *     negative
-   */
-  public static <K extends @Nullable Object, V extends @Nullable Object>
-      ArrayListMultimap<K, V> create(int expectedKeys, int expectedValuesPerKey) {
-    return new ArrayListMultimap<>(expectedKeys, expectedValuesPerKey);
-  }
-
-  /**
-   * Constructs an {@code ArrayListMultimap} with the same mappings as the specified multimap.
-   *
-   * <p>This method will soon be deprecated in favor of {@code
-   * MultimapBuilder.hashKeys().arrayListValues().build(multimap)}.
-   *
-   * @param multimap the multimap whose contents are copied to this multimap
-   */
-  public static <K extends @Nullable Object, V extends @Nullable Object>
-      ArrayListMultimap<K, V> create(Multimap<? extends K, ? extends V> multimap) {
-    return new ArrayListMultimap<>(multimap);
-  }
-
-  private ArrayListMultimap() {
-    this(12, DEFAULT_VALUES_PER_KEY);
-  }
-
-  private ArrayListMultimap(int expectedKeys, int expectedValuesPerKey) {
-    super(Platform.<K, Collection<V>>newHashMapWithExpectedSize(expectedKeys));
-    checkNonnegative(expectedValuesPerKey, "expectedValuesPerKey");
-    this.expectedValuesPerKey = expectedValuesPerKey;
-  }
-
-  private ArrayListMultimap(Multimap<? extends K, ? extends V> multimap) {
-    this(
-        multimap.keySet().size(),
-        (multimap instanceof ArrayListMultimap)
-            ? ((ArrayListMultimap<?, ?>) multimap).expectedValuesPerKey
-            : DEFAULT_VALUES_PER_KEY);
-    putAll(multimap);
-  }
-
-  /**
-   * Creates a new, empty {@code ArrayList} to hold the collection of values for an arbitrary key.
-   */
-  @Override
-  List<V> createCollection() {
-    return new ArrayList<V>(expectedValuesPerKey);
-  }
-
-  /**
-   * Reduces the memory used by this {@code ArrayListMultimap}, if feasible.
-   *
-   * @deprecated For a {@link ListMultimap} that automatically trims to size, use {@link
-   *     ImmutableListMultimap}. If you need a mutable collection, remove the {@code trimToSize}
-   *     call, or switch to a {@code HashMap<K, ArrayList<V>>}.
-   */
-  @Deprecated
-  public void trimToSize() {
-    for (Collection<V> collection : backingMap().values()) {
-      ArrayList<V> arrayList = (ArrayList<V>) collection;
-      arrayList.trimToSize();
+    /**
+     * Creates a new, empty {@code ArrayListMultimap} with the default initial capacities.
+     *
+     * <p>This method will soon be deprecated in favor of {@code
+     * MultimapBuilder.hashKeys().arrayListValues().build()}.
+     */
+    public static <K extends @Nullable Object, V extends @Nullable Object> ArrayListMultimap<K, V> create() {
+        return new ArrayListMultimap<>();
     }
-  }
 
-  /**
-   * @serialData expectedValuesPerKey, number of distinct keys, and then for each distinct key: the
-   *     key, number of values for that key, and the key's values
-   */
-  @GwtIncompatible // java.io.ObjectOutputStream
-  @J2ktIncompatible
-  private void writeObject(ObjectOutputStream stream) throws IOException {
-    stream.defaultWriteObject();
-    Serialization.writeMultimap(this, stream);
-  }
+    /**
+     * Constructs an empty {@code ArrayListMultimap} with enough capacity to hold the specified
+     * numbers of keys and values without resizing.
+     *
+     * <p>This method will soon be deprecated in favor of {@code
+     * MultimapBuilder.hashKeys(expectedKeys).arrayListValues(expectedValuesPerKey).build()}.
+     *
+     * @param expectedKeys the expected number of distinct keys
+     * @param expectedValuesPerKey the expected average number of values per key
+     * @throws IllegalArgumentException if {@code expectedKeys} or {@code expectedValuesPerKey} is
+     * negative
+     */
+    public static <K extends @Nullable Object, V extends @Nullable Object> ArrayListMultimap<K, V>
+        create(int expectedKeys, int expectedValuesPerKey) {
+        return new ArrayListMultimap<>(expectedKeys, expectedValuesPerKey);
+    }
 
-  @GwtIncompatible // java.io.ObjectOutputStream
-  @J2ktIncompatible
-  private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-    stream.defaultReadObject();
-    expectedValuesPerKey = DEFAULT_VALUES_PER_KEY;
-    int distinctKeys = Serialization.readCount(stream);
-    Map<K, Collection<V>> map = Maps.newHashMap();
-    setMap(map);
-    Serialization.populateMultimap(this, stream, distinctKeys);
-  }
+    /**
+     * Constructs an {@code ArrayListMultimap} with the same mappings as the specified multimap.
+     *
+     * <p>This method will soon be deprecated in favor of {@code
+     * MultimapBuilder.hashKeys().arrayListValues().build(multimap)}.
+     *
+     * @param multimap the multimap whose contents are copied to this multimap
+     */
+    public static <K extends @Nullable Object, V extends @Nullable Object> ArrayListMultimap<K, V>
+        create(Multimap<? extends K, ? extends V> multimap) {
+        return new ArrayListMultimap<>(multimap);
+    }
 
-  @GwtIncompatible // Not needed in emulated source.
-  @J2ktIncompatible
-  private static final long serialVersionUID = 0;
+    private ArrayListMultimap() {
+        this(12, DEFAULT_VALUES_PER_KEY);
+    }
+
+    private ArrayListMultimap(int expectedKeys, int expectedValuesPerKey) {
+        super(Platform.<K, Collection<V>>newHashMapWithExpectedSize(expectedKeys));
+        checkNonnegative(expectedValuesPerKey, "expectedValuesPerKey");
+        this.expectedValuesPerKey = expectedValuesPerKey;
+    }
+
+    private ArrayListMultimap(Multimap<? extends K, ? extends V> multimap) {
+        this(multimap.keySet().size(),
+            (multimap instanceof ArrayListMultimap)
+                ? ((ArrayListMultimap<?, ?>) multimap).expectedValuesPerKey
+                : DEFAULT_VALUES_PER_KEY);
+        putAll(multimap);
+    }
+
+    /**
+     * Creates a new, empty {@code ArrayList} to hold the collection of values for an arbitrary key.
+     */
+    @Override
+    List<V> createCollection() {
+        return new ArrayList<V>(expectedValuesPerKey);
+    }
+
+    /**
+     * Reduces the memory used by this {@code ArrayListMultimap}, if feasible.
+     *
+     * @deprecated For a {@link ListMultimap} that automatically trims to size, use {@link
+     * ImmutableListMultimap}. If you need a mutable collection, remove the {@code trimToSize}
+     * call, or switch to a {@code HashMap<K, ArrayList<V>>}.
+     */
+    @Deprecated
+    public void trimToSize() {
+        for (Collection<V> collection : backingMap().values()) {
+            ArrayList<V> arrayList = (ArrayList<V>) collection;
+            arrayList.trimToSize();
+        }
+    }
+
+    /**
+     * @serialData expectedValuesPerKey, number of distinct keys, and then for each distinct key: the
+     * key, number of values for that key, and the key's values
+     */
+    @GwtIncompatible // java.io.ObjectOutputStream
+    @J2ktIncompatible
+    private void writeObject(ObjectOutputStream stream) throws IOException {
+        stream.defaultWriteObject();
+        Serialization.writeMultimap(this, stream);
+    }
+
+    @GwtIncompatible // java.io.ObjectOutputStream
+    @J2ktIncompatible
+    private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+        stream.defaultReadObject();
+        expectedValuesPerKey = DEFAULT_VALUES_PER_KEY;
+        int distinctKeys = Serialization.readCount(stream);
+        Map<K, Collection<V>> map = Maps.newHashMap();
+        setMap(map);
+        Serialization.populateMultimap(this, stream, distinctKeys);
+    }
+
+    @GwtIncompatible // Not needed in emulated source.
+    @J2ktIncompatible
+    private static final long serialVersionUID = 0;
 }

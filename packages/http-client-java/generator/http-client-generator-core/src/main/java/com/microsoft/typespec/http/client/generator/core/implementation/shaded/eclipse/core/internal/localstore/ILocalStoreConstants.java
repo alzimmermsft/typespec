@@ -15,11 +15,6 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 public interface ILocalStoreConstants {
 
-    /** Common constants for History Store classes. */
-    int SIZE_LASTMODIFIED = 8;
-    int SIZE_COUNTER = 1;
-    int SIZE_KEY_SUFFIX = SIZE_LASTMODIFIED + SIZE_COUNTER;
-
     /** constants for safe chunky streams */
 
     // 40b18b8123bc00141a2596e7a393be1e

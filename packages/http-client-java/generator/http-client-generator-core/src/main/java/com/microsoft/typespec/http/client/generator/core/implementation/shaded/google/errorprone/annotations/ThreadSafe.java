@@ -34,10 +34,10 @@ import java.lang.annotation.Target;
  * <p>This annotation has two related-but-distinct purposes:
  *
  * <ul>
- *   <li>For humans: it indicates that the class/interface (and subclasses) is thread-safe
- *   <li>For machines: it causes the annotated class/interface -- and all of its subtypes -- to be
- *       validated by the {@code com.google.errorprone.bugpatterns.threadsafety.ThreadSafeChecker}
- *       {@code BugChecker}.
+ * <li>For humans: it indicates that the class/interface (and subclasses) is thread-safe
+ * <li>For machines: it causes the annotated class/interface -- and all of its subtypes -- to be
+ * validated by the {@code com.google.errorprone.bugpatterns.threadsafety.ThreadSafeChecker}
+ * {@code BugChecker}.
  * </ul>
  *
  * Note that passing the checks performed by the {@code ThreadSafeChecker} is neither necessary nor
@@ -61,9 +61,10 @@ import java.lang.annotation.Target;
  * requirements:
  *
  * <ul>
- *   <li>It is both {@code final} and its type is deemed inherently deeply thread-safe; and/or
- *   <li>it is annotated with either {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.concurrent.GuardedBy}
- *       (some other annotations named {@code GuardedBy} also work, though this the preferred);
+ * <li>It is both {@code final} and its type is deemed inherently deeply thread-safe; and/or
+ * <li>it is annotated with either
+ * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.concurrent.GuardedBy}
+ * (some other annotations named {@code GuardedBy} also work, though this the preferred);
  * </ul>
  *
  * Below, more details about what is meant by "deemed inherently deeply thread-safe" are presented,
@@ -73,14 +74,14 @@ import java.lang.annotation.Target;
  * requirement is that it meets at least one of these four conditions:
  *
  * <ul>
- *   <li>it is listed as a well-known immutable type in {@code
+ * <li>it is listed as a well-known immutable type in {@code
  *       com.google.errorprone.bugpatterns.threadsafety.WellKnownMutability} (e.g. a field of type
- *       {@link String}); and/or
- *   <li>it is listed as a well-known thread-safe type in {@code
+ * {@link String}); and/or
+ * <li>it is listed as a well-known thread-safe type in {@code
  *       com.google.errorprone.bugpatterns.threadsafety.WellKnownThreadSafety} (e.g. a field of type
- *       {@link java.util.concurrent.atomic.AtomicBoolean}); and/or
- *   <li>it is annotated with {@link Immutable}; and/or
- *   <li>it is annotated with {@link ThreadSafe}.
+ * {@link java.util.concurrent.atomic.AtomicBoolean}); and/or
+ * <li>it is annotated with {@link Immutable}; and/or
+ * <li>it is annotated with {@link ThreadSafe}.
  * </ul>
  *
  * <p>This first requirement means the type is at least inherently shallowly thread-safe.
@@ -96,34 +97,38 @@ import java.lang.annotation.Target;
  * heuristics, so as to help you avoid them:
  *
  * <ul>
- *   <li>a non-private {@code @GuardedBy} field -- i.e.if a non-private {@code @GuardedBy} field is
- *       accessed outside the class, the code that enforces {@code @GuardedBy} will not prevent
- *       unprotected access and/or modifications to the field;
- *   <li>indirect access to the field. There are several ways in which code may access the objects
- *       stored in the field indirectly (i.e. not directly referencing the field). In all these
- *       cases, {@code @GuardedBy} offers no enforcement. Here's some examples:
- *       <ul>
- *         <li>if the {@code @GuardedBy} field instance is part of an object by a method (e.g. a
- *             simple getter method or constructor parameter);
- *         <li>if a method takes an out-parameter and the method calls a method in that
- *             out-parameter passing the instance of the {@code @GuardedBy} field, and that instance
- *             is stored in the out-parameter (i.e. a simple setter method);
- *       </ul>
- *   <li>methods that perform multiple operations -- e.g., if a class {@code Foo} contains a {@code
+ * <li>a non-private {@code @GuardedBy} field -- i.e.if a non-private {@code @GuardedBy} field is
+ * accessed outside the class, the code that enforces {@code @GuardedBy} will not prevent
+ * unprotected access and/or modifications to the field;
+ * <li>indirect access to the field. There are several ways in which code may access the objects
+ * stored in the field indirectly (i.e. not directly referencing the field). In all these
+ * cases, {@code @GuardedBy} offers no enforcement. Here's some examples:
+ * <ul>
+ * <li>if the {@code @GuardedBy} field instance is part of an object by a method (e.g. a
+ * simple getter method or constructor parameter);
+ * <li>if a method takes an out-parameter and the method calls a method in that
+ * out-parameter passing the instance of the {@code @GuardedBy} field, and that instance
+ * is stored in the out-parameter (i.e. a simple setter method);
+ * </ul>
+ * <li>methods that perform multiple operations -- e.g., if a class {@code Foo} contains a {@code
  *       AtomicInteger} (which is an inherently deeply thread-safe data structure), the following
- *       code makes this class not thread-safe:
- *       <pre>{@code
+ * code makes this class not thread-safe:
+ * 
+ * <pre>
+ * {@code
  * private void incrementMyAtomicInteger() {
  *   myAtomicInteger.set(myAtomicInteger.get() + 1);
  * }
  *
- * }</pre>
+ * }
+ * </pre>
+ * 
  * </ul>
  *
  * Also see https://errorprone.info/bugpattern/ThreadSafe
  */
 // TODO(b/112275411): when fixed, delete the comment above about non-private fields
-@Target({TYPE})
+@Target({ TYPE })
 @Retention(RUNTIME)
 // Note: besides abiding by the standard behavior of `@Inherited`, the behavior enforced by
 // the static analysis effectively applies not only to classes that extend a class annotated with
@@ -133,4 +138,5 @@ import java.lang.annotation.Target;
 // which case the static analysis enforces that the class _also_ have an `@ThreadSafe` annotation.
 @Inherited
 @Documented
-public @interface ThreadSafe {}
+public @interface ThreadSafe {
+}

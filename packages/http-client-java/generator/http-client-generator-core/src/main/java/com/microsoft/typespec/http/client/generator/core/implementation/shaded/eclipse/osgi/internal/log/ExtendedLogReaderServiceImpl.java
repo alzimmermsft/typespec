@@ -10,64 +10,64 @@
  ******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.internal.log;
 
-import java.util.*;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.equinox.log.ExtendedLogReaderService;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.equinox.log.LogFilter;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.log.LogEntry;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.log.LogListener;
+import java.util.*;
 
 public class ExtendedLogReaderServiceImpl implements ExtendedLogReaderService {
 
-	private final ExtendedLogReaderServiceFactory factory;
-	private Set<LogListener> listeners = new HashSet<>();
+    private final ExtendedLogReaderServiceFactory factory;
+    private Set<LogListener> listeners = new HashSet<>();
 
-	ExtendedLogReaderServiceImpl(ExtendedLogReaderServiceFactory factory) {
-		this.factory = factory;
-	}
+    ExtendedLogReaderServiceImpl(ExtendedLogReaderServiceFactory factory) {
+        this.factory = factory;
+    }
 
-	@Override
-	public synchronized void addLogListener(LogListener listener, LogFilter filter) {
-		checkShutdown();
-		if (listener == null)
-			throw new IllegalArgumentException("LogListener must not be null"); //$NON-NLS-1$
+    @Override
+    public synchronized void addLogListener(LogListener listener, LogFilter filter) {
+        checkShutdown();
+        if (listener == null)
+            throw new IllegalArgumentException("LogListener must not be null"); //$NON-NLS-1$
 
-		if (filter == null)
-			throw new IllegalArgumentException("LogFilter must not be null"); //$NON-NLS-1$
+        if (filter == null)
+            throw new IllegalArgumentException("LogFilter must not be null"); //$NON-NLS-1$
 
-		listeners.add(listener);
-		factory.addLogListener(listener, filter);
-	}
+        listeners.add(listener);
+        factory.addLogListener(listener, filter);
+    }
 
-	@Override
-	public void addLogListener(LogListener listener) {
-		addLogListener(listener, ExtendedLogReaderServiceFactory.NULL_LOGGER_FILTER);
-	}
+    @Override
+    public void addLogListener(LogListener listener) {
+        addLogListener(listener, ExtendedLogReaderServiceFactory.NULL_LOGGER_FILTER);
+    }
 
-	@Override
-	public Enumeration<LogEntry> getLog() {
-		checkShutdown();
-		return factory.getLog();
-	}
+    @Override
+    public Enumeration<LogEntry> getLog() {
+        checkShutdown();
+        return factory.getLog();
+    }
 
-	@Override
-	public synchronized void removeLogListener(LogListener listener) {
-		checkShutdown();
-		if (listener == null)
-			throw new IllegalArgumentException("LogListener must not be null"); //$NON-NLS-1$
+    @Override
+    public synchronized void removeLogListener(LogListener listener) {
+        checkShutdown();
+        if (listener == null)
+            throw new IllegalArgumentException("LogListener must not be null"); //$NON-NLS-1$
 
-		factory.removeLogListener(listener);
-		listeners.remove(listener);
-	}
+        factory.removeLogListener(listener);
+        listeners.remove(listener);
+    }
 
-	private synchronized void checkShutdown() {
-		if (listeners == null)
-			throw new IllegalStateException("LogReaderService is shutdown."); //$NON-NLS-1$
-	}
+    private synchronized void checkShutdown() {
+        if (listeners == null)
+            throw new IllegalStateException("LogReaderService is shutdown."); //$NON-NLS-1$
+    }
 
-	synchronized void shutdown() {
-		for (LogListener listener : listeners) {
-			factory.removeLogListener(listener);
-		}
-		listeners = null;
-	}
+    synchronized void shutdown() {
+        for (LogListener listener : listeners) {
+            factory.removeLogListener(listener);
+        }
+        listeners = null;
+    }
 }

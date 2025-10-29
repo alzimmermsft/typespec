@@ -24,30 +24,31 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class ModuleMainClassAttribute extends ClassFileAttribute implements IModuleMainClassAttribute {
 
-	private final int mainClassIndex;
-	private final char[] mainClassName;
+    private final int mainClassIndex;
+    private final char[] mainClassName;
 
-	/**
-	 * Constructor for ModuleMainClassAttribute.
-	 */
-	public ModuleMainClassAttribute(	byte[] classFileBytes,	IConstantPool constantPool,	int offset)	throws ClassFormatException {
-		super(classFileBytes, constantPool, offset);
-		int readOffset = 6;
-		this.mainClassIndex = u2At(classFileBytes, readOffset, offset);
-		IConstantPoolEntry constantPoolEntry = constantPool.decodeEntry(this.mainClassIndex);
-		if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Class) {
-			throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
-		}
-		this.mainClassName = constantPoolEntry.getClassInfoName();
-	}
+    /**
+     * Constructor for ModuleMainClassAttribute.
+     */
+    public ModuleMainClassAttribute(byte[] classFileBytes, IConstantPool constantPool, int offset)
+        throws ClassFormatException {
+        super(classFileBytes, constantPool, offset);
+        int readOffset = 6;
+        this.mainClassIndex = u2At(classFileBytes, readOffset, offset);
+        IConstantPoolEntry constantPoolEntry = constantPool.decodeEntry(this.mainClassIndex);
+        if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Class) {
+            throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
+        }
+        this.mainClassName = constantPoolEntry.getClassInfoName();
+    }
 
-	@Override
-	public int getMainClassIndex() {
-		return this.mainClassIndex;
-	}
+    @Override
+    public int getMainClassIndex() {
+        return this.mainClassIndex;
+    }
 
-	@Override
-	public char[] getMainClassName() {
-		return this.mainClassName;
-	}
+    @Override
+    public char[] getMainClassName() {
+        return this.mainClassName;
+    }
 }

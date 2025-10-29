@@ -45,6 +45,6 @@ public final class RegistryFactory {
         if (defaultRegistryProvider == null) {
             return null;
         }
-        return defaultRegistryProvider.getRegistry();
+        return defaultRegistryProvider.registry();
     }
 }

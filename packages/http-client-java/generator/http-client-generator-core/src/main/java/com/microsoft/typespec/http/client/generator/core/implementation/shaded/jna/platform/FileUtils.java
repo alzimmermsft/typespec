@@ -23,13 +23,12 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.mac.MacFileUtils;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.W32FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.mac.MacFileUtils;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.W32FileUtils;
 
 /** Miscellaneous file utils not provided for by Java. */
 public abstract class FileUtils {
@@ -38,7 +37,9 @@ public abstract class FileUtils {
         return false;
     }
 
-    /** Move the given file to the system trash, if one is available.
+    /**
+     * Move the given file to the system trash, if one is available.
+     * 
      * @param files files to move
      * @throws IOException on failure.
      */
@@ -51,11 +52,9 @@ public abstract class FileUtils {
             String os = System.getProperty("os.name");
             if (os.startsWith("Windows")) {
                 INSTANCE = new W32FileUtils();
-            }
-            else if (os.startsWith("Mac")){
+            } else if (os.startsWith("Mac")) {
                 INSTANCE = new MacFileUtils();
-            }
-            else {
+            } else {
                 INSTANCE = new DefaultFileUtils();
             }
         }
@@ -68,7 +67,7 @@ public abstract class FileUtils {
     private static class DefaultFileUtils extends FileUtils {
 
         private File getTrashDirectory() {
-            // very simple implementation.  should take care of renaming when
+            // very simple implementation. should take care of renaming when
             // a file already exists, or any other platform-specific behavior
             File home = new File(System.getProperty("user.home"));
             File trash = new File(home, ".Trash");
@@ -95,7 +94,8 @@ public abstract class FileUtils {
             return getTrashDirectory().exists();
         }
 
-        /** The default implementation attempts to move the file to
+        /**
+         * The default implementation attempts to move the file to
          * the desktop "Trash" folder.
          */
         @Override
@@ -105,7 +105,7 @@ public abstract class FileUtils {
                 throw new IOException("No trash location found (define fileutils.trash to be the path to the trash)");
             }
             List<File> failed = new ArrayList<>();
-            for (int i=0;i < files.length;i++) {
+            for (int i = 0; i < files.length; i++) {
                 File src = files[i];
                 File target = new File(trash, src.getName());
                 if (!src.renameTo(target)) {

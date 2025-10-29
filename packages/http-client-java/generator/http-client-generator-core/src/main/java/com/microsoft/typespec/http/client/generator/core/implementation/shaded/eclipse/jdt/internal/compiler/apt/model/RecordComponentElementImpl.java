@@ -14,39 +14,39 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.apt.model;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.ElementKind;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.ElementVisitor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.ExecutableElement;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.RecordComponentElement;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.MethodBinding;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.RecordComponentBinding;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.ElementKind;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.ElementVisitor;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.ExecutableElement;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.element.RecordComponentElement;
 
 public class RecordComponentElementImpl extends VariableElementImpl implements RecordComponentElement {
 
-	protected RecordComponentElementImpl(BaseProcessingEnvImpl env, RecordComponentBinding binding) {
-		super(env, binding);
-	}
+    protected RecordComponentElementImpl(BaseProcessingEnvImpl env, RecordComponentBinding binding) {
+        super(env, binding);
+    }
 
-	@Override
-	public ElementKind getKind() {
-		return ElementKind.RECORD_COMPONENT;
-	}
+    @Override
+    public ElementKind getKind() {
+        return ElementKind.RECORD_COMPONENT;
+    }
 
-	@Override
-	public ExecutableElement getAccessor() {
-		RecordComponentBinding comp = (RecordComponentBinding) this._binding;
-		ReferenceBinding binding = comp.declaringRecord;
-		MethodBinding accessor = binding.getRecordComponentAccessor(comp.name);
-		if (accessor != null) {
-			return new ExecutableElementImpl(this._env, accessor);
-		}
-		return null;
-	}
+    @Override
+    public ExecutableElement getAccessor() {
+        RecordComponentBinding comp = (RecordComponentBinding) this._binding;
+        ReferenceBinding binding = comp.declaringRecord;
+        MethodBinding accessor = binding.getRecordComponentAccessor(comp.name);
+        if (accessor != null) {
+            return new ExecutableElementImpl(this._env, accessor);
+        }
+        return null;
+    }
 
-	@Override
-	public <R, P> R accept(ElementVisitor<R, P> visitor, P param) {
-		return visitor.visitRecordComponent(this, param);
-	}
+    @Override
+    public <R, P> R accept(ElementVisitor<R, P> visitor, P param) {
+        return visitor.visitRecordComponent(this, param);
+    }
 }

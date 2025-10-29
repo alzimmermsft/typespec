@@ -23,19 +23,23 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna;
 
-/** Placeholder proxy interface to allow an InvocationHandler to convert
- * arguments/return values on callback methods.  This is a special sub-interface
+/**
+ * Placeholder proxy interface to allow an InvocationHandler to convert
+ * arguments/return values on callback methods. This is a special sub-interface
  * of {@link Callback} which expects its arguments in a single Object array
  * passed to its {@link #callback} method.
  */
 public interface CallbackProxy extends Callback {
 
-    /** This is the callback method invoked from native code.
+    /**
+     * This is the callback method invoked from native code.
      * It must <em>not</em> throw any exceptions whatsoever.
      */
     Object callback(Object[] args);
+
     /** Returns the types of the parameters to the callback method. */
     Class<?>[] getParameterTypes();
+
     /** Returns the type of the callback method's return value. */
     Class<?> getReturnType();
 }

@@ -26,7 +26,7 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.COMException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.util.annotation.ComInterface;
 
-@ComInterface(iid="{B196B284-BAB4-101A-B69C-00AA00341D07}")
+@ComInterface(iid = "{B196B284-BAB4-101A-B69C-00AA00341D07}")
 public interface IConnectionPoint {
 
     /**
@@ -40,7 +40,8 @@ public interface IConnectionPoint {
      * see exception cause for details.
      *
      */
-    IComEventCallbackCookie advise(Class<?> comEventCallbackInterface, IComEventCallbackListener comEventCallbackListener) throws COMException;
+    IComEventCallbackCookie advise(Class<?> comEventCallbackInterface,
+        IComEventCallbackListener comEventCallbackListener) throws COMException;
 
     /**
      * Stop listening for callback events

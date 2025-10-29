@@ -33,7 +33,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.PackageFragment;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.ClassFileReader;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.formatter.DefaultCodeFormatter;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;

@@ -23,8 +23,6 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
-import java.awt.Rectangle;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.IntegerType;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
@@ -35,6 +33,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HANDLE;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HANDLEByReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.ByReference;
+import java.awt.Rectangle;
 
 /**
  * Ported from Windef.h (various macros and types). Microsoft Windows SDK 6.0A.
@@ -66,7 +65,7 @@ public interface WinDef {
          * Instantiates a new word.
          *
          * @param value
-         *            the value
+         * the value
          */
         public WORD(long value) {
             super(SIZE, value, true);
@@ -138,7 +137,7 @@ public interface WinDef {
          * Instantiates a new dword.
          *
          * @param value
-         *            the value
+         * the value
          */
         public DWORD(long value) {
             super(SIZE, value, true);
@@ -286,7 +285,7 @@ public interface WinDef {
     public static class LONGLONG extends IntegerType implements Comparable<LONGLONG> {
 
         /** The Constant SIZE. */
-        public static final int SIZE = Native.LONG_SIZE *2;
+        public static final int SIZE = Native.LONG_SIZE * 2;
 
         /**
          * Instantiates a new LONGLONG.
@@ -367,7 +366,7 @@ public interface WinDef {
          * Instantiates a new hdc.
          *
          * @param p
-         *            the p
+         * the p
          */
         public HDC(Pointer p) {
             super(p);
@@ -402,7 +401,7 @@ public interface WinDef {
          * Instantiates a new hicon.
          *
          * @param p
-         *            the p
+         * the p
          */
         public HICON(Pointer p) {
             super(p);
@@ -425,7 +424,7 @@ public interface WinDef {
          * Instantiates a new hcursor.
          *
          * @param p
-         *            the p
+         * the p
          */
         public HCURSOR(Pointer p) {
             super(p);
@@ -448,7 +447,7 @@ public interface WinDef {
          * Instantiates a new hmenu.
          *
          * @param p
-         *            the p
+         * the p
          */
         public HMENU(Pointer p) {
             super(p);
@@ -471,7 +470,7 @@ public interface WinDef {
          * Instantiates a new hpen.
          *
          * @param p
-         *            the p
+         * the p
          */
         public HPEN(Pointer p) {
             super(p);
@@ -494,7 +493,7 @@ public interface WinDef {
          * Instantiates a new hrsrc.
          *
          * @param p
-         *            the p
+         * the p
          */
         public HRSRC(Pointer p) {
             super(p);
@@ -517,7 +516,7 @@ public interface WinDef {
          * Instantiates a new hpalette.
          *
          * @param p
-         *            the p
+         * the p
          */
         public HPALETTE(Pointer p) {
             super(p);
@@ -540,7 +539,7 @@ public interface WinDef {
          * Instantiates a new hbitmap.
          *
          * @param p
-         *            the p
+         * the p
          */
         public HBITMAP(Pointer p) {
             super(p);
@@ -563,7 +562,7 @@ public interface WinDef {
          * Instantiates a new hrgn.
          *
          * @param p
-         *            the p
+         * the p
          */
         public HRGN(Pointer p) {
             super(p);
@@ -586,7 +585,7 @@ public interface WinDef {
          * Instantiates a new hwnd.
          *
          * @param p
-         *            the p
+         * the p
          */
         public HWND(Pointer p) {
             super(p);
@@ -623,7 +622,7 @@ public interface WinDef {
          * Instantiates a new hfont.
          *
          * @param p
-         *            the p
+         * the p
          */
         public HFONT(Pointer p) {
             super(p);
@@ -689,7 +688,7 @@ public interface WinDef {
          * Instantiates a new lparam.
          *
          * @param value
-         *            the value
+         * the value
          */
         public LPARAM(long value) {
             super(value);
@@ -712,7 +711,7 @@ public interface WinDef {
          * Instantiates a new lresult.
          *
          * @param value
-         *            the value
+         * the value
          */
         public LRESULT(long value) {
             super(value);
@@ -733,7 +732,7 @@ public interface WinDef {
          * Instantiates a new int ptr.
          *
          * @param value
-         *            the value
+         * the value
          */
         public INT_PTR(long value) {
             super(Native.POINTER_SIZE, value);
@@ -765,7 +764,7 @@ public interface WinDef {
          * Instantiates a new uint ptr.
          *
          * @param value
-         *            the value
+         * the value
          */
         public UINT_PTR(long value) {
             super(Native.POINTER_SIZE, value, true);
@@ -797,7 +796,7 @@ public interface WinDef {
          * Instantiates a new wparam.
          *
          * @param value
-         *            the value
+         * the value
          */
         public WPARAM(long value) {
             super(value);
@@ -807,7 +806,7 @@ public interface WinDef {
     /**
      * The Class RECT.
      */
-    @FieldOrder({"left", "top", "right", "bottom"})
+    @FieldOrder({ "left", "top", "right", "bottom" })
     public class RECT extends Structure {
         /** The left. */
         public int left;
@@ -855,7 +854,7 @@ public interface WinDef {
          * Instantiates a new ULONG.
          *
          * @param value
-         *            the value
+         * the value
          */
         public ULONG(long value) {
             super(SIZE, value, true);
@@ -998,7 +997,7 @@ public interface WinDef {
          * Instantiates a new dwordlong.
          *
          * @param value
-         *            the value
+         * the value
          */
         public DWORDLONG(long value) {
             super(SIZE, value, true);
@@ -1026,7 +1025,7 @@ public interface WinDef {
          * Instantiates a new hbrush.
          *
          * @param p
-         *            the p
+         * the p
          */
         public HBRUSH(Pointer p) {
             super(p);
@@ -1049,7 +1048,7 @@ public interface WinDef {
          * Instantiates a new atom.
          *
          * @param value
-         *            the value
+         * the value
          */
         public ATOM(long value) {
             super(value);
@@ -1089,6 +1088,7 @@ public interface WinDef {
 
         /**
          * Instantiates a new instance using a given pointer.
+         * 
          * @param p the pointer
          */
         public LPVOID(Pointer p) {
@@ -1099,7 +1099,7 @@ public interface WinDef {
     /**
      * The Class POINT.
      */
-    @FieldOrder({"x", "y"})
+    @FieldOrder({ "x", "y" })
     public class POINT extends Structure {
 
         /**
@@ -1142,6 +1142,7 @@ public interface WinDef {
         public int x;
         /** The y. */
         public int y;
+
         /**
          * Instantiates a new point.
          */
@@ -1153,7 +1154,7 @@ public interface WinDef {
          * Instantiates a new point.
          *
          * @param memory
-         *            the memory
+         * the memory
          */
         public POINT(Pointer memory) {
             super(memory);
@@ -1164,9 +1165,9 @@ public interface WinDef {
          * Instantiates a new point.
          *
          * @param x
-         *            the x
+         * the x
          * @param y
-         *            the y
+         * the y
          */
         public POINT(int x, int y) {
             this.x = x;
@@ -1193,7 +1194,7 @@ public interface WinDef {
          * Instantiates a new USHORT.
          *
          * @param value
-         *            the value
+         * the value
          */
         public USHORT(long value) {
             super(SIZE, value, true);
@@ -1275,7 +1276,7 @@ public interface WinDef {
          * Instantiates a new SHORT.
          *
          * @param value
-         *            the value
+         * the value
          */
         public SHORT(long value) {
             super(SIZE, value, false);
@@ -1306,7 +1307,7 @@ public interface WinDef {
          * Instantiates a new UINT.
          *
          * @param value
-         *            the value
+         * the value
          */
         public UINT(long value) {
             super(SIZE, value, true);
@@ -1375,7 +1376,7 @@ public interface WinDef {
          * Instantiates a new SCODE.
          *
          * @param value
-         *            the value
+         * the value
          */
         public SCODE(long value) {
             super(value);
@@ -1498,7 +1499,7 @@ public interface WinDef {
         }
 
         /**
-         * Compares 2 BOOL values -  - <B>Note:</B> a {@code null}
+         * Compares 2 BOOL values - - <B>Note:</B> a {@code null}
          * value is considered <U>greater</U> than any non-{@code null} one
          * (i.e., {@code null} values are &quot;pushed&quot; to the end
          * of a sorted array / list of values)
@@ -1712,10 +1713,10 @@ public interface WinDef {
         }
 
         /**
-            * Sets the value.
-            *
-            * @param value the new value
-            */
+         * Sets the value.
+         *
+         * @param value the new value
+         */
         public void setValue(CHAR value) {
             getPointer().setByte(0, value.byteValue());
         }
@@ -1768,7 +1769,7 @@ public interface WinDef {
          * Instantiates a new pointer to an HGLRC.
          *
          * @param h
-         *            Initial valure for the HGLRC
+         * Initial valure for the HGLRC
          */
         public HGLRCByReference(HGLRC h) {
             super(h);

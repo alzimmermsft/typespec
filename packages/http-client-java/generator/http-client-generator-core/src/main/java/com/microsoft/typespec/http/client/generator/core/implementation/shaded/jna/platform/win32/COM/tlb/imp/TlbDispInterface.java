@@ -23,14 +23,14 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.tlb.imp;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.FUNCDESC;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.INVOKEKIND;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.MEMBERID;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.TYPEATTR;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeInfoUtil;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeInfoUtil.TypeInfoDoc;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeLibUtil;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeLibUtil.TypeLibDoc;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.FUNCDESC;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.INVOKEKIND;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.MEMBERID;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.TYPEATTR;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -44,18 +44,17 @@ public class TlbDispInterface extends TlbBase {
      * Instantiates a new tlb dispatch.
      *
      * @param index
-     *            the index
+     * the index
      * @param typeLibUtil
-     *            the type lib util
+     * the type lib util
      */
-    public TlbDispInterface(int index, String packagename,
-            TypeLibUtil typeLibUtil) {
+    public TlbDispInterface(int index, String packagename, TypeLibUtil typeLibUtil) {
         super(index, typeLibUtil, null);
 
         TypeLibDoc typeLibDoc = this.typeLibUtil.getDocumentation(index);
         String docString = typeLibDoc.getDocString();
 
-        if(typeLibDoc.getName().length() > 0)
+        if (typeLibDoc.getName().length() > 0)
             this.name = typeLibDoc.getName();
 
         this.logInfo("Type of kind 'DispInterface' found: " + this.name);
@@ -112,9 +111,9 @@ public class TlbDispInterface extends TlbBase {
      * Creates the java doc header.
      *
      * @param guid
-     *            the guid
+     * the guid
      * @param helpstring
-     *            the helpstring
+     * the helpstring
      */
     protected void createJavaDocHeader(String guid, String helpstring) {
         this.replaceVariable("uuid", guid);

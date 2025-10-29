@@ -23,11 +23,11 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.tlb.imp;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.ELEMDESC;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.FUNCDESC;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeInfoUtil;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeInfoUtil.TypeInfoDoc;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeLibUtil;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.ELEMDESC;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.FUNCDESC;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -41,16 +41,15 @@ public class TlbPropertyPutStub extends TlbAbstractMethod {
      * Instantiates a new tlb property set.
      *
      * @param index
-     *            the index
+     * the index
      * @param typeLibUtil
-     *            the type lib util
+     * the type lib util
      * @param funcDesc
-     *            the func desc
+     * the func desc
      * @param typeInfoUtil
-     *            the type info util
+     * the type info util
      */
-    public TlbPropertyPutStub(int index, TypeLibUtil typeLibUtil,
-            FUNCDESC funcDesc, TypeInfoUtil typeInfoUtil) {
+    public TlbPropertyPutStub(int index, TypeLibUtil typeLibUtil, FUNCDESC funcDesc, TypeInfoUtil typeInfoUtil) {
         super(index, typeLibUtil, funcDesc, typeInfoUtil);
 
         TypeInfoDoc typeInfoDoc = typeInfoUtil.getDocumentation(funcDesc.memid);
@@ -61,8 +60,7 @@ public class TlbPropertyPutStub extends TlbAbstractMethod {
         for (int i = 0; i < paramCount; i++) {
             ELEMDESC elemdesc = funcDesc.lprgelemdescParam.elemDescArg[i];
             String varType = this.getType(elemdesc);
-            methodparams += varType + " "
-                    + this.replaceJavaKeyword(names[i].toLowerCase());
+            methodparams += varType + " " + this.replaceJavaKeyword(names[i].toLowerCase());
 
             // if there is more than 1 param
             if (i < (paramCount - 1)) {

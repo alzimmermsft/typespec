@@ -32,116 +32,116 @@ import java.util.Enumeration;
  * </pre>
  */
 public class NestedDirBundleFile extends BundleFile {
-	private final BundleFile baseBundleFile;
-	private final String nestedDirName;
-	private final Collection<String> filterPrefixes;
+    private final BundleFile baseBundleFile;
+    private final String nestedDirName;
+    private final Collection<String> filterPrefixes;
 
     /**
-	 * Constructs a NestedDirBundleFile
-	 * 
-	 * @param baseBundlefile the base bundle file
-	 * @param filterPrefixes the prefixes to filter out for the bundle file
-	 */
-	public NestedDirBundleFile(BundleFile baseBundlefile, String nestedDirName, Collection<String> filterPrefixes) {
-		super(baseBundlefile.getBaseFile());
-		this.baseBundleFile = baseBundlefile;
-		if (nestedDirName.charAt(nestedDirName.length() - 1) != '/') {
-			nestedDirName = nestedDirName + '/';
-		}
-		this.nestedDirName = nestedDirName;
-		this.filterPrefixes = filterPrefixes;
-	}
+     * Constructs a NestedDirBundleFile
+     * 
+     * @param baseBundlefile the base bundle file
+     * @param filterPrefixes the prefixes to filter out for the bundle file
+     */
+    public NestedDirBundleFile(BundleFile baseBundlefile, String nestedDirName, Collection<String> filterPrefixes) {
+        super(baseBundlefile.getBaseFile());
+        this.baseBundleFile = baseBundlefile;
+        if (nestedDirName.charAt(nestedDirName.length() - 1) != '/') {
+            nestedDirName = nestedDirName + '/';
+        }
+        this.nestedDirName = nestedDirName;
+        this.filterPrefixes = filterPrefixes;
+    }
 
-	@Override
-	public void close() {
-		// do nothing.
-	}
+    @Override
+    public void close() {
+        // do nothing.
+    }
 
-	private boolean filterPath(String path) {
-		if (path.length() > 0 && path.charAt(0) == '/')
-			path = path.substring(1);
-		for (String prefix : filterPrefixes) {
-			if (path.startsWith(prefix)) {
-				return true;
-			}
-		}
-		return false;
-	}
+    private boolean filterPath(String path) {
+        if (path.length() > 0 && path.charAt(0) == '/')
+            path = path.substring(1);
+        for (String prefix : filterPrefixes) {
+            if (path.startsWith(prefix)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	private boolean filterDir(String path) {
-		if (filterPrefixes.isEmpty()) {
-			return false;
-		}
-		if (path.length() > 0 && path.charAt(path.length() - 1) != '/') {
-			path = path + '/';
-		}
-		return filterPath(path);
-	}
+    private boolean filterDir(String path) {
+        if (filterPrefixes.isEmpty()) {
+            return false;
+        }
+        if (path.length() > 0 && path.charAt(path.length() - 1) != '/') {
+            path = path + '/';
+        }
+        return filterPath(path);
+    }
 
-	@Override
-	public BundleEntry getEntry(String path) {
-		if (filterPath(path)) {
-			return null;
-		}
-		return baseBundleFile.getEntry(prependNestedDir(path));
-	}
+    @Override
+    public BundleEntry getEntry(String path) {
+        if (filterPath(path)) {
+            return null;
+        }
+        return baseBundleFile.getEntry(prependNestedDir(path));
+    }
 
-	@Override
-	public boolean containsDir(String dir) {
-		if (dir == null)
-			return false;
-		if (filterPath(dir)) {
-			return false;
-		}
-		return baseBundleFile.containsDir(prependNestedDir(dir));
-	}
+    @Override
+    public boolean containsDir(String dir) {
+        if (dir == null)
+            return false;
+        if (filterPath(dir)) {
+            return false;
+        }
+        return baseBundleFile.containsDir(prependNestedDir(dir));
+    }
 
-	private String prependNestedDir(String path) {
-		if (path.length() > 0 && path.charAt(0) == '/')
-			path = path.substring(1);
-		return new StringBuilder(nestedDirName).append(path).toString();
-	}
+    private String prependNestedDir(String path) {
+        if (path.length() > 0 && path.charAt(0) == '/')
+            path = path.substring(1);
+        return new StringBuilder(nestedDirName).append(path).toString();
+    }
 
-	@Override
-	public Enumeration<String> getEntryPaths(String path, boolean recurse) {
-		if (filterDir(path)) {
-			return null;
-		}
-		final Enumeration<String> basePaths = baseBundleFile.getEntryPaths(prependNestedDir(path), recurse);
-		final int cpLength = nestedDirName.length();
-		if (basePaths == null)
-			return null;
-		return new Enumeration<String>() {
+    @Override
+    public Enumeration<String> getEntryPaths(String path, boolean recurse) {
+        if (filterDir(path)) {
+            return null;
+        }
+        final Enumeration<String> basePaths = baseBundleFile.getEntryPaths(prependNestedDir(path), recurse);
+        final int cpLength = nestedDirName.length();
+        if (basePaths == null)
+            return null;
+        return new Enumeration<String>() {
 
-			@Override
-			public boolean hasMoreElements() {
-				return basePaths.hasMoreElements();
-			}
+            @Override
+            public boolean hasMoreElements() {
+                return basePaths.hasMoreElements();
+            }
 
-			@Override
-			public String nextElement() {
-				String next = basePaths.nextElement();
-				return next.substring(cpLength);
-			}
-		};
-	}
+            @Override
+            public String nextElement() {
+                String next = basePaths.nextElement();
+                return next.substring(cpLength);
+            }
+        };
+    }
 
-	@Override
-	public File getFile(String entry, boolean nativeCode) {
-		// getFile is only valid if this is a root bundle file.
-		// TODO to catch bugs we probably should throw new
-		// UnsupportedOperationException()
-		return null;
-	}
+    @Override
+    public File getFile(String entry, boolean nativeCode) {
+        // getFile is only valid if this is a root bundle file.
+        // TODO to catch bugs we probably should throw new
+        // UnsupportedOperationException()
+        return null;
+    }
 
-	@Override
-	public void open() throws IOException {
-		// do nothing
-	}
+    @Override
+    public void open() throws IOException {
+        // do nothing
+    }
 
-	@Override
-	public String toString() {
-		return super.toString() + '[' + nestedDirName + ']';
-	}
+    @Override
+    public String toString() {
+        return super.toString() + '[' + nestedDirName + ']';
+    }
 
 }

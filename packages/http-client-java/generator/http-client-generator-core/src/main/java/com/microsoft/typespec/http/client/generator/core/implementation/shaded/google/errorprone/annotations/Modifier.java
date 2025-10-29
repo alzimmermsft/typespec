@@ -20,23 +20,12 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * Modifiers in the Java language, as specified in:
  *
  * <ul>
- *   <li>https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.1.1
- *   <li>https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.3.1
- *   <li>https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.4.3
- *   <li>https://docs.oracle.com/javase/specs/jls/se11/html/jls-9.html#jls-9.4
+ * <li>https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.1.1
+ * <li>https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.3.1
+ * <li>https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.4.3
+ * <li>https://docs.oracle.com/javase/specs/jls/se11/html/jls-9.html#jls-9.4
  * </ul>
  */
 public enum Modifier {
-  PUBLIC,
-  PROTECTED,
-  PRIVATE,
-  ABSTRACT,
-  DEFAULT,
-  STATIC,
-  FINAL,
-  TRANSIENT,
-  VOLATILE,
-  SYNCHRONIZED,
-  NATIVE,
-  STRICTFP
+    PUBLIC, PROTECTED, PRIVATE, ABSTRACT, DEFAULT, STATIC, FINAL, TRANSIENT, VOLATILE, SYNCHRONIZED, NATIVE, STRICTFP
 }

@@ -13,44 +13,20 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IContainer;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
-
 /**
  * Element info for PackageFragments.
  */
 class PackageFragmentInfo extends OpenableElementInfo {
 
-/**
- * Create and initialize a new instance of the receiver
- */
-public PackageFragmentInfo() {
-	this.nonJavaResources = null;
-}
-boolean containsJavaResources() {
-	return this.children.length != 0;
-}
-/**
- * Returns an array of non-java resources contained in the receiver.
- */
-Object[] getNonJavaResources(IResource underlyingResource, PackageFragmentRoot rootHandle) {
-	Object[] resources = this.nonJavaResources;
-	if (resources == null) {
-		try {
-			resources =
-				PackageFragmentRootInfo.computeFolderNonJavaResources(
-					rootHandle,
-					(IContainer)underlyingResource,
-					rootHandle.fullInclusionPatternChars(),
-					rootHandle.fullExclusionPatternChars());
+    /**
+     * Create and initialize a new instance of the receiver
+     */
+    public PackageFragmentInfo() {
+        this.nonJavaResources = null;
+    }
 
-		} catch (JavaModelException e) {
-			// root doesn't exist: consider package has no nonJavaResources
-			resources = NO_NON_JAVA_RESOURCES;
-		}
-		this.nonJavaResources = resources;
-	}
-	return resources;
-}
+    boolean containsJavaResources() {
+        return this.children.length != 0;
+    }
+
 }

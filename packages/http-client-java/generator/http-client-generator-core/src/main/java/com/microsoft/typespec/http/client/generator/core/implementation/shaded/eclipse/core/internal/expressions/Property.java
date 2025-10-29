@@ -46,7 +46,7 @@ public class Property {
 
     @Override
     public String toString() {
-        //$NON-NLS-1$
+        // $NON-NLS-1$
         return "Property [" //$NON-NLS-1$
             + fNamespace + "." //$NON-NLS-1$
             + fName + ", type=" //$NON-NLS-1$

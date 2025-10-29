@@ -140,7 +140,6 @@ public interface IMethod extends IMember, IAnnotatable {
      * 
      * @return the binding key for this method
      * @see org.eclipse.jdt.core.dom.IBinding#getKey()
-     * @see BindingKey
      * @see #isResolved()
      * @since 3.1
      */

@@ -24,7 +24,6 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna;
 
-
 public class FunctionParameterContext extends ToNativeContext {
     private Function function;
     private Object[] args;
@@ -35,10 +34,19 @@ public class FunctionParameterContext extends ToNativeContext {
         this.args = args;
         this.index = index;
     }
+
     /** Get the function that was invoked. */
-    public Function getFunction() { return function; }
+    public Function getFunction() {
+        return function;
+    }
+
     /** Get the arguments used in this function call. */
-    public Object[] getParameters() { return args; }
-    public int getParameterIndex() { return index; }
+    public Object[] getParameters() {
+        return args;
+    }
+
+    public int getParameterIndex() {
+        return index;
+    }
 
 }

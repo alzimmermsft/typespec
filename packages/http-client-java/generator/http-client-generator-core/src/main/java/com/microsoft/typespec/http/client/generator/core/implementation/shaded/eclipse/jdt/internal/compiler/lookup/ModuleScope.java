@@ -15,24 +15,24 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.problem.ProblemReporter;
 
 public class ModuleScope extends BlockScope {
-	public ModuleDeclaration referenceContext;
+    public ModuleDeclaration referenceContext;
 
-	public ModuleScope(Scope parent, ModuleDeclaration referenceContext) {
-		super(Scope.MODULE_SCOPE, parent);
-		this.referenceContext = referenceContext;
-	}
+    public ModuleScope(Scope parent, ModuleDeclaration referenceContext) {
+        super(Scope.MODULE_SCOPE, parent);
+        this.referenceContext = referenceContext;
+    }
 
-	/**
-	 * Answer the problem reporter to use for raising new problems.
-	 *
-	 * Note that as a side-effect, this updates the current reference context
-	 * (here: module declaration) in case the problem handler decides it is necessary
-	 * to abort.
-	 */
-	@Override
-	public ProblemReporter problemReporter() {
-		ProblemReporter problemReporter = referenceCompilationUnit().problemReporter;
-		problemReporter.referenceContext = this.referenceContext;
-		return problemReporter;
-	}
+    /**
+     * Answer the problem reporter to use for raising new problems.
+     *
+     * Note that as a side-effect, this updates the current reference context
+     * (here: module declaration) in case the problem handler decides it is necessary
+     * to abort.
+     */
+    @Override
+    public ProblemReporter problemReporter() {
+        ProblemReporter problemReporter = referenceCompilationUnit().problemReporter;
+        problemReporter.referenceContext = this.referenceContext;
+        return problemReporter;
+    }
 }

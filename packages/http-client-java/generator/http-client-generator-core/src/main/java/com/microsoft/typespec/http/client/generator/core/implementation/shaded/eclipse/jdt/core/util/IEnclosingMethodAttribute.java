@@ -49,13 +49,6 @@ public interface IEnclosingMethodAttribute extends IClassFileAttribute {
     char[] getMethodDescriptor();
 
     /**
-     * Answer back the descriptor index of the enclosing method.
-     *
-     * @return the descriptor index of the enclosing method
-     */
-    int getMethodDescriptorIndex();
-
-    /**
      * Answer back the name of the enclosing method as specified
      * in the JVM specifications.
      *
@@ -63,13 +56,6 @@ public interface IEnclosingMethodAttribute extends IClassFileAttribute {
      * in the JVM specifications
      */
     char[] getMethodName();
-
-    /**
-     * Answer back the name index of the enclosing method.
-     *
-     * @return the name index of the enclosing method
-     */
-    int getMethodNameIndex();
 
     /**
      * Answer back the name and type index of this attribute.

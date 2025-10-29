@@ -37,9 +37,9 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 public interface PreferencesService {
 
     /**
-	 * Returns the names of users for which node trees exist.
-	 * 
-	 * @return The names of users for which node trees exist.
-	 */
-	public String[] getUsers();
+     * Returns the names of users for which node trees exist.
+     * 
+     * @return The names of users for which node trees exist.
+     */
+    public String[] getUsers();
 }

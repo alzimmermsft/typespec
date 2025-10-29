@@ -26,6 +26,7 @@ import java.lang.annotation.Target;
  * @since 32.0.0
  */
 @Retention(RetentionPolicy.CLASS)
-@Target({ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
+@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD })
 @GwtCompatible
-public @interface J2ktIncompatible {}
+public @interface J2ktIncompatible {
+}

@@ -17,14 +17,12 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.runtime;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IAdapterManager;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IExtensionRegistry;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.ILog;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.ILogListener;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Platform;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.RegistryFactory;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.preferences.IPreferencesService;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.service.datalocation.Location;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Bundle;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.BundleContext;
@@ -83,14 +81,6 @@ public final class InternalPlatform {
     private void assertInitialized() {
         // avoid the Policy.bind if assertion is true
         Assert.isTrue(false, Messages.meta_appNotInit);
-    }
-
-    /**
-     * @see Platform#getAdapterManager()
-     */
-    public IAdapterManager getAdapterManager() {
-        assertInitialized();
-        return AdapterManager.getDefault();
     }
 
     public BundleContext getBundleContext() {
@@ -184,10 +174,6 @@ public final class InternalPlatform {
     private String getContextProperty(String key) {
         BundleContext ctx = context;
         return ctx != null ? ctx.getProperty(key) : System.getProperty(key);
-    }
-
-    public IPreferencesService getPreferencesService() {
-        return null;
     }
 
     public IExtensionRegistry getRegistry() {

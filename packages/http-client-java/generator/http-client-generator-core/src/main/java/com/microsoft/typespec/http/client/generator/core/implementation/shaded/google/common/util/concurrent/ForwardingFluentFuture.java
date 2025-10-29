@@ -16,12 +16,12 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Preconditions.checkNotNull;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * {@link FluentFuture} that forwards all calls to a delegate.
@@ -36,47 +36,46 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
 final class ForwardingFluentFuture<V extends @Nullable Object> extends FluentFuture<V> {
-  private final ListenableFuture<V> delegate;
+    private final ListenableFuture<V> delegate;
 
-  ForwardingFluentFuture(ListenableFuture<V> delegate) {
-    this.delegate = checkNotNull(delegate);
-  }
+    ForwardingFluentFuture(ListenableFuture<V> delegate) {
+        this.delegate = checkNotNull(delegate);
+    }
 
-  @Override
-  public void addListener(Runnable listener, Executor executor) {
-    delegate.addListener(listener, executor);
-  }
+    @Override
+    public void addListener(Runnable listener, Executor executor) {
+        delegate.addListener(listener, executor);
+    }
 
-  @Override
-  public boolean cancel(boolean mayInterruptIfRunning) {
-    return delegate.cancel(mayInterruptIfRunning);
-  }
+    @Override
+    public boolean cancel(boolean mayInterruptIfRunning) {
+        return delegate.cancel(mayInterruptIfRunning);
+    }
 
-  @Override
-  public boolean isCancelled() {
-    return delegate.isCancelled();
-  }
+    @Override
+    public boolean isCancelled() {
+        return delegate.isCancelled();
+    }
 
-  @Override
-  public boolean isDone() {
-    return delegate.isDone();
-  }
+    @Override
+    public boolean isDone() {
+        return delegate.isDone();
+    }
 
-  @Override
-  @ParametricNullness
-  public V get() throws InterruptedException, ExecutionException {
-    return delegate.get();
-  }
+    @Override
+    @ParametricNullness
+    public V get() throws InterruptedException, ExecutionException {
+        return delegate.get();
+    }
 
-  @Override
-  @ParametricNullness
-  public V get(long timeout, TimeUnit unit)
-      throws InterruptedException, ExecutionException, TimeoutException {
-    return delegate.get(timeout, unit);
-  }
+    @Override
+    @ParametricNullness
+    public V get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+        return delegate.get(timeout, unit);
+    }
 
-  @Override
-  public String toString() {
-    return delegate.toString();
-  }
+    @Override
+    public String toString() {
+        return delegate.toString();
+    }
 }

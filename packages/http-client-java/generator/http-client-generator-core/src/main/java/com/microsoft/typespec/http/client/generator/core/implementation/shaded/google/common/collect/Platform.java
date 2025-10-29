@@ -16,13 +16,13 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.J2ktIncompatible;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Methods factored out so that they can be emulated differently in GWT.
@@ -33,108 +33,108 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @ElementTypesAreNonnullByDefault
 final class Platform {
 
-  /** Returns the platform preferred implementation of a map based on a hash table. */
-  static <K extends @Nullable Object, V extends @Nullable Object>
-      Map<K, V> newHashMapWithExpectedSize(int expectedSize) {
-    return Maps.newHashMapWithExpectedSize(expectedSize);
-  }
+    /** Returns the platform preferred implementation of a map based on a hash table. */
+    static <K extends @Nullable Object, V extends @Nullable Object> Map<K, V>
+        newHashMapWithExpectedSize(int expectedSize) {
+        return Maps.newHashMapWithExpectedSize(expectedSize);
+    }
 
-  /**
-   * Returns the platform preferred implementation of an insertion ordered map based on a hash
-   * table.
-   */
-  static <K extends @Nullable Object, V extends @Nullable Object>
-      Map<K, V> newLinkedHashMapWithExpectedSize(int expectedSize) {
-    return Maps.newLinkedHashMapWithExpectedSize(expectedSize);
-  }
+    /**
+     * Returns the platform preferred implementation of an insertion ordered map based on a hash
+     * table.
+     */
+    static <K extends @Nullable Object, V extends @Nullable Object> Map<K, V>
+        newLinkedHashMapWithExpectedSize(int expectedSize) {
+        return Maps.newLinkedHashMapWithExpectedSize(expectedSize);
+    }
 
-  /** Returns the platform preferred implementation of a set based on a hash table. */
-  static <E extends @Nullable Object> Set<E> newHashSetWithExpectedSize(int expectedSize) {
-    return Sets.newHashSetWithExpectedSize(expectedSize);
-  }
+    /** Returns the platform preferred implementation of a set based on a hash table. */
+    static <E extends @Nullable Object> Set<E> newHashSetWithExpectedSize(int expectedSize) {
+        return Sets.newHashSetWithExpectedSize(expectedSize);
+    }
 
-  /** Returns the platform preferred implementation of a thread-safe hash set. */
-  static <E> Set<E> newConcurrentHashSet() {
-    return ConcurrentHashMap.newKeySet();
-  }
+    /** Returns the platform preferred implementation of a thread-safe hash set. */
+    static <E> Set<E> newConcurrentHashSet() {
+        return ConcurrentHashMap.newKeySet();
+    }
 
-  /**
-   * Returns the platform preferred implementation of an insertion ordered set based on a hash
-   * table.
-   */
-  static <E extends @Nullable Object> Set<E> newLinkedHashSetWithExpectedSize(int expectedSize) {
-    return Sets.newLinkedHashSetWithExpectedSize(expectedSize);
-  }
+    /**
+     * Returns the platform preferred implementation of an insertion ordered set based on a hash
+     * table.
+     */
+    static <E extends @Nullable Object> Set<E> newLinkedHashSetWithExpectedSize(int expectedSize) {
+        return Sets.newLinkedHashSetWithExpectedSize(expectedSize);
+    }
 
-  /**
-   * Returns the platform preferred map implementation that preserves insertion order when used only
-   * for insertions.
-   */
-  static <K extends @Nullable Object, V extends @Nullable Object>
-      Map<K, V> preservesInsertionOrderOnPutsMap() {
-    return Maps.newLinkedHashMap();
-  }
+    /**
+     * Returns the platform preferred map implementation that preserves insertion order when used only
+     * for insertions.
+     */
+    static <K extends @Nullable Object, V extends @Nullable Object> Map<K, V> preservesInsertionOrderOnPutsMap() {
+        return Maps.newLinkedHashMap();
+    }
 
-  /**
-   * Returns the platform preferred set implementation that preserves insertion order when used only
-   * for insertions.
-   */
-  static <E extends @Nullable Object> Set<E> preservesInsertionOrderOnAddsSet() {
-    return Sets.newLinkedHashSet();
-  }
+    /**
+     * Returns the platform preferred set implementation that preserves insertion order when used only
+     * for insertions.
+     */
+    static <E extends @Nullable Object> Set<E> preservesInsertionOrderOnAddsSet() {
+        return Sets.newLinkedHashSet();
+    }
 
-  /**
-   * Returns a new array of the given length with the same type as a reference array.
-   *
-   * @param reference any array of the desired type
-   * @param length the length of the new array
-   */
-  /*
-   * The new array contains nulls, even if the old array did not. If we wanted to be accurate, we
-   * would declare a return type of `@Nullable T[]`. However, we've decided not to think too hard
-   * about arrays for now, as they're a mess. (We previously discussed this in the review of
-   * ObjectArrays, which is the main caller of this method.)
-   */
-  static <T extends @Nullable Object> T[] newArray(T[] reference, int length) {
-    T[] empty = reference.length == 0 ? reference : Arrays.copyOf(reference, 0);
-    return Arrays.copyOf(empty, length);
-  }
+    /**
+     * Returns a new array of the given length with the same type as a reference array.
+     *
+     * @param reference any array of the desired type
+     * @param length the length of the new array
+     */
+    /*
+     * The new array contains nulls, even if the old array did not. If we wanted to be accurate, we
+     * would declare a return type of `@Nullable T[]`. However, we've decided not to think too hard
+     * about arrays for now, as they're a mess. (We previously discussed this in the review of
+     * ObjectArrays, which is the main caller of this method.)
+     */
+    static <T extends @Nullable Object> T[] newArray(T[] reference, int length) {
+        T[] empty = reference.length == 0 ? reference : Arrays.copyOf(reference, 0);
+        return Arrays.copyOf(empty, length);
+    }
 
-  /** Equivalent to Arrays.copyOfRange(source, from, to, arrayOfType.getClass()). */
-  /*
-   * Arrays are a mess from a nullness perspective, and Class instances for object-array types are
-   * even worse. For now, we just suppress and move on with our lives.
-   *
-   * - https://github.com/jspecify/jspecify/issues/65
-   *
-   * - https://github.com/jspecify/jdk/commit/71d826792b8c7ef95d492c50a274deab938f2552
-   */
-  @SuppressWarnings("nullness")
-  static <T extends @Nullable Object> T[] copy(Object[] source, int from, int to, T[] arrayOfType) {
-    return Arrays.copyOfRange(source, from, to, (Class<? extends T[]>) arrayOfType.getClass());
-  }
+    /** Equivalent to Arrays.copyOfRange(source, from, to, arrayOfType.getClass()). */
+    /*
+     * Arrays are a mess from a nullness perspective, and Class instances for object-array types are
+     * even worse. For now, we just suppress and move on with our lives.
+     *
+     * - https://github.com/jspecify/jspecify/issues/65
+     *
+     * - https://github.com/jspecify/jdk/commit/71d826792b8c7ef95d492c50a274deab938f2552
+     */
+    @SuppressWarnings("nullness")
+    static <T extends @Nullable Object> T[] copy(Object[] source, int from, int to, T[] arrayOfType) {
+        return Arrays.copyOfRange(source, from, to, (Class<? extends T[]>) arrayOfType.getClass());
+    }
 
-  /**
-   * Configures the given map maker to use weak keys, if possible; does nothing otherwise (i.e., in
-   * GWT). This is sometimes acceptable, when only server-side code could generate enough volume
-   * that reclamation becomes important.
-   */
-  @J2ktIncompatible
-  static MapMaker tryWeakKeys(MapMaker mapMaker) {
-    return mapMaker.weakKeys();
-  }
+    /**
+     * Configures the given map maker to use weak keys, if possible; does nothing otherwise (i.e., in
+     * GWT). This is sometimes acceptable, when only server-side code could generate enough volume
+     * that reclamation becomes important.
+     */
+    @J2ktIncompatible
+    static MapMaker tryWeakKeys(MapMaker mapMaker) {
+        return mapMaker.weakKeys();
+    }
 
-  static <E extends Enum<E>> Class<E> getDeclaringClassOrObjectForJ2cl(E e) {
-    return e.getDeclaringClass();
-  }
+    static <E extends Enum<E>> Class<E> getDeclaringClassOrObjectForJ2cl(E e) {
+        return e.getDeclaringClass();
+    }
 
-  static int reduceIterationsIfGwt(int iterations) {
-    return iterations;
-  }
+    static int reduceIterationsIfGwt(int iterations) {
+        return iterations;
+    }
 
-  static int reduceExponentIfGwt(int exponent) {
-    return exponent;
-  }
+    static int reduceExponentIfGwt(int exponent) {
+        return exponent;
+    }
 
-  private Platform() {}
+    private Platform() {
+    }
 }

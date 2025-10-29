@@ -22,50 +22,52 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class ResolvedBinaryMethod extends BinaryMethod {
 
-	private final String uniqueKey;
+    private final String uniqueKey;
 
-	/**
-	 * The parameter type signatures are expected to be dot-based.
-	 */
-	public ResolvedBinaryMethod(JavaElement parent, String name, String[] parameterTypes, String uniqueKey) {
-		super(parent, name, parameterTypes);
-		this.uniqueKey = uniqueKey;
-	}
-	public ResolvedBinaryMethod(JavaElement parent, String name, String[] parameterTypes, String uniqueKey, int occurrenceCount) {
-		super(parent, name, parameterTypes, occurrenceCount);
-		this.uniqueKey = uniqueKey;
-	}
+    /**
+     * The parameter type signatures are expected to be dot-based.
+     */
+    public ResolvedBinaryMethod(JavaElement parent, String name, String[] parameterTypes, String uniqueKey) {
+        super(parent, name, parameterTypes);
+        this.uniqueKey = uniqueKey;
+    }
 
-	@Override
-	public String getKey() {
-		return this.uniqueKey;
-	}
+    public ResolvedBinaryMethod(JavaElement parent, String name, String[] parameterTypes, String uniqueKey,
+        int occurrenceCount) {
+        super(parent, name, parameterTypes, occurrenceCount);
+        this.uniqueKey = uniqueKey;
+    }
 
-	@Override
-	public String getKey(boolean forceOpen) throws JavaModelException {
-		return this.uniqueKey;
-	}
+    @Override
+    public String getKey() {
+        return this.uniqueKey;
+    }
 
-	@Override
-	public boolean isResolved() {
-		return true;
-	}
+    @Override
+    public String getKey(boolean forceOpen) throws JavaModelException {
+        return this.uniqueKey;
+    }
 
-	/**
-	 * for debugging only
-	 */
-	@Override
-	protected void toStringInfo(int tab, StringBuilder buffer, Object info, boolean showResolvedInfo) {
-		super.toStringInfo(tab, buffer, info, showResolvedInfo);
-		if (showResolvedInfo) {
-			buffer.append(" {key="); //$NON-NLS-1$
-			buffer.append(this.uniqueKey);
-			buffer.append("}"); //$NON-NLS-1$
-		}
-	}
+    @Override
+    public boolean isResolved() {
+        return true;
+    }
 
-	@Override
-	public BinaryMethod unresolved() {
-		return new BinaryMethod(this.getParent(), this.name, this.parameterTypes, this.getOccurrenceCount());
-	}
+    /**
+     * for debugging only
+     */
+    @Override
+    protected void toStringInfo(int tab, StringBuilder buffer, Object info, boolean showResolvedInfo) {
+        super.toStringInfo(tab, buffer, info, showResolvedInfo);
+        if (showResolvedInfo) {
+            buffer.append(" {key="); //$NON-NLS-1$
+            buffer.append(this.uniqueKey);
+            buffer.append("}"); //$NON-NLS-1$
+        }
+    }
+
+    @Override
+    public BinaryMethod unresolved() {
+        return new BinaryMethod(this.getParent(), this.name, this.parameterTypes, this.getOccurrenceCount());
+    }
 }

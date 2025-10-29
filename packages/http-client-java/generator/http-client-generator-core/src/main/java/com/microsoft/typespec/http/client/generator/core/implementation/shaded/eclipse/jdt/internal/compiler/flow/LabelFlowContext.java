@@ -22,38 +22,39 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 /**
  * Reflects the context of code analysis, keeping track of enclosing
- *	try statements, exception handlers, etc...
+ * try statements, exception handlers, etc...
  */
 public class LabelFlowContext extends SwitchFlowContext {
 
-	public char[] labelName;
+    public char[] labelName;
 
-public LabelFlowContext(FlowContext parent, ASTNode associatedNode, char[] labelName, BranchLabel breakLabel, BlockScope scope) {
-	super(parent, associatedNode, breakLabel, false, true);
-	this.labelName = labelName;
-	checkLabelValidity(scope);
-}
+    public LabelFlowContext(FlowContext parent, ASTNode associatedNode, char[] labelName, BranchLabel breakLabel,
+        BlockScope scope) {
+        super(parent, associatedNode, breakLabel, false, true);
+        this.labelName = labelName;
+        checkLabelValidity(scope);
+    }
 
-void checkLabelValidity(BlockScope scope) {
-	// check if label was already defined above
-	FlowContext current = this.getLocalParent();
-	while (current != null) {
-		char[] currentLabelName;
-		if (((currentLabelName = current.labelName()) != null)
-			&& CharOperation.equals(currentLabelName, this.labelName)) {
-			scope.problemReporter().alreadyDefinedLabel(this.labelName, this.associatedNode);
-		}
-		current = current.getLocalParent();
-	}
-}
+    void checkLabelValidity(BlockScope scope) {
+        // check if label was already defined above
+        FlowContext current = this.getLocalParent();
+        while (current != null) {
+            char[] currentLabelName;
+            if (((currentLabelName = current.labelName()) != null)
+                && CharOperation.equals(currentLabelName, this.labelName)) {
+                scope.problemReporter().alreadyDefinedLabel(this.labelName, this.associatedNode);
+            }
+            current = current.getLocalParent();
+        }
+    }
 
-@Override
-public String individualToString() {
-	return "Label flow context [label:" + String.valueOf(this.labelName) + "]"; //$NON-NLS-2$ //$NON-NLS-1$
-}
+    @Override
+    public String individualToString() {
+        return "Label flow context [label:" + String.valueOf(this.labelName) + "]"; //$NON-NLS-2$ //$NON-NLS-1$
+    }
 
-@Override
-public char[] labelName() {
-	return this.labelName;
-}
+    @Override
+    public char[] labelName() {
+        return this.labelName;
+    }
 }

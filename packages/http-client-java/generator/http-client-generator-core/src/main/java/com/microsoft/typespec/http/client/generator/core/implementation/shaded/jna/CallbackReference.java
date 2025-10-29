@@ -33,6 +33,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -41,7 +42,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
-import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -55,20 +55,18 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
     // by synchonizing on pointerCallbackMap
     static final Map<Callback, CallbackReference> callbackMap = new WeakHashMap<>();
     static final Map<Callback, CallbackReference> directCallbackMap = new WeakHashMap<>();
-    //callbacks with different signatures sharing the same pointer
+    // callbacks with different signatures sharing the same pointer
     static final Map<Pointer, Reference<Callback>[]> pointerCallbackMap = new WeakHashMap<>();
     // Track memory allocations associated with this closure (usually String args)
-    static final Map<Object, Object> allocations =
-            Collections.synchronizedMap(new WeakHashMap<>());
+    static final Map<Object, Object> allocations = Collections.synchronizedMap(new WeakHashMap<>());
     // Global map of allocated closures to facilitate centralized cleanup
-    private static final Map<Long, Reference<CallbackReference>> allocatedMemory =
-            new ConcurrentHashMap<>();
+    private static final Map<Long, Reference<CallbackReference>> allocatedMemory = new ConcurrentHashMap<>();
     private static final Method PROXY_CALLBACK_METHOD;
 
     static {
         try {
             PROXY_CALLBACK_METHOD = CallbackProxy.class.getMethod("callback", new Class[] { Object[].class });
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new Error("Error looking up CallbackProxy.callback() method");
         }
     }
@@ -78,8 +76,9 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
     static {
         if (Platform.isWindows()) {
             try {
-                DLL_CALLBACK_CLASS = Class.forName("com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.win32.DLLCallback");
-            } catch(ClassNotFoundException e) {
+                DLL_CALLBACK_CLASS = Class.forName(
+                    "com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.win32.DLLCallback");
+            } catch (ClassNotFoundException e) {
                 throw new Error("Error loading DLLCallback class", e);
             }
         } else {
@@ -88,6 +87,7 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
     }
 
     private static final Map<Callback, CallbackThreadInitializer> initializers = new WeakHashMap<>();
+
     /**
      * @param cb The {@link Callback} instance
      * @param initializer The {@link CallbackThreadInitializer} - if {@code null} then the
@@ -95,7 +95,7 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
      * @return The previous initializer instance (may be {@code null})
      */
     static CallbackThreadInitializer setCallbackThreadInitializer(Callback cb, CallbackThreadInitializer initializer) {
-        synchronized(initializers) {
+        synchronized (initializers) {
             if (initializer != null) {
                 return initializers.put(cb, initializer);
             } else {
@@ -124,9 +124,9 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
     private static ThreadGroup initializeThread(Callback cb, AttachOptions args) {
         CallbackThreadInitializer init = null;
         if (cb instanceof DefaultCallbackProxy) {
-            cb = ((DefaultCallbackProxy)cb).getCallback();
+            cb = ((DefaultCallbackProxy) cb).getCallback();
         }
-        synchronized(initializers) {
+        synchronized (initializers) {
             init = initializers.get(cb);
         }
         ThreadGroup group = null;
@@ -140,10 +140,12 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
         return group;
     }
 
-    /** Return a Callback associated with the given function pointer.
+    /**
+     * Return a Callback associated with the given function pointer.
      * If the pointer refers to a Java callback trampoline, return the original
-     * Java Callback.  Otherwise, return a proxy to the native function
+     * Java Callback. Otherwise, return a proxy to the native function
      * pointer.
+     * 
      * @throws IllegalStateException if the given pointer has already been
      * mapped to a callback of a different type.
      */
@@ -159,14 +161,14 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
         if (!type.isInterface())
             throw new IllegalArgumentException("Callback type must be an interface");
         Map<Callback, CallbackReference> map = direct ? directCallbackMap : callbackMap;
-        synchronized(pointerCallbackMap) {
+        synchronized (pointerCallbackMap) {
             Reference<Callback>[] array = pointerCallbackMap.get(p);
             Callback cb = getTypeAssignableCallback(type, array);
             if (cb != null) {
                 return cb;
             }
             cb = createCallback(type, p);
-            pointerCallbackMap.put(p, addCallbackToArray(cb,array));
+            pointerCallbackMap.put(p, addCallbackToArray(cb, array));
 
             // No CallbackReference for this callback
             map.remove(cb);
@@ -176,7 +178,7 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
 
     private static Callback getTypeAssignableCallback(Class<?> type, Reference<Callback>[] array) {
         if (array != null) {
-            for (int i=0;i < array.length;i++) {
+            for (int i = 0; i < array.length; i++) {
                 Callback cb = array[i].get();
                 if (cb != null && type.isAssignableFrom(cb.getClass())) {
                     return cb;
@@ -186,26 +188,24 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
         return null;
     }
 
-
-    private static Reference<Callback>[] addCallbackToArray(Callback cb,Reference<Callback>[] array) {
-        int reqArraySize = 1; //space for the new item
+    private static Reference<Callback>[] addCallbackToArray(Callback cb, Reference<Callback>[] array) {
+        int reqArraySize = 1; // space for the new item
         if (array != null) {
-            //drop any freed reference
-            for (int i=0;i < array.length;i++) {
-                if( array[i].get() == null ) {
+            // drop any freed reference
+            for (int i = 0; i < array.length; i++) {
+                if (array[i].get() == null) {
                     array[i] = null;
-                }
-                else {
+                } else {
                     reqArraySize++;
                 }
             }
         }
-        @SuppressWarnings( "unchecked" )
+        @SuppressWarnings("unchecked")
         Reference<Callback>[] newArray = new Reference[reqArraySize];
-        int nidx=0;
+        int nidx = 0;
         if (array != null) {
-            //shift items if needed
-            for (int i=0;i < array.length;i++) {
+            // shift items if needed
+            for (int i = 0; i < array.length; i++) {
                 if (array[i] != null) {
                     newArray[nidx++] = array[i];
                 }
@@ -216,14 +216,12 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
     }
 
     private static Callback createCallback(Class<?> type, Pointer p) {
-        int ctype = AltCallingConvention.class.isAssignableFrom(type)
-                ? Function.ALT_CONVENTION : Function.C_CONVENTION;
+        int ctype = AltCallingConvention.class.isAssignableFrom(type) ? Function.ALT_CONVENTION : Function.C_CONVENTION;
         Map<String, Object> foptions = new HashMap<>(Native.getLibraryOptions(type));
         foptions.put(Function.OPTION_INVOKING_METHOD, getCallbackMethod(type));
         NativeFunctionHandler h = new NativeFunctionHandler(p, ctype, foptions);
-        return (Callback)Proxy.newProxyInstance(type.getClassLoader(), new Class[] { type }, h);
+        return (Callback) Proxy.newProxyInstance(type.getClassLoader(), new Class[] { type }, h);
     }
-
 
     Cleaner.Cleanable cleanable;
     Pointer cbstruct;
@@ -232,6 +230,7 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
     CallbackProxy proxy;
     Method method;
     int callingConvention;
+
     private CallbackReference(Callback callback, int callingConvention, boolean direct) {
         super(callback);
         TypeMapper mapper = Native.getTypeMapper(callback.getClass());
@@ -245,23 +244,20 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
         if (direct) {
             Method m = getCallbackMethod(callback);
             Class<?>[] ptypes = m.getParameterTypes();
-            for (int i=0;i < ptypes.length;i++) {
+            for (int i = 0; i < ptypes.length; i++) {
                 // varargs w/FP args via ffi_call fails on ppc (darwin)
-                if (ppc && (ptypes[i] == float.class
-                            || ptypes[i] == double.class)) {
+                if (ppc && (ptypes[i] == float.class || ptypes[i] == double.class)) {
                     direct = false;
                     break;
                 }
                 // Direct mode callbacks do not support TypeMapper
-                if (mapper != null
-                    && mapper.getFromNativeConverter(ptypes[i]) != null) {
+                if (mapper != null && mapper.getFromNativeConverter(ptypes[i]) != null) {
                     direct = false;
                     break;
                 }
             }
             // Direct mode callbacks do not support TypeMapper
-            if (mapper != null
-                && mapper.getToNativeConverter(m.getReturnType()) != null) {
+            if (mapper != null && mapper.getToNativeConverter(m.getReturnType()) != null) {
                 direct = false;
             }
         }
@@ -273,29 +269,25 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
             nativeParamTypes = method.getParameterTypes();
             returnType = method.getReturnType();
             int flags = Native.CB_OPTION_DIRECT;
-            if (DLL_CALLBACK_CLASS != null
-                && DLL_CALLBACK_CLASS.isInstance(callback)) {
+            if (DLL_CALLBACK_CLASS != null && DLL_CALLBACK_CLASS.isInstance(callback)) {
                 flags |= Native.CB_OPTION_IN_DLL;
             }
-            peer = Native.createNativeCallback(callback, method,
-                                               nativeParamTypes, returnType,
-                                               callingConvention, flags,
-                                               encoding);
+            peer = Native.createNativeCallback(callback, method, nativeParamTypes, returnType, callingConvention, flags,
+                encoding);
         } else {
             if (callback instanceof CallbackProxy) {
-                proxy = (CallbackProxy)callback;
-            }
-            else {
+                proxy = (CallbackProxy) callback;
+            } else {
                 proxy = new DefaultCallbackProxy(getCallbackMethod(callback), mapper, encoding);
             }
             nativeParamTypes = proxy.getParameterTypes();
             returnType = proxy.getReturnType();
 
             // Generate a list of parameter types that the native code can
-            // handle.  Let the CallbackProxy do any further conversion
+            // handle. Let the CallbackProxy do any further conversion
             // to match the true Java callback method signature
             if (mapper != null) {
-                for (int i=0;i < nativeParamTypes.length;i++) {
+                for (int i = 0; i < nativeParamTypes.length; i++) {
                     FromNativeConverter rc = mapper.getFromNativeConverter(nativeParamTypes[i]);
                     if (rc != null) {
                         nativeParamTypes[i] = rc.nativeType();
@@ -306,30 +298,25 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
                     returnType = tn.nativeType();
                 }
             }
-            for (int i=0;i < nativeParamTypes.length;i++) {
+            for (int i = 0; i < nativeParamTypes.length; i++) {
                 nativeParamTypes[i] = getNativeType(nativeParamTypes[i]);
                 if (!isAllowableNativeType(nativeParamTypes[i])) {
-                    String msg = "Callback argument " + nativeParamTypes[i]
-                        + " requires custom type conversion";
+                    String msg = "Callback argument " + nativeParamTypes[i] + " requires custom type conversion";
                     throw new IllegalArgumentException(msg);
                 }
             }
             returnType = getNativeType(returnType);
             if (!isAllowableNativeType(returnType)) {
-                String msg = "Callback return type " + returnType
-                    + " requires custom type conversion";
+                String msg = "Callback return type " + returnType + " requires custom type conversion";
                 throw new IllegalArgumentException(msg);
             }
-            int flags = DLL_CALLBACK_CLASS != null
-                && DLL_CALLBACK_CLASS.isInstance(callback)
-                ? Native.CB_OPTION_IN_DLL : 0;
-            peer = Native.createNativeCallback(proxy, PROXY_CALLBACK_METHOD,
-                                               nativeParamTypes, returnType,
-                                               callingConvention, flags,
-                                               encoding);
+            int flags
+                = DLL_CALLBACK_CLASS != null && DLL_CALLBACK_CLASS.isInstance(callback) ? Native.CB_OPTION_IN_DLL : 0;
+            peer = Native.createNativeCallback(proxy, PROXY_CALLBACK_METHOD, nativeParamTypes, returnType,
+                callingConvention, flags, encoding);
         }
         cbstruct = peer != 0 ? new Pointer(peer) : null;
-        if(peer != 0) {
+        if (peer != 0) {
             allocatedMemory.put(peer, new WeakReference<>(this));
             cleanable = Cleaner.getCleaner().register(this, new CallbackReferenceDisposer(cbstruct));
         }
@@ -338,16 +325,16 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
     private Class<?> getNativeType(Class<?> cls) {
         if (Structure.class.isAssignableFrom(cls)) {
             // Make sure we can instantiate an argument of this type
-            Structure.validate((Class<? extends Structure>)cls);
+            Structure.validate((Class<? extends Structure>) cls);
             if (!Structure.ByValue.class.isAssignableFrom(cls))
                 return Pointer.class;
         } else if (NativeMapped.class.isAssignableFrom(cls)) {
             return NativeMappedConverter.getInstance(cls).nativeType();
         } else if (cls == String.class
-                 || cls == WString.class
-                 || cls == String[].class
-                 || cls == WString[].class
-                 || Callback.class.isAssignableFrom(cls)) {
+            || cls == WString.class
+            || cls == String[].class
+            || cls == WString[].class
+            || Callback.class.isAssignableFrom(cls)) {
             return Pointer.class;
         }
         return cls;
@@ -355,8 +342,7 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
 
     private static Method checkMethod(Method m) {
         if (m.getParameterTypes().length > Function.MAX_NARGS) {
-            String msg = "Method signature exceeds the maximum "
-                + "parameter count: " + m;
+            String msg = "Method signature exceeds the maximum " + "parameter count: " + m;
             throw new UnsupportedOperationException(msg);
         }
         return m;
@@ -375,14 +361,13 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
             return type;
         }
         Class<?>[] ifaces = type.getInterfaces();
-        for (int i=0;i < ifaces.length;i++) {
+        for (int i = 0; i < ifaces.length; i++) {
             if (Callback.class.isAssignableFrom(ifaces[i])) {
                 try {
                     // Make sure it's got a recognizable callback method
                     getCallbackMethod(ifaces[i]);
                     return ifaces[i];
-                }
-                catch(IllegalArgumentException e) {
+                } catch (IllegalArgumentException e) {
                     break;
                 }
             }
@@ -405,7 +390,7 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
         pmethods.retainAll(Arrays.asList(classMethods));
 
         // Remove Object methods disallowed as callback method names
-        for (Iterator<Method> i=pmethods.iterator();i.hasNext();) {
+        for (Iterator<Method> i = pmethods.iterator(); i.hasNext();) {
             Method m = i.next();
             if (Callback.FORBIDDEN_NAMES.contains(m.getName())) {
                 i.remove();
@@ -416,14 +401,14 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
         if (methods.length == 1) {
             return checkMethod(methods[0]);
         }
-        for (int i=0;i < methods.length;i++) {
+        for (int i = 0; i < methods.length; i++) {
             Method m = methods[i];
             if (Callback.METHOD_NAME.equals(m.getName())) {
                 return checkMethod(m);
             }
         }
-        String msg = "Callback must implement a single public method, "
-            + "or one public method named '" + Callback.METHOD_NAME + "'";
+        String msg = "Callback must implement a single public method, " + "or one public method named '"
+            + Callback.METHOD_NAME + "'";
         throw new IllegalArgumentException(msg);
     }
 
@@ -459,7 +444,7 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
         Collection<Reference<CallbackReference>> refs = new LinkedList<>(allocatedMemory.values());
         for (Reference<CallbackReference> r : refs) {
             CallbackReference ref = r.get();
-            if(ref != null) {
+            if (ref != null) {
                 ref.close();
             }
         }
@@ -469,20 +454,22 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
         return get();
     }
 
-    /** If the callback is one we generated to wrap a native function pointer,
-        return that.  Otherwise return null.
-    */
+    /**
+     * If the callback is one we generated to wrap a native function pointer,
+     * return that. Otherwise return null.
+     */
     private static Pointer getNativeFunctionPointer(Callback cb) {
         if (Proxy.isProxyClass(cb.getClass())) {
             Object handler = Proxy.getInvocationHandler(cb);
             if (handler instanceof NativeFunctionHandler) {
-                return ((NativeFunctionHandler)handler).getPointer();
+                return ((NativeFunctionHandler) handler).getPointer();
             }
         }
         return null;
     }
 
-    /** Return a {@link Pointer} to the native function address for the
+    /**
+     * Return a {@link Pointer} to the native function address for the
      * given callback.
      */
     public static Pointer getFunctionPointer(Callback cb) {
@@ -502,17 +489,16 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
         int callingConvention = cb instanceof AltCallingConvention
             ? Function.ALT_CONVENTION
             : (options != null && options.containsKey(Library.OPTION_CALLING_CONVENTION)
-               ? ((Integer)options.get(Library.OPTION_CALLING_CONVENTION)).intValue()
-               : Function.C_CONVENTION);
+                ? ((Integer) options.get(Library.OPTION_CALLING_CONVENTION)).intValue()
+                : Function.C_CONVENTION);
 
         Map<Callback, CallbackReference> map = direct ? directCallbackMap : callbackMap;
-        synchronized(pointerCallbackMap) {
+        synchronized (pointerCallbackMap) {
             CallbackReference cbref = map.get(cb);
             if (cbref == null || cbref.cbstruct == null) {
                 cbref = new CallbackReference(cb, callingConvention, direct);
                 map.put(cb, cbref);
-                pointerCallbackMap.put(cbref.getTrampoline(),
-                        addCallbackToArray(cb, null));
+                pointerCallbackMap.put(cbref.getTrampoline(), addCallbackToArray(cb, null));
 
                 if (initializers.containsKey(cb)) {
                     cbref.setCallbackOptions(Native.CB_HAS_INITIALIZER);
@@ -527,6 +513,7 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
         private ToNativeConverter toNative;
         private final FromNativeConverter[] fromNative;
         private final String encoding;
+
         public DefaultCallbackProxy(Method callbackMethod, TypeMapper mapper, String encoding) {
             this.callbackMethod = callbackMethod;
             this.encoding = encoding;
@@ -535,24 +522,22 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
             fromNative = new FromNativeConverter[argTypes.length];
             if (NativeMapped.class.isAssignableFrom(returnType)) {
                 toNative = NativeMappedConverter.getInstance(returnType);
-            }
-            else if (mapper != null) {
+            } else if (mapper != null) {
                 toNative = mapper.getToNativeConverter(returnType);
             }
-            for (int i=0;i < fromNative.length;i++) {
+            for (int i = 0; i < fromNative.length; i++) {
                 if (NativeMapped.class.isAssignableFrom(argTypes[i])) {
                     fromNative[i] = new NativeMappedConverter(argTypes[i]);
-                }
-                else if (mapper != null) {
+                } else if (mapper != null) {
                     fromNative[i] = mapper.getFromNativeConverter(argTypes[i]);
                 }
             }
             if (!callbackMethod.isAccessible()) {
                 try {
                     callbackMethod.setAccessible(true);
-                }
-                catch(SecurityException e) {
-                    throw new IllegalArgumentException("Callback method is inaccessible, make sure the interface is public: " + callbackMethod);
+                } catch (SecurityException e) {
+                    throw new IllegalArgumentException(
+                        "Callback method is inaccessible, make sure the interface is public: " + callbackMethod);
                 }
             }
         }
@@ -566,12 +551,11 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
             Object[] callbackArgs = new Object[args.length];
 
             // convert basic supported types to appropriate Java parameter types
-            for (int i=0;i < args.length;i++) {
+            for (int i = 0; i < args.length; i++) {
                 Class<?> type = paramTypes[i];
                 Object arg = args[i];
                 if (fromNative[i] != null) {
-                    FromNativeContext context =
-                        new CallbackParameterContext(type, callbackMethod, args, i);
+                    FromNativeContext context = new CallbackParameterContext(type, callbackMethod, args, i);
                     callbackArgs[i] = fromNative[i].fromNative(arg, context);
                 } else {
                     callbackArgs[i] = convertArgument(arg, type);
@@ -583,26 +567,25 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
             if (cb != null) {
                 try {
                     result = convertResult(callbackMethod.invoke(cb, callbackArgs));
-                }
-                catch (IllegalArgumentException | IllegalAccessException e) {
+                } catch (IllegalArgumentException | IllegalAccessException e) {
                     Native.getCallbackExceptionHandler().uncaughtException(cb, e);
-                }
-                catch (InvocationTargetException e) {
+                } catch (InvocationTargetException e) {
                     Native.getCallbackExceptionHandler().uncaughtException(cb, e.getTargetException());
                 }
             }
             // Synch any structure arguments back to native memory
-            for (int i=0;i < callbackArgs.length;i++) {
-                if (callbackArgs[i] instanceof Structure
-                    && !(callbackArgs[i] instanceof Structure.ByValue)) {
-                    ((Structure)callbackArgs[i]).autoWrite();
+            for (int i = 0; i < callbackArgs.length; i++) {
+                if (callbackArgs[i] instanceof Structure && !(callbackArgs[i] instanceof Structure.ByValue)) {
+                    ((Structure) callbackArgs[i]).autoWrite();
                 }
             }
 
             return result;
         }
-        /** Called from native code.  All arguments are in an array of
-         * Object as the first argument.  Converts all arguments to types
+
+        /**
+         * Called from native code. All arguments are in an array of
+         * Object as the first argument. Converts all arguments to types
          * required by the actual callback method signature, and converts
          * the result back into an appropriate native type.
          * This method <em>must not</em> throw exceptions.
@@ -611,53 +594,46 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
         public Object callback(Object[] args) {
             try {
                 return invokeCallback(args);
-            }
-            catch (Throwable t) {
+            } catch (Throwable t) {
                 Native.getCallbackExceptionHandler().uncaughtException(getCallback(), t);
                 return null;
             }
         }
 
-        /** Convert argument from its basic native type to the given
+        /**
+         * Convert argument from its basic native type to the given
          * Java parameter type.
          */
         private Object convertArgument(Object value, Class<?> dstType) {
             if (value instanceof Pointer) {
                 if (dstType == String.class) {
-                    value = ((Pointer)value).getString(0, encoding);
-                }
-                else if (dstType == WString.class) {
-                    value = new WString(((Pointer)value).getWideString(0));
-                }
-                else if (dstType == String[].class) {
-                    value = ((Pointer)value).getStringArray(0, encoding);
-                }
-                else if (dstType == WString[].class) {
-                    value = ((Pointer)value).getWideStringArray(0);
-                }
-                else if (Callback.class.isAssignableFrom(dstType)) {
-                    value = CallbackReference.getCallback(dstType, (Pointer)value);
-                }
-                else if (Structure.class.isAssignableFrom(dstType)) {
+                    value = ((Pointer) value).getString(0, encoding);
+                } else if (dstType == WString.class) {
+                    value = new WString(((Pointer) value).getWideString(0));
+                } else if (dstType == String[].class) {
+                    value = ((Pointer) value).getStringArray(0, encoding);
+                } else if (dstType == WString[].class) {
+                    value = ((Pointer) value).getWideStringArray(0);
+                } else if (Callback.class.isAssignableFrom(dstType)) {
+                    value = CallbackReference.getCallback(dstType, (Pointer) value);
+                } else if (Structure.class.isAssignableFrom(dstType)) {
                     // If passed by value, don't hold onto the pointer, which
                     // is only valid for the duration of the callback call
                     if (Structure.ByValue.class.isAssignableFrom(dstType)) {
                         Structure s = Structure.newInstance((Class<? extends Structure>) dstType);
                         byte[] buf = new byte[s.size()];
-                        ((Pointer)value).read(0, buf, 0, buf.length);
+                        ((Pointer) value).read(0, buf, 0, buf.length);
                         s.getPointer().write(0, buf, 0, buf.length);
                         s.read();
                         value = s;
                     } else {
-                        Structure s = Structure.newInstance((Class<? extends Structure>) dstType, (Pointer)value);
+                        Structure s = Structure.newInstance((Class<? extends Structure>) dstType, (Pointer) value);
                         s.conditionalAutoRead();
                         value = s;
                     }
                 }
-            }
-            else if ((boolean.class == dstType || Boolean.class == dstType)
-                     && value instanceof Number) {
-                value = Function.valueOf(((Number)value).intValue() != 0);
+            } else if ((boolean.class == dstType || Boolean.class == dstType) && value instanceof Number) {
+                value = Function.valueOf(((Number) value).intValue() != 0);
             }
             return value;
         }
@@ -675,35 +651,37 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
                 if (Structure.ByValue.class.isAssignableFrom(cls)) {
                     return value;
                 }
-                return ((Structure)value).getPointer();
+                return ((Structure) value).getPointer();
             } else if (cls == boolean.class || cls == Boolean.class) {
-                return Boolean.TRUE.equals(value) ?
-                    Function.INTEGER_TRUE : Function.INTEGER_FALSE;
+                return Boolean.TRUE.equals(value) ? Function.INTEGER_TRUE : Function.INTEGER_FALSE;
             } else if (cls == String.class || cls == WString.class) {
                 return getNativeString(value, cls == WString.class);
             } else if (cls == String[].class || cls == WString[].class) {
                 StringArray sa = cls == String[].class
-                    ? new StringArray((String[])value, encoding)
-                    : new StringArray((WString[])value);
+                    ? new StringArray((String[]) value, encoding)
+                    : new StringArray((WString[]) value);
                 // Delay GC until array itself is GC'd.
                 allocations.put(value, sa);
                 return sa;
             } else if (Callback.class.isAssignableFrom(cls)) {
-                return getFunctionPointer((Callback)value);
+                return getFunctionPointer((Callback) value);
             }
             return value;
         }
+
         @Override
         public Class<?>[] getParameterTypes() {
             return callbackMethod.getParameterTypes();
         }
+
         @Override
         public Class<?> getReturnType() {
             return callbackMethod.getReturnType();
         }
     }
 
-    /** Provide invocation handling for an auto-generated Java interface proxy
+    /**
+     * Provide invocation handling for an auto-generated Java interface proxy
      * for a native function pointer.
      * Cf. Library.Handler
      */
@@ -713,7 +691,8 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
 
         public NativeFunctionHandler(Pointer address, int callingConvention, Map<String, ?> options) {
             this.options = options;
-            this.function = new Function(address, callingConvention, (String) options.get(Library.OPTION_STRING_ENCODING));
+            this.function
+                = new Function(address, callingConvention, (String) options.get(Library.OPTION_STRING_ENCODING));
         }
 
         /** Chain invocation to the native function. */
@@ -721,7 +700,7 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             if (Library.Handler.OBJECT_TOSTRING.equals(method)) {
                 String str = "Proxy interface to " + function;
-                Method m = (Method)options.get(Function.OPTION_INVOKING_METHOD);
+                Method m = (Method) options.get(Function.OPTION_INVOKING_METHOD);
                 Class<?> cls = findCallbackClass(m.getDeclaringClass());
                 str += " (" + cls.getName() + ")";
 
@@ -745,22 +724,32 @@ public class CallbackReference extends WeakReference<Callback> implements Closea
             return function;
         }
     }
-    /** Returns whether the given class is supported in native code.
+
+    /**
+     * Returns whether the given class is supported in native code.
      * Other types (String, WString, Structure, arrays, NativeMapped,
      * etc) are supported in the Java library.
      */
     private static boolean isAllowableNativeType(Class<?> cls) {
-        return cls == void.class || cls == Void.class
-            || cls == boolean.class || cls == Boolean.class
-            || cls == byte.class || cls == Byte.class
-            || cls == short.class || cls == Short.class
-            || cls == char.class || cls == Character.class
-            || cls == int.class || cls == Integer.class
-            || cls == long.class || cls == Long.class
-            || cls == float.class || cls == Float.class
-            || cls == double.class || cls == Double.class
-            || (Structure.ByValue.class.isAssignableFrom(cls)
-                && Structure.class.isAssignableFrom(cls))
+        return cls == void.class
+            || cls == Void.class
+            || cls == boolean.class
+            || cls == Boolean.class
+            || cls == byte.class
+            || cls == Byte.class
+            || cls == short.class
+            || cls == Short.class
+            || cls == char.class
+            || cls == Character.class
+            || cls == int.class
+            || cls == Integer.class
+            || cls == long.class
+            || cls == Long.class
+            || cls == float.class
+            || cls == Float.class
+            || cls == double.class
+            || cls == Double.class
+            || (Structure.ByValue.class.isAssignableFrom(cls) && Structure.class.isAssignableFrom(cls))
             || Pointer.class.isAssignableFrom(cls);
     }
 

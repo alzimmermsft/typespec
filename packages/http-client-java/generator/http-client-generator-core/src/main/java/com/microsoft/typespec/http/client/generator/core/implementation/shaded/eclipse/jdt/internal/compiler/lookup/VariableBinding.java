@@ -25,133 +25,140 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public abstract class VariableBinding extends Binding {
 
-	public int modifiers;
-	public TypeBinding type;
-	public char[] name;
-	protected Constant constant;
-	public int id; // for flow-analysis (position in flowInfo bit vector)
+    public int modifiers;
+    public TypeBinding type;
+    public char[] name;
+    protected Constant constant;
+    public int id; // for flow-analysis (position in flowInfo bit vector)
 
-	public VariableBinding(char[] name, TypeBinding type, int modifiers, Constant constant) {
-		this.name = name;
-		this.type = type;
-		this.modifiers = modifiers;
-		this.constant = constant;
-		if (type != null) {
-			this.tagBits |= (type.tagBits & TagBits.HasMissingType);
-		}
-	}
+    public VariableBinding(char[] name, TypeBinding type, int modifiers, Constant constant) {
+        this.name = name;
+        this.type = type;
+        this.modifiers = modifiers;
+        this.constant = constant;
+        if (type != null) {
+            this.tagBits |= (type.tagBits & TagBits.HasMissingType);
+        }
+    }
 
-	public Constant constant() {
-		return this.constant;
-	}
+    public Constant constant() {
+        return this.constant;
+    }
 
-	/**
-	 * Call this variant during resolve / analyse, so we can handle the case
-	 * when a tentative lambda resolve triggers resolving of outside code.
-	 */
-	public Constant constant(Scope scope) {
-		return constant();
-	}
+    /**
+     * Call this variant during resolve / analyse, so we can handle the case
+     * when a tentative lambda resolve triggers resolving of outside code.
+     */
+    public Constant constant(Scope scope) {
+        return constant();
+    }
 
-	@Override
-	public abstract AnnotationBinding[] getAnnotations();
+    @Override
+    public abstract AnnotationBinding[] getAnnotations();
 
-	public ReferenceBinding getDeclaringClass() {
-		return null;
-	}
+    public ReferenceBinding getDeclaringClass() {
+        return null;
+    }
 
-	public final boolean isBlankFinal(){
-		return (this.modifiers & ExtraCompilerModifiers.AccBlankFinal) != 0;
-	}
+    public final boolean isBlankFinal() {
+        return (this.modifiers & ExtraCompilerModifiers.AccBlankFinal) != 0;
+    }
 
-	/* Answer true if the receiver is explicitly or implicitly final
-	 * and cannot be changed. Resources on try and multi catch variables are
-	 * marked as implicitly final.
-	*/
-	public final boolean isFinal() {
-		return (this.modifiers & ClassFileConstants.AccFinal) != 0;
-	}
+    /*
+     * Answer true if the receiver is explicitly or implicitly final
+     * and cannot be changed. Resources on try and multi catch variables are
+     * marked as implicitly final.
+     */
+    public final boolean isFinal() {
+        return (this.modifiers & ClassFileConstants.AccFinal) != 0;
+    }
 
-	/* Answer true if the receiver is a static field
-	*/
-	public final boolean isStatic() {
-		return (this.modifiers & ClassFileConstants.AccStatic) != 0;
-	}
+    /*
+     * Answer true if the receiver is a static field
+     */
+    public final boolean isStatic() {
+        return (this.modifiers & ClassFileConstants.AccStatic) != 0;
+    }
 
-	public final boolean isEffectivelyFinal() {
-		return (this.tagBits & TagBits.IsEffectivelyFinal) != 0;
-	}
+    public final boolean isEffectivelyFinal() {
+        return (this.tagBits & TagBits.IsEffectivelyFinal) != 0;
+    }
 
-	/** Answer true if null annotations are enabled and this field is specified @NonNull */
-	public boolean isNonNull() {
-		return (this.tagBits & TagBits.AnnotationNonNull) != 0
-				|| (this.type != null
-					&& (this.type.tagBits & TagBits.AnnotationNonNull) != 0);
-	}
+    /** Answer true if null annotations are enabled and this field is specified @NonNull */
+    public boolean isNonNull() {
+        return (this.tagBits & TagBits.AnnotationNonNull) != 0
+            || (this.type != null && (this.type.tagBits & TagBits.AnnotationNonNull) != 0);
+    }
 
-	/** Answer true if null annotations are enabled and this field is specified @Nullable */
-	public boolean isNullable() {
-		return (this.tagBits & TagBits.AnnotationNullable) != 0
-				|| (this.type != null
-				&& (this.type.tagBits & TagBits.AnnotationNullable) != 0);
-	}
+    /** Answer true if null annotations are enabled and this field is specified @Nullable */
+    public boolean isNullable() {
+        return (this.tagBits & TagBits.AnnotationNullable) != 0
+            || (this.type != null && (this.type.tagBits & TagBits.AnnotationNullable) != 0);
+    }
 
-	@Override
-	public char[] readableName() {
-		return this.name;
-	}
-	public void setConstant(Constant constant) {
-		this.constant = constant;
-	}
-	@Override
-	public String toString() {
-		StringBuilder output = new StringBuilder(10);
-		ASTNode.printModifiers(this.modifiers & ~ExtraCompilerModifiers.AccOutOfFlowScope, output); // so pattern bindings don't show up as sealed (!)
-		if ((this.modifiers & ExtraCompilerModifiers.AccUnresolved) != 0) {
-			output.append("[unresolved] "); //$NON-NLS-1$
-		}
-		output.append(this.type != null ? this.type.debugName() : "<no type>"); //$NON-NLS-1$
-		output.append(" "); //$NON-NLS-1$
-		output.append((this.name != null) ? new String(this.name) : "<no name>"); //$NON-NLS-1$
-		return output.toString();
-	}
+    @Override
+    public char[] readableName() {
+        return this.name;
+    }
 
-	public void clearEffectiveFinality(Scope scope, Expression node, boolean complain) {
-		return;
-	}
+    public void setConstant(Constant constant) {
+        this.constant = constant;
+    }
 
-	/* Answer true if the receiver has public visibility
-	*/
-	public final boolean isPublic() {
-		return (this.modifiers & ClassFileConstants.AccPublic) != 0;
-	}
+    @Override
+    public String toString() {
+        StringBuilder output = new StringBuilder(10);
+        ASTNode.printModifiers(this.modifiers & ~ExtraCompilerModifiers.AccOutOfFlowScope, output); // so pattern
+                                                                                                    // bindings don't
+                                                                                                    // show up as sealed
+                                                                                                    // (!)
+        if ((this.modifiers & ExtraCompilerModifiers.AccUnresolved) != 0) {
+            output.append("[unresolved] "); //$NON-NLS-1$
+        }
+        output.append(this.type != null ? this.type.debugName() : "<no type>"); //$NON-NLS-1$
+        output.append(" "); //$NON-NLS-1$
+        output.append((this.name != null) ? new String(this.name) : "<no name>"); //$NON-NLS-1$
+        return output.toString();
+    }
 
-	/* Answer true if the receiver is deprecated
-	*/
-	public final boolean isDeprecated() {
-		return (this.modifiers & ClassFileConstants.AccDeprecated) != 0;
-	}
+    public void clearEffectiveFinality(Scope scope, Expression node, boolean complain) {
+        return;
+    }
 
-	/** Applicable only for {@link FieldBinding} and {@link RecordComponentBinding}. */
-	public void fillInDefaultNonNullness(AbstractVariableDeclaration sourceField, Scope scope) {
-		assert sourceField.getKind() != AbstractVariableDeclaration.LOCAL_VARIABLE;
-		if (this.type == null || this.type.isBaseType())
-			return;
-		LookupEnvironment environment = scope.environment();
-		if (environment.usesNullTypeAnnotations()) {
-			if (!this.type.acceptsNonNullDefault())
-				return;
-			if ( (this.type.tagBits & TagBits.AnnotationNullMASK) == 0) {
-				this.type = environment.createNonNullAnnotatedType(this.type);
-			} else if ((this.type.tagBits & TagBits.AnnotationNonNull) != 0) {
-				scope.problemReporter().nullAnnotationIsRedundant(sourceField);
-			}
-		} else {
-			if ( (this.tagBits & TagBits.AnnotationNullMASK) == 0 ) {
-				this.tagBits |= TagBits.AnnotationNonNull;
-			} else if ((this.tagBits & TagBits.AnnotationNonNull) != 0) {
-				scope.problemReporter().nullAnnotationIsRedundant(sourceField);
-			}
-		}
-	}
+    /*
+     * Answer true if the receiver has public visibility
+     */
+    public final boolean isPublic() {
+        return (this.modifiers & ClassFileConstants.AccPublic) != 0;
+    }
+
+    /*
+     * Answer true if the receiver is deprecated
+     */
+    public final boolean isDeprecated() {
+        return (this.modifiers & ClassFileConstants.AccDeprecated) != 0;
+    }
+
+    /** Applicable only for {@link FieldBinding} and {@link RecordComponentBinding}. */
+    public void fillInDefaultNonNullness(AbstractVariableDeclaration sourceField, Scope scope) {
+        assert sourceField.getKind() != AbstractVariableDeclaration.LOCAL_VARIABLE;
+        if (this.type == null || this.type.isBaseType())
+            return;
+        LookupEnvironment environment = scope.environment();
+        if (environment.usesNullTypeAnnotations()) {
+            if (!this.type.acceptsNonNullDefault())
+                return;
+            if ((this.type.tagBits & TagBits.AnnotationNullMASK) == 0) {
+                this.type = environment.createNonNullAnnotatedType(this.type);
+            } else if ((this.type.tagBits & TagBits.AnnotationNonNull) != 0) {
+                scope.problemReporter().nullAnnotationIsRedundant(sourceField);
+            }
+        } else {
+            if ((this.tagBits & TagBits.AnnotationNullMASK) == 0) {
+                this.tagBits |= TagBits.AnnotationNonNull;
+            } else if ((this.tagBits & TagBits.AnnotationNonNull) != 0) {
+                scope.problemReporter().nullAnnotationIsRedundant(sourceField);
+            }
+        }
+    }
 }

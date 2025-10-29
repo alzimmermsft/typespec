@@ -17,45 +17,13 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 /**
  * Clients implement this interface to provide context to a particular scope.
- * Instances of implementations of this interface are passed to the
- * {@link IPreferencesService} for use in preference searching.
  * <p>
  * Clients may implement this interface.
  * </p>
  *
- * @see IPreferencesService
  * @since 3.0
  */
 public interface IScopeContext {
-
-    /**
-     * Property used when a scope context is registered as a service to distinguish
-     * different scopes
-     *
-     * @since 3.10
-     */
-    String PROPERTY_TYPE = "type"; //$NON-NLS-1$
-
-    /**
-     * Type of a scope context that provides access to a bundle scoped context where
-     * {@link IScopeContext#getLocation()} returns the bundles state location, and
-     * {@link IScopeContext#getNode(String)} returns the preferences for this
-     * particular bundle. The bundle is always the one that <b>acquires</b> the
-     * service and not that <b>calling</b> the methods!
-     *
-     * @since 3.10
-     */
-    String TYPE_BUNDLE = "bundle"; //$NON-NLS-1$
-
-    /**
-     * A filter that could be used to acquire a bundle scoped context, see
-     * {@link #TYPE_BUNDLE} for details.
-     *
-     * @since 3.10
-     */
-    String BUNDLE_SCOPE_FILTER
-        = "(&(objectClass=com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.preferences.IScopeContext)(" //$NON-NLS-1$
-            + PROPERTY_TYPE + "=" + TYPE_BUNDLE + "))"; //$NON-NLS-1$ //$NON-NLS-2$
 
     /**
      * Return the name of the scope that this context is associated with. Must not
@@ -87,7 +55,6 @@ public interface IScopeContext {
      *
      * @param qualifier a qualifier for the preference name
      * @return the node containing the plug-in preferences or <code>null</code>
-     * @see IPreferencesService
      */
     IEclipsePreferences getNode(String qualifier);
 

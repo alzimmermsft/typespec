@@ -25,18 +25,17 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.FlagEnum;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.FlagEnum;
 
 /**
  * Several helper methods to convert integer flag (sets)
  * into enum (sets)
+ * 
  * @author Martin Steiger
  */
-public class EnumUtils
-{
+public class EnumUtils {
     /**
      * Uninitialized integer flag
      */
@@ -46,8 +45,7 @@ public class EnumUtils
      * @param val the enum
      * @return the index of the enum in the enum list
      */
-    public static <E extends Enum<E>> int toInteger(E val)
-    {
+    public static <E extends Enum<E>> int toInteger(E val) {
         @SuppressWarnings("unchecked")
         E[] vals = (E[]) val.getClass().getEnumConstants();
 
@@ -65,8 +63,7 @@ public class EnumUtils
      * @param clazz the enum class
      * @return the enum at position idx
      */
-    public static <E extends Enum<E>> E fromInteger(int idx, Class<E> clazz)
-    {
+    public static <E extends Enum<E>> E fromInteger(int idx, Class<E> clazz) {
         if (idx == UNINITIALIZED)
             return null;
 
@@ -79,15 +76,12 @@ public class EnumUtils
      * @param clazz the enum class
      * @return the representing set
      */
-    public static <T extends FlagEnum> Set<T> setFromInteger(int flags, Class<T> clazz)
-    {
+    public static <T extends FlagEnum> Set<T> setFromInteger(int flags, Class<T> clazz) {
         T[] vals = clazz.getEnumConstants();
         Set<T> result = new HashSet<>();
 
-        for (T val : vals)
-        {
-            if ((flags & val.getFlag()) != 0)
-            {
+        for (T val : vals) {
+            if ((flags & val.getFlag()) != 0) {
                 result.add(val);
             }
         }
@@ -102,13 +96,10 @@ public class EnumUtils
     public static <T extends FlagEnum> int setToInteger(Set<T> set) {
         int sum = 0;
 
-        for (T t : set)
-        {
+        for (T t : set) {
             sum |= t.getFlag();
         }
 
         return sum;
     }
 }
-
-

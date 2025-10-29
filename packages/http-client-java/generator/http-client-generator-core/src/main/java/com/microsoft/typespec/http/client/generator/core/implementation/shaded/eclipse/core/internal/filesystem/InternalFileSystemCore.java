@@ -20,12 +20,10 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IConfigurationElement;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IExtension;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IExtensionDelta;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IExtensionPoint;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IRegistryChangeEvent;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IRegistryChangeListener;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.RegistryFactory;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.util.NLS;
+
 import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,7 +33,7 @@ import java.util.concurrent.ConcurrentMap;
  * The class manages internal implementation of methods on EFS.
  * This includes maintaining a list of file system extensions.
  */
-public class InternalFileSystemCore implements IRegistryChangeListener {
+public class InternalFileSystemCore {
     private static final InternalFileSystemCore INSTANCE = new InternalFileSystemCore();
 
     /**
@@ -61,7 +59,6 @@ public class InternalFileSystemCore implements IRegistryChangeListener {
      */
     private InternalFileSystemCore() {
         super();
-        RegistryFactory.getRegistry().addRegistryChangeListener(this);
     }
 
     /**
@@ -156,18 +153,6 @@ public class InternalFileSystemCore implements IRegistryChangeListener {
             }
         }
         return fileSystems;
-    }
-
-    @Override
-    public void registryChanged(IRegistryChangeEvent event) {
-        IExtensionDelta[] changes = event.getExtensionDeltas(EFS.PI_FILE_SYSTEM, EFS.PT_FILE_SYSTEMS);
-        if (changes.length == 0) {
-            return;
-        }
-        synchronized (this) {
-            // let the registry be rebuilt lazily
-            fileSystems = null;
-        }
     }
 
     /**

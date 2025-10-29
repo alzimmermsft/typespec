@@ -16,9 +16,8 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.log;
 
-import java.util.EventListener;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.ConsumerType;
+import java.util.EventListener;
 
 /**
  * Subscribes to {@code LogEntry} objects from the {@code LogReaderService}.
@@ -30,7 +29,9 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  * unregistered by calling the {@code LogReaderService.removeLogListener}
  * method.
  * <p>
- * Since 1.4, {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.log.stream.LogStreamProvider} is the
+ * Since 1.4,
+ * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.log.stream.LogStreamProvider}
+ * is the
  * preferred way to obtain {@link LogEntry} objects.
  * 
  * @ThreadSafe
@@ -39,10 +40,10 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 @ConsumerType
 @FunctionalInterface
 public interface LogListener extends EventListener {
-	/**
-	 * Listener method called for each LogEntry object created.
-	 * 
-	 * @param entry A {@link LogEntry} object containing log information.
-	 */
-	void logged(LogEntry entry);
+    /**
+     * Listener method called for each LogEntry object created.
+     * 
+     * @param entry A {@link LogEntry} object containing log information.
+     */
+    void logged(LogEntry entry);
 }

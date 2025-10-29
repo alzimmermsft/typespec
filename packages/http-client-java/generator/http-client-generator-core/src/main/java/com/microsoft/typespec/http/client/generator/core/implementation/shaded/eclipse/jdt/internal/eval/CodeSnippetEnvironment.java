@@ -29,71 +29,76 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * org.eclipse.jdt.internal.eval.target.CodeSnippet as well as the global variable classes.
  */
 public class CodeSnippetEnvironment implements INameEnvironment, EvaluationConstants {
-	INameEnvironment env;
-	EvaluationContext context;
-/**
- * Creates a new wrapper for the given environment.
- */
-public CodeSnippetEnvironment(INameEnvironment env, EvaluationContext context) {
-	this.env = env;
-	this.context = context;
-}
-/**
- * @see INameEnvironment#findType(char[][])
- */
-@Override
-public NameEnvironmentAnswer findType(char[][] compoundTypeName) {
-	NameEnvironmentAnswer result = this.env.findType(compoundTypeName);
-	if (result != null) {
-		return result;
-	}
-	if (CharOperation.equals(compoundTypeName, ROOT_COMPOUND_NAME)) {
-		IBinaryType binary = this.context.getRootCodeSnippetBinary();
-		if (binary == null) {
-			return null;
-		} else {
-			return new NameEnvironmentAnswer(binary, null /*no access restriction*/);
-		}
-	}
-	VariablesInfo installedVars = this.context.installedVars;
-	ClassFile[] classFiles = installedVars.classFiles;
-	for (ClassFile classFile : classFiles) {
-		if (CharOperation.equals(compoundTypeName, classFile.getCompoundName())) {
-			ClassFileReader binary = null;
-			try {
-				binary = new ClassFileReader(classFile.getBytes(), null);
-			} catch (ClassFormatException e) {
-				if (JavaModelManager.VERBOSE) {
-					JavaModelManager.trace("", e); //$NON-NLS-1$
-				}
-				// Should never happen since we compiled this type
-				return null;
-			}
-			return new NameEnvironmentAnswer(binary, null /*no access restriction*/);
-		}
-	}
-	return null;
-}
-/**
- * @see INameEnvironment#findType(char[], char[][])
- */
-@Override
-public NameEnvironmentAnswer findType(char[] typeName, char[][] packageName) {
-	NameEnvironmentAnswer result = this.env.findType(typeName, packageName);
-	if (result != null) {
-		return result;
-	}
-	return findType(CharOperation.arrayConcat(packageName, typeName));
-}
-/**
- * @see INameEnvironment#isPackage(char[][], char[])
- */
-@Override
-public boolean isPackage(char[][] parentPackageName, char[] packageName) {
-	return this.env.isPackage(parentPackageName, packageName);
-}
-@Override
-public void cleanup() {
-	this.env.cleanup();
-}
+    INameEnvironment env;
+    EvaluationContext context;
+
+    /**
+     * Creates a new wrapper for the given environment.
+     */
+    public CodeSnippetEnvironment(INameEnvironment env, EvaluationContext context) {
+        this.env = env;
+        this.context = context;
+    }
+
+    /**
+     * @see INameEnvironment#findType(char[][])
+     */
+    @Override
+    public NameEnvironmentAnswer findType(char[][] compoundTypeName) {
+        NameEnvironmentAnswer result = this.env.findType(compoundTypeName);
+        if (result != null) {
+            return result;
+        }
+        if (CharOperation.equals(compoundTypeName, ROOT_COMPOUND_NAME)) {
+            IBinaryType binary = this.context.getRootCodeSnippetBinary();
+            if (binary == null) {
+                return null;
+            } else {
+                return new NameEnvironmentAnswer(binary, null /* no access restriction */);
+            }
+        }
+        VariablesInfo installedVars = this.context.installedVars;
+        ClassFile[] classFiles = installedVars.classFiles;
+        for (ClassFile classFile : classFiles) {
+            if (CharOperation.equals(compoundTypeName, classFile.getCompoundName())) {
+                ClassFileReader binary = null;
+                try {
+                    binary = new ClassFileReader(classFile.getBytes(), null);
+                } catch (ClassFormatException e) {
+                    if (JavaModelManager.VERBOSE) {
+                        JavaModelManager.trace("", e); //$NON-NLS-1$
+                    }
+                    // Should never happen since we compiled this type
+                    return null;
+                }
+                return new NameEnvironmentAnswer(binary, null /* no access restriction */);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @see INameEnvironment#findType(char[], char[][])
+     */
+    @Override
+    public NameEnvironmentAnswer findType(char[] typeName, char[][] packageName) {
+        NameEnvironmentAnswer result = this.env.findType(typeName, packageName);
+        if (result != null) {
+            return result;
+        }
+        return findType(CharOperation.arrayConcat(packageName, typeName));
+    }
+
+    /**
+     * @see INameEnvironment#isPackage(char[][], char[])
+     */
+    @Override
+    public boolean isPackage(char[][] parentPackageName, char[] packageName) {
+        return this.env.isPackage(parentPackageName, packageName);
+    }
+
+    @Override
+    public void cleanup() {
+        this.env.cleanup();
+    }
 }

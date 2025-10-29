@@ -18,64 +18,69 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Preconditions.checkNotNull;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.concurrent.LazyInit;
-import java.io.Serializable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
+import java.io.Serializable;
 
 /** An ordering that uses the natural order of the values. */
 @GwtCompatible(serializable = true)
-@SuppressWarnings({"unchecked", "rawtypes"}) // TODO(kevinb): the right way to explain this??
+@SuppressWarnings({ "unchecked", "rawtypes" }) // TODO(kevinb): the right way to explain this??
 @ElementTypesAreNonnullByDefault
 final class NaturalOrdering extends Ordering<Comparable<?>> implements Serializable {
-  static final NaturalOrdering INSTANCE = new NaturalOrdering();
+    static final NaturalOrdering INSTANCE = new NaturalOrdering();
 
-  // TODO: b/287198172 - Consider eagerly initializing these (but think about serialization).
-  @LazyInit @CheckForNull private transient Ordering<@Nullable Comparable<?>> nullsFirst;
-  @LazyInit @CheckForNull private transient Ordering<@Nullable Comparable<?>> nullsLast;
+    // TODO: b/287198172 - Consider eagerly initializing these (but think about serialization).
+    @LazyInit
+    @CheckForNull
+    private transient Ordering<@Nullable Comparable<?>> nullsFirst;
+    @LazyInit
+    @CheckForNull
+    private transient Ordering<@Nullable Comparable<?>> nullsLast;
 
-  @Override
-  public int compare(Comparable<?> left, Comparable<?> right) {
-    checkNotNull(left); // for GWT
-    checkNotNull(right);
-    return ((Comparable<Object>) left).compareTo(right);
-  }
-
-  @Override
-  public <S extends Comparable<?>> Ordering<@Nullable S> nullsFirst() {
-    Ordering<@Nullable Comparable<?>> result = nullsFirst;
-    if (result == null) {
-      result = nullsFirst = super.<Comparable<?>>nullsFirst();
+    @Override
+    public int compare(Comparable<?> left, Comparable<?> right) {
+        checkNotNull(left); // for GWT
+        checkNotNull(right);
+        return ((Comparable<Object>) left).compareTo(right);
     }
-    return (Ordering<@Nullable S>) result;
-  }
 
-  @Override
-  public <S extends Comparable<?>> Ordering<@Nullable S> nullsLast() {
-    Ordering<@Nullable Comparable<?>> result = nullsLast;
-    if (result == null) {
-      result = nullsLast = super.<Comparable<?>>nullsLast();
+    @Override
+    public <S extends Comparable<?>> Ordering<@Nullable S> nullsFirst() {
+        Ordering<@Nullable Comparable<?>> result = nullsFirst;
+        if (result == null) {
+            result = nullsFirst = super.<Comparable<?>>nullsFirst();
+        }
+        return (Ordering<@Nullable S>) result;
     }
-    return (Ordering<@Nullable S>) result;
-  }
 
-  @Override
-  public <S extends Comparable<?>> Ordering<S> reverse() {
-    return (Ordering<S>) ReverseNaturalOrdering.INSTANCE;
-  }
+    @Override
+    public <S extends Comparable<?>> Ordering<@Nullable S> nullsLast() {
+        Ordering<@Nullable Comparable<?>> result = nullsLast;
+        if (result == null) {
+            result = nullsLast = super.<Comparable<?>>nullsLast();
+        }
+        return (Ordering<@Nullable S>) result;
+    }
 
-  // preserving singleton-ness gives equals()/hashCode() for free
-  private Object readResolve() {
-    return INSTANCE;
-  }
+    @Override
+    public <S extends Comparable<?>> Ordering<S> reverse() {
+        return (Ordering<S>) ReverseNaturalOrdering.INSTANCE;
+    }
 
-  @Override
-  public String toString() {
-    return "Ordering.natural()";
-  }
+    // preserving singleton-ness gives equals()/hashCode() for free
+    private Object readResolve() {
+        return INSTANCE;
+    }
 
-  private NaturalOrdering() {}
+    @Override
+    public String toString() {
+        return "Ordering.natural()";
+    }
 
-  private static final long serialVersionUID = 0;
+    private NaturalOrdering() {
+    }
+
+    private static final long serialVersionUID = 0;
 }

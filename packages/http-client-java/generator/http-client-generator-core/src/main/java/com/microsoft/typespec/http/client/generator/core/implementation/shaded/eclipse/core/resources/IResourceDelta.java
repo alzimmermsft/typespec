@@ -14,8 +14,6 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.watson.IElementComparator;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IAdaptable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IPath;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Platform;
 
@@ -27,12 +25,10 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * extensions are managed by the platform's adapter manager.
  * </p>
  *
- * @see IResource
- * @see Platform#getAdapterManager()
  * @noimplement This interface is not intended to be implemented by clients.
  * @noextend This interface is not intended to be extended by clients.
  */
-public interface IResourceDelta extends IAdaptable {
+public interface IResourceDelta {
 
     /*
      * ====================================================================
@@ -212,95 +208,6 @@ public interface IResourceDelta extends IAdaptable {
     int DELETE_CONTENT_PROPOSED = 0x800000;
 
     /**
-     * Accepts the given visitor.
-     * The only kinds of resource deltas visited
-     * are <code>ADDED</code>, <code>REMOVED</code>,
-     * and <code>CHANGED</code>.
-     * The visitor's <code>visit</code> method is called with this
-     * resource delta if applicable. If the visitor returns <code>true</code>,
-     * the resource delta's children are also visited.
-     * <p>
-     * This is a convenience method, fully equivalent to
-     * <code>accept(visitor, IResource.NONE)</code>.
-     * Although the visitor will be invoked for this resource delta, it will not be
-     * invoked for any team-private member resources.
-     * </p>
-     *
-     * @param visitor the visitor
-     * @exception CoreException if the visitor failed with this exception.
-     * @see IResourceDeltaVisitor#visit(IResourceDelta)
-     */
-    void accept(IResourceDeltaVisitor visitor) throws CoreException;
-
-    /**
-     * Accepts the given visitor.
-     * The visitor's <code>visit</code> method is called with this
-     * resource delta. If the visitor returns <code>true</code>,
-     * the resource delta's children are also visited.
-     * <p>
-     * This is a convenience method, fully equivalent to:</p>
-     * 
-     * <pre>
-     * accept(visitor, includePhantoms ? INCLUDE_PHANTOMS : IResource.NONE);
-     * </pre>
-     * 
-     * <p>
-     * Although the visitor will be invoked for this resource delta, it will not be
-     * invoked for any team-private member resources.
-     * </p>
-     *
-     * @param visitor the visitor
-     * @param includePhantoms <code>true</code> if phantom resources are
-     * of interest; <code>false</code> if phantom resources are not of
-     * interest
-     * @exception CoreException if the visitor failed with this exception.
-     * @see #accept(IResourceDeltaVisitor)
-     * @see IResource#isPhantom()
-     * @see IResourceDeltaVisitor#visit(IResourceDelta)
-     */
-    void accept(IResourceDeltaVisitor visitor, boolean includePhantoms) throws CoreException;
-
-    /**
-     * Accepts the given visitor.
-     * The visitor's <code>visit</code> method is called with this
-     * resource delta. If the visitor returns <code>true</code>,
-     * the resource delta's children are also visited.
-     * <p>
-     * The member flags determine which child deltas of this resource delta will be visited.
-     * The visitor will always be invoked for this resource delta.
-     * <p>
-     * If the <code>INCLUDE_PHANTOMS</code> member flag is not specified
-     * (recommended), only child resource deltas involving existing resources will be visited
-     * (kinds <code>ADDED</code>, <code>REMOVED</code>, and <code>CHANGED</code>).
-     * If the <code>INCLUDE_PHANTOMS</code> member flag is specified,
-     * the result will also include additions and removes of phantom resources
-     * (kinds <code>ADDED_PHANTOM</code> and <code>REMOVED_PHANTOM</code>).
-     * </p>
-     * <p>
-     * If the <code>INCLUDE_TEAM_PRIVATE_MEMBERS</code> member flag is not specified
-     * (recommended), resource deltas involving team private member resources will be
-     * excluded from the visit. If the <code>INCLUDE_TEAM_PRIVATE_MEMBERS</code> member
-     * flag is specified, the visit will also include additions and removes of
-     * team private member resources.
-     * </p>
-     *
-     * @param visitor the visitor
-     * @param memberFlags bit-wise or of member flag constants
-     * (<code>IContainer.INCLUDE_PHANTOMS</code>, <code>INCLUDE_HIDDEN</code>
-     * and <code>INCLUDE_TEAM_PRIVATE_MEMBERS</code>) indicating which members are of interest
-     * @exception CoreException if the visitor failed with this exception.
-     * @see IResource#isPhantom()
-     * @see IResource#isTeamPrivateMember()
-     * @see IResource#isHidden()
-     * @see IContainer#INCLUDE_PHANTOMS
-     * @see IContainer#INCLUDE_TEAM_PRIVATE_MEMBERS
-     * @see IContainer#INCLUDE_HIDDEN
-     * @see IResourceDeltaVisitor#visit(IResourceDelta)
-     * @since 2.0
-     */
-    void accept(IResourceDeltaVisitor visitor, int memberFlags) throws CoreException;
-
-    /**
      * Finds and returns the descendent delta identified by the given path in
      * this delta, or <code>null</code> if no such descendent exists.
      * The supplied path may be absolute or relative; in either case, it is
@@ -343,80 +250,6 @@ public interface IResourceDelta extends IAdaptable {
      * @see #getAffectedChildren(int,int)
      */
     IResourceDelta[] getAffectedChildren();
-
-    /**
-     * Returns resource deltas for all children of this resource
-     * whose kind is included in the given mask. Kind masks are formed
-     * by the bitwise or of <code>IResourceDelta</code> kind constants.
-     * Returns an empty array if there are no affected children.
-     * <p>
-     * This is a convenience method, fully equivalent to:</p>
-     * 
-     * <pre>
-     * getAffectedChildren(kindMask, IResource.NONE);
-     * </pre>
-     * 
-     * <p>
-     * Team-private member resources are <b>not</b> included in the result.
-     * </p>
-     *
-     * @param kindMask a mask formed by the bitwise or of <code>IResourceDelta </code>
-     * delta kind constants
-     * @return the resource deltas for all affected children
-     * @see IResourceDelta#ADDED
-     * @see IResourceDelta#REMOVED
-     * @see IResourceDelta#CHANGED
-     * @see IResourceDelta#ADDED_PHANTOM
-     * @see IResourceDelta#REMOVED_PHANTOM
-     * @see IResourceDelta#ALL_WITH_PHANTOMS
-     * @see #getAffectedChildren(int,int)
-     */
-    IResourceDelta[] getAffectedChildren(int kindMask);
-
-    /**
-     * Returns resource deltas for all children of this resource
-     * whose kind is included in the given mask. Masks are formed
-     * by the bitwise or of <code>IResourceDelta</code> kind constants.
-     * Returns an empty array if there are no affected children.
-     * <p>
-     * If the <code>INCLUDE_TEAM_PRIVATE_MEMBERS</code> member flag is not specified,
-     * (recommended), resource deltas involving team private member resources will be
-     * excluded. If the <code>INCLUDE_TEAM_PRIVATE_MEMBERS</code> member
-     * flag is specified, the result will also include resource deltas of the
-     * specified kinds to team private member resources.
-     * </p>
-     * <p>
-     * If the {@link IContainer#INCLUDE_HIDDEN} member flag is not specified,
-     * (recommended), resource deltas involving hidden resources will be
-     * excluded. If the {@link IContainer#INCLUDE_HIDDEN} member
-     * flag is specified, the result will also include resource deltas of the
-     * specified kinds to hidden resources.
-     * </p>
-     * <p>
-     * Specifying the <code>IContainer.INCLUDE_PHANTOMS</code> member flag is equivalent
-     * to including <code>IContainer.ADDED_PHANTOM</code> and <code>IContainer.REMOVED_PHANTOM</code>
-     * in the kind mask.
-     * </p>
-     *
-     * @param kindMask a mask formed by the bitwise or of <code>IResourceDelta</code>
-     * delta kind constants
-     * @param memberFlags bit-wise or of member flag constants
-     * (<code>IContainer.INCLUDE_PHANTOMS</code>, <code>IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS</code>
-     * and <code>IContainer.INCLUDE_HIDDEN</code>)
-     * indicating which members are of interest
-     * @return the resource deltas for all affected children
-     * @see IResourceDelta#ADDED
-     * @see IResourceDelta#REMOVED
-     * @see IResourceDelta#CHANGED
-     * @see IResourceDelta#ADDED_PHANTOM
-     * @see IResourceDelta#REMOVED_PHANTOM
-     * @see IResourceDelta#ALL_WITH_PHANTOMS
-     * @see IContainer#INCLUDE_PHANTOMS
-     * @see IContainer#INCLUDE_TEAM_PRIVATE_MEMBERS
-     * @see IContainer#INCLUDE_HIDDEN
-     * @since 2.0
-     */
-    IResourceDelta[] getAffectedChildren(int kindMask, int memberFlags);
 
     /**
      * Returns flags which describe in more detail how a resource has been affected.
@@ -527,36 +360,6 @@ public interface IResourceDelta extends IAdaptable {
      * @return the marker deltas
      */
     IMarkerDelta[] getMarkerDeltas();
-
-    /**
-     * Returns the full path (in the "before" state) from which this resource
-     * (in the "after" state) was moved. This value is only valid
-     * if the <code>MOVED_FROM</code> change flag is set; otherwise,
-     * <code>null</code> is returned.
-     * <p>
-     * Note: the returned path never has a trailing separator.
-     *
-     * @return a path, or <code>null</code>
-     * @see #getMovedToPath()
-     * @see #getFullPath()
-     * @see #getFlags()
-     */
-    IPath getMovedFromPath();
-
-    /**
-     * Returns the full path (in the "after" state) to which this resource
-     * (in the "before" state) was moved. This value is only valid if the
-     * <code>MOVED_TO</code> change flag is set; otherwise,
-     * <code>null</code> is returned.
-     * <p>
-     * Note: the returned path never has a trailing separator.
-     *
-     * @return a path, or <code>null</code>
-     * @see #getMovedFromPath()
-     * @see #getFullPath()
-     * @see #getFlags()
-     */
-    IPath getMovedToPath();
 
     /**
      * Returns the project-relative path of this resource delta.

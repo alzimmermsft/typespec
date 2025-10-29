@@ -37,22 +37,22 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 @ProviderType
 public abstract class AbstractWiringNamespace extends Namespace {
 
-	/**
-	 * The capability directive used to specify the comma separated list of
-	 * mandatory attributes which must be specified in the
-	 * {@link Namespace#REQUIREMENT_FILTER_DIRECTIVE filter} of a requirement in
-	 * order for the capability to match the requirement.
-	 */
-	public final static String	CAPABILITY_MANDATORY_DIRECTIVE		= "mandatory";
+    /**
+     * The capability directive used to specify the comma separated list of
+     * mandatory attributes which must be specified in the
+     * {@link Namespace#REQUIREMENT_FILTER_DIRECTIVE filter} of a requirement in
+     * order for the capability to match the requirement.
+     */
+    public final static String CAPABILITY_MANDATORY_DIRECTIVE = "mandatory";
 
-	/**
-	 * The capability attribute contains the {@code Version} of the resource
-	 * providing the capability if one is specified or {@code 0.0.0} if not
-	 * specified. The value of this attribute must be of type {@code Version}.
-	 */
-	public static final String	CAPABILITY_BUNDLE_VERSION_ATTRIBUTE	= "bundle-version";
+    /**
+     * The capability attribute contains the {@code Version} of the resource
+     * providing the capability if one is specified or {@code 0.0.0} if not
+     * specified. The value of this attribute must be of type {@code Version}.
+     */
+    public static final String CAPABILITY_BUNDLE_VERSION_ATTRIBUTE = "bundle-version";
 
-	AbstractWiringNamespace() {
-		// empty
-	}
+    AbstractWiringNamespace() {
+        // empty
+    }
 }

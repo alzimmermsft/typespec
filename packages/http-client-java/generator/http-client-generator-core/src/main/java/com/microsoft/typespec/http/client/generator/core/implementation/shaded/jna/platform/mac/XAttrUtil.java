@@ -23,13 +23,12 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.mac;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Memory;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Memory;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
 
 public class XAttrUtil {
 

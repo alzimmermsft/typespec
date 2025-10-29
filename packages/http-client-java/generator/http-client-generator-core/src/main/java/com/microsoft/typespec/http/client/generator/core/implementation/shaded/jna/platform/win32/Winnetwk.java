@@ -24,8 +24,6 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
-import java.util.List;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure.FieldOrder;
@@ -193,7 +191,8 @@ public abstract class Winnetwk {
          * RESOURCEUSAGE_CONNECTABLE, RESOURCEUSAGE_CONTAINER, and
          * RESOURCEUSAGE_ATTACHED.
          */
-        public static final int RESOURCEUSAGE_ALL = RESOURCEUSAGE_CONNECTABLE | RESOURCEUSAGE_CONTAINER | RESOURCEUSAGE_ATTACHED;
+        public static final int RESOURCEUSAGE_ALL
+            = RESOURCEUSAGE_CONNECTABLE | RESOURCEUSAGE_CONTAINER | RESOURCEUSAGE_ATTACHED;
     }
 
     /**
@@ -281,7 +280,15 @@ public abstract class Winnetwk {
     /**
      * The NETRESOURCE structure contains information about a network resource.
      */
-    @FieldOrder({"dwScope", "dwType", "dwDisplayType", "dwUsage", "lpLocalName", "lpRemoteName", "lpComment", "lpProvider"})
+    @FieldOrder({
+        "dwScope",
+        "dwType",
+        "dwDisplayType",
+        "dwUsage",
+        "lpLocalName",
+        "lpRemoteName",
+        "lpComment",
+        "lpProvider" })
     public static class NETRESOURCE extends Structure {
 
         public static class ByReference extends NETRESOURCE implements Structure.ByReference {
@@ -375,7 +382,7 @@ public abstract class Winnetwk {
      * The UNIVERSAL_NAME_INFO structure contains a pointer to a Universal
      * Naming Convention (UNC) name string for a network resource.
      */
-    @FieldOrder({"lpUniversalName"})
+    @FieldOrder({ "lpUniversalName" })
     public static class UNIVERSAL_NAME_INFO extends Structure {
 
         public static class ByReference extends REMOTE_NAME_INFO implements Structure.ByReference {
@@ -411,7 +418,7 @@ public abstract class Winnetwk {
      * Universal Naming Convention (UNC) name string for the resource, and two
      * members that point to additional network connection information strings.
      */
-    @FieldOrder({"lpUniversalName", "lpConnectionName", "lpRemainingPath"})
+    @FieldOrder({ "lpUniversalName", "lpConnectionName", "lpRemainingPath" })
     public static class REMOTE_NAME_INFO extends Structure {
 
         public static class ByReference extends REMOTE_NAME_INFO implements Structure.ByReference {

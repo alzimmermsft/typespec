@@ -23,10 +23,10 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.Nonnull;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.meta.TypeQualifierDefault;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
  * Marks all "top-level" types as non-null in a way that is recognized by Kotlin. Note that this
@@ -36,6 +36,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 @GwtCompatible
 @Retention(RUNTIME)
 @Target(TYPE)
-@TypeQualifierDefault({FIELD, METHOD, PARAMETER})
+@TypeQualifierDefault({ FIELD, METHOD, PARAMETER })
 @Nonnull
-@interface ElementTypesAreNonnullByDefault {}
+@interface ElementTypesAreNonnullByDefault {
+}

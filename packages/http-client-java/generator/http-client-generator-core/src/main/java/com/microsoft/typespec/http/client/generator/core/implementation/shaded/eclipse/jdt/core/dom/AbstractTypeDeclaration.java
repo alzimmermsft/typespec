@@ -172,22 +172,6 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
     }
 
     /**
-     * Returns whether this type declaration is a local type.
-     * <p>
-     * Note that this is a convenience method that simply checks whether
-     * this node's parent is a type declaration statement node.
-     * </p>
-     *
-     * @return <code>true</code> if this type declaration is a child of
-     * a type declaration statement node, and <code>false</code> otherwise
-     * @since 2.0 (originally declared on <code>TypeDeclaration</code>)
-     */
-    public boolean isLocalTypeDeclaration() {
-        ASTNode parent = getParent();
-        return (parent instanceof TypeDeclarationStatement);
-    }
-
-    /**
      * Resolves and returns the binding for the type declared in this type
      * declaration.
      * <p>

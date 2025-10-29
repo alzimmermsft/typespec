@@ -14,13 +14,22 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.runtime;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.*;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.equinox.log.*;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IStatus;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.MultiStatus;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Status;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.equinox.log.ExtendedLogEntry;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.equinox.log.LogFilter;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.framework.log.FrameworkLogEntry;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Bundle;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.log.LogEntry;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.log.LogListener;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.log.LogService;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Set;
 
 /**
  * A log writer that writes log entries.
@@ -29,7 +38,7 @@ import java.util.*;
  * the new extended log service
  */
 @SuppressWarnings("deprecation") // LogService, PackageAdmin
-public class PlatformLogWriter implements SynchronousLogListener, LogFilter {
+public class PlatformLogWriter implements LogListener, LogFilter {
     public static final String EQUINOX_LOGGER_NAME
         = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.equinox.logger"; //$NON-NLS-1$
 

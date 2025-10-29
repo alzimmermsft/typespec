@@ -25,12 +25,13 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-/** Provide a method for overriding how a given function is invoked.
+/**
+ * Provide a method for overriding how a given function is invoked.
  * An instance of this interface may be provided to
  * {@link Native#load(String, Class, java.util.Map)} as an entry in
  * the options map with key {@link Library#OPTION_INVOCATION_MAPPER}.<p>
  * This is useful for implementing inlined functions, or functions which
- * are actually C preprocessor macros.  Given a native library and JNA
+ * are actually C preprocessor macros. Given a native library and JNA
  * interface method, the mapper may provide a handler which implements the
  * desired functionality (which may or may not actually make use of a
  * native method).
@@ -39,7 +40,9 @@ import java.lang.reflect.Method;
  * into a call to <code>_xstat</code> with a slight rearrangement of arguments.
  * A mapper for the GNU C library might look like the following:<br>
  * <blockquote>
- * <pre><code>
+ * 
+ * <pre>
+ * <code>
  * new InvocationMapper() {
  *     public InvocationHandler getInvocationHandler(NativeLibrary lib, Method m) {
  *         if (m.getName().equals("stat")) {
@@ -56,12 +59,16 @@ import java.lang.reflect.Method;
  *         return null;
  *     }
  * }
- * </code></pre>
+ * </code>
+ * </pre>
+ * 
  * </blockquote>
  * Another situation is where a header provides a function-like macro or
  * inline function definition.
  * <blockquote>
- * <pre><code>
+ * 
+ * <pre>
+ * <code>
  * // Original C code (macro and inline variations)
  * #define allocblock(x) malloc(x * 1024)
  * static inline void* allocblock(size_t x) { return malloc(x * 1024); }
@@ -81,15 +88,20 @@ import java.lang.reflect.Method;
  *         return null;
  *     }
  * }
- * </code></pre>
+ * </code>
+ * </pre>
+ * 
  * </blockquote>
+ * 
  * @author twall
  */
 public interface InvocationMapper {
-    /** Return an {@link InvocationHandler} responsible for handling the
+    /**
+     * Return an {@link InvocationHandler} responsible for handling the
      * invocation of the given method, or <code>null</code> if the default
-     * handling should be used.  Note that the result of a call to this method
+     * handling should be used. Note that the result of a call to this method
      * with a given library and method may be cached.
+     * 
      * @param lib Target library
      * @param m Original JNA interface method that was invoked.
      */

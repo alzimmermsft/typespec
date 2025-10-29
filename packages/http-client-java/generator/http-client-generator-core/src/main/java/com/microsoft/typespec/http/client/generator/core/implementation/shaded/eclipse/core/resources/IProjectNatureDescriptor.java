@@ -23,8 +23,6 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * generally runs plug-in-defined code.
  * </p>
  *
- * @see IProjectNature
- * @see IWorkspace#getNatureDescriptor(String)
  * @since 2.0
  * @noimplement This interface is not intended to be implemented by clients.
  * @noextend This interface is not intended to be extended by clients.
@@ -44,19 +42,6 @@ public interface IProjectNatureDescriptor {
     String getNatureId();
 
     /**
-     * Returns a displayable label for this nature.
-     * Returns the empty string if no label for this nature
-     * is specified in the plug-in manifest file.
-     * <p> Note that any translation specified in the plug-in manifest
-     * file is automatically applied.
-     * </p>
-     *
-     * @return a displayable string label for this nature,
-     * possibly the empty string
-     */
-    String getLabel();
-
-    /**
      * Returns the unique identifiers of the natures required by this nature.
      * Nature requirements are specified by the <code>"requires-nature"</code>
      * element on a nature extension.
@@ -67,24 +52,4 @@ public interface IProjectNatureDescriptor {
      */
     String[] getRequiredNatureIds();
 
-    /**
-     * Returns the identifiers of the nature sets that this nature belongs to.
-     * Nature set inclusion is specified by the <code>"one-of-nature"</code>
-     * element on a nature extension.
-     * Returns an empty array if no nature sets are specified for this nature.
-     *
-     * @return an array of nature set ids that this nature belongs to,
-     * possibly an empty array.
-     */
-    String[] getNatureSetIds();
-
-    /**
-     * Returns whether this project nature allows linked resources to be created
-     * in projects where this nature is installed.
-     *
-     * @return boolean <code>true</code> if creating links is allowed,
-     * and <code>false</code> otherwise.
-     * @since 2.1
-     */
-    boolean isLinkingAllowed();
 }

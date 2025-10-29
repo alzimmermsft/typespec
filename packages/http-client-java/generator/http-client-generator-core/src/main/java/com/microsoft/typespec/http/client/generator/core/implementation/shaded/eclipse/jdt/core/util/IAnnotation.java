@@ -38,13 +38,6 @@ public interface IAnnotation {
     char[] getTypeName();
 
     /**
-     * Answer back the number of components as described in the JVM specifications.
-     *
-     * @return the type index
-     */
-    int getComponentsNumber();
-
-    /**
      * Answer back the components as described in the JVM specifications. Answer an
      * empty collection if none.
      *

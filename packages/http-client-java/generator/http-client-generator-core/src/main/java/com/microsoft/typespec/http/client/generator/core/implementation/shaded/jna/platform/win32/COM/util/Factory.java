@@ -61,7 +61,7 @@ public class Factory extends ObjectFactory {
         this(new ComThread("Default Factory COM Thread", 5000, new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread t, Throwable e) {
-                //ignore
+                // ignore
             }
         }));
     }
@@ -82,8 +82,7 @@ public class Factory extends ObjectFactory {
         public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
             if (args != null) {
                 for (int i = 0; i < args.length; i++) {
-                    if (args[i] != null
-                            && Proxy.isProxyClass(args[i].getClass())) {
+                    if (args[i] != null && Proxy.isProxyClass(args[i].getClass())) {
                         InvocationHandler ih = Proxy.getInvocationHandler(args[i]);
                         if (ih instanceof ProxyObject2) {
                             args[i] = ((ProxyObject2) ih).delegate;
@@ -93,22 +92,25 @@ public class Factory extends ObjectFactory {
             }
 
             return runInComThread(new Callable<Object>() {
-                    @Override
-                    public Object call() throws Exception {
-                        return method.invoke(delegate, args);
-                    }
-                });
+                @Override
+                public Object call() throws Exception {
+                    return method.invoke(delegate, args);
+                }
+            });
         }
     }
 
     private class CallbackProxy2 extends CallbackProxy {
 
-        public CallbackProxy2(ObjectFactory factory, Class<?> comEventCallbackInterface, IComEventCallbackListener comEventCallbackListener) {
+        public CallbackProxy2(ObjectFactory factory, Class<?> comEventCallbackInterface,
+            IComEventCallbackListener comEventCallbackListener) {
             super(factory, comEventCallbackInterface, comEventCallbackListener);
         }
 
         @Override
-        public WinNT.HRESULT Invoke(OaIdl.DISPID dispIdMember, Guid.REFIID riid, WinDef.LCID lcid, WinDef.WORD wFlags, OleAuto.DISPPARAMS.ByReference pDispParams, Variant.VARIANT.ByReference pVarResult, OaIdl.EXCEPINFO.ByReference pExcepInfo, IntByReference puArgErr) {
+        public WinNT.HRESULT Invoke(OaIdl.DISPID dispIdMember, Guid.REFIID riid, WinDef.LCID lcid, WinDef.WORD wFlags,
+            OleAuto.DISPPARAMS.ByReference pDispParams, Variant.VARIANT.ByReference pVarResult,
+            OaIdl.EXCEPINFO.ByReference pExcepInfo, IntByReference puArgErr) {
             // Mark callbacks as COM initialized - so normal inline call
             // invocation can be used -- see ComThread#
             ComThread.setComThread(true);
@@ -124,7 +126,7 @@ public class Factory extends ObjectFactory {
     public <T> T createProxy(Class<T> comInterface, IDispatch dispatch) {
         T result = super.createProxy(comInterface, dispatch);
         ProxyObject2 po2 = new ProxyObject2(result);
-        Object proxy = Proxy.newProxyInstance(comInterface.getClassLoader(), new Class<?>[]{comInterface}, po2);
+        Object proxy = Proxy.newProxyInstance(comInterface.getClassLoader(), new Class<?>[] { comInterface }, po2);
         return (T) proxy;
     }
 
@@ -158,7 +160,8 @@ public class Factory extends ObjectFactory {
     }
 
     @Override
-    IDispatchCallback createDispatchCallback(Class<?> comEventCallbackInterface, IComEventCallbackListener comEventCallbackListener) {
+    IDispatchCallback createDispatchCallback(Class<?> comEventCallbackInterface,
+        IComEventCallbackListener comEventCallbackListener) {
         return new CallbackProxy2(this, comEventCallbackInterface, comEventCallbackListener);
     }
 

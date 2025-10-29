@@ -15,7 +15,6 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.localstore;
 
 import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
@@ -43,10 +42,6 @@ import java.io.OutputStream;
 public class SafeChunkyOutputStream extends FilterOutputStream {
     protected String filePath;
     protected boolean isOpen;
-
-    public SafeChunkyOutputStream(File target) throws IOException {
-        this(target.getAbsolutePath());
-    }
 
     public SafeChunkyOutputStream(String filePath) throws IOException {
         super(new BufferedOutputStream(new FileOutputStream(filePath, true)));

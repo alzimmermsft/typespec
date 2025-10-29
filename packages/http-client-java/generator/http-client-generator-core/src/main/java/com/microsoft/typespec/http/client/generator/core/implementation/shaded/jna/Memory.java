@@ -22,6 +22,7 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.internal.Cleaner;
 import java.io.Closeable;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -31,15 +32,14 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.internal.Cleaner;
-
 /**
  * A <code>Pointer</code> to memory obtained from the native heap via a
  * call to <code>malloc</code>.
  *
  * <p>In some cases it might be necessary to use memory obtained from
- * <code>malloc</code>.  For example, <code>Memory</code> helps
+ * <code>malloc</code>. For example, <code>Memory</code> helps
  * accomplish the following idiom:
+ * 
  * <pre>
  *        void *buf = malloc(BUF_LEN * sizeof(char));
  *        call_some_function(buf);
@@ -53,14 +53,14 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
  */
 public class Memory extends Pointer implements Closeable {
     /** Keep track of all allocated memory so we can dispose of it before unloading. */
-    private static final Map<Long, Reference<Memory>> allocatedMemory =
-            new ConcurrentHashMap<>();
+    private static final Map<Long, Reference<Memory>> allocatedMemory = new ConcurrentHashMap<>();
 
     private static final WeakMemoryHolder buffers = new WeakMemoryHolder();
 
-    /** Force cleanup of memory that has associated NIO Buffers which have
-        been GC'd.
-    */
+    /**
+     * Force cleanup of memory that has associated NIO Buffers which have
+     * been GC'd.
+     */
     public static void purge() {
         buffers.clean();
     }
@@ -71,7 +71,7 @@ public class Memory extends Pointer implements Closeable {
         Collection<Reference<Memory>> refs = new ArrayList<>(allocatedMemory.values());
         for (Reference<Memory> r : refs) {
             Memory m = r.get();
-            if(m != null) {
+            if (m != null) {
                 m.close();
             }
         }
@@ -80,7 +80,8 @@ public class Memory extends Pointer implements Closeable {
     private final Cleaner.Cleanable cleanable;
     protected long size; // Size of the malloc'ed space
 
-    /** Provide a view into the original memory.  Keeps an implicit reference
+    /**
+     * Provide a view into the original memory. Keeps an implicit reference
      * to the original to prevent GC.
      */
     private class SharedMemory extends Memory {
@@ -88,16 +89,19 @@ public class Memory extends Pointer implements Closeable {
             this.size = size;
             this.peer = Memory.this.peer + offset;
         }
+
         /** No need to free memory. */
         @Override
         protected synchronized void dispose() {
             this.peer = 0;
         }
+
         /** Pass bounds check to parent. */
         @Override
         protected void boundsCheck(long off, long sz) {
             Memory.this.boundsCheck(this.peer - Memory.this.peer + off, sz);
         }
+
         @Override
         public String toString() {
             return super.toString() + " (shared from " + Memory.this.toString() + ")";
@@ -127,9 +131,11 @@ public class Memory extends Pointer implements Closeable {
         cleanable = null;
     }
 
-    /** Provide a view of this memory using the given offset as the base address.  The
+    /**
+     * Provide a view of this memory using the given offset as the base address. The
      * returned {@link Pointer} will have a size equal to that of the original
      * minus the offset.
+     * 
      * @throws IndexOutOfBoundsException if the requested memory is outside
      * the allocated bounds.
      */
@@ -138,10 +144,12 @@ public class Memory extends Pointer implements Closeable {
         return share(offset, size() - offset);
     }
 
-    /** Provide a view of this memory using the given offset as the base
-     * address, bounds-limited with the given size.  Maintains a reference to
+    /**
+     * Provide a view of this memory using the given offset as the base
+     * address, bounds-limited with the given size. Maintains a reference to
      * the original {@link Memory} object to avoid GC as long as the shared
      * memory is referenced.
+     * 
      * @throws IndexOutOfBoundsException if the requested memory is outside
      * the allocated bounds.
      */
@@ -151,7 +159,9 @@ public class Memory extends Pointer implements Closeable {
         return new SharedMemory(offset, sz);
     }
 
-    /** Provide a view onto this structure with the given alignment.
+    /**
+     * Provide a view onto this structure with the given alignment.
+     * 
      * @param byteBoundary Align memory to this number of bytes; should be a
      * power of two.
      * @throws IndexOutOfBoundsException if the requested alignment can
@@ -163,9 +173,9 @@ public class Memory extends Pointer implements Closeable {
         if (byteBoundary <= 0) {
             throw new IllegalArgumentException("Byte boundary must be positive: " + byteBoundary);
         }
-        for (int i=0;i < 32;i++) {
-            if (byteBoundary == (1<<i)) {
-                long mask = ~((long)byteBoundary - 1);
+        for (int i = 0; i < 32; i++) {
+            if (byteBoundary == (1 << i)) {
+                long mask = ~((long) byteBoundary - 1);
 
                 if ((peer & mask) != peer) {
                     long newPeer = (peer + byteBoundary - 1) & mask;
@@ -173,7 +183,7 @@ public class Memory extends Pointer implements Closeable {
                     if (newSize <= 0) {
                         throw new IllegalArgumentException("Insufficient memory to align to the requested boundary");
                     }
-                    return (Memory)share(newPeer - peer, newSize);
+                    return (Memory) share(newPeer - peer, newSize);
                 }
                 return this;
             }
@@ -219,8 +229,7 @@ public class Memory extends Pointer implements Closeable {
             throw new IndexOutOfBoundsException("Invalid offset: " + off);
         }
         if (off + sz > size) {
-            String msg = "Bounds exceeds available space : size="
-                + size + ", offset=" + (off + sz);
+            String msg = "Bounds exceeds available space : size=" + size + ", offset=" + (off + sz);
             throw new IndexOutOfBoundsException(msg);
         }
     }
@@ -231,7 +240,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.read</code>.  But this method performs a bounds
+     * <code>Pointer.read</code>. But this method performs a bounds
      * checks to ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -245,7 +254,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.read</code>.  But this method performs a bounds
+     * <code>Pointer.read</code>. But this method performs a bounds
      * checks to ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -259,7 +268,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.read</code>.  But this method performs a bounds
+     * <code>Pointer.read</code>. But this method performs a bounds
      * checks to ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -273,7 +282,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.read</code>.  But this method performs a bounds
+     * <code>Pointer.read</code>. But this method performs a bounds
      * checks to ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -287,7 +296,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.read</code>.  But this method performs a bounds
+     * <code>Pointer.read</code>. But this method performs a bounds
      * checks to ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -301,7 +310,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.read</code>.  But this method performs a bounds
+     * <code>Pointer.read</code>. But this method performs a bounds
      * checks to ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -315,7 +324,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.read</code>.  But this method performs a bounds checks to
+     * <code>Pointer.read</code>. But this method performs a bounds checks to
      * ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -329,7 +338,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.read</code>.  But this method performs a bounds checks to
+     * <code>Pointer.read</code>. But this method performs a bounds checks to
      * ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -347,7 +356,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.write</code>.  But this method performs a bounds
+     * <code>Pointer.write</code>. But this method performs a bounds
      * checks to ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -361,7 +370,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.write</code>.  But this method performs a bounds
+     * <code>Pointer.write</code>. But this method performs a bounds
      * checks to ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -375,7 +384,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.write</code>.  But this method performs a bounds
+     * <code>Pointer.write</code>. But this method performs a bounds
      * checks to ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -389,7 +398,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.write</code>.  But this method performs a bounds
+     * <code>Pointer.write</code>. But this method performs a bounds
      * checks to ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -403,7 +412,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.write</code>.  But this method performs a bounds
+     * <code>Pointer.write</code>. But this method performs a bounds
      * checks to ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -417,7 +426,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.write</code>.  But this method performs a bounds
+     * <code>Pointer.write</code>. But this method performs a bounds
      * checks to ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -431,7 +440,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.write</code>.  But this method performs a bounds
+     * <code>Pointer.write</code>. But this method performs a bounds
      * checks to ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -445,7 +454,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.write</code>.  But this method performs a bounds
+     * <code>Pointer.write</code>. But this method performs a bounds
      * checks to ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -463,7 +472,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.getByte</code>.  But this method performs a bounds
+     * <code>Pointer.getByte</code>. But this method performs a bounds
      * checks to ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -477,7 +486,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.getByte</code>.  But this method performs a bounds
+     * <code>Pointer.getByte</code>. But this method performs a bounds
      * checks to ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -491,7 +500,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.getShort</code>.  But this method performs a bounds
+     * <code>Pointer.getShort</code>. But this method performs a bounds
      * checks to ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -505,7 +514,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.getInt</code>.  But this method performs a bounds
+     * <code>Pointer.getInt</code>. But this method performs a bounds
      * checks to ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -519,7 +528,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.getLong</code>.  But this method performs a bounds
+     * <code>Pointer.getLong</code>. But this method performs a bounds
      * checks to ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -533,7 +542,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.getFloat</code>.  But this method performs a bounds
+     * <code>Pointer.getFloat</code>. But this method performs a bounds
      * checks to ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -547,7 +556,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.getDouble</code>.  But this method performs a
+     * <code>Pointer.getDouble</code>. But this method performs a
      * bounds check to ensure that the indirection does not cause memory
      * outside the <code>malloc</code>ed space to be accessed.
      *
@@ -561,7 +570,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.getPointer</code>.  But this method performs
+     * <code>Pointer.getPointer</code>. But this method performs
      * a bounds checks to ensure that the indirection does not cause memory
      * outside the <code>malloc</code>ed space to be accessed.
      *
@@ -615,7 +624,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.setByte</code>.  But this method performs a bounds
+     * <code>Pointer.setByte</code>. But this method performs a bounds
      * checks to ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -629,7 +638,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.setChar</code>.  But this method performs a bounds
+     * <code>Pointer.setChar</code>. But this method performs a bounds
      * checks to ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -643,7 +652,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.setShort</code>.  But this method performs a bounds
+     * <code>Pointer.setShort</code>. But this method performs a bounds
      * checks to ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -657,7 +666,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.setInt</code>.  But this method performs a bounds
+     * <code>Pointer.setInt</code>. But this method performs a bounds
      * checks to ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -671,7 +680,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.setLong</code>.  But this method performs a bounds
+     * <code>Pointer.setLong</code>. But this method performs a bounds
      * checks to ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -685,7 +694,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.setFloat</code>.  But this method performs a bounds
+     * <code>Pointer.setFloat</code>. But this method performs a bounds
      * checks to ensure that the indirection does not cause memory outside the
      * <code>malloc</code>ed space to be accessed.
      *
@@ -699,7 +708,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.setDouble</code>.  But this method performs a
+     * <code>Pointer.setDouble</code>. But this method performs a
      * bounds checks to ensure that the indirection does not cause memory
      * outside the <code>malloc</code>ed space to be accessed.
      *
@@ -713,7 +722,7 @@ public class Memory extends Pointer implements Closeable {
 
     /**
      * Indirect the native pointer to <code>malloc</code> space, a la
-     * <code>Pointer.setPointer</code>.  But this method performs
+     * <code>Pointer.setPointer</code>. But this method performs
      * a bounds checks to ensure that the indirection does not cause memory
      * outside the <code>malloc</code>ed space to be accessed.
      *
@@ -755,7 +764,7 @@ public class Memory extends Pointer implements Closeable {
 
     /** Dumps the contents of this memory object. */
     public String dump() {
-        return dump(0, (int)size());
+        return dump(0, (int) size());
     }
 
     /**
@@ -769,7 +778,7 @@ public class Memory extends Pointer implements Closeable {
      * points to memory backed by this Memory object.
      */
     private Pointer shareReferenceIfInBounds(Pointer target) {
-        if(target == null) {
+        if (target == null) {
             return null;
         }
         long offset = target.peer - this.peer;

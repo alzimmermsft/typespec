@@ -44,12 +44,12 @@ public interface Tlhelp32 {
     /**
      * Includes all processes in the system in the snapshot. To enumerate the processes, see Process32First.
      */
-    DWORD TH32CS_SNAPPROCESS  = new DWORD(0x00000002);
+    DWORD TH32CS_SNAPPROCESS = new DWORD(0x00000002);
 
     /**
      * Includes all threads in the system in the snapshot. To enumerate the threads, see Thread32First.
      */
-    DWORD TH32CS_SNAPTHREAD   = new DWORD(0x00000004);
+    DWORD TH32CS_SNAPTHREAD = new DWORD(0x00000004);
 
     /**
      *
@@ -67,7 +67,7 @@ public interface Tlhelp32 {
      *
      * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms682489(v=vs.85).aspx">MSDN</a>
      */
-    DWORD TH32CS_SNAPMODULE   = new DWORD(0x00000008);
+    DWORD TH32CS_SNAPMODULE = new DWORD(0x00000008);
 
     /**
      * Includes all 32-bit modules of the process specified in th32ProcessID in the snapshot when called from a 64-bit
@@ -77,24 +77,33 @@ public interface Tlhelp32 {
     DWORD TH32CS_SNAPMODULE32 = new DWORD(0x00000010);
 
     /**
-     * Includes all processes and threads in the system, plus the heaps and modules of the process specified in th32ProcessID.
+     * Includes all processes and threads in the system, plus the heaps and modules of the process specified in
+     * th32ProcessID.
      */
-    DWORD TH32CS_SNAPALL      = new DWORD((TH32CS_SNAPHEAPLIST.intValue() |
-            TH32CS_SNAPPROCESS.intValue() | TH32CS_SNAPTHREAD.intValue() | TH32CS_SNAPMODULE.intValue()));
+    DWORD TH32CS_SNAPALL = new DWORD((TH32CS_SNAPHEAPLIST.intValue() | TH32CS_SNAPPROCESS.intValue()
+        | TH32CS_SNAPTHREAD.intValue() | TH32CS_SNAPMODULE.intValue()));
 
     /**
      * Indicates that the snapshot handle is to be inheritable.
      */
-    DWORD TH32CS_INHERIT      = new DWORD(0x80000000);
+    DWORD TH32CS_INHERIT = new DWORD(0x80000000);
 
     int MAX_MODULE_NAME32 = 255;
 
     /**
      * Describes an entry from a list of the processes residing in the system address space when a snapshot was taken.
      */
-    @FieldOrder({"dwSize", "cntUsage", "th32ProcessID", "th32DefaultHeapID",
-        "th32ModuleID", "cntThreads", "th32ParentProcessID", "pcPriClassBase",
-        "dwFlags", "szExeFile"})
+    @FieldOrder({
+        "dwSize",
+        "cntUsage",
+        "th32ProcessID",
+        "th32DefaultHeapID",
+        "th32ModuleID",
+        "cntThreads",
+        "th32ParentProcessID",
+        "pcPriClassBase",
+        "dwFlags",
+        "szExeFile" })
     public static class PROCESSENTRY32 extends Structure {
 
         public static class ByReference extends PROCESSENTRY32 implements Structure.ByReference {
@@ -241,11 +250,19 @@ public interface Tlhelp32 {
      * process.
      *
      * @see <a href=
-     *      "https://msdn.microsoft.com/en-us/library/windows/desktop/ms684225(v=vs.85).aspx">MSDN</a>
+     * "https://msdn.microsoft.com/en-us/library/windows/desktop/ms684225(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"dwSize", "th32ModuleID", "th32ProcessID", "GlblcntUsage",
-        "ProccntUsage", "modBaseAddr", "modBaseSize", "hModule",
-        "szModule", "szExePath"})
+    @FieldOrder({
+        "dwSize",
+        "th32ModuleID",
+        "th32ProcessID",
+        "GlblcntUsage",
+        "ProccntUsage",
+        "modBaseAddr",
+        "modBaseSize",
+        "hModule",
+        "szModule",
+        "szExePath" })
     public class MODULEENTRY32W extends Structure {
 
         /**

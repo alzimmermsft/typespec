@@ -406,18 +406,6 @@ public abstract class AbstractDataTreeNode {
     abstract AbstractDataTreeNode copy();
 
     /**
-     * Replaces the receiver's children between "from" and "to", with the children
-     * in otherNode starting at "start". This method replaces the Smalltalk
-     * #replaceFrom:to:with:startingAt: method for copying children in data nodes
-     */
-    protected void copyChildren(int from, int to, AbstractDataTreeNode otherNode, int start) {
-        int other = start;
-        for (int i = from; i <= to; i++, other++) {
-            this.children[i] = otherNode.children[other];
-        }
-    }
-
-    /**
      * Returns an array of the node's children
      */
     public AbstractDataTreeNode[] getChildren() {

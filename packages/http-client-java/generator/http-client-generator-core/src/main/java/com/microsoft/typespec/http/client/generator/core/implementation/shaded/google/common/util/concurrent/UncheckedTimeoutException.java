@@ -28,19 +28,20 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 @GwtIncompatible
 @ElementTypesAreNonnullByDefault
 public class UncheckedTimeoutException extends RuntimeException {
-  public UncheckedTimeoutException() {}
+    public UncheckedTimeoutException() {
+    }
 
-  public UncheckedTimeoutException(@CheckForNull String message) {
-    super(message);
-  }
+    public UncheckedTimeoutException(@CheckForNull String message) {
+        super(message);
+    }
 
-  public UncheckedTimeoutException(@CheckForNull Throwable cause) {
-    super(cause);
-  }
+    public UncheckedTimeoutException(@CheckForNull Throwable cause) {
+        super(cause);
+    }
 
-  public UncheckedTimeoutException(@CheckForNull String message, @CheckForNull Throwable cause) {
-    super(message, cause);
-  }
+    public UncheckedTimeoutException(@CheckForNull String message, @CheckForNull Throwable cause) {
+        super(message, cause);
+    }
 
-  private static final long serialVersionUID = 0;
+    private static final long serialVersionUID = 0;
 }

@@ -220,7 +220,7 @@ public class FileUtil {
      * is false, this method only returns true if the locations are the same, or the first location
      * is a prefix of the second. Returns false if the locations do not overlap
      */
-    private static boolean computeOverlap(URI location1, URI location2, boolean bothDirections) {
+    private static boolean computeOverlap(URI location1, URI location2) {
         if (location1.equals(location2)) {
             return true;
         }
@@ -229,8 +229,8 @@ public class FileUtil {
         if (scheme1 == null ? scheme2 != null : !scheme1.equals(scheme2)) {
             return false;
         }
-        if (EFS.SCHEME_FILE.equals(scheme1) && EFS.SCHEME_FILE.equals(scheme2)) {
-            return computeOverlap(URIUtil.toPath(location1), URIUtil.toPath(location2), bothDirections);
+        if (EFS.SCHEME_FILE.equals(scheme1)) {
+            return computeOverlap(URIUtil.toPath(location1), URIUtil.toPath(location2), false);
         }
         IFileSystem system = null;
         try {
@@ -242,11 +242,11 @@ public class FileUtil {
             // we are stuck with string comparison
             String string1 = location1.toString();
             String string2 = location2.toString();
-            return string1.startsWith(string2) || (bothDirections && string2.startsWith(string1));
+            return string1.startsWith(string2);
         }
         IFileStore store1 = system.getStore(location1);
         IFileStore store2 = system.getStore(location2);
-        return store1.equals(store2) || store1.isParentOf(store2) || (bothDirections && store2.isParentOf(store1));
+        return store1.equals(store2) || store1.isParentOf(store2);
     }
 
     /**
@@ -272,14 +272,6 @@ public class FileUtil {
     }
 
     /**
-     * Returns true if the given file system locations overlap, and false otherwise.
-     * Overlap means the locations are the same, or one is a proper prefix of the other.
-     */
-    public static boolean isOverlapping(URI location1, URI location2) {
-        return computeOverlap(location1, location2, true);
-    }
-
-    /**
      * Returns true if location1 is the same as, or a proper prefix of, location2.
      * Returns false otherwise.
      */
@@ -292,7 +284,7 @@ public class FileUtil {
      * Returns false otherwise.
      */
     public static boolean isPrefixOf(URI location1, URI location2) {
-        return computeOverlap(location1, location2, false);
+        return computeOverlap(location1, location2);
     }
 
     /**
@@ -320,27 +312,8 @@ public class FileUtil {
         return FileUtil.toCharArray(content, charset);
     }
 
-    public static String readString(IFile file) throws CoreException {
-        byte[] content = file.readAllBytes();
-        Charset charset = getCharset(file, content);
-        return FileUtil.toString(content, charset);
-    }
-
     private static Charset getCharset(IFile file, byte[] content) {
-        Charset charset;
-        try {
-            String encoding = file.getCharset(); // TODO possible optimization: use content while evaluating BOM
-            charset = Charset.forName(encoding);
-        } catch (CoreException | IllegalArgumentException ce) {
-            // encoding is not supported
-            charset = Charset.defaultCharset();
-        }
-        return charset;
-    }
-
-    private static String toString(byte[] content, Charset charset) {
-        int start = getContentStart(content, charset);
-        return new String(content, start, content.length - start, charset);
+        return StandardCharsets.UTF_8;
     }
 
     private static char[] toCharArray(byte[] content, Charset charset) {

@@ -18,30 +18,30 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public class SourceMethodInfo extends SourceMethodElementInfo {
 
-	/*
-	 * Return type name for this method. The return type of
-	 * constructors is equivalent to void.
-	 */
-	protected char[] returnType;
+    /*
+     * Return type name for this method. The return type of
+     * constructors is equivalent to void.
+     */
+    protected char[] returnType;
 
-	@Override
-	public boolean isAnnotationMethod() {
-		return false;
-	}
+    @Override
+    public boolean isAnnotationMethod() {
+        return false;
+    }
 
-	@Override
-	public boolean isConstructor() {
-		return false;
-	}
+    @Override
+    public boolean isConstructor() {
+        return false;
+    }
 
-	@Override
-	public char[] getReturnTypeName() {
-		return this.returnType;
-	}
+    @Override
+    public char[] getReturnTypeName() {
+        return this.returnType;
+    }
 
-	@Override
-	protected void setReturnType(char[] type) {
-		this.returnType = type;
-	}
+    @Override
+    protected void setReturnType(char[] type) {
+        this.returnType = type;
+    }
 
 }

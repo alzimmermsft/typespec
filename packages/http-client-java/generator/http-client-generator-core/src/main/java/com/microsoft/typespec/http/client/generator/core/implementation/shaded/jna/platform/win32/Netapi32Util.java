@@ -23,8 +23,6 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
-import java.util.ArrayList;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.DsGetDC.DS_DOMAIN_TRUSTS;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.DsGetDC.PDOMAIN_CONTROLLER_INFO;
@@ -37,9 +35,11 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.PSID;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.IntByReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.PointerByReference;
+import java.util.ArrayList;
 
 /**
  * Netapi32 Utility API.
+ * 
  * @author dblock[at]dblock.org
  */
 public abstract class Netapi32Util {
@@ -99,6 +99,7 @@ public abstract class Netapi32Util {
 
     /**
      * Returns the name of the primary domain controller (PDC) on the current computer.
+     * 
      * @return The name of the primary domain controller.
      */
     public static String getDCName() {
@@ -107,13 +108,14 @@ public abstract class Netapi32Util {
 
     /**
      * Returns the name of the primary domain controller (PDC).
+     * 
      * @param serverName
-     *     Specifies the DNS or NetBIOS name of the remote server on which the function is
-     *     to execute.
+     * Specifies the DNS or NetBIOS name of the remote server on which the function is
+     * to execute.
      * @param domainName
-     *     Specifies the name of the domain.
+     * Specifies the name of the domain.
      * @return
-     *  Name of the primary domain controller.
+     * Name of the primary domain controller.
      */
     public static String getDCName(String serverName, String domainName) {
         PointerByReference bufptr = new PointerByReference();
@@ -132,6 +134,7 @@ public abstract class Netapi32Util {
 
     /**
      * Return the domain/workgroup join status for a computer.
+     * 
      * @return Join status.
      */
     public static int getJoinStatus() {
@@ -140,6 +143,7 @@ public abstract class Netapi32Util {
 
     /**
      * Return the domain/workgroup join status for a computer.
+     * 
      * @param computerName Computer name.
      * @return Join status.
      */
@@ -165,6 +169,7 @@ public abstract class Netapi32Util {
 
     /**
      * Get information about a computer.
+     * 
      * @param computerName computer name
      * @return Domain or workgroup name.
      */
@@ -191,6 +196,7 @@ public abstract class Netapi32Util {
 
     /**
      * Get the names of local groups on the current computer.
+     * 
      * @return An array of local group names.
      */
     public static LocalGroup[] getLocalGroups() {
@@ -199,6 +205,7 @@ public abstract class Netapi32Util {
 
     /**
      * Get the names of local groups on a computer.
+     * 
      * @param serverName Name of the computer.
      * @return An array of local group names.
      */
@@ -207,7 +214,8 @@ public abstract class Netapi32Util {
         IntByReference entriesRead = new IntByReference();
         IntByReference totalEntries = new IntByReference();
         try {
-            int rc = Netapi32.INSTANCE.NetLocalGroupEnum(serverName, 1, bufptr, LMCons.MAX_PREFERRED_LENGTH, entriesRead, totalEntries, null);
+            int rc = Netapi32.INSTANCE.NetLocalGroupEnum(serverName, 1, bufptr, LMCons.MAX_PREFERRED_LENGTH,
+                entriesRead, totalEntries, null);
             if (LMErr.NERR_Success != rc || bufptr.getValue() == Pointer.NULL) {
                 throw new Win32Exception(rc);
             }
@@ -238,6 +246,7 @@ public abstract class Netapi32Util {
 
     /**
      * Get the names of global groups on a computer.
+     * 
      * @return An array of group names.
      */
     public static Group[] getGlobalGroups() {
@@ -246,6 +255,7 @@ public abstract class Netapi32Util {
 
     /**
      * Get the names of global groups on a computer.
+     * 
      * @param serverName Name of the computer.
      * @return An array of group names.
      */
@@ -254,9 +264,8 @@ public abstract class Netapi32Util {
         IntByReference entriesRead = new IntByReference();
         IntByReference totalEntries = new IntByReference();
         try {
-            int rc = Netapi32.INSTANCE.NetGroupEnum(serverName, 1, bufptr,
-                                                    LMCons.MAX_PREFERRED_LENGTH, entriesRead,
-                                                    totalEntries, null);
+            int rc = Netapi32.INSTANCE.NetGroupEnum(serverName, 1, bufptr, LMCons.MAX_PREFERRED_LENGTH, entriesRead,
+                totalEntries, null);
             if (LMErr.NERR_Success != rc || bufptr.getValue() == Pointer.NULL) {
                 throw new Win32Exception(rc);
             }
@@ -287,6 +296,7 @@ public abstract class Netapi32Util {
 
     /**
      * Get the names of users on a local computer.
+     * 
      * @return Users.
      */
     public static User[] getUsers() {
@@ -295,6 +305,7 @@ public abstract class Netapi32Util {
 
     /**
      * Get the names of users on a computer.
+     * 
      * @param serverName Name of the computer.
      * @return An array of users.
      */
@@ -303,10 +314,8 @@ public abstract class Netapi32Util {
         IntByReference entriesRead = new IntByReference();
         IntByReference totalEntries = new IntByReference();
         try {
-            int rc = Netapi32.INSTANCE.NetUserEnum(
-                    serverName, 1, 0, bufptr,
-                    LMCons.MAX_PREFERRED_LENGTH, entriesRead,
-                    totalEntries, null);
+            int rc = Netapi32.INSTANCE.NetUserEnum(serverName, 1, 0, bufptr, LMCons.MAX_PREFERRED_LENGTH, entriesRead,
+                totalEntries, null);
             if (LMErr.NERR_Success != rc || bufptr.getValue() == Pointer.NULL) {
                 throw new Win32Exception(rc);
             }
@@ -338,6 +347,7 @@ public abstract class Netapi32Util {
 
     /**
      * Get local groups of the current user.
+     * 
      * @return Local groups.
      */
     public static Group[] getCurrentUserLocalGroups() {
@@ -346,6 +356,7 @@ public abstract class Netapi32Util {
 
     /**
      * Get local groups of a given user.
+     * 
      * @param userName User name.
      * @return Local groups.
      */
@@ -355,6 +366,7 @@ public abstract class Netapi32Util {
 
     /**
      * Get local groups of a given user on a given system.
+     * 
      * @param userName User name.
      * @param serverName Server name.
      * @return Local groups.
@@ -364,9 +376,8 @@ public abstract class Netapi32Util {
         IntByReference entriesread = new IntByReference();
         IntByReference totalentries = new IntByReference();
         try {
-            int rc = Netapi32.INSTANCE.NetUserGetLocalGroups(
-                    serverName, userName,
-                    0, 0, bufptr, LMCons.MAX_PREFERRED_LENGTH, entriesread, totalentries);
+            int rc = Netapi32.INSTANCE.NetUserGetLocalGroups(serverName, userName, 0, 0, bufptr,
+                LMCons.MAX_PREFERRED_LENGTH, entriesread, totalentries);
             if (rc != LMErr.NERR_Success) {
                 throw new Win32Exception(rc);
             }
@@ -395,6 +406,7 @@ public abstract class Netapi32Util {
 
     /**
      * Get groups of a given user.
+     * 
      * @param userName User name.
      * @return Groups.
      */
@@ -404,6 +416,7 @@ public abstract class Netapi32Util {
 
     /**
      * Get groups of a given user on a given system.
+     * 
      * @param userName User name.
      * @param serverName Server name.
      * @return Groups.
@@ -413,9 +426,8 @@ public abstract class Netapi32Util {
         IntByReference entriesread = new IntByReference();
         IntByReference totalentries = new IntByReference();
         try {
-            int rc = Netapi32.INSTANCE.NetUserGetGroups(
-                    serverName, userName,
-                    0, bufptr, LMCons.MAX_PREFERRED_LENGTH, entriesread, totalentries);
+            int rc = Netapi32.INSTANCE.NetUserGetGroups(serverName, userName, 0, bufptr, LMCons.MAX_PREFERRED_LENGTH,
+                entriesread, totalentries);
             if (rc != LMErr.NERR_Success) {
                 throw new Win32Exception(rc);
             }
@@ -487,8 +499,9 @@ public abstract class Netapi32Util {
 
     /**
      * Return the domain controller for a current computer.
+     * 
      * @return
-     *  Domain controller information.
+     * Domain controller information.
      */
     public static DomainController getDC() {
         PDOMAIN_CONTROLLER_INFO pdci = new PDOMAIN_CONTROLLER_INFO();
@@ -552,8 +565,9 @@ public abstract class Netapi32Util {
          * The domain represented by this structure is a member of the same forest
          * as the server specified in the ServerName parameter of the
          * DsEnumerateDomainTrusts function.
+         * 
          * @return
-         *  True or false.
+         * True or false.
          */
         public boolean isInForest() {
             return (flags & DsGetDC.DS_DOMAIN_IN_FOREST) != 0;
@@ -563,8 +577,9 @@ public abstract class Netapi32Util {
          * The domain represented by this structure is directly trusted by the domain
          * that the server specified in the ServerName parameter of the
          * DsEnumerateDomainTrusts function is a member of.
+         * 
          * @return
-         *  True or false.
+         * True or false.
          */
         public boolean isOutbound() {
             return (flags & DsGetDC.DS_DOMAIN_DIRECT_OUTBOUND) != 0;
@@ -574,8 +589,9 @@ public abstract class Netapi32Util {
          * The domain represented by this structure is the root of a tree and a member
          * of the same forest as the server specified in the ServerName parameter of the
          * DsEnumerateDomainTrusts function.
+         * 
          * @return
-         *  True or false.
+         * True or false.
          */
         public boolean isRoot() {
             return (flags & DsGetDC.DS_DOMAIN_TREE_ROOT) != 0;
@@ -584,8 +600,9 @@ public abstract class Netapi32Util {
         /**
          * The domain represented by this structure is the primary domain of the server
          * specified in the ServerName parameter of the DsEnumerateDomainTrusts function.
+         * 
          * @return
-         *  True or false.
+         * True or false.
          */
         public boolean isPrimary() {
             return (flags & DsGetDC.DS_DOMAIN_PRIMARY) != 0;
@@ -593,8 +610,9 @@ public abstract class Netapi32Util {
 
         /**
          * The domain represented by this structure is running in the Windows 2000 native mode.
+         * 
          * @return
-         *  True or false.
+         * True or false.
          */
         public boolean isNativeMode() {
             return (flags & DsGetDC.DS_DOMAIN_NATIVE_MODE) != 0;
@@ -604,8 +622,9 @@ public abstract class Netapi32Util {
          * The domain represented by this structure directly trusts the domain that
          * the server specified in the ServerName parameter of the DsEnumerateDomainTrusts
          * function is a member of.
+         * 
          * @return
-         *  True or false.
+         * True or false.
          */
         public boolean isInbound() {
             return (flags & DsGetDC.DS_DOMAIN_DIRECT_INBOUND) != 0;
@@ -614,8 +633,9 @@ public abstract class Netapi32Util {
 
     /**
      * Retrieve all domain trusts.
+     * 
      * @return
-     *  An array of domain trusts.
+     * An array of domain trusts.
      */
     public static DomainTrust[] getDomainTrusts() {
         return getDomainTrusts(null);
@@ -623,25 +643,27 @@ public abstract class Netapi32Util {
 
     /**
      * Retrieve all domain trusts for a given server.
+     * 
      * @param serverName
-     *  Server name.
+     * Server name.
      * @return
-     *  An array of domain trusts.
+     * An array of domain trusts.
      */
     public static DomainTrust[] getDomainTrusts(String serverName) {
         IntByReference domainTrustCount = new IntByReference();
         PointerByReference domainsPointerRef = new PointerByReference();
-        int rc = Netapi32.INSTANCE.DsEnumerateDomainTrusts(serverName,
-                DsGetDC.DS_DOMAIN_VALID_FLAGS, domainsPointerRef, domainTrustCount);
+        int rc = Netapi32.INSTANCE.DsEnumerateDomainTrusts(serverName, DsGetDC.DS_DOMAIN_VALID_FLAGS, domainsPointerRef,
+            domainTrustCount);
         if (W32Errors.NO_ERROR != rc) {
             throw new Win32Exception(rc);
         }
         try {
             ArrayList<DomainTrust> trusts = new ArrayList<>(domainTrustCount.getValue());
 
-            if(domainTrustCount.getValue() > 0) {
+            if (domainTrustCount.getValue() > 0) {
                 DS_DOMAIN_TRUSTS domainTrustRefs = new DS_DOMAIN_TRUSTS(domainsPointerRef.getValue());
-                DS_DOMAIN_TRUSTS[] domainTrusts = (DS_DOMAIN_TRUSTS[]) domainTrustRefs.toArray(new DS_DOMAIN_TRUSTS[domainTrustCount.getValue()]);
+                DS_DOMAIN_TRUSTS[] domainTrusts
+                    = (DS_DOMAIN_TRUSTS[]) domainTrustRefs.toArray(new DS_DOMAIN_TRUSTS[domainTrustCount.getValue()]);
                 for (DS_DOMAIN_TRUSTS domainTrust : domainTrusts) {
                     DomainTrust t = new DomainTrust();
                     if (domainTrust.DnsDomainName != null) {
@@ -666,7 +688,7 @@ public abstract class Netapi32Util {
             return trusts.toArray(new DomainTrust[0]);
         } finally {
             rc = Netapi32.INSTANCE.NetApiBufferFree(domainsPointerRef.getValue());
-            if(W32Errors.NO_ERROR != rc) {
+            if (W32Errors.NO_ERROR != rc) {
                 throw new Win32Exception(rc);
             }
         }
@@ -679,7 +701,7 @@ public abstract class Netapi32Util {
     public static UserInfo getUserInfo(String accountName, String domainName) {
         PointerByReference bufptr = new PointerByReference();
         try {
-            int rc = Netapi32.INSTANCE.NetUserGetInfo(domainName, accountName, (short)23, bufptr);
+            int rc = Netapi32.INSTANCE.NetUserGetInfo(domainName, accountName, (short) 23, bufptr);
             if (rc == LMErr.NERR_Success) {
                 USER_INFO_23 info_23 = new USER_INFO_23(bufptr.getValue());
                 UserInfo userInfo = new UserInfo();

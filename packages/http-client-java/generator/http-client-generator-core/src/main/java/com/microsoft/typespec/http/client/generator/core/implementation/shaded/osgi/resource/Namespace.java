@@ -41,98 +41,98 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 @ConsumerType
 public abstract class Namespace {
 
-	/**
-	 * The capability directive used to specify the comma separated list of
-	 * package names used by a capability.
-	 */
-	public final static String	CAPABILITY_USES_DIRECTIVE			= "uses";
-
-	/**
-	 * The capability directive used to specify the effective time for the
-	 * capability. The default value is {@link #EFFECTIVE_RESOLVE resolve}.
-	 * 
-	 * @see #EFFECTIVE_RESOLVE resolve
-	 * @see #EFFECTIVE_ACTIVE active
-	 */
-	public final static String	CAPABILITY_EFFECTIVE_DIRECTIVE		= "effective";
-
-	/**
-	 * The requirement directive used to specify a capability filter. This
-	 * filter is used to match against a capability's attributes.
-	 */
-	public final static String	REQUIREMENT_FILTER_DIRECTIVE		= "filter";
-
-	/**
-	 * The requirement directive used to specify the resolution type for a
-	 * requirement. The default value is {@link #RESOLUTION_MANDATORY mandatory}
-	 * .
-	 * 
-	 * @see #RESOLUTION_MANDATORY mandatory
-	 * @see #RESOLUTION_OPTIONAL optional
-	 */
-	public final static String	REQUIREMENT_RESOLUTION_DIRECTIVE	= "resolution";
-
-	/**
-	 * The directive value identifying a mandatory requirement resolution type.
-	 * A mandatory resolution type indicates that the requirement must be
-	 * resolved when the resource is resolved. If such a requirement cannot be
-	 * resolved, the resource fails to resolve.
-	 * 
-	 * @see #REQUIREMENT_RESOLUTION_DIRECTIVE
-	 */
-	public final static String	RESOLUTION_MANDATORY				= "mandatory";
-
-	/**
-	 * The directive value identifying an optional requirement resolution type.
-	 * An optional resolution type indicates that the requirement is optional
-	 * and the resource may be resolved without the requirement being resolved.
-	 * 
-	 * @see #REQUIREMENT_RESOLUTION_DIRECTIVE
-	 */
-	public final static String	RESOLUTION_OPTIONAL					= "optional";
-
-	/**
-	 * The requirement directive used to specify the effective time for the
-	 * requirement. The default value is {@link #EFFECTIVE_RESOLVE resolve}.
-	 * 
-	 * @see #EFFECTIVE_RESOLVE resolve
-	 * @see #EFFECTIVE_ACTIVE active
-	 */
-	public final static String	REQUIREMENT_EFFECTIVE_DIRECTIVE		= "effective";
-
-	/**
-	 * The directive value identifying a {@link #CAPABILITY_EFFECTIVE_DIRECTIVE
-	 * capability} or {@link #REQUIREMENT_EFFECTIVE_DIRECTIVE requirement} that
-	 * is effective at resolve time. Capabilities and requirements with an
-	 * effective time of resolve are the only capabilities which are processed
-	 * while resolving a resource.
-	 * 
-	 * @see #REQUIREMENT_EFFECTIVE_DIRECTIVE
-	 * @see #CAPABILITY_EFFECTIVE_DIRECTIVE
-	 */
-	public final static String	EFFECTIVE_RESOLVE					= "resolve";
+    /**
+     * The capability directive used to specify the comma separated list of
+     * package names used by a capability.
+     */
+    public final static String CAPABILITY_USES_DIRECTIVE = "uses";
 
     /**
-	 * The requirement directive used to specify the cardinality for a
-	 * requirement. The default value is {@link #CARDINALITY_SINGLE single}.
-	 * 
-	 * @see #CARDINALITY_MULTIPLE multiple
-	 * @see #CARDINALITY_SINGLE single
-	 */
-	public final static String	REQUIREMENT_CARDINALITY_DIRECTIVE	= "cardinality";
-
-	/**
-	 * The directive value identifying a multiple
-	 * {@link #REQUIREMENT_CARDINALITY_DIRECTIVE cardinality} type.
-	 * 
-	 * @see #REQUIREMENT_CARDINALITY_DIRECTIVE
-	 */
-	public final static String	CARDINALITY_MULTIPLE				= "multiple";
+     * The capability directive used to specify the effective time for the
+     * capability. The default value is {@link #EFFECTIVE_RESOLVE resolve}.
+     * 
+     * @see #EFFECTIVE_RESOLVE resolve
+     * @see #EFFECTIVE_ACTIVE active
+     */
+    public final static String CAPABILITY_EFFECTIVE_DIRECTIVE = "effective";
 
     /**
-	 * Protected constructor for Namespace sub-types.
-	 */
-	protected Namespace() {
-		// empty
-	}
+     * The requirement directive used to specify a capability filter. This
+     * filter is used to match against a capability's attributes.
+     */
+    public final static String REQUIREMENT_FILTER_DIRECTIVE = "filter";
+
+    /**
+     * The requirement directive used to specify the resolution type for a
+     * requirement. The default value is {@link #RESOLUTION_MANDATORY mandatory}
+     * .
+     * 
+     * @see #RESOLUTION_MANDATORY mandatory
+     * @see #RESOLUTION_OPTIONAL optional
+     */
+    public final static String REQUIREMENT_RESOLUTION_DIRECTIVE = "resolution";
+
+    /**
+     * The directive value identifying a mandatory requirement resolution type.
+     * A mandatory resolution type indicates that the requirement must be
+     * resolved when the resource is resolved. If such a requirement cannot be
+     * resolved, the resource fails to resolve.
+     * 
+     * @see #REQUIREMENT_RESOLUTION_DIRECTIVE
+     */
+    public final static String RESOLUTION_MANDATORY = "mandatory";
+
+    /**
+     * The directive value identifying an optional requirement resolution type.
+     * An optional resolution type indicates that the requirement is optional
+     * and the resource may be resolved without the requirement being resolved.
+     * 
+     * @see #REQUIREMENT_RESOLUTION_DIRECTIVE
+     */
+    public final static String RESOLUTION_OPTIONAL = "optional";
+
+    /**
+     * The requirement directive used to specify the effective time for the
+     * requirement. The default value is {@link #EFFECTIVE_RESOLVE resolve}.
+     * 
+     * @see #EFFECTIVE_RESOLVE resolve
+     * @see #EFFECTIVE_ACTIVE active
+     */
+    public final static String REQUIREMENT_EFFECTIVE_DIRECTIVE = "effective";
+
+    /**
+     * The directive value identifying a {@link #CAPABILITY_EFFECTIVE_DIRECTIVE
+     * capability} or {@link #REQUIREMENT_EFFECTIVE_DIRECTIVE requirement} that
+     * is effective at resolve time. Capabilities and requirements with an
+     * effective time of resolve are the only capabilities which are processed
+     * while resolving a resource.
+     * 
+     * @see #REQUIREMENT_EFFECTIVE_DIRECTIVE
+     * @see #CAPABILITY_EFFECTIVE_DIRECTIVE
+     */
+    public final static String EFFECTIVE_RESOLVE = "resolve";
+
+    /**
+     * The requirement directive used to specify the cardinality for a
+     * requirement. The default value is {@link #CARDINALITY_SINGLE single}.
+     * 
+     * @see #CARDINALITY_MULTIPLE multiple
+     * @see #CARDINALITY_SINGLE single
+     */
+    public final static String REQUIREMENT_CARDINALITY_DIRECTIVE = "cardinality";
+
+    /**
+     * The directive value identifying a multiple
+     * {@link #REQUIREMENT_CARDINALITY_DIRECTIVE cardinality} type.
+     * 
+     * @see #REQUIREMENT_CARDINALITY_DIRECTIVE
+     */
+    public final static String CARDINALITY_MULTIPLE = "multiple";
+
+    /**
+     * Protected constructor for Namespace sub-types.
+     */
+    protected Namespace() {
+        // empty
+    }
 }

@@ -22,108 +22,111 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 
 public class InnerClassInfo extends ClassFileStruct implements IBinaryNestedType {
-	final int innerClassNameIndex;
-	final int outerClassNameIndex;
-	final int innerNameIndex;
-	private volatile char[] innerClassName;
-	private volatile char[] outerClassName;
-	private volatile char[] innerName;
-	private volatile int accessFlags = -1;
-	private volatile boolean readInnerClassName;
-	private volatile boolean readOuterClassName;
-	private volatile boolean readInnerName;
+    final int innerClassNameIndex;
+    final int outerClassNameIndex;
+    final int innerNameIndex;
+    private volatile char[] innerClassName;
+    private volatile char[] outerClassName;
+    private volatile char[] innerName;
+    private volatile int accessFlags = -1;
+    private volatile boolean readInnerClassName;
+    private volatile boolean readOuterClassName;
+    private volatile boolean readInnerName;
 
-public InnerClassInfo(byte classFileBytes[], int offsets[], int offset) {
-	super(classFileBytes, offsets, offset);
-	this.innerClassNameIndex = u2At(0);
-	this.outerClassNameIndex = u2At(2);
-	this.innerNameIndex = u2At(4);
-}
+    public InnerClassInfo(byte classFileBytes[], int offsets[], int offset) {
+        super(classFileBytes, offsets, offset);
+        this.innerClassNameIndex = u2At(0);
+        this.outerClassNameIndex = u2At(2);
+        this.innerNameIndex = u2At(4);
+    }
 
-@Override
-public char[] getEnclosingTypeName() {
-	if (!this.readOuterClassName) {
-		// read outer class name
-		if (this.outerClassNameIndex != 0) {
-			int utf8Offset =
-				this.constantPoolOffsets[u2At(
-					this.constantPoolOffsets[this.outerClassNameIndex] - this.structOffset + 1)]
-					- this.structOffset;
-			this.outerClassName = CharDeduplication.intern(utf8At(utf8Offset + 3, u2At(utf8Offset + 1)));
-		}
-		this.readOuterClassName = true;
+    @Override
+    public char[] getEnclosingTypeName() {
+        if (!this.readOuterClassName) {
+            // read outer class name
+            if (this.outerClassNameIndex != 0) {
+                int utf8Offset = this.constantPoolOffsets[u2At(
+                    this.constantPoolOffsets[this.outerClassNameIndex] - this.structOffset + 1)] - this.structOffset;
+                this.outerClassName = CharDeduplication.intern(utf8At(utf8Offset + 3, u2At(utf8Offset + 1)));
+            }
+            this.readOuterClassName = true;
 
-	}
-	return this.outerClassName;
-}
+        }
+        return this.outerClassName;
+    }
 
-@Override
-public int getModifiers() {
-	if (this.accessFlags == -1) {
-		// read access flag
-		this.accessFlags = u2At(6);
-	}
-	return this.accessFlags;
-}
+    @Override
+    public int getModifiers() {
+        if (this.accessFlags == -1) {
+            // read access flag
+            this.accessFlags = u2At(6);
+        }
+        return this.accessFlags;
+    }
 
-@Override
-public char[] getName() {
-	if (!this.readInnerClassName) {
-		// read the inner class name
-		if (this.innerClassNameIndex != 0) {
-			int  classOffset = this.constantPoolOffsets[this.innerClassNameIndex] - this.structOffset;
-			int utf8Offset = this.constantPoolOffsets[u2At(classOffset + 1)] - this.structOffset;
-			this.innerClassName = CharDeduplication.intern(utf8At(utf8Offset + 3, u2At(utf8Offset + 1)));
-		}
-		this.readInnerClassName = true;
-	}
-	return this.innerClassName;
-}
-/**
- * Answer the source name of the member type.
- *
- * For example, p1.p2.A.M is M.
- * @return char[]
- */
-public char[] getSourceName() {
-	if (!this.readInnerName) {
-		if (this.innerNameIndex != 0) {
-			int utf8Offset = this.constantPoolOffsets[this.innerNameIndex] - this.structOffset;
-			this.innerName = CharDeduplication.intern(utf8At(utf8Offset + 3, u2At(utf8Offset + 1)));
-		}
-		this.readInnerName = true;
-	}
-	return this.innerName;
-}
-/**
- * Answer the string representation of the receiver
- * @return java.lang.String
- */
-@Override
-public String toString() {
-	StringBuilder buffer = new StringBuilder();
-	if (getName() != null) {
-		buffer.append(getName());
-	}
-	buffer.append("\n"); //$NON-NLS-1$
-	if (getEnclosingTypeName() != null) {
-		buffer.append(getEnclosingTypeName());
-	}
-	buffer.append("\n"); //$NON-NLS-1$
-	if (getSourceName() != null) {
-		buffer.append(getSourceName());
-	}
-	return buffer.toString();
-}
-/**
- * This method is used to fully initialize the contents of the receiver. All methodinfos, fields infos
- * will be therefore fully initialized and we can get rid of the bytes.
- */
-void initialize() {
-	getModifiers();
-	getName();
-	getSourceName();
-	getEnclosingTypeName();
-	reset();
-}
+    @Override
+    public char[] getName() {
+        if (!this.readInnerClassName) {
+            // read the inner class name
+            if (this.innerClassNameIndex != 0) {
+                int classOffset = this.constantPoolOffsets[this.innerClassNameIndex] - this.structOffset;
+                int utf8Offset = this.constantPoolOffsets[u2At(classOffset + 1)] - this.structOffset;
+                this.innerClassName = CharDeduplication.intern(utf8At(utf8Offset + 3, u2At(utf8Offset + 1)));
+            }
+            this.readInnerClassName = true;
+        }
+        return this.innerClassName;
+    }
+
+    /**
+     * Answer the source name of the member type.
+     *
+     * For example, p1.p2.A.M is M.
+     * 
+     * @return char[]
+     */
+    public char[] getSourceName() {
+        if (!this.readInnerName) {
+            if (this.innerNameIndex != 0) {
+                int utf8Offset = this.constantPoolOffsets[this.innerNameIndex] - this.structOffset;
+                this.innerName = CharDeduplication.intern(utf8At(utf8Offset + 3, u2At(utf8Offset + 1)));
+            }
+            this.readInnerName = true;
+        }
+        return this.innerName;
+    }
+
+    /**
+     * Answer the string representation of the receiver
+     * 
+     * @return java.lang.String
+     */
+    @Override
+    public String toString() {
+        StringBuilder buffer = new StringBuilder();
+        if (getName() != null) {
+            buffer.append(getName());
+        }
+        buffer.append("\n"); //$NON-NLS-1$
+        if (getEnclosingTypeName() != null) {
+            buffer.append(getEnclosingTypeName());
+        }
+        buffer.append("\n"); //$NON-NLS-1$
+        if (getSourceName() != null) {
+            buffer.append(getSourceName());
+        }
+        return buffer.toString();
+    }
+
+    /**
+     * This method is used to fully initialize the contents of the receiver. All methodinfos, fields infos
+     * will be therefore fully initialized and we can get rid of the bytes.
+     */
+    void initialize() {
+        getModifiers();
+        getName();
+        getSourceName();
+        getEnclosingTypeName();
+        reset();
+    }
 }

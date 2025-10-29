@@ -16,10 +16,10 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.dto;
 
-import java.util.List;
-import java.util.Map;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.dto.DTO;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.BundleContext;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Data Transfer Object for a Framework.
@@ -35,26 +35,26 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 public class FrameworkDTO extends DTO {
     /**
-	 * The bundles that are installed in the framework.
-	 * 
-	 * @see BundleContext#getBundles()
-	 */
-    public List<BundleDTO>           bundles;
+     * The bundles that are installed in the framework.
+     * 
+     * @see BundleContext#getBundles()
+     */
+    public List<BundleDTO> bundles;
 
     /**
-	 * The launch properties of the framework.
-	 * 
-	 * The value type must be a numerical type, Boolean, String, DTO or an array
-	 * of any of the former.
-	 * 
-	 * @see BundleContext#getProperty(String)
-	 */
-    public Map<String, Object>       properties;
+     * The launch properties of the framework.
+     * 
+     * The value type must be a numerical type, Boolean, String, DTO or an array
+     * of any of the former.
+     * 
+     * @see BundleContext#getProperty(String)
+     */
+    public Map<String, Object> properties;
 
     /**
-	 * The services that are registered in the framework.
-	 * 
-	 * @see BundleContext#getServiceReferences(String, String)
-	 */
+     * The services that are registered in the framework.
+     * 
+     * @see BundleContext#getServiceReferences(String, String)
+     */
     public List<ServiceReferenceDTO> services;
 }

@@ -18,15 +18,16 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class SignedContentMessages extends NLS {
 
-	public static String Default_Trust_Keystore_Load_Failed;
-	public static String Default_Trust_Read_Only;
-	public static String Default_Trust_Cert_Not_Found;
-	public static String Default_Trust_Existing_Cert;
-	public static String Default_Trust_Existing_Alias;
+    public static String Default_Trust_Keystore_Load_Failed;
+    public static String Default_Trust_Read_Only;
+    public static String Default_Trust_Cert_Not_Found;
+    public static String Default_Trust_Existing_Cert;
+    public static String Default_Trust_Existing_Alias;
 
-	private static final String BUNDLE_NAME = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.internal.signedcontent.SignedContentMessages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME
+        = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.internal.signedcontent.SignedContentMessages"; //$NON-NLS-1$
 
-	static {
-		NLS.initializeMessages(BUNDLE_NAME, SignedContentMessages.class);
-	}
+    static {
+        NLS.initializeMessages(BUNDLE_NAME, SignedContentMessages.class);
+    }
 }

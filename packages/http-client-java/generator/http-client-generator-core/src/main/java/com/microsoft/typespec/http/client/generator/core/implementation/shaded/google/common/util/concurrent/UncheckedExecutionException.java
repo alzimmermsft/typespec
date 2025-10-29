@@ -35,29 +35,31 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
 public class UncheckedExecutionException extends RuntimeException {
-  /*
-   * Ideally, this class would have exposed only constructors that require a non-null cause. We
-   * might try to move in that direction, but there are complications. See
-   * https://github.com/jspecify/jspecify-reference-checker/blob/61aafa4ae52594830cfc2d61c8b113009dbdb045/src/main/java/com/google/jspecify/nullness/NullSpecTransfer.java#L789
-   */
+    /*
+     * Ideally, this class would have exposed only constructors that require a non-null cause. We
+     * might try to move in that direction, but there are complications. See
+     * https://github.com/jspecify/jspecify-reference-checker/blob/61aafa4ae52594830cfc2d61c8b113009dbdb045/src/main/
+     * java/com/google/jspecify/nullness/NullSpecTransfer.java#L789
+     */
 
-  /** Creates a new instance with {@code null} as its detail message. */
-  protected UncheckedExecutionException() {}
+    /** Creates a new instance with {@code null} as its detail message. */
+    protected UncheckedExecutionException() {
+    }
 
-  /** Creates a new instance with the given detail message. */
-  protected UncheckedExecutionException(@CheckForNull String message) {
-    super(message);
-  }
+    /** Creates a new instance with the given detail message. */
+    protected UncheckedExecutionException(@CheckForNull String message) {
+        super(message);
+    }
 
-  /** Creates a new instance with the given detail message and cause. */
-  public UncheckedExecutionException(@CheckForNull String message, @CheckForNull Throwable cause) {
-    super(message, cause);
-  }
+    /** Creates a new instance with the given detail message and cause. */
+    public UncheckedExecutionException(@CheckForNull String message, @CheckForNull Throwable cause) {
+        super(message, cause);
+    }
 
-  /** Creates a new instance with the given cause. */
-  public UncheckedExecutionException(@CheckForNull Throwable cause) {
-    super(cause);
-  }
+    /** Creates a new instance with the given cause. */
+    public UncheckedExecutionException(@CheckForNull Throwable cause) {
+        super(cause);
+    }
 
-  private static final long serialVersionUID = 0;
+    private static final long serialVersionUID = 0;
 }

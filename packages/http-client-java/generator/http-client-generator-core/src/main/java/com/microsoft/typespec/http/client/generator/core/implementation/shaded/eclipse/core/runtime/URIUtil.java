@@ -26,10 +26,8 @@ import java.net.*;
  */
 public final class URIUtil {
 
-    private static final String JAR_SUFFIX = "!/"; //$NON-NLS-1$
     private static final String UNC_PREFIX = "//"; //$NON-NLS-1$
     private static final String SCHEME_FILE = "file"; //$NON-NLS-1$
-    private static final String SCHEME_JAR = "jar"; //$NON-NLS-1$
 
     private static final boolean decodeResolved;
     static {
@@ -206,75 +204,6 @@ public final class URIUtil {
     }
 
     /**
-     * Returns a new URI which is the same as this URI but with the file extension
-     * removed from the path part. If this URI does not have an extension, this path
-     * is returned.
-     * <p>
-     * The file extension portion is defined as the string following the last period
-     * (".") character in the last segment. If there is no period in the last
-     * segment, the path has no file extension portion. If the last segment ends in
-     * a period, the file extension portion is the empty string.
-     * </p>
-     *
-     * @return the new URI
-     */
-    public static URI removeFileExtension(URI uri) {
-        String lastSegment = lastSegment(uri);
-        if (lastSegment == null) {
-            return uri;
-        }
-        int lastIndex = lastSegment.lastIndexOf('.');
-        if (lastIndex == -1) {
-            return uri;
-        }
-        String uriString = uri.toString();
-        lastIndex = uriString.lastIndexOf('.');
-        uriString = uriString.substring(0, lastIndex);
-        return URI.create(uriString);
-    }
-
-    /**
-     * Returns true if the two URIs are equal. URIs are considered equal if
-     * {@link URI#equals(Object)} returns true, if the string representation of the
-     * URIs is equal, or if they URIs are represent the same local file.
-     *
-     * @param uri1 The first URI to compare
-     * @param uri2 The second URI to compare
-     * @return <code>true</code> if the URIs are the same, and <code>false</code>
-     * otherwise.
-     */
-    public static boolean sameURI(URI uri1, URI uri2) {
-        if (uri1 == uri2) {
-            return true;
-        }
-        if (uri1 == null || uri2 == null) {
-            return false;
-        }
-
-        if (uri1.equals(uri2)) {
-            return true;
-        }
-
-        if (sameString(uri1.getScheme(), uri2.getScheme())
-            && sameString(uri1.getSchemeSpecificPart(), uri2.getSchemeSpecificPart())
-            && sameString(uri1.getFragment(), uri2.getFragment())) {
-            return true;
-        }
-
-        if (uri1.isAbsolute() != uri2.isAbsolute()) {
-            return false;
-        }
-
-        // check if we have two local file references that are case variants
-        File file1 = toFile(uri1);
-        return file1 == null ? false : file1.equals(toFile(uri2));
-    }
-
-    private static boolean sameString(String s1, String s2) {
-        return (s1 == s2) || s1 != null && s1.equals(s2);
-    }
-
-    /**
      * Returns the URI as a local file, or <code>null</code> if the given URI does
      * not represent a local file.
      *
@@ -288,37 +217,6 @@ public final class URIUtil {
         // assume all illegal characters have been properly encoded, so use URI class to
         // unencode
         return new File(uri.getSchemeSpecificPart());
-    }
-
-    /**
-     * Returns a Java ARchive (JAR) URI for an entry in a jar or zip file. The given
-     * input URI should represent a zip or jar file, but this method will not check
-     * for existence or validity of a file at the given URI.
-     * <p>
-     * The entry path parameter can optionally be used to obtain the URI of an entry
-     * in a zip or jar file. If an entry path of <code>null</code> is provided, the
-     * resulting URI will represent the jar file itself.
-     * </p>
-     *
-     * @param uri The URI of a zip or jar file
-     * @param entryPath The path of a file inside the jar, or <code>null</code> to
-     * obtain the URI for the jar file itself.
-     * @return A URI with the "jar" scheme for the given input URI and entry path
-     * @see JarURLConnection
-     */
-    public static URI toJarURI(URI uri, IPath entryPath) {
-        try {
-            if (entryPath == null) {
-                entryPath = IPath.EMPTY;
-            }
-            // must deconstruct the input URI to obtain unencoded strings, and then pass to
-            // URI constructor that will encode the entry path
-            return new URI(SCHEME_JAR,
-                uri.getScheme() + ':' + uri.getSchemeSpecificPart() + JAR_SUFFIX + entryPath.toString(), null);
-        } catch (URISyntaxException e) {
-            // should never happen
-            throw new RuntimeException(e);
-        }
     }
 
     /**
@@ -472,27 +370,6 @@ public final class URIUtil {
             result.append('#').append(fragment);
         }
         return result.toString();
-    }
-
-    /**
-     * Returns an absolute URI that is created by appending the given relative URI
-     * to the given base. If the <code>relative</code> URI is already absolute it is
-     * simply returned.
-     * <p>
-     * This method is guaranteed to be the inverse of
-     * {@link #makeRelative(URI, URI)}. That is, if R = makeRelative(O, B), then
-     * makeAbsolute(R, B), will return the original URI O.
-     * </p>
-     *
-     * @param relative the relative URI
-     * @param baseURI the base URI
-     * @return an absolute URI
-     */
-    public static URI makeAbsolute(URI relative, URI baseURI) {
-        if (relative.isAbsolute()) {
-            return relative;
-        }
-        return append(baseURI, toUnencodedString(relative));
     }
 
     /**

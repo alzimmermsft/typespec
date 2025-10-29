@@ -38,7 +38,7 @@ public class Kstat2StatusException extends RuntimeException {
      * New exception from {@code kstat2_status}
      *
      * @param ks
-     *            The return value
+     * The return value
      */
     public Kstat2StatusException(int ks) {
         this(ks, formatMessage(ks));
@@ -48,9 +48,9 @@ public class Kstat2StatusException extends RuntimeException {
      * New exception from {@code kstat2_status} with specified message
      *
      * @param ks
-     *            The return value
+     * The return value
      * @param msg
-     *            The exception message
+     * The exception message
      */
     protected Kstat2StatusException(int ks, String msg) {
         super(msg);

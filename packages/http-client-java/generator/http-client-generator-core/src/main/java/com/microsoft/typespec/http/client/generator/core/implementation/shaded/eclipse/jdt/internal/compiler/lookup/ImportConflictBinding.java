@@ -17,18 +17,21 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast.ImportReference;
 
 public class ImportConflictBinding extends ImportBinding {
-public ReferenceBinding conflictingTypeBinding; // must ensure the import is resolved
+    public ReferenceBinding conflictingTypeBinding; // must ensure the import is resolved
 
-public ImportConflictBinding(char[][] compoundName, Binding methodBinding, ReferenceBinding conflictingTypeBinding, ImportReference reference) {
-	super(compoundName, false, methodBinding, reference);
-	this.conflictingTypeBinding = conflictingTypeBinding;
-}
-@Override
-public char[] readableName() {
-	return CharOperation.concatWith(this.compoundName, '.');
-}
-@Override
-public String toString() {
-	return "method import : " + new String(readableName()); //$NON-NLS-1$
-}
+    public ImportConflictBinding(char[][] compoundName, Binding methodBinding, ReferenceBinding conflictingTypeBinding,
+        ImportReference reference) {
+        super(compoundName, false, methodBinding, reference);
+        this.conflictingTypeBinding = conflictingTypeBinding;
+    }
+
+    @Override
+    public char[] readableName() {
+        return CharOperation.concatWith(this.compoundName, '.');
+    }
+
+    @Override
+    public String toString() {
+        return "method import : " + new String(readableName()); //$NON-NLS-1$
+    }
 }

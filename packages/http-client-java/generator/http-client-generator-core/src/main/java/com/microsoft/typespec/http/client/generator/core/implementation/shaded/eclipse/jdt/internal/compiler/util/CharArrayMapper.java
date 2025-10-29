@@ -18,33 +18,35 @@ import java.util.stream.Collectors;
 
 public interface CharArrayMapper<V> extends Cloneable {
 
-	public boolean containsKey(char[] key);
+    public boolean containsKey(char[] key);
 
-	public V get(char[] key);
+    public V get(char[] key);
 
-	/** @return the previous value **/
-	public V put(char[] key, V value);
+    /** @return the previous value **/
+    public V put(char[] key, V value);
 
-	/** @return the number of keys **/
-	public int size();
+    /** @return the number of keys **/
+    public int size();
 
-	/**
-	 * Returns a copied collection of values.
-	 *
-	 * @return all values in undefined order. The order is not guaranteed to be stable.
-	 **/
-	public Collection<V> values();
+    /**
+     * Returns a copied collection of values.
+     *
+     * @return all values in undefined order. The order is not guaranteed to be stable.
+     **/
+    public Collection<V> values();
 
-	/**
-	 * Returns a copied collection of keys.
-	 *
-	 * @return all keys in undefined order. The order is not guaranteed to be stable.
-	 **/
-	public Collection<char[]> keys();
+    /**
+     * Returns a copied collection of keys.
+     *
+     * @return all keys in undefined order. The order is not guaranteed to be stable.
+     **/
+    public Collection<char[]> keys();
 
-	public static <V> String toString(CharArrayMapper<V> map) {
-		return map.keys().stream().map(k -> new String(k) + "->" + map.get(k)) //$NON-NLS-1$
-				.collect(Collectors.joining("\n")); //$NON-NLS-1$
-	}
+    public static <V> String toString(CharArrayMapper<V> map) {
+        return map.keys()
+            .stream()
+            .map(k -> new String(k) + "->" + map.get(k)) //$NON-NLS-1$
+            .collect(Collectors.joining("\n")); //$NON-NLS-1$
+    }
 
 }

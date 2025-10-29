@@ -31,7 +31,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
  *
  *
  */
-@ComInterface(iid="{00000000-0000-0000-C000-000000000046}")
+@ComInterface(iid = "{00000000-0000-0000-C000-000000000046}")
 public interface IUnknown {
     /**
      * Returns a proxy object for the given interface. Assuming that the

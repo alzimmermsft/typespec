@@ -19,31 +19,32 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.Scope;
 
 public class ModuleReference extends ASTNode {
-	public char[][] tokens;
-	public long[] sourcePositions; //each entry is using the code : (start<<32) + end
-	public char[] moduleName;
-	public ModuleBinding binding = null;
+    public char[][] tokens;
+    public long[] sourcePositions; // each entry is using the code : (start<<32) + end
+    public char[] moduleName;
+    public ModuleBinding binding = null;
 
-	public ModuleReference(char[][] tokens, long[] sourcePositions) {
-		this.tokens = tokens;
-		this.sourcePositions = sourcePositions;
-		this.sourceEnd = (int) (sourcePositions[sourcePositions.length - 1] & 0x00000000FFFFFFFF);
-		this.sourceStart = (int) (sourcePositions[0] >>> 32);
-		this.moduleName = CharOperation.concatWith(tokens, '.');
-	}
+    public ModuleReference(char[][] tokens, long[] sourcePositions) {
+        this.tokens = tokens;
+        this.sourcePositions = sourcePositions;
+        this.sourceEnd = (int) (sourcePositions[sourcePositions.length - 1] & 0x00000000FFFFFFFF);
+        this.sourceStart = (int) (sourcePositions[0] >>> 32);
+        this.moduleName = CharOperation.concatWith(tokens, '.');
+    }
 
-	@Override
-	public StringBuilder print(int indent, StringBuilder output) {
-		for (int i = 0; i < this.tokens.length; i++) {
-			if (i > 0) output.append('.');
-			output.append(this.tokens[i]);
-		}
-		return output;
-	}
+    @Override
+    public StringBuilder print(int indent, StringBuilder output) {
+        for (int i = 0; i < this.tokens.length; i++) {
+            if (i > 0)
+                output.append('.');
+            output.append(this.tokens[i]);
+        }
+        return output;
+    }
 
-	public ModuleBinding resolve(Scope scope) {
-		if (scope == null || this.binding != null)
-			return this.binding;
-		return this.binding = scope.environment().getModule(this.moduleName);
-	}
+    public ModuleBinding resolve(Scope scope) {
+        if (scope == null || this.binding != null)
+            return this.binding;
+        return this.binding = scope.environment().getModule(this.moduleName);
+    }
 }

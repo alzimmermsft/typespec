@@ -16,10 +16,10 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Preconditions.checkNotNull;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
-import java.util.Queue;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
+import java.util.Queue;
 
 /**
  * An Iterator implementation which draws elements from a queue, removing them from the queue as it
@@ -28,19 +28,19 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
 final class ConsumingQueueIterator<T extends @Nullable Object> extends AbstractIterator<T> {
-  private final Queue<T> queue;
+    private final Queue<T> queue;
 
-  ConsumingQueueIterator(Queue<T> queue) {
-    this.queue = checkNotNull(queue);
-  }
-
-  @Override
-  @CheckForNull
-  protected T computeNext() {
-    // TODO(b/192579700): Use a ternary once it no longer confuses our nullness checker.
-    if (queue.isEmpty()) {
-      return endOfData();
+    ConsumingQueueIterator(Queue<T> queue) {
+        this.queue = checkNotNull(queue);
     }
-    return queue.remove();
-  }
+
+    @Override
+    @CheckForNull
+    protected T computeNext() {
+        // TODO(b/192579700): Use a ternary once it no longer confuses our nullness checker.
+        if (queue.isEmpty()) {
+            return endOfData();
+        }
+        return queue.remove();
+    }
 }

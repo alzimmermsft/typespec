@@ -52,12 +52,10 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 public class COMBindingBaseObject extends COMInvoker {
 
     /** The Constant LOCALE_USER_DEFAULT. */
-    public final static LCID LOCALE_USER_DEFAULT = Kernel32.INSTANCE
-            .GetUserDefaultLCID();
+    public final static LCID LOCALE_USER_DEFAULT = Kernel32.INSTANCE.GetUserDefaultLCID();
 
     /** The Constant LOCALE_SYSTEM_DEFAULT. */
-    public final static LCID LOCALE_SYSTEM_DEFAULT = Kernel32.INSTANCE
-            .GetSystemDefaultLCID();
+    public final static LCID LOCALE_SYSTEM_DEFAULT = Kernel32.INSTANCE.GetSystemDefaultLCID();
 
     /** The i unknown. */
     private IUnknown iUnknown;
@@ -80,15 +78,13 @@ public class COMBindingBaseObject extends COMInvoker {
         this(clsid, useActiveInstance, WTypes.CLSCTX_SERVER);
     }
 
-    public COMBindingBaseObject(CLSID clsid, boolean useActiveInstance,
-            int dwClsContext) {
+    public COMBindingBaseObject(CLSID clsid, boolean useActiveInstance, int dwClsContext) {
         assert COMUtils.comIsInitialized() : "COM not initialized";
 
         init(useActiveInstance, clsid, dwClsContext);
     }
 
-    public COMBindingBaseObject(String progId, boolean useActiveInstance,
-            int dwClsContext) throws COMException {
+    public COMBindingBaseObject(String progId, boolean useActiveInstance, int dwClsContext) throws COMException {
         assert COMUtils.comIsInitialized() : "COM not initialized";
 
         CLSID.ByReference clsid = new CLSID.ByReference();
@@ -99,8 +95,7 @@ public class COMBindingBaseObject extends COMInvoker {
         init(useActiveInstance, clsid, dwClsContext);
     }
 
-    public COMBindingBaseObject(String progId, boolean useActiveInstance)
-            throws COMException {
+    public COMBindingBaseObject(String progId, boolean useActiveInstance) throws COMException {
         this(progId, useActiveInstance, WTypes.CLSCTX_SERVER);
     }
 
@@ -111,15 +106,13 @@ public class COMBindingBaseObject extends COMInvoker {
 
             if (COMUtils.SUCCEEDED(hr)) {
                 this.iUnknown = new Unknown(this.pUnknown.getValue());
-                hr = iUnknown.QueryInterface(new REFIID( IDispatch.IID_IDISPATCH),
-                        this.pDispatch);
+                hr = iUnknown.QueryInterface(new REFIID(IDispatch.IID_IDISPATCH), this.pDispatch);
             } else {
-                hr = Ole32.INSTANCE.CoCreateInstance(clsid, null, dwClsContext,
-                        IDispatch.IID_IDISPATCH, this.pDispatch);
+                hr = Ole32.INSTANCE.CoCreateInstance(clsid, null, dwClsContext, IDispatch.IID_IDISPATCH,
+                    this.pDispatch);
             }
         } else {
-            hr = Ole32.INSTANCE.CoCreateInstance(clsid, null, dwClsContext,
-                    IDispatch.IID_IDISPATCH, this.pDispatch);
+            hr = Ole32.INSTANCE.CoCreateInstance(clsid, null, dwClsContext, IDispatch.IID_IDISPATCH, this.pDispatch);
         }
 
         COMUtils.checkRC(hr);
@@ -172,25 +165,23 @@ public class COMBindingBaseObject extends COMInvoker {
         }
     }
 
-    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult,
-            String name, VARIANT[] pArgs) throws COMException {
+    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult, String name, VARIANT[] pArgs)
+        throws COMException {
 
         // variable declaration
         WString[] ptName = new WString[] { new WString(name) };
         DISPIDByReference pdispID = new DISPIDByReference();
 
         // Get DISPID for name passed...
-        HRESULT hr = iDispatch.GetIDsOfNames(new REFIID(Guid.IID_NULL), ptName, 1,
-                LOCALE_USER_DEFAULT, pdispID);
+        HRESULT hr = iDispatch.GetIDsOfNames(new REFIID(Guid.IID_NULL), ptName, 1, LOCALE_USER_DEFAULT, pdispID);
 
         COMUtils.checkRC(hr);
 
         return this.oleMethod(nType, pvResult, pdispID.getValue(), pArgs);
     }
 
-    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult,
-            DISPID dispId, VARIANT[] pArgs)
-            throws COMException {
+    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult, DISPID dispId, VARIANT[] pArgs)
+        throws COMException {
 
         // variable declaration
         int _argsLen = 0;
@@ -212,7 +203,7 @@ public class COMBindingBaseObject extends COMInvoker {
 
         // Handle special-case for property-puts!
         if (nType == OleAuto.DISPATCH_PROPERTYPUT) {
-            dp.setRgdispidNamedArgs(new DISPID[] {OaIdl.DISPID_PROPERTYPUT});
+            dp.setRgdispidNamedArgs(new DISPID[] { OaIdl.DISPID_PROPERTYPUT });
         }
 
         // Build DISPPARAMS
@@ -237,7 +228,7 @@ public class COMBindingBaseObject extends COMInvoker {
         //
         // The MSDN article advises this behaviour: "[...] Some languages cannot
         // distinguish between retrieving a property and calling a method. In this
-        //case, you should set the flags DISPATCH_PROPERTYGET and DISPATCH_METHOD.
+        // case, you should set the flags DISPATCH_PROPERTYGET and DISPATCH_METHOD.
         // [...]"))
         //
         // This was found when trying to bind InchesToPoints from the _Application
@@ -256,7 +247,7 @@ public class COMBindingBaseObject extends COMInvoker {
 
         // Make the call!
         HRESULT hr = iDispatch.Invoke(dispId, new REFIID(Guid.IID_NULL), LOCALE_SYSTEM_DEFAULT,
-                new WinDef.WORD(finalNType), dp, pvResult, pExcepInfo, puArgErr);
+            new WinDef.WORD(finalNType), dp, pvResult, pExcepInfo, puArgErr);
 
         COMUtils.checkRC(hr, pExcepInfo, puArgErr);
         return hr;
@@ -266,25 +257,25 @@ public class COMBindingBaseObject extends COMInvoker {
      * Ole method.
      *
      * @param nType
-     *            the n type
+     * the n type
      * @param pvResult
-     *            the pv result
+     * the pv result
      * @param name
-     *            the name
+     * the name
      * @param pArg
-     *            the arg
+     * the arg
      * @return the hresult
      * @throws COMException
-     *             the cOM exception
+     * the cOM exception
      */
-    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult,
-            String name, VARIANT pArg) throws COMException {
+    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult, String name, VARIANT pArg)
+        throws COMException {
 
         return this.oleMethod(nType, pvResult, name, new VARIANT[] { pArg });
     }
 
-    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult,
-            DISPID dispId, VARIANT pArg) throws COMException {
+    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult, DISPID dispId, VARIANT pArg)
+        throws COMException {
 
         return this.oleMethod(nType, pvResult, dispId, new VARIANT[] { pArg });
     }
@@ -293,23 +284,21 @@ public class COMBindingBaseObject extends COMInvoker {
      * Ole method.
      *
      * @param nType
-     *            the n type
+     * the n type
      * @param pvResult
-     *            the pv result
+     * the pv result
      * @param name
-     *            the name
+     * the name
      * @return the hresult
      * @throws COMException
-     *             the cOM exception
+     * the cOM exception
      */
-    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult,
-            String name) throws COMException {
+    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult, String name) throws COMException {
 
         return this.oleMethod(nType, pvResult, name, (VARIANT[]) null);
     }
 
-    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult,
-            DISPID dispId) throws COMException {
+    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult, DISPID dispId) throws COMException {
 
         return this.oleMethod(nType, pvResult, dispId, (VARIANT[]) null);
     }
@@ -318,8 +307,8 @@ public class COMBindingBaseObject extends COMInvoker {
      * @deprecated {@link COMBindingBaseObject#oleMethod(int, VARIANT.ByReference, String, VARIANT[]) }
      */
     @Deprecated
-    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult,
-            IDispatch pDisp, String name, VARIANT[] pArgs) throws COMException {
+    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult, IDispatch pDisp, String name, VARIANT[] pArgs)
+        throws COMException {
 
         if (pDisp == null)
             throw new COMException("pDisp (IDispatch) parameter is null!");
@@ -329,22 +318,19 @@ public class COMBindingBaseObject extends COMInvoker {
         DISPIDByReference pdispID = new DISPIDByReference();
 
         // Get DISPID for name passed...
-        HRESULT hr = pDisp.GetIDsOfNames(new REFIID(Guid.IID_NULL), ptName, 1,
-                LOCALE_USER_DEFAULT, pdispID);
+        HRESULT hr = pDisp.GetIDsOfNames(new REFIID(Guid.IID_NULL), ptName, 1, LOCALE_USER_DEFAULT, pdispID);
 
         COMUtils.checkRC(hr);
 
-        return this
-                .oleMethod(nType, pvResult, pDisp, pdispID.getValue(), pArgs);
+        return this.oleMethod(nType, pvResult, pDisp, pdispID.getValue(), pArgs);
     }
 
     /**
      * @deprecated {@link COMBindingBaseObject#oleMethod(int, VARIANT.ByReference, DISPID, VARIANT[]) }
      */
     @Deprecated
-    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult,
-            IDispatch pDisp, DISPID dispId, VARIANT[] pArgs)
-            throws COMException {
+    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult, IDispatch pDisp, DISPID dispId,
+        VARIANT[] pArgs) throws COMException {
 
         if (pDisp == null)
             throw new COMException("pDisp (IDispatch) parameter is null!");
@@ -369,7 +355,7 @@ public class COMBindingBaseObject extends COMInvoker {
 
         // Handle special-case for property-puts!
         if (nType == OleAuto.DISPATCH_PROPERTYPUT) {
-            dp.setRgdispidNamedArgs(new DISPID[] {OaIdl.DISPID_PROPERTYPUT});
+            dp.setRgdispidNamedArgs(new DISPID[] { OaIdl.DISPID_PROPERTYPUT });
         }
 
         // Build DISPPARAMS
@@ -394,7 +380,7 @@ public class COMBindingBaseObject extends COMInvoker {
         //
         // The MSDN article advises this behaviour: "[...] Some languages cannot
         // distinguish between retrieving a property and calling a method. In this
-        //case, you should set the flags DISPATCH_PROPERTYGET and DISPATCH_METHOD.
+        // case, you should set the flags DISPATCH_PROPERTYGET and DISPATCH_METHOD.
         // [...]"))
         //
         // This was found when trying to bind InchesToPoints from the _Application
@@ -412,8 +398,8 @@ public class COMBindingBaseObject extends COMInvoker {
         }
 
         // Make the call!
-        HRESULT hr = pDisp.Invoke(dispId, new REFIID(Guid.IID_NULL), LOCALE_SYSTEM_DEFAULT,
-                new WinDef.WORD(finalNType), dp, pvResult, pExcepInfo, puArgErr);
+        HRESULT hr = pDisp.Invoke(dispId, new REFIID(Guid.IID_NULL), LOCALE_SYSTEM_DEFAULT, new WinDef.WORD(finalNType),
+            dp, pvResult, pExcepInfo, puArgErr);
 
         COMUtils.checkRC(hr, pExcepInfo, puArgErr);
         return hr;
@@ -423,30 +409,28 @@ public class COMBindingBaseObject extends COMInvoker {
      * @deprecated Use {@link #oleMethod(int, VARIANT.ByReference, String, VARIANT)}
      */
     @Deprecated
-    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult,
-            IDispatch pDisp, String name, VARIANT pArg) throws COMException {
+    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult, IDispatch pDisp, String name, VARIANT pArg)
+        throws COMException {
 
-        return this.oleMethod(nType, pvResult, pDisp, name,
-                new VARIANT[] { pArg });
+        return this.oleMethod(nType, pvResult, pDisp, name, new VARIANT[] { pArg });
     }
 
     /**
      * @deprecated Use {@link #oleMethod(int, VARIANT.ByReference, DISPID, VARIANT)}
      */
     @Deprecated
-    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult,
-            IDispatch pDisp, DISPID dispId, VARIANT pArg) throws COMException {
+    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult, IDispatch pDisp, DISPID dispId, VARIANT pArg)
+        throws COMException {
 
-        return this.oleMethod(nType, pvResult, pDisp, dispId,
-                new VARIANT[] { pArg });
+        return this.oleMethod(nType, pvResult, pDisp, dispId, new VARIANT[] { pArg });
     }
 
     /**
      * @deprecated Use {@link #oleMethod(int, VARIANT.ByReference, String)}
      */
     @Deprecated
-    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult,
-            IDispatch pDisp, String name) throws COMException {
+    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult, IDispatch pDisp, String name)
+        throws COMException {
 
         return this.oleMethod(nType, pvResult, pDisp, name, (VARIANT[]) null);
     }
@@ -455,8 +439,8 @@ public class COMBindingBaseObject extends COMInvoker {
      * @deprecated Use {@link #oleMethod(int, VARIANT.ByReference, DISPID) }
      */
     @Deprecated
-    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult,
-            IDispatch pDisp, DISPID dispId) throws COMException {
+    protected HRESULT oleMethod(int nType, VARIANT.ByReference pvResult, IDispatch pDisp, DISPID dispId)
+        throws COMException {
 
         return this.oleMethod(nType, pvResult, pDisp, dispId, (VARIANT[]) null);
     }
@@ -465,7 +449,7 @@ public class COMBindingBaseObject extends COMInvoker {
      * Check failed.
      *
      * @param hr
-     *            the hr
+     * the hr
      * @deprecated Use {@link COMUtils#checkRC(HRESULT)}
      */
     @Deprecated

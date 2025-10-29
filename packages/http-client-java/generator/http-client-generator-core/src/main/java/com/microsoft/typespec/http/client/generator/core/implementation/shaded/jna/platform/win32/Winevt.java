@@ -29,9 +29,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HANDLE;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.win32.W32APITypeMapper;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * Ported from winevt.h.
  * Microsoft Windows SDK 10.0.10586
@@ -161,7 +158,7 @@ public interface Winevt {
      * Contains event data or property values.
      * https://msdn.microsoft.com/en-us/library/windows/desktop/aa385611(v=vs.85).aspx
      */
-    @FieldOrder({"field1", "Count", "Type"})
+    @FieldOrder({ "field1", "Count", "Type" })
     public static class EVT_VARIANT extends Structure {
         /**
          * <strong>Exposed to follow JNA rules, use the
@@ -171,9 +168,9 @@ public interface Winevt {
         public field1_union field1;
 
         /*
-        Defined to get correct size for the union. Data is accessed by direct
-        read from memory.
-        */
+         * Defined to get correct size for the union. Data is accessed by direct
+         * read from memory.
+         */
         public static class field1_union extends Union {
 
             public byte byteValue;
@@ -248,7 +245,6 @@ public interface Winevt {
             }
         }
 
-
         private int getBaseType() {
             return Type & EVT_VARIANT_TYPE_MASK;
         }
@@ -298,6 +294,7 @@ public interface Winevt {
                             throw new IllegalArgumentException(type.name() + " must be set from String/String[]");
                         }
                         break;
+
                     case EvtVarTypeBoolean:
                         if (value.getClass().isArray() && value.getClass().getComponentType() == BOOL.class) {
                             Type = type.ordinal() | EVT_VARIANT_TYPE_ARRAY;
@@ -316,6 +313,7 @@ public interface Winevt {
                             throw new IllegalArgumentException(type.name() + " must be set from BOOL/BOOL[]");
                         }
                         break;
+
                     case EvtVarTypeString:
                     case EvtVarTypeEvtXml:
                         if (value.getClass().isArray() && value.getClass().getComponentType() == String.class) {
@@ -335,6 +333,7 @@ public interface Winevt {
                             throw new IllegalArgumentException(type.name() + " must be set from String/String[]");
                         }
                         break;
+
                     case EvtVarTypeSByte:
                     case EvtVarTypeByte:
                         if (value.getClass().isArray() && value.getClass().getComponentType() == byte.class) {
@@ -352,6 +351,7 @@ public interface Winevt {
                             throw new IllegalArgumentException(type.name() + " must be set from byte/byte[]");
                         }
                         break;
+
                     case EvtVarTypeInt16:
                     case EvtVarTypeUInt16:
                         if (value.getClass().isArray() && value.getClass().getComponentType() == short.class) {
@@ -369,6 +369,7 @@ public interface Winevt {
                             throw new IllegalArgumentException(type.name() + " must be set from short/short[]");
                         }
                         break;
+
                     case EvtVarTypeHexInt32:
                     case EvtVarTypeInt32:
                     case EvtVarTypeUInt32:
@@ -387,6 +388,7 @@ public interface Winevt {
                             throw new IllegalArgumentException(type.name() + " must be set from int/int[]");
                         }
                         break;
+
                     case EvtVarTypeHexInt64:
                     case EvtVarTypeInt64:
                     case EvtVarTypeUInt64:
@@ -405,6 +407,7 @@ public interface Winevt {
                             throw new IllegalArgumentException(type.name() + " must be set from long/long[]");
                         }
                         break;
+
                     case EvtVarTypeSingle:
                         if (value.getClass().isArray() && value.getClass().getComponentType() == float.class) {
                             Type = type.ordinal() | EVT_VARIANT_TYPE_ARRAY;
@@ -421,6 +424,7 @@ public interface Winevt {
                             throw new IllegalArgumentException(type.name() + " must be set from float/float[]");
                         }
                         break;
+
                     case EvtVarTypeDouble:
                         if (value.getClass().isArray() && value.getClass().getComponentType() == double.class) {
                             Type = type.ordinal() | EVT_VARIANT_TYPE_ARRAY;
@@ -437,6 +441,7 @@ public interface Winevt {
                             throw new IllegalArgumentException(type.name() + " must be set from double/double[]");
                         }
                         break;
+
                     case EvtVarTypeBinary:
                         if (value.getClass().isArray() && value.getClass().getComponentType() == byte.class) {
                             Type = type.ordinal();
@@ -449,6 +454,7 @@ public interface Winevt {
                             throw new IllegalArgumentException(type.name() + " must be set from byte[]");
                         }
                         break;
+
                     case EvtVarTypeFileTime:
                     case EvtVarTypeEvtHandle:
                     case EvtVarTypeSysTime:
@@ -456,7 +462,8 @@ public interface Winevt {
                     case EvtVarTypeSid:
                     case EvtVarTypeSizeT:
                     default:
-                        throw new IllegalStateException(String.format("NOT IMPLEMENTED: getValue(%s) (Array: %b, Count: %d)", type, isArray(), Count));
+                        throw new IllegalStateException(String
+                            .format("NOT IMPLEMENTED: getValue(%s) (Array: %b, Count: %d)", type, isArray(), Count));
                 }
             }
             write();
@@ -469,7 +476,10 @@ public interface Winevt {
             EVT_VARIANT_TYPE type = getVariantType();
             switch (type) {
                 case EvtVarTypeAnsiString:
-                    return isArray() ? field1.getPointer().getPointer(0).getStringArray(0, Count) : field1.getPointer().getPointer(0).getString(0);
+                    return isArray()
+                        ? field1.getPointer().getPointer(0).getStringArray(0, Count)
+                        : field1.getPointer().getPointer(0).getString(0);
+
                 case EvtVarTypeBoolean:
                     if (isArray()) {
                         int[] rawValue = field1.getPointer().getPointer(0).getIntArray(0, Count);
@@ -483,10 +493,14 @@ public interface Winevt {
                     }
                 case EvtVarTypeString:
                 case EvtVarTypeEvtXml:
-                    return isArray() ? field1.getPointer().getPointer(0).getWideStringArray(0, Count) : field1.getPointer().getPointer(0).getWideString(0);
+                    return isArray()
+                        ? field1.getPointer().getPointer(0).getWideStringArray(0, Count)
+                        : field1.getPointer().getPointer(0).getWideString(0);
+
                 case EvtVarTypeFileTime:
                     if (isArray()) {
-                        WinBase.FILETIME resultFirst = Structure.newInstance(WinBase.FILETIME.class, field1.getPointer().getPointer(0));
+                        WinBase.FILETIME resultFirst
+                            = Structure.newInstance(WinBase.FILETIME.class, field1.getPointer().getPointer(0));
                         resultFirst.read();
                         return resultFirst.toArray(Count);
                     } else {
@@ -496,40 +510,63 @@ public interface Winevt {
                     }
                 case EvtVarTypeSysTime:
                     if (isArray()) {
-                        WinBase.SYSTEMTIME resultFirst = Structure.newInstance(WinBase.SYSTEMTIME.class, field1.getPointer().getPointer(0));
+                        WinBase.SYSTEMTIME resultFirst
+                            = Structure.newInstance(WinBase.SYSTEMTIME.class, field1.getPointer().getPointer(0));
                         resultFirst.read();
                         return resultFirst.toArray(Count);
                     } else {
-                        WinBase.SYSTEMTIME result = Structure.newInstance(WinBase.SYSTEMTIME.class, field1.getPointer().getPointer(0));
+                        WinBase.SYSTEMTIME result
+                            = Structure.newInstance(WinBase.SYSTEMTIME.class, field1.getPointer().getPointer(0));
                         result.read();
                         return result;
                     }
                 case EvtVarTypeSByte:
                 case EvtVarTypeByte:
-                    return isArray() ? field1.getPointer().getPointer(0).getByteArray(0, Count) : field1.getPointer().getByte(0);
+                    return isArray()
+                        ? field1.getPointer().getPointer(0).getByteArray(0, Count)
+                        : field1.getPointer().getByte(0);
+
                 case EvtVarTypeInt16:
                 case EvtVarTypeUInt16:
-                    return isArray() ? field1.getPointer().getPointer(0).getShortArray(0, Count) : field1.getPointer().getShort(0);
+                    return isArray()
+                        ? field1.getPointer().getPointer(0).getShortArray(0, Count)
+                        : field1.getPointer().getShort(0);
+
                 case EvtVarTypeHexInt32:
                 case EvtVarTypeInt32:
                 case EvtVarTypeUInt32:
-                    return isArray() ? field1.getPointer().getPointer(0).getIntArray(0, Count) : field1.getPointer().getInt(0);
+                    return isArray()
+                        ? field1.getPointer().getPointer(0).getIntArray(0, Count)
+                        : field1.getPointer().getInt(0);
+
                 case EvtVarTypeHexInt64:
                 case EvtVarTypeInt64:
                 case EvtVarTypeUInt64:
-                    return isArray() ? field1.getPointer().getPointer(0).getLongArray(0, Count) : field1.getPointer().getLong(0);
+                    return isArray()
+                        ? field1.getPointer().getPointer(0).getLongArray(0, Count)
+                        : field1.getPointer().getLong(0);
+
                 case EvtVarTypeSingle:
-                    return isArray() ? field1.getPointer().getPointer(0).getFloatArray(0, Count) : field1.getPointer().getFloat(0);
+                    return isArray()
+                        ? field1.getPointer().getPointer(0).getFloatArray(0, Count)
+                        : field1.getPointer().getFloat(0);
+
                 case EvtVarTypeDouble:
-                    return isArray() ? field1.getPointer().getPointer(0).getDoubleArray(0, Count) : field1.getPointer().getDouble(0);
+                    return isArray()
+                        ? field1.getPointer().getPointer(0).getDoubleArray(0, Count)
+                        : field1.getPointer().getDouble(0);
+
                 case EvtVarTypeBinary:
                     assert (!isArray());
                     return field1.getPointer().getPointer(0).getByteArray(0, Count);
+
                 case EvtVarTypeNull:
                     return null;
+
                 case EvtVarTypeGuid:
                     if (isArray()) {
-                        Guid.GUID resultFirst = Structure.newInstance(Guid.GUID.class, field1.getPointer().getPointer(0));
+                        Guid.GUID resultFirst
+                            = Structure.newInstance(Guid.GUID.class, field1.getPointer().getPointer(0));
                         resultFirst.read();
                         return resultFirst.toArray(Count);
                     } else {
@@ -539,7 +576,8 @@ public interface Winevt {
                     }
                 case EvtVarTypeSid:
                     if (isArray()) {
-                        WinNT.PSID resultFirst = Structure.newInstance(WinNT.PSID.class, field1.getPointer().getPointer(0));
+                        WinNT.PSID resultFirst
+                            = Structure.newInstance(WinNT.PSID.class, field1.getPointer().getPointer(0));
                         resultFirst.read();
                         return resultFirst.toArray(Count);
                     } else {
@@ -570,7 +608,8 @@ public interface Winevt {
                         return new HANDLE(field1.getPointer().getPointer(0));
                     }
                 default:
-                    throw new IllegalStateException(String.format("NOT IMPLEMENTED: getValue(%s) (Array: %b, Count: %d)", type, isArray(), Count));
+                    throw new IllegalStateException(
+                        String.format("NOT IMPLEMENTED: getValue(%s) (Array: %b, Count: %d)", type, isArray(), Count));
             }
         }
     }
@@ -604,7 +643,7 @@ public interface Winevt {
      * Contains the information used to connect to a remote computer.
      * https://msdn.microsoft.com/en-us/library/windows/desktop/aa385566(v=vs.85).aspx
      */
-    @FieldOrder({"Server", "User", "Domain", "Password", "Flags"})
+    @FieldOrder({ "Server", "User", "Domain", "Password", "Flags" })
     public class EVT_RPC_LOGIN extends Structure {
 
         /** The name of the remote computer to connect to. */
@@ -816,7 +855,8 @@ public interface Winevt {
     public static interface EVT_SYSTEM_PROPERTY_ID {
 
         /**
-         * Identifies the Name attribute of the provider element. The variant type for this property is EvtVarTypeString.
+         * Identifies the Name attribute of the provider element. The variant type for this property is
+         * EvtVarTypeString.
          */
         public static final int EvtSystemProviderName = 0;
 
@@ -1545,7 +1585,8 @@ public interface Winevt {
     /**
      * Defines the identifiers that identify the metadata properties of an event definition.
      *
-     * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa385517%28v=vs.85%29.aspx?f=255&MSPPError=-2147217396">MSDN</a>
+     * @see <a
+     * href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa385517%28v=vs.85%29.aspx?f=255&MSPPError=-2147217396">MSDN</a>
      */
     public static interface EVT_EVENT_METADATA_PROPERTY_ID {
 

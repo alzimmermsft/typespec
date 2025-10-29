@@ -24,27 +24,27 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class SignatureAttribute extends ClassFileAttribute implements ISignatureAttribute {
 
-	private final int signatureIndex;
-	private final char[] signature;
+    private final int signatureIndex;
+    private final char[] signature;
 
-	SignatureAttribute(byte[] classFileBytes, IConstantPool constantPool, int offset) throws ClassFormatException {
-		super(classFileBytes, constantPool, offset);
-		final int index = u2At(classFileBytes, 6, offset);
-		this.signatureIndex = index;
-		IConstantPoolEntry constantPoolEntry = constantPool.decodeEntry(index);
-		if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Utf8) {
-			throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
-		}
-		this.signature = constantPoolEntry.getUtf8Value();
-	}
+    SignatureAttribute(byte[] classFileBytes, IConstantPool constantPool, int offset) throws ClassFormatException {
+        super(classFileBytes, constantPool, offset);
+        final int index = u2At(classFileBytes, 6, offset);
+        this.signatureIndex = index;
+        IConstantPoolEntry constantPoolEntry = constantPool.decodeEntry(index);
+        if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Utf8) {
+            throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
+        }
+        this.signature = constantPoolEntry.getUtf8Value();
+    }
 
-	@Override
-	public int getSignatureIndex() {
-		return this.signatureIndex;
-	}
+    @Override
+    public int getSignatureIndex() {
+        return this.signatureIndex;
+    }
 
-	@Override
-	public char[] getSignature() {
-		return this.signature;
-	}
+    @Override
+    public char[] getSignature() {
+        return this.signature;
+    }
 }

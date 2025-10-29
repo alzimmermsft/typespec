@@ -60,7 +60,7 @@ public interface DiskArbitration extends Library {
      * releasing it with {@link CoreFoundation#CFRelease}.
      *
      * @param alloc
-     *            The allocator object to be used to allocate memory.
+     * The allocator object to be used to allocate memory.
      * @return A reference to a new {@code DASession}.
      */
     DASessionRef DASessionCreate(CFAllocatorRef alloc);
@@ -73,11 +73,11 @@ public interface DiskArbitration extends Library {
      * releasing it with {@link CoreFoundation#CFRelease}.
      *
      * @param alloc
-     *            The allocator object to be used to allocate memory.
+     * The allocator object to be used to allocate memory.
      * @param session
-     *            The {@code DASession} in which to contact Disk Arbitration.
+     * The {@code DASession} in which to contact Disk Arbitration.
      * @param diskName
-     *            the BSD device name.
+     * the BSD device name.
      * @return A reference to a new {@code DADisk}.
      */
     DADiskRef DADiskCreateFromBSDName(CFAllocatorRef alloc, DASessionRef session, String diskName);
@@ -90,11 +90,11 @@ public interface DiskArbitration extends Library {
      * releasing it with {@link CoreFoundation#CFRelease}.
      *
      * @param allocator
-     *            The allocator object to be used to allocate memory.
+     * The allocator object to be used to allocate memory.
      * @param session
-     *            The {@code DASession} in which to contact Disk Arbitration.
+     * The {@code DASession} in which to contact Disk Arbitration.
      * @param media
-     *            The I/O Kit media object.
+     * The I/O Kit media object.
      * @return A reference to a new {@code DADisk}.
      */
     DADiskRef DADiskCreateFromIOMedia(CFAllocatorRef allocator, DASessionRef session, IOObject media);
@@ -111,8 +111,8 @@ public interface DiskArbitration extends Library {
      * with {@link CoreFoundation#CFRelease}.
      *
      * @param disk
-     *            The {@code DADisk} for which to obtain the Disk Arbitration
-     *            description.
+     * The {@code DADisk} for which to obtain the Disk Arbitration
+     * description.
      * @return The disk's Disk Arbitration description.
      */
     CFDictionaryRef DADiskCopyDescription(DADiskRef disk);
@@ -121,7 +121,7 @@ public interface DiskArbitration extends Library {
      * Obtains the BSD device name for the specified disk.
      *
      * @param disk
-     *            The {@code DADisk} for which to obtain the BSD device name.
+     * The {@code DADisk} for which to obtain the BSD device name.
      * @return The disk's BSD device name.
      */
     String DADiskGetBSDName(DADiskRef disk);

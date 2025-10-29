@@ -14,6 +14,7 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.util.concurrent;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtIncompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.J2ktIncompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.ForwardingObject;
@@ -27,7 +28,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An executor service which forwards all its method calls to another executor service. Subclasses
@@ -44,85 +44,82 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @J2ktIncompatible
 @GwtIncompatible
 @ElementTypesAreNonnullByDefault
-public abstract class ForwardingExecutorService extends ForwardingObject
-    implements ExecutorService {
-  /** Constructor for use by subclasses. */
-  protected ForwardingExecutorService() {}
+public abstract class ForwardingExecutorService extends ForwardingObject implements ExecutorService {
+    /** Constructor for use by subclasses. */
+    protected ForwardingExecutorService() {
+    }
 
-  @Override
-  protected abstract ExecutorService delegate();
+    @Override
+    protected abstract ExecutorService delegate();
 
-  @CheckReturnValue
-  @Override
-  public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
-    return delegate().awaitTermination(timeout, unit);
-  }
+    @CheckReturnValue
+    @Override
+    public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
+        return delegate().awaitTermination(timeout, unit);
+    }
 
-  @Override
-  public <T extends @Nullable Object> List<Future<T>> invokeAll(
-      Collection<? extends Callable<T>> tasks) throws InterruptedException {
-    return delegate().invokeAll(tasks);
-  }
+    @Override
+    public <T extends @Nullable Object> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks)
+        throws InterruptedException {
+        return delegate().invokeAll(tasks);
+    }
 
-  @Override
-  public <T extends @Nullable Object> List<Future<T>> invokeAll(
-      Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit)
-      throws InterruptedException {
-    return delegate().invokeAll(tasks, timeout, unit);
-  }
+    @Override
+    public <T extends @Nullable Object> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout,
+        TimeUnit unit) throws InterruptedException {
+        return delegate().invokeAll(tasks, timeout, unit);
+    }
 
-  @Override
-  public <T extends @Nullable Object> T invokeAny(Collection<? extends Callable<T>> tasks)
-      throws InterruptedException, ExecutionException {
-    return delegate().invokeAny(tasks);
-  }
+    @Override
+    public <T extends @Nullable Object> T invokeAny(Collection<? extends Callable<T>> tasks)
+        throws InterruptedException, ExecutionException {
+        return delegate().invokeAny(tasks);
+    }
 
-  @Override
-  public <T extends @Nullable Object> T invokeAny(
-      Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit)
-      throws InterruptedException, ExecutionException, TimeoutException {
-    return delegate().invokeAny(tasks, timeout, unit);
-  }
+    @Override
+    public <T extends @Nullable Object> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout,
+        TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+        return delegate().invokeAny(tasks, timeout, unit);
+    }
 
-  @Override
-  public boolean isShutdown() {
-    return delegate().isShutdown();
-  }
+    @Override
+    public boolean isShutdown() {
+        return delegate().isShutdown();
+    }
 
-  @Override
-  public boolean isTerminated() {
-    return delegate().isTerminated();
-  }
+    @Override
+    public boolean isTerminated() {
+        return delegate().isTerminated();
+    }
 
-  @Override
-  public void shutdown() {
-    delegate().shutdown();
-  }
+    @Override
+    public void shutdown() {
+        delegate().shutdown();
+    }
 
-  @Override
-  @CanIgnoreReturnValue
-  public List<Runnable> shutdownNow() {
-    return delegate().shutdownNow();
-  }
+    @Override
+    @CanIgnoreReturnValue
+    public List<Runnable> shutdownNow() {
+        return delegate().shutdownNow();
+    }
 
-  @Override
-  public void execute(Runnable command) {
-    delegate().execute(command);
-  }
+    @Override
+    public void execute(Runnable command) {
+        delegate().execute(command);
+    }
 
-  @Override
-  public <T extends @Nullable Object> Future<T> submit(Callable<T> task) {
-    return delegate().submit(task);
-  }
+    @Override
+    public <T extends @Nullable Object> Future<T> submit(Callable<T> task) {
+        return delegate().submit(task);
+    }
 
-  @Override
-  public Future<?> submit(Runnable task) {
-    return delegate().submit(task);
-  }
+    @Override
+    public Future<?> submit(Runnable task) {
+        return delegate().submit(task);
+    }
 
-  @Override
-  public <T extends @Nullable Object> Future<T> submit(
-      Runnable task, @ParametricNullness T result) {
-    return delegate().submit(task, result);
-  }
+    @Override
+    public <T extends @Nullable Object> Future<T> submit(Runnable task, @ParametricNullness T result) {
+        return delegate().submit(task, result);
+    }
 }

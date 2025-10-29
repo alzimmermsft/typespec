@@ -13,24 +13,22 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.dom.rewrite.imports;
 
-import java.util.Set;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.JavaModelException;
+import java.util.Set;
 
 interface ConflictingSimpleNameFinder {
-	/**
-	 * Finds duplicate declarations of the specified simple names within the specified on-demand and
-	 * implicit import containers.
-	 *
-	 * @param simpleNames
-	 *            simple names of single imports in the compilation unit
-	 * @param onDemandAndImplicitContainerNames
-	 *            names of on-demand and implicitly imported containers (e.g. "java.lang")
-	 * @param monitor
-	 *            a progress monitor used to track time spent searching for conflicts
-	 */
-	Set<String> findConflictingSimpleNames(
-			Set<String> simpleNames,
-			Set<String> onDemandAndImplicitContainerNames,
-			IProgressMonitor monitor) throws JavaModelException;
+    /**
+     * Finds duplicate declarations of the specified simple names within the specified on-demand and
+     * implicit import containers.
+     *
+     * @param simpleNames
+     * simple names of single imports in the compilation unit
+     * @param onDemandAndImplicitContainerNames
+     * names of on-demand and implicitly imported containers (e.g. "java.lang")
+     * @param monitor
+     * a progress monitor used to track time spent searching for conflicts
+     */
+    Set<String> findConflictingSimpleNames(Set<String> simpleNames, Set<String> onDemandAndImplicitContainerNames,
+        IProgressMonitor monitor) throws JavaModelException;
 }

@@ -17,8 +17,9 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class SyntheticFieldBinding extends FieldBinding {
 
-	public SyntheticFieldBinding(char[] name, TypeBinding type, int modifiers, ReferenceBinding declaringClass, Constant constant) {
-		super(name, type, modifiers, declaringClass, constant);
-		this.extendedTagBits |= ExtendedTagBits.AllAnnotationsResolved;
-	}
+    public SyntheticFieldBinding(char[] name, TypeBinding type, int modifiers, ReferenceBinding declaringClass,
+        Constant constant) {
+        super(name, type, modifiers, declaringClass, constant);
+        this.extendedTagBits |= ExtendedTagBits.AllAnnotationsResolved;
+    }
 }

@@ -23,89 +23,69 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Resource;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Wire;
 
-class WireImpl implements Wire
-{
+class WireImpl implements Wire {
     private final Resource m_requirer;
     private final Requirement m_req;
     private final Resource m_provider;
     private final Capability m_cap;
 
-    public WireImpl(
-        Resource requirer, Requirement req,
-        Resource provider, Capability cap)
-    {
+    public WireImpl(Resource requirer, Requirement req, Resource provider, Capability cap) {
         m_requirer = requirer;
         m_req = req;
         m_provider = provider;
         m_cap = cap;
     }
 
-    public Resource getRequirer()
-    {
+    public Resource getRequirer() {
         return m_requirer;
     }
 
-    public Requirement getRequirement()
-    {
+    public Requirement getRequirement() {
         return m_req;
     }
 
-    public Resource getProvider()
-    {
+    public Resource getProvider() {
         return m_provider;
     }
 
-    public Capability getCapability()
-    {
+    public Capability getCapability() {
         return m_cap;
     }
 
     @Override
-    public String toString()
-    {
-        return m_req
-            + " -> "
-            + "[" + m_provider + "]";
+    public String toString() {
+        return m_req + " -> " + "[" + m_provider + "]";
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
-        if (obj == null)
-        {
+    public boolean equals(Object obj) {
+        if (obj == null) {
             return false;
         }
-        if (!(obj instanceof Wire))
-        {
+        if (!(obj instanceof Wire)) {
             return false;
         }
         final Wire other = (Wire) obj;
         if (this.m_requirer != other.getRequirer()
-            && (this.m_requirer == null || !this.m_requirer.equals(other.getRequirer())))
-        {
+            && (this.m_requirer == null || !this.m_requirer.equals(other.getRequirer()))) {
             return false;
         }
         if (this.m_req != other.getRequirement()
-            && (this.m_req == null || !this.m_req.equals(other.getRequirement())))
-        {
+            && (this.m_req == null || !this.m_req.equals(other.getRequirement()))) {
             return false;
         }
         if (this.m_provider != other.getProvider()
-            && (this.m_provider == null || !this.m_provider.equals(other.getProvider())))
-        {
+            && (this.m_provider == null || !this.m_provider.equals(other.getProvider()))) {
             return false;
         }
-        if (this.m_cap != other.getCapability()
-            && (this.m_cap == null || !this.m_cap.equals(other.getCapability())))
-        {
+        if (this.m_cap != other.getCapability() && (this.m_cap == null || !this.m_cap.equals(other.getCapability()))) {
             return false;
         }
         return true;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int hash = 5;
         hash = 29 * hash + (this.m_requirer != null ? this.m_requirer.hashCode() : 0);
         hash = 29 * hash + (this.m_req != null ? this.m_req.hashCode() : 0);

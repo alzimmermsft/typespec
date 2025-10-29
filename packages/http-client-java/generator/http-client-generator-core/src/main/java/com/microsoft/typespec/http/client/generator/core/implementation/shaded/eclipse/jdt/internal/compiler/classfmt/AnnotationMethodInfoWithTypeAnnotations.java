@@ -16,29 +16,32 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IBinaryTypeAnnotation;
 
 class AnnotationMethodInfoWithTypeAnnotations extends AnnotationMethodInfoWithAnnotations {
-	private final TypeAnnotationInfo[] typeAnnotations;
+    private final TypeAnnotationInfo[] typeAnnotations;
 
-AnnotationMethodInfoWithTypeAnnotations(MethodInfo methodInfo, Object defaultValue, AnnotationInfo[] annotations, TypeAnnotationInfo[] typeAnnotations) {
-	super(methodInfo, defaultValue, annotations);
-	this.typeAnnotations = typeAnnotations;
-}
-@Override
-public IBinaryTypeAnnotation[] getTypeAnnotations() {
-	return this.typeAnnotations;
-}
+    AnnotationMethodInfoWithTypeAnnotations(MethodInfo methodInfo, Object defaultValue, AnnotationInfo[] annotations,
+        TypeAnnotationInfo[] typeAnnotations) {
+        super(methodInfo, defaultValue, annotations);
+        this.typeAnnotations = typeAnnotations;
+    }
 
-@Override
-protected void initialize() {
-	for (int i = 0, l = this.typeAnnotations == null ? 0 : this.typeAnnotations.length; i < l; i++) {
-		this.typeAnnotations[i].initialize();
-	}
-	super.initialize();
-}
-@Override
-protected void reset() {
-	for (int i = 0, l = this.typeAnnotations == null ? 0 : this.typeAnnotations.length; i < l; i++) {
-		this.typeAnnotations[i].reset();
-	}
-	super.reset();
-}
+    @Override
+    public IBinaryTypeAnnotation[] getTypeAnnotations() {
+        return this.typeAnnotations;
+    }
+
+    @Override
+    protected void initialize() {
+        for (int i = 0, l = this.typeAnnotations == null ? 0 : this.typeAnnotations.length; i < l; i++) {
+            this.typeAnnotations[i].initialize();
+        }
+        super.initialize();
+    }
+
+    @Override
+    protected void reset() {
+        for (int i = 0, l = this.typeAnnotations == null ? 0 : this.typeAnnotations.length; i < l; i++) {
+            this.typeAnnotations[i].reset();
+        }
+        super.reset();
+    }
 }

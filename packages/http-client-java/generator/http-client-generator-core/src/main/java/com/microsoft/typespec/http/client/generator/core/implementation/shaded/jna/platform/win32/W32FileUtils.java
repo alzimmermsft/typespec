@@ -23,10 +23,9 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.FileUtils;
 import java.io.File;
 import java.io.IOException;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.FileUtils;
 
 public class W32FileUtils extends FileUtils {
 
@@ -41,15 +40,15 @@ public class W32FileUtils extends FileUtils {
         ShellAPI.SHFILEOPSTRUCT fileop = new ShellAPI.SHFILEOPSTRUCT();
         fileop.wFunc = ShellAPI.FO_DELETE;
         String[] paths = new String[files.length];
-        for (int i=0;i < paths.length;i++) {
+        for (int i = 0; i < paths.length; i++) {
             paths[i] = files[i].getAbsolutePath();
         }
         fileop.pFrom = fileop.encodePaths(paths);
-        fileop.fFlags = ShellAPI.FOF_ALLOWUNDO|ShellAPI.FOF_NO_UI;
+        fileop.fFlags = ShellAPI.FOF_ALLOWUNDO | ShellAPI.FOF_NO_UI;
         int ret = shell.SHFileOperation(fileop);
         if (ret != 0) {
-            throw new IOException("Move to trash failed: " + fileop.pFrom + ": " +
-                                  Kernel32Util.formatMessageFromLastErrorCode(ret));
+            throw new IOException(
+                "Move to trash failed: " + fileop.pFrom + ": " + Kernel32Util.formatMessageFromLastErrorCode(ret));
         }
         if (fileop.fAnyOperationsAborted) {
             throw new IOException("Move to trash aborted");

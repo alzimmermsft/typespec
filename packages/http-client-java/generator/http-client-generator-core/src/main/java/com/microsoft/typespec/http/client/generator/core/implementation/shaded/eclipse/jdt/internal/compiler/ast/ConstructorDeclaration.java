@@ -30,8 +30,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.ast;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CategorizedProblem;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CharOperation;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.IProblem;
@@ -54,793 +52,826 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.problem.ProblemReporter;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.problem.ProblemSeverities;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.Util;
+import java.util.ArrayList;
+import java.util.List;
 
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class ConstructorDeclaration extends AbstractMethodDeclaration {
 
-	public ExplicitConstructorCall constructorCall;
+    public ExplicitConstructorCall constructorCall;
 
-	public TypeParameter[] typeParameters;
+    public TypeParameter[] typeParameters;
 
-	private ExceptionHandlingFlowContext prologueContext;
-	private FlowInfo prologueInfo;
+    private ExceptionHandlingFlowContext prologueContext;
+    private FlowInfo prologueInfo;
 
-	public AbstractVariableDeclaration [] protoArguments; // for compact constructors; we don't have a back pointer to declaring class.
+    public AbstractVariableDeclaration[] protoArguments; // for compact constructors; we don't have a back pointer to
+                                                         // declaring class.
 
-public ConstructorDeclaration(CompilationResult compilationResult){
-	super(compilationResult);
-}
+    public ConstructorDeclaration(CompilationResult compilationResult) {
+        super(compilationResult);
+    }
 
-enum AnalysisMode { ALL, PROLOGUE, REST }
+    enum AnalysisMode {
+        ALL, PROLOGUE, REST
+    }
 
-FlowInfo getPrologueInfo() {
-	if (this.prologueInfo != null)
-		return this.prologueInfo;
-	return new UnconditionalFlowInfo();
-}
+    FlowInfo getPrologueInfo() {
+        if (this.prologueInfo != null)
+            return this.prologueInfo;
+        return new UnconditionalFlowInfo();
+    }
 
-/**
- * The flowInfo corresponds to non-static field initialization infos. It may be unreachable (155423), but still the explicit constructor call must be
- * analyzed as reachable, since it will be generated in the end.
- */
-public void analyseCode(ClassScope classScope, InitializationFlowContext initializerFlowContext, FlowInfo flowInfo, int initialReachMode) {
-	analyseCode(classScope, initializerFlowContext, flowInfo, initialReachMode, this.prologueInfo != null ? AnalysisMode.REST : AnalysisMode.ALL);
-}
-public void analyseCode(ClassScope classScope, InitializationFlowContext initializerFlowContext, FlowInfo flowInfo, int initialReachMode, AnalysisMode mode) {
-	// Effect of 'AnalysisMode mode':
-	// ALL: 		analyse in one go as normal.
-	// PROLOGUE:	analyse only statements *before* the explicit constructor call (if any)
-	// REST:		analyse only starting with the explicit constructor call, if none present behaves like ALL
-	// FlowContext and FlowInfo produced during PROLOGUE will be held in fields prologueContext and prologueInfo for use during REST
-	if (this.ignoreFurtherInvestigation)
-		return;
+    /**
+     * The flowInfo corresponds to non-static field initialization infos. It may be unreachable (155423), but still the
+     * explicit constructor call must be
+     * analyzed as reachable, since it will be generated in the end.
+     */
+    public void analyseCode(ClassScope classScope, InitializationFlowContext initializerFlowContext, FlowInfo flowInfo,
+        int initialReachMode) {
+        analyseCode(classScope, initializerFlowContext, flowInfo, initialReachMode,
+            this.prologueInfo != null ? AnalysisMode.REST : AnalysisMode.ALL);
+    }
 
-	try {
-		ExplicitConstructorCall lateConstructorCall = getLateConstructorCall();
-		boolean hasArgumentNeedingAnalysis = this.constructorCall != null && this.constructorCall.hasArgumentNeedingAnalysis();
-		if (mode == AnalysisMode.PROLOGUE
-				&& lateConstructorCall == null
-				&& (!hasArgumentNeedingAnalysis)) {
-			return; // no relevant prologue present
-		}
+    public void analyseCode(ClassScope classScope, InitializationFlowContext initializerFlowContext, FlowInfo flowInfo,
+        int initialReachMode, AnalysisMode mode) {
+        // Effect of 'AnalysisMode mode':
+        // ALL: analyse in one go as normal.
+        // PROLOGUE: analyse only statements *before* the explicit constructor call (if any)
+        // REST: analyse only starting with the explicit constructor call, if none present behaves like ALL
+        // FlowContext and FlowInfo produced during PROLOGUE will be held in fields prologueContext and prologueInfo for
+        // use during REST
+        if (this.ignoreFurtherInvestigation)
+            return;
 
-		int nonStaticFieldInfoReachMode = flowInfo.reachMode();
-		ExceptionHandlingFlowContext constructorContext;
-		if (mode == AnalysisMode.REST) {
-			// retrieve from first iteration (PROLOGUE):
-			constructorContext = this.prologueContext;
-			flowInfo = this.prologueInfo.addInitializationsFrom(flowInfo);
-			// skip the part already done during PROLOGUE analysis ...
-		} else {
-			flowInfo.setReachMode(initialReachMode);
+        try {
+            ExplicitConstructorCall lateConstructorCall = getLateConstructorCall();
+            boolean hasArgumentNeedingAnalysis
+                = this.constructorCall != null && this.constructorCall.hasArgumentNeedingAnalysis();
+            if (mode == AnalysisMode.PROLOGUE && lateConstructorCall == null && (!hasArgumentNeedingAnalysis)) {
+                return; // no relevant prologue present
+            }
 
-			checkUnused: {
-				MethodBinding constructorBinding;
-				if ((constructorBinding = this.binding) == null) break checkUnused;
-				if ((this.bits & ASTNode.IsDefaultConstructor) != 0) break checkUnused;
-				if (constructorBinding.isUsed()) break checkUnused;
-				if (constructorBinding.isPrivate()) {
-					if ((this.binding.declaringClass.tagBits & TagBits.HasNonPrivateConstructor) == 0)
-						break checkUnused; // tolerate as known pattern to block instantiation
-				} else if (!constructorBinding.isOrEnclosedByPrivateType()) {
-					break checkUnused;
-		 		}
-				// https://bugs.eclipse.org/bugs/show_bug.cgi?id=270446, When the AST built is an abridged version
-				// we don't have all tree nodes we would otherwise expect. (see ASTParser.setFocalPosition)
-				if (this.constructorCall == null)
-					break checkUnused;
-				// https://bugs.eclipse.org/bugs/show_bug.cgi?id=264991, Don't complain about this
-				// constructor being unused if the base class doesn't have a no-arg constructor.
-				// See that a seemingly unused constructor that chains to another constructor with a
-				// this(...) can be flagged as being unused without hesitation.
-				// https://bugs.eclipse.org/bugs/show_bug.cgi?id=265142
-				if (this.constructorCall.accessMode != ExplicitConstructorCall.This) {
-					ReferenceBinding superClass = constructorBinding.declaringClass.superclass();
-					if (superClass == null)
-						break checkUnused;
-					// see if there is a no-arg super constructor
-					MethodBinding methodBinding = superClass.getExactConstructor(Binding.NO_PARAMETERS);
-					if (methodBinding == null)
-						break checkUnused;
-					if (!methodBinding.canBeSeenBy(SuperReference.implicitSuperConstructorCall(), this.scope))
-						break checkUnused;
-					ReferenceBinding declaringClass = constructorBinding.declaringClass;
-					if (constructorBinding.isPublic() && constructorBinding.parameters.length == 0 &&
-							declaringClass.isStatic() &&
-							declaringClass.findSuperTypeOriginatingFrom(TypeIds.T_JavaIoExternalizable, false) != null)
-						break checkUnused;
-					// otherwise default super constructor exists, so go ahead and complain unused.
-				}
-				// complain unused
-				this.scope.problemReporter().unusedPrivateConstructor(this);
-			}
+            int nonStaticFieldInfoReachMode = flowInfo.reachMode();
+            ExceptionHandlingFlowContext constructorContext;
+            if (mode == AnalysisMode.REST) {
+                // retrieve from first iteration (PROLOGUE):
+                constructorContext = this.prologueContext;
+                flowInfo = this.prologueInfo.addInitializationsFrom(flowInfo);
+                // skip the part already done during PROLOGUE analysis ...
+            } else {
+                flowInfo.setReachMode(initialReachMode);
 
-			// check constructor recursion, once all constructor got resolved
-			if (isRecursive(null /*lazy initialized visited list*/)) {
-				this.scope.problemReporter().recursiveConstructorInvocation(this.constructorCall);
-			}
-			// https://bugs.eclipse.org/bugs/show_bug.cgi?id=385780
-			if (this.typeParameters != null  &&
-					!this.scope.referenceCompilationUnit().compilationResult.hasSyntaxError) {
-				for (TypeParameter typeParameter : this.typeParameters) {
-					if ((typeParameter.binding.modifiers & ExtraCompilerModifiers.AccLocallyUsed) == 0) {
-						this.scope.problemReporter().unusedTypeParameter(typeParameter);
-					}
-				}
-			}
-			constructorContext =
-				new ExceptionHandlingFlowContext(
-					initializerFlowContext.parent,
-					this,
-					this.binding.thrownExceptions,
-					initializerFlowContext,
-					this.scope,
-					FlowInfo.DEAD_END);
-			if (mode == AnalysisMode.PROLOGUE)
-				this.prologueContext = constructorContext; // save for REST
-			initializerFlowContext.checkInitializerExceptions(
-				this.scope,
-				constructorContext,
-				flowInfo);
+                checkUnused: {
+                    MethodBinding constructorBinding;
+                    if ((constructorBinding = this.binding) == null)
+                        break checkUnused;
+                    if ((this.bits & ASTNode.IsDefaultConstructor) != 0)
+                        break checkUnused;
+                    if (constructorBinding.isUsed())
+                        break checkUnused;
+                    if (constructorBinding.isPrivate()) {
+                        if ((this.binding.declaringClass.tagBits & TagBits.HasNonPrivateConstructor) == 0)
+                            break checkUnused; // tolerate as known pattern to block instantiation
+                    } else if (!constructorBinding.isOrEnclosedByPrivateType()) {
+                        break checkUnused;
+                    }
+                    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=270446, When the AST built is an abridged version
+                    // we don't have all tree nodes we would otherwise expect. (see ASTParser.setFocalPosition)
+                    if (this.constructorCall == null)
+                        break checkUnused;
+                    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=264991, Don't complain about this
+                    // constructor being unused if the base class doesn't have a no-arg constructor.
+                    // See that a seemingly unused constructor that chains to another constructor with a
+                    // this(...) can be flagged as being unused without hesitation.
+                    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=265142
+                    if (this.constructorCall.accessMode != ExplicitConstructorCall.This) {
+                        ReferenceBinding superClass = constructorBinding.declaringClass.superclass();
+                        if (superClass == null)
+                            break checkUnused;
+                        // see if there is a no-arg super constructor
+                        MethodBinding methodBinding = superClass.getExactConstructor(Binding.NO_PARAMETERS);
+                        if (methodBinding == null)
+                            break checkUnused;
+                        if (!methodBinding.canBeSeenBy(SuperReference.implicitSuperConstructorCall(), this.scope))
+                            break checkUnused;
+                        ReferenceBinding declaringClass = constructorBinding.declaringClass;
+                        if (constructorBinding.isPublic()
+                            && constructorBinding.parameters.length == 0
+                            && declaringClass.isStatic()
+                            && declaringClass.findSuperTypeOriginatingFrom(TypeIds.T_JavaIoExternalizable, false)
+                                != null)
+                            break checkUnused;
+                        // otherwise default super constructor exists, so go ahead and complain unused.
+                    }
+                    // complain unused
+                    this.scope.problemReporter().unusedPrivateConstructor(this);
+                }
 
-			// anonymous constructor can gain extra thrown exceptions from unhandled ones
-			if (this.binding.declaringClass.isAnonymousType()) {
-				List computedExceptions = constructorContext.extendedExceptions;
-				if (computedExceptions != null){
-					int size;
-					if ((size = computedExceptions.size()) > 0){
-						ReferenceBinding[] actuallyThrownExceptions;
-						computedExceptions.toArray(actuallyThrownExceptions = new ReferenceBinding[size]);
-						this.binding.thrownExceptions = actuallyThrownExceptions;
-					}
-				}
-			}
+                // check constructor recursion, once all constructor got resolved
+                if (isRecursive(null /* lazy initialized visited list */)) {
+                    this.scope.problemReporter().recursiveConstructorInvocation(this.constructorCall);
+                }
+                // https://bugs.eclipse.org/bugs/show_bug.cgi?id=385780
+                if (this.typeParameters != null
+                    && !this.scope.referenceCompilationUnit().compilationResult.hasSyntaxError) {
+                    for (TypeParameter typeParameter : this.typeParameters) {
+                        if ((typeParameter.binding.modifiers & ExtraCompilerModifiers.AccLocallyUsed) == 0) {
+                            this.scope.problemReporter().unusedTypeParameter(typeParameter);
+                        }
+                    }
+                }
+                constructorContext = new ExceptionHandlingFlowContext(initializerFlowContext.parent, this,
+                    this.binding.thrownExceptions, initializerFlowContext, this.scope, FlowInfo.DEAD_END);
+                if (mode == AnalysisMode.PROLOGUE)
+                    this.prologueContext = constructorContext; // save for REST
+                initializerFlowContext.checkInitializerExceptions(this.scope, constructorContext, flowInfo);
 
-			// nullity, owning and mark as assigned
-			analyseArguments(classScope.environment(), flowInfo, initializerFlowContext, this.arguments, this.binding);
+                // anonymous constructor can gain extra thrown exceptions from unhandled ones
+                if (this.binding.declaringClass.isAnonymousType()) {
+                    List computedExceptions = constructorContext.extendedExceptions;
+                    if (computedExceptions != null) {
+                        int size;
+                        if ((size = computedExceptions.size()) > 0) {
+                            ReferenceBinding[] actuallyThrownExceptions;
+                            computedExceptions.toArray(actuallyThrownExceptions = new ReferenceBinding[size]);
+                            this.binding.thrownExceptions = actuallyThrownExceptions;
+                        }
+                    }
+                }
 
-			if (this.isCompactConstructor()) {
-				for (LocalVariableBinding local : this.scope.locals) {
-					if (local != null && local.isParameter())
-						flowInfo.markAsDefinitelyAssigned(local);
-				}
-			}
+                // nullity, owning and mark as assigned
+                analyseArguments(classScope.environment(), flowInfo, initializerFlowContext, this.arguments,
+                    this.binding);
 
-			if (JavaFeature.FLEXIBLE_CONSTRUCTOR_BODIES.matchesCompliance(this.scope.compilerOptions())) {
-				this.scope.enterEarlyConstructionContext();
-			}
+                if (this.isCompactConstructor()) {
+                    for (LocalVariableBinding local : this.scope.locals) {
+                        if (local != null && local.isParameter())
+                            flowInfo.markAsDefinitelyAssigned(local);
+                    }
+                }
 
-			// propagate to constructor call
-			if (this.constructorCall != null) {
-				flowInfo = this.constructorCall.analyseCode(this.scope, constructorContext, flowInfo);
-				if (mode == AnalysisMode.PROLOGUE && hasArgumentNeedingAnalysis)
-					this.prologueInfo = flowInfo.copy();
-				// if calling 'this(...)', then flag all non-static fields as definitely
-				// set since they are supposed to be set inside other local constructor
-				if (this.constructorCall.accessMode == ExplicitConstructorCall.This) {
-					FieldBinding[] fields = this.binding.declaringClass.fields();
-					for (FieldBinding field : fields) {
-						if (!field.isStatic()) {
-							flowInfo.markAsDefinitelyAssigned(field);
-						}
-					}
-				}
-			}
+                if (JavaFeature.FLEXIBLE_CONSTRUCTOR_BODIES.matchesCompliance(this.scope.compilerOptions())) {
+                    this.scope.enterEarlyConstructionContext();
+                }
 
-			// reuse the reachMode from non static field info
-			flowInfo.setReachMode(nonStaticFieldInfoReachMode);
-		}
+                // propagate to constructor call
+                if (this.constructorCall != null) {
+                    flowInfo = this.constructorCall.analyseCode(this.scope, constructorContext, flowInfo);
+                    if (mode == AnalysisMode.PROLOGUE && hasArgumentNeedingAnalysis)
+                        this.prologueInfo = flowInfo.copy();
+                    // if calling 'this(...)', then flag all non-static fields as definitely
+                    // set since they are supposed to be set inside other local constructor
+                    if (this.constructorCall.accessMode == ExplicitConstructorCall.This) {
+                        FieldBinding[] fields = this.binding.declaringClass.fields();
+                        for (FieldBinding field : fields) {
+                            if (!field.isStatic()) {
+                                flowInfo.markAsDefinitelyAssigned(field);
+                            }
+                        }
+                    }
+                }
 
-		// propagate to statements
-		if (this.statements != null) {
-			CompilerOptions compilerOptions = this.scope.compilerOptions();
-			boolean enableSyntacticNullAnalysisForFields = compilerOptions.enableSyntacticNullAnalysisForFields;
-			int complaintLevel = (nonStaticFieldInfoReachMode & FlowInfo.UNREACHABLE) == 0 ? Statement.NOT_COMPLAINED : Statement.COMPLAINED_FAKE_REACHABLE;
-			for (Statement stat : this.statements) {
-				if (mode == AnalysisMode.REST && lateConstructorCall != null) {
-					if (stat == lateConstructorCall)	// if true this is where we start analysing
-						lateConstructorCall = null; 	// no more checking for subsequent statements
-					continue;							// skip statements already processed during PROLOGUE analysis
-				}
-				if ((complaintLevel = stat.complainIfUnreachable(flowInfo, this.scope, complaintLevel, true)) < Statement.COMPLAINED_UNREACHABLE) {
-					flowInfo = stat.analyseCode(this.scope, constructorContext, flowInfo);
-				}
-				if (enableSyntacticNullAnalysisForFields) {
-					constructorContext.expireNullCheckedFieldInfo();
-				}
-				if (compilerOptions.analyseResourceLeaks) {
-					FakedTrackingVariable.cleanUpUnassigned(this.scope, stat, flowInfo, false);
-				}
-				if (mode == AnalysisMode.PROLOGUE && stat == lateConstructorCall) {
-					break;
-				}
-			}
-			if (mode == AnalysisMode.PROLOGUE) {
-				if (this.prologueInfo == null)		// don't overwrite info stored in the context of this.constructorCall
-					this.prologueInfo = flowInfo;	// keep for second iteration, also signals the need for REST analysis
-				return;								// we're done for this time
-			}
-		}
-	// check for missing returning path
-		if ((flowInfo.tagBits & FlowInfo.UNREACHABLE_OR_DEAD) == 0) {
-			this.bits |= ASTNode.NeedFreeReturn;
-		}
+                // reuse the reachMode from non static field info
+                flowInfo.setReachMode(nonStaticFieldInfoReachMode);
+            }
 
-		if (this.isCompactConstructor()) {
-			for (FieldBinding field : this.binding.declaringClass.fields()) {
-				if (!field.isStatic()) {
-					flowInfo.markAsDefinitelyAssigned(field);
-				}
-			}
-		}
+            // propagate to statements
+            if (this.statements != null) {
+                CompilerOptions compilerOptions = this.scope.compilerOptions();
+                boolean enableSyntacticNullAnalysisForFields = compilerOptions.enableSyntacticNullAnalysisForFields;
+                int complaintLevel = (nonStaticFieldInfoReachMode & FlowInfo.UNREACHABLE) == 0
+                    ? Statement.NOT_COMPLAINED
+                    : Statement.COMPLAINED_FAKE_REACHABLE;
+                for (Statement stat : this.statements) {
+                    if (mode == AnalysisMode.REST && lateConstructorCall != null) {
+                        if (stat == lateConstructorCall)	// if true this is where we start analysing
+                            lateConstructorCall = null; 	// no more checking for subsequent statements
+                        continue;							// skip statements already processed during PROLOGUE
+                                 							// analysis
+                    }
+                    if ((complaintLevel = stat.complainIfUnreachable(flowInfo, this.scope, complaintLevel, true))
+                        < Statement.COMPLAINED_UNREACHABLE) {
+                        flowInfo = stat.analyseCode(this.scope, constructorContext, flowInfo);
+                    }
+                    if (enableSyntacticNullAnalysisForFields) {
+                        constructorContext.expireNullCheckedFieldInfo();
+                    }
+                    if (compilerOptions.analyseResourceLeaks) {
+                        FakedTrackingVariable.cleanUpUnassigned(this.scope, stat, flowInfo, false);
+                    }
+                    if (mode == AnalysisMode.PROLOGUE && stat == lateConstructorCall) {
+                        break;
+                    }
+                }
+                if (mode == AnalysisMode.PROLOGUE) {
+                    if (this.prologueInfo == null)		// don't overwrite info stored in the context of
+                                                  		// this.constructorCall
+                        this.prologueInfo = flowInfo;	// keep for second iteration, also signals the need for REST
+                                                     	// analysis
+                    return;								// we're done for this time
+                }
+            }
+            // check for missing returning path
+            if ((flowInfo.tagBits & FlowInfo.UNREACHABLE_OR_DEAD) == 0) {
+                this.bits |= ASTNode.NeedFreeReturn;
+            }
 
-		// reuse the initial reach mode for diagnosing missing blank finals
-		// no, we should use the updated reach mode for diagnosing uninitialized blank finals.
-		// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=235781
-		// flowInfo.setReachMode(initialReachMode);
+            if (this.isCompactConstructor()) {
+                for (FieldBinding field : this.binding.declaringClass.fields()) {
+                    if (!field.isStatic()) {
+                        flowInfo.markAsDefinitelyAssigned(field);
+                    }
+                }
+            }
 
-		// check missing blank final field initializations (plus @NonNull)
-		if ((this.constructorCall != null)
-			&& (this.constructorCall.accessMode != ExplicitConstructorCall.This)) {
-			flowInfo = flowInfo.mergedWith(constructorContext.initsOnReturn);
-			FieldBinding[] fields = this.binding.declaringClass.fields();
-			doFieldReachAnalysis(flowInfo, fields);
-		}
-		// check unreachable catch blocks
-		constructorContext.complainIfUnusedExceptionHandlers(this);
-		// check unused parameters
-		this.scope.checkUnusedParameters(this.binding);
-		this.scope.checkUnclosedCloseables(flowInfo, null, null/*don't report against a specific location*/, null);
-	} catch (AbortMethod e) {
-		this.ignoreFurtherInvestigation = true;
-	}
-}
+            // reuse the initial reach mode for diagnosing missing blank finals
+            // no, we should use the updated reach mode for diagnosing uninitialized blank finals.
+            // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=235781
+            // flowInfo.setReachMode(initialReachMode);
 
-@Override
-public AbstractVariableDeclaration[] arguments(boolean includedElided) {
-	return includedElided && this.isCompactConstructor() ? this.protoArguments : super.arguments(includedElided);
-}
+            // check missing blank final field initializations (plus @NonNull)
+            if ((this.constructorCall != null) && (this.constructorCall.accessMode != ExplicitConstructorCall.This)) {
+                flowInfo = flowInfo.mergedWith(constructorContext.initsOnReturn);
+                FieldBinding[] fields = this.binding.declaringClass.fields();
+                doFieldReachAnalysis(flowInfo, fields);
+            }
+            // check unreachable catch blocks
+            constructorContext.complainIfUnusedExceptionHandlers(this);
+            // check unused parameters
+            this.scope.checkUnusedParameters(this.binding);
+            this.scope.checkUnclosedCloseables(flowInfo, null, null/* don't report against a specific location */,
+                null);
+        } catch (AbortMethod e) {
+            this.ignoreFurtherInvestigation = true;
+        }
+    }
 
-protected void doFieldReachAnalysis(FlowInfo flowInfo, FieldBinding[] fields) {
-	for (FieldBinding field : fields) {
-		if (!field.isStatic() && !flowInfo.isDefinitelyAssigned(field)) {
-			if (field.isFinal()) {
-				this.scope.problemReporter().uninitializedBlankFinalField(
-						field,
-						((this.bits & ASTNode.IsDefaultConstructor) != 0)
-							? (ASTNode) this.scope.referenceType().declarationOf(field.original())
-							: this);
-			} else if (field.isNonNull() || field.type.isFreeTypeVariable()) {
-				FieldDeclaration fieldDecl = this.scope.referenceType().declarationOf(field.original());
-				if (!isValueProvidedUsingAnnotation(fieldDecl))
-					this.scope.problemReporter().uninitializedNonNullField(
-						field,
-						((this.bits & ASTNode.IsDefaultConstructor) != 0)
-							? (ASTNode) fieldDecl
-							: this);
-			}
-		}
-	}
-}
-boolean isValueProvidedUsingAnnotation(FieldDeclaration fieldDecl) {
-	// a member field annotated with @Inject is considered to be initialized by the injector
-	if (fieldDecl.annotations != null) {
-		int length = fieldDecl.annotations.length;
-		for (int i = 0; i < length; i++) {
-			Annotation annotation = fieldDecl.annotations[i];
-			int annotId = annotation.resolvedType.id;
-			if (annotId == TypeIds.T_JavaxInjectInject || annotId == TypeIds.T_JakartaInjectInject) {
-				return true; // no concept of "optional"
-			} else if (annotId == TypeIds.T_ComGoogleInjectInject) {
-				MemberValuePair[] memberValuePairs = annotation.memberValuePairs();
-				if (memberValuePairs == Annotation.NoValuePairs)
-					return true;
-				for (MemberValuePair memberValuePair : memberValuePairs) {
-					// if "optional=false" is specified, don't rely on initialization by the injector:
-					if (CharOperation.equals(memberValuePair.name, TypeConstants.OPTIONAL))
-						return memberValuePair.value instanceof FalseLiteral;
-				}
-			} else if (annotId == TypeIds.T_OrgSpringframeworkBeansFactoryAnnotationAutowired) {
-				MemberValuePair[] memberValuePairs = annotation.memberValuePairs();
-				if (memberValuePairs == Annotation.NoValuePairs)
-					return true;
-				for (MemberValuePair memberValuePair : memberValuePairs) {
-					if (CharOperation.equals(memberValuePair.name, TypeConstants.REQUIRED))
-						return memberValuePair.value instanceof TrueLiteral;
-				}
-			}
-		}
-	}
-	return false;
-}
+    @Override
+    public AbstractVariableDeclaration[] arguments(boolean includedElided) {
+        return includedElided && this.isCompactConstructor() ? this.protoArguments : super.arguments(includedElided);
+    }
 
-/**
- * Bytecode generation for a constructor
- *
- * @param classScope org.eclipse.jdt.internal.compiler.lookup.ClassScope
- * @param classFile org.eclipse.jdt.internal.compiler.codegen.ClassFile
- */
-@Override
-public void generateCode(ClassScope classScope, ClassFile classFile) {
-	int problemResetPC = 0;
-	if (this.ignoreFurtherInvestigation) {
-		if (this.binding == null)
-			return; // Handle methods with invalid signature or duplicates
-		int problemsLength;
-		CategorizedProblem[] problems =
-			this.scope.referenceCompilationUnit().compilationResult.getProblems();
-		CategorizedProblem[] problemsCopy = new CategorizedProblem[problemsLength = problems.length];
-		System.arraycopy(problems, 0, problemsCopy, 0, problemsLength);
-		classFile.addProblemConstructor(this, this.binding, problemsCopy);
-		return;
-	}
-	boolean restart = false;
-	boolean abort = false;
-	CompilationResult unitResult = null;
-	int problemCount = 0;
-	if (classScope != null) {
-		TypeDeclaration referenceContext = classScope.referenceContext;
-		if (referenceContext != null) {
-			unitResult = referenceContext.compilationResult();
-			problemCount = unitResult.problemCount;
-		}
-	}
-	do {
-		try {
-			problemResetPC = classFile.contentsOffset;
-			internalGenerateCode(classScope, classFile);
-			restart = false;
-		} catch (AbortMethod e) {
-			if (e.compilationResult == CodeStream.RESTART_IN_WIDE_MODE) {
-				// a branch target required a goto_w, restart code gen in wide mode.
-				classFile.contentsOffset = problemResetPC;
-				classFile.methodCount--;
-				classFile.codeStream.resetInWideMode(); // request wide mode
-				// reset the problem count to prevent reporting the same warning twice
-				if (unitResult != null) {
-					unitResult.problemCount = problemCount;
-				}
-				restart = true;
-			} else if (e.compilationResult == CodeStream.RESTART_CODE_GEN_FOR_UNUSED_LOCALS_MODE) {
-				classFile.contentsOffset = problemResetPC;
-				classFile.methodCount--;
-				classFile.codeStream.resetForCodeGenUnusedLocals();
-				// reset the problem count to prevent reporting the same warning twice
-				if (unitResult != null) {
-					unitResult.problemCount = problemCount;
-				}
-				restart = true;
-			} else {
-				restart = false;
-				abort = true;
-			}
-		}
-	} while (restart);
-	if (abort) {
-		int problemsLength;
-		CategorizedProblem[] problems =
-				this.scope.referenceCompilationUnit().compilationResult.getAllProblems();
-		CategorizedProblem[] problemsCopy = new CategorizedProblem[problemsLength = problems.length];
-		System.arraycopy(problems, 0, problemsCopy, 0, problemsLength);
-		classFile.addProblemConstructor(this, this.binding, problemsCopy, problemResetPC);
-	}
-}
+    protected void doFieldReachAnalysis(FlowInfo flowInfo, FieldBinding[] fields) {
+        for (FieldBinding field : fields) {
+            if (!field.isStatic() && !flowInfo.isDefinitelyAssigned(field)) {
+                if (field.isFinal()) {
+                    this.scope.problemReporter()
+                        .uninitializedBlankFinalField(field,
+                            ((this.bits & ASTNode.IsDefaultConstructor) != 0)
+                                ? (ASTNode) this.scope.referenceType().declarationOf(field.original())
+                                : this);
+                } else if (field.isNonNull() || field.type.isFreeTypeVariable()) {
+                    FieldDeclaration fieldDecl = this.scope.referenceType().declarationOf(field.original());
+                    if (!isValueProvidedUsingAnnotation(fieldDecl))
+                        this.scope.problemReporter()
+                            .uninitializedNonNullField(field,
+                                ((this.bits & ASTNode.IsDefaultConstructor) != 0) ? (ASTNode) fieldDecl : this);
+                }
+            }
+        }
+    }
 
-public void generateSyntheticFieldInitializationsIfNecessary(MethodScope methodScope, CodeStream codeStream, ReferenceBinding declaringClass) {
-	if (!declaringClass.isNestedType()) return;
+    boolean isValueProvidedUsingAnnotation(FieldDeclaration fieldDecl) {
+        // a member field annotated with @Inject is considered to be initialized by the injector
+        if (fieldDecl.annotations != null) {
+            int length = fieldDecl.annotations.length;
+            for (int i = 0; i < length; i++) {
+                Annotation annotation = fieldDecl.annotations[i];
+                int annotId = annotation.resolvedType.id;
+                if (annotId == TypeIds.T_JavaxInjectInject || annotId == TypeIds.T_JakartaInjectInject) {
+                    return true; // no concept of "optional"
+                } else if (annotId == TypeIds.T_ComGoogleInjectInject) {
+                    MemberValuePair[] memberValuePairs = annotation.memberValuePairs();
+                    if (memberValuePairs == Annotation.NoValuePairs)
+                        return true;
+                    for (MemberValuePair memberValuePair : memberValuePairs) {
+                        // if "optional=false" is specified, don't rely on initialization by the injector:
+                        if (CharOperation.equals(memberValuePair.name, TypeConstants.OPTIONAL))
+                            return memberValuePair.value instanceof FalseLiteral;
+                    }
+                } else if (annotId == TypeIds.T_OrgSpringframeworkBeansFactoryAnnotationAutowired) {
+                    MemberValuePair[] memberValuePairs = annotation.memberValuePairs();
+                    if (memberValuePairs == Annotation.NoValuePairs)
+                        return true;
+                    for (MemberValuePair memberValuePair : memberValuePairs) {
+                        if (CharOperation.equals(memberValuePair.name, TypeConstants.REQUIRED))
+                            return memberValuePair.value instanceof TrueLiteral;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
-	NestedTypeBinding nestedType = (NestedTypeBinding) declaringClass;
+    /**
+     * Bytecode generation for a constructor
+     *
+     * @param classScope org.eclipse.jdt.internal.compiler.lookup.ClassScope
+     * @param classFile org.eclipse.jdt.internal.compiler.codegen.ClassFile
+     */
+    @Override
+    public void generateCode(ClassScope classScope, ClassFile classFile) {
+        int problemResetPC = 0;
+        if (this.ignoreFurtherInvestigation) {
+            if (this.binding == null)
+                return; // Handle methods with invalid signature or duplicates
+            int problemsLength;
+            CategorizedProblem[] problems = this.scope.referenceCompilationUnit().compilationResult.getProblems();
+            CategorizedProblem[] problemsCopy = new CategorizedProblem[problemsLength = problems.length];
+            System.arraycopy(problems, 0, problemsCopy, 0, problemsLength);
+            classFile.addProblemConstructor(this, this.binding, problemsCopy);
+            return;
+        }
+        boolean restart = false;
+        boolean abort = false;
+        CompilationResult unitResult = null;
+        int problemCount = 0;
+        if (classScope != null) {
+            TypeDeclaration referenceContext = classScope.referenceContext;
+            if (referenceContext != null) {
+                unitResult = referenceContext.compilationResult();
+                problemCount = unitResult.problemCount;
+            }
+        }
+        do {
+            try {
+                problemResetPC = classFile.contentsOffset;
+                internalGenerateCode(classScope, classFile);
+                restart = false;
+            } catch (AbortMethod e) {
+                if (e.compilationResult == CodeStream.RESTART_IN_WIDE_MODE) {
+                    // a branch target required a goto_w, restart code gen in wide mode.
+                    classFile.contentsOffset = problemResetPC;
+                    classFile.methodCount--;
+                    classFile.codeStream.resetInWideMode(); // request wide mode
+                    // reset the problem count to prevent reporting the same warning twice
+                    if (unitResult != null) {
+                        unitResult.problemCount = problemCount;
+                    }
+                    restart = true;
+                } else if (e.compilationResult == CodeStream.RESTART_CODE_GEN_FOR_UNUSED_LOCALS_MODE) {
+                    classFile.contentsOffset = problemResetPC;
+                    classFile.methodCount--;
+                    classFile.codeStream.resetForCodeGenUnusedLocals();
+                    // reset the problem count to prevent reporting the same warning twice
+                    if (unitResult != null) {
+                        unitResult.problemCount = problemCount;
+                    }
+                    restart = true;
+                } else {
+                    restart = false;
+                    abort = true;
+                }
+            }
+        } while (restart);
+        if (abort) {
+            int problemsLength;
+            CategorizedProblem[] problems = this.scope.referenceCompilationUnit().compilationResult.getAllProblems();
+            CategorizedProblem[] problemsCopy = new CategorizedProblem[problemsLength = problems.length];
+            System.arraycopy(problems, 0, problemsCopy, 0, problemsLength);
+            classFile.addProblemConstructor(this, this.binding, problemsCopy, problemResetPC);
+        }
+    }
 
-	SyntheticArgumentBinding[] syntheticArgs = nestedType.syntheticEnclosingInstances();
-	if (syntheticArgs != null) {
-		for (SyntheticArgumentBinding syntheticArg : syntheticArgs) {
-			if (syntheticArg.matchingField != null) {
-				codeStream.aload_0();
-				codeStream.load(syntheticArg);
-				codeStream.fieldAccess(Opcodes.OPC_putfield, syntheticArg.matchingField, null /* default declaringClass */);
-			}
-		}
-	}
-	syntheticArgs = nestedType.syntheticOuterLocalVariables();
-	if (syntheticArgs != null) {
-		for (SyntheticArgumentBinding syntheticArg : syntheticArgs) {
-			if (syntheticArg.matchingField != null) {
-				codeStream.aload_0();
-				codeStream.load(syntheticArg);
-				codeStream.fieldAccess(Opcodes.OPC_putfield, syntheticArg.matchingField, null /* default declaringClass */);
-			}
-		}
-	}
-}
+    public void generateSyntheticFieldInitializationsIfNecessary(MethodScope methodScope, CodeStream codeStream,
+        ReferenceBinding declaringClass) {
+        if (!declaringClass.isNestedType())
+            return;
 
-private void internalGenerateCode(ClassScope classScope, ClassFile classFile) {
-	classFile.generateMethodInfoHeader(this.binding);
-	int methodAttributeOffset = classFile.contentsOffset;
-	int attributeNumber = classFile.generateMethodInfoAttributes(this.binding);
-	if ((!this.binding.isNative()) && (!this.binding.isAbstract())) {
+        NestedTypeBinding nestedType = (NestedTypeBinding) declaringClass;
 
-		TypeDeclaration declaringType = classScope.referenceContext;
-		int codeAttributeOffset = classFile.contentsOffset;
-		classFile.generateCodeAttributeHeader();
-		CodeStream codeStream = classFile.codeStream;
-		codeStream.reset(this, classFile);
+        SyntheticArgumentBinding[] syntheticArgs = nestedType.syntheticEnclosingInstances();
+        if (syntheticArgs != null) {
+            for (SyntheticArgumentBinding syntheticArg : syntheticArgs) {
+                if (syntheticArg.matchingField != null) {
+                    codeStream.aload_0();
+                    codeStream.load(syntheticArg);
+                    codeStream.fieldAccess(Opcodes.OPC_putfield, syntheticArg.matchingField,
+                        null /* default declaringClass */);
+                }
+            }
+        }
+        syntheticArgs = nestedType.syntheticOuterLocalVariables();
+        if (syntheticArgs != null) {
+            for (SyntheticArgumentBinding syntheticArg : syntheticArgs) {
+                if (syntheticArg.matchingField != null) {
+                    codeStream.aload_0();
+                    codeStream.load(syntheticArg);
+                    codeStream.fieldAccess(Opcodes.OPC_putfield, syntheticArg.matchingField,
+                        null /* default declaringClass */);
+                }
+            }
+        }
+    }
 
-		// initialize local positions - including initializer scope.
-		ReferenceBinding declaringClass = this.binding.declaringClass;
+    private void internalGenerateCode(ClassScope classScope, ClassFile classFile) {
+        classFile.generateMethodInfoHeader(this.binding);
+        int methodAttributeOffset = classFile.contentsOffset;
+        int attributeNumber = classFile.generateMethodInfoAttributes(this.binding);
+        if ((!this.binding.isNative()) && (!this.binding.isAbstract())) {
 
-		int enumOffset = declaringClass.isEnum() ? 2 : 0; // String name, int ordinal
-		int argSlotSize = 1 + enumOffset; // this==aload0
+            TypeDeclaration declaringType = classScope.referenceContext;
+            int codeAttributeOffset = classFile.contentsOffset;
+            classFile.generateCodeAttributeHeader();
+            CodeStream codeStream = classFile.codeStream;
+            codeStream.reset(this, classFile);
 
-		if (declaringClass.isNestedType()){
-			this.scope.extraSyntheticArguments = declaringClass.syntheticOuterLocalVariables();
-			this.scope.computeLocalVariablePositions(// consider synthetic arguments if any
-					declaringClass.getEnclosingInstancesSlotSize() + 1 + enumOffset,
-				codeStream);
-			argSlotSize += declaringClass.getEnclosingInstancesSlotSize();
-			argSlotSize += declaringClass.getOuterLocalVariablesSlotSize();
-		} else {
-			this.scope.computeLocalVariablePositions(1 + enumOffset,  codeStream);
-		}
+            // initialize local positions - including initializer scope.
+            ReferenceBinding declaringClass = this.binding.declaringClass;
 
-		for (LocalVariableBinding local : this.scope.locals) {
-			if (local != null && local.isParameter()) {
-				codeStream.addVisibleLocalVariable(local);
-				local.recordInitializationStartPC(0);
-				switch(local.type.id) {
-					case TypeIds.T_long :
-					case TypeIds.T_double :
-						argSlotSize += 2;
-						break;
-					default :
-						argSlotSize++;
-						break;
-				}
-			}
-		}
+            int enumOffset = declaringClass.isEnum() ? 2 : 0; // String name, int ordinal
+            int argSlotSize = 1 + enumOffset; // this==aload0
 
-		MethodScope initializerScope = declaringType.initializerScope;
-		initializerScope.computeLocalVariablePositions(argSlotSize, codeStream); // offset by the argument size (since not linked to method scope)
+            if (declaringClass.isNestedType()) {
+                this.scope.extraSyntheticArguments = declaringClass.syntheticOuterLocalVariables();
+                this.scope.computeLocalVariablePositions(// consider synthetic arguments if any
+                    declaringClass.getEnclosingInstancesSlotSize() + 1 + enumOffset, codeStream);
+                argSlotSize += declaringClass.getEnclosingInstancesSlotSize();
+                argSlotSize += declaringClass.getOuterLocalVariablesSlotSize();
+            } else {
+                this.scope.computeLocalVariablePositions(1 + enumOffset, codeStream);
+            }
 
-		codeStream.pushPatternAccessTrapScope(this.scope);
-		boolean needFieldInitializations = this.constructorCall == null || this.constructorCall.accessMode != ExplicitConstructorCall.This;
+            for (LocalVariableBinding local : this.scope.locals) {
+                if (local != null && local.isParameter()) {
+                    codeStream.addVisibleLocalVariable(local);
+                    local.recordInitializationStartPC(0);
+                    switch (local.type.id) {
+                        case TypeIds.T_long:
+                        case TypeIds.T_double:
+                            argSlotSize += 2;
+                            break;
 
-		// post 1.4 target level, synthetic initializations occur prior to explicit constructor call
-		if (needFieldInitializations){
-			generateSyntheticFieldInitializationsIfNecessary(this.scope, codeStream, declaringClass);
-			codeStream.recordPositionsFrom(0, this.bodyStart > 0 ? this.bodyStart : this.sourceStart);
-		}
+                        default:
+                            argSlotSize++;
+                            break;
+                    }
+                }
+            }
 
-		if (JavaFeature.FLEXIBLE_CONSTRUCTOR_BODIES.matchesCompliance(this.scope.compilerOptions())) {
-			this.scope.enterEarlyConstructionContext();
-		}
+            MethodScope initializerScope = declaringType.initializerScope;
+            initializerScope.computeLocalVariablePositions(argSlotSize, codeStream); // offset by the argument size
+                                                                                     // (since not linked to method
+                                                                                     // scope)
 
-		// generate constructor call
-		if (this.constructorCall != null) {
-			this.constructorCall.generateCode(this.scope, codeStream);
-		}
-		ExplicitConstructorCall lateConstructorCall = getLateConstructorCall();
-		// generate field initialization - only if not invoking another constructor call of the same class
-		if (needFieldInitializations) {
-			if (lateConstructorCall == null) {
-				// traditionally field inits are generated before explicit statements
-				generateFieldInitializations(declaringType, codeStream, initializerScope);
-			}
-		}
-		// generate statements
-		if (this.statements != null) {
-			for (Statement statement : this.statements) {
-				statement.generateCode(this.scope, codeStream);
-				if (!this.compilationResult.hasErrors() && (codeStream.stackDepth != 0 || codeStream.operandStack.size() != 0)) {
-					this.scope.problemReporter().operandStackSizeInappropriate(this);
-				}
-				if (lateConstructorCall == statement) {
-					// with JEP 492 (Flexible Constructor Bodies) involved field inits are generated only *after* the explicit constructor
-					generateFieldInitializations(declaringType, codeStream, initializerScope);
-				}
-			}
-		}
-		// if a problem got reported during code gen, then trigger problem method creation
-		if (this.ignoreFurtherInvestigation) {
-			throw new AbortMethod(this.scope.referenceCompilationUnit().compilationResult, null);
-		}
-		if ((this.bits & ASTNode.NeedFreeReturn) != 0) {
-			if (this.isCompactConstructor()) {
-				// Note: the body of a compact constructor may not contain a return statement and so will need an injected return
-				for (RecordComponent rc : classScope.referenceContext.recordComponents) {
-					LocalVariableBinding parameter = this.scope.findVariable(rc.name);
-					FieldBinding field = classScope.referenceContext.binding.getField(rc.name, true).original();
-					codeStream.aload_0();
-					codeStream.load(parameter);
-					codeStream.fieldAccess(Opcodes.OPC_putfield, field, classScope.referenceContext.binding);
-				}
-			}
-			codeStream.return_();
-		}
-		// See https://github.com/eclipse-jdt/eclipse.jdt.core/issues/1796#issuecomment-1933458054
-		codeStream.exitUserScope(this.scope, lvb -> !lvb.isParameter());
-		codeStream.handleRecordAccessorExceptions(this.scope);
-		// local variable attributes
-		codeStream.exitUserScope(this.scope);
-		codeStream.recordPositionsFrom(0, this.bodyEnd > 0 ? this.bodyEnd : this.sourceStart);
-		try {
-			classFile.completeCodeAttribute(codeAttributeOffset, this.scope);
-		} catch(NegativeArraySizeException e) {
-			throw new AbortMethod(this.scope.referenceCompilationUnit().compilationResult, null);
-		}
-		attributeNumber++;
-		if ((codeStream instanceof StackMapFrameCodeStream)
-				&& needFieldInitializations
-				&& declaringType.fields != null) {
-			((StackMapFrameCodeStream) codeStream).resetSecretLocals();
-		}
-	}
-	classFile.completeMethodInfo(this.binding, methodAttributeOffset, attributeNumber);
-}
-private void generateFieldInitializations(TypeDeclaration declaringType, CodeStream codeStream, MethodScope initializerScope) {
-	if (declaringType.fields != null) {
-		for (FieldDeclaration field : declaringType.fields) {
-			if (!field.isStatic())
-				field.generateCode(initializerScope, codeStream);
-		}
-	}
-}
+            codeStream.pushPatternAccessTrapScope(this.scope);
+            boolean needFieldInitializations
+                = this.constructorCall == null || this.constructorCall.accessMode != ExplicitConstructorCall.This;
 
-@Override
-public void getAllAnnotationContexts(int targetType, List allAnnotationContexts) {
-	TypeReference fakeReturnType = new SingleTypeReference(this.selector, 0);
-	fakeReturnType.resolvedType = this.binding.declaringClass;
-	AnnotationCollector collector = new AnnotationCollector(fakeReturnType, targetType, allAnnotationContexts);
-	for (Annotation annotation : this.annotations) {
-		annotation.traverse(collector, (BlockScope) null);
-	}
-}
+            // post 1.4 target level, synthetic initializations occur prior to explicit constructor call
+            if (needFieldInitializations) {
+                generateSyntheticFieldInitializationsIfNecessary(this.scope, codeStream, declaringClass);
+                codeStream.recordPositionsFrom(0, this.bodyStart > 0 ? this.bodyStart : this.sourceStart);
+            }
 
-@Override
-public boolean isConstructor() {
-	return true;
-}
+            if (JavaFeature.FLEXIBLE_CONSTRUCTOR_BODIES.matchesCompliance(this.scope.compilerOptions())) {
+                this.scope.enterEarlyConstructionContext();
+            }
 
-@Override
-public boolean isCanonicalConstructor() {
-	return (this.bits & ASTNode.IsCanonicalConstructor) != 0;
-}
+            // generate constructor call
+            if (this.constructorCall != null) {
+                this.constructorCall.generateCode(this.scope, codeStream);
+            }
+            ExplicitConstructorCall lateConstructorCall = getLateConstructorCall();
+            // generate field initialization - only if not invoking another constructor call of the same class
+            if (needFieldInitializations) {
+                if (lateConstructorCall == null) {
+                    // traditionally field inits are generated before explicit statements
+                    generateFieldInitializations(declaringType, codeStream, initializerScope);
+                }
+            }
+            // generate statements
+            if (this.statements != null) {
+                for (Statement statement : this.statements) {
+                    statement.generateCode(this.scope, codeStream);
+                    if (!this.compilationResult.hasErrors()
+                        && (codeStream.stackDepth != 0 || codeStream.operandStack.size() != 0)) {
+                        this.scope.problemReporter().operandStackSizeInappropriate(this);
+                    }
+                    if (lateConstructorCall == statement) {
+                        // with JEP 492 (Flexible Constructor Bodies) involved field inits are generated only *after*
+                        // the explicit constructor
+                        generateFieldInitializations(declaringType, codeStream, initializerScope);
+                    }
+                }
+            }
+            // if a problem got reported during code gen, then trigger problem method creation
+            if (this.ignoreFurtherInvestigation) {
+                throw new AbortMethod(this.scope.referenceCompilationUnit().compilationResult, null);
+            }
+            if ((this.bits & ASTNode.NeedFreeReturn) != 0) {
+                if (this.isCompactConstructor()) {
+                    // Note: the body of a compact constructor may not contain a return statement and so will need an
+                    // injected return
+                    for (RecordComponent rc : classScope.referenceContext.recordComponents) {
+                        LocalVariableBinding parameter = this.scope.findVariable(rc.name);
+                        FieldBinding field = classScope.referenceContext.binding.getField(rc.name, true).original();
+                        codeStream.aload_0();
+                        codeStream.load(parameter);
+                        codeStream.fieldAccess(Opcodes.OPC_putfield, field, classScope.referenceContext.binding);
+                    }
+                }
+                codeStream.return_();
+            }
+            // See https://github.com/eclipse-jdt/eclipse.jdt.core/issues/1796#issuecomment-1933458054
+            codeStream.exitUserScope(this.scope, lvb -> !lvb.isParameter());
+            codeStream.handleRecordAccessorExceptions(this.scope);
+            // local variable attributes
+            codeStream.exitUserScope(this.scope);
+            codeStream.recordPositionsFrom(0, this.bodyEnd > 0 ? this.bodyEnd : this.sourceStart);
+            try {
+                classFile.completeCodeAttribute(codeAttributeOffset, this.scope);
+            } catch (NegativeArraySizeException e) {
+                throw new AbortMethod(this.scope.referenceCompilationUnit().compilationResult, null);
+            }
+            attributeNumber++;
+            if ((codeStream instanceof StackMapFrameCodeStream)
+                && needFieldInitializations
+                && declaringType.fields != null) {
+                ((StackMapFrameCodeStream) codeStream).resetSecretLocals();
+            }
+        }
+        classFile.completeMethodInfo(this.binding, methodAttributeOffset, attributeNumber);
+    }
 
-@Override
-public boolean isCompactConstructor() {
-	return (this.modifiers & ExtraCompilerModifiers.AccCompactConstructor) != 0;
-}
+    private void generateFieldInitializations(TypeDeclaration declaringType, CodeStream codeStream,
+        MethodScope initializerScope) {
+        if (declaringType.fields != null) {
+            for (FieldDeclaration field : declaringType.fields) {
+                if (!field.isStatic())
+                    field.generateCode(initializerScope, codeStream);
+            }
+        }
+    }
 
-@Override
-public boolean isDefaultConstructor() {
-	return (this.bits & ASTNode.IsDefaultConstructor) != 0;
-}
+    @Override
+    public void getAllAnnotationContexts(int targetType, List allAnnotationContexts) {
+        TypeReference fakeReturnType = new SingleTypeReference(this.selector, 0);
+        fakeReturnType.resolvedType = this.binding.declaringClass;
+        AnnotationCollector collector = new AnnotationCollector(fakeReturnType, targetType, allAnnotationContexts);
+        for (Annotation annotation : this.annotations) {
+            annotation.traverse(collector, (BlockScope) null);
+        }
+    }
 
-@Override
-public boolean isInitializationMethod() {
-	return true;
-}
+    @Override
+    public boolean isConstructor() {
+        return true;
+    }
 
-/*
- * Returns true if the constructor is directly involved in a cycle.
- * Given most constructors aren't, we only allocate the visited list
- * lazily.
- */
-public boolean isRecursive(ArrayList visited) {
-	if (this.binding == null
-			|| this.constructorCall == null
-			|| this.constructorCall.binding == null
-			|| this.constructorCall.isSuperAccess()
-			|| !this.constructorCall.binding.isValidBinding()) {
-		return false;
-	}
+    @Override
+    public boolean isCanonicalConstructor() {
+        return (this.bits & ASTNode.IsCanonicalConstructor) != 0;
+    }
 
-	ConstructorDeclaration targetConstructor =
-		((ConstructorDeclaration)this.scope.referenceType().declarationOf(this.constructorCall.binding.original()));
-	if (targetConstructor == null) return false; // https://bugs.eclipse.org/bugs/show_bug.cgi?id=358762
-	if (this == targetConstructor) return true; // direct case
+    @Override
+    public boolean isCompactConstructor() {
+        return (this.modifiers & ExtraCompilerModifiers.AccCompactConstructor) != 0;
+    }
 
-	if (visited == null) { // lazy allocation
-		visited = new ArrayList(1);
-	} else {
-		int index = visited.indexOf(this);
-		if (index >= 0) return index == 0; // only blame if directly part of the cycle
-	}
-	visited.add(this);
+    @Override
+    public boolean isDefaultConstructor() {
+        return (this.bits & ASTNode.IsDefaultConstructor) != 0;
+    }
 
-	return targetConstructor.isRecursive(visited);
-}
+    @Override
+    public boolean isInitializationMethod() {
+        return true;
+    }
 
-@Override
-public void parseStatements(Parser parser, CompilationUnitDeclaration unit) {
-	//fill up the constructor body with its statements
-	if (this.isCompactConstructor()) {
-		this.constructorCall = SuperReference.implicitSuperConstructorCall();
-		this.constructorCall.sourceStart = this.sourceStart;
-		this.constructorCall.sourceEnd = this.sourceEnd;
-	} else if (((this.bits & ASTNode.IsDefaultConstructor) != 0) && this.constructorCall == null){
-		this.constructorCall = SuperReference.implicitSuperConstructorCall();
-		this.constructorCall.sourceStart = this.sourceStart;
-		this.constructorCall.sourceEnd = this.sourceEnd;
-		return;
-	}
-	parser.parse(this, unit, false);
-}
+    /*
+     * Returns true if the constructor is directly involved in a cycle.
+     * Given most constructors aren't, we only allocate the visited list
+     * lazily.
+     */
+    public boolean isRecursive(ArrayList visited) {
+        if (this.binding == null
+            || this.constructorCall == null
+            || this.constructorCall.binding == null
+            || this.constructorCall.isSuperAccess()
+            || !this.constructorCall.binding.isValidBinding()) {
+            return false;
+        }
 
-@Override
-public StringBuilder printBody(int indent, StringBuilder output) {
-	output.append(" {"); //$NON-NLS-1$
-	if (this.constructorCall != null) {
-		output.append('\n');
-		this.constructorCall.printStatement(indent, output);
-	}
-	if (this.statements != null) {
-		for (Statement statement : this.statements) {
-			output.append('\n');
-			statement.printStatement(indent, output);
-		}
-	}
-	output.append('\n');
-	printIndent(indent == 0 ? 0 : indent - 1, output).append('}');
-	return output;
-}
+        ConstructorDeclaration targetConstructor = ((ConstructorDeclaration) this.scope.referenceType()
+            .declarationOf(this.constructorCall.binding.original()));
+        if (targetConstructor == null)
+            return false; // https://bugs.eclipse.org/bugs/show_bug.cgi?id=358762
+        if (this == targetConstructor)
+            return true; // direct case
 
-@Override
-public void resolveJavadoc() {
-	if (this.binding == null || this.javadoc != null) {
-		super.resolveJavadoc();
-	} else if ((this.bits & ASTNode.IsDefaultConstructor) == 0 ) {
-		if (this.binding.declaringClass != null && !this.binding.declaringClass.isLocalType()) {
-			// Set javadoc visibility
-			int javadocVisibility = this.binding.modifiers & ExtraCompilerModifiers.AccVisibilityMASK;
-			ClassScope classScope = this.scope.classScope();
-			ProblemReporter reporter = this.scope.problemReporter();
-			int severity = reporter.computeSeverity(IProblem.JavadocMissing);
-			if (severity != ProblemSeverities.Ignore) {
-				if (classScope != null) {
-					javadocVisibility = Util.computeOuterMostVisibility(classScope.referenceType(), javadocVisibility);
-				}
-				int javadocModifiers = (this.binding.modifiers & ~ExtraCompilerModifiers.AccVisibilityMASK) | javadocVisibility;
-				reporter.javadocMissing(this.sourceStart, this.sourceEnd, severity, javadocModifiers);
-			}
-		}
-	}
-}
+        if (visited == null) { // lazy allocation
+            visited = new ArrayList(1);
+        } else {
+            int index = visited.indexOf(this);
+            if (index >= 0)
+                return index == 0; // only blame if directly part of the cycle
+        }
+        visited.add(this);
 
-@Override
-public void resolve(ClassScope upperScope) {
+        return targetConstructor.isRecursive(visited);
+    }
 
-	if (this.binding != null && this.binding.isCanonicalConstructor()) {
-		RecordComponentBinding[] rcbs = upperScope.referenceContext.binding.components();
-		boolean lastComponentVarargs = rcbs.length > 0 && rcbs[rcbs.length - 1].sourceRecordComponent().isVarArgs();
-		if (this.binding.isVarargs() != lastComponentVarargs)
-			upperScope.problemReporter().erasureIncompatibilityInCanonicalConstructor(this.arguments[this.arguments.length - 1].type);
-		for (int i = 0; i < rcbs.length; ++i) {
-			TypeBinding mpt = this.binding.parameters[i];
-			TypeBinding rct = rcbs[i].type;
-			if (TypeBinding.notEquals(mpt, rct))
-				upperScope.problemReporter().erasureIncompatibilityInCanonicalConstructor(this.arguments[i].type);
-		}
+    @Override
+    public void parseStatements(Parser parser, CompilationUnitDeclaration unit) {
+        // fill up the constructor body with its statements
+        if (this.isCompactConstructor()) {
+            this.constructorCall = SuperReference.implicitSuperConstructorCall();
+            this.constructorCall.sourceStart = this.sourceStart;
+            this.constructorCall.sourceEnd = this.sourceEnd;
+        } else if (((this.bits & ASTNode.IsDefaultConstructor) != 0) && this.constructorCall == null) {
+            this.constructorCall = SuperReference.implicitSuperConstructorCall();
+            this.constructorCall.sourceStart = this.sourceStart;
+            this.constructorCall.sourceEnd = this.sourceEnd;
+            return;
+        }
+        parser.parse(this, unit, false);
+    }
 
-		if (!this.binding.isAsVisible(this.binding.declaringClass))
-			this.scope.problemReporter().canonicalConstructorVisibilityReduced(this);
-		if (this.typeParameters != null && this.typeParameters.length > 0)
-			this.scope.problemReporter().canonicalConstructorShouldNotBeGeneric(this);
-		if (this.binding.thrownExceptions != null && this.binding.thrownExceptions.length > 0)
-			this.scope.problemReporter().canonicalConstructorHasThrowsClause(this);
-		if (!this.isCompactConstructor()) {
-			for (int i = 0; i < rcbs.length; i++)
-				if (!CharOperation.equals(this.arguments[i].name, rcbs[i].name))
-					this.scope.problemReporter().mismatchedParameterNameInCanonicalConstructor(rcbs[i], this.arguments[i]);
-		}
-	}
-	super.resolve(upperScope);
-}
-/*
- * Type checking for constructor, just another method, except for special check
- * for recursive constructor invocations.
- */
-@Override
-public void resolveStatements() {
-	SourceTypeBinding sourceType = this.scope.enclosingSourceType();
-	if (!CharOperation.equals(sourceType.sourceName, this.selector)){
-		this.scope.problemReporter().missingReturnType(this);
-	}
-	// typeParameters are already resolved from Scope#connectTypeVariables()
-	if (this.binding != null && !this.binding.isPrivate()) {
-		sourceType.tagBits |= TagBits.HasNonPrivateConstructor;
-	}
-	// if null ==> an error has occurs at parsing time ....
-	if (this.constructorCall != null) {
-		if (sourceType.id == TypeIds.T_JavaLangObject
-				&& this.constructorCall.accessMode != ExplicitConstructorCall.This) {
-			// cannot use super() in java.lang.Object
-			if (this.constructorCall.accessMode == ExplicitConstructorCall.Super) {
-				this.scope.problemReporter().cannotUseSuperInJavaLangObject(this.constructorCall);
-			}
-			this.constructorCall = null;
-		} else if (sourceType.isRecord() &&
-				!this.isCompactConstructor() && // compact constr should be marked as canonical?
-				(this.binding != null && !this.binding.isCanonicalConstructor()) &&
-				this.constructorCall.accessMode != ExplicitConstructorCall.This) {
-			this.scope.problemReporter().missingExplicitConstructorCallInNonCanonicalConstructor(this);
-			this.constructorCall = null;
-		} else {
-			ExplicitConstructorCall lateConstructorCall = null;
-			if (JavaFeature.FLEXIBLE_CONSTRUCTOR_BODIES.matchesCompliance(this.scope.compilerOptions())) {
-				this.scope.enterEarlyConstructionContext(); // even if no late ctor call to also capture arguments of ctor call as 1st stmt
-				lateConstructorCall = getLateConstructorCall();
-			}
-			if (lateConstructorCall != null) {
-				this.constructorCall = null; // not used with JEP 482, conversely, constructorCall!=null signals no JEP 482 context
-				this.scope.problemReporter().validateJavaFeatureSupport(JavaFeature.FLEXIBLE_CONSTRUCTOR_BODIES,
-						lateConstructorCall.sourceStart,
-						lateConstructorCall.sourceEnd);
-			} else {
-				this.constructorCall.resolve(this.scope);
-			}
-		}
-	}
-	if ((this.modifiers & ExtraCompilerModifiers.AccSemicolonBody) != 0) {
-		this.scope.problemReporter().methodNeedBody(this);
-	}
-	super.resolveStatements();
-}
+    @Override
+    public StringBuilder printBody(int indent, StringBuilder output) {
+        output.append(" {"); //$NON-NLS-1$
+        if (this.constructorCall != null) {
+            output.append('\n');
+            this.constructorCall.printStatement(indent, output);
+        }
+        if (this.statements != null) {
+            for (Statement statement : this.statements) {
+                output.append('\n');
+                statement.printStatement(indent, output);
+            }
+        }
+        output.append('\n');
+        printIndent(indent == 0 ? 0 : indent - 1, output).append('}');
+        return output;
+    }
 
-ExplicitConstructorCall getLateConstructorCall() {
-	if (!JavaFeature.FLEXIBLE_CONSTRUCTOR_BODIES.matchesCompliance(this.scope.compilerOptions()))
-		return null;
-	if (this.constructorCall != null && !this.constructorCall.isImplicitSuper()) {
-		return null;
-	}
-	if (this.statements == null)
-		return null;
-	for (int i = 0; i < this.statements.length; i++) {
-		if (this.statements[i] instanceof ExplicitConstructorCall ctorCall) {
-			return i > 0 ? ctorCall : null;
-		}
-	}
-	return null;
-}
+    @Override
+    public void resolveJavadoc() {
+        if (this.binding == null || this.javadoc != null) {
+            super.resolveJavadoc();
+        } else if ((this.bits & ASTNode.IsDefaultConstructor) == 0) {
+            if (this.binding.declaringClass != null && !this.binding.declaringClass.isLocalType()) {
+                // Set javadoc visibility
+                int javadocVisibility = this.binding.modifiers & ExtraCompilerModifiers.AccVisibilityMASK;
+                ClassScope classScope = this.scope.classScope();
+                ProblemReporter reporter = this.scope.problemReporter();
+                int severity = reporter.computeSeverity(IProblem.JavadocMissing);
+                if (severity != ProblemSeverities.Ignore) {
+                    if (classScope != null) {
+                        javadocVisibility
+                            = Util.computeOuterMostVisibility(classScope.referenceType(), javadocVisibility);
+                    }
+                    int javadocModifiers
+                        = (this.binding.modifiers & ~ExtraCompilerModifiers.AccVisibilityMASK) | javadocVisibility;
+                    reporter.javadocMissing(this.sourceStart, this.sourceEnd, severity, javadocModifiers);
+                }
+            }
+        }
+    }
 
-@Override
-public void traverse(ASTVisitor visitor, ClassScope classScope) {
-	if (visitor.visit(this, classScope)) {
-		if (this.javadoc != null) {
-			this.javadoc.traverse(visitor, this.scope);
-		}
-		if (this.annotations != null) {
-			int annotationsLength = this.annotations.length;
-			for (int i = 0; i < annotationsLength; i++)
-				this.annotations[i].traverse(visitor, this.scope);
-		}
-		if (this.typeParameters != null) {
-			int typeParametersLength = this.typeParameters.length;
-			for (int i = 0; i < typeParametersLength; i++) {
-				this.typeParameters[i].traverse(visitor, this.scope);
-			}
-		}
-		if (this.arguments != null) {
-			int argumentLength = this.arguments.length;
-			for (int i = 0; i < argumentLength; i++)
-				this.arguments[i].traverse(visitor, this.scope);
-		}
-		if (this.thrownExceptions != null) {
-			int thrownExceptionsLength = this.thrownExceptions.length;
-			for (int i = 0; i < thrownExceptionsLength; i++)
-				this.thrownExceptions[i].traverse(visitor, this.scope);
-		}
-		if (this.constructorCall != null)
-			this.constructorCall.traverse(visitor, this.scope);
-		if (this.statements != null) {
-			int statementsLength = this.statements.length;
-			for (int i = 0; i < statementsLength; i++)
-				this.statements[i].traverse(visitor, this.scope);
-		}
-	}
-	visitor.endVisit(this, classScope);
-}
-@Override
-public TypeParameter[] typeParameters() {
-    return this.typeParameters;
-}
+    @Override
+    public void resolve(ClassScope upperScope) {
+
+        if (this.binding != null && this.binding.isCanonicalConstructor()) {
+            RecordComponentBinding[] rcbs = upperScope.referenceContext.binding.components();
+            boolean lastComponentVarargs = rcbs.length > 0 && rcbs[rcbs.length - 1].sourceRecordComponent().isVarArgs();
+            if (this.binding.isVarargs() != lastComponentVarargs)
+                upperScope.problemReporter()
+                    .erasureIncompatibilityInCanonicalConstructor(this.arguments[this.arguments.length - 1].type);
+            for (int i = 0; i < rcbs.length; ++i) {
+                TypeBinding mpt = this.binding.parameters[i];
+                TypeBinding rct = rcbs[i].type;
+                if (TypeBinding.notEquals(mpt, rct))
+                    upperScope.problemReporter().erasureIncompatibilityInCanonicalConstructor(this.arguments[i].type);
+            }
+
+            if (!this.binding.isAsVisible(this.binding.declaringClass))
+                this.scope.problemReporter().canonicalConstructorVisibilityReduced(this);
+            if (this.typeParameters != null && this.typeParameters.length > 0)
+                this.scope.problemReporter().canonicalConstructorShouldNotBeGeneric(this);
+            if (this.binding.thrownExceptions != null && this.binding.thrownExceptions.length > 0)
+                this.scope.problemReporter().canonicalConstructorHasThrowsClause(this);
+            if (!this.isCompactConstructor()) {
+                for (int i = 0; i < rcbs.length; i++)
+                    if (!CharOperation.equals(this.arguments[i].name, rcbs[i].name))
+                        this.scope.problemReporter()
+                            .mismatchedParameterNameInCanonicalConstructor(rcbs[i], this.arguments[i]);
+            }
+        }
+        super.resolve(upperScope);
+    }
+
+    /*
+     * Type checking for constructor, just another method, except for special check
+     * for recursive constructor invocations.
+     */
+    @Override
+    public void resolveStatements() {
+        SourceTypeBinding sourceType = this.scope.enclosingSourceType();
+        if (!CharOperation.equals(sourceType.sourceName, this.selector)) {
+            this.scope.problemReporter().missingReturnType(this);
+        }
+        // typeParameters are already resolved from Scope#connectTypeVariables()
+        if (this.binding != null && !this.binding.isPrivate()) {
+            sourceType.tagBits |= TagBits.HasNonPrivateConstructor;
+        }
+        // if null ==> an error has occurs at parsing time ....
+        if (this.constructorCall != null) {
+            if (sourceType.id == TypeIds.T_JavaLangObject
+                && this.constructorCall.accessMode != ExplicitConstructorCall.This) {
+                // cannot use super() in java.lang.Object
+                if (this.constructorCall.accessMode == ExplicitConstructorCall.Super) {
+                    this.scope.problemReporter().cannotUseSuperInJavaLangObject(this.constructorCall);
+                }
+                this.constructorCall = null;
+            } else if (sourceType.isRecord() && !this.isCompactConstructor() && // compact constr should be marked as
+                                                                                // canonical?
+                (this.binding != null && !this.binding.isCanonicalConstructor())
+                && this.constructorCall.accessMode != ExplicitConstructorCall.This) {
+                this.scope.problemReporter().missingExplicitConstructorCallInNonCanonicalConstructor(this);
+                this.constructorCall = null;
+            } else {
+                ExplicitConstructorCall lateConstructorCall = null;
+                if (JavaFeature.FLEXIBLE_CONSTRUCTOR_BODIES.matchesCompliance(this.scope.compilerOptions())) {
+                    this.scope.enterEarlyConstructionContext(); // even if no late ctor call to also capture arguments
+                                                                // of ctor call as 1st stmt
+                    lateConstructorCall = getLateConstructorCall();
+                }
+                if (lateConstructorCall != null) {
+                    this.constructorCall = null; // not used with JEP 482, conversely, constructorCall!=null signals no
+                                                 // JEP 482 context
+                    this.scope.problemReporter()
+                        .validateJavaFeatureSupport(JavaFeature.FLEXIBLE_CONSTRUCTOR_BODIES,
+                            lateConstructorCall.sourceStart, lateConstructorCall.sourceEnd);
+                } else {
+                    this.constructorCall.resolve(this.scope);
+                }
+            }
+        }
+        if ((this.modifiers & ExtraCompilerModifiers.AccSemicolonBody) != 0) {
+            this.scope.problemReporter().methodNeedBody(this);
+        }
+        super.resolveStatements();
+    }
+
+    ExplicitConstructorCall getLateConstructorCall() {
+        if (!JavaFeature.FLEXIBLE_CONSTRUCTOR_BODIES.matchesCompliance(this.scope.compilerOptions()))
+            return null;
+        if (this.constructorCall != null && !this.constructorCall.isImplicitSuper()) {
+            return null;
+        }
+        if (this.statements == null)
+            return null;
+        for (int i = 0; i < this.statements.length; i++) {
+            if (this.statements[i]instanceof ExplicitConstructorCall ctorCall) {
+                return i > 0 ? ctorCall : null;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void traverse(ASTVisitor visitor, ClassScope classScope) {
+        if (visitor.visit(this, classScope)) {
+            if (this.javadoc != null) {
+                this.javadoc.traverse(visitor, this.scope);
+            }
+            if (this.annotations != null) {
+                int annotationsLength = this.annotations.length;
+                for (int i = 0; i < annotationsLength; i++)
+                    this.annotations[i].traverse(visitor, this.scope);
+            }
+            if (this.typeParameters != null) {
+                int typeParametersLength = this.typeParameters.length;
+                for (int i = 0; i < typeParametersLength; i++) {
+                    this.typeParameters[i].traverse(visitor, this.scope);
+                }
+            }
+            if (this.arguments != null) {
+                int argumentLength = this.arguments.length;
+                for (int i = 0; i < argumentLength; i++)
+                    this.arguments[i].traverse(visitor, this.scope);
+            }
+            if (this.thrownExceptions != null) {
+                int thrownExceptionsLength = this.thrownExceptions.length;
+                for (int i = 0; i < thrownExceptionsLength; i++)
+                    this.thrownExceptions[i].traverse(visitor, this.scope);
+            }
+            if (this.constructorCall != null)
+                this.constructorCall.traverse(visitor, this.scope);
+            if (this.statements != null) {
+                int statementsLength = this.statements.length;
+                for (int i = 0; i < statementsLength; i++)
+                    this.statements[i].traverse(visitor, this.scope);
+            }
+        }
+        visitor.endVisit(this, classScope);
+    }
+
+    @Override
+    public TypeParameter[] typeParameters() {
+        return this.typeParameters;
+    }
 }

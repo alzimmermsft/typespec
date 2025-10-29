@@ -13,6 +13,8 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.builder;
 
+import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaModelManager.trace;
+
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IContainer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IFile;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResource;
@@ -30,15 +32,12 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util.SuffixConstants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaModelManager;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Util;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
-
-import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaModelManager.trace;
 
 public class ClasspathDirectory extends ClasspathLocation {
 
@@ -51,8 +50,10 @@ public class ClasspathDirectory extends ClasspathLocation {
     ClasspathDirectory(IContainer binaryFolder, boolean isOutputFolder, AccessRuleSet accessRuleSet,
         IPath externalAnnotationPath, boolean isOnModulePath) {
         this.binaryFolder = binaryFolder;
-        this.isOutputFolder = isOutputFolder || binaryFolder.getProjectRelativePath()
-            .isEmpty(); // if binaryFolder == project, then treat it as an outputFolder
+        this.isOutputFolder = isOutputFolder || binaryFolder.getProjectRelativePath().isEmpty(); // if binaryFolder ==
+                                                                                                 // project, then treat
+                                                                                                 // it as an
+                                                                                                 // outputFolder
         this.accessRuleSet = accessRuleSet;
         if (externalAnnotationPath != null)
             this.externalAnnotationPath = externalAnnotationPath.toOSString();
@@ -79,8 +80,8 @@ public class ClasspathDirectory extends ClasspathLocation {
                 for (IResource m : members) {
                     String name = m.getName();
                     // Note: Look only inside the default package.
-                    if (m.getType() == IResource.FILE && org.eclipse.jdt.internal.compiler.util.Util.isClassFileName(
-                        name)) {
+                    if (m.getType() == IResource.FILE
+                        && org.eclipse.jdt.internal.compiler.util.Util.isClassFileName(name)) {
                         if (name.equalsIgnoreCase(IModule.MODULE_INFO_CLASS)) {
                             try {
                                 ClassFileReader cfr = Util.newClassFileReader(m);
@@ -119,8 +120,8 @@ public class ClasspathDirectory extends ClasspathLocation {
                 for (IResource m : members) {
                     String name = m.getName();
                     if (m.getType() == IResource.FOLDER || // include folders so we recognize empty parent packages
-                        (m.getType() == IResource.FILE && org.eclipse.jdt.internal.compiler.util.Util.isClassFileName(
-                            name))) {
+                        (m.getType() == IResource.FILE
+                            && org.eclipse.jdt.internal.compiler.util.Util.isClassFileName(name))) {
                         // add exclusion pattern check here if we want to hide .class files
                         dirList[index++] = name;
                     }
@@ -142,7 +143,7 @@ public class ClasspathDirectory extends ClasspathLocation {
         if (dirList == null)
             return false; // most common case
 
-        for (int i = dirList.length; --i >= 0; )
+        for (int i = dirList.length; --i >= 0;)
             if (fileName.equals(dirList[i]))
                 return true;
         return false;
@@ -218,14 +219,14 @@ public class ClasspathDirectory extends ClasspathLocation {
             // 1. search files here:
             for (String entry : list) {
                 String entryLC = entry.toLowerCase();
-                if (entryLC.endsWith(SuffixConstants.SUFFIX_STRING_class) || entryLC.endsWith(
-                    SuffixConstants.SUFFIX_STRING_java))
+                if (entryLC.endsWith(SuffixConstants.SUFFIX_STRING_class)
+                    || entryLC.endsWith(SuffixConstants.SUFFIX_STRING_java))
                     return true;
             }
             // 2. recurse into sub directories
             for (String entry : list) {
                 if (entry.indexOf('.') == -1) { // no plain files without '.' are returned by directoryList()
-                    if (isPackage(qualifiedPackageName + '/' + entry, null/*already checked*/))
+                    if (isPackage(qualifiedPackageName + '/' + entry, null/* already checked */))
                         return true;
                 }
             }
@@ -239,8 +240,8 @@ public class ClasspathDirectory extends ClasspathLocation {
         if (dirList != null) {
             for (String entry : dirList) {
                 String entryLC = entry.toLowerCase();
-                if (entryLC.endsWith(SuffixConstants.SUFFIX_STRING_class) || entryLC.endsWith(
-                    SuffixConstants.SUFFIX_STRING_java))
+                if (entryLC.endsWith(SuffixConstants.SUFFIX_STRING_class)
+                    || entryLC.endsWith(SuffixConstants.SUFFIX_STRING_java))
                     return true;
             }
         }
@@ -274,8 +275,9 @@ public class ClasspathDirectory extends ClasspathLocation {
         try {
             this.binaryFolder.accept(r -> {
                 String extension = r.getFileExtension();
-                if (r instanceof IFile && extension != null && SuffixConstants.EXTENSION_class.equalsIgnoreCase(
-                    extension)) {
+                if (r instanceof IFile
+                    && extension != null
+                    && SuffixConstants.EXTENSION_class.equalsIgnoreCase(extension)) {
                     packageNames.add(r.getParent().getFullPath().makeRelativeTo(basePath).toString().replace('/', '.'));
                 }
                 return true;
@@ -292,8 +294,8 @@ public class ClasspathDirectory extends ClasspathLocation {
         IFile file = this.binaryFolder.getFile(new Path(qualifiedFileName));
         if (file.exists()) {
             try {
-                ExternalAnnotationProvider provider = new ExternalAnnotationProvider(file.getContents(),
-                    fileNameWithoutExtension);
+                ExternalAnnotationProvider provider
+                    = new ExternalAnnotationProvider(file.getContents(), fileNameWithoutExtension);
                 return new ExternalAnnotationDecorator(reader, provider);
             } catch (IOException | CoreException e) {
                 // ignore

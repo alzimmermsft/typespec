@@ -43,35 +43,35 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 @ConsumerType
 public interface Condition {
 
-	/**
-	 * Service property identifying a condition's unique identifier.
-	 * <p>
-	 * Since a {@code Condition} service can potentially describe more then one
-	 * condition, the type of this service property is {@code String+}.
-	 */
-	String		CONDITION_ID		= "osgi.condition.id";
+    /**
+     * Service property identifying a condition's unique identifier.
+     * <p>
+     * Since a {@code Condition} service can potentially describe more then one
+     * condition, the type of this service property is {@code String+}.
+     */
+    String CONDITION_ID = "osgi.condition.id";
 
-	/**
-	 * The unique identifier for the default True condition.
-	 * <p>
-	 * The default True condition is registered by the framework during
-	 * framework initialization and therefore can always be relied upon.
-	 * 
-	 * @see Condition#CONDITION_ID
-	 */
-	String		CONDITION_ID_TRUE	= "true";
+    /**
+     * The unique identifier for the default True condition.
+     * <p>
+     * The default True condition is registered by the framework during
+     * framework initialization and therefore can always be relied upon.
+     * 
+     * @see Condition#CONDITION_ID
+     */
+    String CONDITION_ID_TRUE = "true";
 
-	/**
-	 * A condition instance that can be used to register {@code Condition}
-	 * services.
-	 * <p>
-	 * This can be helpful to avoid a bundle having to implement this interface
-	 * to register a {@code Condition} service
-	 */
-	Condition	INSTANCE			= new ConditionImpl();
+    /**
+     * A condition instance that can be used to register {@code Condition}
+     * services.
+     * <p>
+     * This can be helpful to avoid a bundle having to implement this interface
+     * to register a {@code Condition} service
+     */
+    Condition INSTANCE = new ConditionImpl();
 }
 
 final class ConditionImpl implements Condition {
-	ConditionImpl() {
-	}
+    ConditionImpl() {
+    }
 }

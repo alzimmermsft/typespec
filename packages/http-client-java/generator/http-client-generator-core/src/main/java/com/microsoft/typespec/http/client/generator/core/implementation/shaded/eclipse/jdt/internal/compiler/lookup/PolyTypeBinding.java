@@ -20,82 +20,84 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class PolyTypeBinding extends TypeBinding {
 
-	Expression expression;
-	boolean vanillaCompatibilty = true;
+    Expression expression;
+    boolean vanillaCompatibilty = true;
 
-	public PolyTypeBinding(Expression expression) {
-		this.expression = expression;
-	}
+    public PolyTypeBinding(Expression expression) {
+        this.expression = expression;
+    }
 
-	@Override
-	public char[] constantPoolName() {
-		throw new UnsupportedOperationException();  // should never reach code generation
-	}
+    @Override
+    public char[] constantPoolName() {
+        throw new UnsupportedOperationException();  // should never reach code generation
+    }
 
-	@Override
-	public PackageBinding getPackage() {
-		throw new UnsupportedOperationException();  // nobody should be asking this question.
-	}
+    @Override
+    public PackageBinding getPackage() {
+        throw new UnsupportedOperationException();  // nobody should be asking this question.
+    }
 
-	@Override
-	public boolean isCompatibleWith(TypeBinding left, Scope scope) {
-		return this.vanillaCompatibilty ? this.expression.isCompatibleWith(left, scope) : this.expression.isBoxingCompatibleWith(left, scope);
-	}
+    @Override
+    public boolean isCompatibleWith(TypeBinding left, Scope scope) {
+        return this.vanillaCompatibilty
+            ? this.expression.isCompatibleWith(left, scope)
+            : this.expression.isBoxingCompatibleWith(left, scope);
+    }
 
-	@Override
-	public boolean isPotentiallyCompatibleWith(TypeBinding targetType, Scope scope) {
-		return this.expression.isPotentiallyCompatibleWith(targetType, scope);
-	}
+    @Override
+    public boolean isPotentiallyCompatibleWith(TypeBinding targetType, Scope scope) {
+        return this.expression.isPotentiallyCompatibleWith(targetType, scope);
+    }
 
-	@Override
-	public boolean isPolyType() {
-		return true;
-	}
+    @Override
+    public boolean isPolyType() {
+        return true;
+    }
 
-	@Override
-	public boolean isFunctionalType() {
-		return this.expression.isFunctionalType();
-	}
+    @Override
+    public boolean isFunctionalType() {
+        return this.expression.isFunctionalType();
+    }
 
-	@Override
-	public char[] qualifiedSourceName() {
-		return readableName();
-	}
+    @Override
+    public char[] qualifiedSourceName() {
+        return readableName();
+    }
 
-	@Override
-	public char[] sourceName() {
-		return readableName();
-	}
+    @Override
+    public char[] sourceName() {
+        return readableName();
+    }
 
-	@Override
-	public char[] readableName() {
-		return this.expression.printExpression(0,  new StringBuilder()).toString().toCharArray();
-	}
+    @Override
+    public char[] readableName() {
+        return this.expression.printExpression(0, new StringBuilder()).toString().toCharArray();
+    }
 
-	@Override
-	public char[] shortReadableName() {
-		return this.expression.printExpression(0, new StringBuilder(), true).toString().toCharArray();
-	}
+    @Override
+    public char[] shortReadableName() {
+        return this.expression.printExpression(0, new StringBuilder(), true).toString().toCharArray();
+    }
 
-	@Override
-	public boolean sIsMoreSpecific(TypeBinding s, TypeBinding t, Scope scope) {
-		return this.expression.sIsMoreSpecific(s, t, scope);
-	}
+    @Override
+    public boolean sIsMoreSpecific(TypeBinding s, TypeBinding t, Scope scope) {
+        return this.expression.sIsMoreSpecific(s, t, scope);
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder buffer = new StringBuilder("PolyTypeBinding for: "); //$NON-NLS-1$
-		return this.expression.printExpression(0,  buffer).toString();
-	}
+    @Override
+    public String toString() {
+        StringBuilder buffer = new StringBuilder("PolyTypeBinding for: "); //$NON-NLS-1$
+        return this.expression.printExpression(0, buffer).toString();
+    }
 
-	@Override
-	public int kind() {
-		return Binding.POLY_TYPE;
-	}
+    @Override
+    public int kind() {
+        return Binding.POLY_TYPE;
+    }
 
-	public TypeBinding computeBoxingType() {
-		PolyTypeBinding type = new PolyTypeBinding(this.expression);
-		type.vanillaCompatibilty = !this.vanillaCompatibilty;
-		return type;
-	}
+    public TypeBinding computeBoxingType() {
+        PolyTypeBinding type = new PolyTypeBinding(this.expression);
+        type.vanillaCompatibilty = !this.vanillaCompatibilty;
+        return type;
+    }
 }

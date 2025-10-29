@@ -14,46 +14,55 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.apt.model;
 
-import java.util.Arrays;
-import java.util.List;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeVariableBinding;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.type.IntersectionType;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.type.TypeKind;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.type.TypeMirror;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.type.TypeVisitor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeVariableBinding;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Implementation of the WildcardType
  */
 public class IntersectionTypeImpl extends TypeMirrorImpl implements IntersectionType {
-	private final List<? extends TypeMirror> bounds;
+    private final List<? extends TypeMirror> bounds;
 
-	IntersectionTypeImpl(BaseProcessingEnvImpl env, TypeVariableBinding binding) {
-		super(env, binding);
-		this.bounds = Arrays.stream(binding.superInterfaces).map(referenceBinding -> this._env.getFactory().newTypeMirror(referenceBinding)).toList();
-	}
+    IntersectionTypeImpl(BaseProcessingEnvImpl env, TypeVariableBinding binding) {
+        super(env, binding);
+        this.bounds = Arrays.stream(binding.superInterfaces)
+            .map(referenceBinding -> this._env.getFactory().newTypeMirror(referenceBinding))
+            .toList();
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.lang.model.type.TypeMirror#getKind()
-	 */
-	@Override
-	public TypeKind getKind() {
-		return TypeKind.INTERSECTION;
-	}
-	/* (non-Javadoc)
-	 * @see javax.lang.model.type.WildcardType#getSuperBound()
-	 */
-	@Override
-	public <R, P> R accept(TypeVisitor<R, P> v, P p) {
-		return v.visitIntersection(this, p);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.lang.model.type.TypeMirror#getKind()
+     */
+    @Override
+    public TypeKind getKind() {
+        return TypeKind.INTERSECTION;
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.lang.model.type.IntersectionType#getBounds()
-	 */
-	@Override
-	public List<? extends TypeMirror> getBounds() {
-		return this.bounds;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.lang.model.type.WildcardType#getSuperBound()
+     */
+    @Override
+    public <R, P> R accept(TypeVisitor<R, P> v, P p) {
+        return v.visitIntersection(this, p);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.lang.model.type.IntersectionType#getBounds()
+     */
+    @Override
+    public List<? extends TypeMirror> getBounds() {
+        return this.bounds;
+    }
 }

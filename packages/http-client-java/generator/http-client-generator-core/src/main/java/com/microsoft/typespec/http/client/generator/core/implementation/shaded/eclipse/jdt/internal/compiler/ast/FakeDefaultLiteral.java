@@ -24,27 +24,27 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class FakeDefaultLiteral extends MagicLiteral {
 
-	static final char[] source = {'d' , 'e' , 'f' , 'a', 'u', 'l','t'};
+    static final char[] source = { 'd', 'e', 'f', 'a', 'u', 'l', 't' };
 
-	public FakeDefaultLiteral(int s , int e) {
+    public FakeDefaultLiteral(int s, int e) {
 
-		super(s,e);
-	}
+        super(s, e);
+    }
 
-	@Override
-	public void computeConstant() {
+    @Override
+    public void computeConstant() {
 
-		this.constant = Constant.NotAConstant;
-	}
+        this.constant = Constant.NotAConstant;
+    }
 
-	@Override
-	public TypeBinding literalType(BlockScope scope) {
-		// TODO Change this while implementing flow analysis
-		return TypeBinding.VOID;
-	}
+    @Override
+    public TypeBinding literalType(BlockScope scope) {
+        // TODO Change this while implementing flow analysis
+        return TypeBinding.VOID;
+    }
 
-	@Override
-	public char[] source() {
-		return source;
-	}
+    @Override
+    public char[] source() {
+        return source;
+    }
 }

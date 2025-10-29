@@ -13,8 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text;
 
-
-
 /**
  * Indicates the attempt to access a non-existing position. The attempt has been
  * performed on a text store such as a document or string.
@@ -24,28 +22,29 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public class BadLocationException extends Exception {
 
-	/**
-	 * Serial version UID for this class.
-	 * <p>
-	 * Note: This class is not intended to be serialized.
-	 * </p>
-	 * @since 3.1
-	 */
-	private static final long serialVersionUID= 3257281452776370224L;
+    /**
+     * Serial version UID for this class.
+     * <p>
+     * Note: This class is not intended to be serialized.
+     * </p>
+     * 
+     * @since 3.1
+     */
+    private static final long serialVersionUID = 3257281452776370224L;
 
-	/**
-	 * Creates a new bad location exception.
-	 */
-	public BadLocationException() {
-		super();
-	}
+    /**
+     * Creates a new bad location exception.
+     */
+    public BadLocationException() {
+        super();
+    }
 
-	/**
-	 * Creates a new bad location exception.
-	 *
-	 * @param message the exception message
-	 */
-	public BadLocationException(String message) {
-		super(message);
-	}
+    /**
+     * Creates a new bad location exception.
+     *
+     * @param message the exception message
+     */
+    public BadLocationException(String message) {
+        super(message);
+    }
 }

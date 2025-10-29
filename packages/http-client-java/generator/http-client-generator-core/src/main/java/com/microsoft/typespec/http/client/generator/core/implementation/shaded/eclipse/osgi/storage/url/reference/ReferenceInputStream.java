@@ -14,41 +14,41 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.storage.url.reference;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.storage.ContentProvider;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.storage.ContentProvider;
 
 /**
  * InputStream subclass which provides a reference (via File) to the data rather
  * than allowing the input stream to be directly read.
  */
 public class ReferenceInputStream extends InputStream implements ContentProvider {
-	private final File reference;
+    private final File reference;
 
-	public ReferenceInputStream(File reference) {
-		this.reference = reference;
-	}
+    public ReferenceInputStream(File reference) {
+        this.reference = reference;
+    }
 
-	/*
-	 * This method should not be called.
-	 */
-	@Override
-	public int read() throws IOException {
-		throw new IOException();
-	}
+    /*
+     * This method should not be called.
+     */
+    @Override
+    public int read() throws IOException {
+        throw new IOException();
+    }
 
-	public File getReference() {
-		return getContent();
-	}
+    public File getReference() {
+        return getContent();
+    }
 
-	@Override
-	public File getContent() {
-		return reference;
-	}
+    @Override
+    public File getContent() {
+        return reference;
+    }
 
-	@Override
-	public Type getType() {
-		return Type.REFERENCE;
-	}
+    @Override
+    public Type getType() {
+        return Type.REFERENCE;
+    }
 }

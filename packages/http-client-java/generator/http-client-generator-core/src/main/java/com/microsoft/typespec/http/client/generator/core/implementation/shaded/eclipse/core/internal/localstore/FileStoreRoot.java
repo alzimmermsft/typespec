@@ -96,15 +96,6 @@ public class FileStoreRoot {
     /**
      * Returns the resolved, absolute file system location of the resource
      * corresponding to the given workspace path, or null if none could
-     * be computed. No canonicalization is applied to the returned URI.
-     */
-    public URI computeURI(IPath workspacePath) {
-        return computeURI(workspacePath, false);
-    }
-
-    /**
-     * Returns the resolved, absolute file system location of the resource
-     * corresponding to the given workspace path, or null if none could
      * be computed.
      *
      * @param workspacePath the workspace path to compute the URL for
@@ -151,18 +142,6 @@ public class FileStoreRoot {
 
     boolean isValid() {
         return isValid;
-    }
-
-    /**
-     * Returns the resolved, absolute file system location of the given resource.
-     * Returns null if the location could not be resolved. No canonicalization
-     * is applied to the returned path.
-     *
-     * @param workspacePath the workspace path of the resource
-     * @param resource the resource itself
-     */
-    IPath localLocation(IPath workspacePath, IResource resource) {
-        return localLocation(workspacePath, resource, false);
     }
 
     /**

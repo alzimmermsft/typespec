@@ -285,16 +285,6 @@ public class ListenerList<E> implements Iterable<E> {
         return StreamSupport.stream(spliterator(), false);
     }
 
-    /**
-     * Returns a parallel {@code Stream} over the registered listeners.
-     *
-     * @return a parallel {@code Stream} over the registered listeners.
-     * @since org.eclipse.equinox.common 3.9
-     */
-    public Stream<E> parallelStream() {
-        return StreamSupport.stream(spliterator(), true);
-    }
-
     @Override
     public String toString() {
         return Arrays.toString(listeners);

@@ -18,7 +18,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.OperationCanceledException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.problem.AbortCompilation;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util.Messages;
-
 import java.util.function.BooleanSupplier;
 
 public class BuildNotifier {
@@ -42,10 +41,10 @@ public class BuildNotifier {
 
     private static final int millisecondsBeforeCancelAutoBuild = Integer.getInteger(
         "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.MillisecondsBeforeCancelAutoBuild",
-        1000); //$NON-NLS-1$
+        1000); // $NON-NLS-1$
     private static final int millisecondsBeforeInterruptAutoBuild = Integer.getInteger(
         "com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.MillisecondsBeforeInterruptAutoBuild",
-        3000); //$NON-NLS-1$
+        3000); // $NON-NLS-1$
     private final BooleanSupplier interruptSupplier;
     private final long startTimeNanos;
     private final int buildKind;
@@ -202,8 +201,8 @@ public class BuildNotifier {
                     if (this.fixedErrorCount == 1)
                         buffer.append(Messages.build_oneError);
                     else
-                        buffer.append(
-                            Messages.bind(Messages.build_multipleErrors, String.valueOf(this.fixedErrorCount)));
+                        buffer
+                            .append(Messages.bind(Messages.build_multipleErrors, String.valueOf(this.fixedErrorCount)));
                     if (this.fixedWarningCount > 0)
                         buffer.append(" + "); //$NON-NLS-1$
                 }
@@ -222,7 +221,7 @@ public class BuildNotifier {
 
     /**
      * Sets the cancelling flag, which indicates we are in the middle
-     * of being cancelled.  Certain places (those callable indirectly from the compiler)
+     * of being cancelled. Certain places (those callable indirectly from the compiler)
      * should not check cancel again while this is true, to avoid OperationCanceledException
      * being thrown at an inopportune time.
      */
@@ -236,7 +235,7 @@ public class BuildNotifier {
 
         if (msg.equals(this.previousSubtask))
             return; // avoid refreshing with same one
-        //if (JavaBuilder.DEBUG) System.out.println(msg);
+        // if (JavaBuilder.DEBUG) System.out.println(msg);
         if (this.monitor != null)
             this.monitor.subTask(msg);
 
@@ -250,8 +249,8 @@ public class BuildNotifier {
             if (work > this.workDone) {
                 if (this.monitor != null)
                     this.monitor.worked(work - this.workDone);
-                //if (JavaBuilder.DEBUG)
-                //System.out.println(java.text.NumberFormat.getPercentInstance().format(this.percentComplete));
+                // if (JavaBuilder.DEBUG)
+                // System.out.println(java.text.NumberFormat.getPercentInstance().format(this.percentComplete));
                 this.workDone = work;
             }
         }

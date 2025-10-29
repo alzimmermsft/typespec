@@ -24,15 +24,15 @@ import java.util.concurrent.Executor;
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
 enum DirectExecutor implements Executor {
-  INSTANCE;
+    INSTANCE;
 
-  @Override
-  public void execute(Runnable command) {
-    command.run();
-  }
+    @Override
+    public void execute(Runnable command) {
+        command.run();
+    }
 
-  @Override
-  public String toString() {
-    return "MoreExecutors.directExecutor()";
-  }
+    @Override
+    public String toString() {
+        return "MoreExecutors.directExecutor()";
+    }
 }

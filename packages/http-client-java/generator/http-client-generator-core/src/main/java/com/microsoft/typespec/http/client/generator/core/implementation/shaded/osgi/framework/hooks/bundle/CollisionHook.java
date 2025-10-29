@@ -16,11 +16,11 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.hooks.bundle;
 
-import java.util.Collection;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.ConsumerType;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Bundle;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.BundleContext;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Constants;
+import java.util.Collection;
 
 /**
  * OSGi Framework Bundle Collision Hook Service.
@@ -39,49 +39,49 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 @ConsumerType
 public interface CollisionHook {
 
-	/**
-	 * Specifies a bundle install operation is being performed.
-	 */
-	int	INSTALLING	= 1;
+    /**
+     * Specifies a bundle install operation is being performed.
+     */
+    int INSTALLING = 1;
 
-	/**
-	 * Specifies a bundle update operation is being performed.
-	 */
-	int	UPDATING	= 2;
+    /**
+     * Specifies a bundle update operation is being performed.
+     */
+    int UPDATING = 2;
 
-	/**
-	 * Filter bundle collisions hook method. This method is called during the
-	 * install or update operation. The operation type will be
-	 * {@link #INSTALLING installing} or {@link #UPDATING updating}. Depending
-	 * on the operation type the target bundle and the collision candidate
-	 * collection are the following:
-	 * <ul>
-	 * <li>{@link #INSTALLING installing} - The target is the bundle associated
-	 * with the {@link BundleContext} used to call one of the
-	 * {@link BundleContext#installBundle(String) install} methods. The
-	 * collision candidate collection contains the existing bundles installed
-	 * which have the same symbolic name and version as the bundle being
-	 * installed.</li>
-	 * <li>{@link #UPDATING updating} - The target is the bundle used to call
-	 * one of the {@link Bundle#update() update} methods. The collision
-	 * candidate collection contains the existing bundles installed which have
-	 * the same symbolic name and version as the content the target bundle is
-	 * being updated to.</li>
-	 * </ul>
-	 * This method can filter the collection of collision candidates by removing
-	 * potential collisions. For the specified operation to succeed, the
-	 * collection of collision candidates must be empty after all registered
-	 * collision hook services have been called.
-	 * 
-	 * @param operationType The operation type. Must be the value of
-	 *        {@link #INSTALLING installing} or {@link #UPDATING updating}.
-	 * @param target The target bundle used to determine what collision
-	 *        candidates to filter.
-	 * @param collisionCandidates The collection of collision candidates. The
-	 *        collection supports all the optional {@code Collection} operations
-	 *        except {@code add} and {@code addAll}. Attempting to add to the
-	 *        collection will result in an {@code UnsupportedOperationException}
-	 *        . The collection is not synchronized.
-	 */
-	void filterCollisions(int operationType, Bundle target, Collection<Bundle> collisionCandidates);
+    /**
+     * Filter bundle collisions hook method. This method is called during the
+     * install or update operation. The operation type will be
+     * {@link #INSTALLING installing} or {@link #UPDATING updating}. Depending
+     * on the operation type the target bundle and the collision candidate
+     * collection are the following:
+     * <ul>
+     * <li>{@link #INSTALLING installing} - The target is the bundle associated
+     * with the {@link BundleContext} used to call one of the
+     * {@link BundleContext#installBundle(String) install} methods. The
+     * collision candidate collection contains the existing bundles installed
+     * which have the same symbolic name and version as the bundle being
+     * installed.</li>
+     * <li>{@link #UPDATING updating} - The target is the bundle used to call
+     * one of the {@link Bundle#update() update} methods. The collision
+     * candidate collection contains the existing bundles installed which have
+     * the same symbolic name and version as the content the target bundle is
+     * being updated to.</li>
+     * </ul>
+     * This method can filter the collection of collision candidates by removing
+     * potential collisions. For the specified operation to succeed, the
+     * collection of collision candidates must be empty after all registered
+     * collision hook services have been called.
+     * 
+     * @param operationType The operation type. Must be the value of
+     * {@link #INSTALLING installing} or {@link #UPDATING updating}.
+     * @param target The target bundle used to determine what collision
+     * candidates to filter.
+     * @param collisionCandidates The collection of collision candidates. The
+     * collection supports all the optional {@code Collection} operations
+     * except {@code add} and {@code addAll}. Attempting to add to the
+     * collection will result in an {@code UnsupportedOperationException}
+     * . The collection is not synchronized.
+     */
+    void filterCollisions(int operationType, Bundle target, Collection<Bundle> collisionCandidates);
 }

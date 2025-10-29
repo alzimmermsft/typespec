@@ -59,21 +59,6 @@ public interface IOpenable {
     void close() throws JavaModelException;
 
     /**
-     * Finds and returns the recommended line separator for this element.
-     * The element's buffer is first searched and the first line separator in this buffer is returned if any.
-     * Otherwise the preference
-     * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Platform#PREF_LINE_SEPARATOR}
-     * on this element's project or workspace is returned.
-     * Finally if no such preference is set, the system line separator is returned.
-     *
-     * @return the recommended line separator for this element
-     * @exception JavaModelException if this element does not exist or if an
-     * exception occurs while accessing its corresponding resource.
-     * @since 3.2
-     */
-    String findRecommendedLineSeparator() throws JavaModelException;
-
-    /**
      * Returns the buffer opened for this element, or <code>null</code>
      * if this element does not have a buffer.
      *

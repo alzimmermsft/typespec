@@ -19,10 +19,10 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtIncompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.J2ktIncompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.ForwardingDeque;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.util.Collection;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.TimeUnit;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 
 /**
  * A {@link BlockingDeque} which forwards all its method calls to another {@code BlockingDeque}.
@@ -43,95 +43,96 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
  * methods that they depend on are thread-safe.
  *
  * @author Emily Soldal
- * @since 21.0 (since 14.0 as {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.ForwardingBlockingDeque})
+ * @since 21.0 (since 14.0 as
+ * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.ForwardingBlockingDeque})
  */
 @J2ktIncompatible
 @GwtIncompatible
 @ElementTypesAreNonnullByDefault
-public abstract class ForwardingBlockingDeque<E> extends ForwardingDeque<E>
-    implements BlockingDeque<E> {
+public abstract class ForwardingBlockingDeque<E> extends ForwardingDeque<E> implements BlockingDeque<E> {
 
-  /** Constructor for use by subclasses. */
-  protected ForwardingBlockingDeque() {}
+    /** Constructor for use by subclasses. */
+    protected ForwardingBlockingDeque() {
+    }
 
-  @Override
-  protected abstract BlockingDeque<E> delegate();
+    @Override
+    protected abstract BlockingDeque<E> delegate();
 
-  @Override
-  public int remainingCapacity() {
-    return delegate().remainingCapacity();
-  }
+    @Override
+    public int remainingCapacity() {
+        return delegate().remainingCapacity();
+    }
 
-  @Override
-  public void putFirst(E e) throws InterruptedException {
-    delegate().putFirst(e);
-  }
+    @Override
+    public void putFirst(E e) throws InterruptedException {
+        delegate().putFirst(e);
+    }
 
-  @Override
-  public void putLast(E e) throws InterruptedException {
-    delegate().putLast(e);
-  }
+    @Override
+    public void putLast(E e) throws InterruptedException {
+        delegate().putLast(e);
+    }
 
-  @Override
-  public boolean offerFirst(E e, long timeout, TimeUnit unit) throws InterruptedException {
-    return delegate().offerFirst(e, timeout, unit);
-  }
+    @Override
+    public boolean offerFirst(E e, long timeout, TimeUnit unit) throws InterruptedException {
+        return delegate().offerFirst(e, timeout, unit);
+    }
 
-  @Override
-  public boolean offerLast(E e, long timeout, TimeUnit unit) throws InterruptedException {
-    return delegate().offerLast(e, timeout, unit);
-  }
+    @Override
+    public boolean offerLast(E e, long timeout, TimeUnit unit) throws InterruptedException {
+        return delegate().offerLast(e, timeout, unit);
+    }
 
-  @Override
-  public E takeFirst() throws InterruptedException {
-    return delegate().takeFirst();
-  }
+    @Override
+    public E takeFirst() throws InterruptedException {
+        return delegate().takeFirst();
+    }
 
-  @Override
-  public E takeLast() throws InterruptedException {
-    return delegate().takeLast();
-  }
+    @Override
+    public E takeLast() throws InterruptedException {
+        return delegate().takeLast();
+    }
 
-  @Override
-  @CheckForNull
-  public E pollFirst(long timeout, TimeUnit unit) throws InterruptedException {
-    return delegate().pollFirst(timeout, unit);
-  }
+    @Override
+    @CheckForNull
+    public E pollFirst(long timeout, TimeUnit unit) throws InterruptedException {
+        return delegate().pollFirst(timeout, unit);
+    }
 
-  @Override
-  @CheckForNull
-  public E pollLast(long timeout, TimeUnit unit) throws InterruptedException {
-    return delegate().pollLast(timeout, unit);
-  }
+    @Override
+    @CheckForNull
+    public E pollLast(long timeout, TimeUnit unit) throws InterruptedException {
+        return delegate().pollLast(timeout, unit);
+    }
 
-  @Override
-  public void put(E e) throws InterruptedException {
-    delegate().put(e);
-  }
+    @Override
+    public void put(E e) throws InterruptedException {
+        delegate().put(e);
+    }
 
-  @Override
-  public boolean offer(E e, long timeout, TimeUnit unit) throws InterruptedException {
-    return delegate().offer(e, timeout, unit);
-  }
+    @Override
+    public boolean offer(E e, long timeout, TimeUnit unit) throws InterruptedException {
+        return delegate().offer(e, timeout, unit);
+    }
 
-  @Override
-  public E take() throws InterruptedException {
-    return delegate().take();
-  }
+    @Override
+    public E take() throws InterruptedException {
+        return delegate().take();
+    }
 
-  @Override
-  @CheckForNull
-  public E poll(long timeout, TimeUnit unit) throws InterruptedException {
-    return delegate().poll(timeout, unit);
-  }
+    @Override
+    @CheckForNull
+    public E poll(long timeout, TimeUnit unit) throws InterruptedException {
+        return delegate().poll(timeout, unit);
+    }
 
-  @Override
-  public int drainTo(Collection<? super E> c) {
-    return delegate().drainTo(c);
-  }
+    @Override
+    public int drainTo(Collection<? super E> c) {
+        return delegate().drainTo(c);
+    }
 
-  @Override
-  public int drainTo(Collection<? super E> c, int maxElements) {
-    return delegate().drainTo(c, maxElements);
-  }
+    @Override
+    public int drainTo(Collection<? super E> c, int maxElements) {
+        return delegate().drainTo(c, maxElements);
+    }
 }

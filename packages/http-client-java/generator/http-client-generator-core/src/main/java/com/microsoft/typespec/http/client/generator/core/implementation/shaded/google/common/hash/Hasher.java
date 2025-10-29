@@ -14,11 +14,11 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.hash;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.Beta;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A {@link PrimitiveSink} that can compute a hash code after reading the input. Each hasher should
@@ -38,11 +38,13 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  * were inserted, not how those bytes were chunked into discrete put() operations. For example, the
  * following three expressions all generate colliding hash codes:
  *
- * <pre>{@code
+ * <pre>
+ * {@code
  * newHasher().putByte(b1).putByte(b2).putByte(b3).hash()
  * newHasher().putByte(b1).putBytes(new byte[] { b2, b3 }).hash()
  * newHasher().putBytes(new byte[] { b1, b2, b3 }).hash()
- * }</pre>
+ * }
+ * </pre>
  *
  * <p>If you wish to avoid this, you should either prepend or append the size of each chunk. Keep in
  * mind that when dealing with char sequences, the encoded form of two concatenated char sequences
@@ -56,100 +58,99 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @Beta
 @ElementTypesAreNonnullByDefault
 public interface Hasher extends PrimitiveSink {
-  @CanIgnoreReturnValue
-  @Override
-  Hasher putByte(byte b);
+    @CanIgnoreReturnValue
+    @Override
+    Hasher putByte(byte b);
 
-  @CanIgnoreReturnValue
-  @Override
-  Hasher putBytes(byte[] bytes);
+    @CanIgnoreReturnValue
+    @Override
+    Hasher putBytes(byte[] bytes);
 
-  @CanIgnoreReturnValue
-  @Override
-  Hasher putBytes(byte[] bytes, int off, int len);
+    @CanIgnoreReturnValue
+    @Override
+    Hasher putBytes(byte[] bytes, int off, int len);
 
-  @CanIgnoreReturnValue
-  @Override
-  Hasher putBytes(ByteBuffer bytes);
+    @CanIgnoreReturnValue
+    @Override
+    Hasher putBytes(ByteBuffer bytes);
 
-  @CanIgnoreReturnValue
-  @Override
-  Hasher putShort(short s);
+    @CanIgnoreReturnValue
+    @Override
+    Hasher putShort(short s);
 
-  @CanIgnoreReturnValue
-  @Override
-  Hasher putInt(int i);
+    @CanIgnoreReturnValue
+    @Override
+    Hasher putInt(int i);
 
-  @CanIgnoreReturnValue
-  @Override
-  Hasher putLong(long l);
+    @CanIgnoreReturnValue
+    @Override
+    Hasher putLong(long l);
 
-  /** Equivalent to {@code putInt(Float.floatToRawIntBits(f))}. */
-  @CanIgnoreReturnValue
-  @Override
-  Hasher putFloat(float f);
+    /** Equivalent to {@code putInt(Float.floatToRawIntBits(f))}. */
+    @CanIgnoreReturnValue
+    @Override
+    Hasher putFloat(float f);
 
-  /** Equivalent to {@code putLong(Double.doubleToRawLongBits(d))}. */
-  @CanIgnoreReturnValue
-  @Override
-  Hasher putDouble(double d);
+    /** Equivalent to {@code putLong(Double.doubleToRawLongBits(d))}. */
+    @CanIgnoreReturnValue
+    @Override
+    Hasher putDouble(double d);
 
-  /** Equivalent to {@code putByte(b ? (byte) 1 : (byte) 0)}. */
-  @CanIgnoreReturnValue
-  @Override
-  Hasher putBoolean(boolean b);
+    /** Equivalent to {@code putByte(b ? (byte) 1 : (byte) 0)}. */
+    @CanIgnoreReturnValue
+    @Override
+    Hasher putBoolean(boolean b);
 
-  @CanIgnoreReturnValue
-  @Override
-  Hasher putChar(char c);
+    @CanIgnoreReturnValue
+    @Override
+    Hasher putChar(char c);
 
-  /**
-   * Equivalent to processing each {@code char} value in the {@code CharSequence}, in order. In
-   * other words, no character encoding is performed; the low byte and high byte of each {@code
-   * char} are hashed directly (in that order). The input must not be updated while this method is
-   * in progress.
-   *
-   * <p><b>Warning:</b> This method will produce different output than most other languages do when
-   * running the same hash function on the equivalent input. For cross-language compatibility, use
-   * {@link #putString}, usually with a charset of UTF-8. For other use cases, use {@code
-   * putUnencodedChars}.
-   *
-   * @since 15.0 (since 11.0 as putString(CharSequence)).
-   */
-  @CanIgnoreReturnValue
-  @Override
-  Hasher putUnencodedChars(CharSequence charSequence);
+    /**
+     * Equivalent to processing each {@code char} value in the {@code CharSequence}, in order. In
+     * other words, no character encoding is performed; the low byte and high byte of each {@code
+     * char} are hashed directly (in that order). The input must not be updated while this method is
+     * in progress.
+     *
+     * <p><b>Warning:</b> This method will produce different output than most other languages do when
+     * running the same hash function on the equivalent input. For cross-language compatibility, use
+     * {@link #putString}, usually with a charset of UTF-8. For other use cases, use {@code
+     * putUnencodedChars}.
+     *
+     * @since 15.0 (since 11.0 as putString(CharSequence)).
+     */
+    @CanIgnoreReturnValue
+    @Override
+    Hasher putUnencodedChars(CharSequence charSequence);
 
-  /**
-   * Equivalent to {@code putBytes(charSequence.toString().getBytes(charset))}.
-   *
-   * <p><b>Warning:</b> This method, which reencodes the input before hashing it, is useful only for
-   * cross-language compatibility. For other use cases, prefer {@link #putUnencodedChars}, which is
-   * faster, produces the same output across Java releases, and hashes every {@code char} in the
-   * input, even if some are invalid.
-   */
-  @CanIgnoreReturnValue
-  @Override
-  Hasher putString(CharSequence charSequence, Charset charset);
+    /**
+     * Equivalent to {@code putBytes(charSequence.toString().getBytes(charset))}.
+     *
+     * <p><b>Warning:</b> This method, which reencodes the input before hashing it, is useful only for
+     * cross-language compatibility. For other use cases, prefer {@link #putUnencodedChars}, which is
+     * faster, produces the same output across Java releases, and hashes every {@code char} in the
+     * input, even if some are invalid.
+     */
+    @CanIgnoreReturnValue
+    @Override
+    Hasher putString(CharSequence charSequence, Charset charset);
 
-  /** A simple convenience for {@code funnel.funnel(object, this)}. */
-  @CanIgnoreReturnValue
-  <T extends @Nullable Object> Hasher putObject(
-      @ParametricNullness T instance, Funnel<? super T> funnel);
+    /** A simple convenience for {@code funnel.funnel(object, this)}. */
+    @CanIgnoreReturnValue
+    <T extends @Nullable Object> Hasher putObject(@ParametricNullness T instance, Funnel<? super T> funnel);
 
-  /**
-   * Computes a hash code based on the data that have been provided to this hasher. The result is
-   * unspecified if this method is called more than once on the same instance.
-   */
-  HashCode hash();
+    /**
+     * Computes a hash code based on the data that have been provided to this hasher. The result is
+     * unspecified if this method is called more than once on the same instance.
+     */
+    HashCode hash();
 
-  /**
-   * {@inheritDoc}
-   *
-   * @deprecated This returns {@link Object#hashCode()}; you almost certainly mean to call {@code
-   *     hash().asInt()}.
-   */
-  @Override
-  @Deprecated
-  int hashCode();
+    /**
+     * {@inheritDoc}
+     *
+     * @deprecated This returns {@link Object#hashCode()}; you almost certainly mean to call {@code
+     *     hash().asInt()}.
+     */
+    @Override
+    @Deprecated
+    int hashCode();
 }

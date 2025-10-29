@@ -19,29 +19,29 @@ import java.io.IOException;
  * Internal class.
  */
 public interface Locker {
-	boolean lock() throws IOException;
+    boolean lock() throws IOException;
 
-	boolean isLocked() throws IOException;
+    boolean isLocked() throws IOException;
 
-	void release();
+    void release();
 
-	class MockLocker implements Locker {
-		@Override
-		public boolean lock() throws IOException {
-			// locking always successful
-			return true;
-		}
+    class MockLocker implements Locker {
+        @Override
+        public boolean lock() throws IOException {
+            // locking always successful
+            return true;
+        }
 
-		@Override
-		public boolean isLocked() {
-			// this lock is never locked
-			return false;
-		}
+        @Override
+        public boolean isLocked() {
+            // this lock is never locked
+            return false;
+        }
 
-		@Override
-		public void release() {
-			// nothing to release
-		}
+        @Override
+        public void release() {
+            // nothing to release
+        }
 
-	}
+    }
 }

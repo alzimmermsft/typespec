@@ -16,12 +16,12 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.condpermadmin;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Bundle;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.FrameworkUtil;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Bundle;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.FrameworkUtil;
 
 /**
  * Condition to test if the signer of a bundle matches or does not match a
@@ -51,51 +51,52 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  * @author $Id: 9bb17ecb4b23c66940ab8d9f3b97b0a1040db929 $
  */
 public class BundleSignerCondition {
-	private static final String	CONDITION_TYPE	= "com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.condpermadmin.BundleSignerCondition";
+    private static final String CONDITION_TYPE
+        = "com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.condpermadmin.BundleSignerCondition";
 
-	/**
-	 * Constructs a Condition that tries to match the passed Bundle's location
-	 * to the location pattern.
-	 * 
-	 * @param bundle The Bundle being evaluated.
-	 * @param info The ConditionInfo from which to construct the condition. The
-	 *        ConditionInfo must specify one or two arguments. The first
-	 *        argument of the ConditionInfo specifies the chain of distinguished
-	 *        names pattern to match against the signer of the bundle. The
-	 *        Condition is satisfied if the signer of the bundle matches the
-	 *        pattern. The second argument of the ConditionInfo is optional. If
-	 *        a second argument is present and equal to "!", then the
-	 *        satisfaction of the Condition is negated. That is, the Condition
-	 *        is satisfied if the signer of the bundle does NOT match the
-	 *        pattern. If the second argument is present but does not equal "!",
-	 *        then the second argument is ignored.
-	 * @return A Condition which checks the signers of the specified bundle.
-	 */
-	public static Condition getCondition(final Bundle bundle, final ConditionInfo info) {
-		if (!CONDITION_TYPE.equals(info.getType()))
-			throw new IllegalArgumentException("ConditionInfo must be of type \"" + CONDITION_TYPE + "\"");
-		String[] args = info.getArgs();
-		if (args.length != 1 && args.length != 2)
-			throw new IllegalArgumentException("Illegal number of args: " + args.length);
+    /**
+     * Constructs a Condition that tries to match the passed Bundle's location
+     * to the location pattern.
+     * 
+     * @param bundle The Bundle being evaluated.
+     * @param info The ConditionInfo from which to construct the condition. The
+     * ConditionInfo must specify one or two arguments. The first
+     * argument of the ConditionInfo specifies the chain of distinguished
+     * names pattern to match against the signer of the bundle. The
+     * Condition is satisfied if the signer of the bundle matches the
+     * pattern. The second argument of the ConditionInfo is optional. If
+     * a second argument is present and equal to "!", then the
+     * satisfaction of the Condition is negated. That is, the Condition
+     * is satisfied if the signer of the bundle does NOT match the
+     * pattern. If the second argument is present but does not equal "!",
+     * then the second argument is ignored.
+     * @return A Condition which checks the signers of the specified bundle.
+     */
+    public static Condition getCondition(final Bundle bundle, final ConditionInfo info) {
+        if (!CONDITION_TYPE.equals(info.getType()))
+            throw new IllegalArgumentException("ConditionInfo must be of type \"" + CONDITION_TYPE + "\"");
+        String[] args = info.getArgs();
+        if (args.length != 1 && args.length != 2)
+            throw new IllegalArgumentException("Illegal number of args: " + args.length);
 
-		Map<X509Certificate, List<X509Certificate>> signers = bundle.getSignerCertificates(Bundle.SIGNERS_TRUSTED);
-		boolean match = false;
-		for (List<X509Certificate> signerCerts : signers.values()) {
-			List<String> dnChain = new ArrayList<String>(signerCerts.size());
-			for (X509Certificate signer : signerCerts) {
-				dnChain.add(signer.getSubjectDN().getName());
-			}
-			if (FrameworkUtil.matchDistinguishedNameChain(args[0], dnChain)) {
-				match = true;
-				break;
-			}
-		}
+        Map<X509Certificate, List<X509Certificate>> signers = bundle.getSignerCertificates(Bundle.SIGNERS_TRUSTED);
+        boolean match = false;
+        for (List<X509Certificate> signerCerts : signers.values()) {
+            List<String> dnChain = new ArrayList<String>(signerCerts.size());
+            for (X509Certificate signer : signerCerts) {
+                dnChain.add(signer.getSubjectDN().getName());
+            }
+            if (FrameworkUtil.matchDistinguishedNameChain(args[0], dnChain)) {
+                match = true;
+                break;
+            }
+        }
 
-		boolean negate = (args.length == 2) ? "!".equals(args[1]) : false;
-		return negate ^ match ? Condition.TRUE : Condition.FALSE;
-	}
+        boolean negate = (args.length == 2) ? "!".equals(args[1]) : false;
+        return negate ^ match ? Condition.TRUE : Condition.FALSE;
+    }
 
-	private BundleSignerCondition() {
-		// private constructor to prevent objects of this type
-	}
+    private BundleSignerCondition() {
+        // private constructor to prevent objects of this type
+    }
 }

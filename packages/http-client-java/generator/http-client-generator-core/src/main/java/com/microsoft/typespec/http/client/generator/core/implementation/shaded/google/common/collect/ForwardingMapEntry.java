@@ -16,12 +16,11 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Objects;
-import java.util.Map;
-import java.util.Map.Entry;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
+import java.util.Map.Entry;
 
 /**
  * A map entry which forwards all its method calls to another map entry. Subclasses should override
@@ -50,79 +49,79 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @ElementTypesAreNonnullByDefault
 public abstract class ForwardingMapEntry<K extends @Nullable Object, V extends @Nullable Object>
     extends ForwardingObject implements Entry<K, V> {
-  // TODO(lowasser): identify places where thread safety is actually lost
+    // TODO(lowasser): identify places where thread safety is actually lost
 
-  /** Constructor for use by subclasses. */
-  protected ForwardingMapEntry() {}
-
-  @Override
-  protected abstract Entry<K, V> delegate();
-
-  @Override
-  @ParametricNullness
-  public K getKey() {
-    return delegate().getKey();
-  }
-
-  @Override
-  @ParametricNullness
-  public V getValue() {
-    return delegate().getValue();
-  }
-
-  @Override
-  @ParametricNullness
-  public V setValue(@ParametricNullness V value) {
-    return delegate().setValue(value);
-  }
-
-  @Override
-  public boolean equals(@CheckForNull Object object) {
-    return delegate().equals(object);
-  }
-
-  @Override
-  public int hashCode() {
-    return delegate().hashCode();
-  }
-
-  /**
-   * A sensible definition of {@link #equals(Object)} in terms of {@link #getKey()} and {@link
-   * #getValue()}. If you override either of these methods, you may wish to override {@link
-   * #equals(Object)} to forward to this implementation.
-   *
-   * @since 7.0
-   */
-  protected boolean standardEquals(@CheckForNull Object object) {
-    if (object instanceof Entry) {
-      Entry<?, ?> that = (Entry<?, ?>) object;
-      return Objects.equal(this.getKey(), that.getKey())
-          && Objects.equal(this.getValue(), that.getValue());
+    /** Constructor for use by subclasses. */
+    protected ForwardingMapEntry() {
     }
-    return false;
-  }
 
-  /**
-   * A sensible definition of {@link #hashCode()} in terms of {@link #getKey()} and {@link
-   * #getValue()}. If you override either of these methods, you may wish to override {@link
-   * #hashCode()} to forward to this implementation.
-   *
-   * @since 7.0
-   */
-  protected int standardHashCode() {
-    K k = getKey();
-    V v = getValue();
-    return ((k == null) ? 0 : k.hashCode()) ^ ((v == null) ? 0 : v.hashCode());
-  }
+    @Override
+    protected abstract Entry<K, V> delegate();
 
-  /**
-   * A sensible definition of {@link #toString} in terms of {@link #getKey} and {@link #getValue}.
-   * If you override either of these methods, you may wish to override {@link #equals} to forward to
-   * this implementation.
-   *
-   * @since 7.0
-   */
-  protected String standardToString() {
-    return getKey() + "=" + getValue();
-  }
+    @Override
+    @ParametricNullness
+    public K getKey() {
+        return delegate().getKey();
+    }
+
+    @Override
+    @ParametricNullness
+    public V getValue() {
+        return delegate().getValue();
+    }
+
+    @Override
+    @ParametricNullness
+    public V setValue(@ParametricNullness V value) {
+        return delegate().setValue(value);
+    }
+
+    @Override
+    public boolean equals(@CheckForNull Object object) {
+        return delegate().equals(object);
+    }
+
+    @Override
+    public int hashCode() {
+        return delegate().hashCode();
+    }
+
+    /**
+     * A sensible definition of {@link #equals(Object)} in terms of {@link #getKey()} and {@link
+     * #getValue()}. If you override either of these methods, you may wish to override {@link
+     * #equals(Object)} to forward to this implementation.
+     *
+     * @since 7.0
+     */
+    protected boolean standardEquals(@CheckForNull Object object) {
+        if (object instanceof Entry) {
+            Entry<?, ?> that = (Entry<?, ?>) object;
+            return Objects.equal(this.getKey(), that.getKey()) && Objects.equal(this.getValue(), that.getValue());
+        }
+        return false;
+    }
+
+    /**
+     * A sensible definition of {@link #hashCode()} in terms of {@link #getKey()} and {@link
+     * #getValue()}. If you override either of these methods, you may wish to override {@link
+     * #hashCode()} to forward to this implementation.
+     *
+     * @since 7.0
+     */
+    protected int standardHashCode() {
+        K k = getKey();
+        V v = getValue();
+        return ((k == null) ? 0 : k.hashCode()) ^ ((v == null) ? 0 : v.hashCode());
+    }
+
+    /**
+     * A sensible definition of {@link #toString} in terms of {@link #getKey} and {@link #getValue}.
+     * If you override either of these methods, you may wish to override {@link #equals} to forward to
+     * this implementation.
+     *
+     * @since 7.0
+     */
+    protected String standardToString() {
+        return getKey() + "=" + getValue();
+    }
 }

@@ -17,5 +17,5 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * Element info for IInitializer elements.
  */
 public class InitializerElementInfo extends MemberElementInfo {
-	// used only as a marker class: contains no methods
+    // used only as a marker class: contains no methods
 }

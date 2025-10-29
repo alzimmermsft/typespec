@@ -14,23 +14,23 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.util.concurrent;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.J2ktIncompatible;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Hidden superclass of {@link FluentFuture} that provides us a place to declare special GWT
- * versions of the {@link FluentFuture#catching(Class, com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Function)
+ * versions of the
+ * {@link FluentFuture#catching(Class, com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Function)
  * FluentFuture.catching} family of methods. Those versions have slightly different signatures.
  */
 @GwtCompatible(emulated = true)
 @J2ktIncompatible // Super-sourced
 @ElementTypesAreNonnullByDefault
-abstract class GwtFluentFutureCatchingSpecialization<V extends @Nullable Object>
-    extends AbstractFuture<V> {
-  /*
-   * This server copy of the class is empty. The corresponding GWT copy contains alternative
-   * versions of catching() and catchingAsync() with slightly different signatures from the ones
-   * found in FluentFuture.java.
-   */
+abstract class GwtFluentFutureCatchingSpecialization<V extends @Nullable Object> extends AbstractFuture<V> {
+    /*
+     * This server copy of the class is empty. The corresponding GWT copy contains alternative
+     * versions of catching() and catchingAsync() with slightly different signatures from the ones
+     * found in FluentFuture.java.
+     */
 }

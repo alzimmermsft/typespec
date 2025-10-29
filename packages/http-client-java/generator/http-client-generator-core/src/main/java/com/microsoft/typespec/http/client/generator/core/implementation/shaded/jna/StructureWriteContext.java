@@ -37,10 +37,14 @@ public class StructureWriteContext extends ToNativeContext {
         this.struct = struct;
         this.field = field;
     }
+
     /** Get the {@link Structure} the field is a member of. */
-    public Structure getStructure() { return struct; }
+    public Structure getStructure() {
+        return struct;
+    }
 
     /** Get the {@link Field} being written to native memory. */
-    public Field getField() { return field; }
+    public Field getField() {
+        return field;
+    }
 }
-

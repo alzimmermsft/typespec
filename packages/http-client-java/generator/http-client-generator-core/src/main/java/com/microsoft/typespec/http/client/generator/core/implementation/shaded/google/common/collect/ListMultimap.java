@@ -16,13 +16,13 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A {@code Multimap} that can hold duplicate key-value pairs and that maintains the insertion
@@ -41,59 +41,58 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
  */
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
-public interface ListMultimap<K extends @Nullable Object, V extends @Nullable Object>
-    extends Multimap<K, V> {
-  /**
-   * {@inheritDoc}
-   *
-   * <p>Because the values for a given key may have duplicates and follow the insertion ordering,
-   * this method returns a {@link List}, instead of the {@link Collection} specified in
-   * the {@link Multimap} interface.
-   */
-  @Override
-  List<V> get(@ParametricNullness K key);
+public interface ListMultimap<K extends @Nullable Object, V extends @Nullable Object> extends Multimap<K, V> {
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Because the values for a given key may have duplicates and follow the insertion ordering,
+     * this method returns a {@link List}, instead of the {@link Collection} specified in
+     * the {@link Multimap} interface.
+     */
+    @Override
+    List<V> get(@ParametricNullness K key);
 
-  /**
-   * {@inheritDoc}
-   *
-   * <p>Because the values for a given key may have duplicates and follow the insertion ordering,
-   * this method returns a {@link List}, instead of the {@link Collection} specified in
-   * the {@link Multimap} interface.
-   */
-  @CanIgnoreReturnValue
-  @Override
-  List<V> removeAll(@CheckForNull Object key);
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Because the values for a given key may have duplicates and follow the insertion ordering,
+     * this method returns a {@link List}, instead of the {@link Collection} specified in
+     * the {@link Multimap} interface.
+     */
+    @CanIgnoreReturnValue
+    @Override
+    List<V> removeAll(@CheckForNull Object key);
 
-  /**
-   * {@inheritDoc}
-   *
-   * <p>Because the values for a given key may have duplicates and follow the insertion ordering,
-   * this method returns a {@link List}, instead of the {@link Collection} specified in
-   * the {@link Multimap} interface.
-   */
-  @CanIgnoreReturnValue
-  @Override
-  List<V> replaceValues(@ParametricNullness K key, Iterable<? extends V> values);
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Because the values for a given key may have duplicates and follow the insertion ordering,
+     * this method returns a {@link List}, instead of the {@link Collection} specified in
+     * the {@link Multimap} interface.
+     */
+    @CanIgnoreReturnValue
+    @Override
+    List<V> replaceValues(@ParametricNullness K key, Iterable<? extends V> values);
 
-  /**
-   * {@inheritDoc}
-   *
-   * <p><b>Note:</b> The returned map's values are guaranteed to be of type {@link List}. To obtain
-   * this map with the more specific generic type {@code Map<K, List<V>>}, call {@link
-   * Multimaps#asMap(ListMultimap)} instead.
-   */
-  @Override
-  Map<K, Collection<V>> asMap();
+    /**
+     * {@inheritDoc}
+     *
+     * <p><b>Note:</b> The returned map's values are guaranteed to be of type {@link List}. To obtain
+     * this map with the more specific generic type {@code Map<K, List<V>>}, call {@link
+     * Multimaps#asMap(ListMultimap)} instead.
+     */
+    @Override
+    Map<K, Collection<V>> asMap();
 
-  /**
-   * Compares the specified object to this multimap for equality.
-   *
-   * <p>Two {@code ListMultimap} instances are equal if, for each key, they contain the same values
-   * in the same order. If the value orderings disagree, the multimaps will not be considered equal.
-   *
-   * <p>An empty {@code ListMultimap} is equal to any other empty {@code Multimap}, including an
-   * empty {@code SetMultimap}.
-   */
-  @Override
-  boolean equals(@CheckForNull Object obj);
+    /**
+     * Compares the specified object to this multimap for equality.
+     *
+     * <p>Two {@code ListMultimap} instances are equal if, for each key, they contain the same values
+     * in the same order. If the value orderings disagree, the multimaps will not be considered equal.
+     *
+     * <p>An empty {@code ListMultimap} is equal to any other empty {@code Multimap}, including an
+     * empty {@code SetMultimap}.
+     */
+    @Override
+    boolean equals(@CheckForNull Object obj);
 }

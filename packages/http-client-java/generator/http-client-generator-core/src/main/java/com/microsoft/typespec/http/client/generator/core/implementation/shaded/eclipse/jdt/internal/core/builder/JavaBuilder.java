@@ -20,7 +20,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.IJavaModelMarker;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.JavaModelManager;
-
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Set;
@@ -65,7 +64,8 @@ public class JavaBuilder extends IncrementalProjectBuilder {
      */
     @Override
     public String toString() {
-        return this.currentProject == null ? "JavaBuilder for unknown project" //$NON-NLS-1$
+        return this.currentProject == null
+            ? "JavaBuilder for unknown project" //$NON-NLS-1$
             : "JavaBuilder for " + this.currentProject.getName(); //$NON-NLS-1$
     }
 }

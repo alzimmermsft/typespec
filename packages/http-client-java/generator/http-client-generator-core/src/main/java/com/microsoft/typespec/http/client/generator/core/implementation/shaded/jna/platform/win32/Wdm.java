@@ -23,8 +23,6 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
-import java.util.List;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure;
@@ -33,6 +31,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 /**
  * Ported from Wdm.h.
  * Microsoft Windows DDK.
+ * 
  * @author dblock[at]dblock.org
  */
 public interface Wdm {
@@ -41,7 +40,7 @@ public interface Wdm {
      * The KEY_BASIC_INFORMATION structure defines a subset of
      * the full information that is available for a registry key.
      */
-    @FieldOrder({"LastWriteTime", "TitleIndex", "NameLength", "Name"})
+    @FieldOrder({ "LastWriteTime", "TitleIndex", "NameLength", "Name" })
     public static class KEY_BASIC_INFORMATION extends Structure {
         /**
          * The last time the key or any of its values changed.
@@ -78,6 +77,7 @@ public interface Wdm {
 
         /**
          * Name of the key.
+         * 
          * @return String.
          */
         public String getName() {

@@ -13,15 +13,12 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.source;
 
-
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.ISynchronizable;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.Position;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.ISynchronizable;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.Position;
-
 
 /**
  * An annotation map is a map specialized for the requirements of an annotation
@@ -42,41 +39,41 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public interface IAnnotationMap extends Map<Annotation, Position>, ISynchronizable {
 
-	/**
-	 * Returns an iterator for a copy of this annotation map's values.
-	 *
-	 * @return an iterator for a copy of this map's values
-	 */
-	Iterator<Position> valuesIterator();
+    /**
+     * Returns an iterator for a copy of this annotation map's values.
+     *
+     * @return an iterator for a copy of this map's values
+     */
+    Iterator<Position> valuesIterator();
 
-	/**
-	 * Returns an iterator for a copy of this map's key set.
-	 *
-	 * @return an iterator for a copy of this map's key set
-	 */
-	Iterator<Annotation> keySetIterator();
+    /**
+     * Returns an iterator for a copy of this map's key set.
+     *
+     * @return an iterator for a copy of this map's key set
+     */
+    Iterator<Annotation> keySetIterator();
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * The returned set is not synchronized on this annotation map's lock object.
-	 */
-	@Override
-	Set<Entry<Annotation, Position>> entrySet();
+    /**
+     * {@inheritDoc}
+     *
+     * The returned set is not synchronized on this annotation map's lock object.
+     */
+    @Override
+    Set<Entry<Annotation, Position>> entrySet();
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * The returned set is not synchronized on this annotation map's lock object.
-	 */
-	@Override
-	Set<Annotation> keySet();
+    /**
+     * {@inheritDoc}
+     *
+     * The returned set is not synchronized on this annotation map's lock object.
+     */
+    @Override
+    Set<Annotation> keySet();
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * The returned collection is not synchronized on this annotation map's lock object.
-	 */
-	@Override
-	Collection<Position> values();
+    /**
+     * {@inheritDoc}
+     *
+     * The returned collection is not synchronized on this annotation map's lock object.
+     */
+    @Override
+    Collection<Position> values();
 }

@@ -13,51 +13,51 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.internal.loader.sources;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.internal.loader.BundleLoader;
 import java.net.URL;
 import java.util.*;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.internal.loader.BundleLoader;
 
 public class MultiSourcePackage extends PackageSource {
-	private final SingleSourcePackage[] suppliers;
+    private final SingleSourcePackage[] suppliers;
 
-	public MultiSourcePackage(String id, SingleSourcePackage[] suppliers) {
-		super(id);
-		this.suppliers = suppliers;
-	}
+    public MultiSourcePackage(String id, SingleSourcePackage[] suppliers) {
+        super(id);
+        this.suppliers = suppliers;
+    }
 
-	@Override
-	public SingleSourcePackage[] getSuppliers() {
-		return suppliers;
-	}
+    @Override
+    public SingleSourcePackage[] getSuppliers() {
+        return suppliers;
+    }
 
-	@Override
-	public Class<?> loadClass(String name) throws ClassNotFoundException {
-		Class<?> result = null;
-		for (SingleSourcePackage supplier : suppliers) {
-			result = supplier.loadClass(name);
-			if (result != null)
-				return result;
-		}
-		return result;
-	}
+    @Override
+    public Class<?> loadClass(String name) throws ClassNotFoundException {
+        Class<?> result = null;
+        for (SingleSourcePackage supplier : suppliers) {
+            result = supplier.loadClass(name);
+            if (result != null)
+                return result;
+        }
+        return result;
+    }
 
-	@Override
-	public URL getResource(String name) {
-		URL result = null;
-		for (SingleSourcePackage supplier : suppliers) {
-			result = supplier.getResource(name);
-			if (result != null)
-				return result;
-		}
-		return result;
-	}
+    @Override
+    public URL getResource(String name) {
+        URL result = null;
+        for (SingleSourcePackage supplier : suppliers) {
+            result = supplier.getResource(name);
+            if (result != null)
+                return result;
+        }
+        return result;
+    }
 
-	@Override
-	public Enumeration<URL> getResources(String name) {
-		Enumeration<URL> results = null;
-		for (SingleSourcePackage supplier : suppliers) {
-			results = BundleLoader.compoundEnumerations(results, supplier.getResources(name));
-		}
-		return results;
-	}
+    @Override
+    public Enumeration<URL> getResources(String name) {
+        Enumeration<URL> results = null;
+        for (SingleSourcePackage supplier : suppliers) {
+            results = BundleLoader.compoundEnumerations(results, supplier.getResources(name));
+        }
+        return results;
+    }
 }

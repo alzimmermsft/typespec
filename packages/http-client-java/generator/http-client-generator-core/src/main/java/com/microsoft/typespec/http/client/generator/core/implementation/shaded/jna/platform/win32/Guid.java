@@ -23,13 +23,12 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
-import java.security.SecureRandom;
-import java.util.Arrays;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.PointerType;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure.FieldOrder;
+import java.security.SecureRandom;
+import java.util.Arrays;
 
 /**
  * Ported from Guid.h. Microsoft Windows SDK 6.0A.
@@ -46,7 +45,7 @@ public interface Guid {
      *
      * @author Tobias Wolf, wolf.tobias@gmx.net
      */
-    @FieldOrder({"Data1", "Data2", "Data3", "Data4"})
+    @FieldOrder({ "Data1", "Data2", "Data3", "Data4" })
     public static class GUID extends Structure {
 
         public static class ByValue extends GUID implements Structure.ByValue {
@@ -54,6 +53,7 @@ public interface Guid {
             public ByValue() {
                 super();
             }
+
             public ByValue(GUID guid) {
                 super(guid.getPointer());
 
@@ -62,6 +62,7 @@ public interface Guid {
                 Data3 = guid.Data3;
                 Data4 = guid.Data4;
             }
+
             public ByValue(Pointer memory) {
                 super(memory);
             }
@@ -85,7 +86,7 @@ public interface Guid {
              * Instantiates a new by reference.
              *
              * @param guid
-             *            the guid
+             * the guid
              */
             public ByReference(GUID guid) {
                 super(guid.getPointer());
@@ -100,7 +101,7 @@ public interface Guid {
              * Instantiates a new by reference.
              *
              * @param memory
-             *            the memory
+             * the memory
              */
             public ByReference(Pointer memory) {
                 super(memory);
@@ -144,7 +145,7 @@ public interface Guid {
          * Instantiates a new guid.
          *
          * @param guid
-         *            the guid
+         * the guid
          */
         public GUID(String guid) {
             this(fromString(guid));
@@ -154,7 +155,7 @@ public interface Guid {
          * Instantiates a new guid.
          *
          * @param data
-         *            the data
+         * the data
          */
         public GUID(byte[] data) {
             this(fromBinary(data));
@@ -164,7 +165,7 @@ public interface Guid {
          * Instantiates a new guid.
          *
          * @param memory
-         *            the memory
+         * the memory
          */
         public GUID(Pointer memory) {
             super(memory);
@@ -199,13 +200,12 @@ public interface Guid {
          * From binary.
          *
          * @param data
-         *            the data
+         * the data
          * @return the guid
          */
         public static GUID fromBinary(byte[] data) {
             if (data.length != 16) {
-                throw new IllegalArgumentException("Invalid data length: "
-                        + data.length);
+                throw new IllegalArgumentException("Invalid data length: " + data.length);
             }
 
             GUID newGuid = new GUID();
@@ -246,7 +246,7 @@ public interface Guid {
          * From string.
          *
          * @param guid
-         *            the guid
+         * the guid
          * @return the guid
          */
         public static GUID fromString(String guid) {
@@ -258,26 +258,23 @@ public interface Guid {
 
             // we not accept a string longer than 38 chars
             if (guid.length() > 38) {
-                throw new IllegalArgumentException("Invalid guid length: "
-                        + guid.length());
+                throw new IllegalArgumentException("Invalid guid length: " + guid.length());
             }
 
             // remove '{', '}' and '-' from guid string
             for (int i = 0; i < _cguid.length; i++) {
-                if ((_cguid[i] != '{') && (_cguid[i] != '-')
-                        && (_cguid[i] != '}'))
+                if ((_cguid[i] != '{') && (_cguid[i] != '-') && (_cguid[i] != '}'))
                     _cnewguid[y++] = _cguid[i];
             }
 
             // convert char to byte
             for (int i = 0; i < 32; i += 2) {
-                bdata[i / 2] = (byte) ((Character.digit(_cnewguid[i], 16) << 4)
-                        + Character.digit(_cnewguid[i + 1], 16) & 0xff);
+                bdata[i / 2]
+                    = (byte) ((Character.digit(_cnewguid[i], 16) << 4) + Character.digit(_cnewguid[i + 1], 16) & 0xff);
             }
 
             if (bdata.length != 16) {
-                throw new IllegalArgumentException("Invalid data length: "
-                        + bdata.length);
+                throw new IllegalArgumentException("Invalid data length: " + bdata.length);
             }
 
             long data1Temp = bdata[0] & 0xff;
@@ -427,7 +424,7 @@ public interface Guid {
              * Instantiates a new by reference.
              *
              * @param guid
-             *            the guid
+             * the guid
              */
             public ByReference(GUID guid) {
                 super(guid);
@@ -437,7 +434,7 @@ public interface Guid {
              * Instantiates a new by reference.
              *
              * @param memory
-             *            the memory
+             * the memory
              */
             public ByReference(Pointer memory) {
                 super(memory);
@@ -509,7 +506,7 @@ public interface Guid {
          * Instantiates a new refiid.
          *
          * @param memory
-         *            the memory
+         * the memory
          */
         public REFIID(Pointer memory) {
             super(memory);
@@ -567,7 +564,7 @@ public interface Guid {
          * Instantiates a new iid.
          *
          * @param memory
-         *            the memory
+         * the memory
          */
         public IID(Pointer memory) {
             super(memory);
@@ -586,7 +583,7 @@ public interface Guid {
          * Instantiates a new iid.
          *
          * @param data
-         *            the data
+         * the data
          */
         public IID(byte[] data) {
             super(data);

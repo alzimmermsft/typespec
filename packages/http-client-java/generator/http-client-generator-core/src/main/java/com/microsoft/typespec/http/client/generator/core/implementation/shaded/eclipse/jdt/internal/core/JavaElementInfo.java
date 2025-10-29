@@ -22,24 +22,25 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class JavaElementInfo implements Cloneable, IElementInfo {
 
-	/**
-	 * Shared empty collection used for efficiency.
-	 */
-	static Object[] NO_NON_JAVA_RESOURCES = new Object[] {};
+    /**
+     * Shared empty collection used for efficiency.
+     */
+    static Object[] NO_NON_JAVA_RESOURCES = new Object[] { };
 
-	@Override
-	public Object clone() {
-		try {
-			return super.clone();
-		}
-		catch (CloneNotSupportedException e) {
-			throw new Error(e);
-		}
-	}
-	public IJavaElement[] getChildren() {
-		return JavaElement.NO_ELEMENTS;
-	}
-	public IJavaElement[] getExtendedChildren() {
-		return JavaElement.NO_ELEMENTS;
-	}
+    @Override
+    public Object clone() {
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new Error(e);
+        }
+    }
+
+    public IJavaElement[] getChildren() {
+        return JavaElement.NO_ELEMENTS;
+    }
+
+    public IJavaElement[] getExtendedChildren() {
+        return JavaElement.NO_ELEMENTS;
+    }
 }

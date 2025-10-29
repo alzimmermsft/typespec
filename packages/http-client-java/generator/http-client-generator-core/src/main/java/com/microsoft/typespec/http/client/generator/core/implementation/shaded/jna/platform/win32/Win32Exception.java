@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 
 /**
  * Win32 exception.
+ * 
  * @author dblock[at]dblock[dot]org
  */
 public class Win32Exception extends LastErrorException {
@@ -42,6 +43,7 @@ public class Win32Exception extends LastErrorException {
 
     /**
      * Returns the error code of the error.
+     * 
      * @return HRESULT value
      */
     public HRESULT getHR() {
@@ -50,15 +52,16 @@ public class Win32Exception extends LastErrorException {
 
     /**
      * New Win32 exception from an error code, usually obtained from {@code GetLastError.}
+     * 
      * @param code Error code.
      */
     public Win32Exception(int code) {
         this(code, W32Errors.HRESULT_FROM_WIN32(code));
     }
 
-
     /**
      * New Win32 exception from HRESULT.
+     * 
      * @param hr HRESULT
      */
     public Win32Exception(HRESULT hr) {
@@ -81,12 +84,13 @@ public class Win32Exception extends LastErrorException {
         } catch (NoSuchMethodException ex) {
             // This is the case for JDK < 7
         } catch (SecurityException ex) {
-            Logger.getLogger(Win32Exception.class.getName()).log(Level.SEVERE, "Failed to initialize 'addSuppressed' method", ex);
+            Logger.getLogger(Win32Exception.class.getName())
+                .log(Level.SEVERE, "Failed to initialize 'addSuppressed' method", ex);
         }
     }
 
     void addSuppressedReflected(Throwable exception) {
-        if(addSuppressedMethod == null) {
+        if (addSuppressedMethod == null) {
             // Make this a NOOP on an unsupported JDK
             return;
         }

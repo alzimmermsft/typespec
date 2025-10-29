@@ -26,4 +26,5 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.AltCallingConvention;
 
 /** Tagging interface for __stdcall calling convention. */
-public interface StdCall extends AltCallingConvention {}
+public interface StdCall extends AltCallingConvention {
+}

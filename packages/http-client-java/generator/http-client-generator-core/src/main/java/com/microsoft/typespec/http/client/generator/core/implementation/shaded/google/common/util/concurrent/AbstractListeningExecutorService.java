@@ -14,6 +14,7 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.util.concurrent;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtIncompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.J2ktIncompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.CanIgnoreReturnValue;
@@ -21,7 +22,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.g
 import java.util.concurrent.AbstractExecutorService;
 import java.util.concurrent.Callable;
 import java.util.concurrent.RunnableFuture;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Abstract {@link ListeningExecutorService} implementation that creates {@link ListenableFuture}
@@ -41,41 +41,40 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 public abstract class AbstractListeningExecutorService extends AbstractExecutorService
     implements ListeningExecutorService {
 
-  /**
-   * @since 19.0 (present with return type {@code ListenableFutureTask} since 14.0)
-   */
-  @CanIgnoreReturnValue // TODO(kak): consider removing this
-  @Override
-  protected final <T extends @Nullable Object> RunnableFuture<T> newTaskFor(
-      Runnable runnable, @ParametricNullness T value) {
-    return TrustedListenableFutureTask.create(runnable, value);
-  }
+    /**
+     * @since 19.0 (present with return type {@code ListenableFutureTask} since 14.0)
+     */
+    @CanIgnoreReturnValue // TODO(kak): consider removing this
+    @Override
+    protected final <T extends @Nullable Object> RunnableFuture<T> newTaskFor(Runnable runnable,
+        @ParametricNullness T value) {
+        return TrustedListenableFutureTask.create(runnable, value);
+    }
 
-  /**
-   * @since 19.0 (present with return type {@code ListenableFutureTask} since 14.0)
-   */
-  @CanIgnoreReturnValue // TODO(kak): consider removing this
-  @Override
-  protected final <T extends @Nullable Object> RunnableFuture<T> newTaskFor(Callable<T> callable) {
-    return TrustedListenableFutureTask.create(callable);
-  }
+    /**
+     * @since 19.0 (present with return type {@code ListenableFutureTask} since 14.0)
+     */
+    @CanIgnoreReturnValue // TODO(kak): consider removing this
+    @Override
+    protected final <T extends @Nullable Object> RunnableFuture<T> newTaskFor(Callable<T> callable) {
+        return TrustedListenableFutureTask.create(callable);
+    }
 
-  @CanIgnoreReturnValue // TODO(kak): consider removing this
-  @Override
-  public ListenableFuture<?> submit(Runnable task) {
-    return (ListenableFuture<?>) super.submit(task);
-  }
+    @CanIgnoreReturnValue // TODO(kak): consider removing this
+    @Override
+    public ListenableFuture<?> submit(Runnable task) {
+        return (ListenableFuture<?>) super.submit(task);
+    }
 
-  @CanIgnoreReturnValue // TODO(kak): consider removing this
-  @Override
-  public <T extends @Nullable Object> ListenableFuture<T> submit(
-      Runnable task, @ParametricNullness T result) {
-    return (ListenableFuture<T>) super.submit(task, result);
-  }
+    @CanIgnoreReturnValue // TODO(kak): consider removing this
+    @Override
+    public <T extends @Nullable Object> ListenableFuture<T> submit(Runnable task, @ParametricNullness T result) {
+        return (ListenableFuture<T>) super.submit(task, result);
+    }
 
-  @CanIgnoreReturnValue // TODO(kak): consider removing this
-  @Override
-  public <T extends @Nullable Object> ListenableFuture<T> submit(Callable<T> task) {
-    return (ListenableFuture<T>) super.submit(task);
-  }
+    @CanIgnoreReturnValue // TODO(kak): consider removing this
+    @Override
+    public <T extends @Nullable Object> ListenableFuture<T> submit(Callable<T> task) {
+        return (ListenableFuture<T>) super.submit(task);
+    }
 }

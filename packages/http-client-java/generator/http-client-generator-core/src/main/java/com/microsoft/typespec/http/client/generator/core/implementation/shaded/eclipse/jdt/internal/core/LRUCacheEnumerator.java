@@ -16,59 +16,62 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import java.util.Enumeration;
 
 /**
- *	The <code>LRUCacheEnumerator</code> returns its elements in
- *	the order they are found in the <code>LRUCache</code>, with the
- *	most recent elements first.
+ * The <code>LRUCacheEnumerator</code> returns its elements in
+ * the order they are found in the <code>LRUCache</code>, with the
+ * most recent elements first.
  *
- *	Once the enumerator is created, elements which are later added
- *	to the cache are not returned by the enumerator.  However,
- *	elements returned from the enumerator could have been closed
- *	by the cache.
+ * Once the enumerator is created, elements which are later added
+ * to the cache are not returned by the enumerator. However,
+ * elements returned from the enumerator could have been closed
+ * by the cache.
  */
 public class LRUCacheEnumerator<V> implements Enumeration<V> {
-	/**
-	 *	Current element;
-	 */
-	protected LRUEnumeratorElement<V> elementQueue;
+    /**
+     * Current element;
+     */
+    protected LRUEnumeratorElement<V> elementQueue;
 
-	public static class LRUEnumeratorElement<V> {
-		/**
-		 *	Value returned by <code>nextElement()</code>;
-		 */
-		public V value;
+    public static class LRUEnumeratorElement<V> {
+        /**
+         * Value returned by <code>nextElement()</code>;
+         */
+        public V value;
 
-		/**
-		 *	Next element
-		 */
-		public LRUEnumeratorElement<V> next;
+        /**
+         * Next element
+         */
+        public LRUEnumeratorElement<V> next;
 
-		/**
-		 * Constructor
-		 */
-		public LRUEnumeratorElement(V value) {
-			this.value = value;
-		}
-	}
-/**
- *	Creates a CacheEnumerator on the list of <code>LRUEnumeratorElements</code>.
- */
-public LRUCacheEnumerator(LRUEnumeratorElement<V> firstElement) {
-	this.elementQueue = firstElement;
-}
-/**
- * Returns true if more elements exist.
- */
-@Override
-public boolean hasMoreElements() {
-	return this.elementQueue != null;
-}
-/**
- * Returns the next element.
- */
-@Override
-public V nextElement() {
-	V temp = this.elementQueue.value;
-	this.elementQueue = this.elementQueue.next;
-	return temp;
-}
+        /**
+         * Constructor
+         */
+        public LRUEnumeratorElement(V value) {
+            this.value = value;
+        }
+    }
+
+    /**
+     * Creates a CacheEnumerator on the list of <code>LRUEnumeratorElements</code>.
+     */
+    public LRUCacheEnumerator(LRUEnumeratorElement<V> firstElement) {
+        this.elementQueue = firstElement;
+    }
+
+    /**
+     * Returns true if more elements exist.
+     */
+    @Override
+    public boolean hasMoreElements() {
+        return this.elementQueue != null;
+    }
+
+    /**
+     * Returns the next element.
+     */
+    @Override
+    public V nextElement() {
+        V temp = this.elementQueue.value;
+        this.elementQueue = this.elementQueue.next;
+        return temp;
+    }
 }

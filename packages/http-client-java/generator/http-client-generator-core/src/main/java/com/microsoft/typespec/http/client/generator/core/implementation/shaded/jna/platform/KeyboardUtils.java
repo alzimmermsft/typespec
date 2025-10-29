@@ -23,17 +23,17 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform;
 
-import java.awt.GraphicsEnvironment;
-import java.awt.HeadlessException;
-import java.awt.event.KeyEvent;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Platform;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.unix.X11;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.unix.X11.Display;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.User32;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinUser;
+import java.awt.GraphicsEnvironment;
+import java.awt.HeadlessException;
+import java.awt.event.KeyEvent;
 
-/** Provide access to the local keyboard state.  Note that this is meaningless
+/**
+ * Provide access to the local keyboard state. Note that this is meaningless
  * on a headless system and some VNC setups.
  *
  * @author twall
@@ -50,13 +50,10 @@ public class KeyboardUtils {
         }
         if (Platform.isWindows()) {
             INSTANCE = new W32KeyboardUtils();
-        }
-        else if (Platform.isMac()) {
+        } else if (Platform.isMac()) {
             INSTANCE = new MacKeyboardUtils();
-            throw new UnsupportedOperationException("No support (yet) for "
-                                                    + System.getProperty("os.name"));
-        }
-        else {
+            throw new UnsupportedOperationException("No support (yet) for " + System.getProperty("os.name"));
+        } else {
             INSTANCE = new X11KeyboardUtils();
         }
     }
@@ -64,12 +61,14 @@ public class KeyboardUtils {
     public static boolean isPressed(int keycode, int location) {
         return INSTANCE.isPressed(keycode, location);
     }
+
     public static boolean isPressed(int keycode) {
         return INSTANCE.isPressed(keycode);
     }
 
     private static abstract class NativeKeyboardUtils {
         public abstract boolean isPressed(int keycode, int location);
+
         public boolean isPressed(int keycode) {
             return isPressed(keycode, KeyEvent.KEY_LOCATION_UNKNOWN);
         }
@@ -77,8 +76,7 @@ public class KeyboardUtils {
 
     private static class W32KeyboardUtils extends NativeKeyboardUtils {
         private int toNative(int code, int loc) {
-            if ((code >= KeyEvent.VK_A && code <= KeyEvent.VK_Z)
-                || (code >= KeyEvent.VK_0 && code <= KeyEvent.VK_9)) {
+            if ((code >= KeyEvent.VK_A && code <= KeyEvent.VK_Z) || (code >= KeyEvent.VK_0 && code <= KeyEvent.VK_9)) {
                 return code;
             }
             if (code == KeyEvent.VK_SHIFT) {
@@ -110,16 +108,19 @@ public class KeyboardUtils {
             }
             return 0;
         }
+
         public boolean isPressed(int keycode, int location) {
             User32 lib = User32.INSTANCE;
             return (lib.GetAsyncKeyState(toNative(keycode, location)) & 0x8000) != 0;
         }
     }
+
     private static class MacKeyboardUtils extends NativeKeyboardUtils {
         public boolean isPressed(int keycode, int location) {
             return false;
         }
     }
+
     private static class X11KeyboardUtils extends NativeKeyboardUtils {
         // TODO: fully map from X11 keycodes to java keycodes
         // this is a minimal implementation
@@ -150,6 +151,7 @@ public class KeyboardUtils {
             }
             return 0;
         }
+
         public boolean isPressed(int keycode, int location) {
             X11 lib = X11.INSTANCE;
             Display dpy = lib.XOpenDisplay(null);
@@ -161,17 +163,16 @@ public class KeyboardUtils {
                 // Ignore the return value
                 lib.XQueryKeymap(dpy, keys);
                 int keysym = toKeySym(keycode, location);
-                for (int code=5;code < 256;code++) {
+                for (int code = 5; code < 256; code++) {
                     int idx = code / 8;
                     int shift = code % 8;
                     if ((keys[idx] & (1 << shift)) != 0) {
-                        int sym = lib.XKeycodeToKeysym(dpy, (byte)code, 0).intValue();
+                        int sym = lib.XKeycodeToKeysym(dpy, (byte) code, 0).intValue();
                         if (sym == keysym)
                             return true;
                     }
                 }
-            }
-            finally {
+            } finally {
                 lib.XCloseDisplay(dpy);
             }
             return false;

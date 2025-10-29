@@ -27,86 +27,94 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class Initializer extends Member implements IInitializer {
 
-protected Initializer(JavaElement parent, int occurrenceCount) {
-	super(parent, occurrenceCount);
-}
-@Override
-public boolean equals(Object o) {
-	if (!(o instanceof Initializer)) return false;
-	return super.equals(o);
-}
+    protected Initializer(JavaElement parent, int occurrenceCount) {
+        super(parent, occurrenceCount);
+    }
 
-/**
- * @see IJavaElement
- */
-@Override
-public int getElementType() {
-	return INITIALIZER;
-}
-/**
- * @see JavaElement#getHandleMemento(StringBuilder)
- */
-@Override
-protected void getHandleMemento(StringBuilder buff) {
-	getParent().getHandleMemento(buff);
-	buff.append(getHandleMementoDelimiter());
-	buff.append(this.getOccurrenceCount());
-}
-/**
- * @see JavaElement#getHandleMemento()
- */
-@Override
-protected char getHandleMementoDelimiter() {
-	return JavaElement.JEM_INITIALIZER;
-}
-@Override
-public String readableName() {
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Initializer))
+            return false;
+        return super.equals(o);
+    }
 
-	return ((JavaElement)getDeclaringType()).readableName();
-}
-/**
- * @see IMember
- */
-@Override
-public ISourceRange getNameRange() {
-	return null;
-}
+    /**
+     * @see IJavaElement
+     */
+    @Override
+    public int getElementType() {
+        return INITIALIZER;
+    }
 
-@Override
-public JavaElement getPrimaryElement(boolean checkOwner) {
-	if (checkOwner) {
-		CompilationUnit cu = (CompilationUnit)getAncestor(COMPILATION_UNIT);
-		if (cu == null || cu.isPrimary()) return this;
-	}
-	IJavaElement primaryParent = this.getParent().getPrimaryElement(false);
-	return (JavaElement) ((IType) primaryParent).getInitializer(this.getOccurrenceCount());
-}
-/**
- * for debugging only
- */
-@Override
-protected void toStringInfo(int tab, StringBuilder buffer, Object info, boolean showResolvedInfo) {
-	buffer.append(tabString(tab));
-	if (info == null) {
-		buffer.append("<initializer #"); //$NON-NLS-1$
-		buffer.append(this.getOccurrenceCount());
-		buffer.append("> (not open)"); //$NON-NLS-1$
-	} else if (info == NO_INFO) {
-		buffer.append("<initializer #"); //$NON-NLS-1$
-		buffer.append(this.getOccurrenceCount());
-		buffer.append(">"); //$NON-NLS-1$
-	} else {
-		try {
-			buffer.append("<"); //$NON-NLS-1$
-			if (Flags.isStatic(getFlags())) {
-				buffer.append("static "); //$NON-NLS-1$
-			}
-		buffer.append("initializer #"); //$NON-NLS-1$
-		buffer.append(this.getOccurrenceCount());
-		buffer.append(">"); //$NON-NLS-1$
-		} catch (JavaModelException e) {
-			buffer.append("<JavaModelException in toString of " + getElementName()); //$NON-NLS-1$
-		}
-	}
-}
+    /**
+     * @see JavaElement#getHandleMemento(StringBuilder)
+     */
+    @Override
+    protected void getHandleMemento(StringBuilder buff) {
+        getParent().getHandleMemento(buff);
+        buff.append(getHandleMementoDelimiter());
+        buff.append(this.getOccurrenceCount());
+    }
+
+    /**
+     * @see JavaElement#getHandleMemento()
+     */
+    @Override
+    protected char getHandleMementoDelimiter() {
+        return JavaElement.JEM_INITIALIZER;
+    }
+
+    @Override
+    public String readableName() {
+
+        return ((JavaElement) getDeclaringType()).readableName();
+    }
+
+    /**
+     * @see IMember
+     */
+    @Override
+    public ISourceRange getNameRange() {
+        return null;
+    }
+
+    @Override
+    public JavaElement getPrimaryElement(boolean checkOwner) {
+        if (checkOwner) {
+            CompilationUnit cu = (CompilationUnit) getAncestor(COMPILATION_UNIT);
+            if (cu == null || cu.isPrimary())
+                return this;
+        }
+        IJavaElement primaryParent = this.getParent().getPrimaryElement(false);
+        return (JavaElement) ((IType) primaryParent).getInitializer(this.getOccurrenceCount());
+    }
+
+    /**
+     * for debugging only
+     */
+    @Override
+    protected void toStringInfo(int tab, StringBuilder buffer, Object info, boolean showResolvedInfo) {
+        buffer.append(tabString(tab));
+        if (info == null) {
+            buffer.append("<initializer #"); //$NON-NLS-1$
+            buffer.append(this.getOccurrenceCount());
+            buffer.append("> (not open)"); //$NON-NLS-1$
+        } else if (info == NO_INFO) {
+            buffer.append("<initializer #"); //$NON-NLS-1$
+            buffer.append(this.getOccurrenceCount());
+            buffer.append(">"); //$NON-NLS-1$
+        } else {
+            try {
+                buffer.append("<"); //$NON-NLS-1$
+                if (Flags.isStatic(getFlags())) {
+                    buffer.append("static "); //$NON-NLS-1$
+                }
+                buffer.append("initializer #"); //$NON-NLS-1$
+                buffer.append(this.getOccurrenceCount());
+                buffer.append(">"); //$NON-NLS-1$
+            } catch (JavaModelException e) {
+                buffer.append("<JavaModelException in toString of " + getElementName()); //$NON-NLS-1$
+            }
+        }
+    }
 }

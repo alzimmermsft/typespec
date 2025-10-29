@@ -15,10 +15,6 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.connect;
 
-import java.io.File;
-import java.util.Map;
-import java.util.Optional;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.ConsumerType;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.BundleActivator;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.BundleContext;
@@ -26,6 +22,9 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Constants;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.FrameworkListener;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.launch.Framework;
+import java.io.File;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * A {@code ModuleConnector} provides connections to instances of
@@ -48,58 +47,58 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 @ConsumerType
 public interface ModuleConnector {
 
-	/**
-	 * Initializes this {@code ModuleConnector} with the
-	 * {@link Constants#FRAMEWORK_STORAGE framework persistent storage} file and
-	 * framework properties configured for a {@link Framework} instance.
-	 * <p>
-	 * This method is called once by a {@link Framework} instance and is called
-	 * before any other methods on this module connector are called.
-	 * 
-	 * @param storage The persistent storage area used by the {@link Framework}
-	 *            or {@code null} if the platform does not have file system
-	 *            support.
-	 * @param configuration An unmodifiable map of framework configuration
-	 *            properties that were used to configure the new framework
-	 *            instance.
-	 */
-	void initialize(File storage, Map<String,String> configuration);
+    /**
+     * Initializes this {@code ModuleConnector} with the
+     * {@link Constants#FRAMEWORK_STORAGE framework persistent storage} file and
+     * framework properties configured for a {@link Framework} instance.
+     * <p>
+     * This method is called once by a {@link Framework} instance and is called
+     * before any other methods on this module connector are called.
+     * 
+     * @param storage The persistent storage area used by the {@link Framework}
+     * or {@code null} if the platform does not have file system
+     * support.
+     * @param configuration An unmodifiable map of framework configuration
+     * properties that were used to configure the new framework
+     * instance.
+     */
+    void initialize(File storage, Map<String, String> configuration);
 
-	/**
-	 * Connects a bundle location with a {@link ConnectModule}.
-	 * <p>
-	 * When the result is empty, then the framework must handle reading the
-	 * content of the bundle itself. Otherwise, the returned
-	 * {@link ConnectModule} must be used by the framework to access the content
-	 * of the bundle.
-	 * 
-	 * @param location The bundle location used to install a bundle.
-	 * @return An {@code Optional} containing the {@link ConnectModule} for the
-	 *         specified bundle location, or an empty {@code Optional} if the
-	 *         framework must handle reading the content of the bundle itself.
-	 * @throws BundleException If the location cannot be handled.
-	 */
-	Optional<ConnectModule> connect(String location) throws BundleException;
+    /**
+     * Connects a bundle location with a {@link ConnectModule}.
+     * <p>
+     * When the result is empty, then the framework must handle reading the
+     * content of the bundle itself. Otherwise, the returned
+     * {@link ConnectModule} must be used by the framework to access the content
+     * of the bundle.
+     * 
+     * @param location The bundle location used to install a bundle.
+     * @return An {@code Optional} containing the {@link ConnectModule} for the
+     * specified bundle location, or an empty {@code Optional} if the
+     * framework must handle reading the content of the bundle itself.
+     * @throws BundleException If the location cannot be handled.
+     */
+    Optional<ConnectModule> connect(String location) throws BundleException;
 
-	/**
-	 * Creates a new activator for this {@code ModuleConnector}.
-	 * <p>
-	 * This method is called by the framework during framework
-	 * {@link Framework#init(FrameworkListener...) initialization}. Returning an
-	 * activator allows this {@code ModuleConnector} to participate in the
-	 * framework life cycle. If an activator is returned:
-	 * <ul>
-	 * <li>The framework will call the activator's
-	 * {@link BundleActivator#start(BundleContext) start} method prior to
-	 * activating any extension bundles.</li>
-	 * <li>The framework will call the activator's
-	 * {@link BundleActivator#stop(BundleContext) stop} method after
-	 * deactivating any extension bundles.</li>
-	 * </ul>
-	 * 
-	 * @return An {@code Optional} containing a new {@link BundleActivator} for
-	 *         this {@code ModuleConnector}, or an empty {@code Optional} if no
-	 *         {@link BundleActivator} is necessary.
-	 */
-	Optional<BundleActivator> newBundleActivator();
+    /**
+     * Creates a new activator for this {@code ModuleConnector}.
+     * <p>
+     * This method is called by the framework during framework
+     * {@link Framework#init(FrameworkListener...) initialization}. Returning an
+     * activator allows this {@code ModuleConnector} to participate in the
+     * framework life cycle. If an activator is returned:
+     * <ul>
+     * <li>The framework will call the activator's
+     * {@link BundleActivator#start(BundleContext) start} method prior to
+     * activating any extension bundles.</li>
+     * <li>The framework will call the activator's
+     * {@link BundleActivator#stop(BundleContext) stop} method after
+     * deactivating any extension bundles.</li>
+     * </ul>
+     * 
+     * @return An {@code Optional} containing a new {@link BundleActivator} for
+     * this {@code ModuleConnector}, or an empty {@code Optional} if no
+     * {@link BundleActivator} is necessary.
+     */
+    Optional<BundleActivator> newBundleActivator();
 }

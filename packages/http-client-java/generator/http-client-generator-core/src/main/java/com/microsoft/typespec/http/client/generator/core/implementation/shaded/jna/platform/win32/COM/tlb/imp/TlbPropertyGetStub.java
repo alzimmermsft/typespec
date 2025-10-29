@@ -23,10 +23,10 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.tlb.imp;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.FUNCDESC;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeInfoUtil;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeInfoUtil.TypeInfoDoc;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeLibUtil;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.FUNCDESC;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -40,16 +40,15 @@ public class TlbPropertyGetStub extends TlbAbstractMethod {
      * Instantiates a new tlb property get.
      *
      * @param index
-     *            the index
+     * the index
      * @param typeLibUtil
-     *            the type lib util
+     * the type lib util
      * @param funcDesc
-     *            the func desc
+     * the func desc
      * @param typeInfoUtil
-     *            the type info util
+     * the type info util
      */
-    public TlbPropertyGetStub(int index, TypeLibUtil typeLibUtil,
-            FUNCDESC funcDesc, TypeInfoUtil typeInfoUtil) {
+    public TlbPropertyGetStub(int index, TypeLibUtil typeLibUtil, FUNCDESC funcDesc, TypeInfoUtil typeInfoUtil) {
         super(index, typeLibUtil, funcDesc, typeInfoUtil);
 
         TypeInfoDoc typeInfoDoc = typeInfoUtil.getDocumentation(funcDesc.memid);

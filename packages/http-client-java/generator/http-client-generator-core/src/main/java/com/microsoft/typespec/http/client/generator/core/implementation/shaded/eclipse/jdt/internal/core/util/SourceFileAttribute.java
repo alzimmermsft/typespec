@@ -22,43 +22,39 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 /**
  * Default implementation of ISourceAttribute
  */
-public class SourceFileAttribute
-	extends ClassFileAttribute
-	implements ISourceAttribute {
+public class SourceFileAttribute extends ClassFileAttribute implements ISourceAttribute {
 
-	private final int sourceFileIndex;
-	private final char[] sourceFileName;
+    private final int sourceFileIndex;
+    private final char[] sourceFileName;
 
-	/**
-	 * Constructor for SourceFileAttribute.
-	 */
-	public SourceFileAttribute(
-		byte[] classFileBytes,
-		IConstantPool constantPool,
-		int offset)
-		throws ClassFormatException {
-		super(classFileBytes, constantPool, offset);
-		this.sourceFileIndex = u2At(classFileBytes, 6, offset);
-		IConstantPoolEntry constantPoolEntry = constantPool.decodeEntry(this.sourceFileIndex);
-		if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Utf8) {
-			throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
-		}
-		this.sourceFileName = constantPoolEntry.getUtf8Value();
-	}
-	/**
-	 * @see ISourceAttribute#getSourceFileIndex()
-	 */
-	@Override
-	public int getSourceFileIndex() {
-		return this.sourceFileIndex;
-	}
+    /**
+     * Constructor for SourceFileAttribute.
+     */
+    public SourceFileAttribute(byte[] classFileBytes, IConstantPool constantPool, int offset)
+        throws ClassFormatException {
+        super(classFileBytes, constantPool, offset);
+        this.sourceFileIndex = u2At(classFileBytes, 6, offset);
+        IConstantPoolEntry constantPoolEntry = constantPool.decodeEntry(this.sourceFileIndex);
+        if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Utf8) {
+            throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
+        }
+        this.sourceFileName = constantPoolEntry.getUtf8Value();
+    }
 
-	/**
-	 * @see ISourceAttribute#getSourceFileName()
-	 */
-	@Override
-	public char[] getSourceFileName() {
-		return this.sourceFileName;
-	}
+    /**
+     * @see ISourceAttribute#getSourceFileIndex()
+     */
+    @Override
+    public int getSourceFileIndex() {
+        return this.sourceFileIndex;
+    }
+
+    /**
+     * @see ISourceAttribute#getSourceFileName()
+     */
+    @Override
+    public char[] getSourceFileName() {
+        return this.sourceFileName;
+    }
 
 }

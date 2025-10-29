@@ -25,59 +25,59 @@ import java.net.URL;
  */
 public class DirZipBundleEntry extends BundleEntry {
 
-	/**
-	 * ZipBundleFile for this entry.
-	 */
-	private ZipBundleFile bundleFile;
-	/**
-	 * The name for this entry
-	 */
-	String name;
+    /**
+     * ZipBundleFile for this entry.
+     */
+    private ZipBundleFile bundleFile;
+    /**
+     * The name for this entry
+     */
+    String name;
 
-	public DirZipBundleEntry(ZipBundleFile bundleFile, String name) {
-		this.name = (name.length() > 0 && name.charAt(0) == '/') ? name.substring(1) : name;
-		this.bundleFile = bundleFile;
-	}
+    public DirZipBundleEntry(ZipBundleFile bundleFile, String name) {
+        this.name = (name.length() > 0 && name.charAt(0) == '/') ? name.substring(1) : name;
+        this.bundleFile = bundleFile;
+    }
 
-	@Override
-	public InputStream getInputStream() throws IOException {
-		return new ByteArrayInputStream(new byte[0]);
-	}
+    @Override
+    public InputStream getInputStream() throws IOException {
+        return new ByteArrayInputStream(new byte[0]);
+    }
 
-	@Override
-	public long getSize() {
-		return 0;
-	}
+    @Override
+    public long getSize() {
+        return 0;
+    }
 
-	@Override
-	public String getName() {
-		return name;
-	}
+    @Override
+    public String getName() {
+        return name;
+    }
 
-	@Override
-	public long getTime() {
-		return 0;
-	}
+    @Override
+    public long getTime() {
+        return 0;
+    }
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public URL getLocalURL() {
-		try {
-			return new URL("jar:" + bundleFile.basefile.toURL() + "!/" + name); //$NON-NLS-1$ //$NON-NLS-2$
-		} catch (MalformedURLException e) {
-			// This can not happen, unless the jar protocol is not supported.
-			return null;
-		}
-	}
+    @SuppressWarnings("deprecation")
+    @Override
+    public URL getLocalURL() {
+        try {
+            return new URL("jar:" + bundleFile.basefile.toURL() + "!/" + name); //$NON-NLS-1$ //$NON-NLS-2$
+        } catch (MalformedURLException e) {
+            // This can not happen, unless the jar protocol is not supported.
+            return null;
+        }
+    }
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public URL getFileURL() {
-		try {
-			return bundleFile.extractDirectory(name).toURL();
-		} catch (MalformedURLException e) {
-			// this cannot happen.
-			return null;
-		}
-	}
+    @SuppressWarnings("deprecation")
+    @Override
+    public URL getFileURL() {
+        try {
+            return bundleFile.extractDirectory(name).toURL();
+        } catch (MalformedURLException e) {
+            // this cannot happen.
+            return null;
+        }
+    }
 }

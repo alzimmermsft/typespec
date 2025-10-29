@@ -21,45 +21,42 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 /**
  * Default implementation of IRuntimeVisibleAnnotations
  */
-public class RuntimeVisibleParameterAnnotationsAttribute
-	extends ClassFileAttribute
-	implements IRuntimeVisibleParameterAnnotationsAttribute {
+public class RuntimeVisibleParameterAnnotationsAttribute extends ClassFileAttribute
+    implements IRuntimeVisibleParameterAnnotationsAttribute {
 
-	private static final IParameterAnnotation[] NO_ENTRIES = new IParameterAnnotation[0];
-	private final int parametersNumber;
-	private IParameterAnnotation[] parameterAnnotations;
+    private static final IParameterAnnotation[] NO_ENTRIES = new IParameterAnnotation[0];
+    private final int parametersNumber;
+    private IParameterAnnotation[] parameterAnnotations;
 
-	/**
-	 * Constructor for RuntimeVisibleParameterAnnotations.
-	 */
-	public RuntimeVisibleParameterAnnotationsAttribute(
-		byte[] classFileBytes,
-		IConstantPool constantPool,
-		int offset)
-		throws ClassFormatException {
-		super(classFileBytes, constantPool, offset);
-		final int length = u1At(classFileBytes, 6, offset);
-		this.parametersNumber = length;
-		if (length != 0) {
-			int readOffset = 7;
-			this.parameterAnnotations = new IParameterAnnotation[length];
-			for (int i = 0; i < length; i++) {
-				ParameterAnnotation parameterAnnotation = new ParameterAnnotation(classFileBytes, constantPool, offset + readOffset);
-				this.parameterAnnotations[i] = parameterAnnotation;
-				readOffset += parameterAnnotation.sizeInBytes();
-			}
-		} else {
-			this.parameterAnnotations = NO_ENTRIES;
-		}
-	}
+    /**
+     * Constructor for RuntimeVisibleParameterAnnotations.
+     */
+    public RuntimeVisibleParameterAnnotationsAttribute(byte[] classFileBytes, IConstantPool constantPool, int offset)
+        throws ClassFormatException {
+        super(classFileBytes, constantPool, offset);
+        final int length = u1At(classFileBytes, 6, offset);
+        this.parametersNumber = length;
+        if (length != 0) {
+            int readOffset = 7;
+            this.parameterAnnotations = new IParameterAnnotation[length];
+            for (int i = 0; i < length; i++) {
+                ParameterAnnotation parameterAnnotation
+                    = new ParameterAnnotation(classFileBytes, constantPool, offset + readOffset);
+                this.parameterAnnotations[i] = parameterAnnotation;
+                readOffset += parameterAnnotation.sizeInBytes();
+            }
+        } else {
+            this.parameterAnnotations = NO_ENTRIES;
+        }
+    }
 
-	@Override
-	public IParameterAnnotation[] getParameterAnnotations() {
-		return this.parameterAnnotations;
-	}
+    @Override
+    public IParameterAnnotation[] getParameterAnnotations() {
+        return this.parameterAnnotations;
+    }
 
-	@Override
-	public int getParametersNumber() {
-		return this.parametersNumber;
-	}
+    @Override
+    public int getParametersNumber() {
+        return this.parametersNumber;
+    }
 }

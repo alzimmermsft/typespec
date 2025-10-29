@@ -25,7 +25,6 @@ import java.util.Hashtable;
 public class ConfigurationElement extends RegistryObject {
 
     static final ConfigurationElement[] EMPTY_ARRAY = new ConfigurationElement[0];
-    private static final String[] EMPTY_STRINGS = new String[0];
 
     // The id of the parent element. It can be a configuration element or an
     // extension
@@ -49,24 +48,6 @@ public class ConfigurationElement extends RegistryObject {
     // This happens when the configuration is obtained from a delta containing
     // removed extension.
     private String contributorId;
-
-    protected ConfigurationElement(ExtensionRegistry registry, boolean persist) {
-        super(registry, persist);
-    }
-
-    protected ConfigurationElement(int self, String contributorId, String name, String[] propertiesAndValue,
-        int[] children, int extraDataOffset, int parent, byte parentType, ExtensionRegistry registry, boolean persist) {
-        super(registry, persist);
-
-        setObjectId(self);
-        this.contributorId = contributorId;
-        this.name = name;
-        this.propertiesAndValue = intern(propertiesAndValue);
-        setRawChildren(children);
-        setExtraDataOffset(extraDataOffset);
-        parentId = parent;
-        this.parentType = parentType;
-    }
 
     void throwException(String message, Throwable exception) throws CoreException {
         throw new CoreException(new Status(IStatus.ERROR, RegistryMessages.OWNER_NAME, IRegistryConstants.PLUGIN_ERROR,
@@ -114,55 +95,6 @@ public class ConfigurationElement extends RegistryObject {
         return result;
     }
 
-    void setProperties(String[] value) {
-        propertiesAndValue = intern(value);
-    }
-
-    private static String[] intern(String[] a) {
-        if (a == null) {
-            return null;
-        }
-        if (a.length == 0) {
-            return EMPTY_STRINGS;
-        }
-        for (int i = 0; i < a.length; i++) {
-            a[i] = intern(a[i]);
-        }
-        return a;
-    }
-
-    private static String intern(String s) {
-        return s == null ? null : s.intern();
-    }
-
-    protected String[] getPropertiesAndValue() {
-        return propertiesAndValue;
-    }
-
-    void setValue(String value) {
-        value = intern(value);
-        if (propertiesAndValue.length == 0) {
-            propertiesAndValue = new String[] { value };
-            return;
-        }
-        if (propertiesAndValue.length % 2 == 1) {
-            propertiesAndValue[propertiesAndValue.length - 1] = value;
-            return;
-        }
-        String[] newPropertiesAndValue = new String[propertiesAndValue.length + 1];
-        System.arraycopy(propertiesAndValue, 0, newPropertiesAndValue, 0, propertiesAndValue.length);
-        newPropertiesAndValue[propertiesAndValue.length] = value;
-        propertiesAndValue = newPropertiesAndValue;
-    }
-
-    void setContributorId(String id) {
-        this.contributorId = id;
-    }
-
-    protected String getContributorId() {
-        return contributorId;
-    }
-
     public ConfigurationElement[] getChildren(String childrenName) {
         if (getRawChildren().length == 0) {
             return ConfigurationElement.EMPTY_ARRAY;
@@ -191,20 +123,8 @@ public class ConfigurationElement extends RegistryObject {
         return result;
     }
 
-    void setParentId(int objectId) {
-        parentId = objectId;
-    }
-
     protected String getName() {
         return name;
-    }
-
-    void setName(String name) {
-        this.name = name;
-    }
-
-    void setParentType(byte type) {
-        parentType = type;
     }
 
     public IContributor getContributor() {
@@ -301,11 +221,6 @@ public class ConfigurationElement extends RegistryObject {
             // user code caused exception
             throwException(NLS.bind(RegistryMessages.plugin_initObjectError, getContributor().getName(), className),
                 te);
-        }
-
-        // Deal with executable extension factories.
-        if (result instanceof IExecutableExtensionFactory) {
-            result = ((IExecutableExtensionFactory) result).create();
         }
 
         return result;

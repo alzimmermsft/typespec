@@ -23,9 +23,6 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure;
@@ -36,6 +33,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 /**
  * Ported from Ntifs.h
  * Microsoft Windows WDK 10
+ * 
  * @author amarcionek[at]gmail.com
  */
 public interface Ntifs extends WinDef, BaseTSD {
@@ -48,7 +46,13 @@ public interface Ntifs extends WinDef, BaseTSD {
 
     public int SYMLINK_FLAG_RELATIVE = 1;
 
-    @FieldOrder({"SubstituteNameOffset", "SubstituteNameLength", "PrintNameOffset", "PrintNameLength", "Flags", "PathBuffer"})
+    @FieldOrder({
+        "SubstituteNameOffset",
+        "SubstituteNameLength",
+        "PrintNameOffset",
+        "PrintNameLength",
+        "Flags",
+        "PathBuffer" })
     public static class SymbolicLinkReparseBuffer extends Structure {
 
         public static class ByReference extends SymbolicLinkReparseBuffer implements Structure.ByReference {
@@ -128,7 +132,8 @@ public interface Ntifs extends WinDef, BaseTSD {
             write();
         }
 
-        public SymbolicLinkReparseBuffer(short SubstituteNameOffset, short SubstituteNameLength, short PrintNameOffset, short PrintNameLength, int Flags, String PathBuffer) {
+        public SymbolicLinkReparseBuffer(short SubstituteNameOffset, short SubstituteNameLength, short PrintNameOffset,
+            short PrintNameLength, int Flags, String PathBuffer) {
             super();
             this.SubstituteNameOffset = SubstituteNameOffset;
             this.SubstituteNameLength = SubstituteNameLength;
@@ -154,7 +159,7 @@ public interface Ntifs extends WinDef, BaseTSD {
         }
     }
 
-    @FieldOrder({"SubstituteNameOffset", "SubstituteNameLength", "PrintNameOffset", "PrintNameLength", "PathBuffer"})
+    @FieldOrder({ "SubstituteNameOffset", "SubstituteNameLength", "PrintNameOffset", "PrintNameLength", "PathBuffer" })
     public static class MountPointReparseBuffer extends Structure {
 
         public static class ByReference extends MountPointReparseBuffer implements Structure.ByReference {
@@ -225,7 +230,8 @@ public interface Ntifs extends WinDef, BaseTSD {
             write();
         }
 
-        public MountPointReparseBuffer(short SubstituteNameOffset, short SubstituteNameLength, short PrintNameOffset, short PrintNameLength, String PathBuffer) {
+        public MountPointReparseBuffer(short SubstituteNameOffset, short SubstituteNameLength, short PrintNameOffset,
+            short PrintNameLength, String PathBuffer) {
             super();
             this.SubstituteNameOffset = SubstituteNameOffset;
             this.SubstituteNameLength = SubstituteNameLength;
@@ -236,7 +242,7 @@ public interface Ntifs extends WinDef, BaseTSD {
         }
     }
 
-    @FieldOrder({"DataBuffer"})
+    @FieldOrder({ "DataBuffer" })
     public static class GenericReparseBuffer extends Structure {
 
         public static class ByReference extends GenericReparseBuffer implements Structure.ByReference {
@@ -278,7 +284,7 @@ public interface Ntifs extends WinDef, BaseTSD {
      * The REPARSE_DATA_BUFFER structure contains reparse point data for a Microsoft reparse point.
      * (Third-party reparse point owners must use the REPARSE_GUID_DATA_BUFFER structure instead.)
      */
-    @FieldOrder({"ReparseTag", "ReparseDataLength", "Reserved", "u"})
+    @FieldOrder({ "ReparseTag", "ReparseDataLength", "Reserved", "u" })
     public static class REPARSE_DATA_BUFFER extends Structure {
 
         public static class ByReference extends REPARSE_DATA_BUFFER implements Structure.ByReference {
@@ -301,15 +307,18 @@ public interface Ntifs extends WinDef, BaseTSD {
         public short ReparseDataLength = 0;
 
         /**
-         * Length, in bytes, of the unparsed portion of the file name pointed to by the FileName member of the associated file object.
-         * For more information about the FileName member, see FILE_OBJECT. This member is only valid for create operations when the
-         * I/O fails with STATUS_REPARSE. For all other purposes, such as setting or querying a reparse point for the reparse data,
+         * Length, in bytes, of the unparsed portion of the file name pointed to by the FileName member of the
+         * associated file object.
+         * For more information about the FileName member, see FILE_OBJECT. This member is only valid for create
+         * operations when the
+         * I/O fails with STATUS_REPARSE. For all other purposes, such as setting or querying a reparse point for the
+         * reparse data,
          * this member is treated as reserved.
          */
         public short Reserved = 0;
 
         public static class REPARSE_UNION extends Union {
-            public static class ByReference extends REPARSE_UNION  implements Structure.ByReference {
+            public static class ByReference extends REPARSE_UNION implements Structure.ByReference {
 
             }
 
@@ -370,13 +379,15 @@ public interface Ntifs extends WinDef, BaseTSD {
         public void read() {
             super.read();
             // Set structure value based on ReparseTag and then re-read the union.
-            switch(ReparseTag) {
+            switch (ReparseTag) {
                 default:
                     u.setType(GenericReparseBuffer.class);
                     break;
+
                 case WinNT.IO_REPARSE_TAG_MOUNT_POINT:
                     u.setType(MountPointReparseBuffer.class);
                     break;
+
                 case WinNT.IO_REPARSE_TAG_SYMLINK:
                     u.setType(SymbolicLinkReparseBuffer.class);
                     break;

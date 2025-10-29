@@ -12,215 +12,226 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.util;
+
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CharOperation;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CharOperation;
 
 /**
  * A hashset of char[] whose values can be garbage collected.
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class WeakHashSetOfCharArray {
 
-	public static class HashableWeakReference extends WeakReference {
-		public int hashCode;
-		public HashableWeakReference(char[] referent, ReferenceQueue queue) {
-			super(referent, queue);
-			this.hashCode = CharOperation.hashCode(referent);
-		}
-		@Override
-		public boolean equals(Object obj) {
-			if (!(obj instanceof HashableWeakReference)) return false;
-			char[] referent = (char[]) get();
-			char[] other = (char[]) ((HashableWeakReference) obj).get();
-			if (referent == null) return other == null;
-			return CharOperation.equals(referent, other);
-		}
-		@Override
-		public int hashCode() {
-			return this.hashCode;
-		}
-		@Override
-		public String toString() {
-			char[] referent = (char[]) get();
-			if (referent == null) return "[hashCode=" + this.hashCode + "] <referent was garbage collected>"; //$NON-NLS-1$  //$NON-NLS-2$
-			return "[hashCode=" + this.hashCode + "] \"" + new String(referent) + '\"'; //$NON-NLS-1$ //$NON-NLS-2$
-		}
-	}
+    public static class HashableWeakReference extends WeakReference {
+        public int hashCode;
 
-	HashableWeakReference[] values;
-	public int elementSize; // number of elements in the table
-	int threshold;
-	ReferenceQueue referenceQueue = new ReferenceQueue();
+        public HashableWeakReference(char[] referent, ReferenceQueue queue) {
+            super(referent, queue);
+            this.hashCode = CharOperation.hashCode(referent);
+        }
 
-	public WeakHashSetOfCharArray() {
-		this(5);
-	}
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof HashableWeakReference))
+                return false;
+            char[] referent = (char[]) get();
+            char[] other = (char[]) ((HashableWeakReference) obj).get();
+            if (referent == null)
+                return other == null;
+            return CharOperation.equals(referent, other);
+        }
 
-	public WeakHashSetOfCharArray(int size) {
-		this.elementSize = 0;
-		this.threshold = size; // size represents the expected number of elements
-		int extraRoom = (int) (size * 1.75f);
-		if (this.threshold == extraRoom)
-			extraRoom++;
-		this.values = new HashableWeakReference[extraRoom];
-	}
+        @Override
+        public int hashCode() {
+            return this.hashCode;
+        }
 
-	/*
-	 * Adds the given char array to this set.
-	 * If a char array that is equals to the given char array already exists, do nothing.
-	 * Returns the existing char array or the new char array if not found.
-	 */
-	public char[] add(char[] array) {
-		cleanupGarbageCollectedValues();
-		int valuesLength = this.values.length,
-			index = (CharOperation.hashCode(array) & 0x7FFFFFFF) % valuesLength;
-		HashableWeakReference currentValue;
-		while ((currentValue = this.values[index]) != null) {
-			char[] referent;
-			if (CharOperation.equals(array, referent = (char[]) currentValue.get())) {
-				return referent;
-			}
-			if (++index == valuesLength) {
-				index = 0;
-			}
-		}
-		this.values[index] = new HashableWeakReference(array, this.referenceQueue);
+        @Override
+        public String toString() {
+            char[] referent = (char[]) get();
+            if (referent == null)
+                return "[hashCode=" + this.hashCode + "] <referent was garbage collected>"; //$NON-NLS-1$ //$NON-NLS-2$
+            return "[hashCode=" + this.hashCode + "] \"" + new String(referent) + '\"'; //$NON-NLS-1$ //$NON-NLS-2$
+        }
+    }
 
-		// assumes the threshold is never equal to the size of the table
-		if (++this.elementSize > this.threshold)
-			rehash();
+    HashableWeakReference[] values;
+    public int elementSize; // number of elements in the table
+    int threshold;
+    ReferenceQueue referenceQueue = new ReferenceQueue();
 
-		return array;
-	}
+    public WeakHashSetOfCharArray() {
+        this(5);
+    }
 
-	private void addValue(HashableWeakReference value) {
-		char[] array = (char[]) value.get();
-		if (array == null) return;
-		int valuesLength = this.values.length;
-		int index = (value.hashCode & 0x7FFFFFFF) % valuesLength;
-		HashableWeakReference currentValue;
-		while ((currentValue = this.values[index]) != null) {
-			if (CharOperation.equals(array, (char[]) currentValue.get())) {
-				return;
-			}
-			if (++index == valuesLength) {
-				index = 0;
-			}
-		}
-		this.values[index] = value;
+    public WeakHashSetOfCharArray(int size) {
+        this.elementSize = 0;
+        this.threshold = size; // size represents the expected number of elements
+        int extraRoom = (int) (size * 1.75f);
+        if (this.threshold == extraRoom)
+            extraRoom++;
+        this.values = new HashableWeakReference[extraRoom];
+    }
 
-		// assumes the threshold is never equal to the size of the table
-		if (++this.elementSize > this.threshold)
-			rehash();
-	}
+    /*
+     * Adds the given char array to this set.
+     * If a char array that is equals to the given char array already exists, do nothing.
+     * Returns the existing char array or the new char array if not found.
+     */
+    public char[] add(char[] array) {
+        cleanupGarbageCollectedValues();
+        int valuesLength = this.values.length, index = (CharOperation.hashCode(array) & 0x7FFFFFFF) % valuesLength;
+        HashableWeakReference currentValue;
+        while ((currentValue = this.values[index]) != null) {
+            char[] referent;
+            if (CharOperation.equals(array, referent = (char[]) currentValue.get())) {
+                return referent;
+            }
+            if (++index == valuesLength) {
+                index = 0;
+            }
+        }
+        this.values[index] = new HashableWeakReference(array, this.referenceQueue);
 
-	private void cleanupGarbageCollectedValues() {
-		HashableWeakReference toBeRemoved;
-		while ((toBeRemoved = (HashableWeakReference) this.referenceQueue.poll()) != null) {
-			int hashCode = toBeRemoved.hashCode;
-			int valuesLength = this.values.length;
-			int index = (hashCode & 0x7FFFFFFF) % valuesLength;
-			HashableWeakReference currentValue;
-			while ((currentValue = this.values[index]) != null) {
-				if (currentValue == toBeRemoved) {
-					// replace the value at index with the last value with the same hash
-					int sameHash = index;
-					int current;
-					while ((currentValue = this.values[current = (sameHash + 1) % valuesLength]) != null && currentValue.hashCode == hashCode)
-						sameHash = current;
-					this.values[index] = this.values[sameHash];
-					this.values[sameHash] = null;
-					this.elementSize--;
-					break;
-				}
-				if (++index == valuesLength) {
-					index = 0;
-				}
-			}
-		}
-	}
+        // assumes the threshold is never equal to the size of the table
+        if (++this.elementSize > this.threshold)
+            rehash();
 
-	public boolean contains(char[] array) {
-		return get(array) != null;
-	}
+        return array;
+    }
 
-	/*
-	 * Return the char array that is in this set and that is equals to the given char array.
-	 * Return null if not found.
-	 */
-	public char[] get(char[] array) {
-		cleanupGarbageCollectedValues();
-		int valuesLength = this.values.length;
-		int index = (CharOperation.hashCode(array) & 0x7FFFFFFF) % valuesLength;
-		HashableWeakReference currentValue;
-		while ((currentValue = this.values[index]) != null) {
-			char[] referent;
-			if (CharOperation.equals(array, referent = (char[]) currentValue.get())) {
-				return referent;
-			}
-			if (++index == valuesLength) {
-				index = 0;
-			}
-		}
-		return null;
-	}
+    private void addValue(HashableWeakReference value) {
+        char[] array = (char[]) value.get();
+        if (array == null)
+            return;
+        int valuesLength = this.values.length;
+        int index = (value.hashCode & 0x7FFFFFFF) % valuesLength;
+        HashableWeakReference currentValue;
+        while ((currentValue = this.values[index]) != null) {
+            if (CharOperation.equals(array, (char[]) currentValue.get())) {
+                return;
+            }
+            if (++index == valuesLength) {
+                index = 0;
+            }
+        }
+        this.values[index] = value;
 
-	private void rehash() {
-		WeakHashSetOfCharArray newHashSet = new WeakHashSetOfCharArray(this.elementSize * 2);		// double the number of expected elements
-		newHashSet.referenceQueue = this.referenceQueue;
-		HashableWeakReference currentValue;
-		for (HashableWeakReference value : this.values)
-			if ((currentValue = value) != null)
-				newHashSet.addValue(currentValue);
+        // assumes the threshold is never equal to the size of the table
+        if (++this.elementSize > this.threshold)
+            rehash();
+    }
 
-		this.values = newHashSet.values;
-		this.threshold = newHashSet.threshold;
-		this.elementSize = newHashSet.elementSize;
-	}
+    private void cleanupGarbageCollectedValues() {
+        HashableWeakReference toBeRemoved;
+        while ((toBeRemoved = (HashableWeakReference) this.referenceQueue.poll()) != null) {
+            int hashCode = toBeRemoved.hashCode;
+            int valuesLength = this.values.length;
+            int index = (hashCode & 0x7FFFFFFF) % valuesLength;
+            HashableWeakReference currentValue;
+            while ((currentValue = this.values[index]) != null) {
+                if (currentValue == toBeRemoved) {
+                    // replace the value at index with the last value with the same hash
+                    int sameHash = index;
+                    int current;
+                    while ((currentValue = this.values[current = (sameHash + 1) % valuesLength]) != null
+                        && currentValue.hashCode == hashCode)
+                        sameHash = current;
+                    this.values[index] = this.values[sameHash];
+                    this.values[sameHash] = null;
+                    this.elementSize--;
+                    break;
+                }
+                if (++index == valuesLength) {
+                    index = 0;
+                }
+            }
+        }
+    }
 
-	/*
-	 * Removes the char array that is in this set and that is equals to the given char array.
-	 * Return the char array that was in the set, or null if not found.
-	 */
-	public char[] remove(char[] array) {
-		cleanupGarbageCollectedValues();
-		int valuesLength = this.values.length;
-		int index = (CharOperation.hashCode(array) & 0x7FFFFFFF) % valuesLength;
-		HashableWeakReference currentValue;
-		while ((currentValue = this.values[index]) != null) {
-			char[] referent;
-			if (CharOperation.equals(array, referent = (char[]) currentValue.get())) {
-				this.elementSize--;
-				this.values[index] = null;
-				rehash();
-				return referent;
-			}
-			if (++index == valuesLength) {
-				index = 0;
-			}
-		}
-		return null;
-	}
+    public boolean contains(char[] array) {
+        return get(array) != null;
+    }
 
-	public int size() {
-		return this.elementSize;
-	}
+    /*
+     * Return the char array that is in this set and that is equals to the given char array.
+     * Return null if not found.
+     */
+    public char[] get(char[] array) {
+        cleanupGarbageCollectedValues();
+        int valuesLength = this.values.length;
+        int index = (CharOperation.hashCode(array) & 0x7FFFFFFF) % valuesLength;
+        HashableWeakReference currentValue;
+        while ((currentValue = this.values[index]) != null) {
+            char[] referent;
+            if (CharOperation.equals(array, referent = (char[]) currentValue.get())) {
+                return referent;
+            }
+            if (++index == valuesLength) {
+                index = 0;
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder buffer = new StringBuilder("{"); //$NON-NLS-1$
-		for (HashableWeakReference value : this.values) {
-			if (value != null) {
-				char[] ref = (char[]) value.get();
-				if (ref != null) {
-					buffer.append('\"');
-					buffer.append(ref);
-					buffer.append("\", "); //$NON-NLS-1$
-				}
-			}
-		}
-		buffer.append("}"); //$NON-NLS-1$
-		return buffer.toString();
-	}
+    private void rehash() {
+        WeakHashSetOfCharArray newHashSet = new WeakHashSetOfCharArray(this.elementSize * 2);		// double the number
+                                                                                             		// of expected
+                                                                                             		// elements
+        newHashSet.referenceQueue = this.referenceQueue;
+        HashableWeakReference currentValue;
+        for (HashableWeakReference value : this.values)
+            if ((currentValue = value) != null)
+                newHashSet.addValue(currentValue);
+
+        this.values = newHashSet.values;
+        this.threshold = newHashSet.threshold;
+        this.elementSize = newHashSet.elementSize;
+    }
+
+    /*
+     * Removes the char array that is in this set and that is equals to the given char array.
+     * Return the char array that was in the set, or null if not found.
+     */
+    public char[] remove(char[] array) {
+        cleanupGarbageCollectedValues();
+        int valuesLength = this.values.length;
+        int index = (CharOperation.hashCode(array) & 0x7FFFFFFF) % valuesLength;
+        HashableWeakReference currentValue;
+        while ((currentValue = this.values[index]) != null) {
+            char[] referent;
+            if (CharOperation.equals(array, referent = (char[]) currentValue.get())) {
+                this.elementSize--;
+                this.values[index] = null;
+                rehash();
+                return referent;
+            }
+            if (++index == valuesLength) {
+                index = 0;
+            }
+        }
+        return null;
+    }
+
+    public int size() {
+        return this.elementSize;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder buffer = new StringBuilder("{"); //$NON-NLS-1$
+        for (HashableWeakReference value : this.values) {
+            if (value != null) {
+                char[] ref = (char[]) value.get();
+                if (ref != null) {
+                    buffer.append('\"');
+                    buffer.append(ref);
+                    buffer.append("\", "); //$NON-NLS-1$
+                }
+            }
+        }
+        buffer.append("}"); //$NON-NLS-1$
+        return buffer.toString();
+    }
 }

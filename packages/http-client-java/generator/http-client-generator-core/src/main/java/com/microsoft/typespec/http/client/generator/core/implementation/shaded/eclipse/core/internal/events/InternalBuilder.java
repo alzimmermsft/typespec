@@ -14,14 +14,11 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.events;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.resources.ICoreConstants;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.watson.ElementTree;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IBuildConfiguration;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.ICommand;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IProject;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IResourceDelta;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.resources.IncrementalProjectBuilder;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
+
 import java.util.Collection;
 
 /**
@@ -37,9 +34,6 @@ public abstract class InternalBuilder {
      */
     static BuildManager buildManager;
     private ICommand command;
-    private IProject[] interestingProjects = ICoreConstants.EMPTY_PROJECT_ARRAY;
-    private String natureId;
-    private ElementTree oldState;
     /**
      * The build configuration that this builder is to build.
      */
@@ -49,7 +43,6 @@ public abstract class InternalBuilder {
      * @see IncrementalProjectBuilder#forgetLastBuiltState
      */
     protected void forgetLastBuiltState() {
-        oldState = null;
     }
 
     /*
@@ -63,30 +56,6 @@ public abstract class InternalBuilder {
      */
     protected ICommand getCommand() {
         return (ICommand) ((BuildCommand) command).clone();
-    }
-
-    /**
-     * @see IncrementalProjectBuilder#forgetLastBuiltState()
-     * @see IncrementalProjectBuilder#rememberLastBuiltState()
-     */
-    protected IResourceDelta getDelta(IProject aProject) {
-        return buildManager.getDelta(aProject);
-    }
-
-    final IProject[] getInterestingProjects() {
-        return interestingProjects;
-    }
-
-    final ElementTree getLastBuiltTree() {
-        return oldState;
-    }
-
-    /**
-     * Returns the ID of the nature that owns this builder. Returns null if the
-     * builder does not belong to a nature.
-     */
-    final String getNatureId() {
-        return natureId;
     }
 
     /**
@@ -130,45 +99,5 @@ public abstract class InternalBuilder {
     public void requestProjectsRebuild(Collection<IProject> projects) {
         buildManager.requestRebuild(projects, getProject());
     }
-
-    final void setCallOnEmptyDelta(boolean value) {
-    }
-
-    final void setCommand(ICommand value) {
-        this.command = value;
-    }
-
-    final void setInterestingProjects(IProject[] value) {
-        interestingProjects = value;
-    }
-
-    final void setLabel(String value) {
-    }
-
-    final void setLastBuiltTree(ElementTree value) {
-        oldState = value;
-    }
-
-    final void setNatureId(String id) {
-        this.natureId = id;
-    }
-
-    final void setPluginId(String value) {
-    }
-
-    /**
-     * Sets the build configuration for which this builder operates.
-     * 
-     * @see #getBuildConfig()
-     */
-    final void setBuildConfig(IBuildConfiguration value) {
-        Assert.isNotNull(value);
-        buildConfiguration = value;
-    }
-
-    /*
-     * @see IncrementalProjectBuilder#startupOnInitialize
-     */
-    protected abstract void startupOnInitialize();
 
 }

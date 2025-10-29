@@ -17,13 +17,13 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Preconditions.checkNotNull;
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.util.concurrent.Platform.restoreInterruptIfIsInterruptedException;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtIncompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.J2ktIncompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A TimeLimiter implementation which actually does not attempt to limit time at all. This may be
@@ -39,59 +39,57 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @GwtIncompatible
 @ElementTypesAreNonnullByDefault
 public final class FakeTimeLimiter implements TimeLimiter {
-  @CanIgnoreReturnValue // TODO(kak): consider removing this
-  @Override
-  public <T> T newProxy(
-      T target, Class<T> interfaceType, long timeoutDuration, TimeUnit timeoutUnit) {
-    checkNotNull(target);
-    checkNotNull(interfaceType);
-    checkNotNull(timeoutUnit);
-    return target; // ha ha
-  }
-
-  @CanIgnoreReturnValue // TODO(kak): consider removing this
-  @Override
-  @ParametricNullness
-  public <T extends @Nullable Object> T callWithTimeout(
-      Callable<T> callable, long timeoutDuration, TimeUnit timeoutUnit) throws ExecutionException {
-    checkNotNull(callable);
-    checkNotNull(timeoutUnit);
-    try {
-      return callable.call();
-    } catch (RuntimeException e) {
-      throw new UncheckedExecutionException(e);
-    } catch (Exception e) {
-      restoreInterruptIfIsInterruptedException(e);
-      throw new ExecutionException(e);
-    } catch (Error e) {
-      throw new ExecutionError(e);
+    @CanIgnoreReturnValue // TODO(kak): consider removing this
+    @Override
+    public <T> T newProxy(T target, Class<T> interfaceType, long timeoutDuration, TimeUnit timeoutUnit) {
+        checkNotNull(target);
+        checkNotNull(interfaceType);
+        checkNotNull(timeoutUnit);
+        return target; // ha ha
     }
-  }
 
-  @CanIgnoreReturnValue // TODO(kak): consider removing this
-  @Override
-  @ParametricNullness
-  public <T extends @Nullable Object> T callUninterruptiblyWithTimeout(
-      Callable<T> callable, long timeoutDuration, TimeUnit timeoutUnit) throws ExecutionException {
-    return callWithTimeout(callable, timeoutDuration, timeoutUnit);
-  }
-
-  @Override
-  public void runWithTimeout(Runnable runnable, long timeoutDuration, TimeUnit timeoutUnit) {
-    checkNotNull(runnable);
-    checkNotNull(timeoutUnit);
-    try {
-      runnable.run();
-    } catch (RuntimeException e) {
-      throw new UncheckedExecutionException(e);
-    } catch (Error e) {
-      throw new ExecutionError(e);
+    @CanIgnoreReturnValue // TODO(kak): consider removing this
+    @Override
+    @ParametricNullness
+    public <T extends @Nullable Object> T callWithTimeout(Callable<T> callable, long timeoutDuration,
+        TimeUnit timeoutUnit) throws ExecutionException {
+        checkNotNull(callable);
+        checkNotNull(timeoutUnit);
+        try {
+            return callable.call();
+        } catch (RuntimeException e) {
+            throw new UncheckedExecutionException(e);
+        } catch (Exception e) {
+            restoreInterruptIfIsInterruptedException(e);
+            throw new ExecutionException(e);
+        } catch (Error e) {
+            throw new ExecutionError(e);
+        }
     }
-  }
 
-  @Override
-  public void runUninterruptiblyWithTimeout(
-      Runnable runnable, long timeoutDuration, TimeUnit timeoutUnit) {
-    runWithTimeout(runnable, timeoutDuration, timeoutUnit);
-  }
+    @CanIgnoreReturnValue // TODO(kak): consider removing this
+    @Override
+    @ParametricNullness
+    public <T extends @Nullable Object> T callUninterruptiblyWithTimeout(Callable<T> callable, long timeoutDuration,
+        TimeUnit timeoutUnit) throws ExecutionException {
+        return callWithTimeout(callable, timeoutDuration, timeoutUnit);
+    }
+
+    @Override
+    public void runWithTimeout(Runnable runnable, long timeoutDuration, TimeUnit timeoutUnit) {
+        checkNotNull(runnable);
+        checkNotNull(timeoutUnit);
+        try {
+            runnable.run();
+        } catch (RuntimeException e) {
+            throw new UncheckedExecutionException(e);
+        } catch (Error e) {
+            throw new ExecutionError(e);
+        }
+    }
+
+    @Override
+    public void runUninterruptiblyWithTimeout(Runnable runnable, long timeoutDuration, TimeUnit timeoutUnit) {
+        runWithTimeout(runnable, timeoutDuration, timeoutUnit);
+    }
 }

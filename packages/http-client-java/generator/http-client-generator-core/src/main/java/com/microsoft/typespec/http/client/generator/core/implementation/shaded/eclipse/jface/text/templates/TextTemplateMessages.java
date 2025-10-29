@@ -22,26 +22,25 @@ import java.util.ResourceBundle;
  */
 class TextTemplateMessages {
 
-	private static final String RESOURCE_BUNDLE= TextTemplateMessages.class.getName();
-	private static ResourceBundle fgResourceBundle= ResourceBundle.getBundle(RESOURCE_BUNDLE);
+    private static final String RESOURCE_BUNDLE = TextTemplateMessages.class.getName();
+    private static ResourceBundle fgResourceBundle = ResourceBundle.getBundle(RESOURCE_BUNDLE);
 
-	private TextTemplateMessages() {
-	}
+    private TextTemplateMessages() {
+    }
 
-	public static String getString(String key) {
-		try {
-			return fgResourceBundle.getString(key);
-		} catch (MissingResourceException e) {
-			return '!' + key + '!';
-		}
-	}
+    public static String getString(String key) {
+        try {
+            return fgResourceBundle.getString(key);
+        } catch (MissingResourceException e) {
+            return '!' + key + '!';
+        }
+    }
 
-	public static String getFormattedString(String key, Object arg) {
-		return MessageFormat.format(getString(key), arg);
-	}
+    public static String getFormattedString(String key, Object arg) {
+        return MessageFormat.format(getString(key), arg);
+    }
 
-
-	public static String getFormattedString(String key, Object[] args) {
-		return MessageFormat.format(getString(key), args);
-	}
+    public static String getFormattedString(String key, Object[] args) {
+        return MessageFormat.format(getString(key), args);
+    }
 }

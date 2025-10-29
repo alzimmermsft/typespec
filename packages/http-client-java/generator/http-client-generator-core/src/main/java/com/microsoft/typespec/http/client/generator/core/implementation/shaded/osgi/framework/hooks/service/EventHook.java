@@ -16,10 +16,10 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.hooks.service;
 
-import java.util.Collection;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.ConsumerType;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.BundleContext;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.ServiceEvent;
+import java.util.Collection;
 
 /**
  * OSGi Framework Service Event Hook Service.
@@ -34,21 +34,21 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 @ConsumerType
 public interface EventHook {
-	/**
-	 * Event hook method. This method is called prior to service event delivery
-	 * when a publishing bundle registers, modifies or unregisters a service.
-	 * This method can filter the bundles which receive the event.
-	 * 
-	 * @param event The service event to be delivered.
-	 * @param contexts A collection of Bundle Contexts for bundles which have
-	 *        listeners to which the specified event will be delivered. The
-	 *        implementation of this method may remove bundle contexts from the
-	 *        collection to prevent the event from being delivered to the
-	 *        associated bundles. The collection supports all the optional
-	 *        {@code Collection} operations except {@code add} and
-	 *        {@code addAll}. Attempting to add to the collection will result in
-	 *        an {@code UnsupportedOperationException}. The collection is not
-	 *        synchronized.
-	 */
-	void event(ServiceEvent event, Collection<BundleContext> contexts);
+    /**
+     * Event hook method. This method is called prior to service event delivery
+     * when a publishing bundle registers, modifies or unregisters a service.
+     * This method can filter the bundles which receive the event.
+     * 
+     * @param event The service event to be delivered.
+     * @param contexts A collection of Bundle Contexts for bundles which have
+     * listeners to which the specified event will be delivered. The
+     * implementation of this method may remove bundle contexts from the
+     * collection to prevent the event from being delivered to the
+     * associated bundles. The collection supports all the optional
+     * {@code Collection} operations except {@code add} and
+     * {@code addAll}. Attempting to add to the collection will result in
+     * an {@code UnsupportedOperationException}. The collection is not
+     * synchronized.
+     */
+    void event(ServiceEvent event, Collection<BundleContext> contexts);
 }

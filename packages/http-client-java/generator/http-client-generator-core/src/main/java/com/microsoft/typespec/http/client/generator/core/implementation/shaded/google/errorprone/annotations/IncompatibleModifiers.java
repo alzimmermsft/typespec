@@ -26,16 +26,18 @@ import java.lang.annotation.Target;
  * Annotation declaring that the target annotation is incompatible with any one of the provided
  * modifiers. For example, an annotation declared as:
  *
- * <pre>{@code
- * @IncompatibleModifiers(modifier = Modifier.PUBLIC)
- * @interface MyAnnotation {}
+ * <pre>
+ * {@code
+ * &#64;IncompatibleModifiers(modifier = Modifier.PUBLIC)
+ * &#64;interface MyAnnotation {}
  * </pre>
  *
  * <p>will be considered illegal when used as:
  *
  * <pre>
- * @MyAnnotation public void foo() {}
- * }</pre>
+ * &#64;MyAnnotation public void foo() {}
+ * }
+ * </pre>
  *
  * @author benyu@google.com (Jige Yu)
  */
@@ -44,18 +46,18 @@ import java.lang.annotation.Target;
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface IncompatibleModifiers {
 
-  /**
-   * @deprecated use {@link #modifier} instead
-   */
-  @Deprecated
-  javax.lang.model.element.Modifier[] value() default {};
+    /**
+     * @deprecated use {@link #modifier} instead
+     */
+    @Deprecated
+    javax.lang.model.element.Modifier[] value() default { };
 
-  /**
-   * The incompatible modifiers. The annotated element is illegal with the presence of any one or
-   * more of these modifiers.
-   *
-   * <p>Empty array has the same effect as not applying this annotation at all; duplicates are
-   * allowed but have no effect.
-   */
-  Modifier[] modifier() default {};
+    /**
+     * The incompatible modifiers. The annotated element is illegal with the presence of any one or
+     * more of these modifiers.
+     *
+     * <p>Empty array has the same effect as not applying this annotation at all; duplicates are
+     * allowed but have no effect.
+     */
+    Modifier[] modifier() default { };
 }

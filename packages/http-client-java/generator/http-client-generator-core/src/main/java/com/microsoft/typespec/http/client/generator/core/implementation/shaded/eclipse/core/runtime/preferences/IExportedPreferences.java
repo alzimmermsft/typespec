@@ -26,15 +26,4 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IExportedPreferences extends IEclipsePreferences {
 
-    /**
-     * Return <code>true</code> if this node was an export root when the preferences
-     * were exported, and <code>false</code> otherwise. This information is used
-     * during the import to clear nodes when importing a node's (and its children's)
-     * preferences.
-     *
-     * @return <code>true</code> if this node is an export root and
-     * <code>false</code> otherwise
-     */
-    public boolean isExportRoot();
-
 }

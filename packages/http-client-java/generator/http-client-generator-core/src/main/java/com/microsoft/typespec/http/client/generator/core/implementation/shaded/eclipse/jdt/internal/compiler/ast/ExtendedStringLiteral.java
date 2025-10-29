@@ -18,18 +18,19 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class ExtendedStringLiteral extends StringLiteral {
 
-	protected ExtendedStringLiteral(StringLiteral optionalHead, Object sourcesTail, int start, int end, int lineNumber) {
-		super(optionalHead, sourcesTail, start,  end,  lineNumber);
-	}
+    protected ExtendedStringLiteral(StringLiteral optionalHead, Object sourcesTail, int start, int end,
+        int lineNumber) {
+        super(optionalHead, sourcesTail, start, end, lineNumber);
+    }
 
-	@Override
-	public StringBuilder printExpression(int indent, StringBuilder output) {
-		return output.append("ExtendedStringLiteral{").append(this.source()).append('}'); //$NON-NLS-1$
-	}
+    @Override
+    public StringBuilder printExpression(int indent, StringBuilder output) {
+        return output.append("ExtendedStringLiteral{").append(this.source()).append('}'); //$NON-NLS-1$
+    }
 
-	@Override
-	public void traverse(ASTVisitor visitor, BlockScope scope) {
-		visitor.visit(this, scope);
-		visitor.endVisit(this, scope);
-	}
+    @Override
+    public void traverse(ASTVisitor visitor, BlockScope scope) {
+        visitor.visit(this, scope);
+        visitor.endVisit(this, scope);
+    }
 }

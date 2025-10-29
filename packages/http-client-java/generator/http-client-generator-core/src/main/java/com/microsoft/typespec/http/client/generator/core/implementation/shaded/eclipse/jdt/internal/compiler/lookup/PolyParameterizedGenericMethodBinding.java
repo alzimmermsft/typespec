@@ -15,25 +15,27 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 public class PolyParameterizedGenericMethodBinding extends ParameterizedGenericMethodBinding { // confused citizen.
 
-	public boolean hasOverloads;
+    public boolean hasOverloads;
 
-	private final ParameterizedGenericMethodBinding wrappedBinding;
-	public PolyParameterizedGenericMethodBinding(ParameterizedGenericMethodBinding applicableMethod) {
-		super(applicableMethod.originalMethod, applicableMethod.typeArguments, applicableMethod.environment, applicableMethod.inferredWithUncheckedConversion, false,  applicableMethod.targetType);
-		this.wrappedBinding = applicableMethod;
-	}
+    private final ParameterizedGenericMethodBinding wrappedBinding;
 
-	@Override
-	public boolean equals(Object other) {
-		if (other instanceof PolyParameterizedGenericMethodBinding) {
-			PolyParameterizedGenericMethodBinding ppgmb = (PolyParameterizedGenericMethodBinding)other;
-			return this.wrappedBinding.equals(ppgmb.wrappedBinding);
-		}
-		return false;
-	}
+    public PolyParameterizedGenericMethodBinding(ParameterizedGenericMethodBinding applicableMethod) {
+        super(applicableMethod.originalMethod, applicableMethod.typeArguments, applicableMethod.environment,
+            applicableMethod.inferredWithUncheckedConversion, false, applicableMethod.targetType);
+        this.wrappedBinding = applicableMethod;
+    }
 
-	@Override
-	public int hashCode() {
-		return this.wrappedBinding.hashCode();
-	}
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof PolyParameterizedGenericMethodBinding) {
+            PolyParameterizedGenericMethodBinding ppgmb = (PolyParameterizedGenericMethodBinding) other;
+            return this.wrappedBinding.equals(ppgmb.wrappedBinding);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.wrappedBinding.hashCode();
+    }
 }

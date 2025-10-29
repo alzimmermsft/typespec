@@ -54,7 +54,7 @@ public interface Ole32 extends StdCallLibrary {
      * identifiers.
      *
      * @param pguid
-     *            A pointer to the requested GUID.
+     * A pointer to the requested GUID.
      * @return S_OK if the GUID was successfully created.
      */
     HRESULT CoCreateGuid(GUID pguid);
@@ -64,16 +64,16 @@ public interface Ole32 extends StdCallLibrary {
      * characters.
      *
      * @param rguid
-     *            The GUID to be converted.
+     * The GUID to be converted.
      * @param lpsz
-     *            A pointer to a caller-allocated string variable to receive the
-     *            resulting string.
+     * A pointer to a caller-allocated string variable to receive the
+     * resulting string.
      * @param cchMax
-     *            The number of characters available in the lpsz buffer.
+     * The number of characters available in the lpsz buffer.
      * @return If the function succeeds, the return value is the number of
-     *         characters in the returned string, including the null terminator.
-     *         If the buffer is too small to contain the string, the return
-     *         value is 0.
+     * characters in the returned string, including the null terminator.
+     * If the buffer is too small to contain the string, the return
+     * value is 0.
      */
     int StringFromGUID2(GUID rguid, char[] lpsz, int cchMax);
 
@@ -82,11 +82,11 @@ public interface Ole32 extends StdCallLibrary {
      * original interface identifier (IID).
      *
      * @param lpsz
-     *            A pointer to the string representation of the IID.
+     * A pointer to the string representation of the IID.
      * @param lpiid
-     *            A pointer to the requested IID on return.
+     * A pointer to the requested IID on return.
      * @return This function can return the standard return values E_INVALIDARG,
-     *         E_OUTOFMEMORY, and S_OK.
+     * E_OUTOFMEMORY, and S_OK.
      */
     HRESULT IIDFromString(String lpsz, GUID lpiid);
 
@@ -99,23 +99,23 @@ public interface Ole32 extends StdCallLibrary {
      * pvReserved [in, optional] This parameter is reserved and must be NULL.
      *
      * @param pvReserved
-     *            the pv reserved
+     * the pv reserved
      * @return S_OK The COM library was initialized successfully on this thread.
      *
-     *         S_FALSE The COM library is already initialized on this thread.
+     * S_FALSE The COM library is already initialized on this thread.
      *
-     *         RPC_E_CHANGED_MODE A previous call to CoInitializeEx specified
-     *         the concurrency model for this thread as multithread apartment
-     *         (MTA). This could also indicate that a change from
-     *         neutral-threaded apartment to single-threaded apartment has
-     *         occurred.
+     * RPC_E_CHANGED_MODE A previous call to CoInitializeEx specified
+     * the concurrency model for this thread as multithread apartment
+     * (MTA). This could also indicate that a change from
+     * neutral-threaded apartment to single-threaded apartment has
+     * occurred.
      */
     HRESULT CoInitialize(LPVOID pvReserved);
 
-    int COINIT_APARTMENTTHREADED  = 0x2;
-    int COINIT_MULTITHREADED      = 0x0;
-    int COINIT_DISABLE_OLE1DDE    = 0x4;
-    int COINIT_SPEED_OVER_MEMORY  = 0x8;
+    int COINIT_APARTMENTTHREADED = 0x2;
+    int COINIT_MULTITHREADED = 0x0;
+    int COINIT_DISABLE_OLE1DDE = 0x4;
+    int COINIT_SPEED_OVER_MEMORY = 0x8;
 
     /**
      * Initializes the COM library for use by the calling thread, sets the
@@ -123,18 +123,18 @@ public interface Ole32 extends StdCallLibrary {
      * one is required.
      *
      * @param reserved
-     *            This parameter is reserved and must be NULL.
+     * This parameter is reserved and must be NULL.
      * @param dwCoInit
-     *            The concurrency model and initialization options for the
-     *            thread. Values for this parameter are taken from the COINIT
-     *            enumeration. Any combination of values from COINIT can be
-     *            used, except that the {@link #COINIT_APARTMENTTHREADED} and
-     *            {@link #COINIT_MULTITHREADED} flags cannot both be set. The
-     *            default (and only sane choice) is
-     *            {@link #COINIT_MULTITHREADED}.
+     * The concurrency model and initialization options for the
+     * thread. Values for this parameter are taken from the COINIT
+     * enumeration. Any combination of values from COINIT can be
+     * used, except that the {@link #COINIT_APARTMENTTHREADED} and
+     * {@link #COINIT_MULTITHREADED} flags cannot both be set. The
+     * default (and only sane choice) is
+     * {@link #COINIT_MULTITHREADED}.
      * @return This function can return the standard return values E_INVALIDARG,
-     *         E_OUTOFMEMORY, and E_UNEXPECTED, as well as the following values.
-     *         S_OK, S_FALSE, RPC_E_CHANGED_MODE
+     * E_OUTOFMEMORY, and E_UNEXPECTED, as well as the following values.
+     * S_OK, S_FALSE, RPC_E_CHANGED_MODE
      */
     HRESULT CoInitializeEx(Pointer reserved, int dwCoInit);
 
@@ -150,82 +150,82 @@ public interface Ole32 extends StdCallLibrary {
      * Registers security and sets the default security values for the process.
      *
      * @param pSecDesc
-     *            [in, optional] The access permissions that a server will use
-     *            to receive calls. This parameter is used by COM only when a
-     *            server calls CoInitializeSecurity. Its value is a pointer to
-     *            one of three types: an AppID, an IAccessControl object, or a
-     *            SECURITY_DESCRIPTOR, in absolute format. See the Remarks
-     *            section for more information.
+     * [in, optional] The access permissions that a server will use
+     * to receive calls. This parameter is used by COM only when a
+     * server calls CoInitializeSecurity. Its value is a pointer to
+     * one of three types: an AppID, an IAccessControl object, or a
+     * SECURITY_DESCRIPTOR, in absolute format. See the Remarks
+     * section for more information.
      * @param cAuthSvc
-     *            [in] The count of entries in the asAuthSvc parameter. This
-     *            parameter is used by COM only when a server calls
-     *            CoInitializeSecurity. If this parameter is 0, no
-     *            authentication services will be registered and the server
-     *            cannot receive secure calls. A value of -1 tells COM to choose
-     *            which authentication services to register, and if this is the
-     *            case, the asAuthSvc parameter must be NULL. However, Schannel
-     *            will never be chosen as an authentication service by the
-     *            server if this parameter is -1.
+     * [in] The count of entries in the asAuthSvc parameter. This
+     * parameter is used by COM only when a server calls
+     * CoInitializeSecurity. If this parameter is 0, no
+     * authentication services will be registered and the server
+     * cannot receive secure calls. A value of -1 tells COM to choose
+     * which authentication services to register, and if this is the
+     * case, the asAuthSvc parameter must be NULL. However, Schannel
+     * will never be chosen as an authentication service by the
+     * server if this parameter is -1.
      * @param asAuthSvc
-     *            [in, optional] An array of authentication services that a
-     *            server is willing to use to receive a call. This parameter is
-     *            used by COM only when a server calls CoInitializeSecurity. For
-     *            more information, see SOLE_AUTHENTICATION_SERVICE.
+     * [in, optional] An array of authentication services that a
+     * server is willing to use to receive a call. This parameter is
+     * used by COM only when a server calls CoInitializeSecurity. For
+     * more information, see SOLE_AUTHENTICATION_SERVICE.
      * @param pReserved1
-     *            [in, optional] This parameter is reserved and must be NULL.
+     * [in, optional] This parameter is reserved and must be NULL.
      * @param dwAuthnLevel
-     *            [in] The default authentication level for the process. Both
-     *            servers and clients use this parameter when they call
-     *            CoInitializeSecurity. COM will fail calls that arrive with a
-     *            lower authentication level. By default, all proxies will use
-     *            at least this authentication level. This value should contain
-     *            one of the authentication level constants. By default, all
-     *            calls to IUnknown are made at this level.
+     * [in] The default authentication level for the process. Both
+     * servers and clients use this parameter when they call
+     * CoInitializeSecurity. COM will fail calls that arrive with a
+     * lower authentication level. By default, all proxies will use
+     * at least this authentication level. This value should contain
+     * one of the authentication level constants. By default, all
+     * calls to IUnknown are made at this level.
      * @param dwImpLevel
-     *            [in] The default impersonation level for proxies. The value of
-     *            this parameter is used only when the process is a client. It
-     *            should be a value from the impersonation level constants,
-     *            except for RPC_C_IMP_LEVEL_DEFAULT, which is not for use with
-     *            CoInitializeSecurity. Outgoing calls from the client always
-     *            use the impersonation level as specified. (It is not
-     *            negotiated.) Incoming calls to the client can be at any
-     *            impersonation level. By default, all IUnknown calls are made
-     *            with this impersonation level, so even security-aware
-     *            applications should set this level carefully. To determine
-     *            which impersonation levels each authentication service
-     *            supports, see the description of the authentication services
-     *            in COM and Security Packages. For more information about
-     *            impersonation levels, see Impersonation.
+     * [in] The default impersonation level for proxies. The value of
+     * this parameter is used only when the process is a client. It
+     * should be a value from the impersonation level constants,
+     * except for RPC_C_IMP_LEVEL_DEFAULT, which is not for use with
+     * CoInitializeSecurity. Outgoing calls from the client always
+     * use the impersonation level as specified. (It is not
+     * negotiated.) Incoming calls to the client can be at any
+     * impersonation level. By default, all IUnknown calls are made
+     * with this impersonation level, so even security-aware
+     * applications should set this level carefully. To determine
+     * which impersonation levels each authentication service
+     * supports, see the description of the authentication services
+     * in COM and Security Packages. For more information about
+     * impersonation levels, see Impersonation.
      * @param pAuthList
-     *            [in, optional] A pointer to SOLE_AUTHENTICATION_LIST, which is
-     *            an array of SOLE_AUTHENTICATION_INFO structures. This list
-     *            indicates the information for each authentication service that
-     *            a client can use to call a server. This parameter is used by
-     *            COM only when a client calls CoInitializeSecurity.
+     * [in, optional] A pointer to SOLE_AUTHENTICATION_LIST, which is
+     * an array of SOLE_AUTHENTICATION_INFO structures. This list
+     * indicates the information for each authentication service that
+     * a client can use to call a server. This parameter is used by
+     * COM only when a client calls CoInitializeSecurity.
      * @param dwCapabilities
-     *            [in] Additional capabilities of the client or server,
-     *            specified by setting one or more
-     *            EOLE_AUTHENTICATION_CAPABILITIES values. Some of these value
-     *            cannot be used simultaneously, and some cannot be set when
-     *            particular authentication services are being used.
+     * [in] Additional capabilities of the client or server,
+     * specified by setting one or more
+     * EOLE_AUTHENTICATION_CAPABILITIES values. Some of these value
+     * cannot be used simultaneously, and some cannot be set when
+     * particular authentication services are being used.
      * @param pReserved3
-     *            [in, optional] This parameter is reserved and must be NULL.
+     * [in, optional] This parameter is reserved and must be NULL.
      * @return This function can return the standard return value E_INVALIDARG,
-     *         as well as the following values.
+     * as well as the following values.
      *
-     *         S_OK Indicates success.
+     * S_OK Indicates success.
      *
-     *         RPC_E_TOO_LATE CoInitializeSecurity has already been called.
+     * RPC_E_TOO_LATE CoInitializeSecurity has already been called.
      *
-     *         RPC_E_NO_GOOD_SECURITY_PACKAGES The asAuthSvc parameter was not
-     *         NULL, and none of the authentication services in the list could
-     *         be registered. Check the results saved in asAuthSvc for
-     *         authentication service–specific error codes.
+     * RPC_E_NO_GOOD_SECURITY_PACKAGES The asAuthSvc parameter was not
+     * NULL, and none of the authentication services in the list could
+     * be registered. Check the results saved in asAuthSvc for
+     * authentication service–specific error codes.
      *
-     *         E_OUT_OF_MEMORY Out of memory.
+     * E_OUT_OF_MEMORY Out of memory.
      */
     HRESULT CoInitializeSecurity(SECURITY_DESCRIPTOR pSecDesc, int cAuthSvc, Pointer asAuthSvc, Pointer pReserved1,
-            int dwAuthnLevel, int dwImpLevel, Pointer pAuthList, int dwCapabilities, Pointer pReserved3);
+        int dwAuthnLevel, int dwImpLevel, Pointer pAuthList, int dwCapabilities, Pointer pReserved3);
 
     /**
      * Sets the authentication information that will be used to make calls on
@@ -233,118 +233,118 @@ public interface Ole32 extends StdCallLibrary {
      * IClientSecurity::SetBlanket.
      *
      * @param pProxy
-     *            [in] The proxy to be set.
+     * [in] The proxy to be set.
      * @param dwAuthnSvc
-     *            [in] The authentication service to be used. For a list of
-     *            possible values, see Authentication Service Constants. Use
-     *            RPC_C_AUTHN_NONE if no authentication is required. If
-     *            RPC_C_AUTHN_DEFAULT is specified, DCOM will pick an
-     *            authentication service following its normal security blanket
-     *            negotiation algorithm.
+     * [in] The authentication service to be used. For a list of
+     * possible values, see Authentication Service Constants. Use
+     * RPC_C_AUTHN_NONE if no authentication is required. If
+     * RPC_C_AUTHN_DEFAULT is specified, DCOM will pick an
+     * authentication service following its normal security blanket
+     * negotiation algorithm.
      * @param dwAuthzSvc
-     *            [in] The authorization service to be used. For a list of
-     *            possible values, see Authorization Constants. If
-     *            RPC_C_AUTHZ_DEFAULT is specified, DCOM will pick an
-     *            authorization service following its normal security blanket
-     *            negotiation algorithm. RPC_C_AUTHZ_NONE should be used as the
-     *            authorization service if NTLMSSP, Kerberos, or Schannel is
-     *            used as the authentication service.
+     * [in] The authorization service to be used. For a list of
+     * possible values, see Authorization Constants. If
+     * RPC_C_AUTHZ_DEFAULT is specified, DCOM will pick an
+     * authorization service following its normal security blanket
+     * negotiation algorithm. RPC_C_AUTHZ_NONE should be used as the
+     * authorization service if NTLMSSP, Kerberos, or Schannel is
+     * used as the authentication service.
      * @param pServerPrincName
-     *            [in, optional] The server principal name to be used with the
-     *            authentication service. If COLE_DEFAULT_PRINCIPAL is
-     *            specified, DCOM will pick a principal name using its security
-     *            blanket negotiation algorithm. If Kerberos is used as the
-     *            authentication service, this value must not be NULL. It must
-     *            be the correct principal name of the server or the call will
-     *            fail. If Schannel is used as the authentication service, this
-     *            value must be one of the msstd or fullsic forms described in
-     *            Principal Names, or NULL if you do not want mutual
-     *            authentication. Generally, specifying NULL will not reset the
-     *            server principal name on the proxy; rather, the previous
-     *            setting will be retained. You must be careful when using NULL
-     *            as pServerPrincName when selecting a different authentication
-     *            service for the proxy, because there is no guarantee that the
-     *            previously set principal name would be valid for the newly
-     *            selected authentication service.
+     * [in, optional] The server principal name to be used with the
+     * authentication service. If COLE_DEFAULT_PRINCIPAL is
+     * specified, DCOM will pick a principal name using its security
+     * blanket negotiation algorithm. If Kerberos is used as the
+     * authentication service, this value must not be NULL. It must
+     * be the correct principal name of the server or the call will
+     * fail. If Schannel is used as the authentication service, this
+     * value must be one of the msstd or fullsic forms described in
+     * Principal Names, or NULL if you do not want mutual
+     * authentication. Generally, specifying NULL will not reset the
+     * server principal name on the proxy; rather, the previous
+     * setting will be retained. You must be careful when using NULL
+     * as pServerPrincName when selecting a different authentication
+     * service for the proxy, because there is no guarantee that the
+     * previously set principal name would be valid for the newly
+     * selected authentication service.
      * @param dwAuthnLevel
-     *            [in] The authentication level to be used. For a list of
-     *            possible values, see Authentication Level Constants. If
-     *            RPC_C_AUTHN_LEVEL_DEFAULT is specified, DCOM will pick an
-     *            authentication level following its normal security blanket
-     *            negotiation algorithm. If this value is none, the
-     *            authentication service must also be none.
+     * [in] The authentication level to be used. For a list of
+     * possible values, see Authentication Level Constants. If
+     * RPC_C_AUTHN_LEVEL_DEFAULT is specified, DCOM will pick an
+     * authentication level following its normal security blanket
+     * negotiation algorithm. If this value is none, the
+     * authentication service must also be none.
      * @param dwImpLevel
-     *            [in] The impersonation level to be used. For a list of
-     *            possible values, see Impersonation Level Constants. If
-     *            RPC_C_IMP_LEVEL_DEFAULT is specified, DCOM will pick an
-     *            impersonation level following its normal security blanket
-     *            negotiation algorithm. If NTLMSSP is the authentication
-     *            service, this value must be RPC_C_IMP_LEVEL_IMPERSONATE or
-     *            RPC_C_IMP_LEVEL_IDENTIFY. NTLMSSP also supports delegate-level
-     *            impersonation (RPC_C_IMP_LEVEL_DELEGATE) on the same computer.
-     *            If Schannel is the authentication service, this parameter must
-     *            be RPC_C_IMP_LEVEL_IMPERSONATE.
+     * [in] The impersonation level to be used. For a list of
+     * possible values, see Impersonation Level Constants. If
+     * RPC_C_IMP_LEVEL_DEFAULT is specified, DCOM will pick an
+     * impersonation level following its normal security blanket
+     * negotiation algorithm. If NTLMSSP is the authentication
+     * service, this value must be RPC_C_IMP_LEVEL_IMPERSONATE or
+     * RPC_C_IMP_LEVEL_IDENTIFY. NTLMSSP also supports delegate-level
+     * impersonation (RPC_C_IMP_LEVEL_DELEGATE) on the same computer.
+     * If Schannel is the authentication service, this parameter must
+     * be RPC_C_IMP_LEVEL_IMPERSONATE.
      * @param pAuthInfo
-     *            [in, optional] A pointer to an RPC_AUTH_IDENTITY_HANDLE value
-     *            that establishes the identity of the client. The format of the
-     *            structure referred to by the handle depends on the provider of
-     *            the authentication service. For calls on the same computer,
-     *            RPC logs on the user with the supplied credentials and uses
-     *            the resulting token for the method call. For NTLMSSP or
-     *            Kerberos, the structure is a SEC_WINNT_AUTH_IDENTITY or
-     *            SEC_WINNT_AUTH_IDENTITY_EX structure. The client can discard
-     *            pAuthInfo after calling the API. RPC does not keep a copy of
-     *            the pAuthInfo pointer, and the client cannot retrieve it later
-     *            in the CoQueryProxyBlanket method. If this parameter is NULL,
-     *            DCOM uses the current proxy identity (which is either the
-     *            process token or the impersonation token). If the handle
-     *            refers to a structure, that identity is used. For Schannel,
-     *            this parameter must be either a pointer to a CERT_CONTEXT
-     *            structure that contains the client's X.509 certificate or is
-     *            NULL if the client wishes to make an anonymous connection to
-     *            the server. If a certificate is specified, the caller must not
-     *            free it as long as any proxy to the object exists in the
-     *            current apartment. For Snego, this member is either NULL,
-     *            points to a SEC_WINNT_AUTH_IDENTITY structure, or points to a
-     *            SEC_WINNT_AUTH_IDENTITY_EX structure. If it is NULL, Snego
-     *            will pick a list of authentication services based on those
-     *            available on the client computer. If it points to a
-     *            SEC_WINNT_AUTH_IDENTITY_EX structure, the structure's
-     *            PackageList member must point to a string containing a
-     *            comma-separated list of authentication service names and the
-     *            PackageListLength member must give the number of bytes in the
-     *            PackageList string. If PackageList is NULL, all calls using
-     *            Snego will fail. If COLE_DEFAULT_AUTHINFO is specified for
-     *            this parameter, DCOM will pick the authentication information
-     *            following its normal security blanket negotiation algorithm.
-     *            CoSetProxyBlanket will fail if pAuthInfo is set and one of the
-     *            cloaking flags is set in the dwCapabilities parameter.
+     * [in, optional] A pointer to an RPC_AUTH_IDENTITY_HANDLE value
+     * that establishes the identity of the client. The format of the
+     * structure referred to by the handle depends on the provider of
+     * the authentication service. For calls on the same computer,
+     * RPC logs on the user with the supplied credentials and uses
+     * the resulting token for the method call. For NTLMSSP or
+     * Kerberos, the structure is a SEC_WINNT_AUTH_IDENTITY or
+     * SEC_WINNT_AUTH_IDENTITY_EX structure. The client can discard
+     * pAuthInfo after calling the API. RPC does not keep a copy of
+     * the pAuthInfo pointer, and the client cannot retrieve it later
+     * in the CoQueryProxyBlanket method. If this parameter is NULL,
+     * DCOM uses the current proxy identity (which is either the
+     * process token or the impersonation token). If the handle
+     * refers to a structure, that identity is used. For Schannel,
+     * this parameter must be either a pointer to a CERT_CONTEXT
+     * structure that contains the client's X.509 certificate or is
+     * NULL if the client wishes to make an anonymous connection to
+     * the server. If a certificate is specified, the caller must not
+     * free it as long as any proxy to the object exists in the
+     * current apartment. For Snego, this member is either NULL,
+     * points to a SEC_WINNT_AUTH_IDENTITY structure, or points to a
+     * SEC_WINNT_AUTH_IDENTITY_EX structure. If it is NULL, Snego
+     * will pick a list of authentication services based on those
+     * available on the client computer. If it points to a
+     * SEC_WINNT_AUTH_IDENTITY_EX structure, the structure's
+     * PackageList member must point to a string containing a
+     * comma-separated list of authentication service names and the
+     * PackageListLength member must give the number of bytes in the
+     * PackageList string. If PackageList is NULL, all calls using
+     * Snego will fail. If COLE_DEFAULT_AUTHINFO is specified for
+     * this parameter, DCOM will pick the authentication information
+     * following its normal security blanket negotiation algorithm.
+     * CoSetProxyBlanket will fail if pAuthInfo is set and one of the
+     * cloaking flags is set in the dwCapabilities parameter.
      * @param dwCapabilities
-     *            [in] The capabilities of this proxy. For a list of possible
-     *            values, see the EOLE_AUTHENTICATION_CAPABILITIES enumeration.
-     *            The only flags that can be set through this function are
-     *            EOAC_MUTUAL_AUTH, EOAC_STATIC_CLOAKING, EOAC_DYNAMIC_CLOAKING,
-     *            EOAC_ANY_AUTHORITY (this flag is deprecated),
-     *            EOAC_MAKE_FULLSIC, and EOAC_DEFAULT. Either
-     *            EOAC_STATIC_CLOAKING or EOAC_DYNAMIC_CLOAKING can be set if
-     *            pAuthInfo is not set and Schannel is not the authentication
-     *            service. (See Cloaking for more information.) If any
-     *            capability flags other than those mentioned here are set,
-     *            CoSetProxyBlanket will fail.
+     * [in] The capabilities of this proxy. For a list of possible
+     * values, see the EOLE_AUTHENTICATION_CAPABILITIES enumeration.
+     * The only flags that can be set through this function are
+     * EOAC_MUTUAL_AUTH, EOAC_STATIC_CLOAKING, EOAC_DYNAMIC_CLOAKING,
+     * EOAC_ANY_AUTHORITY (this flag is deprecated),
+     * EOAC_MAKE_FULLSIC, and EOAC_DEFAULT. Either
+     * EOAC_STATIC_CLOAKING or EOAC_DYNAMIC_CLOAKING can be set if
+     * pAuthInfo is not set and Schannel is not the authentication
+     * service. (See Cloaking for more information.) If any
+     * capability flags other than those mentioned here are set,
+     * CoSetProxyBlanket will fail.
      * @return This function can return the following values.
      *
-     *         S_OK The function was successful.
+     * S_OK The function was successful.
      *
-     *         E_INVALIDARG One or more arguments is invalid.
+     * E_INVALIDARG One or more arguments is invalid.
      */
     HRESULT CoSetProxyBlanket(Unknown pProxy, //
-            int dwAuthnSvc, //
-            int dwAuthzSvc, //
-            LPOLESTR pServerPrincName, //
-            int dwAuthnLevel, //
-            int dwImpLevel, //
-            Pointer pAuthInfo, // RPC_AUTH_IDENTITY_HANDLE
-            int dwCapabilities//
+        int dwAuthnSvc, //
+        int dwAuthzSvc, //
+        LPOLESTR pServerPrincName, //
+        int dwAuthnLevel, //
+        int dwImpLevel, //
+        Pointer pAuthInfo, // RPC_AUTH_IDENTITY_HANDLE
+        int dwCapabilities//
     );
 
     /**
@@ -360,51 +360,50 @@ public interface Ole32 extends StdCallLibrary {
      * specified CLSID.
      *
      * @param rclsid
-     *            The CLSID associated with the data and code that will be used
-     *            to create the object.
+     * The CLSID associated with the data and code that will be used
+     * to create the object.
      * @param pUnkOuter
-     *            If NULL, indicates that the object is not being created as
-     *            part of an aggregate. If non-NULL, pointer to the aggregate
-     *            object's IUnknown interface (the controlling IUnknown).
+     * If NULL, indicates that the object is not being created as
+     * part of an aggregate. If non-NULL, pointer to the aggregate
+     * object's IUnknown interface (the controlling IUnknown).
      * @param dwClsContext
-     *            Context in which the code that manages the newly created
-     *            object will run. The values are taken from the enumeration
-     *            CLSCTX defined in WTypes.
+     * Context in which the code that manages the newly created
+     * object will run. The values are taken from the enumeration
+     * CLSCTX defined in WTypes.
      * @param riid
-     *            A reference to the identifier of the interface to be used to
-     *            communicate with the object.
+     * A reference to the identifier of the interface to be used to
+     * communicate with the object.
      * @param ppv
-     *            Address of pointer variable that receives the interface
-     *            pointer requested in riid. Upon successful return, *ppv
-     *            contains the requested interface pointer. Upon failure, *ppv
-     *            contains NULL.
+     * Address of pointer variable that receives the interface
+     * pointer requested in riid. Upon successful return, *ppv
+     * contains the requested interface pointer. Upon failure, *ppv
+     * contains NULL.
      * @return an HRESULT
      */
-    HRESULT CoCreateInstance(GUID rclsid, Pointer pUnkOuter, int dwClsContext,
-                             GUID riid, PointerByReference ppv);
+    HRESULT CoCreateInstance(GUID rclsid, Pointer pUnkOuter, int dwClsContext, GUID riid, PointerByReference ppv);
 
     /**
      * Looks up a CLSID in the registry, given a ProgID.
      *
      * @param lpszProgID
-     *            [in] A pointer to the ProgID whose CLSID is requested.
+     * [in] A pointer to the ProgID whose CLSID is requested.
      * @param lpclsid
-     *            [out] Receives a pointer to the retrieved CLSID on return.
+     * [out] Receives a pointer to the retrieved CLSID on return.
      *
      * @return S_OK The CLSID was retrieved successfully.
      *
-     *         CO_E_CLASSSTRING The registered CLSID for the ProgID is invalid.
+     * CO_E_CLASSSTRING The registered CLSID for the ProgID is invalid.
      *
-     *         REGDB_E_WRITEREGDB An error occurred writing the CLSID to the
-     *         registry. See Remarks below.
+     * REGDB_E_WRITEREGDB An error occurred writing the CLSID to the
+     * registry. See Remarks below.
      *
-     *         Remarks Given a ProgID, CLSIDFromProgID looks up its associated
-     *         CLSID in the registry. If the ProgID cannot be found in the
-     *         registry, CLSIDFromProgID creates an OLE 1 CLSID for the ProgID
-     *         and a CLSID entry in the registry. Because of the restrictions
-     *         placed on OLE 1 CLSID values, CLSIDFromProgID and CLSIDFromString
-     *         are the only two functions that can be used to generate a CLSID
-     *         for an OLE 1 object.
+     * Remarks Given a ProgID, CLSIDFromProgID looks up its associated
+     * CLSID in the registry. If the ProgID cannot be found in the
+     * registry, CLSIDFromProgID creates an OLE 1 CLSID for the ProgID
+     * and a CLSID entry in the registry. Because of the restrictions
+     * placed on OLE 1 CLSID values, CLSIDFromProgID and CLSIDFromString
+     * are the only two functions that can be used to generate a CLSID
+     * for an OLE 1 object.
      */
     HRESULT CLSIDFromProgID(String lpszProgID, CLSID.ByReference lpclsid);
 
@@ -413,24 +412,24 @@ public interface Ole32 extends StdCallLibrary {
      * original CLSID.
      *
      * @param lpsz
-     *            [in] The string representation of the CLSID.
+     * [in] The string representation of the CLSID.
      *
      * @param pclsid
-     *            [out] A pointer to the CLSID.
+     * [out] A pointer to the CLSID.
      *
      * @return Return value
      *
-     *         This function can return the standard return value E_INVALIDARG,
-     *         as well as the following values.
+     * This function can return the standard return value E_INVALIDARG,
+     * as well as the following values.
      *
-     *         NOERROR The CLSID was obtained successfully.
+     * NOERROR The CLSID was obtained successfully.
      *
-     *         CO_E_CLASSSTRING The class string was improperly formatted.
+     * CO_E_CLASSSTRING The class string was improperly formatted.
      *
-     *         REGDB_E_CLASSNOTREG The CLSID corresponding to the class string
-     *         was not found in the registry.
+     * REGDB_E_CLASSNOTREG The CLSID corresponding to the class string
+     * was not found in the registry.
      *
-     *         REGDB_E_READREGDB The registry could not be opened for reading.
+     * REGDB_E_READREGDB The registry could not be opened for reading.
      */
     HRESULT CLSIDFromString(String lpsz, CLSID.ByReference pclsid);
 
@@ -446,6 +445,7 @@ public interface Ole32 extends StdCallLibrary {
      * allocates a zero-length item and returns a valid pointer to that item. If there is insufficient memory available,
      * CoTaskMemAlloc returns NULL. Applications should always check the return value from this function, even when
      * requesting small amounts of memory, because there is no guarantee that the memory will be allocated.
+     * 
      * @param cb The size of the memory block to be allocated, in bytes.
      * @return If the function succeeds, it returns the allocated memory block. Otherwise, it returns NULL.
      */
@@ -471,6 +471,7 @@ public interface Ole32 extends StdCallLibrary {
      * the block to the specified size. In the first case, the original block is freed; in the second case, the original
      * block is unchanged. The storage space pointed to by the return value is guaranteed to be suitably aligned for
      * storage of any type of object. To get a pointer to a type other than void, use a type cast on the return value.
+     * 
      * @param pv A pointer to the memory block to be reallocated. This parameter can be NULL.
      * @param cb The size of the memory block to be reallocated, in bytes. This parameter can be 0.
      * @return If the function succeeds, it returns the reallocated memory block. Otherwise, it returns NULL.
@@ -482,6 +483,7 @@ public interface Ole32 extends StdCallLibrary {
      * {@link #CoTaskMemRealloc} function. The function uses the default OLE allocator. The number of bytes
      * freed equals the number of bytes that were originally allocated or reallocated. After the call, the memory block
      * pointed to by pv is invalid and can no longer be used.
+     * 
      * @param pv A pointer to the memory block to be freed. If this parameter is NULL, the function has no effect.
      */
     void CoTaskMemFree(Pointer pv);
@@ -555,25 +557,25 @@ public interface Ole32 extends StdCallLibrary {
      */
     boolean CoIsHandlerConnected(Pointer pUnk);
 
-
     /**
      * Initializes the COM library on the current apartment, identifies the
      * concurrency model as single-thread apartment (STA), and enables
      * additional functionality described in the Remarks section below.
      * Applications must initialize the COM library before they can call COM
      * library functions other than CoGetMalloc and memory allocation functions.
+     * 
      * @param pvReserved Reserved; must be null.
      * @return {@link WinError#S_OK S_OK} if the COM library and additional functionality were
-     *              initialized successfully on this apartment.<p>
-     *         {@link WinError#S_FALSE S_FALSE} if the COM library is already initialized on this apartment.<p>
-     *         {@link WinError#OLE_E_WRONGCOMPOBJ OLE_E_WRONGCOMPOBJ} if the versions of COMPOBJ.DLL and OLE2.DLL on
-     *                            your machine are incompatible with each other.<p>
-     *         {@link WinError#RPC_E_CHANGED_MODE RPC_E_CHANGED_MODE} if a previous call to CoInitializeEx specified
-     *                            the concurrency model for this apartment as
-     *                            multithread apartment (MTA). If running
-     *                            Windows 2000, this could also mean that a
-     *                            change from neutral threaded apartment to
-     *                            single threaded apartment occurred.
+     * initialized successfully on this apartment.<p>
+     * {@link WinError#S_FALSE S_FALSE} if the COM library is already initialized on this apartment.<p>
+     * {@link WinError#OLE_E_WRONGCOMPOBJ OLE_E_WRONGCOMPOBJ} if the versions of COMPOBJ.DLL and OLE2.DLL on
+     * your machine are incompatible with each other.<p>
+     * {@link WinError#RPC_E_CHANGED_MODE RPC_E_CHANGED_MODE} if a previous call to CoInitializeEx specified
+     * the concurrency model for this apartment as
+     * multithread apartment (MTA). If running
+     * Windows 2000, this could also mean that a
+     * change from neutral threaded apartment to
+     * single threaded apartment occurred.
      */
     HRESULT OleInitialize(Pointer pvReserved);
 
@@ -604,11 +606,12 @@ public interface Ole32 extends StdCallLibrary {
      * Carries out the clipboard shutdown sequence. It also releases the
      * IDataObject pointer that was placed on the clipboard by the
      * OleSetClipboard function.
+     * 
      * @return {@link WinError#S_OK S_OK} on success.<p>
-     *         {@link WinError#CLIPBRD_E_CANT_OPEN CLIPBRD_E_CANT_OPEN} The Windows OpenClipboard function used
-     *                             within OleFlushClipboard failed.<p>
-     *         {@link WinError#CLIPBRD_E_CANT_CLOSE CLIPBRD_E_CANT_CLOSE} The Windows CloseClipboard function used
-     *                              within OleFlushClipboard failed.<p>
+     * {@link WinError#CLIPBRD_E_CANT_OPEN CLIPBRD_E_CANT_OPEN} The Windows OpenClipboard function used
+     * within OleFlushClipboard failed.<p>
+     * {@link WinError#CLIPBRD_E_CANT_CLOSE CLIPBRD_E_CANT_CLOSE} The Windows CloseClipboard function used
+     * within OleFlushClipboard failed.<p>
      * <b>Remarks</b><p>
      * OleFlushClipboard renders the data from a data object onto the clipboard
      * and releases the IDataObject pointer to the data object. While the
@@ -650,13 +653,16 @@ public interface Ole32 extends StdCallLibrary {
 
     /**
      * Puts an OLE compound document object into the running state.
-     * @param pUnknown [in] Pointer to the {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IUnknown IUnknown} interface
-     *                 on the object, with which it will query for a pointer to
-     *                 the IRunnableObject interface, and then call its Run method.
-     * @return This function returns  on success.
-     *         Other possible values include the following.<p>
-     *         {@link WinError#OLE_E_CLASSDIFF OLE_E_CLASSDIFF} The source of an
-     *         OLE link has been converted to a different class.<p>
+     * 
+     * @param pUnknown [in] Pointer to the
+     * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.IUnknown
+     * IUnknown} interface
+     * on the object, with which it will query for a pointer to
+     * the IRunnableObject interface, and then call its Run method.
+     * @return This function returns on success.
+     * Other possible values include the following.<p>
+     * {@link WinError#OLE_E_CLASSDIFF OLE_E_CLASSDIFF} The source of an
+     * OLE link has been converted to a different class.<p>
      * <B>Remarks</B><p>
      * The OleRun function puts an object in the running state. The
      * implementation of OleRun was changed in OLE 2.01 to coincide with the

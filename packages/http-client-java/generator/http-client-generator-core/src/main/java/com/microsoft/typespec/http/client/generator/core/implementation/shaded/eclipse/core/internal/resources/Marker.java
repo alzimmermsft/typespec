@@ -130,7 +130,7 @@ public class Marker extends PlatformObject implements IMarker {
         }
         Object value = info.getAttribute(attributeName);
         if (value instanceof Integer) {
-            return ((Integer) value).intValue();
+            return (Integer) value;
         }
         return defaultValue;
     }
@@ -164,7 +164,7 @@ public class Marker extends PlatformObject implements IMarker {
         }
         Object value = info.getAttribute(attributeName);
         if (value instanceof Boolean) {
-            return ((Boolean) value).booleanValue();
+            return (Boolean) value;
         }
         return defaultValue;
     }
@@ -253,53 +253,6 @@ public class Marker extends PlatformObject implements IMarker {
     }
 
     /**
-     * @see IMarker#setAttribute(String, int)
-     */
-    @Override
-    public void setAttribute(String attributeName, int value) throws CoreException {
-        setAttribute(attributeName, Integer.valueOf(value));
-    }
-
-    /**
-     * @see IMarker#setAttribute(String, Object)
-     */
-    @Override
-    public void setAttribute(String attributeName, Object value) throws CoreException {
-        Assert.isNotNull(attributeName);
-        Workspace workspace = getWorkspace();
-        MarkerManager manager = workspace.getMarkerManager();
-        try {
-            workspace.prepareOperation(null, null);
-            workspace.beginOperation(true);
-            MarkerInfo markerInfo = getInfo();
-            checkInfo(markerInfo);
-
-            // only need to generate delta info if none already
-            boolean needDelta = !manager.hasDelta(resource.getFullPath(), id);
-            MarkerInfo oldInfo = needDelta ? (MarkerInfo) markerInfo.clone() : null;
-            boolean validate = manager.isPersistentType(markerInfo.getType());
-            markerInfo.setAttribute(attributeName, value, validate);
-            if (manager.isPersistent(markerInfo)) {
-                ((Resource) resource).getResourceInfo(false, true).set(ICoreConstants.M_MARKERS_SNAP_DIRTY);
-            }
-            if (needDelta) {
-                MarkerDelta delta = new MarkerDelta(IResourceDelta.CHANGED, resource, oldInfo);
-                manager.changedMarkers(resource, new MarkerDelta[] { delta });
-            }
-        } finally {
-            workspace.endOperation(null, false);
-        }
-    }
-
-    /**
-     * @see IMarker#setAttribute(String, boolean)
-     */
-    @Override
-    public void setAttribute(String attributeName, boolean value) throws CoreException {
-        setAttribute(attributeName, value ? Boolean.TRUE : Boolean.FALSE);
-    }
-
-    /**
      * adds all Entries
      * 
      * @see IMarker#setAttributes(String[], Object[])
@@ -382,7 +335,7 @@ public class Marker extends PlatformObject implements IMarker {
             TreeMap<String, Object> tm = new TreeMap<>(attributes);
             Object severity = tm.remove(SEVERITY);
             if (severity instanceof Integer s) {
-                switch (s.intValue()) {
+                switch (s) {
                     case SEVERITY_ERROR:
                         sb.append(", severity: ERROR(").append(s).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
                         break;

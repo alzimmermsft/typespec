@@ -40,24 +40,24 @@ public interface LibRT extends Library {
      * unrelated processes to {@code mmap()} the same region of shared memory.
      *
      * @param name
-     *            The shared memory object to be created or opened. For portable
-     *            use, a shared memory object should be identified by a name of the
-     *            form {@code /somename} that is, a null-terminated string of up to
-     *            {@code NAME_MAX} (i.e., 255) characters consisting of an initial
-     *            slash, followed by one or more characters, none of which are
-     *            slashes.
+     * The shared memory object to be created or opened. For portable
+     * use, a shared memory object should be identified by a name of the
+     * form {@code /somename} that is, a null-terminated string of up to
+     * {@code NAME_MAX} (i.e., 255) characters consisting of an initial
+     * slash, followed by one or more characters, none of which are
+     * slashes.
      * @param oflag
-     *            A bit mask created by ORing together exactly one of
-     *            {@code O_RDONLY} or {@code O_RDWR} and any of the other flags
-     *            {@code O_CREAT}, {@code O_EXCL}, or {@code O_TRUNC}.
+     * A bit mask created by ORing together exactly one of
+     * {@code O_RDONLY} or {@code O_RDWR} and any of the other flags
+     * {@code O_CREAT}, {@code O_EXCL}, or {@code O_TRUNC}.
      * @param mode
-     *            When {@code oflag} includes {@code O_CREAT}, the object's
-     *            permission bits are set according to the low-order 9 bits of mode,
-     *            except that those bits set in the process file mode creation mask
-     *            (see {@code umask(2)}) are cleared for the new object.
+     * When {@code oflag} includes {@code O_CREAT}, the object's
+     * permission bits are set according to the low-order 9 bits of mode,
+     * except that those bits set in the process file mode creation mask
+     * (see {@code umask(2)}) are cleared for the new object.
      * @return On success, returns a file descriptor (a nonnegative integer). On
-     *         failure, returns -1. On failure, {@code errno} is set to indicate the
-     *         cause of the error.
+     * failure, returns -1. On failure, {@code errno} is set to indicate the
+     * cause of the error.
      */
     int shm_open(String name, int oflag, int mode);
 
@@ -65,9 +65,9 @@ public interface LibRT extends Library {
      * Removes an object previously created by {@link #shm_open}.
      *
      * @param name
-     *            The shared memory object to be unlinked.
+     * The shared memory object to be unlinked.
      * @return returns 0 on success, or -1 on error. On failure, {@code errno} is
-     *         set to indicate the cause of the error.
+     * set to indicate the cause of the error.
      */
     int shm_unlink(String name);
 }

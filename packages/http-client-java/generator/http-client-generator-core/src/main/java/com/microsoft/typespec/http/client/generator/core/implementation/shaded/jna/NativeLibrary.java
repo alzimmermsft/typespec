@@ -25,8 +25,9 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.internal.Cleaner;
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native.DEBUG_LOAD;
+
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.internal.Cleaner;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
@@ -54,8 +55,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Provides management of native library resources.  One instance of this
- * class corresponds to a single loaded native library.  May also be used
+ * Provides management of native library resources. One instance of this
+ * class corresponds to a single loaded native library. May also be used
  * to map to the current process (see {@link NativeLibrary#getProcess()}).
  * <p>
  * <a name=library_search_paths></a>
@@ -67,20 +68,21 @@ import java.util.logging.Logger;
  * <li>On OSX, <code>~/Library/Frameworks</code>,
  * <code>/Library/Frameworks</code>, and
  * <code>/System/Library/Frameworks</code> will be searched for a framework
- * with a name corresponding to that requested.  Absolute paths to frameworks
+ * with a name corresponding to that requested. Absolute paths to frameworks
  * are also accepted, either ending at the framework name (sans ".framework")
  * or the full path to the framework shared library
  * (e.g. CoreServices.framework/CoreServices).
- * <li>Context class loader classpath.  Deployed native libraries may be
+ * <li>Context class loader classpath. Deployed native libraries may be
  * installed on the classpath under
  * <code>${os-prefix}/LIBRARY_FILENAME</code>, where <code>${os-prefix}</code>
  * is the OS/Arch prefix returned by {@link
- * Platform#getNativeLibraryResourcePrefix()}.  If bundled in a jar file, the
+ * Platform#getNativeLibraryResourcePrefix()}. If bundled in a jar file, the
  * resource will be extracted to <code>jna.tmpdir</code> for loading, and
  * later removed (but only if <code>jna.nounpack</code> is false or not set).
  * </ol>
  * You may set the system property <code>jna.debug_load=true</code> to make
  * JNA print the steps of its library search to the console.
+ * 
  * @author Wayne Meissner, split library loading from Function.java
  * @author twall
  */
@@ -127,10 +129,10 @@ public class NativeLibrary implements Closeable {
         this.handle = handle;
         this.cleanable = Cleaner.getCleaner().register(this, new NativeLibraryDisposer(handle));
         Object option = options.get(Library.OPTION_CALLING_CONVENTION);
-        int callingConvention = option instanceof Number ? ((Number)option).intValue() : Function.C_CONVENTION;
+        int callingConvention = option instanceof Number ? ((Number) option).intValue() : Function.C_CONVENTION;
         this.callFlags = callingConvention;
         this.options = options;
-        SymbolProvider optionSymbolProvider = (SymbolProvider)options.get(Library.OPTION_SYMBOL_PROVIDER);
+        SymbolProvider optionSymbolProvider = (SymbolProvider) options.get(Library.OPTION_SYMBOL_PROVIDER);
         if (optionSymbolProvider == null) {
             this.symbolProvider = NATIVE_SYMBOL_PROVIDER;
         } else {
@@ -146,28 +148,30 @@ public class NativeLibrary implements Closeable {
         // Special workaround for w32 kernel32.GetLastError
         // Short-circuit the function to use built-in GetLastError access
         if (Platform.isWindows() && "kernel32".equals(this.libraryName.toLowerCase())) {
-            synchronized(functions) {
+            synchronized (functions) {
                 Function f = new Function(this, "GetLastError", Function.ALT_CONVENTION, encoding) {
-                        @Override
-                        Object invoke(Object[] args, Class<?> returnType, boolean b, int fixedArgs) {
-                            return Integer.valueOf(Native.getLastError());
-                        }
+                    @Override
+                    Object invoke(Object[] args, Class<?> returnType, boolean b, int fixedArgs) {
+                        return Integer.valueOf(Native.getLastError());
+                    }
 
-                        @Override
-                        Object invoke(Method invokingMethod, Class<?>[] paramTypes, Class<?> returnType, Object[] inArgs, Map<String, ?> options) {
-                            return Integer.valueOf(Native.getLastError());
-                        }
-                    };
+                    @Override
+                    Object invoke(Method invokingMethod, Class<?>[] paramTypes, Class<?> returnType, Object[] inArgs,
+                        Map<String, ?> options) {
+                        return Integer.valueOf(Native.getLastError());
+                    }
+                };
                 functions.put(functionKey("GetLastError", callFlags, encoding), f);
             }
         }
     }
 
     private static final int DEFAULT_OPEN_OPTIONS = -1;
+
     private static int openFlags(Map<String, ?> options) {
         Object opt = options.get(Library.OPTION_OPEN_FLAGS);
         if (opt instanceof Number) {
-            return ((Number)opt).intValue();
+            return ((Number) opt).intValue();
         }
         return DEFAULT_OPEN_OPTIONS;
     }
@@ -190,7 +194,7 @@ public class NativeLibrary implements Closeable {
             }
         }
 
-        // Append web start path, if available.  Note that this does not
+        // Append web start path, if available. Note that this does not
         // attempt any library name variations
         String webstartPath = Native.getWebStartLibraryPath(libraryName);
         if (webstartPath != null) {
@@ -204,14 +208,14 @@ public class NativeLibrary implements Closeable {
         String libraryPath = findLibraryPath(libraryName, searchPath);
         long handle = 0;
         //
-        // Only search user specified paths first.  This will also fall back
+        // Only search user specified paths first. This will also fall back
         // to dlopen/LoadLibrary() since findLibraryPath returns the mapped
         // name if it cannot find the library.
         //
         try {
             LOG.log(DEBUG_LOAD_LEVEL, "Trying " + libraryPath);
             handle = Native.open(libraryPath, openFlags);
-        } catch(UnsatisfiedLinkError e) {
+        } catch (UnsatisfiedLinkError e) {
             // Add the system paths back for all fallback searching
             LOG.log(DEBUG_LOAD_LEVEL, "Loading failed with message: " + e.getMessage());
             LOG.log(DEBUG_LOAD_LEVEL, "Adding system paths: " + librarySearchPath);
@@ -228,7 +232,7 @@ public class NativeLibrary implements Closeable {
                     throw new UnsatisfiedLinkError("Failed to load library '" + libraryName + "'");
                 }
             }
-        } catch(UnsatisfiedLinkError ule) {
+        } catch (UnsatisfiedLinkError ule) {
             LOG.log(DEBUG_LOAD_LEVEL, "Loading failed with message: " + ule.getMessage());
             exceptions.add(ule);
             // For android, try to "preload" the library using
@@ -239,13 +243,11 @@ public class NativeLibrary implements Closeable {
                     LOG.log(DEBUG_LOAD_LEVEL, "Preload (via System.loadLibrary) " + libraryName);
                     System.loadLibrary(libraryName);
                     handle = Native.open(libraryPath, openFlags);
-                }
-                catch(UnsatisfiedLinkError e2) {
+                } catch (UnsatisfiedLinkError e2) {
                     LOG.log(DEBUG_LOAD_LEVEL, "Loading failed with message: " + e2.getMessage());
                     exceptions.add(e2);
                 }
-            }
-            else if (Platform.isLinux() || Platform.isFreeBSD()) {
+            } else if (Platform.isLinux() || Platform.isFreeBSD()) {
                 //
                 // Failed to load the library normally - try to match libfoo.so.*
                 //
@@ -255,8 +257,7 @@ public class NativeLibrary implements Closeable {
                     LOG.log(DEBUG_LOAD_LEVEL, "Trying " + libraryPath);
                     try {
                         handle = Native.open(libraryPath, openFlags);
-                    }
-                    catch(UnsatisfiedLinkError e2) {
+                    } catch (UnsatisfiedLinkError e2) {
                         LOG.log(DEBUG_LOAD_LEVEL, "Loading failed with message: " + e2.getMessage());
                         exceptions.add(e2);
                     }
@@ -264,13 +265,12 @@ public class NativeLibrary implements Closeable {
             }
             // Search framework libraries on OS X
             else if (Platform.isMac() && !libraryName.endsWith(".dylib")) {
-                for(String frameworkName : matchFramework(libraryName)) {
+                for (String frameworkName : matchFramework(libraryName)) {
                     try {
                         LOG.log(DEBUG_LOAD_LEVEL, "Trying " + frameworkName);
                         handle = Native.open(frameworkName, openFlags);
                         break;
-                    }
-                    catch(UnsatisfiedLinkError e2) {
+                    } catch (UnsatisfiedLinkError e2) {
                         LOG.log(DEBUG_LOAD_LEVEL, "Loading failed with message: " + e2.getMessage());
                         exceptions.add(e2);
                     }
@@ -284,7 +284,7 @@ public class NativeLibrary implements Closeable {
                     LOG.log(DEBUG_LOAD_LEVEL, "Trying " + libraryPath);
                     try {
                         handle = Native.open(libraryPath, openFlags);
-                    } catch(UnsatisfiedLinkError e2) {
+                    } catch (UnsatisfiedLinkError e2) {
                         LOG.log(DEBUG_LOAD_LEVEL, "Loading failed with message: " + e2.getMessage());
                         exceptions.add(e2);
                     }
@@ -294,7 +294,8 @@ public class NativeLibrary implements Closeable {
             // path, using the current context class loader.
             if (handle == 0) {
                 try {
-                    File embedded = Native.extractFromResourcePath(libraryName, (ClassLoader)options.get(Library.OPTION_CLASSLOADER));
+                    File embedded = Native.extractFromResourcePath(libraryName,
+                        (ClassLoader) options.get(Library.OPTION_CLASSLOADER));
                     if (embedded != null) {
                         try {
                             handle = Native.open(embedded.getAbsolutePath(), openFlags);
@@ -306,8 +307,7 @@ public class NativeLibrary implements Closeable {
                             }
                         }
                     }
-                }
-                catch(IOException e2) {
+                } catch (IOException e2) {
                     LOG.log(DEBUG_LOAD_LEVEL, "Loading failed with message: " + e2.getMessage());
                     exceptions.add(e2);
                 }
@@ -318,12 +318,12 @@ public class NativeLibrary implements Closeable {
                 sb.append("Unable to load library '");
                 sb.append(libraryName);
                 sb.append("':");
-                for(Throwable t: exceptions) {
+                for (Throwable t : exceptions) {
                     sb.append("\n");
                     sb.append(t.getMessage());
                 }
                 UnsatisfiedLinkError res = new UnsatisfiedLinkError(sb.toString());
-                for(Throwable t: exceptions) {
+                for (Throwable t : exceptions) {
                     addSuppressedReflected(res, t);
                 }
                 throw res;
@@ -341,12 +341,13 @@ public class NativeLibrary implements Closeable {
         } catch (NoSuchMethodException ex) {
             // This is the case for JDK < 7
         } catch (SecurityException ex) {
-            Logger.getLogger(NativeLibrary.class.getName()).log(Level.SEVERE, "Failed to initialize 'addSuppressed' method", ex);
+            Logger.getLogger(NativeLibrary.class.getName())
+                .log(Level.SEVERE, "Failed to initialize 'addSuppressed' method", ex);
         }
     }
 
     private static void addSuppressedReflected(Throwable target, Throwable suppressed) {
-        if(addSuppressedMethod == null) {
+        if (addSuppressedMethod == null) {
             // Make this a NOOP on an unsupported JDK
             return;
         }
@@ -364,26 +365,25 @@ public class NativeLibrary implements Closeable {
         if (framework.isAbsolute()) {
             if (libraryName.contains(".framework")) {
                 if (framework.exists()) {
-                    return new String[]{framework.getAbsolutePath()};
+                    return new String[] { framework.getAbsolutePath() };
                 }
                 paths.add(framework.getAbsolutePath());
-            }
-            else {
-                framework = new File(new File(framework.getParentFile(), framework.getName() + ".framework"), framework.getName());
+            } else {
+                framework = new File(new File(framework.getParentFile(), framework.getName() + ".framework"),
+                    framework.getName());
                 if (framework.exists()) {
-                    return new String[]{framework.getAbsolutePath()};
+                    return new String[] { framework.getAbsolutePath() };
                 }
                 paths.add(framework.getAbsolutePath());
             }
-        }
-        else {
+        } else {
             final String[] PREFIXES = { System.getProperty("user.home"), "", "/System" };
-            String suffix = !libraryName.contains(".framework")
-                    ? libraryName + ".framework/" + libraryName : libraryName;
+            String suffix
+                = !libraryName.contains(".framework") ? libraryName + ".framework/" + libraryName : libraryName;
             for (String prefix : PREFIXES) {
                 framework = new File(prefix + "/Library/Frameworks/" + suffix);
                 if (framework.exists()) {
-                    return new String[]{framework.getAbsolutePath()};
+                    return new String[] { framework.getAbsolutePath() };
                 }
                 paths.add(framework.getAbsolutePath());
             }
@@ -409,15 +409,15 @@ public class NativeLibrary implements Closeable {
 
     /**
      * Returns an instance of NativeLibrary for the specified name.
-     * The library is loaded if not already loaded.  If already loaded, the
+     * The library is loaded if not already loaded. If already loaded, the
      * existing instance is returned.<p>
      * More than one name may map to the same NativeLibrary instance; only
      * a single instance will be provided for any given unique file path.
      *
      * @param libraryName The library name to load.
-     *      This can be short form (e.g. "c"),
-     *      an explicit version (e.g. "libc.so.6"), or
-     *      the full path to the library (e.g. "/lib/libc.so.6").
+     * This can be short form (e.g. "c"),
+     * an explicit version (e.g. "libc.so.6"), or
+     * the full path to the library (e.g. "/lib/libc.so.6").
      */
     public static final NativeLibrary getInstance(String libraryName) {
         return getInstance(libraryName, Collections.<String, Object>emptyMap());
@@ -425,19 +425,19 @@ public class NativeLibrary implements Closeable {
 
     /**
      * Returns an instance of NativeLibrary for the specified name.
-     * The library is loaded if not already loaded.  If already loaded, the
+     * The library is loaded if not already loaded. If already loaded, the
      * existing instance is returned.<p>
      * More than one name may map to the same NativeLibrary instance; only
      * a single instance will be provided for any given unique file path.
      *
      * @param libraryName The library name to load.
-     *      This can be short form (e.g. "c"),
-     *      an explicit version (e.g. "libc.so.6"), or
-     *      the full path to the library (e.g. "/lib/libc.so.6").
+     * This can be short form (e.g. "c"),
+     * an explicit version (e.g. "libc.so.6"), or
+     * the full path to the library (e.g. "/lib/libc.so.6").
      * @param classLoader The class loader to use to load the native library.
-     *      This only affects library loading when the native library is
-     *      included somewhere in the classpath, either bundled in a jar file
-     *      or as a plain file within the classpath.
+     * This only affects library loading when the native library is
+     * included somewhere in the classpath, either bundled in a jar file
+     * or as a plain file within the classpath.
      */
     public static final NativeLibrary getInstance(String libraryName, ClassLoader classLoader) {
         return getInstance(libraryName, Collections.singletonMap(Library.OPTION_CLASSLOADER, classLoader));
@@ -445,16 +445,16 @@ public class NativeLibrary implements Closeable {
 
     /**
      * Returns an instance of NativeLibrary for the specified name.
-     * The library is loaded if not already loaded.  If already loaded, the
+     * The library is loaded if not already loaded. If already loaded, the
      * existing instance is returned.<p>
      * More than one name may map to the same NativeLibrary instance; only
      * a single instance will be provided for any given unique file path.
      *
      * @param libraryName The library name to load.
-     *      This can be short form (e.g. "c"),
-     *      an explicit version (e.g. "libc.so.6" or
-     *      "QuickTime.framework/Versions/Current/QuickTime"), or
-     *      the full (absolute) path to the library (e.g. "/lib/libc.so.6").
+     * This can be short form (e.g. "c"),
+     * an explicit version (e.g. "libc.so.6" or
+     * "QuickTime.framework/Versions/Current/QuickTime"), or
+     * the full (absolute) path to the library (e.g. "/lib/libc.so.6").
      * @param libraryOptions Native library options for the given library (see {@link Library}).
      */
     public static final NativeLibrary getInstance(String libraryName, Map<String, ?> libraryOptions) {
@@ -476,8 +476,7 @@ public class NativeLibrary implements Closeable {
             if (library == null) {
                 if (libraryName == null) {
                     library = new NativeLibrary("<process>", null, Native.open(null, openFlags(options)), options);
-                }
-                else {
+                } else {
                     library = loadLibrary(libraryName, options);
                 }
                 ref = new WeakReference<>(library);
@@ -494,7 +493,7 @@ public class NativeLibrary implements Closeable {
 
     /**
      * Returns an instance of NativeLibrary which refers to the current
-     * process.  This is useful for accessing functions which were already
+     * process. This is useful for accessing functions which were already
      * mapped by some other mechanism, without having to reference or even
      * know the exact name of the native library.
      */
@@ -504,7 +503,7 @@ public class NativeLibrary implements Closeable {
 
     /**
      * Returns an instance of NativeLibrary which refers to the current
-     * process.  This is useful for accessing functions which were already
+     * process. This is useful for accessing functions which were already
      * mapped by some other mechanism, without having to reference or even
      * know the exact name of the native library.
      */
@@ -514,7 +513,7 @@ public class NativeLibrary implements Closeable {
 
     /**
      * Add a path to search for the specified library, ahead of any system
-     * paths.  This is similar to setting <code>jna.library.path</code>, but
+     * paths. This is similar to setting <code>jna.library.path</code>, but
      * only extends the search path for a single library.
      *
      * @param libraryName The name of the library to use the path for
@@ -537,9 +536,9 @@ public class NativeLibrary implements Closeable {
      * <p>The allocated instance represents a pointer to the named native
      * function from the library.
      *
-     * @param    functionName
-     *            Name of the native function to be linked with
-     * @throws   UnsatisfiedLinkError if the function is not found
+     * @param functionName
+     * Name of the native function to be linked with
+     * @throws UnsatisfiedLinkError if the function is not found
      */
     public Function getFunction(String functionName) {
         return getFunction(functionName, callFlags);
@@ -552,13 +551,13 @@ public class NativeLibrary implements Closeable {
      * <p>The allocated instance represents a pointer to the named native
      * function from the library.
      *
-     * @param    name
-     *            Name of the native function to be linked with.  Uses a
-     *            function mapper option if one was provided to
-     *            transform the name.
-     * @param    method
-     *            Method to which the native function is to be mapped
-     * @throws   UnsatisfiedLinkError if the function is not found
+     * @param name
+     * Name of the native function to be linked with. Uses a
+     * function mapper option if one was provided to
+     * transform the name.
+     * @param method
+     * Method to which the native function is to be mapped
+     * @throws UnsatisfiedLinkError if the function is not found
      */
     Function getFunction(String name, Method method) {
         FunctionMapper mapper = (FunctionMapper) options.get(Library.OPTION_FUNCTION_MAPPER);
@@ -572,7 +571,7 @@ public class NativeLibrary implements Closeable {
         }
         int flags = this.callFlags;
         Class<?>[] etypes = method.getExceptionTypes();
-        for (int i=0;i < etypes.length;i++) {
+        for (int i = 0; i < etypes.length; i++) {
             if (LastErrorException.class.isAssignableFrom(etypes[i])) {
                 flags |= Function.THROW_LAST_ERROR;
             }
@@ -581,31 +580,31 @@ public class NativeLibrary implements Closeable {
     }
 
     /**
-     * Create a new  {@link Function} that is linked with a native
+     * Create a new {@link Function} that is linked with a native
      * function that follows a given calling flags.
      *
-     * @param    functionName
-     *            Name of the native function to be linked with
-     * @param    callFlags
-     *            Flags affecting the function invocation
-     * @throws   UnsatisfiedLinkError if the function is not found
+     * @param functionName
+     * Name of the native function to be linked with
+     * @param callFlags
+     * Flags affecting the function invocation
+     * @throws UnsatisfiedLinkError if the function is not found
      */
     public Function getFunction(String functionName, int callFlags) {
         return getFunction(functionName, callFlags, encoding);
     }
 
     /**
-     * Create a new  {@link Function} that is linked with a native
+     * Create a new {@link Function} that is linked with a native
      * function that follows a given calling flags.
      *
-     * @param    functionName
-     *            Name of the native function to be linked with
-     * @param    callFlags
-     *            Flags affecting the function invocation
-     * @param   encoding
-     *                  Encoding to use to convert between Java and native
-     *                  strings.
-     * @throws   UnsatisfiedLinkError if the function is not found
+     * @param functionName
+     * Name of the native function to be linked with
+     * @param callFlags
+     * Flags affecting the function invocation
+     * @param encoding
+     * Encoding to use to convert between Java and native
+     * strings.
+     * @throws UnsatisfiedLinkError if the function is not found
      */
     public Function getFunction(String functionName, int callFlags, String encoding) {
         if (functionName == null) {
@@ -627,7 +626,9 @@ public class NativeLibrary implements Closeable {
         return options;
     }
 
-    /** Look up the given global variable within this library.
+    /**
+     * Look up the given global variable within this library.
+     * 
      * @param symbolName
      * @return Pointer representing the global variable address
      * @throws UnsatisfiedLinkError if the symbol is not found
@@ -635,13 +636,14 @@ public class NativeLibrary implements Closeable {
     public Pointer getGlobalVariableAddress(String symbolName) {
         try {
             return new Pointer(getSymbolAddress(symbolName));
-        } catch(UnsatisfiedLinkError e) {
+        } catch (UnsatisfiedLinkError e) {
             throw new UnsatisfiedLinkError("Error looking up '" + symbolName + "': " + e.getMessage());
         }
     }
 
     /**
      * Used by the Function class to locate a symbol
+     * 
      * @throws UnsatisfiedLinkError if the symbol can't be found
      */
     long getSymbolAddress(String name) {
@@ -655,10 +657,12 @@ public class NativeLibrary implements Closeable {
     public String toString() {
         return "Native Library <" + libraryPath + "@" + handle + ">";
     }
+
     /** Returns the simple name of this library. */
     public String getName() {
         return libraryName;
     }
+
     /**
      * Returns the file on disk corresponding to this NativeLibrary instance.
      * If this NativeLibrary represents the current process, this function will return null.
@@ -672,7 +676,7 @@ public class NativeLibrary implements Closeable {
     /** Close all open native libraries. */
     static void disposeAll() {
         Set<Reference<NativeLibrary>> values;
-        synchronized(libraries) {
+        synchronized (libraries) {
             values = new LinkedHashSet<>(libraries.values());
         }
         for (Reference<NativeLibrary> ref : values) {
@@ -686,7 +690,7 @@ public class NativeLibrary implements Closeable {
     /** Close the native library we're mapped to. */
     public void close() {
         Set<String> keys = new HashSet<>();
-        synchronized(libraries) {
+        synchronized (libraries) {
             for (Map.Entry<String, Reference<NativeLibrary>> e : libraries.entrySet()) {
                 Reference<NativeLibrary> ref = e.getValue();
                 if (ref.get() == this) {
@@ -699,7 +703,7 @@ public class NativeLibrary implements Closeable {
             }
         }
 
-        synchronized(this) {
+        synchronized (this) {
             if (handle != 0) {
                 handle = 0;
                 cleanable.clean();
@@ -768,15 +772,15 @@ public class NativeLibrary implements Closeable {
         return name;
     }
 
-    /** Similar to {@link System#mapLibraryName}, except that it maps to
-        standard shared library formats rather than specifically JNI formats.
-        @param libName base (undecorated) name of library
-    */
+    /**
+     * Similar to {@link System#mapLibraryName}, except that it maps to
+     * standard shared library formats rather than specifically JNI formats.
+     * 
+     * @param libName base (undecorated) name of library
+     */
     static String mapSharedLibraryName(String libName) {
         if (Platform.isMac()) {
-            if (libName.startsWith("lib")
-                && (libName.endsWith(".dylib")
-                    || libName.endsWith(".jnilib"))) {
+            if (libName.startsWith("lib") && (libName.endsWith(".dylib") || libName.endsWith(".jnilib"))) {
                 return libName;
             }
             String name = System.mapLibraryName(libName);
@@ -787,27 +791,27 @@ public class NativeLibrary implements Closeable {
                 return name.substring(0, name.lastIndexOf(".jnilib")) + ".dylib";
             }
             return name;
-        }
-        else if (Platform.isLinux() || Platform.isFreeBSD()) {
+        } else if (Platform.isLinux() || Platform.isFreeBSD()) {
             if (isVersionedName(libName) || libName.endsWith(".so")) {
                 // A specific version was requested - use as is for search
                 return libName;
             }
-        }
-        else if (Platform.isAIX()) {    // can be libx.a, libx.a(shr.o), libx.so
-            if (isVersionedName(libName) || libName.endsWith(".so") || libName.startsWith("lib") || libName.endsWith(".a")) {
+        } else if (Platform.isAIX()) {    // can be libx.a, libx.a(shr.o), libx.so
+            if (isVersionedName(libName)
+                || libName.endsWith(".so")
+                || libName.startsWith("lib")
+                || libName.endsWith(".a")) {
                 // A specific version was requested - use as is for search
                 return libName;
             }
-        }
-        else if (Platform.isWindows()) {
+        } else if (Platform.isWindows()) {
             if (libName.endsWith(".drv") || libName.endsWith(".dll") || libName.endsWith(".ocx")) {
                 return libName;
             }
         }
 
         String mappedName = System.mapLibraryName(libName);
-        if(Platform.isAIX() && mappedName.endsWith(".so")) {
+        if (Platform.isAIX() && mappedName.endsWith(".so")) {
             return mappedName.replaceAll(".so$", ".a");
         } else {
             return mappedName;
@@ -818,7 +822,7 @@ public class NativeLibrary implements Closeable {
         if (name.startsWith("lib")) {
             int so = name.lastIndexOf(".so.");
             if (so != -1 && so + 4 < name.length()) {
-                for (int i=so+4;i < name.length();i++) {
+                for (int i = so + 4; i < name.length(); i++) {
                     char ch = name.charAt(i);
                     if (!Character.isDigit(ch) && ch != '.') {
                         return false;
@@ -831,7 +835,7 @@ public class NativeLibrary implements Closeable {
     }
 
     /**
-     * matchLibrary() is very Linux specific.  It is here to deal with the case
+     * matchLibrary() is very Linux specific. It is here to deal with the case
      * where /usr/lib/libc.so does not exist, or it is not a valid symlink to
      * a versioned file (e.g. /lib/libc.so.6).
      */
@@ -841,14 +845,13 @@ public class NativeLibrary implements Closeable {
             searchPath = Arrays.asList(lib.getParent());
         }
         FilenameFilter filter = new FilenameFilter() {
-                @Override
-                public boolean accept(File dir, String filename) {
-                    return (filename.startsWith("lib" + libName + ".so")
-                            || (filename.startsWith(libName + ".so")
-                                && libName.startsWith("lib")))
-                        && isVersionedName(filename);
-                }
-            };
+            @Override
+            public boolean accept(File dir, String filename) {
+                return (filename.startsWith("lib" + libName + ".so")
+                    || (filename.startsWith(libName + ".so") && libName.startsWith("lib")))
+                    && isVersionedName(filename);
+            }
+        };
 
         Collection<File> matches = new LinkedList<>();
         for (String path : searchPath) {
@@ -885,15 +888,13 @@ public class NativeLibrary implements Closeable {
                 num = ver.substring(0, dot);
                 ver = ver.substring(dot + 1);
                 dot = ver.indexOf(".");
-            }
-            else {
+            } else {
                 num = ver;
                 ver = null;
             }
             try {
                 v += Integer.parseInt(num) / divisor;
-            }
-            catch(NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 return 0;
             }
             divisor *= 100;
@@ -907,8 +908,7 @@ public class NativeLibrary implements Closeable {
         if (webstartPath != null) {
             librarySearchPath.add(webstartPath);
         }
-        if (System.getProperty("jna.platform.library.path") == null
-            && !Platform.isWindows()) {
+        if (System.getProperty("jna.platform.library.path") == null && !Platform.isWindows()) {
             // Add default path lookups for unix-like systems
             String platformPath = "";
             String sep = "";
@@ -919,23 +919,17 @@ public class NativeLibrary implements Closeable {
             // include the generic paths if they exist.
             // NOTES (wmeissner):
             // Some older linux amd64 distros did not have /usr/lib64, and
-            // 32bit distros only have /usr/lib.  FreeBSD also only has
+            // 32bit distros only have /usr/lib. FreeBSD also only has
             // /usr/lib by default, with /usr/lib32 for 32bit compat.
             // Solaris seems to have both, but defaults to 32bit userland even
             // on 64bit machines, so we have to explicitly search the 64bit
             // one when running a 64bit JVM.
             //
-            if (Platform.isLinux() || Platform.isSolaris()
-                || Platform.isFreeBSD() || Platform.iskFreeBSD()) {
+            if (Platform.isLinux() || Platform.isSolaris() || Platform.isFreeBSD() || Platform.iskFreeBSD()) {
                 // Linux & FreeBSD use /usr/lib32, solaris uses /usr/lib/32
                 archPath = (Platform.isSolaris() ? "/" : "") + Native.POINTER_SIZE * 8;
             }
-            String[] paths = {
-                "/usr/lib" + archPath,
-                "/lib" + archPath,
-                "/usr/lib",
-                "/lib",
-            };
+            String[] paths = { "/usr/lib" + archPath, "/lib" + archPath, "/usr/lib", "/lib", };
             // Multi-arch support on Ubuntu (and other
             // multi-arch distributions)
             // paths is scanned against real directory
@@ -951,8 +945,7 @@ public class NativeLibrary implements Closeable {
                     "/usr/lib" + archPath,
                     "/lib" + archPath,
                     "/usr/lib",
-                    "/lib",
-                };
+                    "/lib", };
             }
 
             // We might be wrong with the multiArchPath above. Raspbian,
@@ -964,7 +957,7 @@ public class NativeLibrary implements Closeable {
             if (Platform.isLinux()) {
                 ArrayList<String> ldPaths = getLinuxLdPaths();
                 // prepend the paths we already have
-                for (int i=paths.length-1; 0 <= i; i--) {
+                for (int i = paths.length - 1; 0 <= i; i--) {
                     int found = ldPaths.indexOf(paths[i]);
                     if (found != -1) {
                         ldPaths.remove(found);
@@ -974,7 +967,7 @@ public class NativeLibrary implements Closeable {
                 paths = ldPaths.toArray(new String[0]);
             }
 
-            for (int i=0;i < paths.length;i++) {
+            for (int i = 0; i < paths.length; i++) {
                 File dir = new File(paths[i]);
                 if (dir.exists() && dir.isDirectory()) {
                     platformPath += sep + paths[i];
@@ -990,22 +983,17 @@ public class NativeLibrary implements Closeable {
 
     private static String getMultiArchPath() {
         String cpu = Platform.ARCH;
-        String kernel = Platform.iskFreeBSD()
-            ? "-kfreebsd"
-            : (Platform.isGNU() ? "" : "-linux");
+        String kernel = Platform.iskFreeBSD() ? "-kfreebsd" : (Platform.isGNU() ? "" : "-linux");
         String libc = "-gnu";
 
         if (Platform.isIntel()) {
             cpu = (Platform.is64Bit() ? "x86_64" : "i386");
-        }
-        else if (Platform.isPPC()) {
+        } else if (Platform.isPPC()) {
             cpu = (Platform.is64Bit() ? "powerpc64" : "powerpc");
-        }
-        else if (Platform.isARM()) {
+        } else if (Platform.isARM()) {
             cpu = "arm";
             libc = "-gnueabi";
-        }
-        else if (Platform.ARCH.equals("mips64el")) {
+        } else if (Platform.ARCH.equals("mips64el")) {
             libc = "-gnuabi64";
         }
 
@@ -1035,13 +1023,13 @@ public class NativeLibrary implements Closeable {
             }
         } catch (Exception e) {
         } finally {
-            if(reader != null) {
+            if (reader != null) {
                 try {
                     reader.close();
                 } catch (IOException e) {
                 }
             }
-            if(process != null) {
+            if (process != null) {
                 try {
                     process.waitFor();
                 } catch (InterruptedException e) {

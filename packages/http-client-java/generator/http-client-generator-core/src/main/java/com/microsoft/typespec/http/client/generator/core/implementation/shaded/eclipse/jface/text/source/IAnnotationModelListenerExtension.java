@@ -13,7 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.source;
 
-
 /**
  * Extension interface for {@link IAnnotationModelListener}. Introduces a
  * notification mechanism that notifies the user by means of <code>AnnotationModelEvent</code>s.
@@ -24,10 +23,10 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IAnnotationModelListenerExtension {
 
-	/**
-	 * Called if a model change occurred on the given model.
-	 *
-	 * @param event the event to be sent out
-	 */
-	void modelChanged(AnnotationModelEvent event);
+    /**
+     * Called if a model change occurred on the given model.
+     *
+     * @param event the event to be sent out
+     */
+    void modelChanged(AnnotationModelEvent event);
 }

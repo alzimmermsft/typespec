@@ -22,187 +22,195 @@ import java.io.*;
  * is in partnership with ReliableFileOutputStream to avoid losing
  * file data by using multiple files.
  *
- * @see			ReliableFileOutputStream
+ * @see ReliableFileOutputStream
  */
 public class ReliableFileInputStream extends FilterInputStream {
-	/**
-	 * ReliableFile object for this file.
-	 */
-	private ReliableFile reliable;
-
-	/**
-	 * size of crc and signature
-	 */
-	private int sigSize;
-
-	/**
-	 * current position reading from file
-	 */
-	private long readPos;
-
-	/**
-	 * total file length available for reading
-	 */
-	private long length;
+    /**
+     * ReliableFile object for this file.
+     */
+    private ReliableFile reliable;
 
     /**
-	 * Constructs a new ReliableFileInputStream on the File <code>file</code>.  If the
-	 * file does not exist, the <code>FileNotFoundException</code> is thrown.
-	 *
-	 * @param		file		the File on which to stream reads.
-	 * @exception 	IOException If an error occurs opening the file.
-	 */
-	public ReliableFileInputStream(File file) throws IOException {
-		this(ReliableFile.getReliableFile(file), ReliableFile.GENERATION_LATEST, ReliableFile.OPEN_BEST_AVAILABLE);
-	}
+     * size of crc and signature
+     */
+    private int sigSize;
 
-	/**
-	 * Constructs a new ReliableFileInputStream on the File <code>file</code>.  If the
-	 * file does not exist, the <code>FileNotFoundException</code> is thrown.
-	 *
-	 * @param file the File on which to stream reads.
-	 * @param generation a specific generation requested.
-	 * @param openMask mask used to open data.
-	 * are invalid (corrupt, missing, etc).
-	 * @exception 	IOException If an error occurs opening the file.
-	 */
-	public ReliableFileInputStream(File file, int generation, int openMask) throws IOException {
-		this(ReliableFile.getReliableFile(file), generation, openMask);
-	}
+    /**
+     * current position reading from file
+     */
+    private long readPos;
 
-	/**
-	 *
-	 * @param reliable The ReliableFile on which to read.
-	 * @param generation a specific generation requested.
-	 * @param openMask mask used to open data.
-	 * are invalid (corrupt, missing, etc).
-	 * @throws IOException If an error occurs opening the file.
-	 */
-	private ReliableFileInputStream(ReliableFile reliable, int generation, int openMask) throws IOException {
-		super(reliable.getInputStream(generation, openMask));
+    /**
+     * total file length available for reading
+     */
+    private long length;
 
-		this.reliable = reliable;
-		sigSize = reliable.getSignatureSize();
-		readPos = 0;
-		this.length = reliable.getInputLength();
-		if (sigSize > length)
-			length = 0; // shouldn't ever happen
-		else
-			length -= sigSize;
-	}
+    /**
+     * Constructs a new ReliableFileInputStream on the File <code>file</code>. If the
+     * file does not exist, the <code>FileNotFoundException</code> is thrown.
+     *
+     * @param file the File on which to stream reads.
+     * @exception IOException If an error occurs opening the file.
+     */
+    public ReliableFileInputStream(File file) throws IOException {
+        this(ReliableFile.getReliableFile(file), ReliableFile.GENERATION_LATEST, ReliableFile.OPEN_BEST_AVAILABLE);
+    }
 
-	/**
-	 * Closes this input stream and releases any system resources associated
-	 * with the stream.
-	 *
-	 * @exception 	IOException If an error occurs closing the file.
-	 */
-	@Override
-	public synchronized void close() throws IOException {
-		if (reliable != null) {
-			try {
-				super.close();
-			} finally {
-				reliable.closeInputFile();
-				reliable = null;
-			}
-		}
-	}
+    /**
+     * Constructs a new ReliableFileInputStream on the File <code>file</code>. If the
+     * file does not exist, the <code>FileNotFoundException</code> is thrown.
+     *
+     * @param file the File on which to stream reads.
+     * @param generation a specific generation requested.
+     * @param openMask mask used to open data.
+     * are invalid (corrupt, missing, etc).
+     * @exception IOException If an error occurs opening the file.
+     */
+    public ReliableFileInputStream(File file, int generation, int openMask) throws IOException {
+        this(ReliableFile.getReliableFile(file), generation, openMask);
+    }
 
-	/**
-	 * Override default FilterInputStream method.
-	 * @see FilterInputStream#read(byte[], int, int)
-	 */
-	@Override
-	public synchronized int read(byte b[], int off, int len) throws IOException {
-		if (readPos >= length) {
-			return -1;
-		}
-		int num = super.read(b, off, len);
+    /**
+     *
+     * @param reliable The ReliableFile on which to read.
+     * @param generation a specific generation requested.
+     * @param openMask mask used to open data.
+     * are invalid (corrupt, missing, etc).
+     * @throws IOException If an error occurs opening the file.
+     */
+    private ReliableFileInputStream(ReliableFile reliable, int generation, int openMask) throws IOException {
+        super(reliable.getInputStream(generation, openMask));
 
-		if (num != -1) {
-			if (num + readPos > length) {
-				num = (int) (length - readPos);
-			}
-			readPos += num;
-		}
-		return num;
-	}
+        this.reliable = reliable;
+        sigSize = reliable.getSignatureSize();
+        readPos = 0;
+        this.length = reliable.getInputLength();
+        if (sigSize > length)
+            length = 0; // shouldn't ever happen
+        else
+            length -= sigSize;
+    }
 
-	/**
-	 * Override default FilterInputStream method.
-	 * @see FilterInputStream#read(byte[])
-	 */
-	@Override
-	public synchronized int read(byte b[]) throws IOException {
-		return read(b, 0, b.length);
-	}
+    /**
+     * Closes this input stream and releases any system resources associated
+     * with the stream.
+     *
+     * @exception IOException If an error occurs closing the file.
+     */
+    @Override
+    public synchronized void close() throws IOException {
+        if (reliable != null) {
+            try {
+                super.close();
+            } finally {
+                reliable.closeInputFile();
+                reliable = null;
+            }
+        }
+    }
 
-	/**
-	 * Override default FilterInputStream method.
-	 * @see FilterInputStream#read()
-	 */
-	@Override
-	public synchronized int read() throws IOException {
-		if (readPos >= length) {
-			return -1;
-		}
-		int num = super.read();
+    /**
+     * Override default FilterInputStream method.
+     * 
+     * @see FilterInputStream#read(byte[], int, int)
+     */
+    @Override
+    public synchronized int read(byte b[], int off, int len) throws IOException {
+        if (readPos >= length) {
+            return -1;
+        }
+        int num = super.read(b, off, len);
 
-		if (num != -1) {
-			readPos++;
-		}
-		return num;
-	}
+        if (num != -1) {
+            if (num + readPos > length) {
+                num = (int) (length - readPos);
+            }
+            readPos += num;
+        }
+        return num;
+    }
 
-	/**
-	 * Override default available method.
-	 * @see FilterInputStream#available()
-	 */
-	@Override
-	public synchronized int available() throws IOException {
-		if (readPos < length) // just in case
-			return (int) (length - readPos);
-		return 0;
-	}
+    /**
+     * Override default FilterInputStream method.
+     * 
+     * @see FilterInputStream#read(byte[])
+     */
+    @Override
+    public synchronized int read(byte b[]) throws IOException {
+        return read(b, 0, b.length);
+    }
 
-	/**
-	 * Override default skip method.
-	 * @see FilterInputStream#skip(long)
-	 */
-	@Override
-	public synchronized long skip(long n) throws IOException {
-		long len = super.skip(n);
-		if (readPos + len > length)
-			len = length - readPos;
-		readPos += len;
-		return len;
-	}
+    /**
+     * Override default FilterInputStream method.
+     * 
+     * @see FilterInputStream#read()
+     */
+    @Override
+    public synchronized int read() throws IOException {
+        if (readPos >= length) {
+            return -1;
+        }
+        int num = super.read();
 
-	/**
-	 * Override default markSupported method.
-	 * @see FilterInputStream#markSupported()
-	 */
-	@Override
-	public boolean markSupported() {
-		return false;
-	}
+        if (num != -1) {
+            readPos++;
+        }
+        return num;
+    }
 
-	/**
-	 * Override default mark method.
-	 * @see FilterInputStream#mark(int)
-	 */
-	@Override
-	public void mark(int readlimit) {
-		//ignore
-	}
+    /**
+     * Override default available method.
+     * 
+     * @see FilterInputStream#available()
+     */
+    @Override
+    public synchronized int available() throws IOException {
+        if (readPos < length) // just in case
+            return (int) (length - readPos);
+        return 0;
+    }
 
-	/**
-	 * Override default reset method.
-	 * @see FilterInputStream#reset()
-	 */
-	@Override
-	public void reset() throws IOException {
-		throw new IOException("reset not supported."); //$NON-NLS-1$
-	}
+    /**
+     * Override default skip method.
+     * 
+     * @see FilterInputStream#skip(long)
+     */
+    @Override
+    public synchronized long skip(long n) throws IOException {
+        long len = super.skip(n);
+        if (readPos + len > length)
+            len = length - readPos;
+        readPos += len;
+        return len;
+    }
+
+    /**
+     * Override default markSupported method.
+     * 
+     * @see FilterInputStream#markSupported()
+     */
+    @Override
+    public boolean markSupported() {
+        return false;
+    }
+
+    /**
+     * Override default mark method.
+     * 
+     * @see FilterInputStream#mark(int)
+     */
+    @Override
+    public void mark(int readlimit) {
+        // ignore
+    }
+
+    /**
+     * Override default reset method.
+     * 
+     * @see FilterInputStream#reset()
+     */
+    @Override
+    public void reset() throws IOException {
+        throw new IOException("reset not supported."); //$NON-NLS-1$
+    }
 }

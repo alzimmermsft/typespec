@@ -25,77 +25,87 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * only accepts one result element and then cancels.
  */
 /* package */ class SingleTypeRequestor implements IJavaElementRequestor {
-	/**
-	 * The single accepted element
-	 */
-	protected IType element= null;
-/**
- * @see IJavaElementRequestor
- */
-@Override
-public void acceptField(IField field) {
-	// implements interface method
-}
-/**
- * @see IJavaElementRequestor
- */
-@Override
-public void acceptInitializer(IInitializer initializer) {
-	// implements interface method
-}
-/**
- * @see IJavaElementRequestor
- */
-@Override
-public void acceptMemberType(IType type) {
-	this.element= type;
-}
-/**
- * @see IJavaElementRequestor
- */
-@Override
-public void acceptMethod(IMethod method) {
-	// implements interface method
-}
-/**
- * @see IJavaElementRequestor
- */
-@Override
-public void acceptModule(IModuleDescription module) {
-	// implements interface method
-}
-/**
- * @see IJavaElementRequestor
- */
-@Override
-public void acceptPackageFragment(IPackageFragment packageFragment) {
-	// implements interface method
-}
-/**
- * @see IJavaElementRequestor
- */
-@Override
-public void acceptType(IType type) {
-	this.element= type;
-}
-/**
- * Returns the type accepted by this requestor, or <code>null</code>
- * if no type has been accepted.
- */
-public IType getType() {
-	return this.element;
-}
-/**
- * @see IJavaElementRequestor
- */
-@Override
-public boolean isCanceled() {
-	return this.element != null;
-}
-/**
- * Reset the state of this requestor
- */
-public void reset() {
-	this.element= null;
-}
+    /**
+     * The single accepted element
+     */
+    protected IType element = null;
+
+    /**
+     * @see IJavaElementRequestor
+     */
+    @Override
+    public void acceptField(IField field) {
+        // implements interface method
+    }
+
+    /**
+     * @see IJavaElementRequestor
+     */
+    @Override
+    public void acceptInitializer(IInitializer initializer) {
+        // implements interface method
+    }
+
+    /**
+     * @see IJavaElementRequestor
+     */
+    @Override
+    public void acceptMemberType(IType type) {
+        this.element = type;
+    }
+
+    /**
+     * @see IJavaElementRequestor
+     */
+    @Override
+    public void acceptMethod(IMethod method) {
+        // implements interface method
+    }
+
+    /**
+     * @see IJavaElementRequestor
+     */
+    @Override
+    public void acceptModule(IModuleDescription module) {
+        // implements interface method
+    }
+
+    /**
+     * @see IJavaElementRequestor
+     */
+    @Override
+    public void acceptPackageFragment(IPackageFragment packageFragment) {
+        // implements interface method
+    }
+
+    /**
+     * @see IJavaElementRequestor
+     */
+    @Override
+    public void acceptType(IType type) {
+        this.element = type;
+    }
+
+    /**
+     * Returns the type accepted by this requestor, or <code>null</code>
+     * if no type has been accepted.
+     */
+    public IType getType() {
+        return this.element;
+    }
+
+    /**
+     * @see IJavaElementRequestor
+     */
+    @Override
+    public boolean isCanceled() {
+        return this.element != null;
+    }
+
+    /**
+     * Reset the state of this requestor
+     */
+    public void reset() {
+        this.element = null;
+    }
 }

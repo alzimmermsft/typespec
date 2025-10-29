@@ -58,7 +58,7 @@ public interface IExtension {
      * @return the configuration elements declared by this extension
      * @throws InvalidRegistryObjectException if this extension is no longer valid
      */
-    public IConfigurationElement[] getConfigurationElements() throws InvalidRegistryObjectException;
+    IConfigurationElement[] getConfigurationElements() throws InvalidRegistryObjectException;
 
     /**
      * Returns the namespace for this extension. This value can be used in various
@@ -117,7 +117,7 @@ public interface IExtension {
      * </p>
      */
     @Deprecated
-    public String getNamespace() throws InvalidRegistryObjectException;
+    String getNamespace() throws InvalidRegistryObjectException;
 
     /**
      * Returns the namespace name for this extension.
@@ -126,7 +126,7 @@ public interface IExtension {
      * @throws InvalidRegistryObjectException if this extension is no longer valid
      * @since org.eclipse.equinox.registry 3.2
      */
-    public String getNamespaceIdentifier() throws InvalidRegistryObjectException;
+    String getNamespaceIdentifier() throws InvalidRegistryObjectException;
 
     /**
      * Returns the contributor of this extension.
@@ -135,7 +135,7 @@ public interface IExtension {
      * @throws InvalidRegistryObjectException if this extension is no longer valid
      * @since org.eclipse.equinox.registry 3.2
      */
-    public IContributor getContributor() throws InvalidRegistryObjectException;
+    IContributor getContributor() throws InvalidRegistryObjectException;
 
     /**
      * Returns the unique identifier of the extension point to which this extension
@@ -144,7 +144,7 @@ public interface IExtension {
      * @return the unique identifier of the relevant extension point
      * @throws InvalidRegistryObjectException if this extension is no longer valid
      */
-    public String getExtensionPointUniqueIdentifier() throws InvalidRegistryObjectException;
+    String getExtensionPointUniqueIdentifier() throws InvalidRegistryObjectException;
 
     /**
      * Returns a displayable label for this extension. Returns the empty string if
@@ -158,7 +158,7 @@ public interface IExtension {
      * string
      * @throws InvalidRegistryObjectException if this extension is no longer valid
      */
-    public String getLabel() throws InvalidRegistryObjectException;
+    String getLabel() throws InvalidRegistryObjectException;
 
     /**
      * When multi-language support is enabled, this method returns a displayable
@@ -181,7 +181,7 @@ public interface IExtension {
      * @see IExtensionRegistry#isMultiLanguage()
      * @since 3.5
      */
-    public String getLabel(String locale) throws InvalidRegistryObjectException;
+    String getLabel(String locale) throws InvalidRegistryObjectException;
 
     /**
      * Returns the simple identifier of this extension, or <code>null</code> if this
@@ -194,7 +194,7 @@ public interface IExtension {
      * <code>null</code>
      * @throws InvalidRegistryObjectException if this extension is no longer valid
      */
-    public String getSimpleIdentifier() throws InvalidRegistryObjectException;
+    String getSimpleIdentifier() throws InvalidRegistryObjectException;
 
     /**
      * Returns the unique identifier of this extension, or <code>null</code> if this
@@ -206,10 +206,10 @@ public interface IExtension {
      * <code>"com.example.acme.main"</code>), or <code>null</code>
      * @throws InvalidRegistryObjectException if this extension is no longer valid
      */
-    public String getUniqueIdentifier() throws InvalidRegistryObjectException;
+    String getUniqueIdentifier() throws InvalidRegistryObjectException;
 
     @Override
-    public boolean equals(Object o);
+    boolean equals(Object o);
 
     /**
      * Returns whether this extension object is valid.
@@ -218,5 +218,5 @@ public interface IExtension {
      * it is no longer valid
      * @since 3.1
      */
-    public boolean isValid();
+    boolean isValid();
 }

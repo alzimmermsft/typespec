@@ -13,8 +13,8 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.core.jdom;
 
-import java.util.Enumeration;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.jdom.IDOMNode;
+import java.util.Enumeration;
 
 /**
  * SiblingEnumeration provides an enumeration on a linked list
@@ -28,34 +28,37 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 @SuppressWarnings("rawtypes")
 /* package */ class SiblingEnumeration implements Enumeration {
 
-	/**
-	 * The current location in the linked list
-	 * of DOM nodes.
-	 */
-	protected IDOMNode fCurrentElement;
-/**
- * Creates an enumeration of silbings starting at the given node.
- * If the given node is <code>null</code> the enumeration is empty.
- */
-SiblingEnumeration(IDOMNode child) {
-	this.fCurrentElement= child;
-}
-/**
- * @see Enumeration#hasMoreElements()
- */
-@Override
-public boolean hasMoreElements() {
-	return this.fCurrentElement != null;
-}
-/**
- * @see Enumeration#nextElement()
- */
-@Override
-public Object nextElement() {
-	IDOMNode curr=  this.fCurrentElement;
-	if (curr != null) {
-		this.fCurrentElement= this.fCurrentElement.getNextNode();
-	}
-	return curr;
-}
+    /**
+     * The current location in the linked list
+     * of DOM nodes.
+     */
+    protected IDOMNode fCurrentElement;
+
+    /**
+     * Creates an enumeration of silbings starting at the given node.
+     * If the given node is <code>null</code> the enumeration is empty.
+     */
+    SiblingEnumeration(IDOMNode child) {
+        this.fCurrentElement = child;
+    }
+
+    /**
+     * @see Enumeration#hasMoreElements()
+     */
+    @Override
+    public boolean hasMoreElements() {
+        return this.fCurrentElement != null;
+    }
+
+    /**
+     * @see Enumeration#nextElement()
+     */
+    @Override
+    public Object nextElement() {
+        IDOMNode curr = this.fCurrentElement;
+        if (curr != null) {
+            this.fCurrentElement = this.fCurrentElement.getNextNode();
+        }
+        return curr;
+    }
 }

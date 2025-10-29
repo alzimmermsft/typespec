@@ -35,4 +35,3 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.util.tracker;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.Version;
-

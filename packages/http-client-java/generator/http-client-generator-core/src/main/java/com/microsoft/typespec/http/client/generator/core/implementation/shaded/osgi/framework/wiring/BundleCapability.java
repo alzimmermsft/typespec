@@ -16,10 +16,10 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.wiring;
 
-import java.util.Map;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.ProviderType;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.namespace.AbstractWiringNamespace;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Capability;
+import java.util.Map;
 
 /**
  * A capability that has been declared from a {@link BundleRevision bundle
@@ -31,55 +31,55 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 @ProviderType
 public interface BundleCapability extends Capability {
 
-	/**
-	 * Returns the bundle revision declaring this capability.
-	 * 
-	 * @return The bundle revision declaring this capability.
-	 */
-	BundleRevision getRevision();
+    /**
+     * Returns the bundle revision declaring this capability.
+     * 
+     * @return The bundle revision declaring this capability.
+     */
+    BundleRevision getRevision();
 
-	/**
-	 * Returns the namespace of this capability.
-	 * 
-	 * @return The namespace of this capability.
-	 */
-	@Override
-	String getNamespace();
+    /**
+     * Returns the namespace of this capability.
+     * 
+     * @return The namespace of this capability.
+     */
+    @Override
+    String getNamespace();
 
-	/**
-	 * Returns the directives of this capability.
-	 * 
-	 * <p>
-	 * All capability directives not specified by the
-	 * {@link AbstractWiringNamespace wiring namespaces} have no specified
-	 * semantics and are considered extra user defined information.
-	 * 
-	 * @return An unmodifiable map of directive names to directive values for
-	 *         this capability, or an empty map if this capability has no
-	 *         directives.
-	 */
-	@Override
-	Map<String, String> getDirectives();
+    /**
+     * Returns the directives of this capability.
+     * 
+     * <p>
+     * All capability directives not specified by the
+     * {@link AbstractWiringNamespace wiring namespaces} have no specified
+     * semantics and are considered extra user defined information.
+     * 
+     * @return An unmodifiable map of directive names to directive values for
+     * this capability, or an empty map if this capability has no
+     * directives.
+     */
+    @Override
+    Map<String, String> getDirectives();
 
-	/**
-	 * Returns the attributes of this capability.
-	 * 
-	 * @return An unmodifiable map of attribute names to attribute values for
-	 *         this capability, or an empty map if this capability has no
-	 *         attributes.
-	 */
-	@Override
-	Map<String, Object> getAttributes();
+    /**
+     * Returns the attributes of this capability.
+     * 
+     * @return An unmodifiable map of attribute names to attribute values for
+     * this capability, or an empty map if this capability has no
+     * attributes.
+     */
+    @Override
+    Map<String, Object> getAttributes();
 
-	/**
-	 * Returns the resource declaring this capability.
-	 * 
-	 * <p>
-	 * This method returns the same value as {@link #getRevision()}.
-	 * 
-	 * @return The resource declaring this capability.
-	 * @since 1.1
-	 */
-	@Override
-	BundleRevision getResource();
+    /**
+     * Returns the resource declaring this capability.
+     * 
+     * <p>
+     * This method returns the same value as {@link #getRevision()}.
+     * 
+     * @return The resource declaring this capability.
+     * @since 1.1
+     */
+    @Override
+    BundleRevision getResource();
 }

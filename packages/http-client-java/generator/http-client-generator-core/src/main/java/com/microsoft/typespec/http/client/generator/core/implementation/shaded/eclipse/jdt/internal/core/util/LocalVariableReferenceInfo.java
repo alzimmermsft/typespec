@@ -19,46 +19,43 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.util.IConstantPool;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.util.ILocalVariableReferenceInfo;
 
-
 public class LocalVariableReferenceInfo extends ClassFileStruct implements ILocalVariableReferenceInfo {
 
-	private final int startPC;
-	private final int length;
-	private final int index;
+    private final int startPC;
+    private final int length;
+    private final int index;
 
-	/**
-	 * Constructor for LocalVariableTableEntry.
-	 */
-	public LocalVariableReferenceInfo(
-			byte[] classFileBytes,
-			IConstantPool constantPool,
-			int offset) throws ClassFormatException {
-		this.startPC = u2At(classFileBytes, 0, offset);
-		this.length = u2At(classFileBytes, 2, offset);
-		this.index = u2At(classFileBytes, 4, offset);
-	}
+    /**
+     * Constructor for LocalVariableTableEntry.
+     */
+    public LocalVariableReferenceInfo(byte[] classFileBytes, IConstantPool constantPool, int offset)
+        throws ClassFormatException {
+        this.startPC = u2At(classFileBytes, 0, offset);
+        this.length = u2At(classFileBytes, 2, offset);
+        this.index = u2At(classFileBytes, 4, offset);
+    }
 
-	/**
-	 * @see ILocalVariableReferenceInfo#getStartPC()
-	 */
-	@Override
-	public int getStartPC() {
-		return this.startPC;
-	}
+    /**
+     * @see ILocalVariableReferenceInfo#getStartPC()
+     */
+    @Override
+    public int getStartPC() {
+        return this.startPC;
+    }
 
-	/**
-	 * @see ILocalVariableReferenceInfo#getLength()
-	 */
-	@Override
-	public int getLength() {
-		return this.length;
-	}
+    /**
+     * @see ILocalVariableReferenceInfo#getLength()
+     */
+    @Override
+    public int getLength() {
+        return this.length;
+    }
 
-	/**
-	 * @see ILocalVariableReferenceInfo#getIndex()
-	 */
-	@Override
-	public int getIndex() {
-		return this.index;
-	}
+    /**
+     * @see ILocalVariableReferenceInfo#getIndex()
+     */
+    @Override
+    public int getIndex() {
+        return this.index;
+    }
 }

@@ -55,34 +55,6 @@ public abstract class ClassFileBytesDisassembler {
     public final static int WORKING_COPY = 16;
 
     /**
-     * Answers back the disassembled string of the classfile bytes using the default
-     * mode.
-     * This is an output quite similar to the javap tool, using DEFAULT mode.
-     *
-     * @param classFileBytes The bytes of the classfile
-     * @param lineSeparator the line separator to use.
-     *
-     * @return the disassembled string of the IClassFileReader using the default mode.
-     * @exception ClassFormatException if the classfile bytes are ill-formed
-     */
-    public abstract String disassemble(byte[] classFileBytes, String lineSeparator) throws ClassFormatException;
-
-    /**
-     * Answers back the disassembled string of the classfile bytes according to the
-     * mode.
-     * This is an output quite similar to the javap tool.
-     *
-     * @param classFileBytes The bytes of the classfile
-     * @param lineSeparator the line separator to use.
-     * @param mode the mode used to disassemble the IClassFileReader
-     *
-     * @return the disassembled string of the IClassFileReader according to the mode
-     * @exception ClassFormatException if the classfile bytes are ill-formed
-     */
-    public abstract String disassemble(byte[] classFileBytes, String lineSeparator, int mode)
-        throws ClassFormatException;
-
-    /**
      * Answers a readable short description of this disassembler
      *
      * @return String - a string description of the disassembler

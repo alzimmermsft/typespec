@@ -14,77 +14,83 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.classfmt;
 
-import java.util.Arrays;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.compiler.CharOperation;
+import java.util.Arrays;
 
-public class ElementValuePairInfo implements com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IBinaryElementValuePair {
+public class ElementValuePairInfo implements
+    com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IBinaryElementValuePair {
 
-	static final ElementValuePairInfo[] NoMembers = new ElementValuePairInfo[0];
+    static final ElementValuePairInfo[] NoMembers = new ElementValuePairInfo[0];
 
-	private final char[] name;
-	private final Object value;
+    private final char[] name;
+    private final Object value;
 
-public ElementValuePairInfo(char[] name, Object value) {
-	this.name = name;
-	this.value = value;
-}
-@Override
-public char[] getName() {
-	return this.name;
-}
-@Override
-public Object getValue() {
-	return this.value;
-}
-@Override
-public String toString() {
-	StringBuilder buffer = new StringBuilder();
-	buffer.append(this.name);
-	buffer.append('=');
-	if (this.value instanceof Object[]) {
-		final Object[] values = (Object[]) this.value;
-		buffer.append('{');
-		for (int i = 0, l = values.length; i < l; i++) {
-			if (i > 0)
-				buffer.append(", "); //$NON-NLS-1$
-			buffer.append(values[i]);
-		}
-		buffer.append('}');
-	} else {
-		buffer.append(this.value);
-	}
-	return buffer.toString();
-}
-@Override
-public int hashCode() {
-	final int prime = 31;
-	int result = 1;
-	result = prime * result + CharOperation.hashCode(this.name);
-	result = prime * result + ((this.value == null) ? 0 : this.value.hashCode());
-	return result;
-}
-@Override
-public boolean equals(Object obj) {
-	if (this == obj) {
-		return true;
-	}
-	if (obj == null) {
-		return false;
-	}
-	if (getClass() != obj.getClass()) {
-		return false;
-	}
-	ElementValuePairInfo other = (ElementValuePairInfo) obj;
-	if (!Arrays.equals(this.name, other.name)) {
-		return false;
-	}
-	if (this.value == null) {
-		if (other.value != null) {
-			return false;
-		}
-	} else if (!this.value.equals(other.value)) {
-		return false;
-	}
-	return true;
-}
+    public ElementValuePairInfo(char[] name, Object value) {
+        this.name = name;
+        this.value = value;
+    }
+
+    @Override
+    public char[] getName() {
+        return this.name;
+    }
+
+    @Override
+    public Object getValue() {
+        return this.value;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder buffer = new StringBuilder();
+        buffer.append(this.name);
+        buffer.append('=');
+        if (this.value instanceof Object[]) {
+            final Object[] values = (Object[]) this.value;
+            buffer.append('{');
+            for (int i = 0, l = values.length; i < l; i++) {
+                if (i > 0)
+                    buffer.append(", "); //$NON-NLS-1$
+                buffer.append(values[i]);
+            }
+            buffer.append('}');
+        } else {
+            buffer.append(this.value);
+        }
+        return buffer.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + CharOperation.hashCode(this.name);
+        result = prime * result + ((this.value == null) ? 0 : this.value.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        ElementValuePairInfo other = (ElementValuePairInfo) obj;
+        if (!Arrays.equals(this.name, other.name)) {
+            return false;
+        }
+        if (this.value == null) {
+            if (other.value != null) {
+                return false;
+            }
+        } else if (!this.value.equals(other.value)) {
+            return false;
+        }
+        return true;
+    }
 }

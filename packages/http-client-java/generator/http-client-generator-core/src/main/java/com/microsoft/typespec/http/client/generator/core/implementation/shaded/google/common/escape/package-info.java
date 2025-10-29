@@ -17,9 +17,12 @@
  * {@link Escaper}.
  *
  * <p>Additional escapers implementations are found in the applicable packages: {@link
- * com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.html.HtmlEscapers} in {@code com.google.common.html}, {@link
- * com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.xml.XmlEscapers} in {@code com.google.common.xml}, and {@link
- * com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.net.UrlEscapers} in {@code com.google.common.net}.
+ * com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.html.HtmlEscapers} in
+ * {@code com.google.common.html}, {@link
+ * com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.xml.XmlEscapers} in
+ * {@code com.google.common.xml}, and {@link
+ * com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.net.UrlEscapers} in
+ * {@code com.google.common.net}.
  *
  * <p>This package is a part of the open-source <a href="https://github.com/google/guava">Guava</a>
  * library.

@@ -26,7 +26,6 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure.ByReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure.FieldOrder;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.BaseTSD.SIZE_T;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.BaseTSD.ULONG_PTR;
@@ -52,22 +51,22 @@ public interface Psapi extends StdCallLibrary {
      * module.
      *
      * @param process
-     *            A handle to the process that contains the module.
+     * A handle to the process that contains the module.
      * @param module
-     *            A handle to the module. If this parameter is NULL,
-     *            GetModuleFileNameEx returns the path of the executable file of
-     *            the process specified in hProcess.
+     * A handle to the module. If this parameter is NULL,
+     * GetModuleFileNameEx returns the path of the executable file of
+     * the process specified in hProcess.
      * @param lpFilename
-     *            A pointer to a buffer that receives the fully qualified path
-     *            to the module. If the size of the file name is larger than the
-     *            value of the nSize parameter, the function succeeds but the
-     *            file name is truncated and null-terminated.
+     * A pointer to a buffer that receives the fully qualified path
+     * to the module. If the size of the file name is larger than the
+     * value of the nSize parameter, the function succeeds but the
+     * file name is truncated and null-terminated.
      * @param nSize
-     *            The size of the lpFilename buffer, in characters.
+     * The size of the lpFilename buffer, in characters.
      * @return If the function succeeds, the return value specifies the length
-     *         of the string copied to the buffer. If the function fails, the
-     *         return value is zero. To get extended error information, call
-     *         {@link Kernel32Util#getLastErrorMessage()}.
+     * of the string copied to the buffer. If the function fails, the
+     * return value is zero. To get extended error information, call
+     * {@link Kernel32Util#getLastErrorMessage()}.
      */
     int GetModuleFileNameExA(HANDLE process, HANDLE module, byte[] lpFilename, int nSize);
 
@@ -76,22 +75,22 @@ public interface Psapi extends StdCallLibrary {
      * module.
      *
      * @param process
-     *            A handle to the process that contains the module.
+     * A handle to the process that contains the module.
      * @param module
-     *            A handle to the module. If this parameter is NULL,
-     *            GetModuleFileNameEx returns the path of the executable file of
-     *            the process specified in hProcess.
+     * A handle to the module. If this parameter is NULL,
+     * GetModuleFileNameEx returns the path of the executable file of
+     * the process specified in hProcess.
      * @param lpFilename
-     *            A pointer to a buffer that receives the fully qualified path
-     *            to the module. If the size of the file name is larger than the
-     *            value of the nSize parameter, the function succeeds but the
-     *            file name is truncated and null-terminated.
+     * A pointer to a buffer that receives the fully qualified path
+     * to the module. If the size of the file name is larger than the
+     * value of the nSize parameter, the function succeeds but the
+     * file name is truncated and null-terminated.
      * @param nSize
-     *            The size of the lpFilename buffer, in characters.
+     * The size of the lpFilename buffer, in characters.
      * @return If the function succeeds, the return value specifies the length
-     *         of the string copied to the buffer. If the function fails, the
-     *         return value is zero. To get extended error information, call
-     *         {@link Kernel32Util#getLastErrorMessage()}.
+     * of the string copied to the buffer. If the function fails, the
+     * return value is zero. To get extended error information, call
+     * {@link Kernel32Util#getLastErrorMessage()}.
      */
     int GetModuleFileNameExW(HANDLE process, HANDLE module, char[] lpFilename, int nSize);
 
@@ -100,22 +99,22 @@ public interface Psapi extends StdCallLibrary {
      * module.
      *
      * @param process
-     *            A handle to the process that contains the module.
+     * A handle to the process that contains the module.
      * @param module
-     *            A handle to the module. If this parameter is NULL,
-     *            GetModuleFileNameEx returns the path of the executable file of
-     *            the process specified in hProcess.
+     * A handle to the module. If this parameter is NULL,
+     * GetModuleFileNameEx returns the path of the executable file of
+     * the process specified in hProcess.
      * @param lpFilename
-     *            A pointer to a buffer that receives the fully qualified path
-     *            to the module. If the size of the file name is larger than the
-     *            value of the nSize parameter, the function succeeds but the
-     *            file name is truncated and null-terminated.
+     * A pointer to a buffer that receives the fully qualified path
+     * to the module. If the size of the file name is larger than the
+     * value of the nSize parameter, the function succeeds but the
+     * file name is truncated and null-terminated.
      * @param nSize
-     *            The size of the lpFilename buffer, in characters.
+     * The size of the lpFilename buffer, in characters.
      * @return If the function succeeds, the return value specifies the length
-     *         of the string copied to the buffer. If the function fails, the
-     *         return value is zero. To get extended error information, call
-     *         {@link Kernel32Util#getLastErrorMessage()}.
+     * of the string copied to the buffer. If the function fails, the
+     * return value is zero. To get extended error information, call
+     * {@link Kernel32Util#getLastErrorMessage()}.
      */
     int GetModuleFileNameEx(HANDLE process, HANDLE module, Pointer lpFilename, int nSize);
 
@@ -169,17 +168,17 @@ public interface Psapi extends StdCallLibrary {
      * To use run-time dynamic linking, load Psapi.dll.
      *
      * @param hProcess
-     *            A handle to the process.
+     * A handle to the process.
      * @param lphModule
-     *            An array that receives the list of module handles.
+     * An array that receives the list of module handles.
      * @param cb
-     *            The size of the lphModule array, in bytes.
+     * The size of the lphModule array, in bytes.
      * @param lpcbNeeded
-     *            The number of bytes required to store all module handles in
-     *            the lphModule array.
+     * The number of bytes required to store all module handles in
+     * the lphModule array.
      * @return If the function succeeds, the return value is nonzero. If the
-     *         function fails, the return value is zero. To get extended error
-     *         information, call GetLastError.
+     * function fails, the return value is zero. To get extended error
+     * information, call GetLastError.
      * @see <a href="http://msdn.microsoft.com/en-us/library/ms682631(VS.85).aspx">MSDN/a>
      */
     boolean EnumProcessModules(HANDLE hProcess, HMODULE[] lphModule, int cb, IntByReference lpcbNeeded);
@@ -208,21 +207,21 @@ public interface Psapi extends StdCallLibrary {
      * To use run-time dynamic linking, load Psapi.dll.
      *
      * @param hProcess
-     *            A handle to the process that contains the module. The handle
-     *            must have the PROCESS_QUERY_INFORMATION and PROCESS_VM_READ
-     *            access rights. For more information, see Process Security and
-     *            Access Rights.
+     * A handle to the process that contains the module. The handle
+     * must have the PROCESS_QUERY_INFORMATION and PROCESS_VM_READ
+     * access rights. For more information, see Process Security and
+     * Access Rights.
      * @param hModule
-     *            A handle to the module.
+     * A handle to the module.
      *
      * @param lpmodinfo
-     *            A pointer to the MODULEINFO structure that receives
-     *            information about the module.
+     * A pointer to the MODULEINFO structure that receives
+     * information about the module.
      * @param cb
-     *            The size of the MODULEINFO structure, in bytes.
+     * The size of the MODULEINFO structure, in bytes.
      * @return If the function succeeds, the return value is nonzero. If the
-     *         function fails, the return value is zero. To get extended error
-     *         information, call GetLastError.
+     * function fails, the return value is zero. To get extended error
+     * information, call GetLastError.
      * @see <a href="http://msdn.microsoft.com/en-us/library/ms683201(VS.85).aspx">MSDN</a>
      */
     boolean GetModuleInformation(HANDLE hProcess, HMODULE hModule, MODULEINFO lpmodinfo, int cb);
@@ -231,39 +230,38 @@ public interface Psapi extends StdCallLibrary {
      * Retrieves the name of the executable file for the specified process.
      *
      * @param hProcess
-     *            A handle to the process. The handle must have the
-     *            PROCESS_QUERY_INFORMATION or PROCESS_QUERY_LIMITED_INFORMATION
-     *            access right. For more information, see Process Security and
-     *            Access Rights. <br>
-     *            Windows Server 2003 and Windows XP: The handle must have the
-     *            PROCESS_QUERY_INFORMATION access right.
+     * A handle to the process. The handle must have the
+     * PROCESS_QUERY_INFORMATION or PROCESS_QUERY_LIMITED_INFORMATION
+     * access right. For more information, see Process Security and
+     * Access Rights. <br>
+     * Windows Server 2003 and Windows XP: The handle must have the
+     * PROCESS_QUERY_INFORMATION access right.
      * @param lpImageFileName
-     *            A pointer to a buffer that receives the full path to the
-     *            executable file.
+     * A pointer to a buffer that receives the full path to the
+     * executable file.
      * @param nSize
-     *            The size of the lpImageFileName buffer, in characters.
+     * The size of the lpImageFileName buffer, in characters.
      * @return If the function succeeds, the return value specifies the length
-     *         of the string copied to the buffer. If the function fails, the
-     *         return value is zero. To get extended error information, call
-     *         GetLastError.
+     * of the string copied to the buffer. If the function fails, the
+     * return value is zero. To get extended error information, call
+     * GetLastError.
      * @see <a href="http://msdn.microsoft.com/en-us/library/ms683217(VS.85).aspx">MSDN</a>
      */
     int GetProcessImageFileName(HANDLE hProcess, char[] lpImageFileName, int nSize);
-
 
     /**
      * Retrieves the performance values contained in the
      * {@link PERFORMANCE_INFORMATION} structure.
      *
      * @param pPerformanceInformation
-     *            A pointer to a {@link PERFORMANCE_INFORMATION} structure that
-     *            receives the performance information.
+     * A pointer to a {@link PERFORMANCE_INFORMATION} structure that
+     * receives the performance information.
      * @param cb
-     *            The size of the {@link PERFORMANCE_INFORMATION} structure, in
-     *            bytes.
+     * The size of the {@link PERFORMANCE_INFORMATION} structure, in
+     * bytes.
      * @return If the function succeeds, the return value is TRUE. If the
-     *         function fails, the return value is FALSE. To get extended error
-     *         information, call {@link Kernel32Util#getLastErrorMessage()}.
+     * function fails, the return value is FALSE. To get extended error
+     * information, call {@link Kernel32Util#getLastErrorMessage()}.
      * @see <a href="http://msdn.microsoft.com/en-us/library/ms683210(VS.85).aspx">MSDN</a>
      */
     boolean GetPerformanceInfo(PERFORMANCE_INFORMATION pPerformanceInformation, int cb);
@@ -280,17 +278,17 @@ public interface Psapi extends StdCallLibrary {
      * obtained, call the OpenProcess function.
      *
      * @param lpidProcess
-     *            A pointer to an array that receives the list of process
-     *            identifiers
+     * A pointer to an array that receives the list of process
+     * identifiers
      * @param cb
-     *            The size of the lpidProcess array, in bytes.
+     * The size of the lpidProcess array, in bytes.
      * @param lpcbNeeded
-     *            The number of bytes returned in the pProcessIds array.
+     * The number of bytes returned in the pProcessIds array.
      * @return If the function succeeds, the return value is nonzero. If the
-     *         function fails, the return value is zero. To get extended error
-     *         information, call GetLastError.
+     * function fails, the return value is zero. To get extended error
+     * information, call GetLastError.
      * @see <a href=
-     *      "https://docs.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-enumprocesses">MSDN</a>
+     * "https://docs.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-enumprocesses">MSDN</a>
      */
     boolean EnumProcesses(int[] lpidProcess, int cb, IntByReference lpcbNeeded);
 
@@ -299,24 +297,35 @@ public interface Psapi extends StdCallLibrary {
      * virtual addresses in the address space of the specified process.
      *
      * @param hProcess A Handle to the Process
-     * @param pv       A pointer to an array of PSAPI_WORKING_SET_EX_INFORMATION structures
-     * @param cb       The size of the pv buffer, in bytes.
+     * @param pv A pointer to an array of PSAPI_WORKING_SET_EX_INFORMATION structures
+     * @param cb The size of the pv buffer, in bytes.
      * @return If the function succeeds, the return value is nonzero.
      * @see <a href="https://docs.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-queryworkingsetex">MSDN</a>
      */
     boolean QueryWorkingSetEx(HANDLE hProcess, Pointer pv, int cb);
 
-    @FieldOrder({"lpBaseOfDll", "SizeOfImage", "EntryPoint"})
+    @FieldOrder({ "lpBaseOfDll", "SizeOfImage", "EntryPoint" })
     class MODULEINFO extends Structure {
         public Pointer EntryPoint;
         public Pointer lpBaseOfDll;
-        public int     SizeOfImage;
+        public int SizeOfImage;
     }
 
-    @FieldOrder({"cb", "CommitTotal", "CommitLimit", "CommitPeak",
-        "PhysicalTotal", "PhysicalAvailable", "SystemCache", "KernelTotal",
-        "KernelPaged", "KernelNonpaged", "PageSize", "HandleCount",
-        "ProcessCount", "ThreadCount"})
+    @FieldOrder({
+        "cb",
+        "CommitTotal",
+        "CommitLimit",
+        "CommitPeak",
+        "PhysicalTotal",
+        "PhysicalAvailable",
+        "SystemCache",
+        "KernelTotal",
+        "KernelPaged",
+        "KernelNonpaged",
+        "PageSize",
+        "HandleCount",
+        "ProcessCount",
+        "ThreadCount" })
     class PERFORMANCE_INFORMATION extends Structure {
 
         public DWORD cb;
@@ -335,7 +344,7 @@ public interface Psapi extends StdCallLibrary {
         public DWORD ThreadCount;
     }
 
-    @FieldOrder({"VirtualAddress", "VirtualAttributes"})
+    @FieldOrder({ "VirtualAddress", "VirtualAttributes" })
     class PSAPI_WORKING_SET_EX_INFORMATION extends Structure {
 
         public Pointer VirtualAddress;

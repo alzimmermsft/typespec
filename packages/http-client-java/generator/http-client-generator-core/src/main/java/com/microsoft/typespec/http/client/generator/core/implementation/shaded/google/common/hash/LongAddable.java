@@ -14,7 +14,6 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.hash;
 
-
 /**
  * Abstract interface for objects that can concurrently add longs.
  *
@@ -22,9 +21,9 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 @ElementTypesAreNonnullByDefault
 interface LongAddable {
-  void increment();
+    void increment();
 
-  void add(long x);
+    void add(long x);
 
-  long sum();
+    long sum();
 }

@@ -21,173 +21,170 @@ import java.util.*;
  * Sorts imports according to the order of import groups defined on the Organize Imports preference
  * page. Considers equal any two imports matching the same import group.
  */
-final class ImportGroupComparator implements Comparator<ImportName>{
-	private static final class ImportGroup {
-		private final String name;
-		private final int index;
-		private final ImportGroup prefix;
+final class ImportGroupComparator implements Comparator<ImportName> {
+    private static final class ImportGroup {
+        private final String name;
+        private final int index;
+        private final ImportGroup prefix;
 
-		public ImportGroup(String name, int index, ImportGroup prefix) {
-			this.name = name;
-			this.index = index;
-			this.prefix = prefix;
-		}
+        public ImportGroup(String name, int index, ImportGroup prefix) {
+            this.name = name;
+            this.index = index;
+            this.prefix = prefix;
+        }
 
-		@Override
-		public String toString() {
-			return String.format("ImportGroup(%d:%s)", getIndex(), getName()); //$NON-NLS-1$
-		}
+        @Override
+        public String toString() {
+            return String.format("ImportGroup(%d:%s)", getIndex(), getName()); //$NON-NLS-1$
+        }
 
-		String getName() {
-			return this.name;
-		}
+        String getName() {
+            return this.name;
+        }
 
-		int getIndex() {
-			return this.index;
-		}
+        int getIndex() {
+            return this.index;
+        }
 
-		ImportGroup getPrefix() {
-			return this.prefix;
-		}
-	}
+        ImportGroup getPrefix() {
+            return this.prefix;
+        }
+    }
 
-	private static final class IndexedImportGroups {
-		final NavigableMap<String, ImportGroup> typeImportGroupsByName;
-		final NavigableMap<String, ImportGroup> staticImportGroupByName;
+    private static final class IndexedImportGroups {
+        final NavigableMap<String, ImportGroup> typeImportGroupsByName;
+        final NavigableMap<String, ImportGroup> staticImportGroupByName;
 
-		IndexedImportGroups(
-				NavigableMap<String, ImportGroup> typeImportGroupsByName,
-				NavigableMap<String, ImportGroup> staticImportGroupsByName) {
-			this.typeImportGroupsByName = typeImportGroupsByName;
-			this.staticImportGroupByName = staticImportGroupsByName;
-		}
-	}
+        IndexedImportGroups(NavigableMap<String, ImportGroup> typeImportGroupsByName,
+            NavigableMap<String, ImportGroup> staticImportGroupsByName) {
+            this.typeImportGroupsByName = typeImportGroupsByName;
+            this.staticImportGroupByName = staticImportGroupsByName;
+        }
+    }
 
-	private static final String MATCH_ALL = ""; //$NON-NLS-1$
-	private static final String STATIC_PREFIX = "#"; //$NON-NLS-1$
-	private static final String STATIC_MATCH_ALL = STATIC_PREFIX + MATCH_ALL;
+    private static final String MATCH_ALL = ""; //$NON-NLS-1$
+    private static final String STATIC_PREFIX = "#"; //$NON-NLS-1$
+    private static final String STATIC_MATCH_ALL = STATIC_PREFIX + MATCH_ALL;
 
-	private static List<String> memoizedImportOrder = null;
-	private static IndexedImportGroups memoizedIndexedImportGroups = null;
+    private static List<String> memoizedImportOrder = null;
+    private static IndexedImportGroups memoizedIndexedImportGroups = null;
 
-	private static List<String> includeMatchAllImportGroups(List<String> importOrder) {
-		boolean needsTypeMatchAll = !importOrder.contains(MATCH_ALL);
-		boolean needsStaticMatchAll = !importOrder.contains(STATIC_MATCH_ALL);
+    private static List<String> includeMatchAllImportGroups(List<String> importOrder) {
+        boolean needsTypeMatchAll = !importOrder.contains(MATCH_ALL);
+        boolean needsStaticMatchAll = !importOrder.contains(STATIC_MATCH_ALL);
 
-		if (!needsTypeMatchAll && !needsStaticMatchAll) {
-			return importOrder;
-		}
+        if (!needsTypeMatchAll && !needsStaticMatchAll) {
+            return importOrder;
+        }
 
-		List<String> augmentedOrder = new ArrayList<>(importOrder.size() + 2);
+        List<String> augmentedOrder = new ArrayList<>(importOrder.size() + 2);
 
-		if (needsStaticMatchAll) {
-			augmentedOrder.add(STATIC_MATCH_ALL);
-		}
+        if (needsStaticMatchAll) {
+            augmentedOrder.add(STATIC_MATCH_ALL);
+        }
 
-		augmentedOrder.addAll(importOrder);
+        augmentedOrder.addAll(importOrder);
 
-		if (needsTypeMatchAll) {
-			augmentedOrder.add(MATCH_ALL);
-		}
+        if (needsTypeMatchAll) {
+            augmentedOrder.add(MATCH_ALL);
+        }
 
-		return augmentedOrder;
-	}
+        return augmentedOrder;
+    }
 
-	private static synchronized IndexedImportGroups indexImportOrder(List<String> importOrder) {
-		if (importOrder.equals(memoizedImportOrder)) {
-			return memoizedIndexedImportGroups;
-		}
+    private static synchronized IndexedImportGroups indexImportOrder(List<String> importOrder) {
+        if (importOrder.equals(memoizedImportOrder)) {
+            return memoizedIndexedImportGroups;
+        }
 
-		Map<String, Integer> typeGroupsAndIndices = new HashMap<>();
-		Map<String, Integer> staticGroupsAndIndices = new HashMap<>();
-		for (int i = 0; i < importOrder.size(); i++) {
-			String importGroupString = importOrder.get(i);
+        Map<String, Integer> typeGroupsAndIndices = new HashMap<>();
+        Map<String, Integer> staticGroupsAndIndices = new HashMap<>();
+        for (int i = 0; i < importOrder.size(); i++) {
+            String importGroupString = importOrder.get(i);
 
-			final Map<String, Integer> groupsAndIndices;
-			if (importGroupString.startsWith(STATIC_PREFIX)) {
-				groupsAndIndices = staticGroupsAndIndices;
-				importGroupString = importGroupString.substring(1);
-			} else {
-				groupsAndIndices = typeGroupsAndIndices;
-			}
+            final Map<String, Integer> groupsAndIndices;
+            if (importGroupString.startsWith(STATIC_PREFIX)) {
+                groupsAndIndices = staticGroupsAndIndices;
+                importGroupString = importGroupString.substring(1);
+            } else {
+                groupsAndIndices = typeGroupsAndIndices;
+            }
 
-			groupsAndIndices.put(importGroupString, i);
-		}
+            groupsAndIndices.put(importGroupString, i);
+        }
 
-		memoizedImportOrder = importOrder;
+        memoizedImportOrder = importOrder;
 
-		memoizedIndexedImportGroups = new IndexedImportGroups(
-				mapImportGroups(typeGroupsAndIndices),
-				mapImportGroups(staticGroupsAndIndices));
+        memoizedIndexedImportGroups
+            = new IndexedImportGroups(mapImportGroups(typeGroupsAndIndices), mapImportGroups(staticGroupsAndIndices));
 
-		return memoizedIndexedImportGroups;
-	}
+        return memoizedIndexedImportGroups;
+    }
 
-	private static NavigableMap<String, ImportGroup> mapImportGroups(Map<String, Integer> importGroupNamesAndIndices) {
-		if (importGroupNamesAndIndices.isEmpty()) {
-			importGroupNamesAndIndices = Collections.singletonMap(MATCH_ALL, 0);
-		}
+    private static NavigableMap<String, ImportGroup> mapImportGroups(Map<String, Integer> importGroupNamesAndIndices) {
+        if (importGroupNamesAndIndices.isEmpty()) {
+            importGroupNamesAndIndices = Collections.singletonMap(MATCH_ALL, 0);
+        }
 
-		List<String> sortedNames = new ArrayList<>(importGroupNamesAndIndices.keySet());
-		Collections.sort(sortedNames);
+        List<String> sortedNames = new ArrayList<>(importGroupNamesAndIndices.keySet());
+        Collections.sort(sortedNames);
 
-		ArrayList<ImportGroup> importGroups = new ArrayList<>(sortedNames.size());
+        ArrayList<ImportGroup> importGroups = new ArrayList<>(sortedNames.size());
 
-		Deque<ImportGroup> prefixingGroups = new ArrayDeque<>();
-		for (String name : sortedNames) {
-			while (!prefixingGroups.isEmpty()
-					&& !isWholeSegmentPrefix(prefixingGroups.getLast().getName(), name)) {
-				prefixingGroups.removeLast();
-			}
-			ImportGroup prefix = prefixingGroups.peekLast();
+        Deque<ImportGroup> prefixingGroups = new ArrayDeque<>();
+        for (String name : sortedNames) {
+            while (!prefixingGroups.isEmpty() && !isWholeSegmentPrefix(prefixingGroups.getLast().getName(), name)) {
+                prefixingGroups.removeLast();
+            }
+            ImportGroup prefix = prefixingGroups.peekLast();
 
-			ImportGroup group = new ImportGroup(name, importGroupNamesAndIndices.get(name), prefix);
+            ImportGroup group = new ImportGroup(name, importGroupNamesAndIndices.get(name), prefix);
 
-			importGroups.add(group);
+            importGroups.add(group);
 
-			prefixingGroups.addLast(group);
-		}
+            prefixingGroups.addLast(group);
+        }
 
-		NavigableMap<String, ImportGroup> groupsByName = new TreeMap<>();
-		for (ImportGroup group : importGroups) {
-			groupsByName.put(group.getName(), group);
-		}
+        NavigableMap<String, ImportGroup> groupsByName = new TreeMap<>();
+        for (ImportGroup group : importGroups) {
+            groupsByName.put(group.getName(), group);
+        }
 
-		return groupsByName;
-	}
+        return groupsByName;
+    }
 
-	private static boolean isWholeSegmentPrefix(String prefix, String name) {
-		if (!name.startsWith(prefix)) {
-			return false;
-		}
+    private static boolean isWholeSegmentPrefix(String prefix, String name) {
+        if (!name.startsWith(prefix)) {
+            return false;
+        }
 
-		return prefix.isEmpty() || name.length() == prefix.length() || name.charAt(prefix.length()) == '.';
-	}
+        return prefix.isEmpty() || name.length() == prefix.length() || name.charAt(prefix.length()) == '.';
+    }
 
-	private final IndexedImportGroups indexedImportGroups;
+    private final IndexedImportGroups indexedImportGroups;
 
-	ImportGroupComparator(List<String> importOrder) {
-		List<String> importOrderWithMatchAllGroups = includeMatchAllImportGroups(importOrder);
-		this.indexedImportGroups = indexImportOrder(importOrderWithMatchAllGroups);
-	}
+    ImportGroupComparator(List<String> importOrder) {
+        List<String> importOrderWithMatchAllGroups = includeMatchAllImportGroups(importOrder);
+        this.indexedImportGroups = indexImportOrder(importOrderWithMatchAllGroups);
+    }
 
-	@Override
-	public int compare(ImportName o1, ImportName o2) {
-		return determineSortPosition(o1) - determineSortPosition(o2);
-	}
+    @Override
+    public int compare(ImportName o1, ImportName o2) {
+        return determineSortPosition(o1) - determineSortPosition(o2);
+    }
 
-	private int determineSortPosition(ImportName importName) {
-		String name = (importName.isOnDemand() ? importName.containerName : importName.qualifiedName);
+    private int determineSortPosition(ImportName importName) {
+        String name = (importName.isOnDemand() ? importName.containerName : importName.qualifiedName);
 
-		NavigableMap<String, ImportGroup> groupsByName = importName.isStatic
-				? this.indexedImportGroups.staticImportGroupByName
-						: this.indexedImportGroups.typeImportGroupsByName;
+        NavigableMap<String, ImportGroup> groupsByName = importName.isStatic
+            ? this.indexedImportGroups.staticImportGroupByName
+            : this.indexedImportGroups.typeImportGroupsByName;
 
-		ImportGroup prefixingGroup = groupsByName.floorEntry(name).getValue();
-		while (!isWholeSegmentPrefix(prefixingGroup.getName(), name)) {
-			prefixingGroup = prefixingGroup.getPrefix();
-		}
+        ImportGroup prefixingGroup = groupsByName.floorEntry(name).getValue();
+        while (!isWholeSegmentPrefix(prefixingGroup.getName(), name)) {
+            prefixingGroup = prefixingGroup.getPrefix();
+        }
 
-		return prefixingGroup.getIndex();
-	}
+        return prefixingGroup.getIndex();
+    }
 }

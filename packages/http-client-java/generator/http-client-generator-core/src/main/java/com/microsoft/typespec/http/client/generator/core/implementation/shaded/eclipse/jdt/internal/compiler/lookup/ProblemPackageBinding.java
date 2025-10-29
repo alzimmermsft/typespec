@@ -14,23 +14,25 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup;
 
 public class ProblemPackageBinding extends PlainPackageBinding {
-	private final int problemId;
+    private final int problemId;
 // NOTE: must only answer the subset of the name related to the problem
 
-ProblemPackageBinding(char[][] compoundName, int problemId, LookupEnvironment environment) {
-	super(compoundName, environment);
-	this.problemId = problemId;
-}
-ProblemPackageBinding(char[] name, int problemId, LookupEnvironment environment) {
-	this(new char[][] {name}, problemId, environment);
-}
-/**
- * API
- * Answer the problem id associated with the receiver.
- * NoError if the receiver is a valid binding.
- */
-@Override
-public final int problemId() {
-	return this.problemId;
-}
+    ProblemPackageBinding(char[][] compoundName, int problemId, LookupEnvironment environment) {
+        super(compoundName, environment);
+        this.problemId = problemId;
+    }
+
+    ProblemPackageBinding(char[] name, int problemId, LookupEnvironment environment) {
+        this(new char[][] { name }, problemId, environment);
+    }
+
+    /**
+     * API
+     * Answer the problem id associated with the receiver.
+     * NoError if the receiver is a valid binding.
+     */
+    @Override
+    public final int problemId() {
+        return this.problemId;
+    }
 }

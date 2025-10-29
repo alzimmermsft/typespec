@@ -20,12 +20,13 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * A callback interface for receiving code snippet evaluation results.
  */
 public interface IRequestor {
-/**
- * @see org.eclipse.jdt.core.eval.ICodeSnippetRequestor
- */
-boolean acceptClassFiles(ClassFile[] classFiles, char[] codeSnippetClassName);
-/**
- * @see org.eclipse.jdt.core.eval.ICodeSnippetRequestor
- */
-void acceptProblem(CategorizedProblem problem, char[] fragmentSource, int fragmentKind);
+    /**
+     * @see org.eclipse.jdt.core.eval.ICodeSnippetRequestor
+     */
+    boolean acceptClassFiles(ClassFile[] classFiles, char[] codeSnippetClassName);
+
+    /**
+     * @see org.eclipse.jdt.core.eval.ICodeSnippetRequestor
+     */
+    void acceptProblem(CategorizedProblem problem, char[] fragmentSource, int fragmentKind);
 }

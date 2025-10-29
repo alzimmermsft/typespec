@@ -16,7 +16,7 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.ICompilationUnit;
 
 public class SourceTypeCollisionException extends RuntimeException {
-	private static final long serialVersionUID = 4798247636899127380L;
-	public boolean isLastRound = false;
-	public ICompilationUnit[] newAnnotationProcessorUnits;
+    private static final long serialVersionUID = 4798247636899127380L;
+    public boolean isLastRound = false;
+    public ICompilationUnit[] newAnnotationProcessorUnits;
 }

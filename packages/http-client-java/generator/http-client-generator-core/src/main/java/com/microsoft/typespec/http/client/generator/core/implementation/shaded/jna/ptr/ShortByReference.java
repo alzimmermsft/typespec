@@ -28,7 +28,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 public class ShortByReference extends ByReference {
 
     public ShortByReference() {
-        this((short)0);
+        this((short) 0);
     }
 
     public ShortByReference(short value) {

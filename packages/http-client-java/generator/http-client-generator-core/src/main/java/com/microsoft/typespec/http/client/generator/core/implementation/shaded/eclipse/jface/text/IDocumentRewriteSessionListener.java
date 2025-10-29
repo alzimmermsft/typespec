@@ -13,7 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text;
 
-
 /**
  * Interface for objects which are interested in getting informed about document
  * rewrite sessions.
@@ -27,10 +26,10 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IDocumentRewriteSessionListener {
 
-	/**
-	 * Signals a change in a document's rewrite session state.
-	 *
-	 * @param event the event describing the document rewrite session state change
-	 */
-	void documentRewriteSessionChanged(DocumentRewriteSessionEvent event);
+    /**
+     * Signals a change in a document's rewrite session state.
+     *
+     * @param event the event describing the document rewrite session state change
+     */
+    void documentRewriteSessionChanged(DocumentRewriteSessionEvent event);
 }

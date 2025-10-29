@@ -21,12 +21,12 @@ import static com.microsoft.typespec.http.client.generator.core.implementation.s
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Supplier;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.j2objc.annotations.WeakOuter;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 
 /**
  * Implementation of {@code Table} whose iteration ordering across row keys is sorted by their
@@ -47,100 +47,95 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
  */
 @GwtCompatible
 @ElementTypesAreNonnullByDefault
-class StandardRowSortedTable<R, C, V> extends StandardTable<R, C, V>
-    implements RowSortedTable<R, C, V> {
-  /*
-   * TODO(jlevy): Consider adding headTable, tailTable, and subTable methods,
-   * which return a Table view with rows keys in a given range. Create a
-   * RowSortedTable subinterface with the revised methods?
-   */
+class StandardRowSortedTable<R, C, V> extends StandardTable<R, C, V> implements RowSortedTable<R, C, V> {
+    /*
+     * TODO(jlevy): Consider adding headTable, tailTable, and subTable methods,
+     * which return a Table view with rows keys in a given range. Create a
+     * RowSortedTable subinterface with the revised methods?
+     */
 
-  StandardRowSortedTable(
-      SortedMap<R, Map<C, V>> backingMap, Supplier<? extends Map<C, V>> factory) {
-    super(backingMap, factory);
-  }
+    StandardRowSortedTable(SortedMap<R, Map<C, V>> backingMap, Supplier<? extends Map<C, V>> factory) {
+        super(backingMap, factory);
+    }
 
-  private SortedMap<R, Map<C, V>> sortedBackingMap() {
-    return (SortedMap<R, Map<C, V>>) backingMap;
-  }
+    private SortedMap<R, Map<C, V>> sortedBackingMap() {
+        return (SortedMap<R, Map<C, V>>) backingMap;
+    }
 
-  /**
-   * {@inheritDoc}
-   *
-   * <p>This method returns a {@link SortedSet}, instead of the {@code Set} specified in the {@link
-   * Table} interface.
-   */
-  @Override
-  public SortedSet<R> rowKeySet() {
-    return (SortedSet<R>) rowMap().keySet();
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * <p>This method returns a {@link SortedMap}, instead of the {@code Map} specified in the {@link
-   * Table} interface.
-   */
-  @Override
-  public SortedMap<R, Map<C, V>> rowMap() {
-    return (SortedMap<R, Map<C, V>>) super.rowMap();
-  }
-
-  @Override
-  SortedMap<R, Map<C, V>> createRowMap() {
-    return new RowSortedMap();
-  }
-
-  @WeakOuter
-  private class RowSortedMap extends RowMap implements SortedMap<R, Map<C, V>> {
+    /**
+     * {@inheritDoc}
+     *
+     * <p>This method returns a {@link SortedSet}, instead of the {@code Set} specified in the {@link
+     * Table} interface.
+     */
     @Override
-    public SortedSet<R> keySet() {
-      return (SortedSet<R>) super.keySet();
+    public SortedSet<R> rowKeySet() {
+        return (SortedSet<R>) rowMap().keySet();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>This method returns a {@link SortedMap}, instead of the {@code Map} specified in the {@link
+     * Table} interface.
+     */
+    @Override
+    public SortedMap<R, Map<C, V>> rowMap() {
+        return (SortedMap<R, Map<C, V>>) super.rowMap();
     }
 
     @Override
-    SortedSet<R> createKeySet() {
-      return new Maps.SortedKeySet<>(this);
+    SortedMap<R, Map<C, V>> createRowMap() {
+        return new RowSortedMap();
     }
 
-    @Override
-    @CheckForNull
-    public Comparator<? super R> comparator() {
-      return sortedBackingMap().comparator();
+    @WeakOuter
+    private class RowSortedMap extends RowMap implements SortedMap<R, Map<C, V>> {
+        @Override
+        public SortedSet<R> keySet() {
+            return (SortedSet<R>) super.keySet();
+        }
+
+        @Override
+        SortedSet<R> createKeySet() {
+            return new Maps.SortedKeySet<>(this);
+        }
+
+        @Override
+        @CheckForNull
+        public Comparator<? super R> comparator() {
+            return sortedBackingMap().comparator();
+        }
+
+        @Override
+        public R firstKey() {
+            return sortedBackingMap().firstKey();
+        }
+
+        @Override
+        public R lastKey() {
+            return sortedBackingMap().lastKey();
+        }
+
+        @Override
+        public SortedMap<R, Map<C, V>> headMap(R toKey) {
+            checkNotNull(toKey);
+            return new StandardRowSortedTable<R, C, V>(sortedBackingMap().headMap(toKey), factory).rowMap();
+        }
+
+        @Override
+        public SortedMap<R, Map<C, V>> subMap(R fromKey, R toKey) {
+            checkNotNull(fromKey);
+            checkNotNull(toKey);
+            return new StandardRowSortedTable<R, C, V>(sortedBackingMap().subMap(fromKey, toKey), factory).rowMap();
+        }
+
+        @Override
+        public SortedMap<R, Map<C, V>> tailMap(R fromKey) {
+            checkNotNull(fromKey);
+            return new StandardRowSortedTable<R, C, V>(sortedBackingMap().tailMap(fromKey), factory).rowMap();
+        }
     }
 
-    @Override
-    public R firstKey() {
-      return sortedBackingMap().firstKey();
-    }
-
-    @Override
-    public R lastKey() {
-      return sortedBackingMap().lastKey();
-    }
-
-    @Override
-    public SortedMap<R, Map<C, V>> headMap(R toKey) {
-      checkNotNull(toKey);
-      return new StandardRowSortedTable<R, C, V>(sortedBackingMap().headMap(toKey), factory)
-          .rowMap();
-    }
-
-    @Override
-    public SortedMap<R, Map<C, V>> subMap(R fromKey, R toKey) {
-      checkNotNull(fromKey);
-      checkNotNull(toKey);
-      return new StandardRowSortedTable<R, C, V>(sortedBackingMap().subMap(fromKey, toKey), factory)
-          .rowMap();
-    }
-
-    @Override
-    public SortedMap<R, Map<C, V>> tailMap(R fromKey) {
-      checkNotNull(fromKey);
-      return new StandardRowSortedTable<R, C, V>(sortedBackingMap().tailMap(fromKey), factory)
-          .rowMap();
-    }
-  }
-
-  private static final long serialVersionUID = 0;
+    private static final long serialVersionUID = 0;
 }

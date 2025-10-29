@@ -174,7 +174,6 @@ public class JobGroup extends InternalJobGroup {
      * to this job group. If no jobs are found, an empty array is returned.
      *
      * @return the list of active jobs
-     * @see Job#setJobGroup(JobGroup)
      */
     @Override
     public final List<Job> getActiveJobs() {
@@ -193,7 +192,6 @@ public class JobGroup extends InternalJobGroup {
      * cancellation or normal completion. When a job group is in the <code>CANCELING</code>
      * state, newly scheduled jobs which are part of the group are immediately canceled.
      *
-     * @see Job#setJobGroup(JobGroup)
      * @see JobGroup#getState()
      */
     @Override
@@ -246,7 +244,6 @@ public class JobGroup extends InternalJobGroup {
      * if the calling thread is interrupted while waiting
      * @exception OperationCanceledException
      * if the progress monitor is canceled while waiting
-     * @see Job#setJobGroup(JobGroup)
      * @see #cancel()
      */
     @Override

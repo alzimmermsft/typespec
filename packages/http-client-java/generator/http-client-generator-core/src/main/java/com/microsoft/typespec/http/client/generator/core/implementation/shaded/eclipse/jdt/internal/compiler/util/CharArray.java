@@ -24,31 +24,31 @@ import java.util.Arrays;
  */
 public final record CharArray(char[] key) implements Comparable<CharArray> {
 
-	@Override
-	public int compareTo(CharArray o) {
-		// just any technical sort order for Comparable interface used in HashMap https://openjdk.org/jeps/180
-		return Arrays.compare(this.key, o.key);
-	}
+    @Override
+    public int compareTo(CharArray o) {
+        // just any technical sort order for Comparable interface used in HashMap https://openjdk.org/jeps/180
+        return Arrays.compare(this.key, o.key);
+    }
 
-	public char[] getKey() {
-		return this.key;
-	}
+    public char[] getKey() {
+        return this.key;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof CharArray other) {
-			return Arrays.equals(this.key, other.key);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof CharArray other) {
+            return Arrays.equals(this.key, other.key);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Arrays.hashCode(this.key);
-	}
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(this.key);
+    }
 
-	@Override
-	public String toString() {
-		return Arrays.toString(this.key);
-	}
+    @Override
+    public String toString() {
+        return Arrays.toString(this.key);
+    }
 }

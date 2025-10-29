@@ -20,52 +20,48 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 /**
  * Default implementation of ILineNumberAttribute.
  */
-public class LineNumberAttribute
-	extends ClassFileAttribute
-	implements ILineNumberAttribute {
+public class LineNumberAttribute extends ClassFileAttribute implements ILineNumberAttribute {
 
-	private static final int[][] NO_ENTRIES = new int[0][0];
-	private final int lineNumberTableLength;
-	private int[][] lineNumberTable;
+    private static final int[][] NO_ENTRIES = new int[0][0];
+    private final int lineNumberTableLength;
+    private int[][] lineNumberTable;
 
-	/**
-	 * Constructor for LineNumberAttribute.
-	 */
-	public LineNumberAttribute(
-		byte[] classFileBytes,
-		IConstantPool constantPool,
-		int offset)
-		throws ClassFormatException {
-		super(classFileBytes, constantPool, offset);
+    /**
+     * Constructor for LineNumberAttribute.
+     */
+    public LineNumberAttribute(byte[] classFileBytes, IConstantPool constantPool, int offset)
+        throws ClassFormatException {
+        super(classFileBytes, constantPool, offset);
 
-		final int length = u2At(classFileBytes, 6, offset);
-		this.lineNumberTableLength = length;
-		if (length != 0) {
-			this.lineNumberTable = new int[length][2];
-			int readOffset = 8;
-			for (int i = 0; i < length; i++) {
-				this.lineNumberTable[i][0] = u2At(classFileBytes, readOffset, offset);
-				this.lineNumberTable[i][1] = u2At(classFileBytes, readOffset + 2, offset);
-				readOffset += 4;
-			}
-		} else {
-			this.lineNumberTable = NO_ENTRIES;
-		}
-	}
-	/**
-	 * @see ILineNumberAttribute#getLineNumberTable()
-	 */
-	@Override
-	public int[][] getLineNumberTable() {
-		return this.lineNumberTable;
-	}
+        final int length = u2At(classFileBytes, 6, offset);
+        this.lineNumberTableLength = length;
+        if (length != 0) {
+            this.lineNumberTable = new int[length][2];
+            int readOffset = 8;
+            for (int i = 0; i < length; i++) {
+                this.lineNumberTable[i][0] = u2At(classFileBytes, readOffset, offset);
+                this.lineNumberTable[i][1] = u2At(classFileBytes, readOffset + 2, offset);
+                readOffset += 4;
+            }
+        } else {
+            this.lineNumberTable = NO_ENTRIES;
+        }
+    }
 
-	/**
-	 * @see ILineNumberAttribute#getLineNumberTableLength()
-	 */
-	@Override
-	public int getLineNumberTableLength() {
-		return this.lineNumberTableLength;
-	}
+    /**
+     * @see ILineNumberAttribute#getLineNumberTable()
+     */
+    @Override
+    public int[][] getLineNumberTable() {
+        return this.lineNumberTable;
+    }
+
+    /**
+     * @see ILineNumberAttribute#getLineNumberTableLength()
+     */
+    @Override
+    public int getLineNumberTableLength() {
+        return this.lineNumberTableLength;
+    }
 
 }

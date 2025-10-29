@@ -71,5 +71,5 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 @ConsumerType
 @FunctionalInterface
 public interface UnfilteredServiceListener extends ServiceListener {
-	// This is a marker interface
+    // This is a marker interface
 }

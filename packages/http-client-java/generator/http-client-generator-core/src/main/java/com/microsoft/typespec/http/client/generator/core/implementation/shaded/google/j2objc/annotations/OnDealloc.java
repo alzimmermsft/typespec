@@ -35,4 +35,5 @@ import java.lang.annotation.Target;
  */
 @Target(METHOD)
 @Retention(CLASS)
-public @interface OnDealloc {}
+public @interface OnDealloc {
+}

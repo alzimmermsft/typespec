@@ -37,10 +37,10 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  * 
  * <pre>
  * logger.info("Found service %s.", serviceReference, serviceReference);
- * logger.warn("Something named %s happened.", name, serviceReference,
- * 		throwable);
+ * logger.warn("Something named %s happened.", name, serviceReference, throwable);
  * logger.error("Failed.", exception);
  * </pre>
+ * 
  * <p>
  * If an exception occurs formatting the message, the logged message will
  * indicate the formatting failure including the format string and the
@@ -52,5 +52,5 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
  */
 @ProviderType
 public interface FormatterLogger extends Logger {
-	// no additional methods
+    // no additional methods
 }

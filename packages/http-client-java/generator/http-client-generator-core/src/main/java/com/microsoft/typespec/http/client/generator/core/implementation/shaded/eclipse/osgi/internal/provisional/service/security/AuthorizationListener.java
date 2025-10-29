@@ -23,9 +23,9 @@ import java.util.EventListener;
  */
 public interface AuthorizationListener extends EventListener {
 
-	/**
-	 * Called when an AuthorizationEvent has occurred
-	 */
-	public void authorizationEvent(AuthorizationEvent event);
+    /**
+     * Called when an AuthorizationEvent has occurred
+     */
+    public void authorizationEvent(AuthorizationEvent event);
 
 }

@@ -47,8 +47,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
  */
 public class TypeLib extends Unknown implements ITypeLib {
 
-    public static class ByReference extends TypeLib implements
-            Structure.ByReference {
+    public static class ByReference extends TypeLib implements Structure.ByReference {
     }
 
     /**
@@ -61,7 +60,7 @@ public class TypeLib extends Unknown implements ITypeLib {
      * Instantiates a new i type lib.
      *
      * @param pvInstance
-     *            the pv instance
+     * the pv instance
      */
     public TypeLib(Pointer pvInstance) {
         super(pvInstance);
@@ -73,117 +72,96 @@ public class TypeLib extends Unknown implements ITypeLib {
      * @return the uint
      */
     public UINT GetTypeInfoCount() {
-        return (UINT) this._invokeNativeObject(3,
-                new Object[] { this.getPointer() }, UINT.class);
+        return (UINT) this._invokeNativeObject(3, new Object[] { this.getPointer() }, UINT.class);
     }
 
     /**
      * Gets the type info.
      *
      * @param index
-     *            the index
+     * the index
      * @param pTInfo
-     *            the t info
+     * the t info
      * @return the hresult
      */
-    public HRESULT GetTypeInfo(
-    /* [in] */UINT index,
-    /* [out] */PointerByReference pTInfo) {
+    public HRESULT GetTypeInfo(/* [in] */UINT index, /* [out] */PointerByReference pTInfo) {
 
-        return (HRESULT) this._invokeNativeObject(4,
-                new Object[] { this.getPointer(), index, pTInfo },
-                HRESULT.class);
+        return (HRESULT) this._invokeNativeObject(4, new Object[] { this.getPointer(), index, pTInfo }, HRESULT.class);
     }
 
     /**
      * Gets the type info type.
      *
      * @param index
-     *            the index
+     * the index
      * @param pTKind
-     *            the t kind
+     * the t kind
      * @return the hresult
      */
-    public HRESULT GetTypeInfoType(
-    /* [in] */UINT index,
-    /* [out] */TYPEKIND.ByReference pTKind) {
+    public HRESULT GetTypeInfoType(/* [in] */UINT index, /* [out] */TYPEKIND.ByReference pTKind) {
 
-        return (HRESULT) this._invokeNativeObject(5,
-                new Object[] { this.getPointer(), index, pTKind },
-                HRESULT.class);
+        return (HRESULT) this._invokeNativeObject(5, new Object[] { this.getPointer(), index, pTKind }, HRESULT.class);
     }
 
     /**
      * Gets the type info of guid.
      *
      * @param guid
-     *            the guid
+     * the guid
      * @param pTinfo
-     *            the tinfo
+     * the tinfo
      * @return the hresult
      */
-    public HRESULT GetTypeInfoOfGuid(
-        /* [in] */GUID guid,
-        /* [out] */ PointerByReference pTinfo) {
+    public HRESULT GetTypeInfoOfGuid(/* [in] */GUID guid, /* [out] */ PointerByReference pTinfo) {
 
-        return (HRESULT) this
-            ._invokeNativeObject(6, new Object[]{this.getPointer(), guid,
-                pTinfo}, HRESULT.class);
+        return (HRESULT) this._invokeNativeObject(6, new Object[] { this.getPointer(), guid, pTinfo }, HRESULT.class);
     }
 
     /**
      * Gets the lib attr.
      *
      * @param ppTLibAttr
-     *            the pp t lib attr
+     * the pp t lib attr
      * @return the hresult
      */
-    public HRESULT GetLibAttr(
-    /* [out] */PointerByReference ppTLibAttr) {
+    public HRESULT GetLibAttr(/* [out] */PointerByReference ppTLibAttr) {
 
-        return (HRESULT) this._invokeNativeObject(7,
-                new Object[] { this.getPointer(), ppTLibAttr }, HRESULT.class);
+        return (HRESULT) this._invokeNativeObject(7, new Object[] { this.getPointer(), ppTLibAttr }, HRESULT.class);
     }
 
     /**
      * Gets the type comp.
      *
      * @param pTComp
-     *            the t comp
+     * the t comp
      * @return the hresult
      */
-    public HRESULT GetTypeComp(
-    /* [out] */PointerByReference pTComp) {
+    public HRESULT GetTypeComp(/* [out] */PointerByReference pTComp) {
 
-        return (HRESULT) this._invokeNativeObject(8,
-                new Object[] { this.getPointer(), pTComp }, HRESULT.class);
+        return (HRESULT) this._invokeNativeObject(8, new Object[] { this.getPointer(), pTComp }, HRESULT.class);
     }
 
     /**
      * Gets the documentation.
      *
      * @param index
-     *            the index
+     * the index
      * @param pBstrName
-     *            the bstr name
+     * the bstr name
      * @param pBstrDocString
-     *            the bstr doc string
+     * the bstr doc string
      * @param pdwHelpContext
-     *            the pdw help context
+     * the pdw help context
      * @param pBstrHelpFile
-     *            the bstr help file
+     * the bstr help file
      * @return the hresult
      */
-    public HRESULT GetDocumentation(
-        /* [in] */int index,
-        /* [out] */ BSTRByReference pBstrName,
-        /* [out] */ BSTRByReference pBstrDocString,
-        /* [out] */ DWORDByReference pdwHelpContext,
+    public HRESULT GetDocumentation(/* [in] */int index, /* [out] */ BSTRByReference pBstrName,
+        /* [out] */ BSTRByReference pBstrDocString, /* [out] */ DWORDByReference pdwHelpContext,
         /* [out] */ BSTRByReference pBstrHelpFile) {
 
         return (HRESULT) this._invokeNativeObject(9,
-            new Object[]{this.getPointer(), index, pBstrName,
-                pBstrDocString, pdwHelpContext, pBstrHelpFile},
+            new Object[] { this.getPointer(), index, pBstrName, pBstrDocString, pdwHelpContext, pBstrHelpFile },
             HRESULT.class);
     }
 
@@ -191,58 +169,50 @@ public class TypeLib extends Unknown implements ITypeLib {
      * Checks if is name.
      *
      * @param szNameBuf
-     *            the sz name buf
+     * the sz name buf
      * @param lHashVal
-     *            the l hash val
+     * the l hash val
      * @param pfName
-     *            the pf name
+     * the pf name
      * @return the hresult
      */
-    public HRESULT IsName(
-        /* [annotation][out][in] */LPOLESTR szNameBuf,
-        /* [in] */ ULONG lHashVal,
+    public HRESULT IsName(/* [annotation][out][in] */LPOLESTR szNameBuf, /* [in] */ ULONG lHashVal,
         /* [out] */ BOOLByReference pfName) {
 
-        return (HRESULT) this
-            ._invokeNativeObject(10, new Object[]{this.getPointer(),
-                szNameBuf, lHashVal, pfName}, HRESULT.class);
+        return (HRESULT) this._invokeNativeObject(10, new Object[] { this.getPointer(), szNameBuf, lHashVal, pfName },
+            HRESULT.class);
     }
 
     /**
      * Find name.
      *
      * @param szNameBuf
-     *            the sz name buf
+     * the sz name buf
      * @param lHashVal
-     *            the l hash val
+     * the l hash val
      * @param ppTInfo
-     *            the pp t info
+     * the pp t info
      * @param rgMemId
-     *            the rg mem id
+     * the rg mem id
      * @param pcFound
-     *            the pc found
+     * the pc found
      * @return the hresult
      */
-    public HRESULT FindName(
-        /* [annotation][out][in] */LPOLESTR szNameBuf,
-        /* [in] */ ULONG lHashVal,
-        /* [length_is][size_is][out] */ Pointer[] ppTInfo,
-        /* [length_is][size_is][out] */ MEMBERID[] rgMemId,
+    public HRESULT FindName(/* [annotation][out][in] */LPOLESTR szNameBuf, /* [in] */ ULONG lHashVal,
+        /* [length_is][size_is][out] */ Pointer[] ppTInfo, /* [length_is][size_is][out] */ MEMBERID[] rgMemId,
         /* [out][in] */ USHORTByReference pcFound) {
 
         return (HRESULT) this._invokeNativeObject(11,
-            new Object[]{this.getPointer(), szNameBuf, lHashVal, ppTInfo,
-                rgMemId, pcFound}, HRESULT.class);
+            new Object[] { this.getPointer(), szNameBuf, lHashVal, ppTInfo, rgMemId, pcFound }, HRESULT.class);
     }
 
     /**
      * Release t lib attr.
      *
      * @param pTLibAttr
-     *            the t lib attr
+     * the t lib attr
      */
     public void ReleaseTLibAttr(/* [in] */TLIBATTR pTLibAttr) {
-        this._invokeNativeObject(12, new Object[] { this.getPointer(),
-            pTLibAttr.getPointer() },  HRESULT.class);
+        this._invokeNativeObject(12, new Object[] { this.getPointer(), pTLibAttr.getPointer() }, HRESULT.class);
     }
 }

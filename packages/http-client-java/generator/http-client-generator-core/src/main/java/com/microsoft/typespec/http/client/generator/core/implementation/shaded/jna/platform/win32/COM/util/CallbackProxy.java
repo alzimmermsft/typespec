@@ -23,28 +23,8 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.util;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.WString;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Guid.IID;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Guid.REFIID;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.DISPID;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.DISPIDByReference;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.EXCEPINFO;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OleAuto.DISPPARAMS;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VARIANT;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.LCID;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.UINT;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.UINTByReference;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.WORD;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinError;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HRESULT;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.COMException;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.COMUtils;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.Dispatch;
@@ -54,9 +34,26 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.util.annotation.ComEventCallback;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.util.annotation.ComInterface;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.util.annotation.ComMethod;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Guid.IID;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Guid.REFIID;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.DISPID;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.DISPIDByReference;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OaIdl.EXCEPINFO;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.OleAuto.DISPPARAMS;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VARIANT;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.LCID;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.UINT;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.UINTByReference;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.WORD;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinError;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HRESULT;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.IntByReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.PointerByReference;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CallbackProxy implements IDispatchCallback {
     // Helper declarations, initialized to default values by jvm
@@ -70,7 +67,7 @@ public class CallbackProxy implements IDispatchCallback {
     private static double DEFAULT_DOUBLE;
 
     public CallbackProxy(ObjectFactory factory, Class<?> comEventCallbackInterface,
-            IComEventCallbackListener comEventCallbackListener) {
+        IComEventCallbackListener comEventCallbackListener) {
         this.factory = factory;
         this.comEventCallbackInterface = comEventCallbackInterface;
         this.comEventCallbackListener = comEventCallbackListener;
@@ -90,7 +87,7 @@ public class CallbackProxy implements IDispatchCallback {
         ComInterface comInterfaceAnnotation = comEventCallbackInterface.getAnnotation(ComInterface.class);
         if (null == comInterfaceAnnotation) {
             throw new COMException(
-                    "advise: Interface must define a value for either iid via the ComInterface annotation");
+                "advise: Interface must define a value for either iid via the ComInterface annotation");
         }
         String iidStr = comInterfaceAnnotation.iid();
         if (null == iidStr || iidStr.isEmpty()) {
@@ -112,9 +109,8 @@ public class CallbackProxy implements IDispatchCallback {
                     dispId = this.fetchDispIdFromName(callbackAnnotation);
                 }
                 if (dispId == -1) {
-                    CallbackProxy.this.comEventCallbackListener.errorReceivingCallbackEvent(
-                            "DISPID for " + meth.getName() + " not found",
-                            null);
+                    CallbackProxy.this.comEventCallbackListener
+                        .errorReceivingCallbackEvent("DISPID for " + meth.getName() + " not found", null);
                 }
                 map.put(new DISPID(dispId), meth);
             } else if (null != callbackAnnotation) {
@@ -123,9 +119,8 @@ public class CallbackProxy implements IDispatchCallback {
                     dispId = this.fetchDispIdFromName(callbackAnnotation);
                 }
                 if (dispId == -1) {
-                    CallbackProxy.this.comEventCallbackListener.errorReceivingCallbackEvent(
-                            "DISPID for " + meth.getName() + " not found",
-                            null);
+                    CallbackProxy.this.comEventCallbackListener
+                        .errorReceivingCallbackEvent("DISPID for " + meth.getName() + " not found", null);
                 }
                 map.put(new DISPID(dispId), meth);
             }
@@ -140,14 +135,14 @@ public class CallbackProxy implements IDispatchCallback {
     }
 
     void invokeOnThread(final DISPID dispIdMember, final REFIID riid, LCID lcid, WORD wFlags,
-            final DISPPARAMS.ByReference pDispParams) {
+        final DISPPARAMS.ByReference pDispParams) {
 
         VARIANT[] arguments = pDispParams.getArgs();
 
         final Method eventMethod = CallbackProxy.this.dsipIdMap.get(dispIdMember);
         if (eventMethod == null) {
-            CallbackProxy.this.comEventCallbackListener.errorReceivingCallbackEvent(
-                    "No method found with dispId = " + dispIdMember, null);
+            CallbackProxy.this.comEventCallbackListener
+                .errorReceivingCallbackEvent("No method found with dispId = " + dispIdMember, null);
             return;
         }
 
@@ -227,7 +222,8 @@ public class CallbackProxy implements IDispatchCallback {
                 } else if (paramTypes[i].equals(double.class)) {
                     params[i] = DEFAULT_DOUBLE;
                 } else {
-                    throw new IllegalArgumentException("Class type " + paramTypes[i].getName() + " not mapped to primitive default value.");
+                    throw new IllegalArgumentException(
+                        "Class type " + paramTypes[i].getName() + " not mapped to primitive default value.");
                 }
             }
         }
@@ -244,7 +240,7 @@ public class CallbackProxy implements IDispatchCallback {
                 }
             }
             CallbackProxy.this.comEventCallbackListener.errorReceivingCallbackEvent(
-                    "Exception invoking method " + eventMethod + " supplied: " + decodedClassNames.toString(), e);
+                "Exception invoking method " + eventMethod + " supplied: " + decodedClassNames.toString(), e);
         }
     }
 
@@ -265,15 +261,13 @@ public class CallbackProxy implements IDispatchCallback {
     }
 
     @Override
-    public HRESULT GetIDsOfNames(REFIID riid, WString[] rgszNames, int cNames, LCID lcid,
-            DISPIDByReference rgDispId) {
+    public HRESULT GetIDsOfNames(REFIID riid, WString[] rgszNames, int cNames, LCID lcid, DISPIDByReference rgDispId) {
         return new HRESULT(WinError.E_NOTIMPL);
     }
 
     @Override
-    public HRESULT Invoke(DISPID dispIdMember, REFIID riid, LCID lcid, WORD wFlags,
-            DISPPARAMS.ByReference pDispParams, VARIANT.ByReference pVarResult, EXCEPINFO.ByReference pExcepInfo,
-            IntByReference puArgErr) {
+    public HRESULT Invoke(DISPID dispIdMember, REFIID riid, LCID lcid, WORD wFlags, DISPPARAMS.ByReference pDispParams,
+        VARIANT.ByReference pVarResult, EXCEPINFO.ByReference pExcepInfo, IntByReference puArgErr) {
 
         assert COMUtils.comIsInitialized() : "Assumption about COM threading broken.";
 

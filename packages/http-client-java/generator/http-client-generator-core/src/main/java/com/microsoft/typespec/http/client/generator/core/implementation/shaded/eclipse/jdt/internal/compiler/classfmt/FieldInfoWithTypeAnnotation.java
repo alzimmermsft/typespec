@@ -17,41 +17,45 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.env.IBinaryTypeAnnotation;
 
 public final class FieldInfoWithTypeAnnotation extends FieldInfoWithAnnotation {
-	private final TypeAnnotationInfo[] typeAnnotations;
+    private final TypeAnnotationInfo[] typeAnnotations;
 
-FieldInfoWithTypeAnnotation(FieldInfo info, AnnotationInfo[] annos, TypeAnnotationInfo[] typeAnnos) {
-	super(info, annos);
-	this.typeAnnotations = typeAnnos;
-}
-@Override
-public IBinaryTypeAnnotation[] getTypeAnnotations() {
-	return this.typeAnnotations;
-}
-@Override
-protected void initialize() {
-	for (TypeAnnotationInfo typeAnnotation : this.typeAnnotations)
-		typeAnnotation.initialize();
-	super.initialize();
-}
-@Override
-protected void reset() {
-	if (this.typeAnnotations != null)
-		for (TypeAnnotationInfo typeAnnotation : this.typeAnnotations)
-			typeAnnotation.reset();
-	super.reset();
-}
-@Override
-public String toString() {
-	StringBuilder buffer = new StringBuilder(getClass().getName());
-	if (this.typeAnnotations != null) {
-		buffer.append('\n');
-		buffer.append("type annotations:"); //$NON-NLS-1$
-		for (TypeAnnotationInfo typeAnnotation : this.typeAnnotations) {
-			buffer.append(typeAnnotation);
-			buffer.append('\n');
-		}
-	}
-	toStringContent(buffer);
-	return buffer.toString();
-}
+    FieldInfoWithTypeAnnotation(FieldInfo info, AnnotationInfo[] annos, TypeAnnotationInfo[] typeAnnos) {
+        super(info, annos);
+        this.typeAnnotations = typeAnnos;
+    }
+
+    @Override
+    public IBinaryTypeAnnotation[] getTypeAnnotations() {
+        return this.typeAnnotations;
+    }
+
+    @Override
+    protected void initialize() {
+        for (TypeAnnotationInfo typeAnnotation : this.typeAnnotations)
+            typeAnnotation.initialize();
+        super.initialize();
+    }
+
+    @Override
+    protected void reset() {
+        if (this.typeAnnotations != null)
+            for (TypeAnnotationInfo typeAnnotation : this.typeAnnotations)
+                typeAnnotation.reset();
+        super.reset();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder buffer = new StringBuilder(getClass().getName());
+        if (this.typeAnnotations != null) {
+            buffer.append('\n');
+            buffer.append("type annotations:"); //$NON-NLS-1$
+            for (TypeAnnotationInfo typeAnnotation : this.typeAnnotations) {
+                buffer.append(typeAnnotation);
+                buffer.append('\n');
+            }
+        }
+        toStringContent(buffer);
+        return buffer.toString();
+    }
 }

@@ -26,50 +26,51 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class ModulePackagesAttribute extends ClassFileAttribute implements IModulePackagesAttribute {
 
-	private final int packagesCount;
-	private int[] packageIndices;
-	private char[][] packageNames;
+    private final int packagesCount;
+    private int[] packageIndices;
+    private char[][] packageNames;
 
-	/**
-	 * Constructor for ModulePackagesAttribute.
-	 */
-	public ModulePackagesAttribute(	byte[] classFileBytes,	IConstantPool constantPool,	int offset)	throws ClassFormatException {
-		super(classFileBytes, constantPool, offset);
-		int readOffset = 6;
-		final int length = u2At(classFileBytes, readOffset, offset);
-		readOffset += 2;
-		this.packagesCount = length;
-		if (length != 0) {
-			this.packageIndices = new int[length];
-			this.packageNames = new char[length][0];
-			for (int i = 0; i < length; i++) {
-				this.packageIndices[i] = u2At(classFileBytes, readOffset, offset);
-				readOffset += 2;
-				IConstantPoolEntry constantPoolEntry = constantPool.decodeEntry(this.packageIndices[i]);
-				if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Package) {
-					throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
-				}
-				char[] name = ((IConstantPoolEntry3) constantPoolEntry).getPackageName();
-				this.packageNames[i] = name != null ? name : CharOperation.NO_CHAR;
+    /**
+     * Constructor for ModulePackagesAttribute.
+     */
+    public ModulePackagesAttribute(byte[] classFileBytes, IConstantPool constantPool, int offset)
+        throws ClassFormatException {
+        super(classFileBytes, constantPool, offset);
+        int readOffset = 6;
+        final int length = u2At(classFileBytes, readOffset, offset);
+        readOffset += 2;
+        this.packagesCount = length;
+        if (length != 0) {
+            this.packageIndices = new int[length];
+            this.packageNames = new char[length][0];
+            for (int i = 0; i < length; i++) {
+                this.packageIndices[i] = u2At(classFileBytes, readOffset, offset);
+                readOffset += 2;
+                IConstantPoolEntry constantPoolEntry = constantPool.decodeEntry(this.packageIndices[i]);
+                if (constantPoolEntry.getKind() != IConstantPoolConstant.CONSTANT_Package) {
+                    throw new ClassFormatException(ClassFormatException.INVALID_CONSTANT_POOL_ENTRY);
+                }
+                char[] name = ((IConstantPoolEntry3) constantPoolEntry).getPackageName();
+                this.packageNames[i] = name != null ? name : CharOperation.NO_CHAR;
 
-			}
-		} else {
-			this.packageNames = CharOperation.NO_CHAR_CHAR;
-		}
-	}
+            }
+        } else {
+            this.packageNames = CharOperation.NO_CHAR_CHAR;
+        }
+    }
 
-	@Override
-	public int getPackagesCount() {
-		return this.packagesCount;
-	}
+    @Override
+    public int getPackagesCount() {
+        return this.packagesCount;
+    }
 
-	@Override
-	public int[] getPackageIndices() {
-		return this.packageIndices;
-	}
+    @Override
+    public int[] getPackageIndices() {
+        return this.packageIndices;
+    }
 
-	@Override
-	public char[][] getPackageNames() {
-		return this.packageNames;
-	}
+    @Override
+    public char[][] getPackageNames() {
+        return this.packageNames;
+    }
 }

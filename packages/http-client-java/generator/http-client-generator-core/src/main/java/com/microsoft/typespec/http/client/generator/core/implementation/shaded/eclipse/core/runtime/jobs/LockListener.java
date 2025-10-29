@@ -69,13 +69,4 @@ public class LockListener {
         return true;
     }
 
-    /**
-     * Returns whether this thread currently owns any locks
-     * 
-     * @return <code>true</code> if this thread owns any locks, and
-     * <code>false</code> otherwise.
-     */
-    protected final boolean isLockOwnerThread() {
-        return manager.isLockOwner();
-    }
 }

@@ -27,40 +27,40 @@
  * <h3>Value types</h3>
  *
  * <ul>
- *   <li>{@link ImmutableDoubleArray}
- *   <li>{@link ImmutableIntArray}
- *   <li>{@link ImmutableLongrray}
- *   <li>{@link UnsignedInteger}
- *   <li>{@link UnsignedLong}
+ * <li>{@link ImmutableDoubleArray}
+ * <li>{@link ImmutableIntArray}
+ * <li>{@link ImmutableLongrray}
+ * <li>{@link UnsignedInteger}
+ * <li>{@link UnsignedLong}
  * </ul>
  *
  * <h3>Per-type static utilities</h3>
  *
  * <ul>
- *   <li>{@link Booleans}
- *   <li>{@link Bytes}
- *       <ul>
- *         <li>{@link SignedBytes}
- *         <li>{@link UnsignedBytes}
- *       </ul>
- *   <li>{@link Chars}
- *   <li>{@link Doubles}
- *   <li>{@link Floats}
- *   <li>{@link Ints}
- *       <ul>
- *         <li>{@link UnsignedInts}
- *       </ul>
- *   <li>{@link Longs}
- *       <ul>
- *         <li>{@link UnsignedLongs}
- *       </ul>
- *   <li>{@link Shorts}
+ * <li>{@link Booleans}
+ * <li>{@link Bytes}
+ * <ul>
+ * <li>{@link SignedBytes}
+ * <li>{@link UnsignedBytes}
+ * </ul>
+ * <li>{@link Chars}
+ * <li>{@link Doubles}
+ * <li>{@link Floats}
+ * <li>{@link Ints}
+ * <ul>
+ * <li>{@link UnsignedInts}
+ * </ul>
+ * <li>{@link Longs}
+ * <ul>
+ * <li>{@link UnsignedLongs}
+ * </ul>
+ * <li>{@link Shorts}
  * </ul>
  *
  * <h3>General static utilities</h3>
  *
  * <ul>
- *   <li>{@link Primitives}
+ * <li>{@link Primitives}
  * </ul>
  */
 @ParametersAreNonnullByDefault

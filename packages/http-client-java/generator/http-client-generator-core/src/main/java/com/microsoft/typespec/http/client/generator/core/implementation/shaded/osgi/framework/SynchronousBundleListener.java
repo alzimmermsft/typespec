@@ -64,5 +64,5 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 @ConsumerType
 @FunctionalInterface
 public interface SynchronousBundleListener extends BundleListener {
-	// This is a marker interface
+    // This is a marker interface
 }

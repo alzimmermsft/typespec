@@ -16,9 +16,9 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtIncompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.J2ktIncompatible;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import java.lang.ref.PhantomReference;
 import java.lang.ref.ReferenceQueue;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 
 /**
  * Phantom reference with a {@code finalizeReferent()} method which a background thread invokes
@@ -33,16 +33,15 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 @J2ktIncompatible
 @GwtIncompatible
 @ElementTypesAreNonnullByDefault
-public abstract class FinalizablePhantomReference<T> extends PhantomReference<T>
-    implements FinalizableReference {
-  /**
-   * Constructs a new finalizable phantom reference.
-   *
-   * @param referent to phantom reference
-   * @param queue that should finalize the referent
-   */
-  protected FinalizablePhantomReference(@CheckForNull T referent, FinalizableReferenceQueue queue) {
-    super(referent, queue.queue);
-    queue.cleanUp();
-  }
+public abstract class FinalizablePhantomReference<T> extends PhantomReference<T> implements FinalizableReference {
+    /**
+     * Constructs a new finalizable phantom reference.
+     *
+     * @param referent to phantom reference
+     * @param queue that should finalize the referent
+     */
+    protected FinalizablePhantomReference(@CheckForNull T referent, FinalizableReferenceQueue queue) {
+        super(referent, queue.queue);
+        queue.cleanUp();
+    }
 }

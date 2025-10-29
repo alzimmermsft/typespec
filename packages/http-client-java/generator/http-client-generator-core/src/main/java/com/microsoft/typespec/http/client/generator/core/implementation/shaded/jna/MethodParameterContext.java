@@ -33,6 +33,9 @@ public class MethodParameterContext extends FunctionParameterContext {
         super(f, args, index);
         this.method = m;
     }
+
     /** Get the Method in the Library instance the Function was called from. */
-    public Method getMethod() { return method; }
+    public Method getMethod() {
+        return method;
+    }
 }

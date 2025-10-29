@@ -13,14 +13,11 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.text.edits;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.IRegion;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.IRegion;
-
 
 /**
  * A text edit group combines a list of {@link TextEdit}s
@@ -36,132 +33,130 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class TextEditGroup {
 
-	private String fDescription;
-	private List<TextEdit> fEdits;
+    private String fDescription;
+    private List<TextEdit> fEdits;
 
-	/**
-	 * Creates a new text edit group with the given name.
-	 *
-	 * @param name the name of the text edit group. Must be
-	 *  a human readable string
-	 */
-	public TextEditGroup(String name) {
-		super();
-		Assert.isNotNull(name);
-		fDescription= name;
-		fEdits= new ArrayList<>(3);
-	}
+    /**
+     * Creates a new text edit group with the given name.
+     *
+     * @param name the name of the text edit group. Must be
+     * a human readable string
+     */
+    public TextEditGroup(String name) {
+        super();
+        Assert.isNotNull(name);
+        fDescription = name;
+        fEdits = new ArrayList<>(3);
+    }
 
-	/**
-	 * Creates a new text edit group with a name and a single
-	 * {@link TextEdit}.
-	 *
-	 * @param name the name of the text edit group. Must be
-	 *  a human readable string
-	 * @param edit the edit to manage
-	 */
-	public TextEditGroup(String name, TextEdit edit) {
-		Assert.isNotNull(name);
-		Assert.isNotNull(edit);
-		fDescription= name;
-		fEdits= new ArrayList<>(1);
-		fEdits.add(edit);
-	}
+    /**
+     * Creates a new text edit group with a name and a single
+     * {@link TextEdit}.
+     *
+     * @param name the name of the text edit group. Must be
+     * a human readable string
+     * @param edit the edit to manage
+     */
+    public TextEditGroup(String name, TextEdit edit) {
+        Assert.isNotNull(name);
+        Assert.isNotNull(edit);
+        fDescription = name;
+        fEdits = new ArrayList<>(1);
+        fEdits.add(edit);
+    }
 
-	/**
-	 * Creates a new text edit group with the given name and
-	 * array of edits.
-	 *
-	 * @param name the name of the text edit group. Must be
-	 *  a human readable string
-	 * @param edits the array of edits
-	 */
-	public TextEditGroup(String name, TextEdit[] edits) {
-		super();
-		Assert.isNotNull(name);
-		Assert.isNotNull(edits);
-		fDescription= name;
-		fEdits= new ArrayList<>(Arrays.asList(edits));
-	}
+    /**
+     * Creates a new text edit group with the given name and
+     * array of edits.
+     *
+     * @param name the name of the text edit group. Must be
+     * a human readable string
+     * @param edits the array of edits
+     */
+    public TextEditGroup(String name, TextEdit[] edits) {
+        super();
+        Assert.isNotNull(name);
+        Assert.isNotNull(edits);
+        fDescription = name;
+        fEdits = new ArrayList<>(Arrays.asList(edits));
+    }
 
-	/**
-	 * Returns the edit group's name.
-	 *
-	 * @return the edit group's name
-	 */
-	public String getName() {
-		return fDescription;
-	}
+    /**
+     * Returns the edit group's name.
+     *
+     * @return the edit group's name
+     */
+    public String getName() {
+        return fDescription;
+    }
 
-	/**
-	 * Adds the given {@link TextEdit} to this group.
-	 *
-	 * @param edit the edit to add
-	 */
-	public void addTextEdit(TextEdit edit) {
-		fEdits.add(edit);
-	}
+    /**
+     * Adds the given {@link TextEdit} to this group.
+     *
+     * @param edit the edit to add
+     */
+    public void addTextEdit(TextEdit edit) {
+        fEdits.add(edit);
+    }
 
-	/**
-	 * Removes the given {@link TextEdit} from this group.
-	 *
-	 * @param edit the edit to remove
-	 * @return <code>true</code> if this group contained the specified edit.
-	 * @since 3.3
-	 */
-	public boolean removeTextEdit(TextEdit edit) {
-		return fEdits.remove(edit);
-	}
+    /**
+     * Removes the given {@link TextEdit} from this group.
+     *
+     * @param edit the edit to remove
+     * @return <code>true</code> if this group contained the specified edit.
+     * @since 3.3
+     */
+    public boolean removeTextEdit(TextEdit edit) {
+        return fEdits.remove(edit);
+    }
 
-	/**
-	 * Removes all text edits from this group.
-	 *
-	 * @since 3.3
-	 */
-	public void clearTextEdits() {
-		fEdits.clear();
-	}
+    /**
+     * Removes all text edits from this group.
+     *
+     * @since 3.3
+     */
+    public void clearTextEdits() {
+        fEdits.clear();
+    }
 
+    /**
+     * Returns <code>true</code> if the list of managed
+     * {@link TextEdit}s is empty; otherwise <code>false
+     * </code> is returned.
+     *
+     * @return whether the list of managed text edits is
+     * empty or not
+     */
+    public boolean isEmpty() {
+        return fEdits.isEmpty();
+    }
 
+    /**
+     * Returns an array of {@link TextEdit}s containing
+     * the edits managed by this group.
+     *
+     * @return the managed text edits
+     */
+    public TextEdit[] getTextEdits() {
+        return fEdits.toArray(new TextEdit[fEdits.size()]);
+    }
 
-	/**
-	 * Returns <code>true</code> if the list of managed
-	 * {@link TextEdit}s is empty; otherwise <code>false
-	 * </code> is returned.
-	 *
-	 * @return whether the list of managed text edits is
-	 *  empty or not
-	 */
-	public boolean isEmpty() {
-		return fEdits.isEmpty();
-	}
-
-	/**
-	 * Returns an array of {@link TextEdit}s containing
-	 * the edits managed by this group.
-	 *
-	 * @return the managed text edits
-	 */
-	public TextEdit[] getTextEdits() {
-		return fEdits.toArray(new TextEdit[fEdits.size()]);
-	}
-
-	/**
-	 * Returns the text region covered by the edits managed via this
-	 * edit group. If the group doesn't manage any edits <code>null
-	 * </code> is returned.
-	 *
-	 * @return the text region covered by this edit group or <code>
-	 *  null</code> if no edits are managed
-	 */
-	public IRegion getRegion() {
-		int size= fEdits.size();
-		if (size == 0) {
-			return null;
-		} else if (size == 1) {
-			return fEdits.get(0).getRegion();
-		} else {
-			return TextEdit.getCoverage(fEdits.toArray(new TextEdit[fEdits.size()]));
-		}
-	}
+    /**
+     * Returns the text region covered by the edits managed via this
+     * edit group. If the group doesn't manage any edits <code>null
+     * </code> is returned.
+     *
+     * @return the text region covered by this edit group or <code>
+     * null</code> if no edits are managed
+     */
+    public IRegion getRegion() {
+        int size = fEdits.size();
+        if (size == 0) {
+            return null;
+        } else if (size == 1) {
+            return fEdits.get(0).getRegion();
+        } else {
+            return TextEdit.getCoverage(fEdits.toArray(new TextEdit[fEdits.size()]));
+        }
+    }
 }

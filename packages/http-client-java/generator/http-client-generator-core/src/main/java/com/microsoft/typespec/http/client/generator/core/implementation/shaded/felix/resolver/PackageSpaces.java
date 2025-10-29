@@ -18,6 +18,16 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver.util.ArrayMap;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver.util.OpenHashMap;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.namespace.BundleNamespace;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.namespace.PackageNamespace;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Capability;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Namespace;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Requirement;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Resource;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Wire;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Wiring;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,21 +39,11 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicReference;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver.util.ArrayMap;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver.util.OpenHashMap;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.namespace.BundleNamespace;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.namespace.PackageNamespace;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Capability;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Namespace;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Requirement;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Resource;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Wire;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Wiring;
 
 public class PackageSpaces {
 
     static ResolutionError checkConsistency(ResolveSession session, Candidates allCandidates,
-            Map<Resource, ResolutionError> currentFaultyResources) {
+        Map<Resource, ResolutionError> currentFaultyResources) {
         Map<Resource, Resource> allhosts = allCandidates.getRootHosts();
         // Calculate package spaces
         Map<Resource, Packages> resourcePkgMap = calculatePackageSpaces(session, allCandidates, allhosts.values());
@@ -52,7 +52,7 @@ public class PackageSpaces {
         Map<Resource, Object> resultCache = new OpenHashMap<>(resourcePkgMap.size());
         for (Entry<Resource, Resource> entry : allhosts.entrySet()) {
             ResolutionError rethrow = checkPackageSpaceConsistency(session, entry.getValue(), allCandidates,
-                    session.isDynamic(), resourcePkgMap, resultCache);
+                session.isDynamic(), resourcePkgMap, resultCache);
             if (session.isCancelled()) {
                 return null;
             }
@@ -73,7 +73,7 @@ public class PackageSpaces {
     }
 
     private static Map<Resource, Packages> calculatePackageSpaces(final ResolveSession session,
-            final Candidates allCandidates, Collection<Resource> hosts) {
+        final Candidates allCandidates, Collection<Resource> hosts) {
         final EnhancedExecutor executor = new EnhancedExecutor(session.getExecutor());
 
         // Parallel compute wire candidates
@@ -113,14 +113,14 @@ public class PackageSpaces {
             final Packages packages = new Packages(resource);
             allPackages.put(resource, packages);
             executor.execute(() -> calculateExportedPackages(session, allCandidates, resource, packages.m_exportedPkgs,
-                    packages.m_substitePkgs));
+                packages.m_substitePkgs));
         }
         executor.await();
 
         // Parallel compute package lists
         for (final Resource resource : allWireCandidates.keySet()) {
             executor.execute(() -> getPackages(session, allCandidates, allWireCandidates, allPackages, resource,
-                    allPackages.get(resource)));
+                allPackages.get(resource)));
         }
         executor.await();
 
@@ -156,8 +156,8 @@ public class PackageSpaces {
     }
 
     private static ResolutionError checkPackageSpaceConsistency(ResolveSession session, Resource resource,
-            Candidates allCandidates, boolean dynamic, Map<Resource, Packages> resourcePkgMap,
-            Map<Resource, Object> resultCache) {
+        Candidates allCandidates, boolean dynamic, Map<Resource, Packages> resourcePkgMap,
+        Map<Resource, Object> resultCache) {
         if (!dynamic && session.getContext().getWirings().containsKey(resource)) {
             return null;
         }
@@ -189,10 +189,10 @@ public class PackageSpaces {
                         session.addPermutation(PermutationType.IMPORT, allCandidates.permutate(blame.m_reqs.get(0)));
                         // Try to permutate the source requirement.
                         session.addPermutation(PermutationType.IMPORT,
-                                allCandidates.permutate(sourceBlame.m_reqs.get(0)));
+                            allCandidates.permutate(sourceBlame.m_reqs.get(0)));
                         // Report conflict.
                         rethrow = new UseConstraintError(session.getContext(), allCandidates, resource, pkgName,
-                                sourceBlame, blame);
+                            sourceBlame, blame);
                         return rethrow;
                     }
                 }
@@ -225,7 +225,7 @@ public class PackageSpaces {
                 if (!isCompatible(exportBlame, usedBlames.m_caps, resourcePkgMap)) {
                     mutated = (mutated != null) ? mutated : new HashSet<>();
                     rethrow = permuteUsedBlames(session, rethrow, allCandidates, resource, pkgName, null, usedBlames,
-                            permRef1, permRef2, mutated);
+                        permRef1, permRef2, mutated);
                 }
             }
 
@@ -263,13 +263,13 @@ public class PackageSpaces {
             for (UsedBlames usedBlames : pkgBlames.values()) {
                 if (!isCompatible(requirementBlames, usedBlames.m_caps, resourcePkgMap)) {
                     mutated = (mutated != null) ? mutated : new HashSet<>();// Split packages, need to think
-                                                                                        // how to get a good message for
-                                                                                        // split packages (sigh)
+                                                                            // how to get a good message for
+                                                                            // split packages (sigh)
                     // For now we just use the first requirement that brings in the package that
                     // conflicts
                     Blame requirementBlame = requirementBlames.get(0);
                     rethrow = permuteUsedBlames(session, rethrow, allCandidates, resource, pkgName, requirementBlame,
-                            usedBlames, permRef1, permRef2, mutated);
+                        usedBlames, permRef1, permRef2, mutated);
                 }
 
                 // If there was a uses conflict, then we should add a uses
@@ -315,7 +315,7 @@ public class PackageSpaces {
             if (cap != null) {
                 if (!resource.equals(cap.getResource())) {
                     rethrow = checkPackageSpaceConsistency(session, cap.getResource(), allCandidates, false,
-                            resourcePkgMap, resultCache);
+                        resourcePkgMap, resultCache);
                     if (session.isCancelled()) {
                         return null;
                     }
@@ -336,7 +336,7 @@ public class PackageSpaces {
     }
 
     private static List<WireCandidate> getWireCandidates(ResolveSession session, Candidates allCandidates,
-            Resource resource) {
+        Resource resource) {
         // Create a list for requirement and proposed candidate
         // capability or actual capability if resource is resolved or not.
         List<WireCandidate> wireCandidates = new ArrayList<>(256);
@@ -406,9 +406,8 @@ public class PackageSpaces {
     }
 
     private static ResolutionError permuteUsedBlames(ResolveSession session, ResolutionError rethrow,
-            Candidates allCandidates,
-            Resource resource, String pkgName, Blame requirementBlame, UsedBlames usedBlames,
-            AtomicReference<Candidates> permRef1, AtomicReference<Candidates> permRef2, Set<Requirement> mutated) {
+        Candidates allCandidates, Resource resource, String pkgName, Blame requirementBlame, UsedBlames usedBlames,
+        AtomicReference<Candidates> permRef1, AtomicReference<Candidates> permRef2, Set<Requirement> mutated) {
         for (Blame usedBlame : usedBlames.m_blames) {
             if (session.checkMultiple(usedBlames, usedBlame, allCandidates)) {
                 // Continue to the next usedBlame, if possible we
@@ -421,7 +420,7 @@ public class PackageSpaces {
                     rethrow = new UseConstraintError(session.getContext(), allCandidates, resource, pkgName, usedBlame);
                 } else {
                     rethrow = new UseConstraintError(session.getContext(), allCandidates, resource, pkgName,
-                            requirementBlame, usedBlame);
+                        requirementBlame, usedBlame);
                 }
             }
 
@@ -458,7 +457,7 @@ public class PackageSpaces {
     }
 
     private static boolean permuteUsedBlameRequirement(Requirement req, Set<Requirement> mutated,
-            Candidates permutation) {
+        Candidates permutation) {
         // Sanity check for multiple.
         if (Util.isMultiple(req)) {
             return false;
@@ -482,7 +481,7 @@ public class PackageSpaces {
     }
 
     private static boolean isCompatible(Blame currentBlame, Set<Capability> candSources,
-            Map<Resource, Packages> resourcePkgMap) {
+        Map<Resource, Packages> resourcePkgMap) {
         if (candSources.contains(currentBlame.m_cap)) {
             return true;
         }
@@ -491,20 +490,22 @@ public class PackageSpaces {
     }
 
     private static boolean isCompatible(List<Blame> currentBlames, Set<Capability> candSources,
-            Map<Resource, Packages> resourcePkgMap) {
+        Map<Resource, Packages> resourcePkgMap) {
         int size = currentBlames.size();
         switch (size) {
-        case 0:
-            return true;
-        case 1:
-            return isCompatible(currentBlames.get(0), candSources, resourcePkgMap);
-        default:
-            Set<Capability> currentSources = new HashSet<>(currentBlames.size());
-            for (Blame currentBlame : currentBlames) {
-                Set<Capability> blameSources = getPackageSources(currentBlame.m_cap, resourcePkgMap);
-                currentSources.addAll(blameSources);
-            }
-            return currentSources.containsAll(candSources) || candSources.containsAll(currentSources);
+            case 0:
+                return true;
+
+            case 1:
+                return isCompatible(currentBlames.get(0), candSources, resourcePkgMap);
+
+            default:
+                Set<Capability> currentSources = new HashSet<>(currentBlames.size());
+                for (Blame currentBlame : currentBlames) {
+                    Set<Capability> blameSources = getPackageSources(currentBlame.m_cap, resourcePkgMap);
+                    currentSources.addAll(blameSources);
+                }
+                return currentSources.containsAll(candSources) || candSources.containsAll(currentSources);
         }
     }
 
@@ -528,10 +529,10 @@ public class PackageSpaces {
     }
 
     private static void getPackageSourcesInternal(ResolveSession session, Map<Resource, Packages> resourcePkgMap,
-            Resource resource, Packages packages) {
+        Resource resource, Packages packages) {
         Wiring wiring = session.getContext().getWirings().get(resource);
-        List<Capability> caps = (wiring != null) ? wiring.getResourceCapabilities(null)
-                : resource.getCapabilities(null);
+        List<Capability> caps
+            = (wiring != null) ? wiring.getResourceCapabilities(null) : resource.getCapabilities(null);
         @SuppressWarnings("serial")
         OpenHashMap<String, Set<Capability>> pkgs = new OpenHashMap<>(caps.size()) {
             public Set<Capability> compute(String pkgName) {
@@ -585,8 +586,8 @@ public class PackageSpaces {
     }
 
     private static Packages getPackages(ResolveSession session, Candidates allCandidates,
-            Map<Resource, List<WireCandidate>> allWireCandidates, Map<Resource, Packages> allPackages,
-            Resource resource, Packages resourcePkgs) {
+        Map<Resource, List<WireCandidate>> allWireCandidates, Map<Resource, Packages> allPackages, Resource resource,
+        Packages resourcePkgs) {
         // First, all all exported packages
         // This has been done previously
 
@@ -599,10 +600,11 @@ public class PackageSpaces {
             // package, which would be illegal and shouldn't be allowed.
             if (Util.isDynamic(wire.requirement)) {
                 String pkgName = (String) wire.capability.getAttributes().get(PackageNamespace.PACKAGE_NAMESPACE);
-                if (resourcePkgs.m_exportedPkgs.containsKey(pkgName) || resourcePkgs.m_importedPkgs.containsKey(pkgName)
-                        || resourcePkgs.m_requiredPkgs.containsKey(pkgName)) {
+                if (resourcePkgs.m_exportedPkgs.containsKey(pkgName)
+                    || resourcePkgs.m_importedPkgs.containsKey(pkgName)
+                    || resourcePkgs.m_requiredPkgs.containsKey(pkgName)) {
                     throw new IllegalArgumentException("Resource " + resource + " cannot dynamically import package '"
-                            + pkgName + "' since it already has access to it.");
+                        + pkgName + "' since it already has access to it.");
                 }
             }
 
@@ -614,8 +616,8 @@ public class PackageSpaces {
     }
 
     private static void mergeCandidatePackages(ResolveSession session, Map<Resource, Packages> resourcePkgMap,
-            Candidates allCandidates, Packages packages, Requirement currentReq, Capability candCap,
-            Set<Capability> capabilityCycles, Set<Resource> visitedRequiredBundles) {
+        Candidates allCandidates, Packages packages, Requirement currentReq, Capability candCap,
+        Set<Capability> capabilityCycles, Set<Resource> visitedRequiredBundles) {
         if (!capabilityCycles.add(candCap)) {
             return;
         }
@@ -645,7 +647,7 @@ public class PackageSpaces {
                     if (w.getRequirement().getNamespace().equals(BundleNamespace.BUNDLE_NAMESPACE)) {
                         if (Util.isReexport(w.getRequirement())) {
                             mergeCandidatePackages(session, resourcePkgMap, allCandidates, packages, currentReq,
-                                    w.getCapability(), capabilityCycles, visitedRequiredBundles);
+                                w.getCapability(), capabilityCycles, visitedRequiredBundles);
                         }
                     }
                 }
@@ -656,7 +658,7 @@ public class PackageSpaces {
                             Capability cap = allCandidates.getFirstCandidate(req);
                             if (cap != null) {
                                 mergeCandidatePackages(session, resourcePkgMap, allCandidates, packages, currentReq,
-                                        cap, capabilityCycles, visitedRequiredBundles);
+                                    cap, capabilityCycles, visitedRequiredBundles);
                             }
                         }
                     }
@@ -666,7 +668,7 @@ public class PackageSpaces {
     }
 
     private static void mergeCandidatePackage(OpenHashMap<String, List<Blame>> packages, Requirement currentReq,
-            Capability candCap) {
+        Capability candCap) {
         if (candCap.getNamespace().equals(PackageNamespace.PACKAGE_NAMESPACE)) {
             // Merge the candidate capability into the resource's package space
             // for imported or required packages, appropriately.
@@ -683,8 +685,8 @@ public class PackageSpaces {
     }
 
     private static void mergeUses(ResolveSession session, Resource current, Packages currentPkgs, Capability mergeCap,
-            List<Requirement> blameReqs, Capability matchingCap, Map<Resource, Packages> resourcePkgMap,
-            Set<Capability> cycleMap) {
+        List<Requirement> blameReqs, Capability matchingCap, Map<Resource, Packages> resourcePkgMap,
+        Set<Capability> cycleMap) {
         // If there are no uses, then just return.
         // If the candidate resource is the same as the current resource,
         // then we don't need to verify and merge the uses constraints
@@ -761,14 +763,14 @@ public class PackageSpaces {
                 addUsedBlames(usedPkgBlames, newBlames, matchingCap, resourcePkgMap);
                 for (Blame newBlame : newBlames) {
                     mergeUses(session, current, currentPkgs, newBlame.m_cap, newBlame.m_reqs, matchingCap,
-                            resourcePkgMap, cycleMap);
+                        resourcePkgMap, cycleMap);
                 }
             }
         }
     }
 
     private static void computeUses(ResolveSession session, Map<Resource, List<WireCandidate>> allWireCandidates,
-            Map<Resource, Packages> resourcePkgMap, Resource resource) {
+        Map<Resource, Packages> resourcePkgMap, Resource resource) {
         List<WireCandidate> wireCandidates = allWireCandidates.get(resource);
         Packages resourcePkgs = resourcePkgMap.get(resource);
         // Fourth, if the target resource is unresolved or is dynamically importing,
@@ -794,7 +796,7 @@ public class PackageSpaces {
                 // Ignore bundle/package requirements, since they are
                 // considered below.
                 if (!req.getNamespace().equals(BundleNamespace.BUNDLE_NAMESPACE)
-                        && !req.getNamespace().equals(PackageNamespace.PACKAGE_NAMESPACE)) {
+                    && !req.getNamespace().equals(PackageNamespace.PACKAGE_NAMESPACE)) {
                     List<Requirement> blameReqs = Collections.singletonList(req);
 
                     mergeUses(session, resource, resourcePkgs, cap, blameReqs, cap, resourcePkgMap, usesCycleMap);
@@ -806,7 +808,7 @@ public class PackageSpaces {
                     List<Requirement> blameReqs = Collections.singletonList(blame.m_reqs.get(0));
 
                     mergeUses(session, resource, resourcePkgs, blame.m_cap, blameReqs, null, resourcePkgMap,
-                            usesCycleMap);
+                        usesCycleMap);
                 }
             }
             // Merge uses constraints from required bundles.
@@ -815,7 +817,7 @@ public class PackageSpaces {
                     List<Requirement> blameReqs = Collections.singletonList(blame.m_reqs.get(0));
 
                     mergeUses(session, resource, resourcePkgs, blame.m_cap, blameReqs, null, resourcePkgMap,
-                            usesCycleMap);
+                        usesCycleMap);
                 }
             }
         }
@@ -858,7 +860,7 @@ public class PackageSpaces {
     }
 
     private static void addUsedBlames(ArrayMap<Set<Capability>, UsedBlames> usedBlames, Collection<Blame> blames,
-            Capability matchingCap, Map<Resource, Packages> resourcePkgMap) {
+        Capability matchingCap, Map<Resource, Packages> resourcePkgMap) {
         Set<Capability> usedCaps;
         if (blames.size() == 1) {
             usedCaps = getPackageSources(blames.iterator().next().m_cap, resourcePkgMap);
@@ -884,12 +886,12 @@ public class PackageSpaces {
     }
 
     private static OpenHashMap<String, Blame> calculateExportedPackages(ResolveSession session,
-            Candidates allCandidates, Resource resource, OpenHashMap<String, Blame> exports,
-            OpenHashMap<String, Blame> substitutes) {
+        Candidates allCandidates, Resource resource, OpenHashMap<String, Blame> exports,
+        OpenHashMap<String, Blame> substitutes) {
         // Get all exported packages.
         Wiring wiring = session.getContext().getWirings().get(resource);
-        List<Capability> caps = (wiring != null) ? wiring.getResourceCapabilities(null)
-                : resource.getCapabilities(null);
+        List<Capability> caps
+            = (wiring != null) ? wiring.getResourceCapabilities(null) : resource.getCapabilities(null);
         for (Capability cap : caps) {
             if (cap.getNamespace().equals(PackageNamespace.PACKAGE_NAMESPACE)) {
                 if (!cap.getResource().equals(resource)) {
@@ -910,10 +912,10 @@ public class PackageSpaces {
                     cap = new WrappedCapability(wire.getProvider(), cap);
                 }
                 substitutes.put(
-                        // Using a null on requirement instead of the wire requirement here.
-                        // It is unclear if we want to treat the substitution requirement as a
-                        // permutation req here.
-                        (String) cap.getAttributes().get(PackageNamespace.PACKAGE_NAMESPACE), new Blame(cap, null));
+                    // Using a null on requirement instead of the wire requirement here.
+                    // It is unclear if we want to treat the substitution requirement as a
+                    // permutation req here.
+                    (String) cap.getAttributes().get(PackageNamespace.PACKAGE_NAMESPACE), new Blame(cap, null));
             }
         } else {
             if (!exports.isEmpty()) {

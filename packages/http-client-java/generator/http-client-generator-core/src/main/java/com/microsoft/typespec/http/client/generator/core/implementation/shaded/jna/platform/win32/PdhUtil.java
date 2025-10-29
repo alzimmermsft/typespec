@@ -23,13 +23,12 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Memory;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.DWORD;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.DWORDByReference;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Pdh utility API.
@@ -50,12 +49,12 @@ public abstract class PdhUtil {
      * used, calls to PdhLookupPerfNameByIndex, and returns the received string.
      *
      * @param szMachineName
-     *            Null-terminated string that specifies the name of the computer
-     *            where the specified performance object or counter is located.
-     *            The computer name can be specified by the DNS name or the IP
-     *            address. If NULL, the function uses the local computer.
+     * Null-terminated string that specifies the name of the computer
+     * where the specified performance object or counter is located.
+     * The computer name can be specified by the DNS name or the IP
+     * address. If NULL, the function uses the local computer.
      * @param dwNameIndex
-     *            Index of the performance object or counter.
+     * Index of the performance object or counter.
      * @return Returns the name of the performance object or counter.
      */
     public static String PdhLookupPerfNameByIndex(String szMachineName, int dwNameIndex) {
@@ -107,13 +106,13 @@ public abstract class PdhUtil {
      * locale, regardless of the current language setting on the machine.
      *
      * @param szNameBuffer
-     *            The English name of the performance counter
+     * The English name of the performance counter
      * @return The counter's index if it exists, or 0 otherwise.
      */
     public static int PdhLookupPerfIndexByEnglishName(String szNameBuffer) {
         // Look up list of english names and ids
         String[] counters = Advapi32Util.registryGetStringArray(WinReg.HKEY_LOCAL_MACHINE, ENGLISH_COUNTER_KEY,
-                ENGLISH_COUNTER_VALUE);
+            ENGLISH_COUNTER_VALUE);
         // Array contains alternating index/name pairs
         // {"1", "1847", "2", "System", "4", "Memory", ... }
         // Get position of name in the array (odd index), return parsed value of
@@ -138,27 +137,27 @@ public abstract class PdhUtil {
      * calls to PdhEnumObjectItems, and returns the received lists of strings.
      *
      * @param szDataSource
-     *            String that specifies the name of the log file used to
-     *            enumerate the counter and instance names. If NULL, the
-     *            function uses the computer specified in the szMachineName
-     *            parameter to enumerate the names.
+     * String that specifies the name of the log file used to
+     * enumerate the counter and instance names. If NULL, the
+     * function uses the computer specified in the szMachineName
+     * parameter to enumerate the names.
      * @param szMachineName
-     *            String that specifies the name of the computer that contains
-     *            the counter and instance names that you want to enumerate.
-     *            Include the leading slashes in the computer name, for example,
-     *            \\computername. If the szDataSource parameter is NULL, you can
-     *            set szMachineName to NULL to specify the local computer.
+     * String that specifies the name of the computer that contains
+     * the counter and instance names that you want to enumerate.
+     * Include the leading slashes in the computer name, for example,
+     * \\computername. If the szDataSource parameter is NULL, you can
+     * set szMachineName to NULL to specify the local computer.
      * @param szObjectName
-     *            String that specifies the name of the object whose counter and
-     *            instance names you want to enumerate.
+     * String that specifies the name of the object whose counter and
+     * instance names you want to enumerate.
      * @param dwDetailLevel
-     *            Detail level of the performance items to return. All items
-     *            that are of the specified detail level or less will be
-     *            returned.
+     * Detail level of the performance items to return. All items
+     * that are of the specified detail level or less will be
+     * returned.
      * @return Returns a List of Strings of the counters for the object.
      */
     public static PdhEnumObjectItems PdhEnumObjectItems(String szDataSource, String szMachineName, String szObjectName,
-            int dwDetailLevel) {
+        int dwDetailLevel) {
         List<String> counters = new ArrayList<>();
         List<String> instances = new ArrayList<>();
 
@@ -167,9 +166,9 @@ public abstract class PdhUtil {
         // and sets these parameters to the required buffer size.
         DWORDByReference pcchCounterListLength = new DWORDByReference(new DWORD(0));
         DWORDByReference pcchInstanceListLength = new DWORDByReference(new DWORD(0));
-        int result = Pdh.INSTANCE.PdhEnumObjectItems(szDataSource, szMachineName, szObjectName, null, pcchCounterListLength, null,
-                pcchInstanceListLength, dwDetailLevel, 0);
-        if(result != WinError.ERROR_SUCCESS && result != Pdh.PDH_MORE_DATA) {
+        int result = Pdh.INSTANCE.PdhEnumObjectItems(szDataSource, szMachineName, szObjectName, null,
+            pcchCounterListLength, null, pcchInstanceListLength, dwDetailLevel, 0);
+        if (result != WinError.ERROR_SUCCESS && result != Pdh.PDH_MORE_DATA) {
             throw new PdhException(result);
         }
 
@@ -188,7 +187,7 @@ public abstract class PdhUtil {
             }
 
             result = Pdh.INSTANCE.PdhEnumObjectItems(szDataSource, szMachineName, szObjectName, mszCounterList,
-                    pcchCounterListLength, mszInstanceList, pcchInstanceListLength, dwDetailLevel, 0);
+                pcchCounterListLength, mszInstanceList, pcchInstanceListLength, dwDetailLevel, 0);
             if (result == Pdh.PDH_MORE_DATA) {
                 // If the specified size on input is greater than zero but less than the
                 // required size, you should not rely on the returned size to reallocate the
@@ -206,7 +205,7 @@ public abstract class PdhUtil {
             }
         } while (result == Pdh.PDH_MORE_DATA);
 
-        if(result != WinError.ERROR_SUCCESS) {
+        if (result != WinError.ERROR_SUCCESS) {
             throw new PdhException(result);
         }
 
@@ -230,7 +229,7 @@ public abstract class PdhUtil {
             }
         }
 
-        if(mszInstanceList != null) {
+        if (mszInstanceList != null) {
             int offset = 0;
             while (offset < mszInstanceList.size()) {
                 String s = null;
@@ -251,7 +250,6 @@ public abstract class PdhUtil {
 
         return new PdhEnumObjectItems(counters, instances);
     }
-
 
     /**
      * Holder Object for PdhEnumObjectsItems. The embedded lists are modifiable
@@ -283,8 +281,8 @@ public abstract class PdhUtil {
             return instances;
         }
 
-        private List<String> copyAndEmptyListForNullList (List<String> inputList) {
-            if(inputList == null) {
+        private List<String> copyAndEmptyListForNullList(List<String> inputList) {
+            if (inputList == null) {
                 return new ArrayList<>();
             } else {
                 return new ArrayList<>(inputList);

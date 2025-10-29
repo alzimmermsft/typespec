@@ -47,7 +47,8 @@ public class EnumVariant extends Unknown implements IEnumVariant {
     public Variant.VARIANT[] Next(int count) {
         Variant.VARIANT[] resultStaging = new Variant.VARIANT[count];
         IntByReference resultCount = new IntByReference();
-        WinNT.HRESULT hresult = (WinNT.HRESULT) this._invokeNativeObject(3, new Object[]{getPointer(), resultStaging.length, resultStaging, resultCount}, WinNT.HRESULT.class);
+        WinNT.HRESULT hresult = (WinNT.HRESULT) this._invokeNativeObject(3,
+            new Object[] { getPointer(), resultStaging.length, resultStaging, resultCount }, WinNT.HRESULT.class);
         COMUtils.checkRC(hresult);
         Variant.VARIANT[] result = new Variant.VARIANT[resultCount.getValue()];
         System.arraycopy(resultStaging, 0, result, 0, resultCount.getValue());
@@ -56,20 +57,23 @@ public class EnumVariant extends Unknown implements IEnumVariant {
 
     @Override
     public void Skip(int count) {
-        WinNT.HRESULT hresult = (WinNT.HRESULT) this._invokeNativeObject(4, new Object[]{getPointer(), count}, WinNT.HRESULT.class);
+        WinNT.HRESULT hresult
+            = (WinNT.HRESULT) this._invokeNativeObject(4, new Object[] { getPointer(), count }, WinNT.HRESULT.class);
         COMUtils.checkRC(hresult);
     }
 
     @Override
     public void Reset() {
-        WinNT.HRESULT hresult = (WinNT.HRESULT) this._invokeNativeObject(5, new Object[]{getPointer()}, WinNT.HRESULT.class);
+        WinNT.HRESULT hresult
+            = (WinNT.HRESULT) this._invokeNativeObject(5, new Object[] { getPointer() }, WinNT.HRESULT.class);
         COMUtils.checkRC(hresult);
     }
 
     @Override
     public EnumVariant Clone() {
         PointerByReference pbr = new PointerByReference();
-        WinNT.HRESULT hresult = (WinNT.HRESULT) this._invokeNativeObject(6, new Object[]{getPointer(), pbr}, WinNT.HRESULT.class);
+        WinNT.HRESULT hresult
+            = (WinNT.HRESULT) this._invokeNativeObject(6, new Object[] { getPointer(), pbr }, WinNT.HRESULT.class);
         COMUtils.checkRC(hresult);
         return new EnumVariant(pbr.getValue());
     }

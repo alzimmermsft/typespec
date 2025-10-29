@@ -144,8 +144,8 @@ public abstract class W32Errors implements WinError {
     /**
      * Create an HRESULT value from component pieces.
      *
-     * @param sev  the sev
-     * @param fac  the fac
+     * @param sev the sev
+     * @param fac the fac
      * @param code the code
      *
      * @return the int
@@ -157,8 +157,8 @@ public abstract class W32Errors implements WinError {
     /**
      * Make scode.
      *
-     * @param sev  the sev
-     * @param fac  the fac
+     * @param sev the sev
+     * @param fac the fac
      * @param code the code
      *
      * @return the int
@@ -177,8 +177,7 @@ public abstract class W32Errors implements WinError {
      */
     public static final HRESULT HRESULT_FROM_WIN32(int x) {
         int f = FACILITY_WIN32;
-        return new HRESULT(x <= 0 ? x : ((x) & 0x0000FFFF) | (f <<= 16)
-                | 0x80000000);
+        return new HRESULT(x <= 0 ? x : ((x) & 0x0000FFFF) | (f <<= 16) | 0x80000000);
     }
 
     /**

@@ -53,13 +53,6 @@ public class Cache<K, V> {
         }
     }
 
-    public Entry<V> addEntry(K key, V toCache, long timestamp) {
-        cleanup();
-        Entry<V> e = new Entry<>(toCache, timestamp);
-        map.put(key, new EntryRef<>(key, e, referenceQueue));
-        return e;
-    }
-
     public Entry<V> getEntry(K key) {
         cleanup();
         SoftReference<Entry<V>> ref = map.get(key);

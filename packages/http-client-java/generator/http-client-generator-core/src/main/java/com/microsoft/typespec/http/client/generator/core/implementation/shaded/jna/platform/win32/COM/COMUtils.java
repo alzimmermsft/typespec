@@ -24,8 +24,6 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.LastErrorException;
-import java.util.ArrayList;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Advapi32;
@@ -42,6 +40,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinReg;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinReg.HKEYByReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.IntByReference;
+import java.util.ArrayList;
 
 /**
  * The Class COMUtils.
@@ -53,13 +52,13 @@ public abstract class COMUtils {
     /** The Constant CO_E_NOTINITIALIZED. */
     public static final int S_OK = 0;
     public static final int S_FALSE = 1;
-    public static final int E_UNEXPECTED=0x8000FFFF;
+    public static final int E_UNEXPECTED = 0x8000FFFF;
 
     /**
      * Succeeded.
      *
      * @param hr
-     *            the hr
+     * the hr
      * @return true, if successful
      */
     public static boolean SUCCEEDED(HRESULT hr) {
@@ -70,7 +69,7 @@ public abstract class COMUtils {
      * Succeeded.
      *
      * @param hr
-     *            the hr
+     * the hr
      * @return true, if successful
      */
     public static boolean SUCCEEDED(int hr) {
@@ -81,7 +80,7 @@ public abstract class COMUtils {
      * Failed.
      *
      * @param hr
-     *            the hr
+     * the hr
      * @return true, if successful
      */
     public static boolean FAILED(HRESULT hr) {
@@ -92,7 +91,7 @@ public abstract class COMUtils {
      * Failed.
      *
      * @param hr
-     *            the hr
+     * the hr
      * @return true, if successful
      */
     public static boolean FAILED(int hr) {
@@ -103,13 +102,14 @@ public abstract class COMUtils {
      * Throw new exception.
      *
      * @param hr
-     *            the hr
+     * the hr
      */
     public static void checkRC(HRESULT hr) {
         if (FAILED(hr)) {
             String formatMessage;
             try {
-                formatMessage = Kernel32Util.formatMessage(hr) + "(HRESULT: " + Integer.toHexString(hr.intValue()) + ")";
+                formatMessage
+                    = Kernel32Util.formatMessage(hr) + "(HRESULT: " + Integer.toHexString(hr.intValue()) + ")";
             } catch (LastErrorException ex) {
                 // throws if HRESULT can't be resolved
                 formatMessage = "(HRESULT: " + Integer.toHexString(hr.intValue()) + ")";
@@ -127,14 +127,13 @@ public abstract class COMUtils {
      * is allocated via the Memory object of JNA.</p>
      *
      * @param hr
-     *            the hr
+     * the hr
      * @param pExcepInfo
-     *            the excep info, it is expected
+     * the excep info, it is expected
      * @param puArgErr
-     *            the pu arg err
+     * the pu arg err
      */
-    public static void checkRC(HRESULT hr, EXCEPINFO pExcepInfo,
-            IntByReference puArgErr) {
+    public static void checkRC(HRESULT hr, EXCEPINFO pExcepInfo, IntByReference puArgErr) {
 
         COMException resultException = null;
 
@@ -149,7 +148,7 @@ public abstract class COMUtils {
             Integer helpCtx = null;
             String source = null;
 
-            if(puArgErr != null) {
+            if (puArgErr != null) {
                 errorArg = puArgErr.getValue();
             }
 
@@ -163,52 +162,43 @@ public abstract class COMUtils {
             formatMessage.append(Integer.toHexString(hr.intValue()));
             formatMessage.append(")");
 
-            if(pExcepInfo != null) {
+            if (pExcepInfo != null) {
                 wCode = pExcepInfo.wCode.intValue();
                 scode = pExcepInfo.scode.intValue();
                 helpCtx = pExcepInfo.dwHelpContext.intValue();
 
-                if(pExcepInfo.bstrSource != null) {
+                if (pExcepInfo.bstrSource != null) {
                     source = pExcepInfo.bstrSource.getValue();
                     formatMessage.append("\nSource:      ");
                     formatMessage.append(source);
                 }
-                if(pExcepInfo.bstrDescription != null) {
+                if (pExcepInfo.bstrDescription != null) {
                     description = pExcepInfo.bstrDescription.getValue();
                     formatMessage.append("\nDescription: ");
                     formatMessage.append(description);
                 }
-                if(pExcepInfo.bstrHelpFile != null) {
+                if (pExcepInfo.bstrHelpFile != null) {
                     helpFile = pExcepInfo.bstrHelpFile.getValue();
                 }
             }
 
-            throw new COMInvokeException(
-                    formatMessage.toString(),
-                    hr,
-                    errorArg,
-                    description,
-                    helpCtx,
-                    helpFile,
-                    scode,
-                    source,
-                    wCode
-            );
+            throw new COMInvokeException(formatMessage.toString(), hr, errorArg, description, helpCtx, helpFile, scode,
+                source, wCode);
         }
 
-        if(pExcepInfo != null) {
-            if(pExcepInfo.bstrSource != null) {
+        if (pExcepInfo != null) {
+            if (pExcepInfo.bstrSource != null) {
                 OleAuto.INSTANCE.SysFreeString(pExcepInfo.bstrSource);
             }
-            if(pExcepInfo.bstrDescription != null) {
+            if (pExcepInfo.bstrDescription != null) {
                 OleAuto.INSTANCE.SysFreeString(pExcepInfo.bstrDescription);
             }
-            if(pExcepInfo.bstrHelpFile != null) {
+            if (pExcepInfo.bstrHelpFile != null) {
                 OleAuto.INSTANCE.SysFreeString(pExcepInfo.bstrHelpFile);
             }
         }
 
-        if(resultException != null) {
+        if (resultException != null) {
             throw resultException;
         }
     }
@@ -226,49 +216,36 @@ public abstract class COMUtils {
 
         try {
             // open root key
-            phkResult = Advapi32Util.registryGetKey(WinReg.HKEY_CLASSES_ROOT,
-                    "CLSID", WinNT.KEY_READ);
+            phkResult = Advapi32Util.registryGetKey(WinReg.HKEY_CLASSES_ROOT, "CLSID", WinNT.KEY_READ);
             // open subkey
-            InfoKey infoKey = Advapi32Util.registryQueryInfoKey(
-                    phkResult.getValue(), WinNT.KEY_READ);
+            InfoKey infoKey = Advapi32Util.registryQueryInfoKey(phkResult.getValue(), WinNT.KEY_READ);
 
             for (int i = 0; i < infoKey.lpcSubKeys.getValue(); i++) {
-                EnumKey enumKey = Advapi32Util.registryRegEnumKey(
-                        phkResult.getValue(), i);
+                EnumKey enumKey = Advapi32Util.registryRegEnumKey(phkResult.getValue(), i);
                 subKey = Native.toString(enumKey.lpName);
 
                 COMInfo comInfo = new COMInfo(subKey);
 
-                phkResult2 = Advapi32Util.registryGetKey(phkResult.getValue(),
-                        subKey, WinNT.KEY_READ);
-                InfoKey infoKey2 = Advapi32Util.registryQueryInfoKey(
-                        phkResult2.getValue(), WinNT.KEY_READ);
+                phkResult2 = Advapi32Util.registryGetKey(phkResult.getValue(), subKey, WinNT.KEY_READ);
+                InfoKey infoKey2 = Advapi32Util.registryQueryInfoKey(phkResult2.getValue(), WinNT.KEY_READ);
 
                 for (int y = 0; y < infoKey2.lpcSubKeys.getValue(); y++) {
-                    EnumKey enumKey2 = Advapi32Util.registryRegEnumKey(
-                            phkResult2.getValue(), y);
+                    EnumKey enumKey2 = Advapi32Util.registryRegEnumKey(phkResult2.getValue(), y);
                     String subKey2 = Native.toString(enumKey2.lpName);
 
                     if (subKey2.equals("InprocHandler32")) {
-                        comInfo.inprocHandler32 = (String) Advapi32Util
-                                .registryGetValue(phkResult2.getValue(),
-                                        subKey2, null);
+                        comInfo.inprocHandler32
+                            = (String) Advapi32Util.registryGetValue(phkResult2.getValue(), subKey2, null);
                     } else if (subKey2.equals("InprocServer32")) {
-                        comInfo.inprocServer32 = (String) Advapi32Util
-                                .registryGetValue(phkResult2.getValue(),
-                                        subKey2, null);
+                        comInfo.inprocServer32
+                            = (String) Advapi32Util.registryGetValue(phkResult2.getValue(), subKey2, null);
                     } else if (subKey2.equals("LocalServer32")) {
-                        comInfo.localServer32 = (String) Advapi32Util
-                                .registryGetValue(phkResult2.getValue(),
-                                        subKey2, null);
+                        comInfo.localServer32
+                            = (String) Advapi32Util.registryGetValue(phkResult2.getValue(), subKey2, null);
                     } else if (subKey2.equals("ProgID")) {
-                        comInfo.progID = (String) Advapi32Util
-                                .registryGetValue(phkResult2.getValue(),
-                                        subKey2, null);
+                        comInfo.progID = (String) Advapi32Util.registryGetValue(phkResult2.getValue(), subKey2, null);
                     } else if (subKey2.equals("TypeLib")) {
-                        comInfo.typeLib = (String) Advapi32Util
-                                .registryGetValue(phkResult2.getValue(),
-                                        subKey2, null);
+                        comInfo.typeLib = (String) Advapi32Util.registryGetValue(phkResult2.getValue(), subKey2, null);
                     }
                 }
 
@@ -348,7 +325,7 @@ public abstract class COMUtils {
          * Instantiates a new cOM info.
          *
          * @param clsid
-         *            the clsid
+         * the clsid
          */
         public COMInfo(String clsid) {
             this.clsid = clsid;

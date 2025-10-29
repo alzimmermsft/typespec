@@ -17,37 +17,37 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect.Sets.toImmutableEnumSet;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.auto.service.AutoService;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.SourceVersion;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.Tool;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Set;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.lang.model.SourceVersion;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.tools.Tool;
 
 /** Provide a way to be invoked without necessarily starting a new VM. */
 @AutoService(Tool.class)
 public class GoogleJavaFormatTool implements Tool {
-  @Override
-  public String name() {
-    return "google-java-format";
-  }
-
-  @Override
-  public Set<SourceVersion> getSourceVersions() {
-    return Arrays.stream(SourceVersion.values()).collect(toImmutableEnumSet());
-  }
-
-  @Override
-  public int run(InputStream in, OutputStream out, OutputStream err, String... args) {
-    PrintStream outStream = new PrintStream(out);
-    PrintStream errStream = new PrintStream(err);
-    try {
-      return Main.main(in, outStream, errStream, args);
-    } catch (RuntimeException e) {
-      errStream.print(e.getMessage());
-      errStream.flush();
-      return 1; // pass non-zero value back indicating an error has happened
+    @Override
+    public String name() {
+        return "google-java-format";
     }
-  }
+
+    @Override
+    public Set<SourceVersion> getSourceVersions() {
+        return Arrays.stream(SourceVersion.values()).collect(toImmutableEnumSet());
+    }
+
+    @Override
+    public int run(InputStream in, OutputStream out, OutputStream err, String... args) {
+        PrintStream outStream = new PrintStream(out);
+        PrintStream errStream = new PrintStream(err);
+        try {
+            return Main.main(in, outStream, errStream, args);
+        } catch (RuntimeException e) {
+            errStream.print(e.getMessage());
+            errStream.flush();
+            return 1; // pass non-zero value back indicating an error has happened
+        }
+    }
 }

@@ -16,10 +16,9 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.launch;
 
-import java.util.Map;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.ProviderType;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Bundle;
+import java.util.Map;
 
 /**
  * A factory for creating {@link Framework} instances.
@@ -51,24 +50,24 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 @ProviderType
 public interface FrameworkFactory {
 
-	/**
-	 * Create a new {@link Framework} instance.
-	 * 
-	 * @param configuration The framework properties to configure the new
-	 *        framework instance. If framework properties are not provided by
-	 *        the configuration argument, the created framework instance must
-	 *        use some reasonable default configuration appropriate for the
-	 *        current VM. For example, the system packages for the current
-	 *        execution environment should be properly exported. The specified
-	 *        configuration argument may be {@code null}. The created framework
-	 *        instance must copy any information needed from the specified
-	 *        configuration argument since the configuration argument can be
-	 *        changed after the framework instance has been created.
-	 * @return A new, configured {@link Framework} instance. The framework
-	 *         instance must be in the {@link Bundle#INSTALLED} state.
-	 * @throws SecurityException If the caller does not have
-	 *         {@code AllPermission}, and the Java Runtime Environment supports
-	 *         permissions.
-	 */
-	Framework newFramework(Map<String, String> configuration);
+    /**
+     * Create a new {@link Framework} instance.
+     * 
+     * @param configuration The framework properties to configure the new
+     * framework instance. If framework properties are not provided by
+     * the configuration argument, the created framework instance must
+     * use some reasonable default configuration appropriate for the
+     * current VM. For example, the system packages for the current
+     * execution environment should be properly exported. The specified
+     * configuration argument may be {@code null}. The created framework
+     * instance must copy any information needed from the specified
+     * configuration argument since the configuration argument can be
+     * changed after the framework instance has been created.
+     * @return A new, configured {@link Framework} instance. The framework
+     * instance must be in the {@link Bundle#INSTALLED} state.
+     * @throws SecurityException If the caller does not have
+     * {@code AllPermission}, and the Java Runtime Environment supports
+     * permissions.
+     */
+    Framework newFramework(Map<String, String> configuration);
 }

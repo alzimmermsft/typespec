@@ -18,15 +18,15 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.namespace.PackageNamespace;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Capability;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Requirement;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Resource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.namespace.PackageNamespace;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Capability;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Requirement;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Resource;
 
 /**
  * The idea of the {@link ProblemReduction} class is to strike out
@@ -41,7 +41,7 @@ class ProblemReduction {
      * it checks if there are other packages used by this one and removes any
      * offending providers from the top of the list.
      * 
-     * @param candidates  candidates to filter
+     * @param candidates candidates to filter
      * @param requirement the requirement where the search should start
      * @return a list of Candidates that where dropped as part of the filtering
      */
@@ -49,9 +49,9 @@ class ProblemReduction {
         Resource targetResource = requirement.getResource();
         // fetch the current candidate for this requirement
         Capability currentCandidate = candidates.getFirstCandidate(requirement);
-		if (currentCandidate == null) {
-			return Collections.emptyList();
-		}
+        if (currentCandidate == null) {
+            return Collections.emptyList();
+        }
         Resource candidateResource = currentCandidate.getResource();
         // now check if it has any uses constraints
         Set<String> uses = new TreeSet<>(Util.getUses(currentCandidate));
@@ -91,7 +91,7 @@ class ProblemReduction {
     }
 
     private static Capability removeViolators(Candidates candidates, Resource candidateResource,
-            Requirement packageRequirement, List<Candidates> dropped) {
+        Requirement packageRequirement, List<Candidates> dropped) {
         Capability capability;
         while ((capability = candidates.getFirstCandidate(packageRequirement)).getResource() != candidateResource) {
             dropped.add(candidates.copy());

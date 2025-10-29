@@ -23,12 +23,11 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.bsd;
 
-import java.nio.ByteBuffer;
-
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Library;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.unix.LibCAPI.size_t;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.unix.LibCAPI.ssize_t;
+import java.nio.ByteBuffer;
 
 public interface ExtAttr extends Library {
 

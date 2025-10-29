@@ -15,7 +15,6 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text.IDocument;
 
-
 /**
  * Implementation of a child document manager based on
  * {@link ProjectionDocumentManager}. This
@@ -30,8 +29,8 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class ChildDocumentManager extends ProjectionDocumentManager {
 
-	@Override
-	protected ProjectionDocument createProjectionDocument(IDocument master) {
-		return new ChildDocument(master);
-	}
+    @Override
+    protected ProjectionDocument createProjectionDocument(IDocument master) {
+        return new ChildDocument(master);
+    }
 }

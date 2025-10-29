@@ -13,8 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jface.text;
 
-
-
 /**
  * Interface of objects which are interested in getting informed
  * about changes of a document's partitioning.
@@ -28,11 +26,12 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * </p>
  * <ul>
  * <li> {@link IDocumentPartitioningListenerExtension} since version 2.0 replacing the original
- *      notification mechanism.</li>
+ * notification mechanism.</li>
  * <li> {@link IDocumentPartitioningListenerExtension2} since version 3.0 replacing all previous
- *      notification mechanisms. Thus, implementers up-to-date with version 3.0 do not have to implement
- *      {@link IDocumentPartitioningListenerExtension}.</li>
+ * notification mechanisms. Thus, implementers up-to-date with version 3.0 do not have to implement
+ * {@link IDocumentPartitioningListenerExtension}.</li>
  * </ul>
+ * 
  * @see org.eclipse.jface.text.IDocumentPartitioningListenerExtension
  * @see org.eclipse.jface.text.IDocumentPartitioningListenerExtension2
  * @see org.eclipse.jface.text.IDocument
@@ -40,21 +39,21 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public interface IDocumentPartitioningListener {
 
-	/**
-	 * The partitioning of the given document changed.
-	 * <p>
-	 * In version 2.0 this method has been replaces by
-	 * {@link IDocumentPartitioningListenerExtension#documentPartitioningChanged(IDocument, IRegion)}.
-	 * </p>
-	 * <p>
-	 * In version 3.0 this method has been replaces by
-	 * {@link IDocumentPartitioningListenerExtension2#documentPartitioningChanged(DocumentPartitioningChangedEvent)}</p>
-	 *
-	 * @param document the document whose partitioning changed
-	 *
-	 * @see IDocumentPartitioningListenerExtension#documentPartitioningChanged(IDocument, IRegion)
-	 * @see IDocumentPartitioningListenerExtension2#documentPartitioningChanged(DocumentPartitioningChangedEvent)
-	 * @see IDocument#addDocumentPartitioningListener(IDocumentPartitioningListener)
-	 */
-	void documentPartitioningChanged(IDocument document);
+    /**
+     * The partitioning of the given document changed.
+     * <p>
+     * In version 2.0 this method has been replaces by
+     * {@link IDocumentPartitioningListenerExtension#documentPartitioningChanged(IDocument, IRegion)}.
+     * </p>
+     * <p>
+     * In version 3.0 this method has been replaces by
+     * {@link IDocumentPartitioningListenerExtension2#documentPartitioningChanged(DocumentPartitioningChangedEvent)}</p>
+     *
+     * @param document the document whose partitioning changed
+     *
+     * @see IDocumentPartitioningListenerExtension#documentPartitioningChanged(IDocument, IRegion)
+     * @see IDocumentPartitioningListenerExtension2#documentPartitioningChanged(DocumentPartitioningChangedEvent)
+     * @see IDocument#addDocumentPartitioningListener(IDocumentPartitioningListener)
+     */
+    void documentPartitioningChanged(IDocument document);
 }

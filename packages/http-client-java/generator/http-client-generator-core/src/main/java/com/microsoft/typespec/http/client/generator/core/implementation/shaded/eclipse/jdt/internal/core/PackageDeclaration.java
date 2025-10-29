@@ -24,60 +24,68 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class PackageDeclaration extends SourceRefElement implements IPackageDeclaration {
 
-	private final String name;
+    private final String name;
 
-protected PackageDeclaration(CompilationUnit parent, String name) {
-	super(parent);
-	this.name = name;
-}
-@Override
-public boolean equals(Object o) {
-	if (!(o instanceof PackageDeclaration)) return false;
-	return super.equals(o);
-}
-@Override
-public String getElementName() {
-	return this.name;
-}
-/**
- * @see IJavaElement
- */
-@Override
-public int getElementType() {
-	return PACKAGE_DECLARATION;
-}
-/**
- * @see JavaElement#getHandleMemento()
- */
-@Override
-protected char getHandleMementoDelimiter() {
-	return JavaElement.JEM_PACKAGEDECLARATION;
-}
-/**
- * @see IPackageDeclaration#getNameRange()
- */
-@Override
-public ISourceRange getNameRange() throws JavaModelException {
-	AnnotatableInfo info = (AnnotatableInfo) getElementInfo();
-	return info.getNameRange();
-}
+    protected PackageDeclaration(CompilationUnit parent, String name) {
+        super(parent);
+        this.name = name;
+    }
 
-@Override
-public JavaElement getPrimaryElement(boolean checkOwner) {
-	CompilationUnit cu = (CompilationUnit)getAncestor(COMPILATION_UNIT);
-	if (checkOwner && cu.isPrimary()) return this;
-	return cu.getPackageDeclaration(this.name);
-}
-/**
- * for debugging only
- */
-@Override
-protected void toStringInfo(int tab, StringBuilder buffer, Object info, boolean showResolvedInfo) {
-	buffer.append(tabString(tab));
-	buffer.append("package "); //$NON-NLS-1$
-	toStringName(buffer);
-	if (info == null) {
-		buffer.append(" (not open)"); //$NON-NLS-1$
-	}
-}
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof PackageDeclaration))
+            return false;
+        return super.equals(o);
+    }
+
+    @Override
+    public String getElementName() {
+        return this.name;
+    }
+
+    /**
+     * @see IJavaElement
+     */
+    @Override
+    public int getElementType() {
+        return PACKAGE_DECLARATION;
+    }
+
+    /**
+     * @see JavaElement#getHandleMemento()
+     */
+    @Override
+    protected char getHandleMementoDelimiter() {
+        return JavaElement.JEM_PACKAGEDECLARATION;
+    }
+
+    /**
+     * @see IPackageDeclaration#getNameRange()
+     */
+    @Override
+    public ISourceRange getNameRange() throws JavaModelException {
+        AnnotatableInfo info = (AnnotatableInfo) getElementInfo();
+        return info.getNameRange();
+    }
+
+    @Override
+    public JavaElement getPrimaryElement(boolean checkOwner) {
+        CompilationUnit cu = (CompilationUnit) getAncestor(COMPILATION_UNIT);
+        if (checkOwner && cu.isPrimary())
+            return this;
+        return cu.getPackageDeclaration(this.name);
+    }
+
+    /**
+     * for debugging only
+     */
+    @Override
+    protected void toStringInfo(int tab, StringBuilder buffer, Object info, boolean showResolvedInfo) {
+        buffer.append(tabString(tab));
+        buffer.append("package "); //$NON-NLS-1$
+        toStringName(buffer);
+        if (info == null) {
+            buffer.append(" (not open)"); //$NON-NLS-1$
+        }
+    }
 }

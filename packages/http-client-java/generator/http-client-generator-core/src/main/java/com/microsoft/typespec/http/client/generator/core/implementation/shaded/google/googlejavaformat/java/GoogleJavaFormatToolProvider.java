@@ -21,19 +21,19 @@ import java.util.spi.ToolProvider;
 /** Provide a way to be invoked without necessarily starting a new VM. */
 @AutoService(ToolProvider.class)
 public class GoogleJavaFormatToolProvider implements ToolProvider {
-  @Override
-  public String name() {
-    return "google-java-format";
-  }
-
-  @Override
-  public int run(PrintWriter out, PrintWriter err, String... args) {
-    try {
-      return Main.main(System.in, out, err, args);
-    } catch (RuntimeException e) {
-      err.print(e.getMessage());
-      err.flush();
-      return 1; // pass non-zero value back indicating an error has happened
+    @Override
+    public String name() {
+        return "google-java-format";
     }
-  }
+
+    @Override
+    public int run(PrintWriter out, PrintWriter err, String... args) {
+        try {
+            return Main.main(System.in, out, err, args);
+        } catch (RuntimeException e) {
+            err.print(e.getMessage());
+            err.flush();
+            return 1; // pass non-zero value back indicating an error has happened
+        }
+    }
 }

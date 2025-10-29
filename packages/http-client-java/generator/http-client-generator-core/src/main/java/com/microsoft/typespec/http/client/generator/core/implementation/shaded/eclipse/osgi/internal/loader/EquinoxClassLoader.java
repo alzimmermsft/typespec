@@ -17,28 +17,28 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.internal.framework.EquinoxConfiguration;
 
 public class EquinoxClassLoader extends ModuleClassLoader {
-	static {
-		try {
-			ClassLoader.registerAsParallelCapable();
-		} catch (Throwable t) {
-			// ignore all exceptions; substrate native image fails here
-		}
-	}
-	private final EquinoxConfiguration configuration;
+    static {
+        try {
+            ClassLoader.registerAsParallelCapable();
+        } catch (Throwable t) {
+            // ignore all exceptions; substrate native image fails here
+        }
+    }
+    private final EquinoxConfiguration configuration;
 
     /**
-	 * Constructs a new DefaultClassLoader.
-	 * 
-	 * @param parent        the parent classloader
-	 * @param configuration the equinox configuration
+     * Constructs a new DefaultClassLoader.
+     * 
+     * @param parent the parent classloader
+     * @param configuration the equinox configuration
      */
-	public EquinoxClassLoader(ClassLoader parent, EquinoxConfiguration configuration) {
-		super(parent);
-		this.configuration = configuration;
+    public EquinoxClassLoader(ClassLoader parent, EquinoxConfiguration configuration) {
+        super(parent);
+        this.configuration = configuration;
     }
 
     @Override
-	protected final EquinoxConfiguration getConfiguration() {
-		return configuration;
-	}
+    protected final EquinoxConfiguration getConfiguration() {
+        return configuration;
+    }
 }

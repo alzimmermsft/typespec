@@ -23,44 +23,44 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * @author $Id: ebc1f14a473016752d4e42faa23df59113008f3e $
  */
 public enum LogLevel {
-	/*
-	 * The ordering of the elements is deliberate and must be kept. See {@link
-	 * #implies(LogLevel)}.
-	 */
-	/**
-	 * Audit – Information that must always be logged.
-	 */
-	AUDIT,
-	/**
-	 * Error – Information about an error situation.
-	 */
-	ERROR,
-	/**
-	 * Warning – Information about a failure or unwanted situation that is not
-	 * blocking.
-	 */
-	WARN,
-	/**
-	 * Info – Information about normal operation.
-	 */
-	INFO,
-	/**
-	 * Debug – Detailed output for debugging operations.
-	 */
-	DEBUG,
-	/**
-	 * Trace level – Large volume of output for tracing operations.
-	 */
-	TRACE;
+    /*
+     * The ordering of the elements is deliberate and must be kept. See {@link
+     * #implies(LogLevel)}.
+     */
+    /**
+     * Audit – Information that must always be logged.
+     */
+    AUDIT,
+    /**
+     * Error – Information about an error situation.
+     */
+    ERROR,
+    /**
+     * Warning – Information about a failure or unwanted situation that is not
+     * blocking.
+     */
+    WARN,
+    /**
+     * Info – Information about normal operation.
+     */
+    INFO,
+    /**
+     * Debug – Detailed output for debugging operations.
+     */
+    DEBUG,
+    /**
+     * Trace level – Large volume of output for tracing operations.
+     */
+    TRACE;
 
-	/**
-	 * Returns whether this log level implies the specified log level.
-	 * 
-	 * @param other The other log level.
-	 * @return {@code true} If this log level implies the specified log level;
-	 *         {@code false} otherwise.
-	 */
-	public boolean implies(LogLevel other) {
-		return ordinal() >= other.ordinal();
-	}
+    /**
+     * Returns whether this log level implies the specified log level.
+     * 
+     * @param other The other log level.
+     * @return {@code true} If this log level implies the specified log level;
+     * {@code false} otherwise.
+     */
+    public boolean implies(LogLevel other) {
+        return ordinal() >= other.ordinal();
+    }
 }

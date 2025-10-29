@@ -15,22 +15,20 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.felix.resolver;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.namespace.PackageNamespace;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Capability;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.resource.Resource;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.service.resolver.HostedCapability;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
-public class WrappedCapability implements HostedCapability
-{
+public class WrappedCapability implements HostedCapability {
     private final Resource m_host;
     private final Capability m_cap;
     private final Map<String, Object> m_augmentedAttrs;
 
-    public WrappedCapability(Resource host, Capability cap)
-    {
+    public WrappedCapability(Resource host, Capability cap) {
         m_host = host;
         m_cap = cap;
         if ("osgi.content".equals(m_cap.getNamespace())) {
@@ -49,59 +47,48 @@ public class WrappedCapability implements HostedCapability
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
-        if (obj == null)
-        {
+    public boolean equals(Object obj) {
+        if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass())
-        {
+        if (getClass() != obj.getClass()) {
             return false;
         }
         final WrappedCapability other = (WrappedCapability) obj;
-        if (m_host != other.m_host && (m_host == null || !m_host.equals(other.m_host)))
-        {
+        if (m_host != other.m_host && (m_host == null || !m_host.equals(other.m_host))) {
             return false;
         }
-        if (m_cap != other.m_cap && (m_cap == null || !m_cap.equals(other.m_cap)))
-        {
+        if (m_cap != other.m_cap && (m_cap == null || !m_cap.equals(other.m_cap))) {
             return false;
         }
         return true;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int hash = 7;
         hash = 37 * hash + (m_host != null ? m_host.hashCode() : 0);
         hash = 37 * hash + (m_cap != null ? m_cap.hashCode() : 0);
         return hash;
     }
 
-    public Capability getDeclaredCapability()
-    {
+    public Capability getDeclaredCapability() {
         return m_cap;
     }
 
-    public Resource getResource()
-    {
+    public Resource getResource() {
         return m_host;
     }
 
-    public String getNamespace()
-    {
+    public String getNamespace() {
         return m_cap.getNamespace();
     }
 
-    public Map<String, String> getDirectives()
-    {
+    public Map<String, String> getDirectives() {
         return m_cap.getDirectives();
     }
 
-    public Map<String, Object> getAttributes()
-    {
+    public Map<String, Object> getAttributes() {
         return m_augmentedAttrs;
     }
 
@@ -112,17 +99,12 @@ public class WrappedCapability implements HostedCapability
 //    }
 
     @Override
-    public String toString()
-    {
-        if (m_host == null)
-        {
+    public String toString() {
+        if (m_host == null) {
             return getAttributes().toString();
         }
-        if (getNamespace().equals(PackageNamespace.PACKAGE_NAMESPACE))
-        {
-            return "[" + m_host + "] "
-                + getNamespace()
-                + "; "
+        if (getNamespace().equals(PackageNamespace.PACKAGE_NAMESPACE)) {
+            return "[" + m_host + "] " + getNamespace() + "; "
                 + getAttributes().get(PackageNamespace.PACKAGE_NAMESPACE);
         }
         return "[" + m_host + "] " + getNamespace() + "; " + getAttributes();

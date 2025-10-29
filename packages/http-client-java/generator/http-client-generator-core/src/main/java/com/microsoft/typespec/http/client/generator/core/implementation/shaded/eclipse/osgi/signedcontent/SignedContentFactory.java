@@ -13,10 +13,10 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.osgi.signedcontent;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Bundle;
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework.Bundle;
 
 /**
  * A factory used to create {@link SignedContent} objects.
@@ -37,23 +37,23 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 public interface SignedContentFactory {
 
     /**
-	 * Returns a <code>SignedContent</code> object for the specified bundle.
-	 * 
-	 * @param bundle the bundle to get a signed content for.
-	 * @return signed content for the specified bundle.
-	 * @throws IOException              if an IO exception occurs while reading the
-	 *                                  bundle content
-	 * @throws NoSuchProviderException  if there's no security provider for the
-	 *                                  signed content
-	 * @throws NoSuchAlgorithmException if the cryptographic algorithm is not
-	 *                                  available for the signed content
-	 * @throws CertificateException     if there is a problem with one of the
-	 *                                  certificates of the signed content
-	 * @throws SignatureException       if there is a problem with one of the
-	 *                                  signatures of the signed content
-	 * @throws InvalidKeyException      if there is a problem with one of the
-	 *                                  certificate keys of the signed content
-	 */
+     * Returns a <code>SignedContent</code> object for the specified bundle.
+     * 
+     * @param bundle the bundle to get a signed content for.
+     * @return signed content for the specified bundle.
+     * @throws IOException if an IO exception occurs while reading the
+     * bundle content
+     * @throws NoSuchProviderException if there's no security provider for the
+     * signed content
+     * @throws NoSuchAlgorithmException if the cryptographic algorithm is not
+     * available for the signed content
+     * @throws CertificateException if there is a problem with one of the
+     * certificates of the signed content
+     * @throws SignatureException if there is a problem with one of the
+     * signatures of the signed content
+     * @throws InvalidKeyException if there is a problem with one of the
+     * certificate keys of the signed content
+     */
     SignedContent getSignedContent(Bundle bundle) throws IOException, InvalidKeyException, SignatureException,
-			CertificateException, NoSuchAlgorithmException, NoSuchProviderException;
+        CertificateException, NoSuchAlgorithmException, NoSuchProviderException;
 }

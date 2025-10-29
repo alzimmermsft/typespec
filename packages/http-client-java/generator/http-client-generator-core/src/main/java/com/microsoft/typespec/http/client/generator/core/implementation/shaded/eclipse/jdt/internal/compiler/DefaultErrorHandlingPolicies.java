@@ -15,103 +15,117 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 public class DefaultErrorHandlingPolicies {
 
-/*
- * Accumulate all problems, then exit without proceeding.
- *
- * Typically, the #proceedWithProblems(Problem[]) should
- * show the problems.
- */
-public static IErrorHandlingPolicy exitAfterAllProblems() {
-	return new IErrorHandlingPolicy() {
-		@Override
-		public boolean stopOnFirstError() {
-			return false;
-		}
-		@Override
-		public boolean proceedOnErrors(){
-			return false;
-		}
-		@Override
-		public boolean ignoreAllErrors() {
-			return false;
-		}
-	};
-}
-/*
- * Exit without proceeding on the first problem wich appears
- * to be an error.
- */
-public static IErrorHandlingPolicy exitOnFirstError() {
-	return new IErrorHandlingPolicy() {
-		@Override
-		public boolean stopOnFirstError() {
-			return true;
-		}
-		@Override
-		public boolean proceedOnErrors(){
-			return false;
-		}
-		@Override
-		public boolean ignoreAllErrors() {
-			return false;
-		}
-	};
-}
-/*
- * Proceed on the first error met.
- */
-public static IErrorHandlingPolicy proceedOnFirstError() {
-	return new IErrorHandlingPolicy() {
-		@Override
-		public boolean stopOnFirstError() {
-			return true;
-		}
-		@Override
-		public boolean proceedOnErrors(){
-			return true;
-		}
-		@Override
-		public boolean ignoreAllErrors() {
-			return false;
-		}
-	};
-}
-/*
- * Accumulate all problems, then proceed with them.
- */
-public static IErrorHandlingPolicy proceedWithAllProblems() {
-	return new IErrorHandlingPolicy() {
-		@Override
-		public boolean stopOnFirstError() {
-			return false;
-		}
-		@Override
-		public boolean proceedOnErrors(){
-			return true;
-		}
-		@Override
-		public boolean ignoreAllErrors() {
-			return false;
-		}
-	};
-}
-/*
- * Accumulate all problems, then proceed with them, but never report them.
- */
-public static IErrorHandlingPolicy ignoreAllProblems() {
-	return new IErrorHandlingPolicy() {
-		@Override
-		public boolean stopOnFirstError() {
-			return false;
-		}
-		@Override
-		public boolean proceedOnErrors(){
-			return true;
-		}
-		@Override
-		public boolean ignoreAllErrors() {
-			return true;
-		}
-	};
-}
+    /*
+     * Accumulate all problems, then exit without proceeding.
+     *
+     * Typically, the #proceedWithProblems(Problem[]) should
+     * show the problems.
+     */
+    public static IErrorHandlingPolicy exitAfterAllProblems() {
+        return new IErrorHandlingPolicy() {
+            @Override
+            public boolean stopOnFirstError() {
+                return false;
+            }
+
+            @Override
+            public boolean proceedOnErrors() {
+                return false;
+            }
+
+            @Override
+            public boolean ignoreAllErrors() {
+                return false;
+            }
+        };
+    }
+
+    /*
+     * Exit without proceeding on the first problem wich appears
+     * to be an error.
+     */
+    public static IErrorHandlingPolicy exitOnFirstError() {
+        return new IErrorHandlingPolicy() {
+            @Override
+            public boolean stopOnFirstError() {
+                return true;
+            }
+
+            @Override
+            public boolean proceedOnErrors() {
+                return false;
+            }
+
+            @Override
+            public boolean ignoreAllErrors() {
+                return false;
+            }
+        };
+    }
+
+    /*
+     * Proceed on the first error met.
+     */
+    public static IErrorHandlingPolicy proceedOnFirstError() {
+        return new IErrorHandlingPolicy() {
+            @Override
+            public boolean stopOnFirstError() {
+                return true;
+            }
+
+            @Override
+            public boolean proceedOnErrors() {
+                return true;
+            }
+
+            @Override
+            public boolean ignoreAllErrors() {
+                return false;
+            }
+        };
+    }
+
+    /*
+     * Accumulate all problems, then proceed with them.
+     */
+    public static IErrorHandlingPolicy proceedWithAllProblems() {
+        return new IErrorHandlingPolicy() {
+            @Override
+            public boolean stopOnFirstError() {
+                return false;
+            }
+
+            @Override
+            public boolean proceedOnErrors() {
+                return true;
+            }
+
+            @Override
+            public boolean ignoreAllErrors() {
+                return false;
+            }
+        };
+    }
+
+    /*
+     * Accumulate all problems, then proceed with them, but never report them.
+     */
+    public static IErrorHandlingPolicy ignoreAllProblems() {
+        return new IErrorHandlingPolicy() {
+            @Override
+            public boolean stopOnFirstError() {
+                return false;
+            }
+
+            @Override
+            public boolean proceedOnErrors() {
+                return true;
+            }
+
+            @Override
+            public boolean ignoreAllErrors() {
+                return true;
+            }
+        };
+    }
 }

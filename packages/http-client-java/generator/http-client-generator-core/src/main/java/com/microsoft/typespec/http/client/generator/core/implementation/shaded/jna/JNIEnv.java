@@ -22,7 +22,8 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna;
 
-/** Marker type for the JNIEnv pointer.
+/**
+ * Marker type for the JNIEnv pointer.
  * Use this to wrap native methods that take a JNIEnv* parameter.
  * Pass {@link JNIEnv#CURRENT} as the argument.
  */
@@ -30,5 +31,6 @@ public final class JNIEnv {
     /** Marker object representing the current thread's JNIEnv pointer. */
     public static final JNIEnv CURRENT = new JNIEnv();
 
-    private JNIEnv() {}
+    private JNIEnv() {
+    }
 }

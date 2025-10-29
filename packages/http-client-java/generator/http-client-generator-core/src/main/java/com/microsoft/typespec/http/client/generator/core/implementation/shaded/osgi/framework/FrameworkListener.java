@@ -16,8 +16,8 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework;
 
-import java.util.EventListener;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.ConsumerType;
+import java.util.EventListener;
 
 /**
  * A {@code FrameworkEvent} listener. {@code FrameworkListener} is a listener
@@ -41,10 +41,10 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.o
 @FunctionalInterface
 public interface FrameworkListener extends EventListener {
 
-	/**
-	 * Receives notification of a general {@code FrameworkEvent} object.
-	 * 
-	 * @param event The {@code FrameworkEvent} object.
-	 */
-	public void frameworkEvent(FrameworkEvent event);
+    /**
+     * Receives notification of a general {@code FrameworkEvent} object.
+     * 
+     * @param event The {@code FrameworkEvent} object.
+     */
+    public void frameworkEvent(FrameworkEvent event);
 }

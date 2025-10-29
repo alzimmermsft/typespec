@@ -20,10 +20,8 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import java.util.concurrent.Executor;
 
-class DumbExecutor implements Executor
-{
-    public void execute(Runnable command)
-    {
+class DumbExecutor implements Executor {
+    public void execute(Runnable command) {
         command.run();
     }
 }

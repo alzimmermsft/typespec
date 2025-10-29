@@ -31,19 +31,20 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.StringArray;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure.FieldOrder;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.HWND;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.win32.W32APITypeMapper;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Union;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Guid.GUID;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WTypes.LPSTR;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinBase.FILETIME;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinCrypt.DATA_BLOB;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.HWND;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT.HANDLE;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Union;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.win32.StdCallLibrary;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.win32.W32APITypeMapper;
 
 /**
  * Ported from WinCrypt.h.
  * Microsoft Windows SDK 6.0A.
+ * 
  * @author dblock[at]dblock.org
  */
 public interface WinCrypt {
@@ -51,9 +52,10 @@ public interface WinCrypt {
     /**
      * The CryptoAPI CRYPTOAPI_BLOB structure is used for an arbitrary array of bytes.
      */
-    @FieldOrder({"cbData", "pbData"})
+    @FieldOrder({ "cbData", "pbData" })
     public static class DATA_BLOB extends Structure {
-        public static class ByReference extends DATA_BLOB implements Structure.ByReference {}
+        public static class ByReference extends DATA_BLOB implements Structure.ByReference {
+        }
 
         /**
          * The count of bytes in the buffer pointed to by pbData.
@@ -73,7 +75,7 @@ public interface WinCrypt {
             read();
         }
 
-        public DATA_BLOB(byte [] data) {
+        public DATA_BLOB(byte[] data) {
             super();
             if (data.length > 0) {
                 pbData = new Memory(data.length);
@@ -95,8 +97,9 @@ public interface WinCrypt {
 
         /**
          * Get byte data.
+         * 
          * @return
-         *  Byte data or null.
+         * Byte data or null.
          */
         public byte[] getData() {
             return pbData == null ? null : pbData.getByteArray(0, cbData);
@@ -112,7 +115,7 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa377590(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"dwErrorStatus", "dwInfoStatus"})
+    @FieldOrder({ "dwErrorStatus", "dwInfoStatus" })
     public static class CERT_TRUST_STATUS extends Structure {
         public static class ByReference extends CERT_TRUST_STATUS implements Structure.ByReference {
         }
@@ -127,7 +130,7 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa381487(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"SubjectIdentifier", "cAttribute", "rgAttribute"})
+    @FieldOrder({ "SubjectIdentifier", "cAttribute", "rgAttribute" })
     public static class CTL_ENTRY extends Structure {
         public static class ByReference extends CTL_ENTRY implements Structure.ByReference {
         }
@@ -140,10 +143,8 @@ public interface WinCrypt {
             if (cAttribute == 0) {
                 return new CRYPT_ATTRIBUTE[0];
             } else {
-                CRYPT_ATTRIBUTE[] result = (CRYPT_ATTRIBUTE[]) Structure.newInstance(
-                        CRYPT_ATTRIBUTE.class,
-                        rgAttribute)
-                        .toArray(cAttribute);
+                CRYPT_ATTRIBUTE[] result
+                    = (CRYPT_ATTRIBUTE[]) Structure.newInstance(CRYPT_ATTRIBUTE.class, rgAttribute).toArray(cAttribute);
                 result[0].read();
                 return result;
             }
@@ -158,8 +159,7 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa377509(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"cbSize", "pBaseCRLContext", "pDeltaCRLContext", "pCrlEntry",
-                "fDeltaCrlEntry"})
+    @FieldOrder({ "cbSize", "pBaseCRLContext", "pDeltaCRLContext", "pCrlEntry", "fDeltaCrlEntry" })
     public static class CERT_REVOCATION_CRL_INFO extends Structure {
         public static class ByReference extends CERT_REVOCATION_CRL_INFO implements Structure.ByReference {
         }
@@ -182,8 +182,14 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa377519(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"cbSize", "dwRevocationResult", "pszRevocationOid",
-        "pvOidSpecificInfo", "fHasFreshnessTime", "dwFreshnessTime", "pCrlInfo"})
+    @FieldOrder({
+        "cbSize",
+        "dwRevocationResult",
+        "pszRevocationOid",
+        "pvOidSpecificInfo",
+        "fHasFreshnessTime",
+        "dwFreshnessTime",
+        "pCrlInfo" })
     public static class CERT_REVOCATION_INFO extends Structure {
         public static class ByReference extends CERT_REVOCATION_INFO implements Structure.ByReference {
         }
@@ -211,8 +217,14 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa377183(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"cbSize", "pCertContext", "TrustStatus", "pRevocationInfo",
-        "pIssuanceUsage", "pApplicationUsage", "pwszExtendedErrorInfo"})
+    @FieldOrder({
+        "cbSize",
+        "pCertContext",
+        "TrustStatus",
+        "pRevocationInfo",
+        "pIssuanceUsage",
+        "pApplicationUsage",
+        "pwszExtendedErrorInfo" })
     public static class CERT_CHAIN_ELEMENT extends Structure {
         public static class ByReference extends CERT_CHAIN_ELEMENT implements Structure.ByReference {
         }
@@ -242,9 +254,18 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/es-xl/library/windows/desktop/aa381491(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"dwVersion", "SubjectUsage", "ListIdentifier", "SequenceNumber",
-                "ThisUpdate", "NextUpdate", "SubjectAlgorithm", "cCTLEntry",
-                "rgCTLEntry", "cExtension", "rgExtension"})
+    @FieldOrder({
+        "dwVersion",
+        "SubjectUsage",
+        "ListIdentifier",
+        "SequenceNumber",
+        "ThisUpdate",
+        "NextUpdate",
+        "SubjectAlgorithm",
+        "cCTLEntry",
+        "rgCTLEntry",
+        "cExtension",
+        "rgExtension" })
     public static class CTL_INFO extends Structure {
         public static class ByReference extends CTL_INFO implements Structure.ByReference {
         }
@@ -265,10 +286,8 @@ public interface WinCrypt {
             if (cCTLEntry == 0) {
                 return new CTL_ENTRY[0];
             } else {
-                CTL_ENTRY[] result = (CTL_ENTRY[]) Structure.newInstance(
-                        CTL_ENTRY.class,
-                        rgCTLEntry)
-                        .toArray(cCTLEntry);
+                CTL_ENTRY[] result
+                    = (CTL_ENTRY[]) Structure.newInstance(CTL_ENTRY.class, rgCTLEntry).toArray(cCTLEntry);
                 result[0].read();
                 return result;
             }
@@ -278,10 +297,8 @@ public interface WinCrypt {
             if (cExtension == 0) {
                 return new CERT_EXTENSION[0];
             } else {
-                CERT_EXTENSION[] result = (CERT_EXTENSION[]) Structure.newInstance(
-                        CERT_EXTENSION.class,
-                        rgExtension)
-                        .toArray(cExtension);
+                CERT_EXTENSION[] result
+                    = (CERT_EXTENSION[]) Structure.newInstance(CERT_EXTENSION.class, rgExtension).toArray(cExtension);
                 result[0].read();
                 return result;
             }
@@ -297,9 +314,15 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa381486(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"dwMsgAndCertEncodingType", "pbCtlEncoded", "cbCtlEncoded",
-                "pCtlInfo", "hCertStore", "hCryptMsg", "pbCtlContent",
-                "cbCtlContent"})
+    @FieldOrder({
+        "dwMsgAndCertEncodingType",
+        "pbCtlEncoded",
+        "cbCtlEncoded",
+        "pCtlInfo",
+        "hCertStore",
+        "hCryptMsg",
+        "pbCtlContent",
+        "cbCtlContent" })
     public static class CTL_CONTEXT extends Structure {
         public static class ByReference extends CTL_CONTEXT implements Structure.ByReference {
         }
@@ -320,7 +343,7 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa377585(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"cbSize", "pCtlEntry", "pCtlContext"})
+    @FieldOrder({ "cbSize", "pCtlEntry", "pCtlContext" })
     public static class CERT_TRUST_LIST_INFO extends Structure {
         public static class ByReference extends CERT_TRUST_LIST_INFO implements Structure.ByReference {
         }
@@ -338,7 +361,7 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa381493(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"cUsageIdentifier", "rgpszUsageIdentifier"})
+    @FieldOrder({ "cUsageIdentifier", "rgpszUsageIdentifier" })
     public static class CTL_USAGE extends Structure {
 
         public static class ByReference extends CTL_USAGE implements Structure.ByReference {
@@ -377,7 +400,7 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa377593(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"dwType", "Usage"})
+    @FieldOrder({ "dwType", "Usage" })
     public static class CERT_USAGE_MATCH extends Structure {
         public static class ByReference extends CERT_USAGE_MATCH implements Structure.ByReference {
         }
@@ -393,10 +416,16 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa377186(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"cbSize", "RequestedUsage", "RequestedIssuancePolicy",
-                "dwUrlRetrievalTimeout", "fCheckRevocationFreshnessTime",
-                "dwRevocationFreshnessTime", "pftCacheResync", "pStrongSignPara",
-                "dwStrongSignFlags"})
+    @FieldOrder({
+        "cbSize",
+        "RequestedUsage",
+        "RequestedIssuancePolicy",
+        "dwUrlRetrievalTimeout",
+        "fCheckRevocationFreshnessTime",
+        "dwRevocationFreshnessTime",
+        "pftCacheResync",
+        "pStrongSignPara",
+        "dwStrongSignFlags" })
     public static class CERT_CHAIN_PARA extends Structure {
         public static class ByReference extends CERT_CHAIN_PARA implements Structure.ByReference {
         }
@@ -424,7 +453,7 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/hh870262(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"cbSize", "dwInfoChoice", "DUMMYUNIONNAME"})
+    @FieldOrder({ "cbSize", "dwInfoChoice", "DUMMYUNIONNAME" })
     public static class CERT_STRONG_SIGN_PARA extends Structure {
         public static class ByReference extends CERT_CHAIN_PARA implements Structure.ByReference {
         }
@@ -449,7 +478,7 @@ public interface WinCrypt {
      * @see
      * <a href= "https://msdn.microsoft.com/en-us/library/windows/desktop/hh870263(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"dwFlags", "pwszCNGSignHashAlgids", "pwszCNGPubKeyMinBitLengths"})
+    @FieldOrder({ "dwFlags", "pwszCNGSignHashAlgids", "pwszCNGPubKeyMinBitLengths" })
     public static class CERT_STRONG_SIGN_SERIALIZED_INFO extends Structure {
         public static class ByReference extends CERT_CHAIN_PARA implements Structure.ByReference {
         }
@@ -471,8 +500,7 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa377188(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"cbSize", "dwError", "lChainIndex", "lElementIndex",
-                "pvExtraPolicyStatus"})
+    @FieldOrder({ "cbSize", "dwError", "lChainIndex", "lElementIndex", "pvExtraPolicyStatus" })
     public static class CERT_CHAIN_POLICY_STATUS extends Structure {
         public static class ByReference extends CERT_CHAIN_POLICY_STATUS implements Structure.ByReference {
         }
@@ -491,8 +519,14 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa377544(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"cbSize", "TrustStatus", "cElement", "rgpElement", "pTrustListInfo",
-                "fHasRevocationFreshnessTime", "dwRevocationFreshnessTime"})
+    @FieldOrder({
+        "cbSize",
+        "TrustStatus",
+        "cElement",
+        "rgpElement",
+        "pTrustListInfo",
+        "fHasRevocationFreshnessTime",
+        "dwRevocationFreshnessTime" })
     public static class CERT_SIMPLE_CHAIN extends Structure {
         public static class ByReference extends CERT_SIMPLE_CHAIN implements Structure.ByReference {
         }
@@ -513,9 +547,8 @@ public interface WinCrypt {
         public CERT_CHAIN_ELEMENT[] getRgpElement() {
             CERT_CHAIN_ELEMENT[] elements = new CERT_CHAIN_ELEMENT[cElement];
             for (int i = 0; i < elements.length; i++) {
-                elements[i] = Structure.newInstance(
-                        CERT_CHAIN_ELEMENT.class,
-                        rgpElement.getPointer(i * Native.POINTER_SIZE));
+                elements[i]
+                    = Structure.newInstance(CERT_CHAIN_ELEMENT.class, rgpElement.getPointer(i * Native.POINTER_SIZE));
                 elements[i].read();
             }
             return elements;
@@ -530,7 +563,7 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa377187(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"cbSize", "dwFlags", "pvExtraPolicyPara"})
+    @FieldOrder({ "cbSize", "dwFlags", "pvExtraPolicyPara" })
     public static class CERT_CHAIN_POLICY_PARA extends Structure {
         public static class ByReference extends CERT_CHAIN_POLICY_PARA implements Structure.ByReference {
         }
@@ -548,10 +581,17 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa377182(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"cbSize", "TrustStatus", "cChain", "rgpChain",
-        "cLowerQualityChainContext", "rgpLowerQualityChainContext",
-        "fHasRevocationFreshnessTime", "dwRevocationFreshnessTime",
-        "dwCreateFlags", "ChainId"})
+    @FieldOrder({
+        "cbSize",
+        "TrustStatus",
+        "cChain",
+        "rgpChain",
+        "cLowerQualityChainContext",
+        "rgpLowerQualityChainContext",
+        "fHasRevocationFreshnessTime",
+        "dwRevocationFreshnessTime",
+        "dwCreateFlags",
+        "ChainId" })
     public static class CERT_CHAIN_CONTEXT extends Structure {
         public static class ByReference extends CERT_CHAIN_CONTEXT implements Structure.ByReference {
         }
@@ -570,9 +610,8 @@ public interface WinCrypt {
         public CERT_SIMPLE_CHAIN[] getRgpChain() {
             CERT_SIMPLE_CHAIN[] elements = new CERT_SIMPLE_CHAIN[cChain];
             for (int i = 0; i < elements.length; i++) {
-                elements[i] = Structure.newInstance(
-                        CERT_SIMPLE_CHAIN.class,
-                        rgpChain.getPointer(i * Native.POINTER_SIZE));
+                elements[i]
+                    = Structure.newInstance(CERT_SIMPLE_CHAIN.class, rgpChain.getPointer(i * Native.POINTER_SIZE));
                 elements[i].read();
             }
             return elements;
@@ -581,9 +620,8 @@ public interface WinCrypt {
         public CERT_CHAIN_CONTEXT[] getRgpLowerQualityChainContext() {
             CERT_CHAIN_CONTEXT[] elements = new CERT_CHAIN_CONTEXT[cLowerQualityChainContext];
             for (int i = 0; i < elements.length; i++) {
-                elements[i] = Structure.newInstance(
-                        CERT_CHAIN_CONTEXT.class,
-                        rgpLowerQualityChainContext.getPointer(i * Native.POINTER_SIZE));
+                elements[i] = Structure.newInstance(CERT_CHAIN_CONTEXT.class,
+                    rgpLowerQualityChainContext.getPointer(i * Native.POINTER_SIZE));
                 elements[i].read();
             }
             return elements;
@@ -605,8 +643,7 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa377189(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"dwCertEncodingType", "pbCertEncoded", "cbCertEncoded",
-        "pCertInfo", "hCertStore"})
+    @FieldOrder({ "dwCertEncodingType", "pbCertEncoded", "cbCertEncoded", "pCertInfo", "hCertStore" })
     public static class CERT_CONTEXT extends Structure {
         public static class ByReference extends CERT_CONTEXT implements Structure.ByReference {
         }
@@ -626,7 +663,7 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa377195(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"pszObjId", "fCritical", "Value"})
+    @FieldOrder({ "pszObjId", "fCritical", "Value" })
     public static class CERT_EXTENSION extends Structure {
         public static class ByReference extends CERT_EXTENSION implements Structure.ByReference {
         }
@@ -646,7 +683,7 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa377196(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"cExtension", "rgExtension"})
+    @FieldOrder({ "cExtension", "rgExtension" })
     public static class CERT_EXTENSIONS extends Structure {
         public static class ByReference extends CERT_EXTENSIONS implements Structure.ByReference {
         }
@@ -655,12 +692,11 @@ public interface WinCrypt {
         public Pointer rgExtension;
 
         public CERT_EXTENSION[] getRgExtension() {
-            if(cExtension == 0) {
+            if (cExtension == 0) {
                 return new CERT_EXTENSION[0];
             }
-            CERT_EXTENSION[] ces = (CERT_EXTENSION[]) Structure
-                .newInstance(CERT_EXTENSION.class, rgExtension)
-                .toArray(cExtension);
+            CERT_EXTENSION[] ces
+                = (CERT_EXTENSION[]) Structure.newInstance(CERT_EXTENSION.class, rgExtension).toArray(cExtension);
             ces[0].read();
             return ces;
         }
@@ -672,9 +708,19 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa377200(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"dwVersion", "SerialNumber", "SignatureAlgorithm", "Issuer",
-        "NotBefore", "NotAfter", "Subject", "SubjectPublicKeyInfo",
-        "IssuerUniqueId", "SubjectUniqueId", "cExtension", "rgExtension"})
+    @FieldOrder({
+        "dwVersion",
+        "SerialNumber",
+        "SignatureAlgorithm",
+        "Issuer",
+        "NotBefore",
+        "NotAfter",
+        "Subject",
+        "SubjectPublicKeyInfo",
+        "IssuerUniqueId",
+        "SubjectUniqueId",
+        "cExtension",
+        "rgExtension" })
     public static class CERT_INFO extends Structure {
         public static class ByReference extends CERT_INFO implements Structure.ByReference {
         }
@@ -693,12 +739,11 @@ public interface WinCrypt {
         public Pointer rgExtension;
 
         public CERT_EXTENSION[] getRgExtension() {
-            if(cExtension == 0) {
+            if (cExtension == 0) {
                 return new CERT_EXTENSION[0];
             }
-            CERT_EXTENSION[] ces = (CERT_EXTENSION[]) Structure
-                .newInstance(CERT_EXTENSION.class, rgExtension)
-                .toArray(cExtension);
+            CERT_EXTENSION[] ces
+                = (CERT_EXTENSION[]) Structure.newInstance(CERT_EXTENSION.class, rgExtension).toArray(cExtension);
             ces[0].read();
             return ces;
         }
@@ -711,7 +756,7 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa377463(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"Algorithm", "PublicKey"})
+    @FieldOrder({ "Algorithm", "PublicKey" })
     public static class CERT_PUBLIC_KEY_INFO extends Structure {
         public static class ByReference extends CERT_PUBLIC_KEY_INFO implements Structure.ByReference {
         }
@@ -729,8 +774,7 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa379873(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"dwCertEncodingType", "pbCrlEncoded", "cbCrlEncoded",
-                "pCrlInfo", "hCertStore"})
+    @FieldOrder({ "dwCertEncodingType", "pbCrlEncoded", "cbCrlEncoded", "pCrlInfo", "hCertStore" })
     public static class CRL_CONTEXT extends Structure {
         public static class ByReference extends CRL_CONTEXT implements Structure.ByReference {
         }
@@ -749,7 +793,7 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa379878(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"SerialNumber", "RevocationDate", "cExtension", "rgExtension"})
+    @FieldOrder({ "SerialNumber", "RevocationDate", "cExtension", "rgExtension" })
     public static class CRL_ENTRY extends Structure {
         public static class ByReference extends CRL_ENTRY implements Structure.ByReference {
         }
@@ -760,12 +804,11 @@ public interface WinCrypt {
         public Pointer rgExtension;
 
         public CERT_EXTENSION[] getRgExtension() {
-            if(cExtension == 0) {
+            if (cExtension == 0) {
                 return new CERT_EXTENSION[0];
             } else {
-                CERT_EXTENSION[] result = (CERT_EXTENSION[]) Structure
-                        .newInstance(CERT_EXTENSION.class, rgExtension)
-                        .toArray(cExtension);
+                CERT_EXTENSION[] result
+                    = (CERT_EXTENSION[]) Structure.newInstance(CERT_EXTENSION.class, rgExtension).toArray(cExtension);
                 result[0].read();
                 return result;
             }
@@ -779,8 +822,16 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa379880(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"dwVersion", "SignatureAlgorithm", "Issuer", "ThisUpdate",
-        "NextUpdate", "cCRLEntry", "rgCRLEntry", "cExtension", "rgExtension"})
+    @FieldOrder({
+        "dwVersion",
+        "SignatureAlgorithm",
+        "Issuer",
+        "ThisUpdate",
+        "NextUpdate",
+        "cCRLEntry",
+        "rgCRLEntry",
+        "cExtension",
+        "rgExtension" })
     public static class CRL_INFO extends Structure {
         public static class ByReference extends CRL_INFO implements Structure.ByReference {
         }
@@ -799,9 +850,8 @@ public interface WinCrypt {
             if (cCRLEntry == 0) {
                 return new CRL_ENTRY[0];
             } else {
-                CRL_ENTRY[] result = (CRL_ENTRY[]) Structure
-                        .newInstance(CRL_ENTRY.class, rgCRLEntry)
-                        .toArray(cCRLEntry);
+                CRL_ENTRY[] result
+                    = (CRL_ENTRY[]) Structure.newInstance(CRL_ENTRY.class, rgCRLEntry).toArray(cCRLEntry);
                 result[0].read();
                 return result;
             }
@@ -811,9 +861,8 @@ public interface WinCrypt {
             if (cExtension == 0) {
                 return new CERT_EXTENSION[0];
             } else {
-                CERT_EXTENSION[] result = (CERT_EXTENSION[]) Structure
-                        .newInstance(CERT_EXTENSION.class, rgExtension)
-                        .toArray(cExtension);
+                CERT_EXTENSION[] result
+                    = (CERT_EXTENSION[]) Structure.newInstance(CERT_EXTENSION.class, rgExtension).toArray(cExtension);
                 result[0].read();
                 return result;
             }
@@ -829,7 +878,7 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa381133(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"pszObjId", "Parameters"})
+    @FieldOrder({ "pszObjId", "Parameters" })
     public static class CRYPT_ALGORITHM_IDENTIFIER extends Structure {
         public static class ByReference extends CRYPT_ALGORITHM_IDENTIFIER implements Structure.ByReference {
         }
@@ -849,7 +898,7 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa381139(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"pszObjId", "cValue", "rgValue"})
+    @FieldOrder({ "pszObjId", "cValue", "rgValue" })
     public static class CRYPT_ATTRIBUTE extends Structure {
         public static class ByReference extends CRYPT_ATTRIBUTE implements Structure.ByReference {
         }
@@ -874,7 +923,7 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa381165(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"cbData", "pbData", "cUnusedBits"})
+    @FieldOrder({ "cbData", "pbData", "cUnusedBits" })
     public static class CRYPT_BIT_BLOB extends Structure {
         public static class ByReference extends CRYPT_BIT_BLOB implements Structure.ByReference {
         }
@@ -891,8 +940,14 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa381420(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"pwszContainerName", "pwszProvName", "dwProvType", "dwFlags",
-                "cProvParam", "rgProvParam", "dwKeySpec"})
+    @FieldOrder({
+        "pwszContainerName",
+        "pwszProvName",
+        "dwProvType",
+        "dwFlags",
+        "cProvParam",
+        "rgProvParam",
+        "dwKeySpec" })
     public static class CRYPT_KEY_PROV_INFO extends Structure {
         public static class ByReference extends CRYPT_KEY_PROV_INFO implements Structure.ByReference {
         }
@@ -912,9 +967,8 @@ public interface WinCrypt {
         public CRYPT_KEY_PROV_PARAM[] getRgProvParam() {
             CRYPT_KEY_PROV_PARAM[] elements = new CRYPT_KEY_PROV_PARAM[cProvParam];
             for (int i = 0; i < elements.length; i++) {
-                elements[i] = Structure.newInstance(
-                        CRYPT_KEY_PROV_PARAM.class,
-                        rgProvParam.getPointer(i * Native.POINTER_SIZE));
+                elements[i] = Structure.newInstance(CRYPT_KEY_PROV_PARAM.class,
+                    rgProvParam.getPointer(i * Native.POINTER_SIZE));
                 elements[i].read();
             }
             return elements;
@@ -929,7 +983,7 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa381423(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"dwParam", "pbData", "cbData", "dwFlags"})
+    @FieldOrder({ "dwParam", "pbData", "cbData", "dwFlags" })
     public static class CRYPT_KEY_PROV_PARAM extends Structure {
         public static class ByReference extends CRYPT_KEY_PROV_PARAM implements Structure.ByReference {
         }
@@ -947,11 +1001,24 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa381468(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"cbSize", "dwMsgEncodingType", "pSigningCert", "HashAlgorithm",
-                "pvHashAuxInfo", "cMsgCert", "rgpMsgCert", "cMsgCrl",
-                "rgpMsgCrl", "cAuthAttr", "rgAuthAttr", "cUnauthAttr",
-                "rgUnauthAttr", "dwFlags", "dwInnerContentType",
-                "HashEncryptionAlgorithm", "pvHashEncryptionAuxInfo"})
+    @FieldOrder({
+        "cbSize",
+        "dwMsgEncodingType",
+        "pSigningCert",
+        "HashAlgorithm",
+        "pvHashAuxInfo",
+        "cMsgCert",
+        "rgpMsgCert",
+        "cMsgCrl",
+        "rgpMsgCrl",
+        "cAuthAttr",
+        "rgAuthAttr",
+        "cUnauthAttr",
+        "rgUnauthAttr",
+        "dwFlags",
+        "dwInnerContentType",
+        "HashEncryptionAlgorithm",
+        "pvHashEncryptionAuxInfo" })
     public static class CRYPT_SIGN_MESSAGE_PARA extends Structure {
         public static class ByReference extends CRYPT_SIGN_MESSAGE_PARA implements Structure.ByReference {
         }
@@ -977,9 +1044,7 @@ public interface WinCrypt {
         public CERT_CONTEXT[] getRgpMsgCert() {
             CERT_CONTEXT[] elements = new CERT_CONTEXT[cMsgCrl];
             for (int i = 0; i < elements.length; i++) {
-                elements[i] = Structure.newInstance(
-                        CERT_CONTEXT.class,
-                        rgpMsgCert.getPointer(i * Native.POINTER_SIZE));
+                elements[i] = Structure.newInstance(CERT_CONTEXT.class, rgpMsgCert.getPointer(i * Native.POINTER_SIZE));
                 elements[i].read();
             }
             return elements;
@@ -988,9 +1053,7 @@ public interface WinCrypt {
         public CRL_CONTEXT[] getRgpMsgCrl() {
             CRL_CONTEXT[] elements = new CRL_CONTEXT[cMsgCrl];
             for (int i = 0; i < elements.length; i++) {
-                elements[i] = Structure.newInstance(
-                        CRL_CONTEXT.class,
-                        rgpMsgCrl.getPointer(i * Native.POINTER_SIZE));
+                elements[i] = Structure.newInstance(CRL_CONTEXT.class, rgpMsgCrl.getPointer(i * Native.POINTER_SIZE));
                 elements[i].read();
             }
             return elements;
@@ -1000,10 +1063,7 @@ public interface WinCrypt {
             if (cAuthAttr == 0) {
                 return new CRYPT_ATTRIBUTE[0];
             } else {
-                return (CRYPT_ATTRIBUTE[]) Structure.newInstance(
-                        CRYPT_ATTRIBUTE.class,
-                        rgAuthAttr)
-                        .toArray(cAuthAttr);
+                return (CRYPT_ATTRIBUTE[]) Structure.newInstance(CRYPT_ATTRIBUTE.class, rgAuthAttr).toArray(cAuthAttr);
             }
         }
 
@@ -1011,10 +1071,8 @@ public interface WinCrypt {
             if (cUnauthAttr == 0) {
                 return new CRYPT_ATTRIBUTE[0];
             } else {
-                return (CRYPT_ATTRIBUTE[]) Structure.newInstance(
-                        CRYPT_ATTRIBUTE.class,
-                        rgUnauthAttr)
-                        .toArray(cUnauthAttr);
+                return (CRYPT_ATTRIBUTE[]) Structure.newInstance(CRYPT_ATTRIBUTE.class, rgUnauthAttr)
+                    .toArray(cUnauthAttr);
             }
         }
     }
@@ -1052,9 +1110,8 @@ public interface WinCrypt {
          * @return Pointer to a read-only {@link CERT_CONTEXT}
          * if a signer certificate is found, {@code null} if the function fails.
          */
-        public CERT_CONTEXT.ByReference callback(Pointer pvGetArg, int dwCertEncodingType,
-                              CERT_INFO pSignerId,
-                              HCERTSTORE hMsgCertStore);
+        public CERT_CONTEXT.ByReference callback(Pointer pvGetArg, int dwCertEncodingType, CERT_INFO pSignerId,
+            HCERTSTORE hMsgCertStore);
     }
 
     /**
@@ -1064,8 +1121,13 @@ public interface WinCrypt {
      * @see
      * <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa381477(v=vs.85).aspx">MSDN</a>
      */
-    @FieldOrder({"cbSize", "dwMsgAndCertEncodingType", "hCryptProv",
-                "pfnGetSignerCertificate", "pvGetArg", "pStrongSignPara"})
+    @FieldOrder({
+        "cbSize",
+        "dwMsgAndCertEncodingType",
+        "hCryptProv",
+        "pfnGetSignerCertificate",
+        "pvGetArg",
+        "pStrongSignPara" })
     public static class CRYPT_VERIFY_MESSAGE_PARA extends Structure {
         public static class ByReference extends CRYPT_SIGN_MESSAGE_PARA implements Structure.ByReference {
         }
@@ -1122,7 +1184,7 @@ public interface WinCrypt {
          * Instantiates a new hcertstore.
          *
          * @param p
-         *            the p
+         * the p
          */
         public HCERTSTORE(Pointer p) {
             super(p);
@@ -1145,7 +1207,7 @@ public interface WinCrypt {
          * Instantiates a new hcryptmsg.
          *
          * @param p
-         *            the p
+         * the p
          */
         public HCRYPTMSG(Pointer p) {
             super(p);
@@ -1167,7 +1229,7 @@ public interface WinCrypt {
      * information about when and where that prompt is to be displayed when using
      * the CryptProtectData and CryptUnprotectData functions.
      */
-    @FieldOrder({"cbSize", "dwPromptFlags", "hwndApp", "szPrompt"})
+    @FieldOrder({ "cbSize", "dwPromptFlags", "hwndApp", "szPrompt" })
     public static class CRYPTPROTECT_PROMPTSTRUCT extends Structure {
         /**
          * Size of this structure in bytes.
@@ -1197,7 +1259,8 @@ public interface WinCrypt {
     }
 
     /**
-     * Value wrapper for {@code lpszStoreProvider} of {@link Crypt32#CertOpenStore(CertStoreProviderName, int, HCRYPTPROV_LEGACY, int, Pointer)}
+     * Value wrapper for {@code lpszStoreProvider} of
+     * {@link Crypt32#CertOpenStore(CertStoreProviderName, int, HCRYPTPROV_LEGACY, int, Pointer)}
      */
     class CertStoreProviderName implements NativeMapped {
         private final Pointer pointer;
@@ -1302,114 +1365,133 @@ public interface WinCrypt {
 
     /**
      * ASN.1 Certificate encode/decode return value base
+     * 
      * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa375564(v=vs.85).aspx">MSDN</a>
      */
     int CRYPT_E_ASN1_ERROR = 0x80093100;
 
     /**
      * ASN.1 internal encode or decode error
+     * 
      * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa375564(v=vs.85).aspx">MSDN</a>
      */
     int CRYPT_E_ASN1_INTERNAL = 0x80093101;
 
     /**
      * ASN.1 unexpected end of data
+     * 
      * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa375564(v=vs.85).aspx">MSDN</a>
      */
     int CRYPT_E_ASN1_EOD = 0x80093102;
 
     /**
      * ASN.1 corrupted data
+     * 
      * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa375564(v=vs.85).aspx">MSDN</a>
      */
     int CRYPT_E_ASN1_CORRUPT = 0x80093103;
 
     /**
      * ASN.1 value too large
+     * 
      * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa375564(v=vs.85).aspx">MSDN</a>
      */
     int CRYPT_E_ASN1_LARGE = 0x80093104;
 
     /**
      * ASN.1 constraint violated
+     * 
      * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa375564(v=vs.85).aspx">MSDN</a>
      */
     int CRYPT_E_ASN1_CONSTRAINT = 0x80093105;
 
     /**
      * ASN.1 out of memory
+     * 
      * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa375564(v=vs.85).aspx">MSDN</a>
      */
     int CRYPT_E_ASN1_MEMORY = 0x80093106;
 
     /**
      * ASN.1 buffer overflow
+     * 
      * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa375564(v=vs.85).aspx">MSDN</a>
      */
     int CRYPT_E_ASN1_OVERFLOW = 0x80093107;
 
     /**
      * ASN.1 function not supported for this PDU
+     * 
      * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa375564(v=vs.85).aspx">MSDN</a>
      */
     int CRYPT_E_ASN1_BADPDU = 0x80093108;
 
     /**
      * ASN.1 bad arguments to function call
+     * 
      * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa375564(v=vs.85).aspx">MSDN</a>
      */
     int CRYPT_E_ASN1_BADARGS = 0x80093109;
 
     /**
      * ASN.1 bad real value
+     * 
      * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa375564(v=vs.85).aspx">MSDN</a>
      */
     int CRYPT_E_ASN1_BADREAL = 0x8009310A;
 
     /**
      * ASN.1 bad tag value met
+     * 
      * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa375564(v=vs.85).aspx">MSDN</a>
      */
     int CRYPT_E_ASN1_BADTAG = 0x8009310B;
 
     /**
      * ASN.1 bad choice value
+     * 
      * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa375564(v=vs.85).aspx">MSDN</a>
      */
     int CRYPT_E_ASN1_CHOICE = 0x8009310C;
 
     /**
      * ASN.1 bad encoding rule
+     * 
      * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa375564(v=vs.85).aspx">MSDN</a>
      */
     int CRYPT_E_ASN1_RULE = 0x8009310D;
 
     /**
      * ASN.1 bad Unicode (UTF8)
+     * 
      * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa375564(v=vs.85).aspx">MSDN</a>
      */
     int CRYPT_E_ASN1_UTF8 = 0x8009310E;
 
     /**
      * ASN.1 bad PDU type
+     * 
      * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa375564(v=vs.85).aspx">MSDN</a>
      */
     int CRYPT_E_ASN1_PDU_TYPE = 0x80093133;
 
     /**
      * ASN.1 not yet implemented
+     * 
      * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa375564(v=vs.85).aspx">MSDN</a>
      */
     int CRYPT_E_ASN1_NYI = 0x80093134;
 
     /**
      * ASN.1 skipped unknown extensions
+     * 
      * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa375564(v=vs.85).aspx">MSDN</a>
      */
     int CRYPT_E_ASN1_EXTENDED = 0x80093201;
 
     /**
      * ASN.1 end of data expected
+     * 
      * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa375564(v=vs.85).aspx">MSDN</a>
      */
     int CRYPT_E_ASN1_NOEOD = 0x80093202;
@@ -1548,7 +1630,7 @@ public interface WinCrypt {
      * Certificate comparison functions.
      *
      * @see <a href=
-     *      "https://msdn.microsoft.com/en-us/library/windows/desktop/aa376064(v=vs.85).aspx">MSDN</a>
+     * "https://msdn.microsoft.com/en-us/library/windows/desktop/aa376064(v=vs.85).aspx">MSDN</a>
      */
     int CERT_COMPARE_SHIFT = 16;
 
@@ -1556,7 +1638,7 @@ public interface WinCrypt {
      * Certificate comparison functions.
      *
      * @see <a href=
-     *      "https://msdn.microsoft.com/en-us/library/windows/desktop/aa376064(v=vs.85).aspx">MSDN</a>
+     * "https://msdn.microsoft.com/en-us/library/windows/desktop/aa376064(v=vs.85).aspx">MSDN</a>
      */
     int CERT_COMPARE_NAME_STR_W = 8;
 
@@ -1564,7 +1646,7 @@ public interface WinCrypt {
      * Certificate comparison functions.
      *
      * @see <a href=
-     *      "https://msdn.microsoft.com/en-us/library/windows/desktop/aa376064(v=vs.85).aspx">MSDN</a>
+     * "https://msdn.microsoft.com/en-us/library/windows/desktop/aa376064(v=vs.85).aspx">MSDN</a>
      */
     int CERT_INFO_SUBJECT_FLAG = 7;
 
@@ -1572,7 +1654,7 @@ public interface WinCrypt {
      * Certificate comparison functions.
      *
      * @see <a href=
-     *      "https://msdn.microsoft.com/en-us/library/windows/desktop/aa376064(v=vs.85).aspx">MSDN</a>
+     * "https://msdn.microsoft.com/en-us/library/windows/desktop/aa376064(v=vs.85).aspx">MSDN</a>
      */
     int CERT_FIND_SUBJECT_STR_W = (CERT_COMPARE_NAME_STR_W << CERT_COMPARE_SHIFT | CERT_INFO_SUBJECT_FLAG);
 
@@ -1580,7 +1662,7 @@ public interface WinCrypt {
      * Certificate comparison functions.
      *
      * @see <a href=
-     *      "https://msdn.microsoft.com/en-us/library/windows/desktop/aa376064(v=vs.85).aspx">MSDN</a>
+     * "https://msdn.microsoft.com/en-us/library/windows/desktop/aa376064(v=vs.85).aspx">MSDN</a>
      */
     int CERT_FIND_SUBJECT_STR = CERT_FIND_SUBJECT_STR_W;
 
@@ -1667,26 +1749,26 @@ public interface WinCrypt {
     //
 
     int CERT_STORE_PROV_MSG = 1;
-    int CERT_STORE_PROV_MEMORY  = 2;
+    int CERT_STORE_PROV_MEMORY = 2;
     int CERT_STORE_PROV_FILE = 3;
-    int CERT_STORE_PROV_REG  = 4;
+    int CERT_STORE_PROV_REG = 4;
     int CERT_STORE_PROV_PKCS7 = 5;
     int CERT_STORE_PROV_SERIALIZED = 6;
     int CERT_STORE_PROV_FILENAME_A = 7; // ASCII
     int CERT_STORE_PROV_FILENAME_W = 8; // Unicode
     int CERT_STORE_PROV_FILENAME = CERT_STORE_PROV_FILENAME_W;
-    int CERT_STORE_PROV_SYSTEM_A  = 9; // pvPara is ASCII (1 byte/char)
-    int CERT_STORE_PROV_SYSTEM_W  = 10; // pvPara is Unicode (2 bytes/char)
-    int CERT_STORE_PROV_SYSTEM  = CERT_STORE_PROV_SYSTEM_W;
-    int CERT_STORE_PROV_COLLECTION  = 11;
+    int CERT_STORE_PROV_SYSTEM_A = 9; // pvPara is ASCII (1 byte/char)
+    int CERT_STORE_PROV_SYSTEM_W = 10; // pvPara is Unicode (2 bytes/char)
+    int CERT_STORE_PROV_SYSTEM = CERT_STORE_PROV_SYSTEM_W;
+    int CERT_STORE_PROV_COLLECTION = 11;
     int CERT_STORE_PROV_SYSTEM_REGISTRY_A = 12;
     int CERT_STORE_PROV_SYSTEM_REGISTRY_W = 13;
     int CERT_STORE_PROV_SYSTEM_REGISTRY = CERT_STORE_PROV_SYSTEM_REGISTRY_W;
     int CERT_STORE_PROV_PHYSICAL_W = 14;
     int CERT_STORE_PROV_PHYSICAL = CERT_STORE_PROV_PHYSICAL_W;
-    int CERT_STORE_PROV_SMART_CARD_W  = 15;
+    int CERT_STORE_PROV_SMART_CARD_W = 15;
     int CERT_STORE_PROV_SMART_CARD = CERT_STORE_PROV_SMART_CARD_W;
-    int CERT_STORE_PROV_LDAP_W  = 16;
+    int CERT_STORE_PROV_LDAP_W = 16;
     int CERT_STORE_PROV_LDAP = CERT_STORE_PROV_LDAP_W;
 
     //
@@ -1754,7 +1836,7 @@ public interface WinCrypt {
     int CERT_QUERY_CONTENT_SERIALIZED_CRL = 7;
     /** a PKCS#7 signed message */
     int CERT_QUERY_CONTENT_PKCS7_SIGNED = 8;
-    /** a PKCS#7 message, such as enveloped message. But it is not a signed message,  */
+    /** a PKCS#7 message, such as enveloped message. But it is not a signed message, */
     int CERT_QUERY_CONTENT_PKCS7_UNSIGNED = 9;
     /** a PKCS7 signed message embedded in a file */
     int CERT_QUERY_CONTENT_PKCS7_SIGNED_EMBED = 10;
@@ -1791,7 +1873,7 @@ public interface WinCrypt {
     /** an encoded PKCS#7 signed message */
     int CERT_QUERY_CONTENT_FLAG_PKCS7_SIGNED = (1 << CERT_QUERY_CONTENT_PKCS7_SIGNED);
 
-    /** an encoded PKCS#7 message.  But it is not a signed message */
+    /** an encoded PKCS#7 message. But it is not a signed message */
     int CERT_QUERY_CONTENT_FLAG_PKCS7_UNSIGNED = (1 << CERT_QUERY_CONTENT_PKCS7_UNSIGNED);
 
     /** the content includes an embedded PKCS7 signed message */
@@ -1810,19 +1892,12 @@ public interface WinCrypt {
     int CERT_QUERY_CONTENT_FLAG_PFX_AND_LOAD = (1 << CERT_QUERY_CONTENT_PFX_AND_LOAD);
 
     /** content can be any type */
-    int CERT_QUERY_CONTENT_FLAG_ALL = CERT_QUERY_CONTENT_FLAG_CERT
-        | CERT_QUERY_CONTENT_FLAG_CTL
-        | CERT_QUERY_CONTENT_FLAG_CRL
-        | CERT_QUERY_CONTENT_FLAG_SERIALIZED_STORE
-        | CERT_QUERY_CONTENT_FLAG_SERIALIZED_CERT
-        | CERT_QUERY_CONTENT_FLAG_SERIALIZED_CTL
-        | CERT_QUERY_CONTENT_FLAG_SERIALIZED_CRL
-        | CERT_QUERY_CONTENT_FLAG_PKCS7_SIGNED
-        | CERT_QUERY_CONTENT_FLAG_PKCS7_UNSIGNED
-        | CERT_QUERY_CONTENT_FLAG_PKCS7_SIGNED_EMBED
-        | CERT_QUERY_CONTENT_FLAG_PKCS10
-        | CERT_QUERY_CONTENT_FLAG_PFX
-        | CERT_QUERY_CONTENT_FLAG_CERT_PAIR;
+    int CERT_QUERY_CONTENT_FLAG_ALL = CERT_QUERY_CONTENT_FLAG_CERT | CERT_QUERY_CONTENT_FLAG_CTL
+        | CERT_QUERY_CONTENT_FLAG_CRL | CERT_QUERY_CONTENT_FLAG_SERIALIZED_STORE
+        | CERT_QUERY_CONTENT_FLAG_SERIALIZED_CERT | CERT_QUERY_CONTENT_FLAG_SERIALIZED_CTL
+        | CERT_QUERY_CONTENT_FLAG_SERIALIZED_CRL | CERT_QUERY_CONTENT_FLAG_PKCS7_SIGNED
+        | CERT_QUERY_CONTENT_FLAG_PKCS7_UNSIGNED | CERT_QUERY_CONTENT_FLAG_PKCS7_SIGNED_EMBED
+        | CERT_QUERY_CONTENT_FLAG_PKCS10 | CERT_QUERY_CONTENT_FLAG_PFX | CERT_QUERY_CONTENT_FLAG_CERT_PAIR;
 
     /** the content is in binary format */
     int CERT_QUERY_FORMAT_BINARY = 1;
@@ -1834,17 +1909,16 @@ public interface WinCrypt {
     int CERT_QUERY_FORMAT_ASN_ASCII_HEX_ENCODED = 3;
 
     /** the content is in binary format */
-    int CERT_QUERY_FORMAT_FLAG_BINARY = ( 1 << CERT_QUERY_FORMAT_BINARY);
+    int CERT_QUERY_FORMAT_FLAG_BINARY = (1 << CERT_QUERY_FORMAT_BINARY);
 
     /** the content is base64 encoded */
-    int CERT_QUERY_FORMAT_FLAG_BASE64_ENCODED = ( 1 << CERT_QUERY_FORMAT_BASE64_ENCODED);
+    int CERT_QUERY_FORMAT_FLAG_BASE64_ENCODED = (1 << CERT_QUERY_FORMAT_BASE64_ENCODED);
 
     /** the content is ascii hex encoded with "{ASN}" prefix */
-    int CERT_QUERY_FORMAT_FLAG_ASN_ASCII_HEX_ENCODED  = ( 1 << CERT_QUERY_FORMAT_ASN_ASCII_HEX_ENCODED);
+    int CERT_QUERY_FORMAT_FLAG_ASN_ASCII_HEX_ENCODED = (1 << CERT_QUERY_FORMAT_ASN_ASCII_HEX_ENCODED);
 
     /** the content can be of any format */
-    int CERT_QUERY_FORMAT_FLAG_ALL = CERT_QUERY_FORMAT_FLAG_BINARY
-        | CERT_QUERY_FORMAT_FLAG_BASE64_ENCODED
+    int CERT_QUERY_FORMAT_FLAG_ALL = CERT_QUERY_FORMAT_FLAG_BINARY | CERT_QUERY_FORMAT_FLAG_BASE64_ENCODED
         | CERT_QUERY_FORMAT_FLAG_ASN_ASCII_HEX_ENCODED;
 
     /**

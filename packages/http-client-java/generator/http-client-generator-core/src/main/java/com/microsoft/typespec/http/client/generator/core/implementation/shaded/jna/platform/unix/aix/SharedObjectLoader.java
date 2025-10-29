@@ -23,12 +23,11 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.unix.aix;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Library;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Library;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Native;
 
 /**
  * Special treatment of shared objects inside AIX archive libraries and

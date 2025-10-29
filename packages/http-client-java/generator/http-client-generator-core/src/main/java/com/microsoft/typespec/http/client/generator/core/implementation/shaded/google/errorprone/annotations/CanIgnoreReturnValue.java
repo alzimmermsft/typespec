@@ -33,6 +33,7 @@ import java.lang.annotation.Target;
  */
 @Documented
 // Note: annotating a type with @CanIgnoreReturnValue is discouraged (and banned inside of Google)
-@Target({METHOD, CONSTRUCTOR, TYPE})
+@Target({ METHOD, CONSTRUCTOR, TYPE })
 @Retention(CLASS)
-public @interface CanIgnoreReturnValue {}
+public @interface CanIgnoreReturnValue {
+}

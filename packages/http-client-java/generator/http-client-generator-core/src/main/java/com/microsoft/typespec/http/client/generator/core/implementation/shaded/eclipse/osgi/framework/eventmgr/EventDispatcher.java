@@ -20,6 +20,7 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * <p>
  * Clients may implement this interface.
  * </p>
+ * 
  * @since 3.1
  */
 public interface EventDispatcher<K, V, E> {

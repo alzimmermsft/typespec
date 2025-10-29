@@ -17,83 +17,93 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 public enum ExpressionContext {
 
-	/** Assignment context: potential poly-expressions are: method invocations, lambdas, reference expressions,
-	   conditional expressions and allocation expressions. This is the only Java 7 context where target type
-	   influenced evaluation of some expression.
+    /**
+     * Assignment context: potential poly-expressions are: method invocations, lambdas, reference expressions,
+     * conditional expressions and allocation expressions. This is the only Java 7 context where target type
+     * influenced evaluation of some expression.
+     * 
+     * Context induced by: ReturnStatement, ArrayInitializer, Assignment, FieldDeclaration and LocalDeclaration.
+     */
+    ASSIGNMENT_CONTEXT {
+        @Override
+        public String toString() {
+            return "assignment context"; //$NON-NLS-1$
+        }
 
-	   Context induced by: ReturnStatement, ArrayInitializer, Assignment, FieldDeclaration and LocalDeclaration.
-	*/
-	ASSIGNMENT_CONTEXT {
-		@Override
-		public String toString() {
-			return "assignment context"; //$NON-NLS-1$
-		}
-		@Override
-		public boolean definesTargetType() {
-			return true;
-		}
-	},
+        @Override
+        public boolean definesTargetType() {
+            return true;
+        }
+    },
 
-	/** Invocation context: potential poly-expressions are: method invocations, lambdas, reference expressions,
-	   conditional expressions and allocation expressions. At this point, we don't distinguish between strict
-	   and loose invocation contexts - we may have to cross the bridge some day.
+    /**
+     * Invocation context: potential poly-expressions are: method invocations, lambdas, reference expressions,
+     * conditional expressions and allocation expressions. At this point, we don't distinguish between strict
+     * and loose invocation contexts - we may have to cross the bridge some day.
+     * 
+     * Context induced by: AllocationExpression, QualifiedAllocationExpression, ExplicitConstructorCall, MessageSend
+     * CodeSnippetAllocationExpression and CodeSnippetMessageSend.
+     */
+    INVOCATION_CONTEXT {
+        @Override
+        public String toString() {
+            return "invocation context"; //$NON-NLS-1$
+        }
 
-	   Context induced by: AllocationExpression, QualifiedAllocationExpression, ExplicitConstructorCall, MessageSend
-	   CodeSnippetAllocationExpression and CodeSnippetMessageSend.
-	*/
-	INVOCATION_CONTEXT {
-		@Override
-		public String toString() {
-			return "invocation context"; //$NON-NLS-1$
-		}
-		@Override
-		public boolean definesTargetType() {
-			return true;
-		}
-	},
+        @Override
+        public boolean definesTargetType() {
+            return true;
+        }
+    },
 
-	/** Casting context: potential poly-expressions are: lambdas and reference expressions
-	   Context induced by: CastExpression.
-	*/
-	CASTING_CONTEXT {
-		@Override
-		public String toString() {
-			return "casting context"; //$NON-NLS-1$
-		}
-		@Override
-		public boolean definesTargetType() {
-			return false;
-		}
-	},
+    /**
+     * Casting context: potential poly-expressions are: lambdas and reference expressions
+     * Context induced by: CastExpression.
+     */
+    CASTING_CONTEXT {
+        @Override
+        public String toString() {
+            return "casting context"; //$NON-NLS-1$
+        }
 
-	/** Instanceof context: potential poly-expressions are: None
-	   Context induced by: Type comparison or Pattern matching expressions
-	   ie InstanceOfExpression or Switch
-	*/
-	TESTING_CONTEXT {
-		@Override
-		public String toString() {
-			return "Testing context"; //$NON-NLS-1$
-		}
-		@Override
-		public boolean definesTargetType() {
-			return false;
-		}
-	},
+        @Override
+        public boolean definesTargetType() {
+            return false;
+        }
+    },
 
-	/** Vanilla context (string, numeric): potential poly-expressions are: NONE. This is the nonpoly context in which
-	   expressions get evaluated, unless they feature in one of the above contexts.
-	*/
-	VANILLA_CONTEXT {
-		@Override
-		public String toString() {
-			return "vanilla context"; //$NON-NLS-1$
-		}
-		@Override
-		public boolean definesTargetType() {
-			return false;
-		}
-	};
+    /**
+     * Instanceof context: potential poly-expressions are: None
+     * Context induced by: Type comparison or Pattern matching expressions
+     * ie InstanceOfExpression or Switch
+     */
+    TESTING_CONTEXT {
+        @Override
+        public String toString() {
+            return "Testing context"; //$NON-NLS-1$
+        }
 
-	public abstract boolean definesTargetType();
+        @Override
+        public boolean definesTargetType() {
+            return false;
+        }
+    },
+
+    /**
+     * Vanilla context (string, numeric): potential poly-expressions are: NONE. This is the nonpoly context in which
+     * expressions get evaluated, unless they feature in one of the above contexts.
+     */
+    VANILLA_CONTEXT {
+        @Override
+        public String toString() {
+            return "vanilla context"; //$NON-NLS-1$
+        }
+
+        @Override
+        public boolean definesTargetType() {
+            return false;
+        }
+    };
+
+    public abstract boolean definesTargetType();
 }

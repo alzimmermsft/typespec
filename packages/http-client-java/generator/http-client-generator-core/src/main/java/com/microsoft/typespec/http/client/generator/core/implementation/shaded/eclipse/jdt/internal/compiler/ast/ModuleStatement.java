@@ -19,7 +19,7 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  */
 public abstract class ModuleStatement extends ASTNode {
 
-	public int declarationEnd;
-	public int declarationSourceStart;
-	public int declarationSourceEnd;
+    public int declarationEnd;
+    public int declarationSourceStart;
+    public int declarationSourceEnd;
 }

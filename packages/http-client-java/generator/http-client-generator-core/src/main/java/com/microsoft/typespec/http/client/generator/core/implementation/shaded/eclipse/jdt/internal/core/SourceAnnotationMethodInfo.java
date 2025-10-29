@@ -20,19 +20,19 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class SourceAnnotationMethodInfo extends SourceMethodInfo {
 
-	/*
-	 * The positions of a default member value of an annotation method.
-	 * These are {-1, -1} if the method is an annotation method with no default value.
-	 * Otherwise these are the start and end (inclusive) of the expression representing the default value.
-	 */
-	public int defaultValueStart = -1;
-	public int defaultValueEnd = -1;
+    /*
+     * The positions of a default member value of an annotation method.
+     * These are {-1, -1} if the method is an annotation method with no default value.
+     * Otherwise these are the start and end (inclusive) of the expression representing the default value.
+     */
+    public int defaultValueStart = -1;
+    public int defaultValueEnd = -1;
 
-	public IMemberValuePair defaultValue;
+    public IMemberValuePair defaultValue;
 
-	@Override
-	public boolean isAnnotationMethod() {
-		return true;
-	}
+    @Override
+    public boolean isAnnotationMethod() {
+        return true;
+    }
 
 }

@@ -66,7 +66,7 @@ public class TypeInfoUtil {
      * Instantiates a new i type info util.
      *
      * @param typeInfo
-     *            the type info
+     * the type info
      */
     public TypeInfoUtil(ITypeInfo typeInfo) {
         this.typeInfo = typeInfo;
@@ -102,7 +102,7 @@ public class TypeInfoUtil {
      * Gets the func desc.
      *
      * @param index
-     *            the index
+     * the index
      * @return the func desc
      */
     public FUNCDESC getFuncDesc(int index) {
@@ -117,7 +117,7 @@ public class TypeInfoUtil {
      * Gets the var desc.
      *
      * @param index
-     *            the index
+     * the index
      * @return the var desc
      */
     public VARDESC getVarDesc(int index) {
@@ -132,16 +132,15 @@ public class TypeInfoUtil {
      * Gets the names.
      *
      * @param memid
-     *            the memid
+     * the memid
      * @param maxNames
-     *            the max names
+     * the max names
      * @return the names
      */
     public String[] getNames(MEMBERID memid, int maxNames) {
         BSTR[] rgBstrNames = new BSTR[maxNames];
         UINTByReference pcNames = new UINTByReference();
-        HRESULT hr = this.typeInfo.GetNames(memid, rgBstrNames, new UINT(
-                maxNames), pcNames);
+        HRESULT hr = this.typeInfo.GetNames(memid, rgBstrNames, new UINT(maxNames), pcNames);
         COMUtils.checkRC(hr);
 
         int cNames = pcNames.getValue().intValue();
@@ -159,13 +158,12 @@ public class TypeInfoUtil {
      * Gets the ref type of impl type.
      *
      * @param index
-     *            the index
+     * the index
      * @return the ref type of impl type
      */
     public HREFTYPE getRefTypeOfImplType(int index) {
         HREFTYPEByReference ppTInfo = new HREFTYPEByReference();
-        HRESULT hr = this.typeInfo.GetRefTypeOfImplType(new UINT(index),
-                ppTInfo);
+        HRESULT hr = this.typeInfo.GetRefTypeOfImplType(new UINT(index), ppTInfo);
         COMUtils.checkRC(hr);
 
         return ppTInfo.getValue();
@@ -175,13 +173,12 @@ public class TypeInfoUtil {
      * Gets the impl type flags.
      *
      * @param index
-     *            the index
+     * the index
      * @return the impl type flags
      */
     public int getImplTypeFlags(int index) {
         IntByReference pImplTypeFlags = new IntByReference();
-        HRESULT hr = this.typeInfo.GetImplTypeFlags(new UINT(index),
-                pImplTypeFlags);
+        HRESULT hr = this.typeInfo.GetImplTypeFlags(new UINT(index), pImplTypeFlags);
         COMUtils.checkRC(hr);
 
         return pImplTypeFlags.getValue();
@@ -191,15 +188,14 @@ public class TypeInfoUtil {
      * Gets the i ds of names.
      *
      * @param rgszNames
-     *            the rgsz names
+     * the rgsz names
      * @param cNames
-     *            the c names
+     * the c names
      * @return the i ds of names
      */
     public MEMBERID[] getIDsOfNames(LPOLESTR[] rgszNames, int cNames) {
         MEMBERID[] pMemId = new MEMBERID[cNames];
-        HRESULT hr = this.typeInfo.GetIDsOfNames(rgszNames, new UINT(cNames),
-                pMemId);
+        HRESULT hr = this.typeInfo.GetIDsOfNames(rgszNames, new UINT(cNames), pMemId);
         COMUtils.checkRC(hr);
 
         return pMemId;
@@ -209,28 +205,25 @@ public class TypeInfoUtil {
      * Invoke.
      *
      * @param pvInstance
-     *            the pv instance
+     * the pv instance
      * @param memid
-     *            the memid
+     * the memid
      * @param wFlags
-     *            the w flags
+     * the w flags
      * @param pDispParams
-     *            the disp params
+     * the disp params
      * @return the invoke
      */
-    public Invoke Invoke(PVOID pvInstance, MEMBERID memid, WORD wFlags,
-            DISPPARAMS.ByReference pDispParams) {
+    public Invoke Invoke(PVOID pvInstance, MEMBERID memid, WORD wFlags, DISPPARAMS.ByReference pDispParams) {
 
         VARIANT.ByReference pVarResult = new VARIANT.ByReference();
         EXCEPINFO.ByReference pExcepInfo = new EXCEPINFO.ByReference();
         UINTByReference puArgErr = new UINTByReference();
 
-        HRESULT hr = this.typeInfo.Invoke(pvInstance, memid, wFlags,
-                pDispParams, pVarResult, pExcepInfo, puArgErr);
+        HRESULT hr = this.typeInfo.Invoke(pvInstance, memid, wFlags, pDispParams, pVarResult, pExcepInfo, puArgErr);
         COMUtils.checkRC(hr);
 
-        return new Invoke(pVarResult, pExcepInfo, puArgErr.getValue()
-                .intValue());
+        return new Invoke(pVarResult, pExcepInfo, puArgErr.getValue().intValue());
     }
 
     /**
@@ -253,14 +246,13 @@ public class TypeInfoUtil {
          * Instantiates a new invoke.
          *
          * @param pVarResult
-         *            the var result
+         * the var result
          * @param pExcepInfo
-         *            the excep info
+         * the excep info
          * @param puArgErr
-         *            the pu arg err
+         * the pu arg err
          */
-        public Invoke(VARIANT.ByReference pVarResult,
-                EXCEPINFO.ByReference pExcepInfo, int puArgErr) {
+        public Invoke(VARIANT.ByReference pVarResult, EXCEPINFO.ByReference pExcepInfo, int puArgErr) {
             this.pVarResult = pVarResult;
             this.pExcepInfo = pExcepInfo;
             this.puArgErr = puArgErr;
@@ -298,7 +290,7 @@ public class TypeInfoUtil {
      * Gets the documentation.
      *
      * @param memid
-     *            the memid
+     * the memid
      * @return the documentation
      */
     public TypeInfoDoc getDocumentation(MEMBERID memid) {
@@ -307,13 +299,11 @@ public class TypeInfoUtil {
         DWORDByReference pdwHelpContext = new DWORDByReference();
         BSTRByReference pBstrHelpFile = new BSTRByReference();
 
-        HRESULT hr = this.typeInfo.GetDocumentation(memid, pBstrName,
-                pBstrDocString, pdwHelpContext, pBstrHelpFile);
+        HRESULT hr = this.typeInfo.GetDocumentation(memid, pBstrName, pBstrDocString, pdwHelpContext, pBstrHelpFile);
         COMUtils.checkRC(hr);
 
-        TypeInfoDoc TypeInfoDoc = new TypeInfoDoc(pBstrName.getString(),
-                pBstrDocString.getString(), pdwHelpContext.getValue()
-                        .intValue(), pBstrHelpFile.getString());
+        TypeInfoDoc TypeInfoDoc = new TypeInfoDoc(pBstrName.getString(), pBstrDocString.getString(),
+            pdwHelpContext.getValue().intValue(), pBstrHelpFile.getString());
 
         OLEAUTO.SysFreeString(pBstrName.getValue());
         OLEAUTO.SysFreeString(pBstrDocString.getValue());
@@ -345,16 +335,15 @@ public class TypeInfoUtil {
          * Instantiates a new type info doc.
          *
          * @param name
-         *            the name
+         * the name
          * @param docString
-         *            the doc string
+         * the doc string
          * @param helpContext
-         *            the help context
+         * the help context
          * @param helpFile
-         *            the help file
+         * the help file
          */
-        public TypeInfoDoc(String name, String docString, int helpContext,
-                String helpFile) {
+        public TypeInfoDoc(String name, String docString, int helpContext, String helpFile) {
             this.name = name;
             this.docString = docString;
             this.helpContext = helpContext;
@@ -402,9 +391,9 @@ public class TypeInfoUtil {
      * Gets the dll entry.
      *
      * @param memid
-     *            the memid
+     * the memid
      * @param invKind
-     *            the inv kind
+     * the inv kind
      * @return the dll entry
      */
     public DllEntry GetDllEntry(MEMBERID memid, INVOKEKIND invKind) {
@@ -412,15 +401,13 @@ public class TypeInfoUtil {
         BSTRByReference pBstrName = new BSTRByReference();
         WORDByReference pwOrdinal = new WORDByReference();
 
-        HRESULT hr = this.typeInfo.GetDllEntry(memid, invKind, pBstrDllName,
-                pBstrName, pwOrdinal);
+        HRESULT hr = this.typeInfo.GetDllEntry(memid, invKind, pBstrDllName, pBstrName, pwOrdinal);
         COMUtils.checkRC(hr);
 
         OLEAUTO.SysFreeString(pBstrDllName.getValue());
         OLEAUTO.SysFreeString(pBstrName.getValue());
 
-        return new DllEntry(pBstrDllName.getString(), pBstrName.getString(),
-                pwOrdinal.getValue().intValue());
+        return new DllEntry(pBstrDllName.getString(), pBstrName.getString(), pwOrdinal.getValue().intValue());
     }
 
     /**
@@ -443,11 +430,11 @@ public class TypeInfoUtil {
          * Instantiates a new dll entry.
          *
          * @param dllName
-         *            the dll name
+         * the dll name
          * @param name
-         *            the name
+         * the name
          * @param ordinal
-         *            the ordinal
+         * the ordinal
          */
         public DllEntry(String dllName, String name, int ordinal) {
             this.dllName = dllName;
@@ -468,7 +455,7 @@ public class TypeInfoUtil {
          * Sets the dll name.
          *
          * @param dllName
-         *            the new dll name
+         * the new dll name
          */
         public void setDllName(String dllName) {
             this.dllName = dllName;
@@ -487,7 +474,7 @@ public class TypeInfoUtil {
          * Sets the name.
          *
          * @param name
-         *            the new name
+         * the new name
          */
         public void setName(String name) {
             this.name = name;
@@ -506,7 +493,7 @@ public class TypeInfoUtil {
          * Sets the ordinal.
          *
          * @param ordinal
-         *            the new ordinal
+         * the new ordinal
          */
         public void setOrdinal(int ordinal) {
             this.ordinal = ordinal;
@@ -517,7 +504,7 @@ public class TypeInfoUtil {
      * Gets the ref type info.
      *
      * @param hreftype
-     *            the hreftype
+     * the hreftype
      * @return the ref type info
      */
     public ITypeInfo getRefTypeInfo(HREFTYPE hreftype) {
@@ -532,9 +519,9 @@ public class TypeInfoUtil {
      * Address of member.
      *
      * @param memid
-     *            the memid
+     * the memid
      * @param invKind
-     *            the inv kind
+     * the inv kind
      * @return the pointer by reference
      */
     public PointerByReference AddressOfMember(MEMBERID memid, INVOKEKIND invKind) {
@@ -549,9 +536,9 @@ public class TypeInfoUtil {
      * Creates the instance.
      *
      * @param pUnkOuter
-     *            the unk outer
+     * the unk outer
      * @param riid
-     *            the riid
+     * the riid
      * @return the pointer by reference
      */
     public PointerByReference CreateInstance(IUnknown pUnkOuter, REFIID riid) {
@@ -566,7 +553,7 @@ public class TypeInfoUtil {
      * Gets the mops.
      *
      * @param memid
-     *            the memid
+     * the memid
      * @return the string
      */
     public String GetMops(MEMBERID memid) {
@@ -591,8 +578,7 @@ public class TypeInfoUtil {
         HRESULT hr = this.typeInfo.GetContainingTypeLib(ppTLib, pIndex);
         COMUtils.checkRC(hr);
 
-        return new ContainingTypeLib(new TypeLib(ppTLib.getValue()), pIndex
-                .getValue().intValue());
+        return new ContainingTypeLib(new TypeLib(ppTLib.getValue()), pIndex.getValue().intValue());
     }
 
     /**
@@ -612,9 +598,9 @@ public class TypeInfoUtil {
          * Instantiates a new containing type lib.
          *
          * @param typeLib
-         *            the type lib
+         * the type lib
          * @param index
-         *            the index
+         * the index
          */
         public ContainingTypeLib(ITypeLib typeLib, int index) {
             this.typeLib = typeLib;
@@ -634,7 +620,7 @@ public class TypeInfoUtil {
          * Sets the type lib.
          *
          * @param typeLib
-         *            the new type lib
+         * the new type lib
          */
         public void setTypeLib(ITypeLib typeLib) {
             this.typeLib = typeLib;
@@ -653,7 +639,7 @@ public class TypeInfoUtil {
          * Sets the index.
          *
          * @param index
-         *            the new index
+         * the new index
          */
         public void setIndex(int index) {
             this.index = index;
@@ -664,7 +650,7 @@ public class TypeInfoUtil {
      * Release type attr.
      *
      * @param pTypeAttr
-     *            the type attr
+     * the type attr
      */
     public void ReleaseTypeAttr(TYPEATTR pTypeAttr) {
         this.typeInfo.ReleaseTypeAttr(pTypeAttr);
@@ -674,7 +660,7 @@ public class TypeInfoUtil {
      * Release func desc.
      *
      * @param pFuncDesc
-     *            the func desc
+     * the func desc
      */
     public void ReleaseFuncDesc(FUNCDESC pFuncDesc) {
         this.typeInfo.ReleaseFuncDesc(pFuncDesc);
@@ -684,7 +670,7 @@ public class TypeInfoUtil {
      * Release var desc.
      *
      * @param pVarDesc
-     *            the var desc
+     * the var desc
      */
     public void ReleaseVarDesc(VARDESC pVarDesc) {
         this.typeInfo.ReleaseVarDesc(pVarDesc);

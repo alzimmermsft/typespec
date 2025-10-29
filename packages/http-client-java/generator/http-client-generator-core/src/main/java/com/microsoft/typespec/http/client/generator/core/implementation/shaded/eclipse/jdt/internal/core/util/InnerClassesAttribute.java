@@ -22,47 +22,45 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  * Default implementation of IInnerClassesAttribute.
  */
 public class InnerClassesAttribute extends ClassFileAttribute implements IInnerClassesAttribute {
-	private static final IInnerClassesAttributeEntry[] NO_ENTRIES = new IInnerClassesAttributeEntry[0];
+    private static final IInnerClassesAttributeEntry[] NO_ENTRIES = new IInnerClassesAttributeEntry[0];
 
-	private final int numberOfClasses;
-	private IInnerClassesAttributeEntry[] entries;
-	/**
-	 * Constructor for InnerClassesAttribute.
-	 */
-	public InnerClassesAttribute(
-		byte[] classFileBytes,
-		IConstantPool constantPool,
-		int offset)
-		throws ClassFormatException {
-		super(classFileBytes, constantPool, offset);
-		this.numberOfClasses = u2At(classFileBytes, 6, offset);
-		final int length = this.numberOfClasses;
-		if (length != 0) {
-			int readOffset = 8;
-			this.entries = new IInnerClassesAttributeEntry[length];
-			for (int i = 0; i < length; i++) {
-				this.entries[i] = new InnerClassesAttributeEntry(classFileBytes, constantPool, offset + readOffset);
-				readOffset += 8;
-			}
-		} else {
-			this.entries = NO_ENTRIES;
-		}
-	}
+    private final int numberOfClasses;
+    private IInnerClassesAttributeEntry[] entries;
 
-	/**
-	 * @see IInnerClassesAttribute#getInnerClassAttributesEntries()
-	 */
-	@Override
-	public IInnerClassesAttributeEntry[] getInnerClassAttributesEntries() {
-		return this.entries;
-	}
+    /**
+     * Constructor for InnerClassesAttribute.
+     */
+    public InnerClassesAttribute(byte[] classFileBytes, IConstantPool constantPool, int offset)
+        throws ClassFormatException {
+        super(classFileBytes, constantPool, offset);
+        this.numberOfClasses = u2At(classFileBytes, 6, offset);
+        final int length = this.numberOfClasses;
+        if (length != 0) {
+            int readOffset = 8;
+            this.entries = new IInnerClassesAttributeEntry[length];
+            for (int i = 0; i < length; i++) {
+                this.entries[i] = new InnerClassesAttributeEntry(classFileBytes, constantPool, offset + readOffset);
+                readOffset += 8;
+            }
+        } else {
+            this.entries = NO_ENTRIES;
+        }
+    }
 
-	/**
-	 * @see IInnerClassesAttribute#getNumberOfClasses()
-	 */
-	@Override
-	public int getNumberOfClasses() {
-		return this.numberOfClasses;
-	}
+    /**
+     * @see IInnerClassesAttribute#getInnerClassAttributesEntries()
+     */
+    @Override
+    public IInnerClassesAttributeEntry[] getInnerClassAttributesEntries() {
+        return this.entries;
+    }
+
+    /**
+     * @see IInnerClassesAttribute#getNumberOfClasses()
+     */
+    @Override
+    public int getNumberOfClasses() {
+        return this.numberOfClasses;
+    }
 
 }

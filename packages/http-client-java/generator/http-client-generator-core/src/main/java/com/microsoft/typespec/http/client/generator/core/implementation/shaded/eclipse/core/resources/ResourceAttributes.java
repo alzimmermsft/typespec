@@ -16,8 +16,6 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.filesystem.EFS;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.filesystem.IFileSystem;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.internal.utils.FileUtil;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.CoreException;
 
 /**
  * This class represents platform specific attributes of files.
@@ -33,24 +31,6 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class ResourceAttributes {
     private int attributes;
-
-    /**
-     * Creates a new resource attributes instance with attributes
-     * taken from the specified file in the file system. If the specified
-     * file does not exist or is not accessible, this method has the
-     * same effect as calling the default constructor.
-     *
-     * @param file The file to get attributes from
-     * @return A resource attributes object
-     */
-    public static ResourceAttributes fromFile(java.io.File file) {
-        try {
-            return FileUtil.fileInfoToAttributes(EFS.getStore(file.toURI()).fetchInfo());
-        } catch (CoreException e) {
-            // file could not be accessed
-            return new ResourceAttributes();
-        }
-    }
 
     /**
      * Creates a new instance of <code>ResourceAttributes</code>.

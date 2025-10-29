@@ -149,15 +149,6 @@ public interface IAnnotationComponentValue {
     IConstantPoolEntry getConstantValue();
 
     /**
-     * Returns the constant value index as described in the JVM specifications
-     * if the tag item is one of 'B', 'C', 'D', 'F', 'I', 'J', 'S', 'Z', or 's'.
-     * The value is unspecified otherwise.
-     *
-     * @return the constant value index
-     */
-    int getConstantValueIndex();
-
-    /**
      * Returns the simple name of the enum constant represented
      * by this annotation component value as described in the JVM specifications
      * if the tag item is 'e'.
@@ -206,12 +197,4 @@ public interface IAnnotationComponentValue {
      */
     int getTag();
 
-    /**
-     * Returns the number of values as described in the JVM specifications
-     * if the tag item is '['.
-     * The value is unspecified otherwise.
-     *
-     * @return the number of values
-     */
-    int getValuesNumber();
 }

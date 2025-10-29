@@ -16,8 +16,8 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.framework;
 
-import java.util.EventListener;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.osgi.annotation.versioning.ConsumerType;
+import java.util.EventListener;
 
 /**
  * A {@code BundleEvent} listener. {@code BundleListener} is a listener

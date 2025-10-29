@@ -20,8 +20,9 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  *	(internal only)
  */
 public class ShouldNotImplement extends RuntimeException {
-	private static final long serialVersionUID = 2669970476264283736L; // backward compatible
-	public ShouldNotImplement(String message) {
-		super(message);
-	}
+    private static final long serialVersionUID = 2669970476264283736L; // backward compatible
+
+    public ShouldNotImplement(String message) {
+        super(message);
+    }
 }

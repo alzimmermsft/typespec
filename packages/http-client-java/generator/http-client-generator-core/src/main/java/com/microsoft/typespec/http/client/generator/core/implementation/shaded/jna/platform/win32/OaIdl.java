@@ -22,39 +22,6 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32;
 
-import java.util.Calendar;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.IntegerType;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Memory;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.NativeLong;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure.FieldOrder;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Union;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.BaseTSD.ULONG_PTR;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.COMUtils;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.Dispatch;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Guid.GUID;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VARIANT;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VariantArg;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WTypes.BSTR;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WTypes.LPOLESTR;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WTypes.VARTYPE;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.BYTE;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.DWORD;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.DWORDByReference;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.LCID;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.LONG;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.LONGLONG;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.PVOID;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.SCODE;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.SHORT;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.ULONG;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.ULONGLONG;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.USHORT;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.WORD;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeComp;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.Unknown;
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VT_BOOL;
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VT_BSTR;
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VT_CY;
@@ -75,10 +42,43 @@ import static com.microsoft.typespec.http.client.generator.core.implementation.s
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VT_UINT;
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VT_UNKNOWN;
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VT_VARIANT;
+
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.IntegerType;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Memory;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.NativeLong;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Pointer;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Structure.FieldOrder;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.Union;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.BaseTSD.ULONG_PTR;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.COMUtils;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.Dispatch;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.TypeComp;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.Unknown;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Guid.GUID;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VARIANT;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Variant.VariantArg;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WTypes.BSTR;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WTypes.LPOLESTR;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WTypes.VARTYPE;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.BYTE;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.DWORD;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.DWORDByReference;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.LCID;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.LONG;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.LONGLONG;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.PVOID;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.SCODE;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.SHORT;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.ULONG;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.ULONGLONG;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.USHORT;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinDef.WORD;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.ByReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.DoubleByReference;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.PointerByReference;
 import java.io.Closeable;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -95,16 +95,22 @@ public interface OaIdl {
     /**
      * The Class EXCEPINFO.
      */
-    @FieldOrder({"wCode", "wReserved", "bstrSource", "bstrDescription",
-        "bstrHelpFile", "dwHelpContext", "pvReserved", "pfnDeferredFillIn",
-        "scode"})
+    @FieldOrder({
+        "wCode",
+        "wReserved",
+        "bstrSource",
+        "bstrDescription",
+        "bstrHelpFile",
+        "dwHelpContext",
+        "pvReserved",
+        "pfnDeferredFillIn",
+        "scode" })
     public static class EXCEPINFO extends Structure {
 
         /**
          * The Class ByReference.
          */
-        public static class ByReference extends EXCEPINFO implements
-                Structure.ByReference {
+        public static class ByReference extends EXCEPINFO implements Structure.ByReference {
         }
 
         /** The w code. */
@@ -145,7 +151,7 @@ public interface OaIdl {
          * Instantiates a new excepinfo.
          *
          * @param p
-         *            the p
+         * the p
          */
         public EXCEPINFO(Pointer p) {
             super(p);
@@ -223,12 +229,11 @@ public interface OaIdl {
         }
     }
 
-    @FieldOrder({"date"})
+    @FieldOrder({ "date" })
     public static class DATE extends Structure {
         private static final double MILLISECONDS_PER_DAY = 24L * 60L * 60L * 1000L;
 
-        public static class ByReference extends DATE implements
-                Structure.ByReference {
+        public static class ByReference extends DATE implements Structure.ByReference {
         }
 
         public double date;
@@ -376,8 +381,7 @@ public interface OaIdl {
     /** The Constant DISPID_VALUE. */
     public final static DISPID DISPID_VALUE = new DISPID(0);
 
-    public final static MEMBERID MEMBERID_NIL = new MEMBERID(
-            DISPID_UNKNOWN.intValue());
+    public final static MEMBERID MEMBERID_NIL = new MEMBERID(DISPID_UNKNOWN.intValue());
 
     /** An array that is allocated on the stack. */
     public final static int FADF_AUTO = 0x0001;
@@ -425,10 +429,9 @@ public interface OaIdl {
     /** Bits reserved for future use. */
     public final static int FADF_RESERVED = 0xF008;
 
-    @FieldOrder({"value"})
+    @FieldOrder({ "value" })
     public static class TYPEKIND extends Structure {
-        public static class ByReference extends TYPEKIND implements
-                Structure.ByReference {
+        public static class ByReference extends TYPEKIND implements Structure.ByReference {
             public ByReference() {
 
             }
@@ -478,10 +481,9 @@ public interface OaIdl {
         public static final int TKIND_MAX = TYPEKIND.TKIND_UNION + 1;
     }
 
-    @FieldOrder({"value"})
+    @FieldOrder({ "value" })
     public static class DESCKIND extends Structure {
-        public static class ByReference extends DESCKIND implements
-                Structure.ByReference {
+        public static class ByReference extends DESCKIND implements Structure.ByReference {
         }
 
         public int value;
@@ -548,11 +550,10 @@ public interface OaIdl {
      *
      * <blockquote>A 32-bit signed integer. The range is �2147483648 through 2147483647 decimal.</blockquote>
      */
-    @FieldOrder({"cDims", "fFeatures", "cbElements", "cLocks", "pvData", "rgsabound"})
+    @FieldOrder({ "cDims", "fFeatures", "cbElements", "cLocks", "pvData", "rgsabound" })
     public static class SAFEARRAY extends Structure implements Closeable {
 
-        public static class ByReference extends SAFEARRAY implements
-                Structure.ByReference {
+        public static class ByReference extends SAFEARRAY implements Structure.ByReference {
         }
 
         public USHORT cDims;
@@ -576,10 +577,10 @@ public interface OaIdl {
         @Override
         public void read() {
             super.read();
-            if(cDims.intValue() > 0) {
+            if (cDims.intValue() > 0) {
                 rgsabound = (SAFEARRAYBOUND[]) rgsabound[0].toArray(cDims.intValue());
             } else {
-                rgsabound = new SAFEARRAYBOUND[]{ new SAFEARRAYBOUND() };
+                rgsabound = new SAFEARRAYBOUND[] { new SAFEARRAYBOUND() };
             }
         }
 
@@ -642,14 +643,15 @@ public interface OaIdl {
             switch (getVarType().intValue()) {
                 case VT_BOOL:
                     mem = new Memory(2);
-                    if(arg instanceof Boolean) {
-                        mem.setShort(0, (short) (((Boolean) arg) ? 0xFFFF : 0) );
+                    if (arg instanceof Boolean) {
+                        mem.setShort(0, (short) (((Boolean) arg) ? 0xFFFF : 0));
                     } else {
                         mem.setShort(0, (short) (((Number) arg).intValue() > 0 ? 0xFFFF : 0));
                     }
                     hr = OleAuto.INSTANCE.SafeArrayPutElement(this, paramIndices, mem);
                     COMUtils.checkRC(hr);
                     break;
+
                 case VT_UI1:
                 case VT_I1:
                     mem = new Memory(1);
@@ -657,6 +659,7 @@ public interface OaIdl {
                     hr = OleAuto.INSTANCE.SafeArrayPutElement(this, paramIndices, mem);
                     COMUtils.checkRC(hr);
                     break;
+
                 case VT_UI2:
                 case VT_I2:
                     mem = new Memory(2);
@@ -664,6 +667,7 @@ public interface OaIdl {
                     hr = OleAuto.INSTANCE.SafeArrayPutElement(this, paramIndices, mem);
                     COMUtils.checkRC(hr);
                     break;
+
                 case VT_UI4:
                 case VT_UINT:
                 case VT_I4:
@@ -673,32 +677,37 @@ public interface OaIdl {
                     hr = OleAuto.INSTANCE.SafeArrayPutElement(this, paramIndices, mem);
                     COMUtils.checkRC(hr);
                     break;
+
                 case VT_ERROR:
                     mem = new Memory(4);
                     mem.setInt(0, ((Number) arg).intValue());
                     hr = OleAuto.INSTANCE.SafeArrayPutElement(this, paramIndices, mem);
                     COMUtils.checkRC(hr);
                     break;
+
                 case VT_R4:
                     mem = new Memory(4);
                     mem.setFloat(0, ((Number) arg).floatValue());
                     hr = OleAuto.INSTANCE.SafeArrayPutElement(this, paramIndices, mem);
                     COMUtils.checkRC(hr);
                     break;
+
                 case VT_R8:
                     mem = new Memory(8);
                     mem.setDouble(0, ((Number) arg).doubleValue());
                     hr = OleAuto.INSTANCE.SafeArrayPutElement(this, paramIndices, mem);
                     COMUtils.checkRC(hr);
                     break;
+
                 case VT_DATE:
                     mem = new Memory(8);
                     mem.setDouble(0, ((DATE) arg).date);
                     hr = OleAuto.INSTANCE.SafeArrayPutElement(this, paramIndices, mem);
                     COMUtils.checkRC(hr);
                     break;
+
                 case VT_BSTR:
-                    if(arg instanceof String) {
+                    if (arg instanceof String) {
                         BSTR bstr = OleAuto.INSTANCE.SysAllocString((String) arg);
                         hr = OleAuto.INSTANCE.SafeArrayPutElement(this, paramIndices, bstr.getPointer());
                         OleAuto.INSTANCE.SysFreeString(bstr);
@@ -708,29 +717,36 @@ public interface OaIdl {
                         COMUtils.checkRC(hr);
                     }
                     break;
+
                 case VT_VARIANT:
                     hr = OleAuto.INSTANCE.SafeArrayPutElement(this, paramIndices, ((VARIANT) arg).getPointer());
                     COMUtils.checkRC(hr);
                     break;
+
                 case VT_UNKNOWN:
                     hr = OleAuto.INSTANCE.SafeArrayPutElement(this, paramIndices, ((Unknown) arg).getPointer());
                     COMUtils.checkRC(hr);
                     break;
+
                 case VT_DISPATCH:
                     hr = OleAuto.INSTANCE.SafeArrayPutElement(this, paramIndices, ((Dispatch) arg).getPointer());
                     COMUtils.checkRC(hr);
                     break;
+
                 case VT_CY:
                     hr = OleAuto.INSTANCE.SafeArrayPutElement(this, paramIndices, ((CURRENCY) arg).getPointer());
                     COMUtils.checkRC(hr);
                     break;
+
                 case VT_DECIMAL:
                     hr = OleAuto.INSTANCE.SafeArrayPutElement(this, paramIndices, ((DECIMAL) arg).getPointer());
                     COMUtils.checkRC(hr);
                     break;
+
                 case VT_RECORD:
                 default:
-                    throw new IllegalStateException("Can't parse array content - type not supported: " + getVarType().intValue());
+                    throw new IllegalStateException(
+                        "Can't parse array content - type not supported: " + getVarType().intValue());
             }
         }
 
@@ -760,6 +776,7 @@ public interface OaIdl {
                     COMUtils.checkRC(hr);
                     result = mem.getShort(0) != 0;
                     break;
+
                 case VT_UI1:
                 case VT_I1:
                     mem = new Memory(1);
@@ -767,6 +784,7 @@ public interface OaIdl {
                     COMUtils.checkRC(hr);
                     result = mem.getByte(0);
                     break;
+
                 case VT_UI2:
                 case VT_I2:
                     mem = new Memory(2);
@@ -774,6 +792,7 @@ public interface OaIdl {
                     COMUtils.checkRC(hr);
                     result = mem.getShort(0);
                     break;
+
                 case VT_UI4:
                 case VT_UINT:
                 case VT_I4:
@@ -783,30 +802,35 @@ public interface OaIdl {
                     COMUtils.checkRC(hr);
                     result = mem.getInt(0);
                     break;
+
                 case VT_ERROR:
                     mem = new Memory(4);
                     hr = OleAuto.INSTANCE.SafeArrayGetElement(this, paramIndices, mem);
                     COMUtils.checkRC(hr);
                     result = new SCODE(mem.getInt(0));
                     break;
+
                 case VT_R4:
                     mem = new Memory(4);
                     hr = OleAuto.INSTANCE.SafeArrayGetElement(this, paramIndices, mem);
                     COMUtils.checkRC(hr);
                     result = mem.getFloat(0);
                     break;
+
                 case VT_R8:
                     mem = new Memory(8);
                     hr = OleAuto.INSTANCE.SafeArrayGetElement(this, paramIndices, mem);
                     COMUtils.checkRC(hr);
                     result = mem.getDouble(0);
                     break;
+
                 case VT_DATE:
                     mem = new Memory(8);
                     hr = OleAuto.INSTANCE.SafeArrayGetElement(this, paramIndices, mem);
                     COMUtils.checkRC(hr);
                     result = new DATE(mem.getDouble(0));
                     break;
+
                 case VT_BSTR:
                     pbr = new PointerByReference();
                     hr = OleAuto.INSTANCE.SafeArrayGetElement(this, paramIndices, pbr.getPointer());
@@ -815,39 +839,46 @@ public interface OaIdl {
                     result = bstr.getValue();
                     OleAuto.INSTANCE.SysFreeString(bstr);
                     break;
+
                 case VT_VARIANT:
                     VARIANT holder = new VARIANT();
                     hr = OleAuto.INSTANCE.SafeArrayGetElement(this, paramIndices, holder.getPointer());
                     COMUtils.checkRC(hr);
                     result = holder;
                     break;
+
                 case VT_UNKNOWN:
                     pbr = new PointerByReference();
                     hr = OleAuto.INSTANCE.SafeArrayGetElement(this, paramIndices, pbr.getPointer());
                     COMUtils.checkRC(hr);
                     result = new Unknown(pbr.getValue());
                     break;
+
                 case VT_DISPATCH:
                     pbr = new PointerByReference();
                     hr = OleAuto.INSTANCE.SafeArrayGetElement(this, paramIndices, pbr.getPointer());
                     COMUtils.checkRC(hr);
                     result = new Dispatch(pbr.getValue());
                     break;
+
                 case VT_CY:
                     CURRENCY currency = new CURRENCY();
                     hr = OleAuto.INSTANCE.SafeArrayGetElement(this, paramIndices, currency.getPointer());
                     COMUtils.checkRC(hr);
                     result = currency;
                     break;
+
                 case VT_DECIMAL:
                     DECIMAL decimal = new DECIMAL();
                     hr = OleAuto.INSTANCE.SafeArrayGetElement(this, paramIndices, decimal.getPointer());
                     COMUtils.checkRC(hr);
                     result = decimal;
                     break;
+
                 case VT_RECORD:
                 default:
-                    throw new IllegalStateException("Can't parse array content - type not supported: " + getVarType().intValue());
+                    throw new IllegalStateException(
+                        "Can't parse array content - type not supported: " + getVarType().intValue());
             }
 
             return result;
@@ -1007,7 +1038,7 @@ public interface OaIdl {
         }
     }
 
-    @FieldOrder({"pSAFEARRAY"})
+    @FieldOrder({ "pSAFEARRAY" })
     public static class SAFEARRAYByReference extends Structure implements Structure.ByReference {
 
         public SAFEARRAYByReference() {
@@ -1025,10 +1056,9 @@ public interface OaIdl {
         public SAFEARRAY.ByReference pSAFEARRAY;
     }
 
-    @FieldOrder({"cElements", "lLbound"})
+    @FieldOrder({ "cElements", "lLbound" })
     public static class SAFEARRAYBOUND extends Structure {
-        public static class ByReference extends SAFEARRAYBOUND implements
-                Structure.ByReference {
+        public static class ByReference extends SAFEARRAYBOUND implements Structure.ByReference {
         }
 
         public ULONG cElements;
@@ -1052,8 +1082,7 @@ public interface OaIdl {
 
     public static class CURRENCY extends Union {
 
-        public static class ByReference extends CURRENCY implements
-                Structure.ByReference {
+        public static class ByReference extends CURRENCY implements Structure.ByReference {
         };
 
         public _CURRENCY currency;
@@ -1068,7 +1097,7 @@ public interface OaIdl {
             this.read();
         }
 
-        @FieldOrder({"Lo", "Hi"})
+        @FieldOrder({ "Lo", "Hi" })
         public static class _CURRENCY extends Structure {
             public ULONG Lo;
             public LONG Hi;
@@ -1084,12 +1113,10 @@ public interface OaIdl {
         }
     }
 
-    @FieldOrder({"wReserved", "decimal1", "Hi32", "decimal2"})
+    @FieldOrder({ "wReserved", "decimal1", "Hi32", "decimal2" })
     public static class DECIMAL extends Structure {
-        public static class ByReference extends DECIMAL implements
-                Structure.ByReference {
+        public static class ByReference extends DECIMAL implements Structure.ByReference {
         };
-
 
         public static class _DECIMAL1 extends Union {
 
@@ -1106,7 +1133,7 @@ public interface OaIdl {
                 this.read();
             }
 
-            @FieldOrder({"scale", "sign"})
+            @FieldOrder({ "scale", "sign" })
             public static class _DECIMAL1_DECIMAL extends Structure {
                 public BYTE scale;
                 public BYTE sign;
@@ -1135,7 +1162,7 @@ public interface OaIdl {
                 this.read();
             }
 
-            @FieldOrder({"Lo32", "Mid32"})
+            @FieldOrder({ "Lo32", "Mid32" })
             public static class _DECIMAL2_DECIMAL extends Structure {
 
                 public BYTE Lo32;
@@ -1165,13 +1192,13 @@ public interface OaIdl {
         }
     }
 
-    @FieldOrder({"value"})
+    @FieldOrder({ "value" })
     public static class SYSKIND extends Structure {
-        public static class ByReference extends SYSKIND implements
-                Structure.ByReference {
+        public static class ByReference extends SYSKIND implements Structure.ByReference {
         }
 
         public int value;
+
         public SYSKIND() {
             super();
         }
@@ -1191,10 +1218,9 @@ public interface OaIdl {
         public static final int SYS_WIN64 = SYSKIND.SYS_MAC + 1;
     }
 
-    @FieldOrder({"value"})
+    @FieldOrder({ "value" })
     public static class LIBFLAGS extends Structure {
-        public static class ByReference extends LIBFLAGS implements
-                Structure.ByReference {
+        public static class ByReference extends LIBFLAGS implements Structure.ByReference {
         }
 
         public int value;
@@ -1218,10 +1244,9 @@ public interface OaIdl {
         public static final int LIBFLAG_FHASDISKIMAGE = 0x8;
     };
 
-    @FieldOrder({"guid", "lcid", "syskind", "wMajorVerNum", "wMinorVerNum", "wLibFlags"})
+    @FieldOrder({ "guid", "lcid", "syskind", "wMajorVerNum", "wMinorVerNum", "wLibFlags" })
     public static class TLIBATTR extends Structure {
-        public static class ByReference extends TLIBATTR implements
-                Structure.ByReference {
+        public static class ByReference extends TLIBATTR implements Structure.ByReference {
 
             public ByReference() {
                 super();
@@ -1251,8 +1276,7 @@ public interface OaIdl {
     }
 
     public static class BINDPTR extends Union {
-        public static class ByReference extends BINDPTR implements
-                Structure.ByReference {
+        public static class ByReference extends BINDPTR implements Structure.ByReference {
         };
 
         // / C type : FUNCDESC*
@@ -1288,12 +1312,21 @@ public interface OaIdl {
         }
     }
 
-    @FieldOrder({"memid", "lprgscode", "lprgelemdescParam", "funckind",
-        "invkind", "callconv", "cParams", "cParamsOpt", "oVft", "cScodes",
-        "elemdescFunc", "wFuncFlags"})
+    @FieldOrder({
+        "memid",
+        "lprgscode",
+        "lprgelemdescParam",
+        "funckind",
+        "invkind",
+        "callconv",
+        "cParams",
+        "cParamsOpt",
+        "oVft",
+        "cScodes",
+        "elemdescFunc",
+        "wFuncFlags" })
     public static class FUNCDESC extends Structure {
-        public static class ByReference extends FUNCDESC implements
-                Structure.ByReference {
+        public static class ByReference extends FUNCDESC implements Structure.ByReference {
         };
 
         public MEMBERID memid;
@@ -1318,17 +1351,15 @@ public interface OaIdl {
             this.read();
 
             if (this.cParams.shortValue() > 1) {
-                this.lprgelemdescParam.elemDescArg = new ELEMDESC[this.cParams
-                        .shortValue()];
+                this.lprgelemdescParam.elemDescArg = new ELEMDESC[this.cParams.shortValue()];
                 this.lprgelemdescParam.read();
             }
         }
     }
 
-    @FieldOrder({"elemDescArg"})
+    @FieldOrder({ "elemDescArg" })
     public static class ElemDescArg extends Structure {
-        public static class ByReference extends ElemDescArg implements
-                Structure.ByReference {
+        public static class ByReference extends ElemDescArg implements Structure.ByReference {
         }
 
         public ELEMDESC[] elemDescArg = { new ELEMDESC() };
@@ -1343,10 +1374,9 @@ public interface OaIdl {
         }
     }
 
-    @FieldOrder({"scodeArg"})
+    @FieldOrder({ "scodeArg" })
     public static class ScodeArg extends Structure {
-        public static class ByReference extends ScodeArg implements
-                Structure.ByReference {
+        public static class ByReference extends ScodeArg implements Structure.ByReference {
         }
 
         public SCODE[] scodeArg = { new SCODE() };
@@ -1361,10 +1391,9 @@ public interface OaIdl {
         }
     }
 
-    @FieldOrder({"memid", "lpstrSchema", "_vardesc", "elemdescVar", "wVarFlags", "varkind"})
+    @FieldOrder({ "memid", "lpstrSchema", "_vardesc", "elemdescVar", "wVarFlags", "varkind" })
     public class VARDESC extends Structure {
-        public static class ByReference extends VARDESC implements
-                Structure.ByReference {
+        public static class ByReference extends VARDESC implements Structure.ByReference {
         };
 
         // / C type : MEMBERID
@@ -1385,8 +1414,7 @@ public interface OaIdl {
         // / <i>native declaration : line 6</i>
         // / <i>native declaration : line 6</i>
         public static class _VARDESC extends Union {
-            public static class ByReference extends _VARDESC implements
-                    Structure.ByReference {
+            public static class ByReference extends _VARDESC implements Structure.ByReference {
             };
 
             // / [case()]
@@ -1410,8 +1438,8 @@ public interface OaIdl {
 
             /**
              * @param lpvarValue
-             *            [case()]<br>
-             *            C type : VARIANT*
+             * [case()]<br>
+             * C type : VARIANT*
              */
             public _VARDESC(VARIANT.ByReference lpvarValue) {
                 this.lpvarValue = lpvarValue;
@@ -1436,10 +1464,9 @@ public interface OaIdl {
         }
     }
 
-    @FieldOrder({"tdesc", "_elemdesc"})
+    @FieldOrder({ "tdesc", "_elemdesc" })
     public static class ELEMDESC extends Structure {
-        public static class ByReference extends ELEMDESC implements
-                Structure.ByReference {
+        public static class ByReference extends ELEMDESC implements Structure.ByReference {
         };
 
         /**
@@ -1453,8 +1480,7 @@ public interface OaIdl {
         // / <i>native declaration : line 4</i>
         // / <i>native declaration : line 4</i>
         public static class _ELEMDESC extends Union {
-            public static class ByReference extends _ELEMDESC implements
-                    Structure.ByReference {
+            public static class ByReference extends _ELEMDESC implements Structure.ByReference {
             };
 
             /**
@@ -1479,8 +1505,8 @@ public interface OaIdl {
 
             /**
              * @param paramdesc
-             *            info about the parameter<br>
-             *            C type : PARAMDESC
+             * info about the parameter<br>
+             * C type : PARAMDESC
              */
             public _ELEMDESC(PARAMDESC paramdesc) {
                 this.paramdesc = paramdesc;
@@ -1489,8 +1515,8 @@ public interface OaIdl {
 
             /**
              * @param idldesc
-             *            info for remoting the element<br>
-             *            C type : IDLDESC
+             * info for remoting the element<br>
+             * C type : IDLDESC
              */
             public _ELEMDESC(IDLDESC idldesc) {
                 this.idldesc = idldesc;
@@ -1508,10 +1534,9 @@ public interface OaIdl {
         }
     }
 
-    @FieldOrder({"value"})
+    @FieldOrder({ "value" })
     public static class FUNCKIND extends Structure {
-        public static class ByReference extends FUNCKIND implements
-                Structure.ByReference {
+        public static class ByReference extends FUNCKIND implements Structure.ByReference {
         };
 
         // / <i>native declaration : line 20</i>
@@ -1537,10 +1562,9 @@ public interface OaIdl {
         }
     }
 
-    @FieldOrder({"value"})
+    @FieldOrder({ "value" })
     public static class INVOKEKIND extends Structure {
-        public static class ByReference extends INVOKEKIND implements
-                Structure.ByReference {
+        public static class ByReference extends INVOKEKIND implements Structure.ByReference {
         }
 
         // / <i>native declaration : line 30</i>
@@ -1564,10 +1588,9 @@ public interface OaIdl {
         }
     }
 
-    @FieldOrder({"value"})
+    @FieldOrder({ "value" })
     public static class CALLCONV extends Structure {
-        public static class ByReference extends CALLCONV implements
-                Structure.ByReference {
+        public static class ByReference extends CALLCONV implements Structure.ByReference {
         }
 
         // / <i>native declaration : line 4</i>
@@ -1603,10 +1626,9 @@ public interface OaIdl {
         }
     }
 
-    @FieldOrder({"value"})
+    @FieldOrder({ "value" })
     public static class VARKIND extends Structure {
-        public static class ByReference extends VARKIND implements
-                Structure.ByReference {
+        public static class ByReference extends VARKIND implements Structure.ByReference {
         };
 
         // / <i>native declaration : line 4</i>
@@ -1629,12 +1651,10 @@ public interface OaIdl {
         }
     }
 
-    @FieldOrder({"_typedesc", "vt"})
+    @FieldOrder({ "_typedesc", "vt" })
     public static class TYPEDESC extends Structure {
-        public static class ByReference extends TYPEDESC implements
-                Structure.ByReference {
+        public static class ByReference extends TYPEDESC implements Structure.ByReference {
         };
-
 
         public static class _TYPEDESC extends Union {
             /**
@@ -1701,10 +1721,9 @@ public interface OaIdl {
         }
     }
 
-    @FieldOrder({"dwReserved", "wIDLFlags"})
+    @FieldOrder({ "dwReserved", "wIDLFlags" })
     public static class IDLDESC extends Structure {
-        public static class ByReference extends IDLDESC implements
-                Structure.ByReference {
+        public static class ByReference extends IDLDESC implements Structure.ByReference {
 
             public ByReference() {
                 super();
@@ -1735,7 +1754,7 @@ public interface OaIdl {
         }
     }
 
-    @FieldOrder({"tdescElem", "cDims", "rgbounds"})
+    @FieldOrder({ "tdescElem", "cDims", "rgbounds" })
     public class ARRAYDESC extends Structure {
         // / C type : TYPEDESC
         public TYPEDESC tdescElem;
@@ -1757,11 +1776,11 @@ public interface OaIdl {
 
         /**
          * @param tdescElem
-         *            C type : TYPEDESC<br>
+         * C type : TYPEDESC<br>
          * @param cDims dimensions
          * @param rgbounds
-         *            [size_is]<br>
-         *            C type : SAFEARRAYBOUND[1]
+         * [size_is]<br>
+         * C type : SAFEARRAYBOUND[1]
          */
         public ARRAYDESC(TYPEDESC tdescElem, short cDims, SAFEARRAYBOUND rgbounds[]) {
             this.tdescElem = tdescElem;
@@ -1771,16 +1790,14 @@ public interface OaIdl {
             this.rgbounds = rgbounds;
         }
 
-        public static class ByReference extends ARRAYDESC implements
-                Structure.ByReference {
+        public static class ByReference extends ARRAYDESC implements Structure.ByReference {
 
         };
     }
 
-    @FieldOrder({"pparamdescex", "wParamFlags"})
+    @FieldOrder({ "pparamdescex", "wParamFlags" })
     public static class PARAMDESC extends Structure {
-        public static class ByReference extends PARAMDESC implements
-                Structure.ByReference {
+        public static class ByReference extends PARAMDESC implements Structure.ByReference {
         }
 
         // replaced PARAMDESCEX.ByReference with Pointer
@@ -1798,10 +1815,9 @@ public interface OaIdl {
         }
     }
 
-    @FieldOrder({"cBytes", "varDefaultValue"})
+    @FieldOrder({ "cBytes", "varDefaultValue" })
     public static class PARAMDESCEX extends Structure {
-        public static class ByReference extends PARAMDESCEX implements
-                Structure.ByReference {
+        public static class ByReference extends PARAMDESCEX implements Structure.ByReference {
         };
 
         public ULONG cBytes;
@@ -1848,14 +1864,27 @@ public interface OaIdl {
         }
     }
 
-    @FieldOrder({"guid", "lcid", "dwReserved", "memidConstructor",
-        "memidDestructor", "lpstrSchema", "cbSizeInstance", "typekind",
-        "cFuncs", "cVars", "cImplTypes", "cbSizeVft", "cbAlignment",
-        "wTypeFlags", "wMajorVerNum", "wMinorVerNum", "tdescAlias",
-        "idldescType"})
+    @FieldOrder({
+        "guid",
+        "lcid",
+        "dwReserved",
+        "memidConstructor",
+        "memidDestructor",
+        "lpstrSchema",
+        "cbSizeInstance",
+        "typekind",
+        "cFuncs",
+        "cVars",
+        "cImplTypes",
+        "cbSizeVft",
+        "cbAlignment",
+        "wTypeFlags",
+        "wMajorVerNum",
+        "wMinorVerNum",
+        "tdescAlias",
+        "idldescType" })
     public class TYPEATTR extends Structure {
-        public static class ByReference extends TYPEATTR implements
-                Structure.ByReference {
+        public static class ByReference extends TYPEATTR implements Structure.ByReference {
         };
 
         // / C type : GUID

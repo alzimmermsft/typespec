@@ -13,13 +13,11 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.text.edits;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.Assert;
-
 
 /**
  * Copies a tree of text edits. A text edit copier keeps a map
@@ -30,72 +28,72 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public final class TextEditCopier {
 
-	private TextEdit fEdit;
-	private Map<TextEdit, TextEdit> fCopies;
+    private TextEdit fEdit;
+    private Map<TextEdit, TextEdit> fCopies;
 
-	/**
-	 * Constructs a new <code>TextEditCopier</code> for the
-	 * given edit. The actual copy is done by calling <code>
-	 * perform</code>.
-	 *
-	 * @param edit the edit to copy
-	 *
-	 * @see #perform()
-	 */
-	public TextEditCopier(TextEdit edit) {
-		super();
-		Assert.isNotNull(edit);
-		fEdit= edit;
-		fCopies= new HashMap<>();
-	}
+    /**
+     * Constructs a new <code>TextEditCopier</code> for the
+     * given edit. The actual copy is done by calling <code>
+     * perform</code>.
+     *
+     * @param edit the edit to copy
+     *
+     * @see #perform()
+     */
+    public TextEditCopier(TextEdit edit) {
+        super();
+        Assert.isNotNull(edit);
+        fEdit = edit;
+        fCopies = new HashMap<>();
+    }
 
-	/**
-	 * Performs the actual copying.
-	 *
-	 * @return the copy
-	 */
-	public TextEdit perform() {
-		TextEdit result= doCopy(fEdit);
-		if (result != null) {
-			for (TextEdit edit : fCopies.keySet()) {
-				edit.postProcessCopy(this);
-			}
-		}
-		return result;
-	}
+    /**
+     * Performs the actual copying.
+     *
+     * @return the copy
+     */
+    public TextEdit perform() {
+        TextEdit result = doCopy(fEdit);
+        if (result != null) {
+            for (TextEdit edit : fCopies.keySet()) {
+                edit.postProcessCopy(this);
+            }
+        }
+        return result;
+    }
 
-	/**
-	 * Returns the copy for the original text edit.
-	 *
-	 * @param original the original for which the copy
-	 *  is requested
-	 * @return the copy of the original edit or <code>null</code>
-	 *  if the original isn't managed by this copier
-	 */
-	public TextEdit getCopy(TextEdit original) {
-		Assert.isNotNull(original);
-		return fCopies.get(original);
-	}
+    /**
+     * Returns the copy for the original text edit.
+     *
+     * @param original the original for which the copy
+     * is requested
+     * @return the copy of the original edit or <code>null</code>
+     * if the original isn't managed by this copier
+     */
+    public TextEdit getCopy(TextEdit original) {
+        Assert.isNotNull(original);
+        return fCopies.get(original);
+    }
 
-	//---- helper methods --------------------------------------------
+    // ---- helper methods --------------------------------------------
 
-	private TextEdit doCopy(TextEdit edit) {
-		TextEdit result= edit.doCopy();
-		List<TextEdit> children= edit.internalGetChildren();
-		if (children != null) {
-			List<TextEdit> newChildren= new ArrayList<>(children.size());
-			for (TextEdit textEdit : children) {
-				TextEdit childCopy= doCopy(textEdit);
-				childCopy.internalSetParent(result);
-				newChildren.add(childCopy);
-			}
-			result.internalSetChildren(newChildren);
-		}
-		addCopy(edit, result);
-		return result;
-	}
+    private TextEdit doCopy(TextEdit edit) {
+        TextEdit result = edit.doCopy();
+        List<TextEdit> children = edit.internalGetChildren();
+        if (children != null) {
+            List<TextEdit> newChildren = new ArrayList<>(children.size());
+            for (TextEdit textEdit : children) {
+                TextEdit childCopy = doCopy(textEdit);
+                childCopy.internalSetParent(result);
+                newChildren.add(childCopy);
+            }
+            result.internalSetChildren(newChildren);
+        }
+        addCopy(edit, result);
+        return result;
+    }
 
-	private void addCopy(TextEdit original, TextEdit copy) {
-		fCopies.put(original, copy);
-	}
+    private void addCopy(TextEdit original, TextEdit copy) {
+        fCopies.put(original, copy);
+    }
 }

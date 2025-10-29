@@ -26,126 +26,128 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class Annotation extends SourceRefElement implements IAnnotation {
 
-	public static final IAnnotation[] NO_ANNOTATIONS = new IAnnotation[0];
-	public static final IMemberValuePair[] NO_MEMBER_VALUE_PAIRS = new IMemberValuePair[0];
+    public static final IAnnotation[] NO_ANNOTATIONS = new IAnnotation[0];
+    public static final IMemberValuePair[] NO_MEMBER_VALUE_PAIRS = new IMemberValuePair[0];
 
-	protected final String name;
-	// require to distinguish same annotations in different member value pairs
-	protected final String memberValuePairName;
+    protected final String name;
+    // require to distinguish same annotations in different member value pairs
+    protected final String memberValuePairName;
 
-	public Annotation(JavaElement parent, String name) {
-		this(parent, name, null);
-	}
+    public Annotation(JavaElement parent, String name) {
+        this(parent, name, null);
+    }
 
-	public Annotation(JavaElement parent, String name, String memberValuePairName) {
-		this(parent, name, memberValuePairName, 1);
-	}
+    public Annotation(JavaElement parent, String name, String memberValuePairName) {
+        this(parent, name, memberValuePairName, 1);
+    }
 
-	public Annotation(JavaElement parent, String name, String memberValuePairName, int occurrenceCount) {
-		super(parent, occurrenceCount);
-		this.name = name.intern();
-		this.memberValuePairName = memberValuePairName;
-	}
-	@Override
-	public boolean equals(Object o) {
-		if (!(o instanceof Annotation other)) {
-			return false;
-		}
-		if (this.memberValuePairName == null) {
-			if (other.memberValuePairName != null)
-				return false;
-		} else if (!this.memberValuePairName.equals(other.memberValuePairName)) {
-			return false;
-		}
-		// name equality is checked as part of the super.equals(..)
-		return super.equals(o);
-	}
+    public Annotation(JavaElement parent, String name, String memberValuePairName, int occurrenceCount) {
+        super(parent, occurrenceCount);
+        this.name = name.intern();
+        this.memberValuePairName = memberValuePairName;
+    }
 
-	@Override
-	protected int calculateHashCode() {
-		return Util.combineHashCodes(super.calculateHashCode(), (this.memberValuePairName == null) ? 0 : this.memberValuePairName.hashCode());
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Annotation other)) {
+            return false;
+        }
+        if (this.memberValuePairName == null) {
+            if (other.memberValuePairName != null)
+                return false;
+        } else if (!this.memberValuePairName.equals(other.memberValuePairName)) {
+            return false;
+        }
+        // name equality is checked as part of the super.equals(..)
+        return super.equals(o);
+    }
 
-	public IMember getDeclaringMember() {
-		return (IMember) getParent();
-	}
+    @Override
+    protected int calculateHashCode() {
+        return Util.combineHashCodes(super.calculateHashCode(),
+            (this.memberValuePairName == null) ? 0 : this.memberValuePairName.hashCode());
+    }
 
-	@Override
-	public String getElementName() {
-		return this.name;
-	}
+    public IMember getDeclaringMember() {
+        return (IMember) getParent();
+    }
 
-	@Override
-	public int getElementType() {
-		return ANNOTATION;
-	}
+    @Override
+    public String getElementName() {
+        return this.name;
+    }
 
-	@Override
-	protected char getHandleMementoDelimiter() {
-		return JavaElement.JEM_ANNOTATION;
-	}
+    @Override
+    public int getElementType() {
+        return ANNOTATION;
+    }
 
-	@Override
-	public IMemberValuePair[] getMemberValuePairs() throws JavaModelException {
-		Object info = getElementInfo();
-		if (info instanceof AnnotationInfo)
-			return ((AnnotationInfo) info).members;
-		IBinaryElementValuePair[] binaryAnnotations = ((IBinaryAnnotation) info).getElementValuePairs();
-		int length = binaryAnnotations.length;
-		IMemberValuePair[] result = new IMemberValuePair[length];
-		for (int i = 0; i < length; i++) {
-			IBinaryElementValuePair binaryAnnotation = binaryAnnotations[i];
-			MemberValuePair memberValuePair = new MemberValuePair(new String(binaryAnnotation.getName()));
-			memberValuePair.value = Util.getAnnotationMemberValue(this, memberValuePair, binaryAnnotation.getValue());
-			result[i] = memberValuePair;
-		}
-		return result;
-	}
+    @Override
+    protected char getHandleMementoDelimiter() {
+        return JavaElement.JEM_ANNOTATION;
+    }
 
-	@Override
-	public ISourceRange getNameRange() throws JavaModelException {
-		SourceMapper mapper= getSourceMapper();
-		if (mapper != null) {
-			IClassFile classFile = getClassFile();
-			if (classFile != null) {
-				// ensure the class file's buffer is open so that source ranges are computed
-				classFile.getBuffer();
-				return mapper.getNameRange(this);
-			}
-		}
-		Object info = getElementInfo();
-		if (info instanceof AnnotationInfo) {
-			AnnotationInfo annotationInfo = (AnnotationInfo) info;
-			return new SourceRange(annotationInfo.nameStart, annotationInfo.nameEnd - annotationInfo.nameStart + 1);
-		}
-		return null;
-	}
+    @Override
+    public IMemberValuePair[] getMemberValuePairs() throws JavaModelException {
+        Object info = getElementInfo();
+        if (info instanceof AnnotationInfo)
+            return ((AnnotationInfo) info).members;
+        IBinaryElementValuePair[] binaryAnnotations = ((IBinaryAnnotation) info).getElementValuePairs();
+        int length = binaryAnnotations.length;
+        IMemberValuePair[] result = new IMemberValuePair[length];
+        for (int i = 0; i < length; i++) {
+            IBinaryElementValuePair binaryAnnotation = binaryAnnotations[i];
+            MemberValuePair memberValuePair = new MemberValuePair(new String(binaryAnnotation.getName()));
+            memberValuePair.value = Util.getAnnotationMemberValue(this, memberValuePair, binaryAnnotation.getValue());
+            result[i] = memberValuePair;
+        }
+        return result;
+    }
 
-	/*
-	 * @see ISourceReference
-	 */
-	@Override
-	public ISourceRange getSourceRange() throws JavaModelException {
-		SourceMapper mapper= getSourceMapper();
-		if (mapper != null) {
-			// ensure the class file's buffer is open so that source ranges are computed
-			IClassFile classFile = getClassFile();
-			if (classFile != null) {
-				classFile.getBuffer();
-				return mapper.getSourceRange(this);
-			}
-		}
-		return super.getSourceRange();
-	}
+    @Override
+    public ISourceRange getNameRange() throws JavaModelException {
+        SourceMapper mapper = getSourceMapper();
+        if (mapper != null) {
+            IClassFile classFile = getClassFile();
+            if (classFile != null) {
+                // ensure the class file's buffer is open so that source ranges are computed
+                classFile.getBuffer();
+                return mapper.getNameRange(this);
+            }
+        }
+        Object info = getElementInfo();
+        if (info instanceof AnnotationInfo) {
+            AnnotationInfo annotationInfo = (AnnotationInfo) info;
+            return new SourceRange(annotationInfo.nameStart, annotationInfo.nameEnd - annotationInfo.nameStart + 1);
+        }
+        return null;
+    }
 
-	@Override
-	public IClassFile getClassFile() {
-		return getParent().getClassFile();
-	}
+    /*
+     * @see ISourceReference
+     */
+    @Override
+    public ISourceRange getSourceRange() throws JavaModelException {
+        SourceMapper mapper = getSourceMapper();
+        if (mapper != null) {
+            // ensure the class file's buffer is open so that source ranges are computed
+            IClassFile classFile = getClassFile();
+            if (classFile != null) {
+                classFile.getBuffer();
+                return mapper.getSourceRange(this);
+            }
+        }
+        return super.getSourceRange();
+    }
 
-	@Override
-	protected void toStringName(StringBuilder buffer) {
-		buffer.append('@');
-		buffer.append(getElementName());
-	}
+    @Override
+    public IClassFile getClassFile() {
+        return getParent().getClassFile();
+    }
+
+    @Override
+    protected void toStringName(StringBuilder buffer) {
+        buffer.append('@');
+        buffer.append(getElementName());
+    }
 }

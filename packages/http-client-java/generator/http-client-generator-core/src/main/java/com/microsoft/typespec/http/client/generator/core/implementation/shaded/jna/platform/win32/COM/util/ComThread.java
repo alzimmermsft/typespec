@@ -23,6 +23,9 @@
  */
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.util;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.COMUtils;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Ole32;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -31,10 +34,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.Ole32;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.WinNT;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.platform.win32.COM.COMUtils;
 
 public class ComThread {
     private static ThreadLocal<Boolean> isCOMThread = new ThreadLocal<>();
@@ -45,11 +44,13 @@ public class ComThread {
     long timeoutMilliseconds;
     UncaughtExceptionHandler uncaughtExceptionHandler;
 
-    public ComThread(final String threadName, long timeoutMilliseconds, UncaughtExceptionHandler uncaughtExceptionHandler) {
+    public ComThread(final String threadName, long timeoutMilliseconds,
+        UncaughtExceptionHandler uncaughtExceptionHandler) {
         this(threadName, timeoutMilliseconds, uncaughtExceptionHandler, Ole32.COINIT_MULTITHREADED);
     }
 
-    public ComThread(final String threadName, long timeoutMilliseconds, UncaughtExceptionHandler uncaughtExceptionHandler, final int coinitialiseExFlag) {
+    public ComThread(final String threadName, long timeoutMilliseconds,
+        UncaughtExceptionHandler uncaughtExceptionHandler, final int coinitialiseExFlag) {
         this.requiresInitialisation = true;
         this.timeoutMilliseconds = timeoutMilliseconds;
         this.uncaughtExceptionHandler = uncaughtExceptionHandler;
@@ -57,7 +58,7 @@ public class ComThread {
             @Override
             public void run() {
                 try {
-                    //If we do not use COINIT_MULTITHREADED, it is necessary to have
+                    // If we do not use COINIT_MULTITHREADED, it is necessary to have
                     // a message loop see -
                     // [http://www.codeguru.com/cpp/com-tech/activex/apts/article.php/c5529/Understanding-COM-Apartments-Part-I.htm]
                     // [http://www.codeguru.com/cpp/com-tech/activex/apts/article.php/c5533/Understanding-COM-Apartments-Part-II.htm]
@@ -79,7 +80,7 @@ public class ComThread {
                     throw new RuntimeException("ComThread executor has a problem.");
                 }
                 Thread thread = new Thread(r, threadName);
-                //make sure this is a daemon thread, or it will stop JVM existing
+                // make sure this is a daemon thread, or it will stop JVM existing
                 // if program does not call terminate();
                 thread.setDaemon(true);
 
@@ -101,8 +102,8 @@ public class ComThread {
      * Stop the COM Thread.
      *
      * @param timeoutMilliseconds
-     *            number of milliseconds to wait for a clean shutdown before a
-     *            forced shutdown is attempted
+     * number of milliseconds to wait for a clean shutdown before a
+     * forced shutdown is attempted
      */
     public void terminate(long timeoutMilliseconds) {
         try {

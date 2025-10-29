@@ -37,11 +37,13 @@ import java.lang.annotation.Target;
  * public class Foo {
  *   &#064;FormatMethod void doBarAndLogFailure(&#064;FormatString String logMessage,
  *       Object... args) {...}
- * }</pre>
+ * }
+ * </pre>
  *
  * <p>See {@link FormatMethod} for more information.
  */
 @Documented
 @Retention(CLASS)
-@Target({ElementType.PARAMETER})
-public @interface FormatString {}
+@Target({ ElementType.PARAMETER })
+public @interface FormatString {
+}

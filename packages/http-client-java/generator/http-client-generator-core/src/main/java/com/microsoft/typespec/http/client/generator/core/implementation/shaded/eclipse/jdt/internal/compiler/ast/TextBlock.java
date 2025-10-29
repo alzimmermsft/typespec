@@ -16,20 +16,20 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 
 public class TextBlock extends StringLiteral {
 
-	public int endLineNumber;
+    public int endLineNumber;
 
-	public TextBlock(char[] token, int start, int end, int lineNumber, int endLineNumber) {
-		super(token, start,end, lineNumber);
-		this.endLineNumber = endLineNumber - 1; // line number is 1 based
-	}
+    public TextBlock(char[] token, int start, int end, int lineNumber, int endLineNumber) {
+        super(token, start, end, lineNumber);
+        this.endLineNumber = endLineNumber - 1; // line number is 1 based
+    }
 
-	@Override
-	public StringBuilder printExpression(int indent, StringBuilder output) {
-		output.append("\"\"\"\n"); //$NON-NLS-1$
-		for (char c: this.source()) {
-			Util.appendEscapedChar(output, c, true);
-		}
-		output.append("\"\"\""); //$NON-NLS-1$
-		return output;
-	}
+    @Override
+    public StringBuilder printExpression(int indent, StringBuilder output) {
+        output.append("\"\"\"\n"); //$NON-NLS-1$
+        for (char c : this.source()) {
+            Util.appendEscapedChar(output, c, true);
+        }
+        output.append("\"\"\""); //$NON-NLS-1$
+        return output;
+    }
 }

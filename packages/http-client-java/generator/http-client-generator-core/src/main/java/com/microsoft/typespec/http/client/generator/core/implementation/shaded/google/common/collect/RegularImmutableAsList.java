@@ -16,11 +16,11 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.collect;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtIncompatible;
-import java.util.function.Consumer;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
+import java.util.function.Consumer;
 
 /**
  * An {@link ImmutableAsList} implementation specialized for when the delegate collection is already
@@ -32,63 +32,63 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @SuppressWarnings("serial") // uses writeReplace, not default serialization
 @ElementTypesAreNonnullByDefault
 class RegularImmutableAsList<E> extends ImmutableAsList<E> {
-  private final ImmutableCollection<E> delegate;
-  private final ImmutableList<? extends E> delegateList;
+    private final ImmutableCollection<E> delegate;
+    private final ImmutableList<? extends E> delegateList;
 
-  RegularImmutableAsList(ImmutableCollection<E> delegate, ImmutableList<? extends E> delegateList) {
-    this.delegate = delegate;
-    this.delegateList = delegateList;
-  }
+    RegularImmutableAsList(ImmutableCollection<E> delegate, ImmutableList<? extends E> delegateList) {
+        this.delegate = delegate;
+        this.delegateList = delegateList;
+    }
 
-  RegularImmutableAsList(ImmutableCollection<E> delegate, Object[] array) {
-    this(delegate, ImmutableList.<E>asImmutableList(array));
-  }
+    RegularImmutableAsList(ImmutableCollection<E> delegate, Object[] array) {
+        this(delegate, ImmutableList.<E>asImmutableList(array));
+    }
 
-  @Override
-  ImmutableCollection<E> delegateCollection() {
-    return delegate;
-  }
+    @Override
+    ImmutableCollection<E> delegateCollection() {
+        return delegate;
+    }
 
-  ImmutableList<? extends E> delegateList() {
-    return delegateList;
-  }
+    ImmutableList<? extends E> delegateList() {
+        return delegateList;
+    }
 
-  @SuppressWarnings("unchecked") // safe covariant cast!
-  @Override
-  public UnmodifiableListIterator<E> listIterator(int index) {
-    return (UnmodifiableListIterator<E>) delegateList.listIterator(index);
-  }
+    @SuppressWarnings("unchecked") // safe covariant cast!
+    @Override
+    public UnmodifiableListIterator<E> listIterator(int index) {
+        return (UnmodifiableListIterator<E>) delegateList.listIterator(index);
+    }
 
-  @GwtIncompatible // not present in emulated superclass
-  @Override
-  public void forEach(Consumer<? super E> action) {
-    delegateList.forEach(action);
-  }
+    @GwtIncompatible // not present in emulated superclass
+    @Override
+    public void forEach(Consumer<? super E> action) {
+        delegateList.forEach(action);
+    }
 
-  @GwtIncompatible // not present in emulated superclass
-  @Override
-  int copyIntoArray(@Nullable Object[] dst, int offset) {
-    return delegateList.copyIntoArray(dst, offset);
-  }
+    @GwtIncompatible // not present in emulated superclass
+    @Override
+    int copyIntoArray(@Nullable Object[] dst, int offset) {
+        return delegateList.copyIntoArray(dst, offset);
+    }
 
-  @Override
-  @CheckForNull
-  Object[] internalArray() {
-    return delegateList.internalArray();
-  }
+    @Override
+    @CheckForNull
+    Object[] internalArray() {
+        return delegateList.internalArray();
+    }
 
-  @Override
-  int internalArrayStart() {
-    return delegateList.internalArrayStart();
-  }
+    @Override
+    int internalArrayStart() {
+        return delegateList.internalArrayStart();
+    }
 
-  @Override
-  int internalArrayEnd() {
-    return delegateList.internalArrayEnd();
-  }
+    @Override
+    int internalArrayEnd() {
+        return delegateList.internalArrayEnd();
+    }
 
-  @Override
-  public E get(int index) {
-    return delegateList.get(index);
-  }
+    @Override
+    public E get(int index) {
+        return delegateList.get(index);
+    }
 }

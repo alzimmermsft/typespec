@@ -39,7 +39,8 @@ import java.lang.annotation.Target;
  * <p>The annotation can also be applied to fields, to indicate that the field is deliberately
  * non-final.
  */
-@Target({FIELD, PARAMETER, LOCAL_VARIABLE})
+@Target({ FIELD, PARAMETER, LOCAL_VARIABLE })
 @Retention(RUNTIME)
-@IncompatibleModifiers(modifier = {Modifier.FINAL})
-public @interface Var {}
+@IncompatibleModifiers(modifier = { Modifier.FINAL })
+public @interface Var {
+}

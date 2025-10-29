@@ -16,9 +16,7 @@
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core;
 
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.dom.AST;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.dom.ASTParser;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.dom.CompilationUnit;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core.dom.IBinding;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.text.edits.TextEdit;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.text.edits.UndoEdit;
@@ -104,69 +102,6 @@ public interface ICompilationUnit extends ITypeRoot, IWorkingCopy, ISourceManipu
      * @since 3.4
      */
     UndoEdit applyTextEdit(TextEdit edit, IProgressMonitor monitor) throws JavaModelException;
-
-    /**
-     * Changes this compilation unit handle into a working copy. A new {@link IBuffer} is
-     * created using this compilation unit handle's owner. Uses the primary owner if none was
-     * specified when this compilation unit handle was created.
-     * <p>
-     * When switching to working copy mode, problems are reported to given
-     * {@link IProblemRequestor}. Note that once in working copy mode, the given
-     * {@link IProblemRequestor} is ignored. Only the original {@link IProblemRequestor}
-     * is used to report subsequent problems.
-     * </p>
-     * <p>
-     * Once in working copy mode, changes to this compilation unit or its children are done in memory.
-     * Only the new buffer is affected. Using {@link #commitWorkingCopy(boolean, IProgressMonitor)}
-     * will bring the underlying resource in sync with this compilation unit.
-     * </p>
-     * <p>
-     * If this compilation unit was already in working copy mode, an internal counter is incremented and no
-     * other action is taken on this compilation unit. To bring this compilation unit back into the original mode
-     * (where it reflects the underlying resource), {@link #discardWorkingCopy} must be call as many
-     * times as {@link #becomeWorkingCopy(IProblemRequestor, IProgressMonitor)}.
-     * </p>
-     *
-     * @param problemRequestor a requestor which will get notified of problems detected during
-     * reconciling as they are discovered. The requestor can be set to <code>null</code> indicating
-     * that the client is not interested in problems.
-     * @param monitor a progress monitor used to report progress while opening this compilation unit
-     * or <code>null</code> if no progress should be reported
-     * @throws JavaModelException if this compilation unit could not become a working copy.
-     * @see #discardWorkingCopy()
-     * @since 3.0
-     *
-     * @deprecated Use {@link #becomeWorkingCopy(IProgressMonitor)} instead.
-     * Note that if this deprecated method is used, problems will be reported to the given problem requestor
-     * as well as the problem requestor returned by the working copy owner (if not null).
-     */
-    void becomeWorkingCopy(IProblemRequestor problemRequestor, IProgressMonitor monitor) throws JavaModelException;
-
-    /**
-     * Changes this compilation unit handle into a working copy. A new {@link IBuffer} is
-     * created using this compilation unit handle's owner. Uses the primary owner if none was
-     * specified when this compilation unit handle was created.
-     * <p>
-     * When switching to working copy mode, problems are reported to the {@link IProblemRequestor
-     * problem requestor} of the {@link WorkingCopyOwner working copy owner}.
-     * </p><p>
-     * Once in working copy mode, changes to this compilation unit or its children are done in memory.
-     * Only the new buffer is affected. Using {@link #commitWorkingCopy(boolean, IProgressMonitor)}
-     * will bring the underlying resource in sync with this compilation unit.
-     * </p><p>
-     * If this compilation unit was already in working copy mode, an internal counter is incremented and no
-     * other action is taken on this compilation unit. To bring this compilation unit back into the original mode
-     * (where it reflects the underlying resource), {@link #discardWorkingCopy} must be call as many
-     * times as {@link #becomeWorkingCopy(IProblemRequestor, IProgressMonitor)}.
-     * </p>
-     *
-     * @param monitor a progress monitor used to report progress while opening this compilation unit
-     * or <code>null</code> if no progress should be reported
-     * @throws JavaModelException if this compilation unit could not become a working copy.
-     * @see #discardWorkingCopy()
-     * @since 3.3
-     */
-    void becomeWorkingCopy(IProgressMonitor monitor) throws JavaModelException;
 
     /**
      * Finds the elements in this compilation unit that correspond to
@@ -323,84 +258,6 @@ public interface ICompilationUnit extends ITypeRoot, IWorkingCopy, ISourceManipu
      * exception occurs while accessing its corresponding resource
      */
     IType[] getTypes() throws JavaModelException;
-
-    /**
-     * Returns a new working copy of this compilation unit if it is a primary compilation unit,
-     * or this compilation unit if it is already a non-primary working copy.
-     * <p>
-     * Note: if intending to share a working copy amongst several clients, then
-     * {@link #getWorkingCopy(WorkingCopyOwner, IProblemRequestor, IProgressMonitor)}
-     * should be used instead.
-     * </p><p>
-     * When the working copy instance is created, an ADDED IJavaElementDelta is
-     * reported on this working copy.
-     * </p><p>
-     * Once done with the working copy, users of this method must discard it using
-     * {@link #discardWorkingCopy()}.
-     * </p><p>
-     * Since 2.1, a working copy can be created on a not-yet existing compilation
-     * unit. In particular, such a working copy can then be committed in order to create
-     * the corresponding compilation unit.
-     * </p>
-     * 
-     * @param monitor a progress monitor used to report progress while opening this compilation unit
-     * or <code>null</code> if no progress should be reported
-     * @throws JavaModelException if the contents of this element can
-     * not be determined.
-     * @return a new working copy of this element if this element is not
-     * a working copy, or this element if this element is already a working copy
-     * @since 3.0
-     */
-    ICompilationUnit getWorkingCopy(IProgressMonitor monitor) throws JavaModelException;
-
-    /**
-     * Returns a shared working copy on this compilation unit using the given working copy owner to create
-     * the buffer, or this compilation unit if it is already a non-primary working copy.
-     * This API can only answer an already existing working copy if it is based on the same
-     * original compilation unit AND was using the same working copy owner (that is, as defined by
-     * {@link Object#equals}).
-     * <p>
-     * The life time of a shared working copy is as follows:
-     * <ul>
-     * <li>The first call to {@link #getWorkingCopy(WorkingCopyOwner, IProblemRequestor, IProgressMonitor)}
-     * creates a new working copy for this element</li>
-     * <li>Subsequent calls increment an internal counter.</li>
-     * <li>A call to {@link #discardWorkingCopy()} decrements the internal counter.</li>
-     * <li>When this counter is 0, the working copy is discarded.
-     * </ul>
-     * So users of this method must discard exactly once the working copy.
-     * <p>
-     * Note that the working copy owner will be used for the life time of this working copy, that is if the
-     * working copy is closed then reopened, this owner will be used.
-     * The buffer will be automatically initialized with the original's compilation unit content
-     * upon creation.
-     * <p>
-     * When the shared working copy instance is created, an ADDED IJavaElementDelta is reported on this
-     * working copy.
-     * </p><p>
-     * Since 2.1, a working copy can be created on a not-yet existing compilation
-     * unit. In particular, such a working copy can then be committed in order to create
-     * the corresponding compilation unit.
-     * </p>
-     * 
-     * @param owner the working copy owner that creates a buffer that is used to get the content
-     * of the working copy
-     * @param problemRequestor a requestor which will get notified of problems detected during
-     * reconciling as they are discovered. The requestor can be set to <code>null</code> indicating
-     * that the client is not interested in problems.
-     * @param monitor a progress monitor used to report progress while opening this compilation unit
-     * or <code>null</code> if no progress should be reported
-     * @throws JavaModelException if the contents of this element can
-     * not be determined.
-     * @return a new working copy of this element using the given factory to create
-     * the buffer, or this element if this element is already a working copy
-     * @since 3.0
-     * @deprecated Use {@link ITypeRoot#getWorkingCopy(WorkingCopyOwner, IProgressMonitor)} instead.
-     * Note that if this deprecated method is used, problems will be reported on the passed problem requester
-     * as well as on the problem requestor returned by the working copy owner (if not null).
-     */
-    ICompilationUnit getWorkingCopy(WorkingCopyOwner owner, IProblemRequestor problemRequestor,
-        IProgressMonitor monitor) throws JavaModelException;
 
     /**
      * Returns whether the resource of this working copy has changed since the

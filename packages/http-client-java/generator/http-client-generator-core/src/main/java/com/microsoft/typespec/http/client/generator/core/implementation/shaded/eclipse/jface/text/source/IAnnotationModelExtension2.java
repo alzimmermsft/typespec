@@ -15,7 +15,6 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import java.util.Iterator;
 
-
 /**
  * Extends {@link IAnnotationModel} with the
  * ability to retrieve a set of annotations within a given region.
@@ -24,17 +23,17 @@ import java.util.Iterator;
  */
 public interface IAnnotationModelExtension2 {
 
-	/**
-	 * Returns an iterator over all annotations managed by this model that are
-	 * inside the given region.
-	 *
-	 * @param offset the start position of the region, must be &gt;= 0
-	 * @param length the length of the region, must be &gt;= 0
-	 * @param canStartBefore if <code>true</code> then annotations are included
-	 *            which start before the region if they end at or after the region's start
-	 * @param canEndAfter if <code>true</code> then annotations are included
-	 *            which end after the region if they start at or before the region's end
-	 * @return all annotations inside the region managed by this model
-	 */
-	Iterator<Annotation> getAnnotationIterator(int offset, int length, boolean canStartBefore, boolean canEndAfter);
+    /**
+     * Returns an iterator over all annotations managed by this model that are
+     * inside the given region.
+     *
+     * @param offset the start position of the region, must be &gt;= 0
+     * @param length the length of the region, must be &gt;= 0
+     * @param canStartBefore if <code>true</code> then annotations are included
+     * which start before the region if they end at or after the region's start
+     * @param canEndAfter if <code>true</code> then annotations are included
+     * which end after the region if they start at or before the region's end
+     * @return all annotations inside the region managed by this model
+     */
+    Iterator<Annotation> getAnnotationIterator(int offset, int length, boolean canStartBefore, boolean canEndAfter);
 }

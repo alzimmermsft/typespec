@@ -21,40 +21,31 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;
 
 public class AnnotationContext {
-	public static final int VISIBLE = 0x1;
-	public static final int INVISIBLE = 0x2;
-	public Annotation annotation;
-	public Expression typeReference;
-	public int targetType;
-	public int info;
-	public int info2;
-	public int visibility;
-	public LocalVariableBinding variableBinding;
-	public Wildcard wildcard;
+    public static final int VISIBLE = 0x1;
+    public static final int INVISIBLE = 0x2;
+    public Annotation annotation;
+    public Expression typeReference;
+    public int targetType;
+    public int info;
+    public int info2;
+    public int visibility;
+    public LocalVariableBinding variableBinding;
+    public Wildcard wildcard;
 
-	public AnnotationContext(
-			Annotation annotation,
-			Expression typeReference,
-			int targetType,
-			int visibility) {
-		this.annotation = annotation;
-		this.typeReference = typeReference;
-		this.targetType = targetType;
-		this.visibility = visibility;
-	}
+    public AnnotationContext(Annotation annotation, Expression typeReference, int targetType, int visibility) {
+        this.annotation = annotation;
+        this.typeReference = typeReference;
+        this.targetType = targetType;
+        this.visibility = visibility;
+    }
 
-	@Override
-	public String toString() {
-		return "AnnotationContext [annotation=" //$NON-NLS-1$
-				+ this.annotation
-				+ ", typeReference=" //$NON-NLS-1$
-				+ this.typeReference
-				+ ", targetType=" //$NON-NLS-1$
-				+ this.targetType
-				+ ", info =" //$NON-NLS-1$
-				+ this.info
-				+ ", boundIndex=" //$NON-NLS-1$
-				+ this.info2
-				+ "]"; //$NON-NLS-1$
-	}
+    @Override
+    public String toString() {
+        return "AnnotationContext [annotation=" //$NON-NLS-1$
+            + this.annotation + ", typeReference=" //$NON-NLS-1$
+            + this.typeReference + ", targetType=" //$NON-NLS-1$
+            + this.targetType + ", info =" //$NON-NLS-1$
+            + this.info + ", boundIndex=" //$NON-NLS-1$
+            + this.info2 + "]"; //$NON-NLS-1$
+    }
 }

@@ -31,6 +31,7 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.j
  * Note: we are using this &quot;intermediate&quot; API in order to allow
  * Linux-like O/S-es to implement the same API, but maybe using a different
  * library name
+ * 
  * @author Lyor Goldstein
  */
 public interface LibCAPI extends Reboot, Resource {
@@ -43,7 +44,8 @@ public interface LibCAPI extends Reboot, Resource {
 
         private static final long serialVersionUID = 1L;
 
-        public static class ByReference extends com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.ByReference {
+        public static class ByReference
+            extends com.microsoft.typespec.http.client.generator.core.implementation.shaded.jna.ptr.ByReference {
             public ByReference() {
                 this(0);
             }
@@ -107,22 +109,31 @@ public interface LibCAPI extends Reboot, Resource {
 
     // see man(2) get/set uid/gid
     int getuid();
+
     int geteuid();
+
     int getgid();
+
     int getegid();
 
     int setuid(int uid);
+
     int seteuid(int uid);
+
     int setgid(int gid);
+
     int setegid(int gid);
 
     // see man(2) get/set hostname
     int HOST_NAME_MAX = 255; // not including the '\0'
+
     int gethostname(byte[] name, int len);
+
     int sethostname(String name, int len);
 
     // see man(2) get/set domainname
     int getdomainname(byte[] name, int len);
+
     int setdomainname(String name, int len);
 
     /**
@@ -135,9 +146,10 @@ public interface LibCAPI extends Reboot, Resource {
 
     /**
      * Update or add a variable in the environment of the calling process.
+     * 
      * @param name Environment variable name
      * @param value Required value
-     * @param overwrite  If the environment variable already exists and the
+     * @param overwrite If the environment variable already exists and the
      * value of {@code overwrite} is non-zero, the function shall return
      * success and the environment shall be updated. If the environment
      * variable already exists and the value of {@code overwrite} is zero, the
@@ -162,10 +174,11 @@ public interface LibCAPI extends Reboot, Resource {
 
     /**
      * The getloadavg() function returns the number of processes in the system
-     * run queue averaged over various periods of time.  Up to nelem samples are
-     * retrieved and assigned to successive elements of loadavg[].  The system
+     * run queue averaged over various periods of time. Up to nelem samples are
+     * retrieved and assigned to successive elements of loadavg[]. The system
      * imposes a maximum of 3 samples, representing averages over the last 1, 5,
      * and 15 minutes, respectively.
+     * 
      * @param loadavg An array of doubles which will be filled with the results
      * @param nelem Number of samples to return
      * @return If the load average was unobtainable, -1 is returned; otherwise,
@@ -186,11 +199,11 @@ public interface LibCAPI extends Reboot, Resource {
      * removed using {@code unlink}, the file is deleted.
      *
      * @param fd
-     *            a file descriptor
+     * a file descriptor
      * @return returns zero on success. On error, -1 is returned, and {@code errno}
-     *         is set appropriately.
-     *         <p>
-     *         {@code close()} should not be retried after an error.
+     * is set appropriately.
+     * <p>
+     * {@code close()} should not be retried after an error.
      */
     int close(int fd);
 
@@ -203,15 +216,15 @@ public interface LibCAPI extends Reboot, Resource {
      * starting at {@code addr} and having length {@code length} is updated.
      *
      * @param addr
-     *            The start of the memory area to sync to the filesystem.
+     * The start of the memory area to sync to the filesystem.
      * @param length
-     *            The length of the memory area to sync to the filesystem.
+     * The length of the memory area to sync to the filesystem.
      * @param flags
-     *            The flags argument should specify exactly one of {@code MS_ASYNC}
-     *            and {@code MS_SYNC}, and may additionally include the
-     *            {@code MS_INVALIDATE} bit.
+     * The flags argument should specify exactly one of {@code MS_ASYNC}
+     * and {@code MS_SYNC}, and may additionally include the
+     * {@code MS_INVALIDATE} bit.
      * @return On success, zero is returned. On error, -1 is returned, and
-     *         {@code errno} is set appropriately.
+     * {@code errno} is set appropriately.
      */
     int msync(Pointer addr, size_t length, int flags);
 
@@ -225,16 +238,16 @@ public interface LibCAPI extends Reboot, Resource {
      * It is not an error if the indicated range does not contain any mapped pages.
      *
      * @param addr
-     *            The base address from which to delete mappings. The address addr
-     *            must be a multiple of the page size (but length need not be).
+     * The base address from which to delete mappings. The address addr
+     * must be a multiple of the page size (but length need not be).
      * @param length
-     *            The length from the base address to delete mappings. All pages
-     *            containing a part of the indicated range are unmapped, and
-     *            subsequent references to these pages will generate
-     *            {@code SIGSEGV}.
+     * The length from the base address to delete mappings. All pages
+     * containing a part of the indicated range are unmapped, and
+     * subsequent references to these pages will generate
+     * {@code SIGSEGV}.
      * @return On success, returns 0. On failure, it returns -1, and {@code errno}
-     *         is set to indicate the cause of the error (probably to
-     *         {@code EINVAL}).
+     * is set to indicate the cause of the error (probably to
+     * {@code EINVAL}).
      */
     int munmap(Pointer addr, size_t length);
 }

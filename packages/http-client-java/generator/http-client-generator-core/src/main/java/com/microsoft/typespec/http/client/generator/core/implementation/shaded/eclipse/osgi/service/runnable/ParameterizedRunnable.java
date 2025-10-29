@@ -15,7 +15,7 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 /**
  * Like a {@link Runnable}, an object which captures a block of code which can
- * be passed around and executed.  Unlike standard runnables, paramaterized
+ * be passed around and executed. Unlike standard runnables, paramaterized
  * runnables allow an arbitrary {@link Object} to be passed in when the
  * block is evaluated.
  * <p>
@@ -25,17 +25,18 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
  * This class is for internal use by the platform-related plug-ins.
  * Clients outside of the base platform should not reference or subclass this class.
  * </p>
+ * 
  * @since 3.0
  */
 public interface ParameterizedRunnable {
 
-	/**
-	 * Executes the block of code encapsulated by this runnable in the context of
-	 * the given object and returns the result.  The result may be <code>null</code>.
-	 *
-	 * @param context the context for evaluating the runnable
-	 * @return the result of evaluating the runnable in the given context
-	 * @throws Exception if there is a problem running this runnable
-	 */
+    /**
+     * Executes the block of code encapsulated by this runnable in the context of
+     * the given object and returns the result. The result may be <code>null</code>.
+     *
+     * @param context the context for evaluating the runnable
+     * @return the result of evaluating the runnable in the given context
+     * @throws Exception if there is a problem running this runnable
+     */
     Object run(Object context) throws Exception;
 }

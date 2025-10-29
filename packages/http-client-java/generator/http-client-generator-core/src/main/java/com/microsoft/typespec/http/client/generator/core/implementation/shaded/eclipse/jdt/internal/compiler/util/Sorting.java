@@ -13,13 +13,13 @@
  **********************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.util;
 
-import java.util.Arrays;
-import java.util.Comparator;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.InferenceVariable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.MethodBinding;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.internal.compiler.lookup.TypeIds;
+import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * Sorting utilities.
@@ -27,97 +27,97 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.e
  */
 public class Sorting {
 
-	/**
-	 * Topological sort for types
-	 * Guarantee: supertypes come before subtypes.
-	 */
-	public static ReferenceBinding[] sortTypes(ReferenceBinding[] types) {
-		int len = types.length;
+    /**
+     * Topological sort for types
+     * Guarantee: supertypes come before subtypes.
+     */
+    public static ReferenceBinding[] sortTypes(ReferenceBinding[] types) {
+        int len = types.length;
 
-		ReferenceBinding[] unsorted = new ReferenceBinding[len];
-		ReferenceBinding[] sorted = new ReferenceBinding[len];
-		System.arraycopy(types, 0, unsorted, 0, len);
+        ReferenceBinding[] unsorted = new ReferenceBinding[len];
+        ReferenceBinding[] sorted = new ReferenceBinding[len];
+        System.arraycopy(types, 0, unsorted, 0, len);
 
-		int o = 0;
-		for(int i=0; i<len; i++)
-			o = sort(unsorted, i, sorted, o);
+        int o = 0;
+        for (int i = 0; i < len; i++)
+            o = sort(unsorted, i, sorted, o);
 
-		return sorted;
-	}
-	// Transfer input[i] and all its supers into output[o] ff.
-	private static int sort(ReferenceBinding[] input, int i,
-							ReferenceBinding[] output, int o)
-	{
-		if (input[i] == null)
-			return o;
+        return sorted;
+    }
 
-		ReferenceBinding superclass = input[i].superclass();
-		o = sortSuper(superclass, input, output, o);
+    // Transfer input[i] and all its supers into output[o] ff.
+    private static int sort(ReferenceBinding[] input, int i, ReferenceBinding[] output, int o) {
+        if (input[i] == null)
+            return o;
 
-		ReferenceBinding[] superInterfaces = input[i].superInterfaces();
-		for (ReferenceBinding superInterface : superInterfaces) {
-			o = sortSuper(superInterface, input, output, o);
-		}
+        ReferenceBinding superclass = input[i].superclass();
+        o = sortSuper(superclass, input, output, o);
 
-		// done with supers, now input[i] can safely be transferred:
-		output[o++] = input[i];
-		input[i] = null;
+        ReferenceBinding[] superInterfaces = input[i].superInterfaces();
+        for (ReferenceBinding superInterface : superInterfaces) {
+            o = sortSuper(superInterface, input, output, o);
+        }
 
-		return o;
-	}
-	// if superclass is within the set of types to sort,
-	// transfer it and all its supers to output[o] ff.
-	private static int sortSuper(ReferenceBinding superclass,
-						  		 ReferenceBinding[] input,
-						  		 ReferenceBinding[] output, int o)
-	{
-		if (superclass.id != TypeIds.T_JavaLangObject) {
-			// search superclass within input:
-			int j = 0;
-			for(j=0; j<input.length; j++)
-				if (TypeBinding.equalsEquals(input[j], superclass))
-					break;
-			if (j < input.length)
-				// depth first traversal:
-				o = sort(input, j, output, o);
-			// otherwise assume super was already transferred.
-		}
-		return o;
-	}
-	public static MethodBinding[] concreteFirst(MethodBinding[] methods, int length) {
-		if (length == 0 || (length > 0 && !methods[0].isAbstract()))
-			return methods;
-		MethodBinding[] copy = new MethodBinding[length];
-		int idx = 0;
-		for (int i=0; i<length; i++)
-			if (!methods[i].isAbstract())
-				copy[idx++] = methods[i];
-		for (int i=0; i<length; i++)
-			if (methods[i].isAbstract())
-				copy[idx++] = methods[i];
-		return copy;
-	}
-	public static MethodBinding[] abstractFirst(MethodBinding[] methods, int length) {
-		if (length == 0 || (length > 0 && methods[0].isAbstract()))
-			return methods;
-		MethodBinding[] copy = new MethodBinding[length];
-		int idx = 0;
-		for (int i=0; i<length; i++)
-			if (methods[i].isAbstract())
-				copy[idx++] = methods[i];
-		for (int i=0; i<length; i++)
-			if (!methods[i].isAbstract())
-				copy[idx++] = methods[i];
-		return copy;
-	}
+        // done with supers, now input[i] can safely be transferred:
+        output[o++] = input[i];
+        input[i] = null;
 
-	/** Sort inference variables by rank. */
-	public static void sortInferenceVariables(InferenceVariable[] variables) {
-		Arrays.sort(variables, new Comparator<InferenceVariable>() {
-			@Override
-			public int compare(InferenceVariable iv1, InferenceVariable iv2) {
-				return iv1.rank - iv2.rank;
-			}
-		});
-	}
+        return o;
+    }
+
+    // if superclass is within the set of types to sort,
+    // transfer it and all its supers to output[o] ff.
+    private static int sortSuper(ReferenceBinding superclass, ReferenceBinding[] input, ReferenceBinding[] output,
+        int o) {
+        if (superclass.id != TypeIds.T_JavaLangObject) {
+            // search superclass within input:
+            int j = 0;
+            for (j = 0; j < input.length; j++)
+                if (TypeBinding.equalsEquals(input[j], superclass))
+                    break;
+            if (j < input.length)
+                // depth first traversal:
+                o = sort(input, j, output, o);
+            // otherwise assume super was already transferred.
+        }
+        return o;
+    }
+
+    public static MethodBinding[] concreteFirst(MethodBinding[] methods, int length) {
+        if (length == 0 || (length > 0 && !methods[0].isAbstract()))
+            return methods;
+        MethodBinding[] copy = new MethodBinding[length];
+        int idx = 0;
+        for (int i = 0; i < length; i++)
+            if (!methods[i].isAbstract())
+                copy[idx++] = methods[i];
+        for (int i = 0; i < length; i++)
+            if (methods[i].isAbstract())
+                copy[idx++] = methods[i];
+        return copy;
+    }
+
+    public static MethodBinding[] abstractFirst(MethodBinding[] methods, int length) {
+        if (length == 0 || (length > 0 && methods[0].isAbstract()))
+            return methods;
+        MethodBinding[] copy = new MethodBinding[length];
+        int idx = 0;
+        for (int i = 0; i < length; i++)
+            if (methods[i].isAbstract())
+                copy[idx++] = methods[i];
+        for (int i = 0; i < length; i++)
+            if (!methods[i].isAbstract())
+                copy[idx++] = methods[i];
+        return copy;
+    }
+
+    /** Sort inference variables by rank. */
+    public static void sortInferenceVariables(InferenceVariable[] variables) {
+        Arrays.sort(variables, new Comparator<InferenceVariable>() {
+            @Override
+            public int compare(InferenceVariable iv1, InferenceVariable iv2) {
+                return iv1.rank - iv2.rank;
+            }
+        });
+    }
 }

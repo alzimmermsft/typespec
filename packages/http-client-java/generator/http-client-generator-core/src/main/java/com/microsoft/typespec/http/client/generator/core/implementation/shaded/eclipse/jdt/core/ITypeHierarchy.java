@@ -13,9 +13,6 @@
  *******************************************************************************/
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.jdt.core;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.eclipse.core.runtime.IProgressMonitor;
-import java.io.OutputStream;
-
 /**
  * A type hierarchy provides navigations between a type and its resolved
  * supertypes and subtypes for a specific type or for all types within a region.
@@ -91,25 +88,6 @@ public interface ITypeHierarchy {
     IType[] getAllSubtypes(IType type);
 
     /**
-     * Returns all resolved supertypes of the
-     * given type, in bottom-up order. An empty array
-     * is returned if there are no resolved supertypes for the
-     * given type.
-     * <p>
-     * Note that <code>java.lang.Object</code> is NOT considered to be a supertype
-     * of any interface type.
-     * </p><p>NOTE: once a type hierarchy has been created, it is more efficient to
-     * query the hierarchy for supertypes than to query a type recursively up
-     * the supertype chain. Querying an element performs a dynamic resolution,
-     * whereas the hierarchy returns a pre-computed result.
-     *
-     * @param type the given type
-     * @return all resolved supertypes of the given class, in bottom-up order, an empty array
-     * if none
-     */
-    IType[] getAllSupertypes(IType type);
-
-    /**
      * Returns all types in this type hierarchy's graph, in no particular
      * order. Any types in the creation region which were not resolved to
      * have any subtypes or supertypes are not included in the result.
@@ -162,14 +140,6 @@ public interface ITypeHierarchy {
      * @return all classes in the graph which have no resolved superclass
      */
     IType[] getRootClasses();
-
-    /**
-     * Returns all interfaces in the graph which have no resolved superinterfaces,
-     * in no particular order.
-     *
-     * @return all interfaces in the graph which have no resolved superinterfaces
-     */
-    IType[] getRootInterfaces();
 
     /**
      * Returns the direct resolved subtypes of the given type,
@@ -235,32 +205,4 @@ public interface ITypeHierarchy {
      * @return the type this hierarchy was computed for
      */
     IType getType();
-
-    /**
-     * Re-computes the type hierarchy reporting progress.
-     *
-     * @param monitor the given progress monitor
-     * @exception JavaModelException if unable to refresh the hierarchy
-     */
-    void refresh(IProgressMonitor monitor) throws JavaModelException;
-
-    /**
-     * Stores the type hierarchy in an output stream. This stored hierarchy can be load by
-     * IType#loadTypeHierachy(IJavaProject, InputStream, IProgressMonitor).
-     * Listeners of this hierarchy are not stored.
-     *
-     * Only hierarchies created by the following methods can be store:
-     * <ul>
-     * <li>IType#newSupertypeHierarchy(IProgressMonitor)</li>
-     * <li>IType#newTypeHierarchy(IJavaProject, IProgressMonitor)</li>
-     * <li>IType#newTypeHierarchy(IProgressMonitor)</li>
-     * </ul>
-     *
-     * @param outputStream output stream where the hierarchy will be stored
-     * @param monitor the given progress monitor
-     * @exception JavaModelException if unable to store the hierarchy in the ouput stream
-     * @see IType#loadTypeHierachy(java.io.InputStream, IProgressMonitor)
-     * @since 2.1
-     */
-    void store(OutputStream outputStream, IProgressMonitor monitor) throws JavaModelException;
 }

@@ -14,10 +14,10 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.util.concurrent;
 
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtIncompatible;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicReferenceArray;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Static utility methods pertaining to classes in the {@code java.util.concurrent.atomic} package.
@@ -28,46 +28,46 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @GwtIncompatible
 @ElementTypesAreNonnullByDefault
 public final class Atomics {
-  private Atomics() {}
+    private Atomics() {
+    }
 
-  /**
-   * Creates an {@code AtomicReference} instance with no initial value.
-   *
-   * @return a new {@code AtomicReference} with no initial value
-   */
-  public static <V> AtomicReference<@Nullable V> newReference() {
-    return new AtomicReference<>();
-  }
+    /**
+     * Creates an {@code AtomicReference} instance with no initial value.
+     *
+     * @return a new {@code AtomicReference} with no initial value
+     */
+    public static <V> AtomicReference<@Nullable V> newReference() {
+        return new AtomicReference<>();
+    }
 
-  /**
-   * Creates an {@code AtomicReference} instance with the given initial value.
-   *
-   * @param initialValue the initial value
-   * @return a new {@code AtomicReference} with the given initial value
-   */
-  public static <V extends @Nullable Object> AtomicReference<V> newReference(
-      @ParametricNullness V initialValue) {
-    return new AtomicReference<>(initialValue);
-  }
+    /**
+     * Creates an {@code AtomicReference} instance with the given initial value.
+     *
+     * @param initialValue the initial value
+     * @return a new {@code AtomicReference} with the given initial value
+     */
+    public static <V extends @Nullable Object> AtomicReference<V> newReference(@ParametricNullness V initialValue) {
+        return new AtomicReference<>(initialValue);
+    }
 
-  /**
-   * Creates an {@code AtomicReferenceArray} instance of given length.
-   *
-   * @param length the length of the array
-   * @return a new {@code AtomicReferenceArray} with the given length
-   */
-  public static <E> AtomicReferenceArray<@Nullable E> newReferenceArray(int length) {
-    return new AtomicReferenceArray<>(length);
-  }
+    /**
+     * Creates an {@code AtomicReferenceArray} instance of given length.
+     *
+     * @param length the length of the array
+     * @return a new {@code AtomicReferenceArray} with the given length
+     */
+    public static <E> AtomicReferenceArray<@Nullable E> newReferenceArray(int length) {
+        return new AtomicReferenceArray<>(length);
+    }
 
-  /**
-   * Creates an {@code AtomicReferenceArray} instance with the same length as, and all elements
-   * copied from, the given array.
-   *
-   * @param array the array to copy elements from
-   * @return a new {@code AtomicReferenceArray} copied from the given array
-   */
-  public static <E extends @Nullable Object> AtomicReferenceArray<E> newReferenceArray(E[] array) {
-    return new AtomicReferenceArray<>(array);
-  }
+    /**
+     * Creates an {@code AtomicReferenceArray} instance with the same length as, and all elements
+     * copied from, the given array.
+     *
+     * @param array the array to copy elements from
+     * @return a new {@code AtomicReferenceArray} copied from the given array
+     */
+    public static <E extends @Nullable Object> AtomicReferenceArray<E> newReferenceArray(E[] array) {
+        return new AtomicReferenceArray<>(array);
+    }
 }

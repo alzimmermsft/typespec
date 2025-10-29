@@ -15,25 +15,25 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 public class TypeParameterElementInfo extends SourceRefElementInfo {
 
-	/*
-	 * The start position of this type parameter's name in the its
-	 * openable's buffer.
-	 */
-	public int nameStart= -1;
+    /*
+     * The start position of this type parameter's name in the its
+     * openable's buffer.
+     */
+    public int nameStart = -1;
 
-	/*
-	 * The last position of this type parameter name in the its
-	 * openable's buffer.
-	 */
-	public int nameEnd= -1;
+    /*
+     * The last position of this type parameter name in the its
+     * openable's buffer.
+     */
+    public int nameEnd = -1;
 
-	/*
-	 * The bounds names of this type parameter.
-	 */
-	public char[][] bounds;
+    /*
+     * The bounds names of this type parameter.
+     */
+    public char[][] bounds;
 
-	/*
-	 * The bounds' signatures for this type parameter.
-	 */
-	public char[][] boundsSignatures;
+    /*
+     * The bounds' signatures for this type parameter.
+     */
+    public char[][] boundsSignatures;
 }

@@ -25,7 +25,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Private replacement for {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.gwt.user.client.rpc.GwtTransient} to work around
+ * Private replacement for
+ * {@link com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.gwt.user.client.rpc.GwtTransient}
+ * to work around
  * build-system quirks. This annotation should be used <b>only</b> in {@code
  * com.google.common.collect}.
  */
@@ -34,4 +36,5 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 @Target(FIELD)
 @ElementTypesAreNonnullByDefault
-@interface GwtTransient {}
+@interface GwtTransient {
+}

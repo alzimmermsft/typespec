@@ -339,75 +339,6 @@ public final class CharOperation {
      * but are not always considered as leading character. For instance, both
      * 'UTF16DSS' and 'UTFDSS' patterns will match 'UTF16DocumentScannerSupport'.
      * <p>
-     * Using this method allows matching names to have more parts than the specified
-     * pattern (see {@link #camelCaseMatch(char[], char[], boolean)}).<br>
-     * For instance, 'HM' , 'HaMa' and 'HMap' patterns will match 'HashMap',
-     * 'HatMapper' <b>and also</b> 'HashMapEntry'.
-     * <p>
-     * Examples:
-     * <ol>
-     * <li> pattern = "NPE".toCharArray()
-     * name = "NullPointerException".toCharArray()
-     * result => true</li>
-     * <li> pattern = "NPE".toCharArray()
-     * name = "NoPermissionException".toCharArray()
-     * result => true</li>
-     * <li> pattern = "NuPoEx".toCharArray()
-     * name = "NullPointerException".toCharArray()
-     * result => true</li>
-     * <li> pattern = "NuPoEx".toCharArray()
-     * name = "NoPermissionException".toCharArray()
-     * result => false</li>
-     * <li> pattern = "npe".toCharArray()
-     * name = "NullPointerException".toCharArray()
-     * result => false</li>
-     * <li> pattern = "IPL3".toCharArray()
-     * name = "IPerspectiveListener3".toCharArray()
-     * result => true</li>
-     * <li> pattern = "HM".toCharArray()
-     * name = "HashMapEntry".toCharArray()
-     * result => true</li>
-     * </ol>
-     *
-     * @param pattern the given pattern
-     * @param name the given name
-     * @return true if the pattern matches the given name, false otherwise
-     * @since 3.2
-     */
-    public static boolean camelCaseMatch(char[] pattern, char[] name) {
-        if (pattern == null)
-            return true; // null pattern is equivalent to '*'
-        if (name == null)
-            return false; // null name cannot match
-
-        return camelCaseMatch(pattern, 0, pattern.length, name, 0, name.length, false/* not the same count of parts */);
-    }
-
-    /**
-     * Answers true if the pattern matches the given name using CamelCase rules, or
-     * false otherwise. char[] CamelCase matching does NOT accept explicit wild-cards
-     * '*' and '?' and is inherently case sensitive.
-     * <p>
-     * CamelCase denotes the convention of writing compound names without spaces,
-     * and capitalizing every term. This function recognizes both upper and lower
-     * CamelCase, depending whether the leading character is capitalized or not.
-     * The leading part of an upper CamelCase pattern is assumed to contain a
-     * sequence of capitals which are appearing in the matching name; e.g. 'NPE' will
-     * match 'NullPointerException', but not 'NewPerfData'. A lower CamelCase pattern
-     * uses a lowercase first character. In Java, type names follow the upper
-     * CamelCase convention, whereas method or field names follow the lower
-     * CamelCase convention.
-     * <p>
-     * The pattern may contain lowercase characters, which will be matched in a case
-     * sensitive way. These characters must appear in sequence in the name.
-     * For instance, 'NPExcep' will match 'NullPointerException', but not
-     * 'NullPointerExCEPTION' or 'NuPoEx' will match 'NullPointerException', but not
-     * 'NoPointerException'.
-     * <p>
-     * Digit characters are treated in a special way. They can be used in the pattern
-     * but are not always considered as leading character. For instance, both
-     * 'UTF16DSS' and 'UTFDSS' patterns will match 'UTF16DocumentScannerSupport'.
-     * <p>
      * CamelCase can be restricted to match only the same count of parts. When this
      * restriction is specified the given pattern and the given name must have <b>exactly</b>
      * the same number of parts (i.e. the same number of uppercase characters).<br>
@@ -459,110 +390,6 @@ public final class CharOperation {
             return false; // null name cannot match
 
         return camelCaseMatch(pattern, 0, pattern.length, name, 0, name.length, samePartCount);
-    }
-
-    /**
-     * Answers true if a sub-pattern matches the sub-part of the given name using
-     * CamelCase rules, or false otherwise. char[] CamelCase matching does NOT
-     * accept explicit wild-cards '*' and '?' and is inherently case sensitive.
-     * Can match only subset of name/pattern, considering end positions as non-inclusive.
-     * The sub-pattern is defined by the patternStart and patternEnd positions.
-     * <p>
-     * CamelCase denotes the convention of writing compound names without spaces,
-     * and capitalizing every term. This function recognizes both upper and lower
-     * CamelCase, depending whether the leading character is capitalized or not.
-     * The leading part of an upper CamelCase pattern is assumed to contain a
-     * sequence of capitals which are appearing in the matching name; e.g. 'NPE' will
-     * match 'NullPointerException', but not 'NewPerfData'. A lower CamelCase pattern
-     * uses a lowercase first character. In Java, type names follow the upper
-     * CamelCase convention, whereas method or field names follow the lower
-     * CamelCase convention.
-     * <p>
-     * The pattern may contain lowercase characters, which will be matched in a case
-     * sensitive way. These characters must appear in sequence in the name.
-     * For instance, 'NPExcep' will match 'NullPointerException', but not
-     * 'NullPointerExCEPTION' or 'NuPoEx' will match 'NullPointerException', but not
-     * 'NoPointerException'.
-     * <p>
-     * Digit characters are treated in a special way. They can be used in the pattern
-     * but are not always considered as leading character. For instance, both
-     * 'UTF16DSS' and 'UTFDSS' patterns will match 'UTF16DocumentScannerSupport'.
-     * <p>
-     * Digit characters are treated in a special way. They can be used in the pattern
-     * but are not always considered as leading character. For instance, both
-     * 'UTF16DSS' and 'UTFDSS' patterns will match 'UTF16DocumentScannerSupport'.
-     * <p>
-     * Using this method allows matching names to have more parts than the specified
-     * pattern (see {@link #camelCaseMatch(char[], int, int, char[], int, int, boolean)}).<br>
-     * For instance, 'HM' , 'HaMa' and 'HMap' patterns will match 'HashMap',
-     * 'HatMapper' <b>and also</b> 'HashMapEntry'.
-     * <p>
-     * Examples:
-     * <ol>
-     * <li> pattern = "NPE".toCharArray()
-     * patternStart = 0
-     * patternEnd = 3
-     * name = "NullPointerException".toCharArray()
-     * nameStart = 0
-     * nameEnd = 20
-     * result => true</li>
-     * <li> pattern = "NPE".toCharArray()
-     * patternStart = 0
-     * patternEnd = 3
-     * name = "NoPermissionException".toCharArray()
-     * nameStart = 0
-     * nameEnd = 21
-     * result => true</li>
-     * <li> pattern = "NuPoEx".toCharArray()
-     * patternStart = 0
-     * patternEnd = 6
-     * name = "NullPointerException".toCharArray()
-     * nameStart = 0
-     * nameEnd = 20
-     * result => true</li>
-     * <li> pattern = "NuPoEx".toCharArray()
-     * patternStart = 0
-     * patternEnd = 6
-     * name = "NoPermissionException".toCharArray()
-     * nameStart = 0
-     * nameEnd = 21
-     * result => false</li>
-     * <li> pattern = "npe".toCharArray()
-     * patternStart = 0
-     * patternEnd = 3
-     * name = "NullPointerException".toCharArray()
-     * nameStart = 0
-     * nameEnd = 20
-     * result => false</li>
-     * <li> pattern = "IPL3".toCharArray()
-     * patternStart = 0
-     * patternEnd = 4
-     * name = "IPerspectiveListener3".toCharArray()
-     * nameStart = 0
-     * nameEnd = 21
-     * result => true</li>
-     * <li> pattern = "HM".toCharArray()
-     * patternStart = 0
-     * patternEnd = 2
-     * name = "HashMapEntry".toCharArray()
-     * nameStart = 0
-     * nameEnd = 12
-     * result => true</li>
-     * </ol>
-     *
-     * @param pattern the given pattern
-     * @param patternStart the start index of the pattern, inclusive
-     * @param patternEnd the end index of the pattern, exclusive
-     * @param name the given name
-     * @param nameStart the start index of the name, inclusive
-     * @param nameEnd the end index of the name, exclusive
-     * @return true if a sub-pattern matches the sub-part of the given name, false otherwise
-     * @since 3.2
-     */
-    public static boolean camelCaseMatch(char[] pattern, int patternStart, int patternEnd, char[] name, int nameStart,
-        int nameEnd) {
-        return camelCaseMatch(pattern, patternStart, patternEnd, name, nameStart, nameEnd,
-            false/* not the same count of parts */);
     }
 
     /**
@@ -1100,94 +927,6 @@ public final class CharOperation {
     }
 
     /**
-     * Compares the contents of the two arrays array and prefix. Returns
-     * <ul>
-     * <li>zero if the array starts with the prefix contents</li>
-     * <li>the difference between the first two characters that are not equal </li>
-     * <li>one if array length is lower than the prefix length and that the prefix starts with the
-     * array contents.</li>
-     * </ul>
-     * <p>
-     * For example:
-     * <ol>
-     * <li>
-     * 
-     * <pre>
-     *    array = null
-     *    prefix = null
-     *    => result = NullPointerException
-     * </pre>
-     * 
-     * </li>
-     * <li>
-     * 
-     * <pre>
-     *    array = { 'a', 'b', 'c', 'd', 'e' }
-     *    prefix = { 'a', 'b', 'c'}
-     *    => result = 0
-     * </pre>
-     * 
-     * </li>
-     * <li>
-     * 
-     * <pre>
-     *    array = { 'a', 'b', 'c', 'd', 'e' }
-     *    prefix = { 'a', 'B', 'c'}
-     *    => result = 32
-     * </pre>
-     * 
-     * </li>
-     * <li>
-     * 
-     * <pre>
-     *    array = { 'd', 'b', 'c', 'd', 'e' }
-     *    prefix = { 'a', 'b', 'c'}
-     *    => result = 3
-     * </pre>
-     * 
-     * </li>
-     * <li>
-     * 
-     * <pre>
-     *    array = { 'a', 'b', 'c', 'd', 'e' }
-     *    prefix = { 'd', 'b', 'c'}
-     *    => result = -3
-     * </pre>
-     * 
-     * </li>
-     * <li>
-     * 
-     * <pre>
-     *    array = { 'a', 'a', 'c', 'd', 'e' }
-     *    prefix = { 'a', 'e', 'c'}
-     *    => result = -4
-     * </pre>
-     * 
-     * </li>
-     * </ol>
-     *
-     * @param array the given array
-     * @param prefix the given prefix
-     * @return the result of the comparison (>=0 if array>prefix)
-     * @throws NullPointerException if either array or prefix is null
-     */
-    public static int compareWith(char[] array, char[] prefix) {
-        int arrayLength = array.length;
-        int prefixLength = prefix.length;
-        int min = Math.min(arrayLength, prefixLength);
-        int i = 0;
-        while (min-- != 0) {
-            char c1 = array[i];
-            char c2 = prefix[i++];
-            if (c1 != c2)
-                return c1 - c2;
-        }
-        if (prefixLength == i)
-            return 0;
-        return -1;	// array is shorter than prefix (e.g. array:'ab' < prefix:'abc').
-    }
-
-    /**
      * Answers the concatenation of the two arrays. It answers null if the two arrays are null.
      * If the first array is null, then the second array is returned.
      * If the second array is null, then the first array is returned.
@@ -1568,169 +1307,6 @@ public final class CharOperation {
     }
 
     /**
-     * Answers the concatenation of the two arrays inserting the separator character between the two arrays.
-     * It answers null if the two arrays are null.
-     * If the first array is null or is empty, then the second array is returned.
-     * If the second array is null or is empty, then the first array is returned.
-     * <br>
-     * <br>
-     * For example:
-     * <ol>
-     * <li>
-     * 
-     * <pre>
-     *    first = null
-     *    second = { 'a' }
-     *    separator = '/'
-     *    => result = { ' a' }
-     * </pre>
-     * 
-     * </li>
-     * <li>
-     * 
-     * <pre>
-     *    first = { ' a' }
-     *    second = null
-     *    separator = '/'
-     *    => result = { ' a' }
-     * </pre>
-     * 
-     * </li>
-     * <li>
-     * 
-     * <pre>
-     *    first = { ' a' }
-     *    second = { ' b' }
-     *    separator = '/'
-     *    => result = { ' a' , '/', 'b' }
-     * </pre>
-     * 
-     * </li>
-     * <li>
-     * 
-     * <pre>
-     *    first = { ' a' }
-     *    second = {  }
-     *    separator = '/'
-     *    => result = { ' a'}
-     * </pre>
-     * 
-     * </li>
-     * 
-     * </ol>
-     *
-     * @param first the first array to concatenate
-     * @param second the second array to concatenate
-     * @param separator the character to insert
-     * @return the concatenation of the two arrays inserting the separator character
-     * between the two arrays , or null if the two arrays are null.
-     * @since 3.12
-     */
-    public static char[] concatNonEmpty(char[] first, char[] second, char separator) {
-        if (first == null || first.length == 0)
-            return second;
-        if (second == null || second.length == 0)
-            return first;
-        return concat(first, second, separator);
-    }
-
-    /**
-     * Answers the concatenation of the three arrays inserting the sep1 character between the
-     * first two arrays and sep2 between the last two.
-     * It answers null if the three arrays are null.
-     * If the first array is null or empty, then it answers the concatenation of second and third inserting
-     * the sep2 character between them.
-     * If the second array is null or empty, then it answers the concatenation of first and third inserting
-     * the sep1 character between them.
-     * If the third array is null or empty, then it answers the concatenation of first and second inserting
-     * the sep1 character between them.
-     * <br>
-     * <br>
-     * For example:
-     * <ol>
-     * <li>
-     * 
-     * <pre>
-     *    first = null
-     *    sep1 = '/'
-     *    second = { 'a' }
-     *    sep2 = ':'
-     *    third = { 'b' }
-     *    => result = { ' a' , ':', 'b' }
-     * </pre>
-     * 
-     * </li>
-     * <li>
-     * 
-     * <pre>
-     *    first = { 'a' }
-     *    sep1 = '/'
-     *    second = null
-     *    sep2 = ':'
-     *    third = { 'b' }
-     *    => result = { ' a' , '/', 'b' }
-     * </pre>
-     * 
-     * </li>
-     * <li>
-     * 
-     * <pre>
-     *    first = { 'a' }
-     *    sep1 = '/'
-     *    second = { 'b' }
-     *    sep2 = ':'
-     *    third = null
-     *    => result = { ' a' , '/', 'b' }
-     * </pre>
-     * 
-     * </li>
-     * <li>
-     * 
-     * <pre>
-     *    first = { 'a' }
-     *    sep1 = '/'
-     *    second = { 'b' }
-     *    sep2 = ':'
-     *    third = { 'c' }
-     *    => result = { ' a' , '/', 'b' , ':', 'c' }
-     * </pre>
-     * 
-     * </li>
-     * <li>
-     * 
-     * <pre>
-     *    first = { 'a' }
-     *    sep1 = '/'
-     *    second = { }
-     *    sep2 = ':'
-     *    third = { 'c' }
-     *    => result = { ' a', ':', 'c' }
-     * </pre>
-     * 
-     * </li>
-     * </ol>
-     *
-     * @param first the first array to concatenate
-     * @param sep1 the character to insert
-     * @param second the second array to concatenate
-     * @param sep2 the character to insert
-     * @param third the second array to concatenate
-     * @return the concatenation of the three arrays inserting the sep1 character between the
-     * two arrays and sep2 between the last two.
-     * @since 3.12
-     */
-    public static char[] concatNonEmpty(char[] first, char sep1, char[] second, char sep2, char[] third) {
-        if (first == null || first.length == 0)
-            return concatNonEmpty(second, third, sep2);
-        if (second == null || second.length == 0)
-            return concatNonEmpty(first, third, sep1);
-        if (third == null || third.length == 0)
-            return concatNonEmpty(first, second, sep1);
-
-        return concat(first, sep1, second, sep2, third);
-    }
-
-    /**
      * Answers a new array with prepending the prefix character and appending the suffix
      * character at the end of the array. If array is null, it answers a new array containing the
      * prefix and the suffix characters.
@@ -1977,70 +1553,6 @@ public final class CharOperation {
                 if (--size >= 0)
                     result[size] = separator;
             }
-        }
-        return result;
-    }
-
-    /**
-     * Answers the concatenation of the given array parts using the given separator between each part
-     * irrespective of whether an element is a zero length array or not.
-     * <br>
-     * <br>
-     * For example:<br>
-     * <ol>
-     * <li>
-     * 
-     * <pre>
-     *    array = { { 'a' }, {}, { 'b' } }
-     *    separator = ''
-     *    => result = { 'a', '/', '/', 'b' }
-     * </pre>
-     * 
-     * </li>
-     * <li>
-     * 
-     * <pre>
-     *    array = { { 'a' }, { 'b' } }
-     *    separator = '.'
-     *    => result = { 'a', '.', 'b' }
-     * </pre>
-     * 
-     * </li>
-     * <li>
-     * 
-     * <pre>
-     *    array = null
-     *    separator = '.'
-     *    => result = { }
-     * </pre>
-     * 
-     * </li>
-     * </ol>
-     *
-     * @param array the given array
-     * @param separator the given separator
-     * @return the concatenation of the given array parts using the given separator between each part
-     * @since 3.12
-     */
-    public static char[] concatWithAll(char[][] array, char separator) {
-        int length = array == null ? 0 : array.length;
-        if (length == 0)
-            return CharOperation.NO_CHAR;
-
-        int size = length - 1;
-        int index = length;
-        while (--index >= 0) {
-            size += array[index].length;
-        }
-        char[] result = new char[size];
-        index = length;
-        while (--index >= 0) {
-            length = array[index].length;
-            if (length > 0) {
-                System.arraycopy(array[index], 0, result, (size -= length), length);
-            }
-            if (--size >= 0)
-                result[size] = separator;
         }
         return result;
     }
@@ -3585,7 +3097,8 @@ public final class CharOperation {
             }
 
             /* path segment is ending */
-            if (pSegmentEnd == pSegmentStart + 2 && pattern[pSegmentStart] == '*'
+            if (pSegmentEnd == pSegmentStart + 2
+                && pattern[pSegmentStart] == '*'
                 && pattern[pSegmentStart + 1] == '*') {
                 pSegmentEnd = CharOperation.indexOf(pathSeparator, pattern, pSegmentStart = pSegmentEnd + 1);
                 // skip separator
@@ -3629,7 +3142,8 @@ public final class CharOperation {
                 fSegmentEnd = fLength;
         }
 
-        return pSegmentRestart >= pSegmentEnd || fSegmentStart >= fLength && pSegmentStart >= pLength
+        return pSegmentRestart >= pSegmentEnd
+            || fSegmentStart >= fLength && pSegmentStart >= pLength
             || pSegmentStart == pLength - 2 && pattern[pSegmentStart] == '*' && pattern[pSegmentStart + 1] == '*';
     }
 
@@ -4097,7 +3611,7 @@ public final class CharOperation {
 
         if (!equals(toBeReplaced, replacementChars)) {
 
-            for (int i = 0; i < max; ) {
+            for (int i = 0; i < max;) {
                 int index = indexOf(toBeReplaced, array, true, i);
                 if (index == -1) {
                     i = max; // end

@@ -16,10 +16,10 @@ package com.microsoft.typespec.http.client.generator.core.implementation.shaded.
 
 import static com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.base.Preconditions.checkNotNull;
 
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
-import java.io.Serializable;
-import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
 import com.microsoft.typespec.http.client.generator.core.implementation.shaded.checkerframework.checker.nullness.qual.Nullable;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.google.common.annotations.GwtCompatible;
+import com.microsoft.typespec.http.client.generator.core.implementation.shaded.javax.annotation.CheckForNull;
+import java.io.Serializable;
 
 /**
  * Equivalence applied on functional result.
@@ -31,46 +31,45 @@ import com.microsoft.typespec.http.client.generator.core.implementation.shaded.c
 @ElementTypesAreNonnullByDefault
 final class FunctionalEquivalence<F, T> extends Equivalence<F> implements Serializable {
 
-  private static final long serialVersionUID = 0;
+    private static final long serialVersionUID = 0;
 
-  private final Function<? super F, ? extends @Nullable T> function;
-  private final Equivalence<T> resultEquivalence;
+    private final Function<? super F, ? extends @Nullable T> function;
+    private final Equivalence<T> resultEquivalence;
 
-  FunctionalEquivalence(
-      Function<? super F, ? extends @Nullable T> function, Equivalence<T> resultEquivalence) {
-    this.function = checkNotNull(function);
-    this.resultEquivalence = checkNotNull(resultEquivalence);
-  }
-
-  @Override
-  protected boolean doEquivalent(F a, F b) {
-    return resultEquivalence.equivalent(function.apply(a), function.apply(b));
-  }
-
-  @Override
-  protected int doHash(F a) {
-    return resultEquivalence.hash(function.apply(a));
-  }
-
-  @Override
-  public boolean equals(@CheckForNull Object obj) {
-    if (obj == this) {
-      return true;
+    FunctionalEquivalence(Function<? super F, ? extends @Nullable T> function, Equivalence<T> resultEquivalence) {
+        this.function = checkNotNull(function);
+        this.resultEquivalence = checkNotNull(resultEquivalence);
     }
-    if (obj instanceof FunctionalEquivalence) {
-      FunctionalEquivalence<?, ?> that = (FunctionalEquivalence<?, ?>) obj;
-      return function.equals(that.function) && resultEquivalence.equals(that.resultEquivalence);
+
+    @Override
+    protected boolean doEquivalent(F a, F b) {
+        return resultEquivalence.equivalent(function.apply(a), function.apply(b));
     }
-    return false;
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(function, resultEquivalence);
-  }
+    @Override
+    protected int doHash(F a) {
+        return resultEquivalence.hash(function.apply(a));
+    }
 
-  @Override
-  public String toString() {
-    return resultEquivalence + ".onResultOf(" + function + ")";
-  }
+    @Override
+    public boolean equals(@CheckForNull Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof FunctionalEquivalence) {
+            FunctionalEquivalence<?, ?> that = (FunctionalEquivalence<?, ?>) obj;
+            return function.equals(that.function) && resultEquivalence.equals(that.resultEquivalence);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(function, resultEquivalence);
+    }
+
+    @Override
+    public String toString() {
+        return resultEquivalence + ".onResultOf(" + function + ")";
+    }
 }
