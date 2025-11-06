@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  * A generic type that is used by the client.
  */
 public class GenericType implements IType {
-    public static final GenericType FLUX_BYTE_BUFFER = Flux(ClassType.BYTE_BUFFER);
+    public static final GenericType FLUX_BYTE_BUFFER = flux(ClassType.BYTE_BUFFER);
     /**
      * The main non-generic type of this generic type.
      */
@@ -41,7 +41,7 @@ public class GenericType implements IType {
 
     public GenericType(String packageKeyword, String name, String jsonToken, IType... typeArguments) {
         if (!JavaSettings.getInstance().isAzureV1()) {
-            if (Objects.equals(packageKeyword + "." + name, com.azure.core.http.rest.Response.class.getName())) {
+            if (Objects.equals(packageKeyword + "." + name, ClassType.RESPONSE.getFullName())) {
                 packageKeyword = "io.clientcore.core.http";
             } else {
                 packageKeyword = packageKeyword.replace(ExternalPackage.AZURE_CORE_PACKAGE_NAME,
@@ -55,72 +55,64 @@ public class GenericType implements IType {
         this.jsonToken = jsonToken;
     }
 
-    public static GenericType Flux(IType typeArgument) {
-        return new GenericType("reactor.core.publisher", "Flux", typeArgument);
+    public static GenericType flux(IType typeArgument) {
+        return fromClassType(ClassType.FLUX, typeArgument);
     }
 
-    public static GenericType Mono(IType typeArgument) {
-        return new GenericType("reactor.core.publisher", "Mono", typeArgument);
+    public static GenericType mono(IType typeArgument) {
+        return fromClassType(ClassType.MONO, typeArgument);
     }
 
-    public static GenericType OperationStatus(IType typeArgument) {
-        return new GenericType("com.microsoft.azure.v3", "OperationStatus", typeArgument);
+    public static GenericType response(IType bodyType) {
+        return fromClassType(ClassType.RESPONSE, bodyType);
     }
 
-    public static GenericType Page(IType elementType) {
-        return new GenericType("com.microsoft.azure.v3", "Page", elementType);
+    public static GenericType restResponse(IType headersType, IType bodyType) {
+        return fromClassType(ClassType.RESPONSE_BASE, headersType, bodyType);
     }
 
-    public static GenericType PagedList(IType elementType) {
-        return new GenericType("com.microsoft.azure.v3", "PagedList", elementType);
-    }
-
-    public static GenericType Response(IType bodyType) {
-        return new GenericType(ClassType.RESPONSE.getPackage(), ClassType.RESPONSE.getName(), bodyType);
-    }
-
-    public static GenericType RestResponse(IType headersType, IType bodyType) {
-        return new GenericType("com.azure.core.http.rest", "ResponseBase", headersType, bodyType);
-    }
-
-    public static GenericType PagedResponse(IType bodyType) {
+    public static GenericType pagedResponse(IType bodyType) {
         if (JavaSettings.getInstance().isAzureV1()) {
-            return new GenericType("com.azure.core.http.rest", "PagedResponse", bodyType);
+            return fromClassType(ClassType.PAGED_RESPONSE, bodyType);
         } else {
             return new GenericType("io.clientcore.core.http.paging", "PagedResponse", bodyType);
         }
     }
 
-    public static GenericType PagedFlux(IType bodyType) {
-        return new GenericType("com.azure.core.http.rest", "PagedFlux", bodyType);
+    public static GenericType pagedFlux(IType bodyType) {
+        return fromClassType(ClassType.PAGED_FLUX, bodyType);
     }
 
-    public static GenericType PagedIterable(IType bodyType) {
+    public static GenericType pagedIterable(IType bodyType) {
         if (JavaSettings.getInstance().isAzureV1()) {
-            return new GenericType("com.azure.core.http.rest", "PagedIterable", bodyType);
+            return fromClassType(ClassType.PAGED_ITERABLE, bodyType);
         } else {
             return new GenericType("io.clientcore.core.http.paging", "PagedIterable", bodyType);
         }
     }
 
-    public static GenericType Function(IType inputType, IType outputType) {
-        return new GenericType("java.util", "Function", inputType, outputType);
+    public static GenericType function(IType inputType, IType outputType) {
+        return fromClassType(ClassType.FUNCTION, inputType, outputType);
     }
 
-    public static GenericType PollerFlux(IType pollResultType, IType finalResultType) {
-        return new GenericType("com.azure.core.util.polling", "PollerFlux", pollResultType, finalResultType);
+    public static GenericType pollerFlux(IType pollResultType, IType finalResultType) {
+        return fromClassType(ClassType.POLLER_FLUX, pollResultType, finalResultType);
     }
 
-    public static GenericType SyncPoller(IType pollResultType, IType finalResultType) {
-        return new GenericType("com.azure.core.util.polling", "SyncPoller", pollResultType, finalResultType);
+    public static GenericType syncPoller(IType pollResultType, IType finalResultType) {
+        return fromClassType(ClassType.SYNC_POLLER, pollResultType, finalResultType);
     }
 
-    public static GenericType AzureVNextPoller(IType pollResultType, IType finalResultType) {
+    public static GenericType azureVNextPoller(IType pollResultType, IType finalResultType) {
         return new GenericType("com.azure.v2.core.http.polling", "Poller", pollResultType, finalResultType);
     }
 
-    public static GenericType PollResult(IType pollResultType) {
-        return new GenericType("com.azure.core.management.polling", "PollResult", pollResultType);
+    public static GenericType pollResult(IType pollResultType) {
+        return fromClassType(ClassType.POLL_RESULT, pollResultType);
+    }
+
+    private static GenericType fromClassType(ClassType classType, IType... genericTypes) {
+        return new GenericType(classType.getPackage(), classType.getName(), genericTypes);
     }
 
     public final String getName() {
@@ -190,7 +182,7 @@ public class GenericType implements IType {
     }
 
     public void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
-        imports.add(String.format("%1$s.%2$s", getPackage(), getName()));
+        imports.add(packageName + "." + name);
         for (IType typeArgument : getTypeArguments()) {
             typeArgument.addImportsTo(imports, includeImplementationImports);
         }
@@ -259,7 +251,7 @@ public class GenericType implements IType {
                 } else {
                     throw new UnsupportedOperationException(
                         String.format("Instance %1$s of generic type %2$s not supported for conversion to client type.",
-                            expression, toString()));
+                            expression, this));
                 }
                 break;
             }

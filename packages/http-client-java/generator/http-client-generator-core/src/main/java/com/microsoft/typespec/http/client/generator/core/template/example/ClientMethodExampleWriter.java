@@ -3,11 +3,6 @@
 
 package com.microsoft.typespec.http.client.generator.core.template.example;
 
-import com.azure.core.http.ContentType;
-import com.azure.core.http.HttpMethod;
-import com.azure.core.http.rest.PagedIterable;
-import com.azure.core.util.polling.LongRunningOperationStatus;
-import com.azure.core.util.polling.SyncPoller;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.RequestParameterLocation;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.ClassType;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.ClientMethod;
@@ -33,6 +28,8 @@ import com.microsoft.typespec.http.client.generator.core.util.ClientModelUtil;
 import com.microsoft.typespec.http.client.generator.core.util.CodeNamer;
 import com.microsoft.typespec.http.client.generator.core.util.MethodUtil;
 import com.microsoft.typespec.http.client.generator.core.util.ModelExampleUtil;
+import io.clientcore.core.http.models.HttpMethod;
+import io.clientcore.core.implementation.http.ContentType;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -62,7 +59,7 @@ public class ClientMethodExampleWriter {
 
         // assertion
         this.imports.add("org.junit.jupiter.api.Assertions");
-        imports.add(LongRunningOperationStatus.class.getName());
+        imports.add(ClassType.LONG_RUNNING_OPERATION_STATUS.getFullName());
         ClassType.HTTP_HEADER_NAME.addImportsTo(imports, false);
 
         method.getReturnValue().getType().addImportsTo(imports, false);
@@ -71,8 +68,7 @@ public class ClientMethodExampleWriter {
             StringBuilder methodInvocation = new StringBuilder();
 
             if (method.getReturnValue().getType().asNullable() != ClassType.VOID) {
-                String assignment = String.format("%s %s = ", method.getReturnValue().getType(), "response");
-                methodInvocation.append(assignment);
+                methodInvocation.append(method.getReturnValue().getType()).append(" response = ");
             }
 
             String methodCall = String.format("%s.%s(%s)", clientVarName, method.getName(), parameterInvocations);
@@ -93,7 +89,7 @@ public class ClientMethodExampleWriter {
                 IType returnType = method.getReturnValue().getType();
                 if (returnType instanceof GenericType) {
                     GenericType responseType = (GenericType) returnType;
-                    if (SyncPoller.class.getSimpleName().equals(responseType.getName())) {
+                    if (ClassType.SYNC_POLLER.getName().equals(responseType.getName())) {
                         // SyncPoller<>
 
                         if (response.getStatusCode() / 100 == 2) {
@@ -104,7 +100,7 @@ public class ClientMethodExampleWriter {
                             methodBlock.line(
                                 "Assertions.assertEquals(LongRunningOperationStatus.SUCCESSFULLY_COMPLETED, response.waitForCompletion().getStatus());");
                         }
-                    } else if (PagedIterable.class.getSimpleName().equals(responseType.getName())) {
+                    } else if (ClassType.PAGED_ITERABLE.getName().equals(responseType.getName())) {
                         // PagedIterable<>
 
                         methodBlock.line();
@@ -116,7 +112,8 @@ public class ClientMethodExampleWriter {
                         // assert headers
                         response.getHttpHeaders().stream().forEach(header -> {
                             String expectedValueStr = ClassType.STRING.defaultValueExpression(header.getValue());
-                            String keyStr = ClassType.STRING.defaultValueExpression(header.getName());
+                            String keyStr
+                                = ClassType.STRING.defaultValueExpression(header.getName().getCaseSensitiveName());
                             methodBlock.line(String.format(
                                 "Assertions.assertEquals(%1$s, response.iterableByPage().iterator().next().getHeaders().get(HttpHeaderName.fromString(%2$s)).getValue());",
                                 expectedValueStr, keyStr));
@@ -137,8 +134,8 @@ public class ClientMethodExampleWriter {
                                         methodBlock.line("Assertions.assertEquals(0, response.stream().count());");
                                     } else {
                                         Object firstItem = itemArray.iterator().next();
-                                        methodBlock.line("%s firstItem = %s;", responseType.getTypeArguments()[0],
-                                            "response.iterator().next()");
+                                        methodBlock.line(responseType.getTypeArguments()[0]
+                                            + " firstItem = response.iterator().next();");
                                         writeModelAssertion(methodBlock, nodeVisitor,
                                             responseType.getTypeArguments()[0], responseType.getTypeArguments()[0],
                                             firstItem, "firstItem", true);
@@ -229,14 +226,14 @@ public class ClientMethodExampleWriter {
             } else if (isList(modelClientType, modelValue)) {
                 // List
                 List<Object> values = (List<Object>) modelValue;
-                if (values.size() > 0) {
+                if (!values.isEmpty()) {
                     IterableType listType = (IterableType) modelClientType;
                     IType elementType = listType.getElementType();
                     Object firstItemValue = values.iterator().next();
                     if (firstItemValue != null) {
-                        String firstItemGetter = String.format("%s.iterator().next()", modelReference);
+                        String firstItemGetter = modelReference + ".iterator().next()";
                         if (isClientModel(elementType, firstItemValue) || isList(elementType, firstItemValue)) {
-                            String firstItemReference = String.format("%s%s", modelReference, "FirstItem");
+                            String firstItemReference = modelReference + "FirstItem";
                             methodBlock.line("%s %s = %s;", elementType, firstItemReference, firstItemGetter);
                             writeModelAssertion(methodBlock, nodeVisitor, elementType, elementType,
                                 values.iterator().next(), firstItemReference, rootModel);
@@ -246,7 +243,7 @@ public class ClientMethodExampleWriter {
                         }
                     }
                 } else {
-                    methodBlock.line("Assertions.assertEquals(0, %s);", String.format("%s.size()", modelReference));
+                    methodBlock.line("Assertions.assertEquals(0, %s.size());", modelReference);
                 }
             } else if (modelClientType instanceof PrimitiveType
                 || modelClientType instanceof EnumType

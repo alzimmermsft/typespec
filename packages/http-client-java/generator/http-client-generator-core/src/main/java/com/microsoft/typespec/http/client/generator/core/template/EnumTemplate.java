@@ -3,7 +3,6 @@
 
 package com.microsoft.typespec.http.client.generator.core.template;
 
-import com.azure.core.util.CoreUtils;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.Annotation;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.ClassType;
@@ -18,6 +17,7 @@ import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaJav
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaModifier;
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaVisibility;
 import com.microsoft.typespec.http.client.generator.core.util.CodeNamer;
+import io.clientcore.core.utils.CoreUtils;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -262,9 +262,8 @@ public class EnumTemplate implements IJavaTemplate<EnumType, JavaFile> {
             }
 
             classBlock.variable(pascalTypeName + " value", JavaVisibility.Private, JavaModifier.Final);
-            classBlock.privateConstructor(enumName + "(" + pascalTypeName + " value)", ctor -> {
-                ctor.line("this.value = value;");
-            });
+            classBlock.privateConstructor(enumName + "(" + pascalTypeName + " value)",
+                ctor -> ctor.line("this.value = value;"));
 
             // fromValue(typeName)
             classBlock.javadocComment(comment -> {
@@ -309,10 +308,9 @@ public class EnumTemplate implements IJavaTemplate<EnumType, JavaFile> {
                 classBlock.javadocComment(JavaJavadocComment::inheritDoc);
                 addGeneratedAnnotation(classBlock);
                 classBlock.annotation("Override");
-                classBlock.publicMethod("JsonWriter toJson(JsonWriter jsonWriter) throws IOException", methodBlock -> {
-                    methodBlock.methodReturn(enumType.getElementType()
-                        .jsonSerializationMethodCall("jsonWriter", null, enumType.getToMethodName() + "()", false));
-                });
+                classBlock.publicMethod("JsonWriter toJson(JsonWriter jsonWriter) throws IOException",
+                    methodBlock -> methodBlock.methodReturn(enumType.getElementType()
+                        .jsonSerializationMethodCall("jsonWriter", null, enumType.getToMethodName() + "()", false)));
 
                 // fromJson
                 classBlock.javadocComment(javadocComment -> {

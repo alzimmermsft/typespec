@@ -3,7 +3,6 @@
 
 package com.microsoft.typespec.http.client.generator.core.template;
 
-import com.azure.core.http.ContentType;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.RequestParameterLocation;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.ClassType;
@@ -17,6 +16,8 @@ import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaInt
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaVisibility;
 import com.microsoft.typespec.http.client.generator.core.util.ClientModelUtil;
 import com.microsoft.typespec.http.client.generator.core.util.CodeNamer;
+import io.clientcore.core.implementation.http.ContentType;
+import io.clientcore.core.utils.CoreUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,11 +39,9 @@ public class ProxyTemplate implements IJavaTemplate<Proxy, JavaClass> {
     public final void write(Proxy restAPI, JavaClass classBlock) {
         JavaSettings settings = JavaSettings.getInstance();
         if (restAPI != null) {
-            classBlock.javadocComment(comment -> {
-                comment.description(String.format(
-                    "The interface defining all the services for %1$s to be used by the proxy service to perform REST calls.",
-                    restAPI.getClientTypeName()));
-            });
+            classBlock.javadocComment(comment -> comment.description(String.format(
+                "The interface defining all the services for %1$s to be used by the proxy service to perform REST calls.",
+                restAPI.getClientTypeName())));
             if (settings.isAzureV1()) {
                 classBlock.annotation(String.format("Host(\"%1$s\")", restAPI.getBaseURL()));
                 classBlock.annotation(String.format("ServiceInterface(name = \"%1$s\")", restAPI.getClientTypeName()));
@@ -59,9 +58,6 @@ public class ProxyTemplate implements IJavaTemplate<Proxy, JavaClass> {
             classBlock.interfaceBlock(visibility, restAPI.getName(), interfaceBlock -> {
 
                 if (settings.isAzureV2() || !settings.isAzureV1()) {
-                    StringBuilder params = new StringBuilder();
-                    params.append("HttpPipeline pipeline");
-
                     StringBuilder paramTypes = new StringBuilder();
                     paramTypes.append("HttpPipeline.class");
 
@@ -69,22 +65,20 @@ public class ProxyTemplate implements IJavaTemplate<Proxy, JavaClass> {
                     reflectionParams.append("pipeline");
 
                     interfaceBlock.staticMethod(JavaVisibility.PackagePrivate,
-                        restAPI.getName() + " getNewInstance(" + params + ")", javaBlock -> {
+                        restAPI.getName() + " getNewInstance(HttpPipeline pipeline)", javaBlock -> {
 
                             String serviceClientInterfacePackageName
                                 = ClientModelUtil.getServiceClientInterfacePackageName();
                             javaBlock.tryBlock(tryBlock -> {
-                                tryBlock.line(
-                                    "Class<?> clazz = Class.forName(" + "\"" + JavaSettings.getInstance().getPackage()
-                                        + ".implementation." + restAPI.getName() + "Impl" + "\");");
+                                tryBlock
+                                    .line("Class<?> clazz = Class.forName(\"" + JavaSettings.getInstance().getPackage()
+                                        + ".implementation." + restAPI.getName() + "Impl\");");
                                 tryBlock.line("return (" + restAPI.getName() + ") clazz.getMethod(\"getNewInstance\", "
                                     + paramTypes + ").invoke(null, " + reflectionParams + ");");
                             })
                                 .catchBlock(
                                     "ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e",
-                                    catchBlock -> {
-                                        catchBlock.line("throw new RuntimeException(e);");
-                                    });
+                                    catchBlock -> catchBlock.line("throw new RuntimeException(e);"));
                         });
                 }
 
@@ -181,12 +175,10 @@ public class ProxyTemplate implements IJavaTemplate<Proxy, JavaClass> {
                     parameterDeclarationBuilder
                         .append(String.format("value = \"%1$s\", encoded = true", parameter.getRequestParameterName()));
                 } else if (location == RequestParameterLocation.HEADER
-                    && parameter.getHeaderCollectionPrefix() != null
-                    && !parameter.getHeaderCollectionPrefix().isEmpty()) {
-                    parameterDeclarationBuilder
-                        .append(String.format("\"%1$s\"", parameter.getHeaderCollectionPrefix()));
+                    && !CoreUtils.isNullOrEmpty(parameter.getHeaderCollectionPrefix())) {
+                    parameterDeclarationBuilder.append('"').append(parameter.getHeaderCollectionPrefix()).append('"');
                 } else {
-                    parameterDeclarationBuilder.append(String.format("\"%1$s\"", parameter.getRequestParameterName()));
+                    parameterDeclarationBuilder.append('"').append(parameter.getRequestParameterName()).append('"');
                 }
                 parameterDeclarationBuilder.append(") ");
 
@@ -194,12 +186,14 @@ public class ProxyTemplate implements IJavaTemplate<Proxy, JavaClass> {
 
             case BODY:
                 if (ContentType.APPLICATION_X_WWW_FORM_URLENCODED.equals(restAPIMethod.getRequestContentType())) {
-                    parameterDeclarationBuilder
-                        .append(String.format("@FormParam(\"%1$s\") ", parameter.getRequestParameterName()));
+                    parameterDeclarationBuilder.append("@FormParam(\"")
+                        .append(parameter.getRequestParameterName())
+                        .append('"');
                     break;
                 }
-                parameterDeclarationBuilder
-                    .append(String.format("@BodyParam(\"%1$s\") ", restAPIMethod.getRequestContentType()));
+                parameterDeclarationBuilder.append("@BodyParam(\"")
+                    .append(restAPIMethod.getRequestContentType())
+                    .append('"');
                 break;
 
             // case FormData:
@@ -282,9 +276,8 @@ public class ProxyTemplate implements IJavaTemplate<Proxy, JavaClass> {
             String parameterDeclarations = String.join(", ", parameterDeclarationList);
             IType restAPIMethodReturnValueClientType = restAPIMethod.getReturnType().getClientType();
             interfaceBlock.defaultMethod(String.format("%1$s %2$s(%3$s)", restAPIMethodReturnValueClientType,
-                restAPIMethod.getName(), parameterDeclarations), functionBlock -> {
-                    functionBlock.line(restAPIMethod.getImplementation());
-                });
+                restAPIMethod.getName(), parameterDeclarations),
+                functionBlock -> functionBlock.line(restAPIMethod.getImplementation()));
         } else {
             String parameterDeclarations = String.join(", ", parameterDeclarationList);
             IType restAPIMethodReturnValueClientType = restAPIMethod.getReturnType().getClientType();

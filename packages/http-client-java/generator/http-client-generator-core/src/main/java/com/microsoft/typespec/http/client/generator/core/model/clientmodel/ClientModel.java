@@ -3,9 +3,9 @@
 
 package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 
-import com.azure.core.util.CoreUtils;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
 import com.microsoft.typespec.http.client.generator.core.util.ClientModelUtil;
+import io.clientcore.core.utils.CoreUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -482,7 +482,7 @@ public class ClientModel {
             imports.add("com.fasterxml.jackson.annotation.JsonTypeInfo");
             imports.add("com.fasterxml.jackson.annotation.JsonTypeName");
 
-            if (getDerivedModels() != null && getDerivedModels().size() > 0) {
+            if (!CoreUtils.isNullOrEmpty(getDerivedModels())) {
                 imports.add("com.fasterxml.jackson.annotation.JsonSubTypes");
                 getDerivedModels().forEach(m -> imports.add(m.getFullName()));
             }

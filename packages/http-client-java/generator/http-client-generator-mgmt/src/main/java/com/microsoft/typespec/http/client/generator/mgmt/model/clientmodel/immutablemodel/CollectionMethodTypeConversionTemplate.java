@@ -3,7 +3,7 @@
 
 package com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.immutablemodel;
 
-import com.azure.core.http.rest.SimpleResponse;
+import com.microsoft.typespec.http.client.generator.core.model.clientmodel.ClassType;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.IType;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.ListType;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.MapType;
@@ -38,7 +38,7 @@ public class CollectionMethodTypeConversionTemplate implements ImmutableMethod {
             imports.add(Collections.class.getName());
         }
         if (FluentUtils.isResponseType(innerType)) {
-            imports.add(SimpleResponse.class.getName());
+            imports.add(ClassType.SIMPLE_RESPONSE.getFullName());
         }
 
         conversionMethodTemplate = MethodTemplate.builder()
@@ -52,13 +52,13 @@ public class CollectionMethodTypeConversionTemplate implements ImmutableMethod {
                     block.methodReturn(
                         TypeConversionUtils.conversionExpression(innerType, TypeConversionUtils.tempVariableName()));
                 } else {
-                    block.ifBlock(String.format("%1$s != null", TypeConversionUtils.tempVariableName()), ifBlock -> {
+                    block.ifBlock(TypeConversionUtils.tempVariableName() + " != null", ifBlock -> {
                         String expression = TypeConversionUtils.conversionExpression(innerType,
                             TypeConversionUtils.tempVariableName());
-                        block.methodReturn(TypeConversionUtils.objectOrUnmodifiableCollection(innerType, expression));
-                    }).elseBlock(elseBlock -> {
-                        block.methodReturn(TypeConversionUtils.nullOrEmptyCollection(innerType));
-                    });
+                        ifBlock.methodReturn(TypeConversionUtils.objectOrUnmodifiableCollection(innerType, expression));
+                    })
+                        .elseBlock(
+                            elseBlock -> elseBlock.methodReturn(TypeConversionUtils.nullOrEmptyCollection(innerType)));
                 }
             })
             .build();

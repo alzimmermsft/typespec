@@ -214,7 +214,7 @@ public class ResourceUpdate extends ResourceOperation {
 
     private FluentMethod getApplyMethod(boolean hasContextParameter) {
         List<ClientMethodParameter> parameters = new ArrayList<>();
-        Optional<FluentCollectionMethod> methodOpt = this.findMethod(true, parameters);
+        Optional<FluentCollectionMethod> methodOpt = this.findMethod(parameters);
         if (methodOpt.isPresent()) {
             if (!hasContextParameter) {
                 parameters.clear();

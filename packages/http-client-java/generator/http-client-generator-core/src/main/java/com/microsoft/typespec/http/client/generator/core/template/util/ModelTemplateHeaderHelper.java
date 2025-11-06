@@ -3,9 +3,6 @@
 
 package com.microsoft.typespec.http.client.generator.core.template.util;
 
-import com.azure.core.http.HttpHeaderName;
-import com.azure.core.http.HttpHeaders;
-import com.azure.core.util.CoreUtils;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.ArrayType;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.ClassType;
@@ -22,6 +19,9 @@ import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaMod
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaVisibility;
 import com.microsoft.typespec.http.client.generator.core.template.ModelTemplate;
 import com.microsoft.typespec.http.client.generator.core.util.CodeNamer;
+import io.clientcore.core.http.models.HttpHeaderName;
+import io.clientcore.core.http.models.HttpHeaders;
+import io.clientcore.core.utils.CoreUtils;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Consumer;
 
 /**
  * Utility class for {@link ModelTemplate} that handles generating {@link HttpHeaders} deserialization to POJOs.
@@ -80,10 +81,8 @@ public final class ModelTemplateHeaderHelper {
      *
      * @param classBlock The class block for the model.
      * @param model The model itself.
-     * @param settings Autorest generation settings.
      */
-    public static void addCustomStronglyTypedHeadersConstructor(JavaClass classBlock, ClientModel model,
-        JavaSettings settings) {
+    public static void addCustomStronglyTypedHeadersConstructor(JavaClass classBlock, ClientModel model) {
         addHttpHeaderNameConstants(classBlock, model);
 
         classBlock.lineComment("HttpHeaders containing the raw property values.");
@@ -240,28 +239,22 @@ public final class ModelTemplateHeaderHelper {
                 + property.getSerializedName() + "\"), " + getWireTypeJavaType(wireType) + ")";
         }
 
-        if (needsTryCatch) {
-            javaBlock.line("try {");
-            javaBlock.increaseIndent();
-        }
-
-        // String is special as the setter is null safe for it, unlike other nullable types.
+        Consumer<JavaBlock> setConsumer = block -> block.line("this." + property.getName() + " = " + setter + ";");
         if (needsNullGuarding) {
-            javaBlock
+            // String is special as the setter is null safe for it, unlike other nullable types.
+            setConsumer = block -> block
                 .ifBlock(property.getName() + " != null",
                     ifBlock -> ifBlock.line("this." + property.getName() + " = " + setter + ";"))
                 .elseBlock(elseBlock -> elseBlock.line(
                     "this." + property.getName() + " = " + property.getClientType().defaultValueExpression() + ";"));
-        } else {
-            javaBlock.line("this." + property.getName() + " = " + setter + ";");
         }
 
         if (needsTryCatch) {
-            // At this time all try-catching is for IOExceptions.
-            javaBlock.decreaseIndent();
-            javaBlock.line("} catch (IOException ex) {");
-            javaBlock.indent(() -> javaBlock.line("throw LOGGER.atError().log(new UncheckedIOException(ex));"));
-            javaBlock.line("}");
+            javaBlock.tryBlock(setConsumer)
+                .catchBlock("IOException ex",
+                    catchBlock -> catchBlock.line("throw LOGGER.atError().log(new UncheckedIOException(ex));"));
+        } else {
+            setConsumer.accept(javaBlock);
         }
     }
 

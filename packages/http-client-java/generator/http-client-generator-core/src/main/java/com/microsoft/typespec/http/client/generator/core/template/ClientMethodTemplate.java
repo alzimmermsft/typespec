@@ -3,10 +3,6 @@
 
 package com.microsoft.typespec.http.client.generator.core.template;
 
-import com.azure.core.annotation.ReturnType;
-import com.azure.core.http.HttpHeaderName;
-import com.azure.core.util.CoreUtils;
-import com.azure.core.util.serializer.CollectionFormat;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.RequestParameterLocation;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.ArrayType;
@@ -36,9 +32,13 @@ import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaJav
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaType;
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaVisibility;
 import com.microsoft.typespec.http.client.generator.core.util.CodeNamer;
+import com.microsoft.typespec.http.client.generator.core.util.CollectionFormat;
 import com.microsoft.typespec.http.client.generator.core.util.MethodNamer;
 import com.microsoft.typespec.http.client.generator.core.util.MethodUtil;
 import com.microsoft.typespec.http.client.generator.core.util.TemplateUtil;
+import io.clientcore.core.annotations.ReturnType;
+import io.clientcore.core.http.models.HttpHeaderName;
+import io.clientcore.core.utils.CoreUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -478,8 +478,8 @@ public class ClientMethodTemplate extends ClientMethodTemplateBase {
         final String enumToString = enumType.getElementType() == ClassType.STRING
             ? "paramItemValue"
             : "paramItemValue == null ? null : paramItemValue." + enumType.getToMethodName() + "()";
-        final String streamToString = parameterName + ".stream()" + ".map(paramItemValue -> Objects.toString("
-            + enumToString + ", \"\"))" + ".collect(Collectors.joining(" + delimiter + "))";
+        final String streamToString = parameterName + ".stream().map(paramItemValue -> Objects.toString(" + enumToString
+            + ", \"\")).collect(Collectors.joining(" + delimiter + "))";
         if (shouldCheckNull) {
             return "(" + parameterName + " == null) ? null : " + streamToString;
         } else {
@@ -502,7 +502,7 @@ public class ClientMethodTemplate extends ClientMethodTemplateBase {
     private static String primitiveIterableToDelimitedStringOfWireValues(String parameterName, boolean shouldCheckNull,
         String delimiter) {
         final String streamToString
-            = parameterName + ".stream()" + ".map(paramItemValue -> Objects.toString(paramItemValue, \"\"))"
+            = parameterName + ".stream().map(paramItemValue -> Objects.toString(paramItemValue, \"\"))"
                 + ".collect(Collectors.joining(" + delimiter + "))";
         if (shouldCheckNull) {
             return "(" + parameterName + " == null) ? null : " + streamToString;
@@ -533,8 +533,8 @@ public class ClientMethodTemplate extends ClientMethodTemplateBase {
         final String iterableToSerialize;
         if (elementWireType != elementType) {
             // convert List<ClientType> to List<WireType>.
-            iterableToSerialize = parameterName + ".stream()" + ".map(paramItemValue -> "
-                + elementWireType.convertFromClientType("paramItemValue") + ")" + ".collect(Collectors.toList())";
+            iterableToSerialize = parameterName + ".stream().map(paramItemValue -> "
+                + elementWireType.convertFromClientType("paramItemValue") + ").collect(Collectors.toList())";
         } else {
             iterableToSerialize = parameterName;
         }
@@ -551,8 +551,8 @@ public class ClientMethodTemplate extends ClientMethodTemplateBase {
             // https://github.com/Azure/azure-sdk-for-java/blob/e1f8f21b1111f8ac9372e0b039f3de92485a5a66/sdk/core/azure-core/src/main/java/com/azure/core/util/serializer/JacksonAdapter.java#L250-L304
             final String serializeItemValueCode
                 = TemplateUtil.loadTextFromResource("ClientMethodSerializeItemValue.java");
-            final String streamToString = iterableToSerialize + ".stream()" + ".map(" + serializeItemValueCode + ")"
-                + ".collect(Collectors.joining(" + delimiter + "))";
+            final String streamToString = iterableToSerialize + ".stream().map(" + serializeItemValueCode
+                + ").collect(Collectors.joining(" + delimiter + "))";
             if (shouldCheckNull) {
                 return "(" + parameterName + " == null) ? null : " + streamToString;
             } else {
@@ -574,7 +574,7 @@ public class ClientMethodTemplate extends ClientMethodTemplateBase {
             return "Base64Util.encodeToString" + "(" + parameterName + ")";
         } else {
             // byte[] to Base64-encoded URL.
-            return ClassType.BASE_64_URL.getName() + ".encode" + "(" + parameterName + ")";
+            return ClassType.BASE_64_URL.getName() + ".encode(" + parameterName + ")";
         }
     }
 
@@ -630,7 +630,7 @@ public class ClientMethodTemplate extends ClientMethodTemplateBase {
             function.line("requestOptionsLocal.addRequestCallback(requestLocal -> {");
             function.indent(() -> function.ifBlock(
                 "requestLocal.getBody() != null && requestLocal.getHeaders().get(HttpHeaderName.CONTENT_TYPE) == null",
-                ifBlock -> function
+                ifBlock -> ifBlock
                     .line("requestLocal.getHeaders().set(HttpHeaderName.CONTENT_TYPE, \"" + contentType + "\");")));
             function.line("});");
         }
@@ -642,7 +642,7 @@ public class ClientMethodTemplate extends ClientMethodTemplateBase {
         function.line("requestOptionsLocal.addRequestCallback(requestLocal -> {");
         function.indent(() -> function.ifBlock(
             "requestLocal.getHeaders().get(HttpHeaderName.fromString(\"" + headerName + "\")) == null",
-            ifBlock -> function.line("requestLocal.getHeaders().set(HttpHeaderName.fromString(\"" + headerName + "\"), "
+            ifBlock -> ifBlock.line("requestLocal.getHeaders().set(HttpHeaderName.fromString(\"" + headerName + "\"), "
                 + expression + ");")));
         function.line("});");
     }
@@ -836,17 +836,17 @@ public class ClientMethodTemplate extends ClientMethodTemplateBase {
                         if (continuationToken.getRequestParameter().getRequestParameterLocation()
                             == RequestParameterLocation.QUERY) {
                             // QUERY
-                            function.line("requestOptionsLocal.addRequestCallback(requestLocal -> {");
-                            function.line("    UriBuilder urlBuilder = UriBuilder.parse(requestLocal.getUri());");
-                            function.line("    urlBuilder.setQueryParameter("
+                            ifBlock.line("requestOptionsLocal.addRequestCallback(requestLocal -> {");
+                            ifBlock.line("    UriBuilder urlBuilder = UriBuilder.parse(requestLocal.getUri());");
+                            ifBlock.line("    urlBuilder.setQueryParameter("
                                 + ClassType.STRING.defaultValueExpression(
                                     continuationToken.getRequestParameter().getRequestParameterName())
                                 + ", String.valueOf(pagingOptions.getContinuationToken()));");
-                            function.line("    requestLocal.setUri(urlBuilder.toString());");
-                            function.line("});");
+                            ifBlock.line("    requestLocal.setUri(urlBuilder.toString());");
+                            ifBlock.line("});");
                         } else {
                             // HEADER
-                            function.line("requestOptionsLocal.setHeader(HttpHeaderName.fromString("
+                            ifBlock.line("requestOptionsLocal.setHeader(HttpHeaderName.fromString("
                                 + ClassType.STRING.defaultValueExpression(
                                     continuationToken.getRequestParameter().getRequestParameterName())
                                 + "), String.valueOf(pagingOptions.getContinuationToken()));");
@@ -1085,25 +1085,19 @@ public class ClientMethodTemplate extends ClientMethodTemplateBase {
 
     protected void addQueryParameterReInjectionLogic(MethodPageDetails.NextLinkReInjection nextLinkReInjection,
         JavaBlock javaBlock) {
-        javaBlock.line("if (requestOptions != null) {");
-        javaBlock.indent(() -> {
-            javaBlock.line("requestOptions.addRequestCallback(httpRequest -> {");
-            javaBlock.indent(() -> {
-                javaBlock.line("UrlBuilder urlBuilder = UrlBuilder.parse(httpRequest.getUrl().toString());");
-                javaBlock.line("Map<String, String> queryParams = urlBuilder.getQuery();");
+        javaBlock.ifBlock("requestOptions != null", ifBlock -> {
+            ifBlock.line("requestOptions.addRequestCallback(httpRequest -> {");
+            ifBlock.indent(() -> {
+                ifBlock.line("UrlBuilder urlBuilder = UrlBuilder.parse(httpRequest.getUrl().toString());");
+                ifBlock.line("Map<String, String> queryParams = urlBuilder.getQuery();");
                 for (String paramSerializedName : nextLinkReInjection.getQueryParameterSerializedNames()) {
-                    javaBlock.line("if (queryParams.containsKey(\"" + paramSerializedName + "\")) {");
-                    javaBlock.indent(() -> {
-                        javaBlock.line("requestOptionsForNextPage.addQueryParam(\"" + paramSerializedName
-                            + "\", queryParams.get(\"" + paramSerializedName + "\"));");
-                    });
-                    javaBlock.line("}");
+                    ifBlock.ifBlock("queryParams.containsKey(\"" + paramSerializedName + "\")",
+                        innerIfBlock -> innerIfBlock.line("requestOptionsForNextPage.addQueryParam(\""
+                            + paramSerializedName + "\", queryParams.get(\"" + paramSerializedName + "\"));"));
                 }
             });
-            javaBlock.line("});");
+            ifBlock.line("});");
         });
-        javaBlock.line("}");
-
     }
 
     protected void generateResumable(ClientMethod clientMethod, JavaType typeBlock, JavaSettings settings) {
@@ -1124,13 +1118,13 @@ public class ClientMethodTemplate extends ClientMethodTemplateBase {
             function.line("return %s(%s)", clientMethod.getProxyMethod().getSimpleAsyncRestResponseMethodName(),
                 clientMethod.getArgumentList());
             function.indent(() -> {
-                if (GenericType.Flux(ClassType.BYTE_BUFFER).equals(clientMethod.getReturnValue().getType())) {
+                if (GenericType.flux(ClassType.BYTE_BUFFER).equals(clientMethod.getReturnValue().getType())) {
                     // Previously this used StreamResponse::getValue, but it isn't guaranteed that the return is
                     // StreamResponse, instead use Response::getValue as StreamResponse is just a fancier
                     // Response<Flux<ByteBuffer>>.
                     function.text(".flatMapMany(fluxByteBufferResponse -> fluxByteBufferResponse.getValue());");
-                } else if (!GenericType.Mono(ClassType.VOID).equals(clientMethod.getReturnValue().getType())
-                    && !GenericType.Flux(ClassType.VOID).equals(clientMethod.getReturnValue().getType())) {
+                } else if (!GenericType.mono(ClassType.VOID).equals(clientMethod.getReturnValue().getType())
+                    && !GenericType.flux(ClassType.VOID).equals(clientMethod.getReturnValue().getType())) {
                     function.text(".flatMap(res -> Mono.justOrEmpty(res.getValue()));");
                 } else {
                     function.text(".flatMap(ignored -> Mono.empty());");
@@ -1645,14 +1639,12 @@ public class ClientMethodTemplate extends ClientMethodTemplateBase {
             addOptionalVariables(function, clientMethod);
             function.line("return PollerFlux.create(Duration.ofSeconds(%s),",
                 clientMethod.getMethodPollingDetails().getPollIntervalInSeconds());
-            function.increaseIndent();
             function.line("() -> this.%s(%s),", clientMethod.getProxyMethod().getSimpleAsyncRestResponseMethodName(),
                 clientMethod.getArgumentList());
             function.line(pollingStrategy + ",");
             function.line(
                 TemplateUtil.getLongRunningOperationTypeReferenceExpression(clientMethod.getMethodPollingDetails())
                     + ");");
-            function.decreaseIndent();
         });
     }
 
@@ -1702,14 +1694,12 @@ public class ClientMethodTemplate extends ClientMethodTemplateBase {
             addOptionalVariables(function, clientMethod);
             function.line("return SyncPoller.createPoller(Duration.ofSeconds(%s),",
                 clientMethod.getMethodPollingDetails().getPollIntervalInSeconds());
-            function.increaseIndent();
             function.line("() -> this.%s(%s),", clientMethod.getProxyMethod().getSimpleRestResponseMethodName(),
                 effectiveArgumentList);
             function.line(pollingStrategy + ",");
             function.line(
                 TemplateUtil.getLongRunningOperationTypeReferenceExpression(clientMethod.getMethodPollingDetails())
                     + ");");
-            function.decreaseIndent();
         });
     }
 
@@ -1723,14 +1713,12 @@ public class ClientMethodTemplate extends ClientMethodTemplateBase {
             addOptionalVariables(function, clientMethod);
             function.line("return SyncPoller.createPoller(Duration.ofSeconds(%s),",
                 clientMethod.getMethodPollingDetails().getPollIntervalInSeconds());
-            function.increaseIndent();
             function.line("() -> this.%s(%s),", clientMethod.getProxyMethod().getSimpleRestResponseMethodName(),
                 clientMethod.getArgumentList());
             function.line(pollingStrategy + ",");
             function.line(
                 TemplateUtil.getLongRunningOperationTypeReferenceExpression(clientMethod.getMethodPollingDetails())
                     + ");");
-            function.decreaseIndent();
         });
     }
 
@@ -1749,14 +1737,12 @@ public class ClientMethodTemplate extends ClientMethodTemplateBase {
             addOptionalVariables(function, clientMethod);
             function.line("return PollerFlux.create(Duration.ofSeconds(%s),",
                 clientMethod.getMethodPollingDetails().getPollIntervalInSeconds());
-            function.increaseIndent();
             function.line("() -> this.%s(%s),", clientMethod.getProxyMethod().getSimpleAsyncRestResponseMethodName(),
                 clientMethod.getArgumentList());
             function.line(pollingStrategy + ",");
             function.line(
                 TemplateUtil.getLongRunningOperationTypeReferenceExpression(clientMethod.getMethodPollingDetails())
                     + ");");
-            function.decreaseIndent();
         });
     }
 

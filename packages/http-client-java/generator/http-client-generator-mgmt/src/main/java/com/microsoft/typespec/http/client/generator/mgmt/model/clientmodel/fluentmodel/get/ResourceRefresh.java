@@ -59,7 +59,7 @@ public class ResourceRefresh extends ResourceOperation {
 
     private FluentMethod getRefreshMethod(boolean hasContextParameter) {
         List<ClientMethodParameter> parameters = new ArrayList<>();
-        Optional<FluentCollectionMethod> methodOpt = this.findMethod(true, parameters);
+        Optional<FluentCollectionMethod> methodOpt = this.findMethod(parameters);
         if (methodOpt.isPresent()) {
             if (!hasContextParameter) {
                 parameters.clear();
@@ -81,7 +81,7 @@ public class ResourceRefresh extends ResourceOperation {
     public List<MethodTemplate> getGetByIdCollectionMethods() {
         List<MethodTemplate> methods = new ArrayList<>();
         List<ClientMethodParameter> parameters = new ArrayList<>();
-        Optional<FluentCollectionMethod> methodOpt = this.findMethod(true, parameters);
+        Optional<FluentCollectionMethod> methodOpt = this.findMethod(parameters);
         if (methodOpt.isPresent()) {
             FluentCollectionMethod collectionMethod = methodOpt.get();
 

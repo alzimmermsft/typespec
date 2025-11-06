@@ -3,7 +3,6 @@
 
 package com.microsoft.typespec.http.client.generator.mgmt.template;
 
-import com.azure.core.util.CoreUtils;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.ClassType;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.IType;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.PrimitiveType;
@@ -18,6 +17,7 @@ import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.examp
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.examplemodel.FluentResourceCreateExample;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.examplemodel.FluentResourceUpdateExample;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.examplemodel.ParameterExample;
+import io.clientcore.core.utils.CoreUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -45,7 +45,7 @@ public class FluentExampleTemplate {
             = exampleMethods.stream().flatMap(em -> em.getHelperFeatures().stream()).collect(Collectors.toSet());
 
         javaFile.javadocComment(commentBlock -> commentBlock
-            .description(String.format("Samples for %1$s %2$s", example.getGroupName(), example.getMethodName())));
+            .description("Samples for " + example.getGroupName() + " " + example.getMethodName()));
         javaFile.publicFinalClass(className, classBlock -> {
             for (ExampleMethod exampleMethod : exampleMethods) {
                 if (!CoreUtils.isNullOrEmpty(exampleMethod.getExample().getOriginalFileName())) {
@@ -53,7 +53,7 @@ public class FluentExampleTemplate {
                 }
 
                 classBlock.javadocComment(commentBlock -> {
-                    commentBlock.description(String.format("Sample code: %1$s", exampleMethod.getExample().getName()));
+                    commentBlock.description("Sample code: " + exampleMethod.getExample().getName());
                     commentBlock.param(exampleMethod.getExample().getEntryName(),
                         exampleMethod.getExample().getEntryDescription());
                 });
@@ -129,7 +129,7 @@ public class FluentExampleTemplate {
                 IType clientType = parameter.getExampleNodes().iterator().next().getClientType();
                 if (clientType instanceof PrimitiveType) {
                     // for primitive type, use language default value
-                    parameterInvocations = String.format("%1$s", clientType.defaultValueExpression());
+                    parameterInvocations = clientType.defaultValueExpression();
                 } else {
                     // avoid ambiguous type on "null"
                     parameterInvocations = String.format("(%1$s) %2$s", clientType, parameterInvocations);
@@ -199,7 +199,7 @@ public class FluentExampleTemplate {
         @Override
         protected String codeDeserializeJsonString(String jsonStr) {
             imports.add("com.azure.core.management.serializer.SerializerFactory");
-            imports.add("com.azure.core.util.serializer.SerializerEncoding");
+            imports.add(ClassType.SERIALIZE_ENCODING.getFullName());
             imports.add(java.io.IOException.class.getName());
 
             return String.format(

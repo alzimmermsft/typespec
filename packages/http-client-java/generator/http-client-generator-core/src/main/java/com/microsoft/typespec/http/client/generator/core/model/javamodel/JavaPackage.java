@@ -3,7 +3,6 @@
 
 package com.microsoft.typespec.http.client.generator.core.model.javamodel;
 
-import com.azure.core.util.CoreUtils;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.NewPlugin;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.PluginLogger;
@@ -44,6 +43,7 @@ import com.microsoft.typespec.http.client.generator.core.util.ClassNameUtil;
 import com.microsoft.typespec.http.client.generator.core.util.ClientModelUtil;
 import com.microsoft.typespec.http.client.generator.core.util.ConstantStringTooLongException;
 import com.microsoft.typespec.http.client.generator.core.util.PossibleCredentialException;
+import io.clientcore.core.utils.CoreUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -269,7 +269,7 @@ public class JavaPackage {
         addJavaFile(javaFile);
     }
 
-    public void addProtocolTestBase(TestContext testContext) {
+    public void addProtocolTestBase(TestContext<?> testContext) {
         JavaFile javaFile
             = javaFileFactory.createTestFile(testContext.getPackageName(), testContext.getTestBaseClassName());
         ProtocolTestBaseTemplate.getInstance().write(testContext, javaFile);
@@ -422,7 +422,7 @@ public class JavaPackage {
              * However, there is later cases that we decided to delay the decision to the function calling it.
              * E.g. code to generate unit tests can just skip that file of duplicate name.
              */
-            logger.warn(String.format("Name conflict for output file '%1$s'.", filePath));
+            logger.warn("Name conflict for output file '{}'.", filePath);
             return true;
         }
         return false;

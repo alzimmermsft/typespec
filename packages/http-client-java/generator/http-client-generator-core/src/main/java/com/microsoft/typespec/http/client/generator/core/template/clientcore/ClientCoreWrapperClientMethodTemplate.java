@@ -3,7 +3,6 @@
 
 package com.microsoft.typespec.http.client.generator.core.template.clientcore;
 
-import com.azure.core.annotation.ReturnType;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.Annotation;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.ArrayType;
@@ -21,6 +20,7 @@ import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaCla
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaType;
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaVisibility;
 import com.microsoft.typespec.http.client.generator.core.template.WrapperClientMethodTemplate;
+import io.clientcore.core.annotations.ReturnType;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -138,9 +138,7 @@ public class ClientCoreWrapperClientMethodTemplate extends WrapperClientMethodTe
                     || !clientMethod.getMethodPageDetails().shouldHideParameter(parameter))
                 .map(ClientMethodParameter::getName)
                 .collect(Collectors.joining(", "));
-            argumentList = argumentList == null || argumentList.isEmpty()
-                ? "RequestContext.none()"
-                : argumentList + ", RequestContext.none()";
+            argumentList = argumentList.isEmpty() ? "RequestContext.none()" : argumentList + ", RequestContext.none()";
 
             if (clientMethod.getReturnValue().getType().equals(PrimitiveType.VOID)) {
                 function.line("%s(%s);", maxOverloadMethodName, argumentList);

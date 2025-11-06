@@ -3,7 +3,6 @@
 
 package com.microsoft.typespec.http.client.generator.core.preprocessor.tranformer;
 
-import com.azure.core.util.CoreUtils;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.AndSchema;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.BinarySchema;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.ChoiceSchema;
@@ -34,11 +33,11 @@ import com.microsoft.typespec.http.client.generator.core.extension.model.extensi
 import com.microsoft.typespec.http.client.generator.core.extension.model.extensionmodel.XmsPageable;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
 import com.microsoft.typespec.http.client.generator.core.preprocessor.namer.CodeNamer;
+import io.clientcore.core.utils.CoreUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -469,82 +468,40 @@ public class Transformer {
                 Operation nextOperationLocal = nextOperation;
 
                 if (operation.getExtensions().getXmsPageable().getOperationName() == null) {
-                    operation.getRequests().stream().flatMap(r -> r.getParameters().stream()).filter(parameter -> {
-                        return parameter.getProtocol() == null
-                            || parameter.getProtocol().getHttp() == null
-                            || (parameter.getProtocol().getHttp().getIn() != null
-                                && (parameter.getProtocol().getHttp().getIn().equals(RequestParameterLocation.HEADER)
-                                    || parameter.getProtocol().getHttp().getIn().equals(RequestParameterLocation.URI)));
-                    }).forEach(param -> {
-                        nextOperationLocal.getRequests().get(0).getParameters().add(param);
-                    });
+                    operation.getRequests()
+                        .stream()
+                        .flatMap(r -> r.getParameters().stream())
+                        .filter(Transformer::paramLocationCheck)
+                        .forEach(param -> nextOperationLocal.getRequests().get(0).getParameters().add(param));
 
                     operation.getRequests()
                         .stream()
                         .flatMap(r -> r.getSignatureParameters().stream())
-                        .filter(parameter -> {
-                            return parameter.getProtocol() == null
-                                || parameter.getProtocol().getHttp() == null
-                                || (parameter.getProtocol().getHttp().getIn() != null
-                                    && (parameter.getProtocol()
-                                        .getHttp()
-                                        .getIn()
-                                        .equals(RequestParameterLocation.HEADER)
-                                        || parameter.getProtocol()
-                                            .getHttp()
-                                            .getIn()
-                                            .equals(RequestParameterLocation.URI)));
-                        })
-                        .forEach(param -> {
-                            nextOperationLocal.getRequests().get(0).getSignatureParameters().add(param);
-                        });
+                        .filter(Transformer::paramLocationCheck)
+                        .forEach(param -> nextOperationLocal.getRequests().get(0).getSignatureParameters().add(param));
 
                     if (operation.getConvenienceApi() != null && operation.getConvenienceApi().getRequests() != null) {
                         operation.getConvenienceApi()
                             .getRequests()
                             .stream()
                             .flatMap(r -> r.getParameters().stream())
-                            .filter(parameter -> {
-                                return parameter.getProtocol() == null
-                                    || parameter.getProtocol().getHttp() == null
-                                    || (parameter.getProtocol().getHttp().getIn() != null
-                                        && (parameter.getProtocol()
-                                            .getHttp()
-                                            .getIn()
-                                            .equals(RequestParameterLocation.HEADER)
-                                            || parameter.getProtocol()
-                                                .getHttp()
-                                                .getIn()
-                                                .equals(RequestParameterLocation.URI)));
-                            })
-                            .forEach(param -> {
-                                nextOperationLocal.getConvenienceApi().getRequests().get(0).getParameters().add(param);
-                            });
+                            .filter(Transformer::paramLocationCheck)
+                            .forEach(param -> nextOperationLocal.getConvenienceApi()
+                                .getRequests()
+                                .get(0)
+                                .getParameters()
+                                .add(param));
 
                         operation.getConvenienceApi()
                             .getRequests()
                             .stream()
                             .flatMap(r -> r.getSignatureParameters().stream())
-                            .filter(parameter -> {
-                                return parameter.getProtocol() == null
-                                    || parameter.getProtocol().getHttp() == null
-                                    || (parameter.getProtocol().getHttp().getIn() != null
-                                        && (parameter.getProtocol()
-                                            .getHttp()
-                                            .getIn()
-                                            .equals(RequestParameterLocation.HEADER)
-                                            || parameter.getProtocol()
-                                                .getHttp()
-                                                .getIn()
-                                                .equals(RequestParameterLocation.URI)));
-                            })
-                            .forEach(param -> {
-                                nextOperationLocal.getConvenienceApi()
-                                    .getRequests()
-                                    .get(0)
-                                    .getSignatureParameters()
-                                    .add(param);
-                            });
+                            .filter(Transformer::paramLocationCheck)
+                            .forEach(param -> nextOperationLocal.getConvenienceApi()
+                                .getRequests()
+                                .get(0)
+                                .getSignatureParameters()
+                                .add(param));
                     }
                 }
                 operationNextPageOperationMap.put(operationSignature, nextOperation);
@@ -573,6 +530,14 @@ public class Transformer {
             operation.getExtensions().getXmsPageable().setNextOperation(nextOperation);
             nextOperation.getExtensions().getXmsPageable().setNextOperation(nextOperation);
         }
+    }
+
+    private static boolean paramLocationCheck(Parameter param) {
+        return param.getProtocol() == null
+            || param.getProtocol().getHttp() == null
+            || (param.getProtocol().getHttp().getIn() != null
+                && (param.getProtocol().getHttp().getIn().equals(RequestParameterLocation.HEADER)
+                    || param.getProtocol().getHttp().getIn().equals(RequestParameterLocation.URI)));
     }
 
     private void renameType(Metadata schema) {
@@ -683,11 +648,9 @@ public class Transformer {
 
         // rename if name conflict
         Set<String> parameterNames = new HashSet<>();
-        ListIterator<Parameter> iter = parameters.listIterator();
-        while (iter.hasNext()) {
-            Parameter parameter = iter.next();
+        for (Parameter parameter : parameters) {
             if (parameter.getOriginalParameter() == null // skip the parameters resulted from parameter-flattening as
-                                                         // they are not in proxy method
+                // they are not in proxy method
                 && parameterNames.contains(parameter.getLanguage().getJava().getName())) {
                 parameter.getLanguage().getJava().setName(parameter.getLanguage().getJava().getName() + "Param");
             }
@@ -696,11 +659,8 @@ public class Transformer {
         }
     }
 
-    private final static Map<String, String> ODATA_PARAMETER_NAME_CONVERSION = new HashMap<>(2);
-    static {
-        ODATA_PARAMETER_NAME_CONVERSION.put("maxpagesize", "maxPageSize");
-        ODATA_PARAMETER_NAME_CONVERSION.put("orderby", "orderBy");
-    }
+    private final static Map<String, String> ODATA_PARAMETER_NAME_CONVERSION
+        = Map.of("maxpagesize", "maxPageSize", "orderby", "orderBy");
 
     private static void renameOdataParameterNames(Request request) {
         List<Parameter> parameters = request.getParameters();

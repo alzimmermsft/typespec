@@ -3,9 +3,9 @@
 
 package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 
-import com.azure.core.util.CoreUtils;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
 import com.microsoft.typespec.http.client.generator.core.util.ClientModelUtil;
+import io.clientcore.core.utils.CoreUtils;
 import java.util.List;
 import java.util.Set;
 
@@ -183,7 +183,7 @@ public class MethodGroupClient {
 
         if (includeImplementationImports && !CoreUtils.isNullOrEmpty(getProperties())) {
             for (ServiceClientProperty property : getProperties()) {
-                property.addImportsTo(imports, includeImplementationImports);
+                property.addImportsTo(imports, true);
             }
         }
     }

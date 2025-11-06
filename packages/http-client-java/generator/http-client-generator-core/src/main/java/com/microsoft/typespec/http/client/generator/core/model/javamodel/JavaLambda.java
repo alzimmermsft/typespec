@@ -43,14 +43,6 @@ public class JavaLambda implements Closeable {
         line(String.format(format, args));
     }
 
-    public final void increaseIndent() {
-        contents.increaseIndent();
-    }
-
-    public final void decreaseIndent() {
-        contents.decreaseIndent();
-    }
-
     public final JavaIfBlock ifBlock(String condition, Consumer<JavaBlock> ifAction) {
         nonReturnStatement();
         contents.ifBlock(condition, ifAction);

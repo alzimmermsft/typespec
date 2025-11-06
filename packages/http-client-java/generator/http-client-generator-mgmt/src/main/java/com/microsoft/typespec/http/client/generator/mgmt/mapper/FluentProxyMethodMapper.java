@@ -3,7 +3,6 @@
 
 package com.microsoft.typespec.http.client.generator.mgmt.mapper;
 
-import com.azure.core.util.CoreUtils;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.Operation;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
 import com.microsoft.typespec.http.client.generator.core.mapper.ProxyMethodMapper;
@@ -12,6 +11,7 @@ import com.microsoft.typespec.http.client.generator.core.model.clientmodel.Proxy
 import com.microsoft.typespec.http.client.generator.mgmt.model.FluentType;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.FluentStatic;
 import com.microsoft.typespec.http.client.generator.mgmt.util.Utils;
+import io.clientcore.core.utils.CoreUtils;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,7 +24,7 @@ public final class FluentProxyMethodMapper extends ProxyMethodMapper {
     }
 
     @Override
-    protected final void buildUnexpectedResponseExceptionFields(ProxyMethod.Builder builder, Operation operation,
+    protected void buildUnexpectedResponseExceptionFields(ProxyMethod.Builder builder, Operation operation,
         List<Integer> expectedStatusCodes, JavaSettings settings) {
         if (CoreUtils.isNullOrEmpty(operation.getExceptions())) {
             // use ManagementException
@@ -73,7 +73,7 @@ public final class FluentProxyMethodMapper extends ProxyMethodMapper {
     }
 
     @Override
-    protected final ClassType mapToExceptionClassType(ClassType errorType, JavaSettings settings) {
+    protected ClassType mapToExceptionClassType(ClassType errorType, JavaSettings settings) {
         if (!FluentType.nonManagementError(errorType)) {
             return FluentType.MANAGEMENT_EXCEPTION;
         } else {
@@ -82,12 +82,12 @@ public final class FluentProxyMethodMapper extends ProxyMethodMapper {
     }
 
     @Override
-    protected final ClassType getHttpResponseExceptionType() {
+    protected ClassType getHttpResponseExceptionType() {
         return FluentType.MANAGEMENT_EXCEPTION;
     }
 
     @Override
-    protected final boolean belongsToOperationGroup(Operation operation, JavaSettings settings) {
+    protected boolean belongsToOperationGroup(Operation operation, JavaSettings settings) {
         if (!super.belongsToOperationGroup(operation, settings)) {
             return false;
         }

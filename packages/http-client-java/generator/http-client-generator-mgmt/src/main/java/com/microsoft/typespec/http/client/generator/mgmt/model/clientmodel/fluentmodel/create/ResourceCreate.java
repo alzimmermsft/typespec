@@ -419,7 +419,7 @@ public class ResourceCreate extends ResourceOperation {
 
     private FluentMethod getCreateMethod(boolean hasContextParameter) {
         List<ClientMethodParameter> parameters = new ArrayList<>();
-        Optional<FluentCollectionMethod> methodOpt = this.findMethod(true, parameters);
+        Optional<FluentCollectionMethod> methodOpt = this.findMethod(parameters);
         if (methodOpt.isPresent()) {
             if (!hasContextParameter) {
                 parameters.clear();

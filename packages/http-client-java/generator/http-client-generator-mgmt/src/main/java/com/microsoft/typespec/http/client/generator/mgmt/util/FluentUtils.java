@@ -3,12 +3,6 @@
 
 package com.microsoft.typespec.http.client.generator.mgmt.util;
 
-import com.azure.core.http.rest.PagedIterable;
-import com.azure.core.http.rest.Response;
-import com.azure.core.http.rest.ResponseBase;
-import com.azure.core.http.rest.SimpleResponse;
-import com.azure.core.util.Context;
-import com.azure.core.util.CoreUtils;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.PluginLogger;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.ClassType;
@@ -37,9 +31,7 @@ import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.Fluen
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.ModelNaming;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel.LocalVariable;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel.ResourceLocalVariables;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
+import io.clientcore.core.utils.CoreUtils;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -52,8 +44,8 @@ public class FluentUtils {
 
     private static final Logger LOGGER = new PluginLogger(FluentGen.getPluginInstance(), FluentUtils.class);
 
-    private static final Set<String> RESERVED_CLASS_NAMES = Collections
-        .unmodifiableSet(new HashSet<>(Arrays.asList(Response.class.getSimpleName(), Context.class.getSimpleName())));
+    private static final Set<String> RESERVED_CLASS_NAMES
+        = Set.of(ClassType.RESPONSE.getFullName(), ClassType.CONTEXT.getFullName());
 
     private FluentUtils() {
     }
@@ -174,7 +166,7 @@ public class FluentUtils {
             } else if (FluentUtils.isResponseType(type)) {
                 IType bodyType = FluentUtils.getValueTypeFromResponseType(type);
                 IType wrapperItemType = getFluentWrapperType(bodyType);
-                wrapperType = wrapperItemType == bodyType ? type : GenericType.Response(wrapperItemType);
+                wrapperType = wrapperItemType == bodyType ? type : GenericType.response(wrapperItemType);
             }
         } else if (clientType instanceof ListType) {
             ListType type = (ListType) clientType;
@@ -186,14 +178,14 @@ public class FluentUtils {
             wrapperType = wrapperElementType == type.getValueType() ? type : new MapType(wrapperElementType);
         } else if (clientType instanceof GenericType) {
             GenericType type = (GenericType) clientType;
-            if (PagedIterable.class.getSimpleName().equals(type.getName())) {
+            if (ClassType.PAGED_ITERABLE.getName().equals(type.getName())) {
                 IType wrapperItemType = getFluentWrapperType(type.getTypeArguments()[0]);
                 wrapperType
-                    = wrapperItemType == type.getTypeArguments()[0] ? type : GenericType.PagedIterable(wrapperItemType);
-            } else if (Response.class.getSimpleName().equals(type.getName())) {
+                    = wrapperItemType == type.getTypeArguments()[0] ? type : GenericType.pagedIterable(wrapperItemType);
+            } else if (ClassType.RESPONSE.getName().equals(type.getName())) {
                 IType wrapperItemType = getFluentWrapperType(type.getTypeArguments()[0]);
                 wrapperType
-                    = wrapperItemType == type.getTypeArguments()[0] ? type : GenericType.Response(wrapperItemType);
+                    = wrapperItemType == type.getTypeArguments()[0] ? type : GenericType.response(wrapperItemType);
             }
         }
         return wrapperType;
@@ -324,10 +316,10 @@ public class FluentUtils {
         if (clientType instanceof GenericType) {
             // Response<>
             GenericType type = (GenericType) clientType;
-            if (Response.class.getSimpleName().equals(type.getName())) {
+            if (ClassType.RESPONSE.getName().equals(type.getName())) {
                 ret = true;
             } else {
-                ret = TypeUtil.isGenericTypeClassSubclassOf(type, Response.class);
+                ret = TypeUtil.isGenericTypeClassSubclassOf(type, ClassType.RESPONSE);
             }
         } else if (clientType instanceof ClassType) {
             // ClientResponse is type of a subclass of Response<>
@@ -346,9 +338,9 @@ public class FluentUtils {
         IType bodyType = null;
         if (clientType instanceof GenericType) {
             GenericType type = (GenericType) clientType;
-            if (Response.class.getSimpleName().equals(type.getName())) {
+            if (ClassType.RESPONSE.getName().equals(type.getName())) {
                 bodyType = type.getTypeArguments()[0];
-            } else if (TypeUtil.isGenericTypeClassSubclassOf(type, Response.class)) {
+            } else if (TypeUtil.isGenericTypeClassSubclassOf(type, ClassType.RESPONSE)) {
                 bodyType = getValueTypeFromResponseTypeSubType(type);
             }
         } else if (clientType instanceof ClassType) {
@@ -367,9 +359,9 @@ public class FluentUtils {
 
     private static IType getValueTypeFromResponseTypeSubType(GenericType type) {
         IType bodyType;
-        if (ResponseBase.class.getSimpleName().equals(type.getName())) {
+        if (ClassType.RESPONSE_BASE.getName().equals(type.getName())) {
             bodyType = type.getTypeArguments()[1];
-        } else if (SimpleResponse.class.getSimpleName().equals(type.getName())) {
+        } else if (ClassType.SIMPLE_RESPONSE.getName().equals(type.getName())) {
             bodyType = type.getTypeArguments()[0];
         } else {
             log("Unable to determine value type for Response subtype: %s, fallback to typeArguments[0].", type);

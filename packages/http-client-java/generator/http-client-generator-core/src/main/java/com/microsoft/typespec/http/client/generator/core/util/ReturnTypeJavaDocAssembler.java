@@ -3,15 +3,9 @@
 
 package com.microsoft.typespec.http.client.generator.core.util;
 
-import com.azure.core.http.rest.PagedFlux;
-import com.azure.core.http.rest.PagedIterable;
-import com.azure.core.http.rest.Response;
-import com.azure.core.util.polling.PollerFlux;
-import com.azure.core.util.polling.SyncPoller;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.ClassType;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.GenericType;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.IType;
-import reactor.core.publisher.Mono;
 
 public class ReturnTypeJavaDocAssembler {
 
@@ -31,13 +25,13 @@ public class ReturnTypeJavaDocAssembler {
     }
 
     private static String assembleForGeneric(String description, GenericType returnType, IType baseType) {
-        if (TypeUtil.isGenericTypeClassSubclassOf(returnType, Mono.class)) {
+        if (TypeUtil.isGenericTypeClassSubclassOf(returnType, ClassType.MONO)) {
             return assembleForMono(description, returnType, baseType);
-        } else if (TypeUtil.isGenericTypeClassSubclassOf(returnType, Response.class)) {
+        } else if (TypeUtil.isGenericTypeClassSubclassOf(returnType, ClassType.RESPONSE)) {
             return assembleForResponse(description, returnType, baseType);
-        } else if (TypeUtil.isGenericTypeClassSubclassOf(returnType, PagedIterable.class, PagedFlux.class)) {
+        } else if (TypeUtil.isGenericTypeClassSubclassOf(returnType, ClassType.PAGED_ITERABLE, ClassType.PAGED_FLUX)) {
             return assembleForPagination(description, returnType);
-        } else if (TypeUtil.isGenericTypeClassSubclassOf(returnType, SyncPoller.class, PollerFlux.class)) {
+        } else if (TypeUtil.isGenericTypeClassSubclassOf(returnType, ClassType.SYNC_POLLER, ClassType.POLLER_FLUX)) {
             return assembleForPoller(description, returnType);
         }
 
@@ -52,7 +46,7 @@ public class ReturnTypeJavaDocAssembler {
      * Mono<OtherType> - the response body on successful completion of {@link Mono}
      */
     private static String assembleForMono(String description, GenericType returnType, IType baseType) {
-        if (TypeUtil.isGenericTypeClassSubclassOf(returnType.getTypeArguments()[0], Response.class)) { // Mono<Response<?>>
+        if (TypeUtil.isGenericTypeClassSubclassOf(returnType.getTypeArguments()[0], ClassType.RESPONSE)) { // Mono<Response<?>>
             return assembleForResponse(description, (GenericType) returnType.getTypeArguments()[0], baseType)
                 + " on successful completion of {@link Mono}";
         } else {

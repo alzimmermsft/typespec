@@ -3,10 +3,10 @@
 
 package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 
-import com.azure.core.util.serializer.CollectionFormat;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.RequestParameterLocation;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
 import com.microsoft.typespec.http.client.generator.core.util.CodeNamer;
+import com.microsoft.typespec.http.client.generator.core.util.CollectionFormat;
 import com.microsoft.typespec.http.client.generator.core.util.MethodUtil;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -187,8 +187,7 @@ public class ProxyMethodParameter extends MethodParameter {
     }
 
     public final String getParameterReferenceConverted() {
-        return String.format("%1$sConverted",
-            CodeNamer.toCamelCase(CodeNamer.removeInvalidCharacters(getParameterReference())));
+        return CodeNamer.toCamelCase(CodeNamer.removeInvalidCharacters(getParameterReference())) + "Converted";
     }
 
     public final CollectionFormat getCollectionFormat() {
@@ -252,7 +251,7 @@ public class ProxyMethodParameter extends MethodParameter {
             } else if (getClientType() instanceof IterableType && !getExplode()) {
                 imports.add("com.azure.core.util.serializer.CollectionFormat");
                 imports.add("com.azure.core.util.serializer.JacksonAdapter");
-            } else if (getClientType() instanceof IterableType && getExplode()) {
+            } else if (getClientType() instanceof IterableType) {
                 imports.add("java.util.stream.Collectors");
             }
         }
@@ -265,9 +264,9 @@ public class ProxyMethodParameter extends MethodParameter {
         }
 
         if (includeImplementationImports) {
-            getWireType().addImportsTo(imports, includeImplementationImports);
+            getWireType().addImportsTo(imports, true);
             if (getRawType() != null) {
-                getRawType().addImportsTo(imports, includeImplementationImports);
+                getRawType().addImportsTo(imports, true);
             }
 
             if (getExplode()) {

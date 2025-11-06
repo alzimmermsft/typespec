@@ -3,7 +3,6 @@
 
 package com.microsoft.typespec.http.client.generator.core.mapper;
 
-import com.azure.core.util.CoreUtils;
 import com.microsoft.typespec.http.client.generator.core.Javagen;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.ArraySchema;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.ChoiceSchema;
@@ -51,6 +50,7 @@ import com.microsoft.typespec.http.client.generator.core.template.Templates;
 import com.microsoft.typespec.http.client.generator.core.util.ClientModelUtil;
 import com.microsoft.typespec.http.client.generator.core.util.CodeNamer;
 import com.microsoft.typespec.http.client.generator.core.util.SchemaUtil;
+import io.clientcore.core.utils.CoreUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -117,7 +117,7 @@ public class ClientMapper implements IMapper<CodeModel, Client> {
         List<ClientException> exceptions = Stream
             .concat(
                 codeModel.getClients() == null
-                    ? Stream.<OperationGroup>empty()
+                    ? Stream.empty()
                     : codeModel.getClients().stream().flatMap(c -> c.getOperationGroups().stream()),
                 codeModel.getOperationGroups().stream())
             .flatMap(og -> og.getOperations().stream())
@@ -197,7 +197,7 @@ public class ClientMapper implements IMapper<CodeModel, Client> {
             // set the service clients only if there are client operations present
             if (!CoreUtils.isNullOrEmpty(codeModel.getClients())) {
                 serviceClientsMap = processClients(codeModel.getClients(), codeModel);
-                builder.serviceClients(new ArrayList(serviceClientsMap.keySet()));
+                builder.serviceClients(new ArrayList<>(serviceClientsMap.keySet()));
             } else {
                 // service client
                 ServiceClient serviceClient = Mappers.getServiceClientMapper().map(codeModel);
@@ -504,10 +504,10 @@ public class ClientMapper implements IMapper<CodeModel, Client> {
                 clientBuilder.addBuilderTrait(ClientBuilderTrait.AZURE_KEY_CREDENTIAL_TRAIT);
             }
         }
-        serviceClient.getProperties().stream().map(property -> {
-            Javagen.getPluginInstance().getLogger().info("Client property name " + property.getName());
-            return property;
-        })
+        serviceClient.getProperties()
+            .stream()
+            .peek(
+                property -> Javagen.getPluginInstance().getLogger().info("Client property name {}", property.getName()))
             .filter(property -> property.getName().equals("endpoint"))
             .findFirst()
             .ifPresent(property -> clientBuilder.addBuilderTrait(ClientBuilderTrait.getEndpointTrait(property)));

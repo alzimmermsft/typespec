@@ -3,9 +3,7 @@
 
 package com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel;
 
-import com.azure.core.util.CoreUtils;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.RequestParameterLocation;
-import com.microsoft.typespec.http.client.generator.core.extension.plugin.PluginLogger;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.ClientMethod;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.ClientMethodParameter;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.ClientModel;
@@ -14,7 +12,6 @@ import com.microsoft.typespec.http.client.generator.core.model.clientmodel.Proxy
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.examplemodel.MethodParameter;
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaVisibility;
 import com.microsoft.typespec.http.client.generator.core.util.CodeNamer;
-import com.microsoft.typespec.http.client.generator.mgmt.FluentGen;
 import com.microsoft.typespec.http.client.generator.mgmt.model.ResourceTypeName;
 import com.microsoft.typespec.http.client.generator.mgmt.model.arm.UrlPathSegments;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.FluentCollectionMethod;
@@ -23,6 +20,7 @@ import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.Fluen
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.FluentResourceModel;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel.method.FluentMethod;
 import com.microsoft.typespec.http.client.generator.mgmt.util.FluentUtils;
+import io.clientcore.core.utils.CoreUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,11 +33,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
 
 public abstract class ResourceOperation {
-
-    private static final Logger LOGGER = new PluginLogger(FluentGen.getPluginInstance(), ResourceOperation.class);
 
     protected final FluentResourceModel resourceModel;
     protected final FluentResourceCollection resourceCollection;
@@ -177,21 +172,17 @@ public abstract class ResourceOperation {
     /**
      * Find an appropriate method for fluent method implementation.
      *
-     * @param hasContextParameter whether the fluent method has Context as its parameter
      * @param parameters fluent method parameters
      * @return {@link Optional} of the method
      */
-    protected Optional<FluentCollectionMethod> findMethod(boolean hasContextParameter,
-        List<ClientMethodParameter> parameters) {
+    protected Optional<FluentCollectionMethod> findMethod(List<ClientMethodParameter> parameters) {
         Optional<FluentCollectionMethod> methodOpt = this.getMethodReferencesOfFullParameters()
             .stream()
-            .filter(m -> hasContextParameter
-                ? m.getInnerClientMethod().getParameters().stream().anyMatch(FluentUtils::isContextParameter)
-                : m.getInnerClientMethod().getParameters().stream().noneMatch(FluentUtils::isContextParameter))
+            .filter(m -> m.getInnerClientMethod().getParameters().stream().anyMatch(FluentUtils::isContextParameter))
             // fluent method implementation calls client interface API, thus we need the method to be public
             .filter(method -> JavaVisibility.Public == method.getInnerClientMethod().getMethodVisibility())
             .findFirst();
-        if (methodOpt.isPresent() && hasContextParameter) {
+        if (methodOpt.isPresent()) {
             ClientMethodParameter contextParameter = methodOpt.get()
                 .getInnerClientMethod()
                 .getParameters()

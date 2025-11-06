@@ -3,7 +3,6 @@
 
 package com.microsoft.typespec.http.client.generator.core.util;
 
-import com.azure.core.util.CoreUtils;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.ApiVersion;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.Client;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.CodeModel;
@@ -30,6 +29,7 @@ import com.microsoft.typespec.http.client.generator.core.model.clientmodel.Metho
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.ModelPropertySegment;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.ServiceClient;
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaVisibility;
+import io.clientcore.core.utils.CoreUtils;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -148,10 +148,7 @@ public class ClientModelUtil {
                 }
 
                 if (generateSyncMethods) {
-                    String syncClassName = serviceClient.getClientBaseName().endsWith("Client")
-                        ? serviceClient.getClientBaseName()
-                        : serviceClient.getClientBaseName() + "Client";
-                    syncClients.add(builder.className(syncClassName).build());
+                    syncClients.add(builder.className(getSyncName(serviceClient.getClientBaseName())).build());
                 }
             } else {
                 if (generateAsyncMethods) {
@@ -160,13 +157,14 @@ public class ClientModelUtil {
                 }
 
                 if (generateSyncMethods) {
-                    String syncClassName = methodGroupClient.getClassBaseName().endsWith("Client")
-                        ? methodGroupClient.getClassBaseName()
-                        : methodGroupClient.getClassBaseName() + "Client";
-                    syncClients.add(builder.className(syncClassName).build());
+                    syncClients.add(builder.className(getSyncName(methodGroupClient.getClassBaseName())).build());
                 }
             }
         }
+    }
+
+    private static String getSyncName(String name) {
+        return name.endsWith("Client") ? name : name + "Client";
     }
 
     private static List<ConvenienceMethod> getConvenienceMethods(Supplier<List<ClientMethod>> clientMethods,
@@ -721,14 +719,10 @@ public class ClientModelUtil {
             return false;
         } else {
             // type mismatch
-            if (ignoreGenericType
-                && clientModelProperty.getClientType() instanceof GenericType
-                && clientModelProperty.getWireType() instanceof GenericType) {
-                // at present, ignore generic type, as type erasure causes conflict of 2 constructors
-                return false;
-            } else {
-                return true;
-            }
+            // at present, ignore generic type, as type erasure causes conflict of 2 constructors
+            return !ignoreGenericType
+                || !(clientModelProperty.getClientType() instanceof GenericType)
+                || !(clientModelProperty.getWireType() instanceof GenericType);
         }
     }
 
@@ -946,14 +940,13 @@ public class ClientModelUtil {
         boolean notIncludedInConstructor = !includePropertyInConstructor(property, settings);
         boolean definedByModel = modelDefinesProperty(model, property);
         boolean modelIsJsonMergePatch = isJsonMergePatchModel(model, settings);
-        boolean hasPackagePrivateSetter = hasDerivedTypes
+        return hasDerivedTypes
             && notIncludedInConstructor
             && definedByModel
             && streamStyle
             && !property.isPolymorphicDiscriminator()
             && !modelIsJsonMergePatch
             && !property.isConstant();
-        return hasPackagePrivateSetter;
     }
 
     /**

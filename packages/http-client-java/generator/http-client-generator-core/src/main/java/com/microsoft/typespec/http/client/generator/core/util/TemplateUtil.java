@@ -3,7 +3,6 @@
 
 package com.microsoft.typespec.http.client.generator.core.util;
 
-import com.azure.core.util.CoreUtils;
 import com.microsoft.typespec.http.client.generator.core.Javagen;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.PluginLogger;
@@ -21,6 +20,7 @@ import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaFil
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaType;
 import com.microsoft.typespec.http.client.generator.core.template.Templates;
 import io.clientcore.core.serialization.json.JsonWriter;
+import io.clientcore.core.utils.CoreUtils;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -246,19 +246,18 @@ public class TemplateUtil {
      * @param classBlock Java class block
      */
     private static void writePagingHelperMethods(JavaClass classBlock) {
-        classBlock.privateMethod("List<BinaryData> getValues(BinaryData binaryData, String path)", block -> {
-            block.line("try {");
-            block.line("Map<?, ?> obj = binaryData.toObject(Map.class);");
-            block.line("List<?> values = (List<?>) obj.get(path);");
-            block.line("return values.stream().map(BinaryData::fromObject).collect(Collectors.toList());");
-            block.line("} catch (RuntimeException e) { return null; }");
-        });
-        classBlock.privateMethod("String getNextLink(BinaryData binaryData, String path)", block -> {
-            block.line("try {");
-            block.line("Map<?, ?> obj = binaryData.toObject(Map.class);");
-            block.line("return (String) obj.get(path);");
-            block.line("} catch (RuntimeException e) { return null; }");
-        });
+        classBlock.privateMethod("List<BinaryData> getValues(BinaryData binaryData, String path)",
+            block -> block.tryBlock(tryBlock -> {
+                tryBlock.line("Map<?, ?> obj = binaryData.toObject(Map.class);");
+                tryBlock.line("List<?> values = (List<?>) obj.get(path);");
+                tryBlock.methodReturn("values.stream().map(BinaryData::fromObject).collect(Collectors.toList())");
+            }).catchBlock("RuntimeException e", catchBlock -> catchBlock.methodReturn("null")));
+
+        classBlock.privateMethod("String getNextLink(BinaryData binaryData, String path)",
+            block -> block.tryBlock(tryBlock -> {
+                tryBlock.line("Map<?, ?> obj = binaryData.toObject(Map.class);");
+                tryBlock.methodReturn("(String) obj.get(path)");
+            }).catchBlock("RuntimeException e", catchBlock -> catchBlock.methodReturn("null")));
     }
 
     /**

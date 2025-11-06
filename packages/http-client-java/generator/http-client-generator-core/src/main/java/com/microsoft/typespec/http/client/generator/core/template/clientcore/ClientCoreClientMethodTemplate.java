@@ -3,10 +3,6 @@
 
 package com.microsoft.typespec.http.client.generator.core.template.clientcore;
 
-import com.azure.core.annotation.ReturnType;
-import com.azure.core.http.HttpHeaderName;
-import com.azure.core.util.CoreUtils;
-import com.azure.core.util.serializer.CollectionFormat;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.RequestParameterLocation;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.ArrayType;
@@ -36,9 +32,13 @@ import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaTyp
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaVisibility;
 import com.microsoft.typespec.http.client.generator.core.template.ClientMethodTemplate;
 import com.microsoft.typespec.http.client.generator.core.util.CodeNamer;
+import com.microsoft.typespec.http.client.generator.core.util.CollectionFormat;
 import com.microsoft.typespec.http.client.generator.core.util.MethodNamer;
 import com.microsoft.typespec.http.client.generator.core.util.MethodUtil;
 import com.microsoft.typespec.http.client.generator.core.util.TemplateUtil;
+import io.clientcore.core.annotations.ReturnType;
+import io.clientcore.core.http.models.HttpHeaderName;
+import io.clientcore.core.utils.CoreUtils;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -690,15 +690,13 @@ public class ClientCoreClientMethodTemplate extends ClientMethodTemplate {
                 clientMethod.getOperationInstrumentationInfo().getOperationName(),
                 requestContextParam == null ? "RequestContext.none()" : requestContextParam);
 
-            function.increaseIndent();
             addValidations(function, clientMethod.getRequiredNullableParameterExpressions(),
                 clientMethod.getValidateExpressions(), settings);
             addOptionalAndConstantVariables(function, clientMethod, restAPIMethod.getParameters(), settings);
             applyParameterTransformations(function, clientMethod, settings);
             convertClientTypesToWireTypes(function, clientMethod, restAPIMethod.getParameters());
 
-            String serviceMethodCall
-                = checkAndReplaceParamNameCollision(clientMethod, restAPIMethod, "updatedContext", settings);
+            String serviceMethodCall = checkAndReplaceParamNameCollision(clientMethod, restAPIMethod, settings);
             function.line(String.format("%s res = %s;", restAPIMethod.getReturnType(), serviceMethodCall));
             if (settings.isAzureV1()) {
                 function.line("return new PagedResponseBase<>(");
@@ -753,7 +751,6 @@ public class ClientCoreClientMethodTemplate extends ClientMethodTemplate {
                 // previous link, first link, last link
                 function.line("null,null,null);");
             }
-            function.decreaseIndent();
             function.line("});");
         });
     }
@@ -787,32 +784,26 @@ public class ClientCoreClientMethodTemplate extends ClientMethodTemplate {
                     .getArgumentList()
                     .replace("requestContext", "requestContextForNextPage");
                 String firstPageArgs = clientMethod.getArgumentList();
-                String effectiveNextMethodArgs = nextMethodArgs;
-                String effectiveFirstPageArgs = firstPageArgs;
                 function.indent(() -> {
-                    function.line("%s,",
-                        this.getPagingSinglePageExpression(clientMethod,
-                            clientMethod.getProxyMethod().getPagingSinglePageMethodName(), effectiveFirstPageArgs,
-                            settings));
+                    function.line("%s,", this.getPagingSinglePageExpression(clientMethod,
+                        clientMethod.getProxyMethod().getPagingSinglePageMethodName(), firstPageArgs, settings));
                     function.line("%s);",
                         this.getPagingNextPageExpression(clientMethod,
                             clientMethod.getMethodPageDetails()
                                 .getNextMethod()
                                 .getProxyMethod()
                                 .getPagingSinglePageMethodName(),
-                            effectiveNextMethodArgs, settings));
+                            nextMethodArgs, settings));
                 });
             });
         } else {
             writeMethod(typeBlock, clientMethod.getMethodVisibility(), clientMethod.getDeclaration(), function -> {
 
-                String firstPageArgs = clientMethod.getArgumentList();
-                String effectiveFirstPageArgs = firstPageArgs;
                 addOptionalVariables(function, clientMethod);
                 function.line("return new PagedIterable<>(");
                 function.indent(() -> function.line(this.getPagingSinglePageExpression(clientMethod,
-                    clientMethod.getProxyMethod().getPagingSinglePageMethodName(), effectiveFirstPageArgs, settings)
-                    + ");"));
+                    clientMethod.getProxyMethod().getPagingSinglePageMethodName(), clientMethod.getArgumentList(),
+                    settings) + ");"));
             });
         }
     }
@@ -952,7 +943,6 @@ public class ClientCoreClientMethodTemplate extends ClientMethodTemplate {
                 clientMethod.getOperationInstrumentationInfo().getOperationName(),
                 requestContextParam == null ? "RequestContext.none()" : requestContextParam);
 
-            function.increaseIndent();
             addValidations(function, clientMethod.getRequiredNullableParameterExpressions(),
                 clientMethod.getValidateExpressions(), settings);
             addOptionalAndConstantVariables(function, clientMethod, restAPIMethod.getParameters(), settings);
@@ -960,7 +950,7 @@ public class ClientCoreClientMethodTemplate extends ClientMethodTemplate {
             convertClientTypesToWireTypes(function, clientMethod, restAPIMethod.getParameters());
 
             String serviceMethodCall
-                = checkAndReplaceParamNameCollision(clientMethod, restAPIMethod.toSync(), "updatedContext", settings);
+                = checkAndReplaceParamNameCollision(clientMethod, restAPIMethod.toSync(), settings);
             if (clientMethod.getReturnValue().getType() == ClassType.INPUT_STREAM) {
                 function.line(
                     "Iterator<ByteBufferBackedInputStream> iterator = %s(%s).map(ByteBufferBackedInputStream::new).toStream().iterator();",
@@ -992,7 +982,6 @@ public class ClientCoreClientMethodTemplate extends ClientMethodTemplate {
             } else {
                 function.line("%s(%s);", effectiveProxyMethodName, arguments);
             }
-            function.decreaseIndent();
             function.line("});");
         });
     }
@@ -1104,7 +1093,7 @@ public class ClientCoreClientMethodTemplate extends ClientMethodTemplate {
     }
 
     private static String checkAndReplaceParamNameCollision(ClientMethod clientMethod, ProxyMethod restAPIMethod,
-        String requestContextParamName, JavaSettings settings) {
+        JavaSettings settings) {
         // Asynchronous methods will use 'FluxUtils.withContext' to infer 'Context' from the Reactor's context.
         // Only replace 'context' with 'Context.NONE' for synchronous methods that don't have a 'Context' parameter.
         boolean isSync = clientMethod.getProxyMethod().isSync();
@@ -1119,7 +1108,7 @@ public class ClientCoreClientMethodTemplate extends ClientMethodTemplate {
             String parameterName;
             if ("requestContext".equals(proxyMethodArgument)) {
                 // Simple static mapping for RequestOptions when 'useLocalRequestOptions' is true.
-                parameterName = requestContextParamName;
+                parameterName = "updatedContext";
             } else {
                 ClientMethodParameter parameter = nameToParameter.get(proxyMethodArgument);
                 if (parameter != null && parametersWithTransformations.contains(proxyMethodArgument)) {
@@ -1131,7 +1120,7 @@ public class ClientCoreClientMethodTemplate extends ClientMethodTemplate {
                         // For asynchronous methods always use the argument name.
                         parameterName = proxyMethodArgument;
                     } else {
-                        parameterName = (parameter == null && requestContextParamName.equals(proxyMethodArgument))
+                        parameterName = (parameter == null && "updatedContext".equals(proxyMethodArgument))
                             ? TemplateUtil.getRequestContextNone()
                             : proxyMethodArgument;
                     }
@@ -1220,19 +1209,16 @@ public class ClientCoreClientMethodTemplate extends ClientMethodTemplate {
 
         String argumentList = clientMethod.getArgumentList();
 
-        String effectiveArgumentList = argumentList;
         writeMethod(typeBlock, clientMethod.getMethodVisibility(), clientMethod.getDeclaration(), function -> {
             addOptionalVariables(function, clientMethod);
             function.line("return SyncPoller.createPoller(Duration.ofSeconds(%s),",
                 clientMethod.getMethodPollingDetails().getPollIntervalInSeconds());
-            function.increaseIndent();
             function.line("() -> this.%s(%s),", clientMethod.getProxyMethod().getSimpleRestResponseMethodName(),
-                effectiveArgumentList);
+                argumentList);
             function.line(pollingStrategy + ",");
             function.line(
                 TemplateUtil.getLongRunningOperationTypeReferenceExpression(clientMethod.getMethodPollingDetails())
                     + ");");
-            function.decreaseIndent();
         });
     }
 

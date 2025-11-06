@@ -3,11 +3,11 @@
 
 package com.microsoft.typespec.http.client.generator.core.implementation;
 
-import com.azure.core.util.CoreUtils;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.Client;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.Languages;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.Operation;
 import com.microsoft.typespec.http.client.generator.core.util.SchemaUtil;
+import io.clientcore.core.utils.CoreUtils;
 
 /**
  * Represents language-agnostic information about an operation for instrumentation purposes
@@ -25,12 +25,11 @@ public class OperationInstrumentationInfo {
             if (codeModel != null) {
                 String namespace = codeModel.getLanguage().getDefault().getNamespace();
                 String name = getName(codeModel.getLanguage());
-                clientName = namespace == null ? name : String.format("%s.%s", namespace, name);
+                clientName = namespace == null ? name : namespace + "." + name;
             }
 
             String methodName = getName(operation.getLanguage());
-            localOperationName
-                = CoreUtils.isNullOrEmpty(clientName) ? methodName : String.format("%s.%s", clientName, methodName);
+            localOperationName = CoreUtils.isNullOrEmpty(clientName) ? methodName : clientName + "." + methodName;
         }
 
         this.operationName = localOperationName;

@@ -3,7 +3,6 @@
 
 package com.microsoft.typespec.http.client.generator.mgmt.transformer;
 
-import com.azure.core.util.CoreUtils;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.CodeModel;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.DictionarySchema;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.Language;
@@ -20,6 +19,7 @@ import com.microsoft.typespec.http.client.generator.mgmt.model.FluentType;
 import com.microsoft.typespec.http.client.generator.mgmt.model.ResourceType;
 import com.microsoft.typespec.http.client.generator.mgmt.model.ResourceTypeName;
 import com.microsoft.typespec.http.client.generator.mgmt.util.Utils;
+import io.clientcore.core.utils.CoreUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -63,10 +63,11 @@ class ResourceTypeNormalization {
         objectSchemas.forEach(compositeType -> {
             Optional<ObjectSchema> parentType = getObjectParent(compositeType);
             if (parentType.isPresent()) {
-                getSchemaResourceType(parentType.get()).ifPresent(type -> {
+                ResourceType type = getSchemaResourceType(parentType.get());
+                if (type != null) {
                     correctDeduplicatedName(parentType.get());
                     adaptForParentSchema(compositeType, parentType.get(), type);
-                });
+                }
 
                 if (FluentType.SYSTEM_DATA.getName().equals(Utils.getJavaName(parentType.get()))) {
                     adaptAsSystemData(compositeType);
@@ -87,15 +88,14 @@ class ResourceTypeNormalization {
         return DUMMY_SUB_RESOURCE;
     }
 
-    private static final Set<String> SUB_RESOURCE_FIELDS = new HashSet<>(Arrays.asList(ResourceTypeName.FIELD_ID));
-    private static final Set<String> PROXY_RESOURCE_FIELDS = new HashSet<>(
-        Arrays.asList(ResourceTypeName.FIELD_ID, ResourceTypeName.FIELD_NAME, ResourceTypeName.FIELD_TYPE));
-    private static final Set<String> RESOURCE_FIELDS
-        = new HashSet<>(Arrays.asList(ResourceTypeName.FIELD_ID, ResourceTypeName.FIELD_NAME,
-            ResourceTypeName.FIELD_TYPE, ResourceTypeName.FIELD_LOCATION, ResourceTypeName.FIELD_TAGS));
+    private static final Set<String> SUB_RESOURCE_FIELDS = Set.of(ResourceTypeName.FIELD_ID);
+    private static final Set<String> PROXY_RESOURCE_FIELDS
+        = Set.of(ResourceTypeName.FIELD_ID, ResourceTypeName.FIELD_NAME, ResourceTypeName.FIELD_TYPE);
+    private static final Set<String> RESOURCE_FIELDS = Set.of(ResourceTypeName.FIELD_ID, ResourceTypeName.FIELD_NAME,
+        ResourceTypeName.FIELD_TYPE, ResourceTypeName.FIELD_LOCATION, ResourceTypeName.FIELD_TAGS);
 
     private static final Set<String> RESOURCE_EXTRA_FIELDS
-        = new HashSet<>(Arrays.asList(ResourceTypeName.FIELD_LOCATION, ResourceTypeName.FIELD_TAGS));
+        = Set.of(ResourceTypeName.FIELD_LOCATION, ResourceTypeName.FIELD_TAGS);
 
     private static final ObjectSchema DUMMY_SUB_RESOURCE = dummyResourceSchema(ResourceTypeName.SUB_RESOURCE);
     private static final ObjectSchema DUMMY_PROXY_RESOURCE = dummyResourceSchema(ResourceTypeName.PROXY_RESOURCE);
@@ -202,7 +202,7 @@ class ResourceTypeNormalization {
     }
 
     private static void tryAdaptAsResource(ObjectSchema compositeType) {
-        if (!getSchemaResourceType(compositeType).isPresent()) {
+        if (getSchemaResourceType(compositeType) == null) {
             if (hasProperties(compositeType, RESOURCE_FIELDS)) {
                 addDummyParentType(compositeType, DUMMY_RESOURCE);
 
@@ -241,34 +241,32 @@ class ResourceTypeNormalization {
      * @param compositeType the object schema to check
      * @return the resource type
      */
-    private static Optional<ResourceType> getSchemaResourceType(ObjectSchema compositeType) {
-        ResourceType type = null;
-
+    private static ResourceType getSchemaResourceType(ObjectSchema compositeType) {
         String javaName = Utils.getJavaName(compositeType);
         if (javaName.equals(ResourceTypeName.SUB_RESOURCE)
             || javaName.startsWith(ResourceTypeName.SUB_RESOURCE_AUTO_GENERATED)) {
-            type = ResourceType.SUB_RESOURCE;
+            return ResourceType.SUB_RESOURCE;
         } else if (javaName.equals(ResourceTypeName.PROXY_RESOURCE)
             || javaName.startsWith(ResourceTypeName.PROXY_RESOURCE_AUTO_GENERATED)
             || javaName.equals(ResourceTypeName.EXTENSION_RESOURCE)) {
-            type = ResourceType.PROXY_RESOURCE;
+            return ResourceType.PROXY_RESOURCE;
         } else if (javaName.equals(ResourceTypeName.TRACKED_RESOURCE)
             || javaName.startsWith(ResourceTypeName.TRACKED_RESOURCE_AUTO_GENERATED)) {
-            type = ResourceType.RESOURCE;
+            return ResourceType.RESOURCE;
         } else if (javaName.equals(ResourceTypeName.RESOURCE)
             || javaName.startsWith(ResourceTypeName.RESOURCE_AUTO_GENERATED)
             || javaName.equals(ResourceTypeName.AZURE_RESOURCE)
             || javaName.startsWith(ResourceTypeName.AZURE_RESOURCE_AUTO_GENERATED)) {
             if (hasProperties(compositeType, RESOURCE_EXTRA_FIELDS)) {
-                type = ResourceType.RESOURCE;
+                return ResourceType.RESOURCE;
             } else if (hasProperties(compositeType, PROXY_RESOURCE_FIELDS)) {
-                type = ResourceType.PROXY_RESOURCE;
+                return ResourceType.PROXY_RESOURCE;
             } else if (hasProperties(compositeType, SUB_RESOURCE_FIELDS)) {
-                type = ResourceType.SUB_RESOURCE;
+                return ResourceType.SUB_RESOURCE;
             }
         }
 
-        return Optional.ofNullable(type);
+        return null;
     }
 
     /**

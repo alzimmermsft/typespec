@@ -29,7 +29,7 @@ public class FluentClientMethodTemplate extends ClientMethodTemplate {
         final ProxyMethod restAPIMethod = clientMethod.getProxyMethod();
         boolean addContextParameter = !contextInParameters(clientMethod);
         boolean mergeContextParameter = contextInParameters(clientMethod);
-        boolean isLroPagination = GenericType.Mono(GenericType.Response(GenericType.FLUX_BYTE_BUFFER))
+        boolean isLroPagination = GenericType.mono(GenericType.response(GenericType.FLUX_BYTE_BUFFER))
             .equals(restAPIMethod.getReturnType().getClientType());
         String endOfLine = addContextParameter ? "" : ";";
         String contextParam
@@ -218,7 +218,7 @@ public class FluentClientMethodTemplate extends ClientMethodTemplate {
         JavaSettings settings, JavaBlock function) {
         boolean contextInParameters = contextInParameters(clientMethod);
         boolean isLroPagination
-            = GenericType.Response(ClassType.BINARY_DATA).equals(restAPIMethod.getReturnType().getClientType());
+            = GenericType.response(ClassType.BINARY_DATA).equals(restAPIMethod.getReturnType().getClientType());
         if (isLroPagination && settings.isSyncStackEnabled()) {
             IType classType = clientMethod.getMethodPageDetails().getLroIntermediateType();
             // get final result

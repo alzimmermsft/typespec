@@ -46,7 +46,7 @@ public class ResourceDelete extends ResourceOperation {
     public List<MethodTemplate> getDeleteByIdCollectionMethods() {
         List<MethodTemplate> methods = new ArrayList<>();
         List<ClientMethodParameter> parameters = new ArrayList<>();
-        Optional<FluentCollectionMethod> methodOpt = this.findMethod(true, parameters);
+        Optional<FluentCollectionMethod> methodOpt = this.findMethod(parameters);
         if (methodOpt.isPresent()) {
             FluentCollectionMethod collectionMethod = methodOpt.get();
 

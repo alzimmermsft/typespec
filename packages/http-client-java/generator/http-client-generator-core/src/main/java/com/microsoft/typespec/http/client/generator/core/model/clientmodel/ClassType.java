@@ -3,65 +3,10 @@
 
 package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 
-import com.azure.core.client.traits.ConfigurationTrait;
-import com.azure.core.client.traits.EndpointTrait;
-import com.azure.core.client.traits.HttpTrait;
-import com.azure.core.client.traits.KeyCredentialTrait;
-import com.azure.core.client.traits.TokenCredentialTrait;
-import com.azure.core.credential.AzureKeyCredential;
-import com.azure.core.credential.KeyCredential;
-import com.azure.core.credential.TokenCredential;
-import com.azure.core.exception.ClientAuthenticationException;
-import com.azure.core.exception.HttpResponseException;
-import com.azure.core.exception.ResourceExistsException;
-import com.azure.core.exception.ResourceModifiedException;
-import com.azure.core.exception.ResourceNotFoundException;
-import com.azure.core.exception.TooManyRedirectsException;
-import com.azure.core.http.HttpClient;
-import com.azure.core.http.HttpHeader;
-import com.azure.core.http.HttpHeaderName;
-import com.azure.core.http.HttpHeaders;
-import com.azure.core.http.HttpPipeline;
-import com.azure.core.http.HttpPipelineBuilder;
-import com.azure.core.http.HttpRequest;
-import com.azure.core.http.HttpResponse;
-import com.azure.core.http.MatchConditions;
-import com.azure.core.http.ProxyOptions;
-import com.azure.core.http.RequestConditions;
-import com.azure.core.http.policy.BearerTokenAuthenticationPolicy;
-import com.azure.core.http.policy.HttpLogOptions;
-import com.azure.core.http.policy.HttpLoggingPolicy;
-import com.azure.core.http.policy.HttpPipelinePolicy;
-import com.azure.core.http.policy.KeyCredentialPolicy;
-import com.azure.core.http.policy.RedirectPolicy;
-import com.azure.core.http.policy.RetryOptions;
-import com.azure.core.http.policy.RetryPolicy;
-import com.azure.core.http.policy.UserAgentPolicy;
-import com.azure.core.http.rest.RequestOptions;
-import com.azure.core.http.rest.Response;
-import com.azure.core.http.rest.RestProxy;
-import com.azure.core.http.rest.SimpleResponse;
-import com.azure.core.http.rest.StreamResponse;
-import com.azure.core.util.Base64Url;
-import com.azure.core.util.Base64Util;
-import com.azure.core.util.BinaryData;
-import com.azure.core.util.ClientOptions;
-import com.azure.core.util.Configuration;
-import com.azure.core.util.Context;
-import com.azure.core.util.CoreUtils;
-import com.azure.core.util.DateTimeRfc1123;
-import com.azure.core.util.ExpandableEnum;
-import com.azure.core.util.ExpandableStringEnum;
-import com.azure.core.util.logging.ClientLogger;
-import com.azure.core.util.logging.LogLevel;
-import com.azure.core.util.polling.PollingStrategyOptions;
-import com.azure.core.util.polling.SyncPoller;
-import com.azure.core.util.serializer.JsonSerializer;
-import com.azure.core.util.serializer.SerializerAdapter;
 import com.microsoft.typespec.http.client.generator.core.extension.model.extensionmodel.XmsExtensions;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
 import com.microsoft.typespec.http.client.generator.core.util.TemplateUtil;
-import io.clientcore.core.credentials.oauth.OAuthTokenRequestContext;
+import io.clientcore.core.utils.CoreUtils;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
@@ -108,96 +53,95 @@ public class ClassType implements IType {
 
     }
 
-    private static final Map<String, ClassDetails> CLASS_TYPE_MAPPING
-        = Map.ofEntries(createEntry(RestProxy.class.getName(), "io.clientcore.core.http.RestProxy"),
-            createEntry(HttpPipeline.class.getName(), "io.clientcore.core.http.pipeline.HttpPipeline"),
-            createEntry(HttpPipelineBuilder.class.getName(), "io.clientcore.core.http.pipeline.HttpPipelineBuilder"),
-            createEntry(Context.class.getName(), "io.clientcore.core.utils.Context"),
-            createEntry(HttpClient.class.getName(), "io.clientcore.core.http.client.HttpClient"),
-            createEntry(HttpLogOptions.class.getName(), "io.clientcore.core.http.pipeline.HttpInstrumentationOptions"),
-            createEntry(HttpPipelinePolicy.class.getName(), "io.clientcore.core.http.pipeline.HttpPipelinePolicy"),
-            createEntry(KeyCredential.class.getName(), "io.clientcore.core.credentials.KeyCredential"),
-            createEntry(KeyCredentialPolicy.class.getName(), "io.clientcore.core.http.pipeline.KeyCredentialPolicy"),
-            createEntry(RetryPolicy.class.getName(), "io.clientcore.core.http.pipeline.HttpRetryPolicy"),
-            createEntry(RedirectPolicy.class.getName(), "io.clientcore.core.http.pipeline.HttpRedirectPolicy"),
-            createEntry(HttpLoggingPolicy.class.getName(),
-                "io.clientcore.core.http.pipeline.HttpInstrumentationPolicy"),
-            createEntry(Configuration.class.getName(), "io.clientcore.core.utils.configuration.Configuration"),
-            createEntry(HttpHeaders.class.getName(), "io.clientcore.core.http.models.HttpHeaders"),
-            createEntry(HttpHeader.class.getName(), "io.clientcore.core.http.models.HttpHeader"),
-            createEntry(HttpHeaderName.class.getName(), "io.clientcore.core.http.models.HttpHeaderName"),
-            createEntry(HttpRequest.class.getName(), "io.clientcore.core.http.models.HttpRequest"),
-            createEntry(HttpResponse.class.getName(), "io.clientcore.core.http.models.HttpResponse"),
-            createEntry(BinaryData.class.getName(), "io.clientcore.core.models.binarydata.BinaryData"),
-            createEntry(RetryOptions.class.getName(), "io.clientcore.core.http.pipeline.HttpRetryOptions"),
-            createEntry(ProxyOptions.class.getName(), "io.clientcore.core.http.models.ProxyOptions"),
-            createEntry(Response.class.getName(), "io.clientcore.core.http.models.Response"),
-            createEntry(SimpleResponse.class.getName(), "io.clientcore.core.http.SimpleResponse"),
-            createEntry(ExpandableStringEnum.class.getName(), "io.clientcore.core.utils.ExpandableEnum"),
-            createEntry(ExpandableEnum.class.getName(), "io.clientcore.core.utils.ExpandableEnum"),
-            createEntry(HttpResponseException.class.getName(), "io.clientcore.core.http.models.HttpResponseException"),
-            createEntry(HttpTrait.class.getName(), "io.clientcore.core.traits.HttpTrait"),
-            createEntry(ConfigurationTrait.class.getName(), "io.clientcore.core.traits.ConfigurationTrait"),
-            createEntry(EndpointTrait.class.getName(), "io.clientcore.core.traits.EndpointTrait"),
-            createEntry(KeyCredentialTrait.class.getName(), "io.clientcore.core.traits.KeyCredentialTrait"),
-            createEntry(ClientLogger.class.getName(), "io.clientcore.core.instrumentation.logging.ClientLogger"),
-            createEntry(LogLevel.class.getName(), "io.clientcore.core.instrumentation.logging.LogLevel"),
-            createEntry(com.azure.core.util.ServiceVersion.class.getName(),
-                "io.clientcore.core.http.models.ServiceVersion"),
-            createEntry(UserAgentPolicy.class.getName(), "io.clientcore.core.http.pipeline.UserAgentPolicy"),
+    private static final Map<String, ClassDetails> CLASS_TYPE_MAPPING = Map.ofEntries(
+        sameName("com.azure.core.http.rest", "io.clientcore.core.http", "RestProxy"),
+        sameName("com.azure.core.http", "io.clientcore.core.http.pipeline", "HttpPipeline"),
+        sameName("com.azure.core.http", "io.clientcore.core.http.pipeline", "HttpPipelineBuilder"),
+        sameName("com.azure.core.util", "io.clientcore.core.utils", "Context"),
+        sameName("com.azure.core.http", "io.clientcore.core.http.client", "HttpClient"),
+        fullPath("com.azure.core.http.policy.HttpLogOptions",
+            "io.clientcore.core.http.pipeline.HttpInstrumentationOptions"),
+        sameName("com.azure.core.http.policy", "io.clientcore.core.http.pipeline", "HttpPipelinePolicy"),
+        sameName("com.azure.core.credential", "io.clientcore.core.credentials", "KeyCredential"),
+        sameName("com.azure.core.http.policy", "io.clientcore.core.http.pipeline", "KeyCredentialPolicy"),
+        fullPath("com.azure.core.http.policy.RetryPolicy", "io.clientcore.core.http.pipeline.HttpRetryPolicy"),
+        fullPath("com.azure.core.http.policy.RedirectPolicy", "io.clientcore.core.http.pipeline.HttpRedirectPolicy"),
+        fullPath("com.azure.core.http.policy.HttpLoggingPolicy",
+            "io.clientcore.core.http.pipeline.HttpInstrumentationPolicy"),
+        sameName("com.azure.core.util", "io.clientcore.core.utils.configuration", "Configuration"),
+        sameName("com.azure.core.http", "io.clientcore.core.http.models", "HttpHeaders"),
+        sameName("com.azure.core.http", "io.clientcore.core.http.models", "HttpHeader"),
+        sameName("com.azure.core.http", "io.clientcore.core.http.models", "HttpHeaderName"),
+        sameName("com.azure.core.http", "io.clientcore.core.http.models", "HttpRequest"),
+        sameName("com.azure.core.http", "io.clientcore.core.http.models", "HttpResponse"),
+        sameName("com.azure.core.util", "io.clientcore.core.models.binarydata", "BinaryData"),
+        fullPath("com.azure.core.http.policy.RetryOptions", "io.clientcore.core.http.pipeline.HttpRetryOptions"),
+        sameName("com.azure.core.http", "io.clientcore.core.http.models", "ProxyOptions"),
+        sameName("com.azure.core.http.rest", "io.clientcore.core.http.models", "Response"),
+        sameName("com.azure.core.http.rest", "io.clientcore.core.http", "SimpleResponse"),
+        fullPath("com.azure.core.util.ExpandableStringEnum", "io.clientcore.core.utils.ExpandableEnum"),
+        sameName("com.azure.core.util", "io.clientcore.core.utils", "ExpandableEnum"),
+        sameName("com.azure.core.exception", "io.clientcore.core.http.models", "HttpResponseException"),
+        sameName("com.azure.core.client.traits", "io.clientcore.core.traits", "HttpTrait"),
+        sameName("com.azure.core.client.traits", "io.clientcore.core.traits", "ConfigurationTrait"),
+        sameName("com.azure.core.client.traits", "io.clientcore.core.traits", "EndpointTrait"),
+        sameName("com.azure.core.client.traits", "io.clientcore.core.traits", "KeyCredentialTrait"),
+        sameName("com.azure.core.util.logging", "io.clientcore.core.instrumentation.logging", "ClientLogger"),
+        sameName("com.azure.core.util.logging", "io.clientcore.core.instrumentation.logging", "LogLevel"),
+        sameName("com.azure.core.util", "io.clientcore.core.http.models", "ServiceVersion"),
+        sameName("com.azure.core.http.policy", "io.clientcore.core.http.pipeline", "UserAgentPolicy"),
+        sameName("com.azure.core.util", "io.clientcore.core.utils", "DateTimeRfc1123"),
+        fullPath("com.azure.core.util.Base64Url", "io.clientcore.core.utils.Base64Uri"),
+        fullPath("com.azure.core.credential.TokenCredential",
+            "io.clientcore.core.credentials.oauth.OAuthTokenCredential",
+            "com.azure.v2.core.credentials.TokenCredential"),
+        fullPath("com.azure.core.client.traits.TokenCredentialTrait",
+            "io.clientcore.core.traits.OAuthTokenCredentialTrait", "com.azure.v2.core.traits.TokenCredentialTrait"),
+        fullPath("com.azure.core.http.policy.BearerTokenAuthenticationPolicy",
+            "io.clientcore.core.http.pipeline.OAuthBearerTokenAuthenticationPolicy",
+            "com.azure.v2.core.http.pipeline.BearerTokenAuthenticationPolicy"),
+        sameName("com.azure.core.util", "io.clientcore.core.utils", "CoreUtils"),
+        fullPath("com.azure.core.http.MatchConditions", "io.clientcore.core.http.models.HttpMatchConditions"),
+        fullPath("com.azure.core.http.RequestConditions", "io.clientcore.core.http.models.HttpRequestConditions"),
+        fullPath("com.azure.core.models.ResponseError", "io.clientcore.core.Error",
+            "com.azure.v2.core.models.AzureResponseError"),
+        fullPath("com.azure.core.util.polling.SyncPoller", "io.clientcore.core.Poller",
+            "com.azure.v2.core.http.polling.Poller"),
+        fullPath("com.azure.core.util.polling.PollingStrategyOptions", "io.clientcore.core.PollingStrategyOptions",
+            "com.azure.v2.core.http.polling.PollingStrategyOptions"));
 
-            createEntry(DateTimeRfc1123.class.getName(), "io.clientcore.core.utils.DateTimeRfc1123"),
-            createEntry(Base64Url.class.getName(), "io.clientcore.core.utils.Base64Uri"),
-            createEntry(TokenCredential.class.getName(), "io.clientcore.core.credentials.oauth.OAuthTokenCredential",
-                "com.azure.v2.core.credentials.TokenCredential"),
-            createEntry(TokenCredentialTrait.class.getName(), "io.clientcore.core.traits.OAuthTokenCredentialTrait",
-                "com.azure.v2.core.traits.TokenCredentialTrait"),
-            createEntry(BearerTokenAuthenticationPolicy.class.getName(),
-                "io.clientcore.core.http.pipeline.OAuthBearerTokenAuthenticationPolicy",
-                "com.azure.v2.core.http.pipeline.BearerTokenAuthenticationPolicy"),
-            createEntry(CoreUtils.class.getName(), "io.clientcore.core.utils.CoreUtils"),
-            createEntry(MatchConditions.class.getName(), "io.clientcore.core.http.models.HttpMatchConditions"),
-            createEntry(RequestConditions.class.getName(), "io.clientcore.core.http.models.HttpRequestConditions"),
-            createEntry("com.azure.core.models.ResponseError", "io.clientcore.core.Error",
-                "com.azure.v2.core.models.AzureResponseError"),
-            createEntry("com.azure.core.util.polling.SyncPoller", "io.clientcore.core.Poller",
-                "com.azure.v2.core.http.polling.Poller"),
-            createEntry("com.azure.core.util.polling.PollingStrategyOptions",
-                "io.clientcore.core.PollingStrategyOptions", "com.azure.v2.core.http.polling.PollingStrategyOptions"));
+    private static Map.Entry<String, ClassDetails> sameName(String azurePackage, String genericPackage,
+        String className) {
+        String azureFullPath = azurePackage + "." + className;
+        String genericFullPath = genericPackage + "." + className;
 
-    private static Map.Entry<String, ClassDetails> createEntry(String azureClass, String genericClass) {
-        return createEntry(azureClass, genericClass, genericClass);
+        return fullPath(azureFullPath, genericFullPath, genericFullPath);
     }
 
-    private static Map.Entry<String, ClassDetails> createEntry(String azureClass, String genericClass,
+    private static Map.Entry<String, ClassDetails> fullPath(String azureClass, String genericClass) {
+        return fullPath(azureClass, genericClass, genericClass);
+    }
+
+    private static Map.Entry<String, ClassDetails> fullPath(String azureClass, String genericClass,
         String azureVNextClass) {
         return Map.entry(azureClass, new ClassDetails(azureClass, genericClass, azureVNextClass));
     }
 
-    private static ClassType.Builder getClassTypeBuilder(Class<?> classKey) {
-        return getClassTypeBuilder(classKey, false);
+    private static ClassType getClassType(String packageName, String className) {
+        return getClassTypeBuilder(packageName, className).build();
     }
 
-    private static ClassType.Builder getClassTypeBuilder(String packageName, String className) {
+    private static Builder getClassTypeBuilder(String packageName, String className) {
         return getClassTypeBuilder(packageName, className, false);
     }
 
-    private static ClassType.Builder getClassTypeBuilder(Class<?> classKey, boolean isSwaggerType) {
-        return getClassTypeBuilder(classKey.getPackageName(), classKey.getSimpleName(), isSwaggerType);
-    }
-
-    private static ClassType.Builder getClassTypeBuilder(String packageName, String className, boolean isSwaggerType) {
-        ClassType.ClassDetails mapping = CLASS_TYPE_MAPPING.get(packageName + "." + className);
+    private static Builder getClassTypeBuilder(String packageName, String className, boolean isSwaggerType) {
+        ClassDetails mapping = CLASS_TYPE_MAPPING.get(packageName + "." + className);
         if (JavaSettings.getInstance().isAzureV2()) {
             if (mapping != null) {
-                return new ClassType.Builder(false).knownClass(mapping.getAzureVNextClass());
+                return new Builder(false).knownClass(mapping.getAzureVNextClass());
             } else {
-                return new Builder(isSwaggerType)
-                    .packageName(packageName
-                        .replace(ExternalPackage.AZURE_CORE_PACKAGE_NAME, ExternalPackage.CLIENTCORE_PACKAGE_NAME)
-                        .replace(ExternalPackage.AZURE_JSON_PACKAGE_NAME, ExternalPackage.CLIENTCORE_JSON_PACKAGE_NAME)
-                        .replace(ExternalPackage.AZURE_XML_PACKAGE_NAME, ExternalPackage.CLIENTCORE_XML_PACKAGE_NAME))
-                    .name(className);
+                return new Builder(isSwaggerType).packageName(replacePakcageName(packageName)).name(className);
             }
         } else if (!JavaSettings.getInstance().isAzureV1()) {
             if (mapping != null) {
@@ -205,64 +149,65 @@ public class ClassType implements IType {
                 if (CoreUtils.isNullOrEmpty(genericClass)) {
                     return null;
                 }
-                return new ClassType.Builder(isSwaggerType).knownClass(genericClass);
+                return new Builder(isSwaggerType).knownClass(genericClass);
             } else {
-                return new Builder(isSwaggerType)
-                    .packageName(packageName
-                        .replace(ExternalPackage.AZURE_CORE_PACKAGE_NAME, ExternalPackage.CLIENTCORE_PACKAGE_NAME)
-                        .replace(ExternalPackage.AZURE_JSON_PACKAGE_NAME, ExternalPackage.CLIENTCORE_JSON_PACKAGE_NAME)
-                        .replace(ExternalPackage.AZURE_XML_PACKAGE_NAME, ExternalPackage.CLIENTCORE_XML_PACKAGE_NAME))
-                    .name(className);
+                return new Builder(isSwaggerType).packageName(replacePakcageName(packageName)).name(className);
             }
         } else {
             if (mapping != null) {
-                return new ClassType.Builder(isSwaggerType).knownClass(mapping.getAzureClass());
+                return new Builder(isSwaggerType).knownClass(mapping.getAzureClass());
             } else {
                 return new Builder(isSwaggerType).packageName(packageName).name(className);
             }
         }
     }
 
-    public static final ClassType REQUEST_CONDITIONS = getClassTypeBuilder(RequestConditions.class).build();
-    public static final ClassType MATCH_CONDITIONS = getClassTypeBuilder(MatchConditions.class).build();
-    public static final ClassType CORE_UTILS = getClassTypeBuilder(CoreUtils.class).build();
-    public static final ClassType RESPONSE = getClassTypeBuilder(Response.class).build();
-    public static final ClassType SIMPLE_RESPONSE = getClassTypeBuilder(SimpleResponse.class).build();
-    public static final ClassType EXPANDABLE_STRING_ENUM = getClassTypeBuilder(ExpandableStringEnum.class).build();
-    public static final ClassType EXPANDABLE_ENUM = getClassTypeBuilder(ExpandableEnum.class).build();
-    public static final ClassType HTTP_PIPELINE_BUILDER = getClassTypeBuilder(HttpPipelineBuilder.class).build();
-    public static final ClassType KEY_CREDENTIAL_POLICY = getClassTypeBuilder(KeyCredentialPolicy.class).build();
+    private static String replacePakcageName(String packageName) {
+        return packageName.replace(ExternalPackage.AZURE_CORE_PACKAGE_NAME, ExternalPackage.CLIENTCORE_PACKAGE_NAME)
+            .replace(ExternalPackage.AZURE_JSON_PACKAGE_NAME, ExternalPackage.CLIENTCORE_JSON_PACKAGE_NAME)
+            .replace(ExternalPackage.AZURE_XML_PACKAGE_NAME, ExternalPackage.CLIENTCORE_XML_PACKAGE_NAME);
+    }
+
+    public static final ClassType REQUEST_CONDITIONS = getClassType("com.azure.core.http", "RequestConditions");
+    public static final ClassType MATCH_CONDITIONS = getClassType("com.azure.core.http", "MatchConditions");
+    public static final ClassType CORE_UTILS = getClassType("com.azure.core.util", "CoreUtils");
+    public static final ClassType RESPONSE = getClassType("com.azure.core.http.rest", "Response");
+    public static final ClassType SIMPLE_RESPONSE = getClassType("com.azure.core.http.rest", "SimpleResponse");
+    public static final ClassType EXPANDABLE_STRING_ENUM = getClassType("com.azure.core.util", "ExpandableStringEnum");
+    public static final ClassType EXPANDABLE_ENUM = getClassType("com.azure.core.util", "ExpandableEnum");
+    public static final ClassType HTTP_PIPELINE_BUILDER = getClassType("com.azure.core.http", "HttpPipelineBuilder");
+    public static final ClassType KEY_CREDENTIAL_POLICY
+        = getClassType("com.azure.core.http.policy", "KeyCredentialPolicy");
     public static final ClassType BEARER_TOKEN_POLICY
-        = getClassTypeBuilder(BearerTokenAuthenticationPolicy.class).build();
-    public static final ClassType KEY_CREDENTIAL_TRAIT = getClassTypeBuilder(KeyCredentialTrait.class).build();
-    public static final ClassType ENDPOINT_TRAIT = getClassTypeBuilder(EndpointTrait.class).build();
-    public static final ClassType HTTP_TRAIT = getClassTypeBuilder(HttpTrait.class).build();
-    public static final ClassType CONFIGURATION_TRAIT = getClassTypeBuilder(ConfigurationTrait.class).build();
-    public static final ClassType PROXY_TRAIT
-        = new ClassType.Builder(false).packageName("io.clientcore.core.traits").name("ProxyTrait").build();
+        = getClassType("com.azure.core.http.policy", "BearerTokenAuthenticationPolicy");
+    public static final ClassType AZURE_KEY_CREDENTIAL_TRAIT
+        = new ClassType("com.azure.core.client.traits", "AzureKeyCredentialTrait");
+    public static final ClassType KEY_CREDENTIAL_TRAIT
+        = getClassType("com.azure.core.client.traits", "KeyCredentialTrait");
+    public static final ClassType ENDPOINT_TRAIT = getClassType("com.azure.core.client.traits", "EndpointTrait");
+    public static final ClassType HTTP_TRAIT = getClassType("com.azure.core.client.traits", "HttpTrait");
+    public static final ClassType CONFIGURATION_TRAIT
+        = getClassType("com.azure.core.client.traits", "ConfigurationTrait");
+    public static final ClassType PROXY_TRAIT = new ClassType("io.clientcore.core.traits", "ProxyTrait");
     public static final ClassType POLL_OPERATION_DETAILS
-        = getClassTypeBuilder("com.azure.core.util.polling", "PollOperationDetails").build();
-    public static final ClassType JSON_SERIALIZABLE = getClassTypeBuilder("com.azure.json", "JsonSerializable").build();
-    public static final ClassType JSON_WRITER = getClassTypeBuilder("com.azure.json", "JsonWriter").build();
-    public static final ClassType JSON_READER = getClassTypeBuilder("com.azure.json", "JsonReader").build();
-    public static final ClassType JSON_TOKEN = getClassTypeBuilder("com.azure.json", "JsonToken").build();
+        = getClassType("com.azure.core.util.polling", "PollOperationDetails");
+    public static final ClassType JSON_SERIALIZABLE = getClassType("com.azure.json", "JsonSerializable");
+    public static final ClassType JSON_WRITER = getClassType("com.azure.json", "JsonWriter");
+    public static final ClassType JSON_READER = getClassType("com.azure.json", "JsonReader");
+    public static final ClassType JSON_TOKEN = getClassType("com.azure.json", "JsonToken");
 
-    public static final ClassType XML_SERIALIZABLE = getClassTypeBuilder("com.azure.xml", "XmlSerializable").build();
-    public static final ClassType XML_WRITER = getClassTypeBuilder("com.azure.xml", "XmlWriter").build();
-    public static final ClassType XML_READER = getClassTypeBuilder("com.azure.xml", "XmlReader").build();
-    public static final ClassType XML_TOKEN = getClassTypeBuilder("com.azure.xml", "XmlToken").build();
+    public static final ClassType XML_SERIALIZABLE = getClassType("com.azure.xml", "XmlSerializable");
+    public static final ClassType XML_WRITER = getClassType("com.azure.xml", "XmlWriter");
+    public static final ClassType XML_READER = getClassType("com.azure.xml", "XmlReader");
+    public static final ClassType XML_TOKEN = getClassType("com.azure.xml", "XmlToken");
 
-    public static final ClassType VOID = new ClassType.Builder(false).knownClass(Void.class).build();
+    public static final ClassType VOID = new ClassType(Void.class);
 
     public static final ClassType INSTRUMENTATION
-        = new ClassType.Builder(false).packageName("io.clientcore.core.instrumentation")
-            .name("Instrumentation")
-            .build();
+        = new ClassType("io.clientcore.core.instrumentation", "Instrumentation");
 
     public static final ClassType SDK_INSTRUMENTATION_OPTIONS
-        = new ClassType.Builder(false).packageName("io.clientcore.core.instrumentation")
-            .name("SdkInstrumentationOptions")
-            .build();
+        = new ClassType("io.clientcore.core.instrumentation", "SdkInstrumentationOptions");
 
     public static final ClassType BOOLEAN = new Builder(false).knownClass(Boolean.class)
         .defaultValueExpressionConverter(String::toLowerCase)
@@ -345,7 +290,7 @@ public class ClassType implements IType {
         .xmlAttributeDeserializationTemplate("%s.getStringAttribute(%s, %s)")
         .build();
 
-    public static final ClassType BASE_64_URL = getClassTypeBuilder(Base64Url.class)
+    public static final ClassType BASE_64_URL = getClassTypeBuilder("com.azure.core.util", "Base64Url")
         .serializationValueGetterModifier(valueGetter -> "Objects.toString(" + valueGetter + ", null)")
         .jsonToken("JsonToken.STRING")
         .jsonDeserializationMethod("getNullable(nonNullReader -> new "
@@ -400,7 +345,7 @@ public class ClassType implements IType {
         .xmlAttributeDeserializationTemplate("%s.getNullableAttribute(%s, %s, Duration::parse)")
         .build();
 
-    public static final ClassType DATE_TIME_RFC_1123 = getClassTypeBuilder(DateTimeRfc1123.class)
+    public static final ClassType DATE_TIME_RFC_1123 = getClassTypeBuilder("com.azure.core.util", "DateTimeRfc1123")
         .defaultValueExpressionConverter(
             defaultValueExpression -> "new DateTimeRfc1123(\"" + defaultValueExpression + "\")")
         .jsonToken("JsonToken.STRING")
@@ -431,15 +376,16 @@ public class ClassType implements IType {
         .xmlAttributeDeserializationTemplate("%s.getNullableAttribute(%s, %s, UUID::fromString)")
         .build();
 
-    public static final ClassType OBJECT = new ClassType.Builder(false).knownClass(Object.class).build();
+    public static final ClassType OBJECT = new ClassType(Objects.class);
 
-    public static final ClassType TOKEN_CREDENTIAL = getClassTypeBuilder(TokenCredential.class).build();
+    public static final ClassType ACCESS_TOKEN = new ClassType("com.azure.core.credential", "AccessToken");
+    public static final ClassType TOKEN_CREDENTIAL = getClassType("com.azure.core.credential", "TokenCredential");
     public static final ClassType OAUTH_TOKEN_REQUEST_CONTEXT
-        = new Builder().knownClass(OAuthTokenRequestContext.class).build();
+        = new ClassType("io.clientcore.core.credentials.oauth", "OAuthTokenRequestContext");
+    public static final ClassType TOKEN_CREDENTIAL_TRAIT
+        = getClassType("com.azure.core.client.traits", "TokenCredentialTrait");
 
-    public static final ClassType TOKEN_CREDENTIAL_TRAIT = getClassTypeBuilder(TokenCredentialTrait.class).build();
-
-    public static final ClassType UNIX_TIME_DATE_TIME = new ClassType.Builder(false)
+    public static final ClassType UNIX_TIME_DATE_TIME = new Builder(false)
         .defaultValueExpressionConverter(
             defaultValueExpression -> "OffsetDateTime.parse(\"" + defaultValueExpression + "\")")
         .jsonToken("JsonToken.STRING")
@@ -451,23 +397,27 @@ public class ClassType implements IType {
         .xmlAttributeDeserializationTemplate("%s.getNullableAttribute(%s, %s, OffsetDateTime::parse)")
         .build();
 
-    public static final ClassType UNIX_TIME_LONG = new ClassType.Builder(false).prototypeAsLong().build();
+    public static final ClassType UNIX_TIME_LONG = new Builder(false).prototypeAsLong().build();
 
-    public static final ClassType DURATION_LONG = new ClassType.Builder(false).prototypeAsLong().build();
+    public static final ClassType DURATION_LONG = new Builder(false).prototypeAsLong().build();
 
-    public static final ClassType DURATION_DOUBLE = new ClassType.Builder(false).prototypeAsDouble().build();
+    public static final ClassType DURATION_DOUBLE = new Builder(false).prototypeAsDouble().build();
 
-    public static final ClassType HTTP_PIPELINE = getClassTypeBuilder(HttpPipeline.class).build();
+    public static final ClassType HTTP_PIPELINE = getClassType("com.azure.core.http", "HttpPipeline");
 
-    public static final ClassType REST_PROXY = getClassTypeBuilder(RestProxy.class).build();
+    public static final ClassType REST_PROXY = getClassType("com.azure.core.http.rest", "RestProxy");
 
+    public static final ClassType COLLECTION_FORMAT
+        = new ClassType("com.azure.core.util.serializer", "CollectionFormat");
     public static final ClassType SERIALIZER_ADAPTER
-        = new ClassType.Builder(false).knownClass(SerializerAdapter.class).build();
-    public static final ClassType JSON_SERIALIZER = getClassTypeBuilder(JsonSerializer.class).build();
+        = new ClassType("com.azure.core.util.serializer", "SerializerAdapter");
+    public static final ClassType SERIALIZE_ENCODING
+        = new ClassType("com.azure.core.util.serializer", "SerializerEncoding");
 
-    public static final ClassType FUNCTION = new ClassType.Builder(false).knownClass(Function.class).build();
+    public static final ClassType JSON_SERIALIZER = getClassType("com.azure.core.util.serializer", "JsonSerializer");
 
-    public static final ClassType BYTE_BUFFER = new ClassType.Builder(false).knownClass(ByteBuffer.class).build();
+    public static final ClassType FUNCTION = new ClassType(Function.class);
+    public static final ClassType BYTE_BUFFER = new ClassType(ByteBuffer.class);
 
     public static final ClassType URL = new Builder(false)
         .defaultValueExpressionConverter(defaultValueExpression -> "new URL(\"" + defaultValueExpression + "\")")
@@ -481,61 +431,74 @@ public class ClassType implements IType {
         .xmlAttributeDeserializationTemplate("%s.getNullableAttribute(%s, %s, URL::new)")
         .build();
 
-    public static final ClassType STREAM_RESPONSE
-        = new ClassType.Builder(false).knownClass(StreamResponse.class).build();
+    public static final ClassType STREAM_RESPONSE = new ClassType("com.azure.core.http.rest", "StreamResponse");
 
-    public static final ClassType INPUT_STREAM = new ClassType.Builder(false).knownClass(InputStream.class).build();
+    public static final ClassType INPUT_STREAM = new ClassType(InputStream.class);
+    public static final ClassType PAGED_FLUX = new ClassType("com.azure.core.http.rest", "PagedFlux");
+    public static final ClassType PAGED_ITERABLE = getClassType("com.azure.core.http.rest", "PagedIterable");
+    public static final ClassType RESPONSE_BASE = getClassType("com.azure.core.http.rest", "ResponseBase");
+    public static final ClassType PAGED_RESPONSE = getClassType("com.azure.core.http.rest", "PagedResponse");
+    public static final ClassType PAGED_RESPONSE_BASE = getClassType("com.azure.core.http.rest", "PagedResponseBase");
 
-    public static final ClassType CONTEXT = ClassType.getClassTypeBuilder(Context.class)
-        .defaultValueExpressionConverter(
+    public static final ClassType CONTEXT
+        = getClassTypeBuilder("com.azure.core.util", "Context").defaultValueExpressionConverter(
             epr -> (JavaSettings.getInstance().isAzureV1() ? "com.azure.core.util." : "io.clientcore.core.utils.")
                 + TemplateUtil.getContextNone())
-        .build();
+            .build();
 
-    public static final ClassType CLIENT_LOGGER = ClassType.getClassTypeBuilder(ClientLogger.class).build();
-    public static final ClassType LOG_LEVEL = ClassType.getClassTypeBuilder(LogLevel.class).build();
+    public static final ClassType CLIENT_LOGGER = getClassType("com.azure.core.util.logging", "ClientLogger");
+    public static final ClassType LOG_LEVEL = getClassType("com.azure.core.util.logging", "LogLevel");
 
-    public static final ClassType AZURE_CLOUD
-        = new ClassType.Builder(false).packageName("com.azure.core.models").name("AzureCloud").build();
+    public static final ClassType AZURE_CLOUD = new ClassType("com.azure.core.models", "AzureCloud");
 
-    public static final ClassType AZURE_ENVIRONMENT
-        = new ClassType.Builder(false).packageName("com.azure.core.management").name("AzureEnvironment").build();
+    public static final ClassType AZURE_ENVIRONMENT = new ClassType("com.azure.core.management", "AzureEnvironment");
 
-    public static final ClassType HTTP_CLIENT = getClassTypeBuilder(HttpClient.class).build();
+    public static final ClassType HTTP_CLIENT = getClassType("com.azure.core.http", "HttpClient");
 
-    public static final ClassType HTTP_PIPELINE_POLICY = getClassTypeBuilder(HttpPipelinePolicy.class).build();
+    public static final ClassType HTTP_PIPELINE_POLICY
+        = getClassType("com.azure.core.http.policy", "HttpPipelinePolicy");
+    public static final ClassType HTTP_PIPELINE_POSITION = getClassType("com.azure.core.http", "HttpPipelinePosition");
+    public static final ClassType HTTP_LOG_OPTIONS = getClassType("com.azure.core.http.policy", "HttpLogOptions");
+    public static final ClassType HTTP_LOG_DETAIL_LEVEL
+        = getClassType("com.azure.core.http.policy", "HttpLogDetailLevel");
 
-    public static final ClassType HTTP_LOG_OPTIONS = getClassTypeBuilder(HttpLogOptions.class).build();
+    public static final ClassType CONFIGURATION = getClassType("com.azure.core.util", "Configuration");
 
-    public static final ClassType CONFIGURATION = getClassTypeBuilder(Configuration.class).build();
-
-    public static final ClassType SERVICE_VERSION
-        = getClassTypeBuilder(com.azure.core.util.ServiceVersion.class).build();
+    public static final ClassType SERVICE_VERSION = getClassType("com.azure.core.util", "ServiceVersion");
 
     public static final ClassType AZURE_KEY_CREDENTIAL
-        = new ClassType.Builder(false).knownClass(AzureKeyCredential.class).build();
+        = new ClassType("com.azure.core.credential", "AzureKeyCredential");
 
-    public static final ClassType KEY_CREDENTIAL = getClassTypeBuilder(KeyCredential.class).build();
-    public static final ClassType BASE_64_UTIL = getClassTypeBuilder(Base64Util.class).build();
+    public static final ClassType KEY_CREDENTIAL = getClassType("com.azure.core.credential", "KeyCredential");
+    public static final ClassType BASE_64_UTIL = getClassType("com.azure.core.util", "Base64Util");
 
-    public static final ClassType RETRY_POLICY = getClassTypeBuilder(RetryPolicy.class).build();
-    public static final ClassType USER_AGENT_POLICY = getClassTypeBuilder(UserAgentPolicy.class).build();
+    public static final ClassType HTTP_POLICY_PROVIDERS
+        = new ClassType("com.azure.core.http.policy", "HttpPolicyProviders");
+    public static final ClassType ADD_HEADERS_POLICY = getClassType("com.azure.core.http.policy", "AddHeadersPolicy");
+    public static final ClassType ADD_HEADERS_FROM_CONTEXT_POLICY
+        = new ClassType("com.azure.core.http.policy", "AddHeadersFromContextPolicy");
+    public static final ClassType AZURE_KEY_CREDENTIAL_POLICY
+        = new ClassType("com.azure.core.credential", "AzureKeyCredentialPolicy");
+    public static final ClassType REQUEST_ID_POLICY = getClassType("com.azure.core.http.policy", "RequestIdPolicy");
+    public static final ClassType ADD_DATE_POLICY = getClassType("com.azure.core.http.policy", "AddDatePolicy");
+    public static final ClassType RETRY_POLICY = getClassType("com.azure.core.http.policy", "RetryPolicy");
+    public static final ClassType USER_AGENT_POLICY = getClassType("com.azure.core.http.policy", "UserAgentPolicy");
     public static final ClassType USER_AGENT_OPTIONS
-        = new Builder(false).packageName("io.clientcore.core.http.pipeline").name("UserAgentOptions").build();
-    public static final ClassType REDIRECT_POLICY = getClassTypeBuilder(RedirectPolicy.class).build();
-    public static final ClassType HTTP_LOGGING_POLICY = getClassTypeBuilder(HttpLoggingPolicy.class).build();
+        = new ClassType("io.clientcore.core.http.pipeline", "UserAgentOptions");
+    public static final ClassType REDIRECT_POLICY = getClassType("com.azure.core.http.policy", "RedirectPolicy");
+    public static final ClassType HTTP_LOGGING_POLICY = getClassType("com.azure.core.http.policy", "HttpLoggingPolicy");
 
-    public static final ClassType RETRY_OPTIONS = getClassTypeBuilder(RetryOptions.class).build();
+    public static final ClassType RETRY_OPTIONS = getClassType("com.azure.core.http.policy", "RetryOptions");
 
     public static final ClassType REDIRECT_OPTIONS
-        = new Builder(false).packageName("io.clientcore.core.http.pipeline").name("HttpRedirectOptions").build();
+        = new ClassType("io.clientcore.core.http.pipeline", "HttpRedirectOptions");
 
     public static final ClassType JSON_PATCH_DOCUMENT = new Builder(false).packageName("com.azure.core.models")
         .name("JsonPatchDocument")
         .jsonToken("JsonToken.START_OBJECT")
         .build();
 
-    public static final ClassType BINARY_DATA = getClassTypeBuilder(BinaryData.class)
+    public static final ClassType BINARY_DATA = getClassTypeBuilder("com.azure.core.util", "BinaryData")
         .defaultValueExpressionConverter(
             defaultValueExpression -> "BinaryData.fromObject(\"" + defaultValueExpression + "\")")
         // When used as model property, serialization code will not use the "writeUntyped(nullableVar)",
@@ -548,29 +511,29 @@ public class ClassType implements IType {
         .xmlAttributeDeserializationTemplate("%s.getNullableAttribute(%s, %s, BinaryData::fromObject)")
         .build();
 
-    public static final ClassType REQUEST_OPTIONS = getClassTypeBuilder(RequestOptions.class).build();
-    public static final ClassType REQUEST_CONTEXT
-        = new Builder(false).packageName("io.clientcore.core.http.models").name("RequestContext").build();
-    public static final ClassType PROXY_OPTIONS = getClassTypeBuilder(ProxyOptions.class).build();
-    public static final ClassType CLIENT_OPTIONS = getClassTypeBuilder(ClientOptions.class).build();
-    public static final ClassType HTTP_REQUEST = getClassTypeBuilder(HttpRequest.class).build();
-    public static final ClassType HTTP_HEADERS = getClassTypeBuilder(HttpHeaders.class).build();
-    public static final ClassType HTTP_HEADER = getClassTypeBuilder(HttpHeader.class).build();
-    public static final ClassType HTTP_HEADER_NAME = getClassTypeBuilder(HttpHeaderName.class).build();
-    public static final ClassType HTTP_RESPONSE = getClassTypeBuilder(HttpResponse.class).build();
+    public static final ClassType REQUEST_OPTIONS = getClassType("com.azure.core.http.rest", "RequestOptions");
+    public static final ClassType REQUEST_CONTEXT = new ClassType("io.clientcore.core.http.models", "RequestContext");
+    public static final ClassType PROXY_OPTIONS = getClassType("com.azure.core.http", "ProxyOptions");
+    public static final ClassType CLIENT_OPTIONS = getClassType("com.azure.core.util", "ClientOptions");
+    public static final ClassType HTTP_REQUEST = getClassType("com.azure.core.http", "HttpRequest");
+    public static final ClassType HTTP_HEADERS = getClassType("com.azure.core.http", "HttpHeaders");
+    public static final ClassType HTTP_HEADER = getClassType("com.azure.core.http", "HttpHeader");
+    public static final ClassType HTTP_HEADER_NAME = getClassType("com.azure.core.http", "HttpHeaderName");
+    public static final ClassType HTTP_RESPONSE = getClassType("com.azure.core.http", "HttpResponse");
 
     // Java exception types
-    public static final ClassType HTTP_RESPONSE_EXCEPTION = getClassTypeBuilder(HttpResponseException.class).build();
+    public static final ClassType HTTP_RESPONSE_EXCEPTION
+        = getClassType("com.azure.core.exception", "HttpResponseException");
     public static final ClassType CLIENT_AUTHENTICATION_EXCEPTION
-        = getClassTypeBuilder(ClientAuthenticationException.class).build();
+        = getClassType("com.azure.core.exception", "ClientAuthenticationException");
     public static final ClassType RESOURCE_EXISTS_EXCEPTION
-        = getClassTypeBuilder(ResourceExistsException.class).build();
+        = getClassType("com.azure.core.exception", "ResourceExistsException");
     public static final ClassType RESOURCE_MODIFIED_EXCEPTION
-        = getClassTypeBuilder(ResourceModifiedException.class).build();
+        = getClassType("com.azure.core.exception", "ResourceModifiedException");
     public static final ClassType RESOURCE_NOT_FOUND_EXCEPTION
-        = getClassTypeBuilder(ResourceNotFoundException.class).build();
+        = getClassType("com.azure.core.exception", "ResourceNotFoundException");
     public static final ClassType TOO_MANY_REDIRECTS_EXCEPTION
-        = getClassTypeBuilder(TooManyRedirectsException.class).build();
+        = getClassType("com.azure.core.exception", "TooManyRedirectsException");
     public static final ClassType RESPONSE_ERROR
         = getClassTypeBuilder("com.azure.core.models", "ResponseError", true).jsonToken("JsonToken.START_OBJECT")
             .build();
@@ -578,11 +541,22 @@ public class ClassType implements IType {
         .name("ResponseInnerError")
         .jsonToken("JsonToken.START_OBJECT")
         .build();
+    public static final ClassType POLL_RESULT = new ClassType("com.azure.core.management.polling", "PollResult");
+    public static final ClassType POLLER_FACTORY = new ClassType("com.azure.core.management.polling", "PollerFactory");
     public static final ClassType SYNC_POLLER_FACTORY
-        = new Builder().packageName("com.azure.core.management.polling").name("SyncPollerFactory").build();
+        = new ClassType("com.azure.core.management.polling", "SyncPollerFactory");
 
-    public static final ClassType SYNC_POLLER = getClassTypeBuilder(SyncPoller.class).build();
-    public static final ClassType POLLING_STRATEGY_OPTIONS = getClassTypeBuilder(PollingStrategyOptions.class).build();
+    public static final ClassType ASYNC_POLL_RESPONSE
+        = new ClassType("com.azure.core.utl.polling", "AsyncPollResponse");
+    public static final ClassType LONG_RUNNING_OPERATION_STATUS
+        = new ClassType("com.azure.core.util.polling", "LongRunningOperationStatus");
+    public static final ClassType POLLER_FLUX = new ClassType("com.azure.core.util.polling", "PollerFlux");
+    public static final ClassType SYNC_POLLER = getClassType("com.azure.core.util.polling", "SyncPoller");
+    public static final ClassType POLLING_STRATEGY_OPTIONS
+        = getClassType("com.azure.core.util.polling", "PollingStrategyOptions");
+
+    public static final ClassType FLUX = new ClassType("reactor.core.publisher", "Flux");
+    public static final ClassType MONO = new ClassType("reactor.core.publisher", "Mono");
 
     private final String fullName;
     private final String packageName;
@@ -599,13 +573,21 @@ public class ClassType implements IType {
     private final String xmlElementDeserializationMethod;
     private final boolean usedInXml;
 
-    private ClassType(String packageKeyword, String name, List<String> implementationImports, XmsExtensions extensions,
+    private ClassType(Class<?> knownClass) {
+        this(knownClass.getPackageName(), knownClass.getSimpleName());
+    }
+
+    private ClassType(String packageName, String name) {
+        this(packageName, name, null, null, null, false, null, null, null, null, null, null, false);
+    }
+
+    private ClassType(String packageName, String name, List<String> implementationImports, XmsExtensions extensions,
         Function<String, String> defaultValueExpressionConverter, boolean isSwaggerType, String jsonToken,
         String serializationMethodBase, Function<String, String> serializationValueGetterModifier,
         String jsonDeserializationMethod, String xmlAttributeDeserializationTemplate,
         String xmlElementDeserializationMethod, boolean usedInXml) {
-        this.fullName = packageKeyword + "." + name;
-        this.packageName = packageKeyword;
+        this.fullName = packageName + "." + name;
+        this.packageName = packageName;
         this.name = name;
         this.implementationImports = implementationImports;
         this.extensions = extensions;
@@ -642,13 +624,13 @@ public class ClassType implements IType {
 
     public final boolean isBoxedType() {
         // TODO (alzimmer): This should be a property on the ClassType
-        return this.equals(ClassType.VOID)
-            || this.equals(ClassType.BOOLEAN)
-            || this.equals(ClassType.BYTE)
-            || this.equals(ClassType.INTEGER)
-            || this.equals(ClassType.LONG)
-            || this.equals(ClassType.FLOAT)
-            || this.equals(ClassType.DOUBLE);
+        return this.equals(VOID)
+            || this.equals(BOOLEAN)
+            || this.equals(BYTE)
+            || this.equals(INTEGER)
+            || this.equals(LONG)
+            || this.equals(FLOAT)
+            || this.equals(DOUBLE);
     }
 
     @Override
@@ -690,23 +672,23 @@ public class ClassType implements IType {
             imports.add(fullName);
         }
 
-        if (this == ClassType.UNIX_TIME_LONG) {
+        if (this == UNIX_TIME_LONG) {
             imports.add(Instant.class.getName());
             imports.add(ZoneOffset.class.getName());
         }
 
-        if (this == ClassType.DATE_TIME) {
+        if (this == DATE_TIME) {
             imports.add(DateTimeFormatter.class.getName());
         }
 
-        if (this == ClassType.DATE_TIME_RFC_1123) {
+        if (this == DATE_TIME_RFC_1123) {
             // May need OffsetDateTime when consuming DateTimeRfc1123 APIs as DateTimeRfc1123 APIs consume and return
             // OffsetDateTime.
             // If OffsetDateTime isn't needed, when running Spotless the unused import will be removed.
             imports.add(OffsetDateTime.class.getName());
         }
 
-        if (this == ClassType.URL) {
+        if (this == URL) {
             imports.add(java.net.URL.class.getName());
             imports.add(java.net.MalformedURLException.class.getName());
         }
@@ -735,32 +717,32 @@ public class ClassType implements IType {
 
     public final IType getClientType() {
         IType clientType = this;
-        if (this == ClassType.DATE_TIME_RFC_1123) {
-            clientType = ClassType.DATE_TIME;
-        } else if (this == ClassType.UNIX_TIME_LONG) {
-            clientType = ClassType.DATE_TIME;
-        } else if (this == ClassType.BASE_64_URL) {
+        if (this == DATE_TIME_RFC_1123) {
+            clientType = DATE_TIME;
+        } else if (this == UNIX_TIME_LONG) {
+            clientType = DATE_TIME;
+        } else if (this == BASE_64_URL) {
             clientType = ArrayType.BYTE_ARRAY;
-        } else if (this == ClassType.DURATION_LONG) {
-            clientType = ClassType.DURATION;
-        } else if (this == ClassType.DURATION_DOUBLE) {
-            clientType = ClassType.DURATION;
+        } else if (this == DURATION_LONG) {
+            clientType = DURATION;
+        } else if (this == DURATION_DOUBLE) {
+            clientType = DURATION;
         }
         return clientType;
     }
 
     public String convertToClientType(String expression) {
-        if (this == ClassType.DATE_TIME_RFC_1123) {
+        if (this == DATE_TIME_RFC_1123) {
             expression = expression + ".getDateTime()";
-        } else if (this == ClassType.UNIX_TIME_LONG) {
+        } else if (this == UNIX_TIME_LONG) {
             expression = "OffsetDateTime.ofInstant(Instant.ofEpochSecond(" + expression + "), ZoneOffset.UTC)";
-        } else if (this == ClassType.BASE_64_URL) {
+        } else if (this == BASE_64_URL) {
             expression = expression + ".decodedBytes()";
-        } else if (this == ClassType.URL) {
+        } else if (this == URL) {
             expression = "new URL(" + expression + ")";
-        } else if (this == ClassType.DURATION_LONG) {
+        } else if (this == DURATION_LONG) {
             expression = "Duration.ofSeconds(" + expression + ")";
-        } else if (this == ClassType.DURATION_DOUBLE) {
+        } else if (this == DURATION_DOUBLE) {
             expression = "Duration.ofNanos((long) (" + expression + " * 1000_000_000L))";
         }
 
@@ -768,17 +750,17 @@ public class ClassType implements IType {
     }
 
     public String convertFromClientType(String expression) {
-        if (this == ClassType.DATE_TIME_RFC_1123) {
+        if (this == DATE_TIME_RFC_1123) {
             expression = "new DateTimeRfc1123(" + expression + ")";
-        } else if (this == ClassType.UNIX_TIME_LONG) {
+        } else if (this == UNIX_TIME_LONG) {
             expression = expression + ".toEpochSecond()";
-        } else if (this == ClassType.BASE_64_URL) {
-            expression = ClassType.BASE_64_URL.getName() + ".encode(" + expression + ")";
-        } else if (this == ClassType.URL) {
+        } else if (this == BASE_64_URL) {
+            expression = BASE_64_URL.getName() + ".encode(" + expression + ")";
+        } else if (this == URL) {
             expression = expression + ".toString()";
-        } else if (this == ClassType.DURATION_LONG) {
+        } else if (this == DURATION_LONG) {
             expression = expression + ".getSeconds()";
-        } else if (this == ClassType.DURATION_DOUBLE) {
+        } else if (this == DURATION_DOUBLE) {
             expression = "(double) " + expression + ".toNanos() / 1000_000_000L";
         }
 

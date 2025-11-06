@@ -3,7 +3,6 @@
 
 package com.microsoft.typespec.http.client.generator.core.template;
 
-import com.azure.core.util.CoreUtils;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.Annotation;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.ClassType;
@@ -18,6 +17,7 @@ import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaJav
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaType;
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaVisibility;
 import com.microsoft.typespec.http.client.generator.core.util.TemplateUtil;
+import io.clientcore.core.utils.CoreUtils;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -76,8 +76,7 @@ public class WrapperClientMethodTemplate extends ClientMethodTemplateBase {
             }
 
             boolean shouldReturn = true;
-            if (clientMethod.getReturnValue() != null
-                && clientMethod.getReturnValue().getType() instanceof PrimitiveType) {
+            if (clientMethod.getReturnValue().getType() instanceof PrimitiveType) {
                 PrimitiveType type = (PrimitiveType) clientMethod.getReturnValue().getType();
                 if (type.asNullable() == ClassType.VOID) {
                     shouldReturn = false;

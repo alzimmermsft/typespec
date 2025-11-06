@@ -3,7 +3,6 @@
 
 package com.microsoft.typespec.http.client.generator.mgmt.transformer;
 
-import com.azure.core.util.CoreUtils;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.CodeModel;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.Operation;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.Parameter;
@@ -15,9 +14,9 @@ import com.microsoft.typespec.http.client.generator.core.extension.plugin.Plugin
 import com.microsoft.typespec.http.client.generator.mgmt.FluentNamer;
 import com.microsoft.typespec.http.client.generator.mgmt.util.FluentJavaSettings;
 import com.microsoft.typespec.http.client.generator.mgmt.util.Utils;
+import io.clientcore.core.utils.CoreUtils;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -40,8 +39,7 @@ public class FluentTransformer {
         codeModel = new SchemaNameNormalization(fluentJavaSettings.getNamingOverride()).process(codeModel);
         codeModel = new ConstantSchemaOptimization().process(codeModel);
         codeModel = renameHostParameter(codeModel);
-        codeModel = transformSubscriptionIdUuid(codeModel);
-        return codeModel;
+        return transformSubscriptionIdUuid(codeModel);
     }
 
     public CodeModel postTransform(CodeModel codeModel) {
@@ -57,8 +55,7 @@ public class FluentTransformer {
         if (fluentJavaSettings.isResourcePropertyAsSubResource()) {
             codeModel = new ResourcePropertyNormalization().process(codeModel);
         }
-        codeModel = new SchemaCleanup(fluentJavaSettings.getJavaNamesForPreserveModel()).process(codeModel);
-        return codeModel;
+        return new SchemaCleanup(fluentJavaSettings.getJavaNamesForPreserveModel()).process(codeModel);
     }
 
     protected CodeModel deduplicateOperations(CodeModel codeModel) {
@@ -74,7 +71,6 @@ public class FluentTransformer {
                     .collect(Collectors.toMap(Utils::getDefaultName, Function.identity(), (p, q) -> p))
                     .values()
                     .stream()
-                    .filter(Objects::nonNull)
                     .distinct()
                     .collect(Collectors.toList());
                 deduplicatedOperations.addAll(og.getOperations()
@@ -151,9 +147,7 @@ public class FluentTransformer {
         codeModel.getGlobalParameters()
             .stream()
             .filter(p -> "$host".equals(p.getLanguage().getDefault().getSerializedName()))
-            .forEach(p -> {
-                p.getLanguage().getDefault().setName("endpoint");
-            });
+            .forEach(p -> p.getLanguage().getDefault().setName("endpoint"));
         return codeModel;
     }
 

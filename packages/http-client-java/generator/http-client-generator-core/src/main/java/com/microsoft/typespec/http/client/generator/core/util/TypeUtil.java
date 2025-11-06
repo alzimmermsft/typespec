@@ -3,21 +3,12 @@
 
 package com.microsoft.typespec.http.client.generator.core.util;
 
-import com.microsoft.typespec.http.client.generator.core.Javagen;
-import com.microsoft.typespec.http.client.generator.core.extension.plugin.PluginLogger;
+import com.microsoft.typespec.http.client.generator.core.model.clientmodel.ClassType;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.GenericType;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.IType;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.Objects;
 
 public class TypeUtil {
-
-    private static final PluginLogger LOGGER = new PluginLogger(Javagen.getPluginInstance(), TypeUtil.class);
-
-    private static final ConcurrentMap<String, Optional<Class<?>>> TYPE_CLASS_MAP = new ConcurrentHashMap<>();
-
     private TypeUtil() {
     }
 
@@ -28,22 +19,17 @@ public class TypeUtil {
      * @param parentClasses classes to match either one
      * @return whether the given type is GenericType and is subclass of either of the given classes
      */
-    public static boolean isGenericTypeClassSubclassOf(IType type, Class<?>... parentClasses) {
+    public static boolean isGenericTypeClassSubclassOf(IType type, ClassType... parentClasses) {
         if (!(type instanceof GenericType) || parentClasses == null || parentClasses.length == 0)
             return false;
-        Class<?> genericClass = getGenericClass((GenericType) type);
-        return genericClass != null && Arrays.stream(parentClasses).anyMatch(p -> p.isAssignableFrom(genericClass));
-    }
-
-    private static Class<?> getGenericClass(GenericType type) {
-        String className = type.getPackage() + "." + type.getName();
-        return TYPE_CLASS_MAP.computeIfAbsent(className, key -> {
-            try {
-                return Optional.of(Class.forName(key));
-            } catch (ClassNotFoundException e) {
-                LOGGER.warn("class {} not found, skip subclass checking.", key);
-                return Optional.empty();
+        GenericType genericType = (GenericType) type;
+        for (ClassType classType : parentClasses) {
+            if (Objects.equals(genericType.getPackage(), classType.getPackage())
+                && Objects.equals(genericType.getName(), classType.getName())) {
+                return true;
             }
-        }).orElse(null);
+        }
+
+        return false;
     }
 }

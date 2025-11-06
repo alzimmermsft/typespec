@@ -3,7 +3,6 @@
 
 package com.microsoft.typespec.http.client.generator.core.mapper;
 
-import com.azure.core.util.serializer.CollectionFormat;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.AnySchema;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.ArraySchema;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.ConstantSchema;
@@ -18,6 +17,7 @@ import com.microsoft.typespec.http.client.generator.core.model.clientmodel.ListT
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.PrimitiveType;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.ProxyMethodParameter;
 import com.microsoft.typespec.http.client.generator.core.util.CodeNamer;
+import com.microsoft.typespec.http.client.generator.core.util.CollectionFormat;
 import com.microsoft.typespec.http.client.generator.core.util.SchemaUtil;
 
 public class CustomProxyParameterMapper implements IMapper<Parameter, ProxyMethodParameter> {
@@ -90,11 +90,8 @@ public class CustomProxyParameterMapper implements IMapper<Parameter, ProxyMetho
                 wireType = ClassType.STRING;
             }
         } else if (wireType instanceof ListType
-            && parameter.getProtocol().getHttp().getIn()
-                != RequestParameterLocation.BODY /*
-                                                  * && parameter.getProtocol().getHttp().getIn() !=
-                                                  * RequestParameterLocation.FormData
-                                                  */) {
+            // && parameter.getProtocol().getHttp().getIn() != RequestParameterLocation.FormData
+            && parameter.getProtocol().getHttp().getIn() != RequestParameterLocation.BODY) {
             if (parameter.getProtocol().getHttp().getExplode()) {
                 wireType = new ListType(ClassType.STRING);
             } else {

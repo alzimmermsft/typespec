@@ -3,7 +3,6 @@
 
 package com.microsoft.typespec.http.client.generator.mgmt.transformer;
 
-import com.azure.core.http.HttpMethod;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.CodeModel;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.Response;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.PluginLogger;
@@ -30,7 +29,7 @@ public class ResponseStatusCodeNormalization {
                 .stream()
                 .anyMatch(r -> r.getProtocol() != null
                     && r.getProtocol().getHttp() != null
-                    && HttpMethod.GET.name().equalsIgnoreCase(r.getProtocol().getHttp().getMethod())))
+                    && "GET".equalsIgnoreCase(r.getProtocol().getHttp().getMethod())))
             .forEach(operation -> {
                 List<Response> responsesToRemove = new ArrayList<>();
                 for (Response response : operation.getResponses()) {

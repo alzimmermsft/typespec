@@ -3,10 +3,6 @@
 
 package com.microsoft.typespec.http.client.generator.core.template;
 
-import com.azure.core.util.FluxUtil;
-import com.azure.core.util.serializer.CollectionFormat;
-import com.azure.core.util.serializer.JacksonAdapter;
-import com.azure.core.util.serializer.TypeReference;
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.RequestParameterLocation;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.Annotation;
@@ -36,6 +32,7 @@ import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaVis
 import com.microsoft.typespec.http.client.generator.core.template.util.ModelTemplateHeaderHelper;
 import com.microsoft.typespec.http.client.generator.core.util.ClientModelUtil;
 import com.microsoft.typespec.http.client.generator.core.util.CodeNamer;
+import com.microsoft.typespec.http.client.generator.core.util.CollectionFormat;
 import com.microsoft.typespec.http.client.generator.core.util.MethodUtil;
 import com.microsoft.typespec.http.client.generator.core.util.TemplateUtil;
 import java.lang.reflect.ParameterizedType;
@@ -55,6 +52,8 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+;
 
 abstract class ConvenienceMethodTemplateBase {
 
@@ -137,7 +136,7 @@ abstract class ConvenienceMethodTemplateBase {
             if (parameter.getProxyMethodParameter() != null
                 && parameter.getProxyMethodParameter().getOrigin() == ParameterSynthesizedOrigin.CONTEXT) {
                 // Context
-                methodBlock.line(String.format("requestOptions.setContext(%s);", parameter.getName()));
+                methodBlock.line("requestOptions.setContext(%s);", parameter.getName());
             } else if (protocolParameter != null) {
                 // protocol method parameter exists
                 String expression = expressionConvertToType(parameter.getName(), parameter,
@@ -369,8 +368,8 @@ abstract class ConvenienceMethodTemplateBase {
                             .append(")");
                     }
                 }
-                methodBlock.line(String.format("%1$s %2$s = new %1$s(%3$s)%4$s;", targetType, targetParameterObjectName,
-                    ctorExpression, setterExpression));
+                methodBlock.line("%1$s %2$s = new %1$s(%3$s)%4$s;", targetType, targetParameterObjectName,
+                    ctorExpression, setterExpression);
 
                 String expression = null;
                 if (targetParameter.getRawType() instanceof ClassType) {
@@ -384,7 +383,7 @@ abstract class ConvenienceMethodTemplateBase {
                     expression = expressionConvertToBinaryData(targetParameterObjectName, targetParameter.getRawType(),
                         protocolMethod.getProxyMethod().getRequestContentType());
                 }
-                methodBlock.line(String.format("BinaryData %1$s = %2$s;", targetParameterName, expression));
+                methodBlock.line("BinaryData %1$s = %2$s;", targetParameterName, expression);
 
                 requestBodyClientParameter = targetParameter;
             }
@@ -416,12 +415,12 @@ abstract class ConvenienceMethodTemplateBase {
         ClassType.REQUEST_CONTEXT.addImportsTo((imports), false);
         imports.add(Collectors.class.getName());
         imports.add(Objects.class.getName());
-        imports.add(FluxUtil.class.getName());
+        imports.add("com.azure.core.util.FluxUtil");
 
         // collection format
-        imports.add(JacksonAdapter.class.getName());
-        imports.add(CollectionFormat.class.getName());
-        imports.add(TypeReference.class.getName());
+        imports.add("com.azure.core.util.serializer.JacksonAdapter");
+        imports.add(ClassType.COLLECTION_FORMAT.getFullName());
+        imports.add("com.azure.core.util.serializer.TypeReference");
         if (!JavaSettings.getInstance().isAzureV1() || JavaSettings.getInstance().isAzureV2()) {
             imports.add(Type.class.getName());
             imports.add(ParameterizedType.class.getName());
@@ -593,13 +592,12 @@ abstract class ConvenienceMethodTemplateBase {
     }
 
     private static void writeHeader(MethodParameter parameter, JavaBlock methodBlock) {
-        Consumer<JavaBlock> writeLine
-            = javaBlock -> javaBlock.line(String.format("requestOptions.setHeader(%1$s, %2$s);",
-                ModelTemplateHeaderHelper.getHttpHeaderNameInstanceExpression(parameter.getSerializedName()),
-                expressionConvertToString(parameter.getName(), parameter.getClientMethodParameter().getWireType(),
-                    parameter.getProxyMethodParameter())));
+        Consumer<JavaBlock> writeLine = javaBlock -> javaBlock.line("requestOptions.setHeader(%1$s, %2$s);",
+            ModelTemplateHeaderHelper.getHttpHeaderNameInstanceExpression(parameter.getSerializedName()),
+            expressionConvertToString(parameter.getName(), parameter.getClientMethodParameter().getWireType(),
+                parameter.getProxyMethodParameter()));
         if (!parameter.getClientMethodParameter().isRequired()) {
-            methodBlock.ifBlock(String.format("%s != null", parameter.getName()), writeLine);
+            methodBlock.ifBlock(parameter.getName() + " != null", writeLine);
         } else {
             writeLine.accept(methodBlock);
         }
@@ -632,7 +630,7 @@ abstract class ConvenienceMethodTemplateBase {
                     parameter.getClientMethodParameter().getWireType(), parameter.getProxyMethodParameter())));
         }
         if (!parameter.getClientMethodParameter().isRequired()) {
-            methodBlock.ifBlock(String.format("%s != null", parameter.getName()), writeLine);
+            methodBlock.ifBlock(parameter.getName() + " != null", writeLine);
         } else {
             writeLine.accept(methodBlock);
         }
@@ -674,11 +672,11 @@ abstract class ConvenienceMethodTemplateBase {
                     String enumToString = enumType.getElementType() == ClassType.STRING
                         ? "paramItemValue"
                         : "paramItemValue == null ? null : paramItemValue." + enumType.getToMethodName() + "()";
-                    return name + ".stream()\n" + "    .map(paramItemValue -> Objects.toString(" + enumToString
-                        + ", \"\"))\n" + "    .collect(Collectors.joining(" + delimiter + "))";
+                    return name + ".stream()\n    .map(paramItemValue -> Objects.toString(" + enumToString
+                        + ", \"\"))\n    .collect(Collectors.joining(" + delimiter + "))";
                 } else if (elementType == ClassType.STRING
                     || (elementType instanceof ClassType && ((ClassType) elementType).isBoxedType())) {
-                    return name + ".stream()\n" + "    .map(paramItemValue -> Objects.toString(paramItemValue, \"\"))\n"
+                    return name + ".stream()\n    .map(paramItemValue -> Objects.toString(paramItemValue, \"\"))\n"
                         + "    .collect(Collectors.joining(" + delimiter + "))";
                 } else {
                     // Always use serializeIterable as Iterable supports both Iterable and List.

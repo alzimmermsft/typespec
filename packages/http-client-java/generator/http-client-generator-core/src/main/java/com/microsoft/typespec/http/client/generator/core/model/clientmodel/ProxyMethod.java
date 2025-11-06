@@ -3,14 +3,14 @@
 
 package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 
-import com.azure.core.http.ContentType;
-import com.azure.core.http.HttpMethod;
 import com.microsoft.typespec.http.client.generator.core.extension.base.util.HttpExceptionType;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
 import com.microsoft.typespec.http.client.generator.core.mapper.CollectionUtil;
 import com.microsoft.typespec.http.client.generator.core.util.ClientModelUtil;
 import com.microsoft.typespec.http.client.generator.core.util.CodeNamer;
 import com.microsoft.typespec.http.client.generator.core.util.MethodNamer;
+import io.clientcore.core.http.models.HttpMethod;
+import io.clientcore.core.implementation.http.ContentType;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -378,45 +378,43 @@ public class ProxyMethod {
     private IType mapToSyncType(IType type) {
         if (type == GenericType.FLUX_BYTE_BUFFER) {
             return JavaSettings.getInstance().isInputStreamForBinary()
-                ? GenericType.Response(ClassType.INPUT_STREAM)
-                : GenericType.Response(ClassType.BINARY_DATA);
+                ? GenericType.response(ClassType.INPUT_STREAM)
+                : GenericType.response(ClassType.BINARY_DATA);
         }
 
         if (type instanceof GenericType) {
             GenericType genericType = (GenericType) type;
-            if (genericType.getName().equals("Mono")) {
-                if (genericType.getTypeArguments()[0] instanceof GenericType) {
-                    GenericType innerGenericType = (GenericType) genericType.getTypeArguments()[0];
-                    if (innerGenericType.getName().equals("ResponseBase")
-                        && innerGenericType.getTypeArguments()[1] == GenericType.FLUX_BYTE_BUFFER) {
-                        return GenericType.RestResponse(innerGenericType.getTypeArguments()[0],
-                            JavaSettings.getInstance().isInputStreamForBinary()
-                                ? ClassType.INPUT_STREAM
-                                : ClassType.BINARY_DATA);
-                    } else if ((innerGenericType.getName().equals("Response")
-                        && innerGenericType.getTypeArguments()[0] == GenericType.FLUX_BYTE_BUFFER)) {
-                        return JavaSettings.getInstance().isInputStreamForBinary()
-                            ? GenericType.Response(ClassType.INPUT_STREAM)
-                            : GenericType.Response(ClassType.BINARY_DATA);
+            switch (genericType.getName()) {
+                case "Mono":
+                    if (genericType.getTypeArguments()[0] instanceof GenericType) {
+                        GenericType innerGenericType = (GenericType) genericType.getTypeArguments()[0];
+                        if (innerGenericType.getName().equals("ResponseBase")
+                            && innerGenericType.getTypeArguments()[1] == GenericType.FLUX_BYTE_BUFFER) {
+                            return GenericType.restResponse(innerGenericType.getTypeArguments()[0],
+                                JavaSettings.getInstance().isInputStreamForBinary()
+                                    ? ClassType.INPUT_STREAM
+                                    : ClassType.BINARY_DATA);
+                        } else if ((innerGenericType.getName().equals("Response")
+                            && innerGenericType.getTypeArguments()[0] == GenericType.FLUX_BYTE_BUFFER)) {
+                            return JavaSettings.getInstance().isInputStreamForBinary()
+                                ? GenericType.response(ClassType.INPUT_STREAM)
+                                : GenericType.response(ClassType.BINARY_DATA);
+                        }
                     }
-                }
 
-                if (genericType.getTypeArguments()[0] == ClassType.STREAM_RESPONSE) {
-                    return JavaSettings.getInstance().isInputStreamForBinary()
-                        ? GenericType.Response(ClassType.INPUT_STREAM)
-                        : GenericType.Response(ClassType.BINARY_DATA);
-                }
-                return genericType.getTypeArguments()[0];
-            }
-            if (genericType.getName().equals("PagedFlux")) {
-                IType pageType = genericType.getTypeArguments()[0];
-                return GenericType.PagedIterable(pageType);
-            }
-            if (genericType.getName().equals("PollerFlux")) {
-                IType[] typeArguments = genericType.getTypeArguments();
-                IType pollType = typeArguments[0];
-                IType resultType = typeArguments[1];
-                return GenericType.SyncPoller(pollType, resultType);
+                    if (genericType.getTypeArguments()[0] == ClassType.STREAM_RESPONSE) {
+                        return JavaSettings.getInstance().isInputStreamForBinary()
+                            ? GenericType.response(ClassType.INPUT_STREAM)
+                            : GenericType.response(ClassType.BINARY_DATA);
+                    }
+                    return genericType.getTypeArguments()[0];
+
+                case "PagedFlux":
+                    return GenericType.pagedIterable(genericType.getTypeArguments()[0]);
+
+                case "PollerFlux":
+                    IType[] typeArguments = genericType.getTypeArguments();
+                    return GenericType.syncPoller(typeArguments[0], typeArguments[1]);
             }
         }
         return type;
@@ -436,7 +434,7 @@ public class ProxyMethod {
         if (includeImplementationImports) {
             if (getUnexpectedResponseExceptionType() != null) {
                 Annotation.UNEXPECTED_RESPONSE_EXCEPTION_TYPE.addImportsTo(imports);
-                getUnexpectedResponseExceptionType().addImportsTo(imports, includeImplementationImports);
+                getUnexpectedResponseExceptionType().addImportsTo(imports, true);
 
                 if (!settings.isAzureV1()) {
                     ClientModel errorModel
@@ -448,8 +446,7 @@ public class ProxyMethod {
             }
             if (getUnexpectedResponseExceptionTypes() != null) {
                 Annotation.UNEXPECTED_RESPONSE_EXCEPTION_TYPE.addImportsTo(imports);
-                getUnexpectedResponseExceptionTypes().keySet()
-                    .forEach(e -> e.addImportsTo(imports, includeImplementationImports));
+                getUnexpectedResponseExceptionTypes().keySet().forEach(e -> e.addImportsTo(imports, true));
 
                 if (!settings.isAzureV1()) {
                     for (ClassType exceptionType : getUnexpectedResponseExceptionTypes().keySet()) {
@@ -473,17 +470,17 @@ public class ProxyMethod {
 
             if (getReturnValueWireType() != null) {
                 Annotation.RETURN_VALUE_WIRE_TYPE.addImportsTo(imports);
-                returnValueWireType.addImportsTo(imports, includeImplementationImports);
+                returnValueWireType.addImportsTo(imports, true);
             }
 
-            returnType.addImportsTo(imports, includeImplementationImports);
+            returnType.addImportsTo(imports, true);
 
             if (ContentType.APPLICATION_X_WWW_FORM_URLENCODED.equals(this.requestContentType)) {
                 Annotation.FORM_PARAM.addImportsTo(imports);
             }
 
             for (ProxyMethodParameter parameter : allParameters) {
-                parameter.addImportsTo(imports, includeImplementationImports, settings);
+                parameter.addImportsTo(imports, true, settings);
             }
         }
     }
