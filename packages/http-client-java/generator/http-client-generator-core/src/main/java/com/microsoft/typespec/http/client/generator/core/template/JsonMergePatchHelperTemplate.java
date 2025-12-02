@@ -12,10 +12,8 @@ import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaVis
 import com.microsoft.typespec.http.client.generator.core.util.ClientModelUtil;
 import com.microsoft.typespec.http.client.generator.core.util.CodeNamer;
 import io.clientcore.core.utils.CoreUtils;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class JsonMergePatchHelperTemplate implements IJavaTemplate<List<ClientModel>, JavaFile> {
@@ -33,9 +31,7 @@ public class JsonMergePatchHelperTemplate implements IJavaTemplate<List<ClientMo
     public void write(List<ClientModel> models, JavaFile javaFile) {
         // imports
         JavaSettings settings = JavaSettings.getInstance();
-        Set<String> imports = new HashSet<>();
-        addImports(imports, models, settings);
-        javaFile.declareImport(imports);
+        addImports(javaFile, models, settings);
 
         // class javadoc
         javaFile.javadocComment(comment -> comment
@@ -48,13 +44,13 @@ public class JsonMergePatchHelperTemplate implements IJavaTemplate<List<ClientMo
     /**
      * Add imports for JsonMergePatchHelper.
      *
-     * @param imports Set of imports to add to.
+     * @param javaFile The Java file to add imports to.
      * @param models List of models in the service that are used in json-merge-patch.
      * @param settings JavaSettings to use.
      */
-    private static void addImports(Set<String> imports, List<ClientModel> models, JavaSettings settings) {
+    private static void addImports(JavaFile javaFile, List<ClientModel> models, JavaSettings settings) {
         if (models != null && !models.isEmpty()) {
-            models.forEach(model -> model.addImportsTo(imports, settings));
+            models.forEach(model -> model.addImportsTo(javaFile::declareImport, settings));
         }
     }
 

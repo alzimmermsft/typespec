@@ -10,6 +10,7 @@ import com.microsoft.typespec.http.client.generator.core.model.clientmodel.Clien
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.MapType;
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaClass;
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaContext;
+import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaFile;
 import com.microsoft.typespec.http.client.generator.core.template.ModelTemplate;
 import com.microsoft.typespec.http.client.generator.core.util.ModelNamer;
 import com.microsoft.typespec.http.client.generator.mgmt.model.FluentType;
@@ -34,10 +35,10 @@ public class FluentModelTemplate extends ModelTemplate {
     }
 
     @Override
-    protected void addSerializationImports(Set<String> imports, ClientModel model, JavaSettings settings) {
-        super.addSerializationImports(imports, model, settings);
+    protected void addSerializationImports(JavaFile javaFile, ClientModel model, JavaSettings settings) {
+        super.addSerializationImports(javaFile, model, settings);
 
-        imports.add("com.fasterxml.jackson.annotation.JsonInclude");
+        javaFile.declareImport("com.fasterxml.jackson.annotation.JsonInclude");
     }
 
     @Override
@@ -134,7 +135,7 @@ public class FluentModelTemplate extends ModelTemplate {
     }
 
     @Override
-    protected void addGeneratedImport(Set<String> imports) {
+    protected void addGeneratedImport(JavaFile javaFile) {
     }
 
     @Override

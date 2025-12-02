@@ -53,32 +53,31 @@ public class ServiceSyncClientTemplate implements IJavaTemplate<AsyncSyncClient,
             = samePackageAsBuilder ? JavaVisibility.PackagePrivate : JavaVisibility.Public;
         ClientBuilder rootClientBuilder = ServiceAsyncClientTemplate.getClientBuilder(syncClient);
 
-        Set<String> imports = new HashSet<>();
         if (wrapServiceClient) {
-            serviceClient.addImportsTo(imports, true, false, settings);
-            imports.add(serviceClient.getPackage() + "." + serviceClient.getClassName());
+            serviceClient.addImportsTo(javaFile::declareImport, true, false, settings);
+            javaFile.declareImport(serviceClient.getPackage() + "." + serviceClient.getClassName());
         } else {
-            methodGroupClient.addImportsTo(imports, true, settings);
-            imports.add(methodGroupClient.getPackage() + "." + methodGroupClient.getClassName());
+            methodGroupClient.addImportsTo(javaFile::declareImport, true, settings);
+            javaFile.declareImport(methodGroupClient.getPackage() + "." + methodGroupClient.getClassName());
         }
-        imports.add(builderPackageName + "." + builderClassName);
+        javaFile.declareImport(builderPackageName + "." + builderClassName);
         if (rootClientBuilder != null) {
-            rootClientBuilder.addImportsTo(imports, false);
+            rootClientBuilder.addImportsTo(javaFile::declareImport, false);
         }
-        addServiceClientAnnotationImport(imports);
+        addServiceClientAnnotationImport(javaFile);
 
         for (ClientAccessorMethod clientAccessorMethod : serviceClient.getClientAccessorMethods()) {
-            clientAccessorMethod.addImportsTo(imports, false);
+            clientAccessorMethod.addImportsTo(javaFile::declareImport, false);
         }
 
-        Templates.getConvenienceSyncMethodTemplate().addImports(imports, syncClient.getConvenienceMethods());
+        Templates.getConvenienceSyncMethodTemplate()
+            .addImports(javaFile::declareImport, syncClient.getConvenienceMethods());
 
         if (!JavaSettings.getInstance().isAzureV1()) {
-            ClassType.INSTRUMENTATION.addImportsTo(imports, false);
-            ClassType.SDK_INSTRUMENTATION_OPTIONS.addImportsTo(imports, false);
+            javaFile.declareImport(ClassType.INSTRUMENTATION.getFullName(),
+                ClassType.SDK_INSTRUMENTATION_OPTIONS.getFullName());
         }
 
-        javaFile.declareImport(imports);
         javaFile.javadocComment(comment -> comment.description(String
             .format("Initializes a new instance of the synchronous %1$s type.", serviceClient.getInterfaceName())));
 
@@ -166,9 +165,7 @@ public class ServiceSyncClientTemplate implements IJavaTemplate<AsyncSyncClient,
             .filter(clientMethod -> clientMethod.getMethodVisibility() == JavaVisibility.Public)
             .filter(clientMethod -> !clientMethod.isImplementationOnly())
             .filter(clientMethod -> !clientMethod.getType().name().contains("Async"))
-            .forEach(clientMethod -> {
-                writeMethod(clientMethod, classBlock);
-            });
+            .forEach(clientMethod -> writeMethod(clientMethod, classBlock));
 
         writeConvenienceMethods(syncClient.getConvenienceMethods(), classBlock);
 
@@ -195,11 +192,9 @@ public class ServiceSyncClientTemplate implements IJavaTemplate<AsyncSyncClient,
         Templates.getWrapperClientMethodTemplate().write(clientMethod, classBlock);
     }
 
-    private void addServiceClientAnnotationImport(Set<String> imports) {
-        Annotation.SERVICE_CLIENT.addImportsTo(imports);
-        Annotation.GENERATED.addImportsTo(imports);
-        Annotation.METADATA.addImportsTo(imports);
-        Annotation.METADATA_PROPERTIES.addImportsTo(imports);
+    private void addServiceClientAnnotationImport(JavaFile javaFile) {
+        javaFile.declareImport(Annotation.SERVICE_CLIENT.getFullName(), Annotation.GENERATED.getFullName(),
+            Annotation.METADATA.getFullName(), Annotation.METADATA_PROPERTIES.getFullName());
     }
 
     protected void addGeneratedAnnotation(JavaContext classBlock) {

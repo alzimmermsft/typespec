@@ -11,7 +11,8 @@ import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.Fluen
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.ModelNaming;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel.LocalVariable;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel.ResourceLocalVariables;
-import java.util.Set;
+import java.util.Collection;
+import java.util.function.Consumer;
 
 public class FluentUpdateMethod extends FluentMethod {
     public FluentUpdateMethod(FluentResourceModel model, FluentMethodType type,
@@ -20,7 +21,7 @@ public class FluentUpdateMethod extends FluentMethod {
 
         this.name = "update";
         String interfaceTypeName = model.getInterfaceType().getName();
-        this.description = String.format("Begins update for the %1$s resource.", interfaceTypeName);;
+        this.description = String.format("Begins update for the %1$s resource.", interfaceTypeName);
 
         this.interfaceReturnValue = new ReturnValue("the stage of resource update",
             new ClassType.Builder()
@@ -35,9 +36,7 @@ public class FluentUpdateMethod extends FluentMethod {
                     .values()
                     .stream()
                     .filter(LocalVariable::isInitializeRequired)
-                    .forEach(var -> {
-                        block.line(String.format("this.%1$s = %2$s;", var.getName(), var.getInitializeExpression()));
-                    });
+                    .forEach(var -> block.line("this.%1$s = %2$s;", var.getName(), var.getInitializeExpression()));
 
                 block.methodReturn("this");
             }).build();
@@ -55,6 +54,6 @@ public class FluentUpdateMethod extends FluentMethod {
     }
 
     @Override
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
     }
 }

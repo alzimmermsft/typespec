@@ -124,12 +124,11 @@ public class CollectionMethodOperationByIdTemplate implements ImmutableMethod {
                     // need additional conversion from String to LocalVariable.variableType
                     boolean needsLocalVar = var.getVariableType() != ClassType.STRING;
                     String varName = needsLocalVar ? var.getName() + "Local" : var.getName();
-                    block
-                        .line(String.format("%1$s %2$s = %3$s;", ClassType.STRING.getName(), varName, valueFromIdText));
+                    block.line("%1$s %2$s = %3$s;", ClassType.STRING.getName(), varName, valueFromIdText);
 
                     String segmentNameForErrorPrompt
                         = urlSegmentName.isEmpty() ? p.getSerializedName() : urlSegmentName;
-                    block.ifBlock(String.format("%1$s == null", varName), ifBlock -> {
+                    block.ifBlock(varName + " == null", ifBlock -> {
                         String errorMessageExpr = String.format(
                             "String.format(\"The resource ID '%%s' is not valid. Missing path segment '%1$s'.\", %2$s)",
                             segmentNameForErrorPrompt, ModelNaming.METHOD_PARAMETER_NAME_ID);
@@ -138,8 +137,7 @@ public class CollectionMethodOperationByIdTemplate implements ImmutableMethod {
                     });
                     if (needsLocalVar) {
                         // currently this works only for UUID or Enum
-                        block.line(String.format("%1$s %2$s = %3$s.fromString(%4$s);", var.getVariableType().toString(),
-                            var.getName(), var.getVariableType().toString(), varName));
+                        block.line("%1$s %2$s = %1$s.fromString(%3$s);", var.getVariableType(), var.getName(), varName);
                     }
                 });
 
@@ -147,16 +145,16 @@ public class CollectionMethodOperationByIdTemplate implements ImmutableMethod {
                     // init local variables to default value
                     for (LocalVariable var : localVariables.getLocalVariablesMap().values()) {
                         if (var.getParameterLocation() == RequestParameterLocation.QUERY) {
-                            block.line(String.format("%1$s %2$s = %3$s;", var.getVariableType().toString(),
-                                var.getName(), var.getInitializeExpression()));
+                            block.line("%1$s %2$s = %3$s;", var.getVariableType(), var.getName(),
+                                var.getInitializeExpression());
                         }
                     }
                 }
 
                 if (returnType == PrimitiveType.VOID) {
-                    block.line(String.format("this.%1$s%2$s;", methodInvocation, afterInvocationCode));
+                    block.line("this." + methodInvocation + afterInvocationCode + ";");
                 } else {
-                    block.methodReturn(String.format("this.%1$s%2$s", methodInvocation, afterInvocationCode));
+                    block.methodReturn("this." + methodInvocation + afterInvocationCode);
                 }
             })
             .build();
@@ -186,9 +184,8 @@ public class CollectionMethodOperationByIdTemplate implements ImmutableMethod {
     }
 
     private String getMethodSignature(IType returnType, List<ClientMethodParameter> parameters) {
-        String parameterText = parameters.stream()
-            .map(p -> String.format("%1$s %2$s", p.getClientType().toString(), p.getName()))
-            .collect(Collectors.joining(", "));
+        String parameterText
+            = parameters.stream().map(p -> p.getClientType() + " " + p.getName()).collect(Collectors.joining(", "));
         return String.format("%1$s %2$s(%3$s)", returnType.toString(), this.name, parameterText);
     }
 }

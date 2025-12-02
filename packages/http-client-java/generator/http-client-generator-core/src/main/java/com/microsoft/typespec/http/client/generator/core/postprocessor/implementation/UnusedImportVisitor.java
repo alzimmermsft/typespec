@@ -4,31 +4,24 @@ package com.microsoft.typespec.http.client.generator.core.postprocessor.implemen
 
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.PackageDeclaration;
-import com.github.javaparser.ast.body.AnnotationDeclaration;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.CompactConstructorDeclaration;
-import com.github.javaparser.ast.body.ConstructorDeclaration;
-import com.github.javaparser.ast.body.EnumDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.RecordDeclaration;
 import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.MarkerAnnotationExpr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.type.ArrayType;
+import com.github.javaparser.ast.expr.NormalAnnotationExpr;
+import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import com.github.javaparser.ast.type.IntersectionType;
-import com.github.javaparser.ast.type.TypeParameter;
-import com.github.javaparser.ast.type.UnionType;
-import com.github.javaparser.ast.type.UnknownType;
-import com.github.javaparser.ast.type.VarType;
-import com.github.javaparser.ast.type.VoidType;
-import com.github.javaparser.ast.type.WildcardType;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import com.github.javaparser.resolution.types.ResolvedType;
+import com.github.javaparser.javadoc.Javadoc;
+import com.github.javaparser.javadoc.description.JavadocInlineTag;
 import java.util.HashSet;
 import java.util.Set;
 
-public final class UnusedImportVisitor extends VoidVisitorAdapter<Void> {
+/**
+ * Effective copy of how Google Java Format detects unused imports.
+ * <p>
+ * Google Java Format scans the AST to find all simple names that could be used in imports. Then compares that to the
+ * import declarations to find unused ones.
+ */
+final class UnusedImportVisitor extends VoidVisitorAdapter<Void> {
     private String packageDeclaration = null;
 
     private final Set<String> importDeclarations = new HashSet<>();
@@ -55,155 +48,111 @@ public final class UnusedImportVisitor extends VoidVisitorAdapter<Void> {
     }
 
     @Override
-    public void visit(AnnotationDeclaration n, Void arg) {
-        resolvedTypes.add(n.resolve().getQualifiedName());
-        super.visit(n, arg);
-    }
-
-    @Override
-    public void visit(ClassOrInterfaceDeclaration n, Void arg) {
-        resolvedTypes.add(n.resolve().getQualifiedName());
-        super.visit(n, arg);
-    }
-
-    @Override
     public void visit(ClassOrInterfaceType n, Void arg) {
-        handleResolvedType(n.resolve());
-        super.visit(n, arg);
-    }
-
-    @Override
-    public void visit(ConstructorDeclaration n, Void arg) {
-        resolvedTypes.add(n.resolve().getQualifiedName());
-        super.visit(n, arg);
-    }
-
-    @Override
-    public void visit(EnumDeclaration n, Void arg) {
-        resolvedTypes.add(n.resolve().getQualifiedName());
+        // Add name with scope as this will include full package path if used.
+        resolvedTypes.add(n.getNameWithScope());
         super.visit(n, arg);
     }
 
     @Override
     public void visit(JavadocComment n, Void arg) {
+        Javadoc javadoc = n.parse();
+        javadoc.getDescription().getElements().forEach(element -> {
+            if (element instanceof JavadocInlineTag) {
+                JavadocInlineTag inlineTag = (JavadocInlineTag) element;
+                if (inlineTag.getType() == JavadocInlineTag.Type.LINK
+                    || inlineTag.getType() == JavadocInlineTag.Type.LINKPLAIN) {
+                    // Need to handle link and linkplain tags to catch types mentioned in Javadocs.
+                    // These can come in various forms, such as:
+                    // {@link com.example.MyClass}, {@link MyClass}, {@linkplain #myMethod(ParamType, ParamType2)}, etc.
+                    // And also with optional label after the reference:
+                    // {@link com.example.MyClass My Class}, {@linkplain #myMethod(ParamType, ParamType2) My Method},
+                    // etc.
+
+                    // Get the content and trim it.
+                    String content = inlineTag.getContent().trim();
+
+                    int closingParenIndex = content.indexOf(')');
+                    if (closingParenIndex == -1) {
+                        throw new IllegalStateException("Invalid Javadoc link / linkplain: " + content);
+                    }
+
+                    content = content.substring(0, closingParenIndex + 1);
+
+                    int hashIndex = content.indexOf('#');
+                    if (hashIndex != -1) {
+
+                    } else {
+
+                    }
+                }
+            }
+        });
+
         super.visit(n, arg);
+    }
+
+    /**
+     *
+     * @param linkContent
+     */
+    private void extractTypeFromJavadocLink(String linkContent) {
+        // Remove any label after the reference
+        String[] parts = linkContent.split("\\s+", 2);
+        String reference = parts[0];
+
+        // If it's a method reference, extract the parameter types
+        int parenIndex = reference.indexOf('(');
+        if (parenIndex != -1) {
+            String methodPart = reference.substring(0, parenIndex);
+            String paramsPart = reference.substring(parenIndex + 1, reference.length() - 1); // Exclude closing
+                                                                                             // parenthesis
+
+            // Add the method name (without parameters) to resolved types
+            resolvedTypes.add(methodPart);
+
+            // Split parameters and add their types
+            String[] paramTypes = paramsPart.split(",");
+            for (String paramType : paramTypes) {
+                resolvedTypes.add(paramType.trim());
+            }
+        } else {
+            // It's a class or field reference
+            resolvedTypes.add(reference);
+        }
     }
 
     @Override
     public void visit(MarkerAnnotationExpr n, Void arg) {
-        resolvedTypes.add(n.resolve().getQualifiedName());
+        resolvedTypes.add(n.getNameAsString());
         super.visit(n, arg);
     }
 
     @Override
-    public void visit(MethodCallExpr n, Void arg) {
-        resolvedTypes.add(n.resolve().getQualifiedName());
-        super.visit(n, arg);
-    }
-
-    @Override
-    public void visit(MethodDeclaration n, Void arg) {
-        resolvedTypes.add(n.resolve().getQualifiedName());
+    public void visit(NormalAnnotationExpr n, Void arg) {
+        resolvedTypes.add(n.getNameAsString());
         super.visit(n, arg);
     }
 
     @Override
     public void visit(PackageDeclaration n, Void arg) {
-        if (this.packageDeclaration == null) {
-            this.packageDeclaration = n.getNameAsString();
-        } else {
-            throw new IllegalStateException("Multiple package declarations found.");
-        }
+        this.packageDeclaration = n.getNameAsString();
         super.visit(n, arg);
     }
 
     @Override
-    public void visit(ArrayType n, Void arg) {
-        handleResolvedType(n.resolve());
-        super.visit(n, arg);
-    }
-
-    @Override
-    public void visit(IntersectionType n, Void arg) {
-        handleResolvedType(n.resolve());
-        super.visit(n, arg);
-    }
-
-    @Override
-    public void visit(UnionType n, Void arg) {
-        handleResolvedType(n.resolve());
-        super.visit(n, arg);
-    }
-
-    @Override
-    public void visit(TypeParameter n, Void arg) {
-        handleResolvedType(n.resolve());
-        super.visit(n, arg);
-    }
-
-    @Override
-    public void visit(UnknownType n, Void arg) {
-        handleResolvedType(n.resolve());
-        super.visit(n, arg);
-    }
-
-    @Override
-    public void visit(VoidType n, Void arg) {
-        handleResolvedType(n.resolve());
-        super.visit(n, arg);
-    }
-
-    @Override
-    public void visit(WildcardType n, Void arg) {
-        handleResolvedType(n.resolve());
+    public void visit(SingleMemberAnnotationExpr n, Void arg) {
+        resolvedTypes.add(n.getNameAsString());
         super.visit(n, arg);
     }
 
     @Override
     public void visit(ImportDeclaration n, Void arg) {
         if (n.isAsterisk()) {
-            throw new IllegalStateException("Asterisk imports are not supported.");
+            throw new IllegalStateException("Wildcard imports are not supported: " + n);
         }
 
         importDeclarations.add(n.getNameAsString());
         super.visit(n, arg);
-    }
-
-    @Override
-    public void visit(VarType n, Void arg) {
-        handleResolvedType(n.resolve());
-        super.visit(n, arg);
-    }
-
-    @Override
-    public void visit(RecordDeclaration n, Void arg) {
-        resolvedTypes.add(n.resolve().getQualifiedName());
-        super.visit(n, arg);
-    }
-
-    @Override
-    public void visit(CompactConstructorDeclaration n, Void arg) {
-        resolvedTypes.add(n.resolve().getQualifiedName());
-        super.visit(n, arg);
-    }
-
-    private void handleResolvedType(ResolvedType resolved) {
-        if (resolved.isReferenceType()) {
-            resolvedTypes.add(resolved.asReferenceType().getQualifiedName());
-        } else if (resolved.isArray()) {
-            // Need to check the component type, ex: SomeType[]
-            handleResolvedType(resolved.asArrayType().getComponentType());
-        } else if (resolved.isTypeVariable()) {
-            resolvedTypes.add(resolved.asTypeVariable().qualifiedName());
-        } else if (resolved.isWildcard()) {
-            // Need to check the bound type, ex: <? extends SomeType>
-            handleResolvedType(resolved.asWildcard().getBoundedType());
-        } else if (resolved.isUnionType()) {
-            // Need to check each type in the union, ex: <SomeType1 | SomeType2>
-            resolved.asUnionType().getElements().forEach(this::handleResolvedType);
-        } else if (resolved.isConstraint()) {
-            // Need to check the bound type, ex: <? extends SomeType>
-            handleResolvedType(resolved.asConstraintType().getBound());
-        }
     }
 }

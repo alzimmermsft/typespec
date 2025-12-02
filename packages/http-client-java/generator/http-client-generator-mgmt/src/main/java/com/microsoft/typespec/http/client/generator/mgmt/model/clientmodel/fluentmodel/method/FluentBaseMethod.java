@@ -18,9 +18,11 @@ import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.Model
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel.LocalVariable;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel.ResourceLocalVariables;
 import com.microsoft.typespec.http.client.generator.mgmt.util.FluentUtils;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 abstract public class FluentBaseMethod extends FluentMethod {
@@ -81,8 +83,8 @@ abstract public class FluentBaseMethod extends FluentMethod {
                 if (initLocalVariables) {
                     for (LocalVariable var : resourceLocalVariables.getLocalVariablesMap().values()) {
                         if (var.getParameterLocation() == RequestParameterLocation.QUERY) {
-                            block.line(String.format("%1$s %2$s = %3$s;", var.getVariableType().toString(),
-                                var.getName(), var.getInitializeExpression()));
+                            block.line("%1$s %2$s = %3$s;", var.getVariableType(), var.getName(),
+                                var.getInitializeExpression());
                         }
                     }
                 }
@@ -96,9 +98,8 @@ abstract public class FluentBaseMethod extends FluentMethod {
 
     @Override
     protected String getBaseMethodSignature() {
-        String parameterText = parameters.stream()
-            .map(p -> String.format("%1$s %2$s", p.getClientType().toString(), p.getName()))
-            .collect(Collectors.joining(", "));
+        String parameterText
+            = parameters.stream().map(p -> p.getClientType() + " " + p.getName()).collect(Collectors.joining(", "));
         return String.format("%1$s(%2$s)", this.name, parameterText);
     }
 
@@ -110,11 +111,11 @@ abstract public class FluentBaseMethod extends FluentMethod {
     }
 
     @Override
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
-        interfaceReturnValue.addImportsTo(imports, false);
-        parameters.forEach(p -> p.addImportsTo(imports, false));
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
+        interfaceReturnValue.addImportsTo(importConsumer, false);
+        parameters.forEach(p -> p.addImportsTo(importConsumer, false));
         if (includeImplementationImports) {
-            collectionMethod.addImportsTo(imports, false);
+            collectionMethod.addImportsTo(importConsumer, false);
         }
     }
 }

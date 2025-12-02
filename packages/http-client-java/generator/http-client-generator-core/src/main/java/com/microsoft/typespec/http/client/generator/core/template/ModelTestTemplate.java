@@ -17,9 +17,7 @@ import io.clientcore.core.serialization.json.JsonWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class ModelTestTemplate implements IJavaTemplate<ModelTestTemplate.ModelUnitTestInfo, JavaFile> {
 
@@ -56,17 +54,15 @@ public class ModelTestTemplate implements IJavaTemplate<ModelTestTemplate.ModelU
      */
     @Override
     public void write(ModelUnitTestInfo testInfo, JavaFile javaFile) {
-
-        String className = testInfo.className;
+        JavaSettings settings = JavaSettings.getInstance();
         ClientModel model = testInfo.model;
 
-        final boolean immutableOutputModel = JavaSettings.getInstance().isOutputModelImmutable()
+        final boolean immutableOutputModel = settings.isOutputModelImmutable()
             && model.getImplementationDetails() != null
             && !model.getImplementationDetails().isInput();
 
-        Set<String> imports = new HashSet<>();
-        model.addImportsTo(imports, JavaSettings.getInstance());
-        ClassType.BINARY_DATA.addImportsTo(imports, false);
+        model.addImportsTo(javaFile::declareImport, settings);
+        javaFile.declareImport(ClassType.BINARY_DATA.getFullName());
 
         String jsonStr;
         ExampleNode exampleNode;
@@ -82,9 +78,7 @@ public class ModelTestTemplate implements IJavaTemplate<ModelTestTemplate.ModelU
         }
 
         ModelExampleWriter writer = new ModelExampleWriter(exampleNode, "model");
-        imports.addAll(writer.getImports());
-
-        javaFile.declareImport(imports);
+        javaFile.declareImport(writer.getImports());
 
         String jsonStringExpression = ClassType.STRING.defaultValueExpression(jsonStr);
         if (jsonStringExpression.length() >= 65536) {
@@ -94,7 +88,7 @@ public class ModelTestTemplate implements IJavaTemplate<ModelTestTemplate.ModelU
             throw new ConstantStringTooLongException();
         }
 
-        javaFile.publicFinalClass(className, classBlock -> {
+        javaFile.publicFinalClass(testInfo.className, classBlock -> {
             // testDeserialize
             classBlock.annotation("org.junit.jupiter.api.Test");
             classBlock.publicMethod("void testDeserialize() throws Exception", methodBlock -> {

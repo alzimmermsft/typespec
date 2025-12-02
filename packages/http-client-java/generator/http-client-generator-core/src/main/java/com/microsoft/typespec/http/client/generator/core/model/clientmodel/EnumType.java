@@ -5,13 +5,14 @@ package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 
 import com.microsoft.typespec.http.client.generator.core.util.CodeNamer;
 import io.clientcore.core.utils.CoreUtils;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * The details of an enumerated type that is used by a service.
  */
-public class EnumType implements IType {
+public final class EnumType implements IType {
     /**
      * The name of the new Enum.
      */
@@ -34,7 +35,7 @@ public class EnumType implements IType {
 
     private final ImplementationDetails implementationDetails;
 
-    private String crossLanguageDefinitionId;
+    private final String crossLanguageDefinitionId;
     private final String fromMethodName;
     private final String toMethodName;
 
@@ -67,11 +68,11 @@ public class EnumType implements IType {
         return crossLanguageDefinitionId;
     }
 
-    public final String getName() {
+    public String getName() {
         return name;
     }
 
-    public final String getPackage() {
+    public String getPackage() {
         return packageName;
     }
 
@@ -79,38 +80,36 @@ public class EnumType implements IType {
         return description;
     }
 
-    public final boolean getExpandable() {
+    public boolean getExpandable() {
         return expandable;
     }
 
-    public final List<ClientEnumValue> getValues() {
+    public List<ClientEnumValue> getValues() {
         return values;
     }
 
-    public final IType getElementType() {
+    public IType getElementType() {
         return elementType;
     }
 
-    public final void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
-        imports.add(getPackage() + "." + getName());
-
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
         // EnumTypes may result in Collectors being used, if Collectors isn't used the unused import will be removed.
-        imports.add("java.util.stream.Collectors");
+        importConsumer.accept(List.of(packageName + "." + name, "java.util.stream.Collectors"));
     }
 
-    public final boolean isNullable() {
+    public boolean isNullable() {
         return true;
     }
 
-    public final IType asNullable() {
+    public IType asNullable() {
         return this;
     }
 
-    public final boolean contains(IType type) {
+    public boolean contains(IType type) {
         return this == type;
     }
 
-    public final String defaultValueExpression(String sourceExpression) {
+    public String defaultValueExpression(String sourceExpression) {
         if (sourceExpression == null) {
             return null;
         }
@@ -137,7 +136,7 @@ public class EnumType implements IType {
      *
      * @return The method name used to convert JSON to the enum type.
      */
-    public final String getFromMethodName() {
+    public String getFromMethodName() {
         return CoreUtils.isNullOrEmpty(fromMethodName)
             ? "from" + CodeNamer.toPascalCase(elementType.getClientType().toString())
             : fromMethodName;
@@ -148,7 +147,7 @@ public class EnumType implements IType {
      *
      * @return The method name used to convert the enum type to JSON.
      */
-    public final String getToMethodName() {
+    public String getToMethodName() {
         return CoreUtils.isNullOrEmpty(toMethodName)
             ? "to" + CodeNamer.toPascalCase(elementType.getClientType().toString())
             : toMethodName;
@@ -159,19 +158,19 @@ public class EnumType implements IType {
         return "null";
     }
 
-    public final IType getClientType() {
+    public IType getClientType() {
         return this;
     }
 
-    public final String convertToClientType(String expression) {
+    public String convertToClientType(String expression) {
         return expression;
     }
 
-    public final String convertFromClientType(String expression) {
+    public String convertFromClientType(String expression) {
         return expression;
     }
 
-    public final String validate(String expression) {
+    public String validate(String expression) {
         return null;
     }
 

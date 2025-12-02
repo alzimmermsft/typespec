@@ -21,28 +21,23 @@ public class ProtocolSampleTemplate implements IJavaTemplate<ProtocolExample, Ja
     public void write(ProtocolExample protocolExample, JavaFile javaFile) {
         ProtocolExampleWriter writer = new ProtocolExampleWriter(protocolExample);
 
-        String filename = protocolExample.getFilename();
-
         javaFile.declareImport(writer.getImports());
 
-        javaFile.publicClass(null, filename, classBlock -> {
-            classBlock.publicStaticMethod("void main(String[] args)", methodBlock -> {
+        javaFile.publicClass(null, protocolExample.getFilename(),
+            classBlock -> classBlock.publicStaticMethod("void main(String[] args)", methodBlock -> {
                 writer.writeClientInitialization(methodBlock);
 
-                // codesnippet begin
+                // code snippet begin
                 if (protocolExample.getProxyMethodExample().getCodeSnippetIdentifier() != null) {
-                    methodBlock.line(String.format("// BEGIN:%s",
-                        protocolExample.getProxyMethodExample().getCodeSnippetIdentifier()));
+                    methodBlock.line("// BEGIN:" + protocolExample.getProxyMethodExample().getCodeSnippetIdentifier());
                 }
 
                 writer.writeClientMethodInvocation(methodBlock, false);
 
-                // codesnippet end
+                // code snippet end
                 if (protocolExample.getProxyMethodExample().getCodeSnippetIdentifier() != null) {
-                    methodBlock.line(
-                        String.format("// END:%s", protocolExample.getProxyMethodExample().getCodeSnippetIdentifier()));
+                    methodBlock.line("// END:" + protocolExample.getProxyMethodExample().getCodeSnippetIdentifier());
                 }
-            });
-        });
+            }));
     }
 }

@@ -8,8 +8,6 @@ import com.microsoft.typespec.http.client.generator.core.template.ClientMethodTe
 import com.microsoft.typespec.http.client.generator.core.template.IJavaTemplate;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.FluentResourceCollection;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel.method.FluentDefineMethod;
-import java.util.HashSet;
-import java.util.Set;
 
 public class FluentResourceCollectionInterfaceTemplate implements IJavaTemplate<FluentResourceCollection, JavaFile> {
 
@@ -22,14 +20,11 @@ public class FluentResourceCollectionInterfaceTemplate implements IJavaTemplate<
 
     @Override
     public void write(FluentResourceCollection collection, JavaFile javaFile) {
-        Set<String> imports = new HashSet<>();
-        collection.addImportsTo(imports, false);
-        collection.getResourceCreates().forEach(rc -> rc.getDefineMethod().addImportsTo(imports, false));
-        javaFile.declareImport(imports);
+        collection.addImportsTo(javaFile::declareImport, false);
+        collection.getResourceCreates()
+            .forEach(rc -> rc.getDefineMethod().addImportsTo(javaFile::declareImport, false));
 
-        javaFile.javadocComment(comment -> {
-            comment.description(collection.getDescription());
-        });
+        javaFile.javadocComment(comment -> comment.description(collection.getDescription()));
 
         javaFile.publicInterface(collection.getInterfaceType().getName(), interfaceBlock -> {
             // methods

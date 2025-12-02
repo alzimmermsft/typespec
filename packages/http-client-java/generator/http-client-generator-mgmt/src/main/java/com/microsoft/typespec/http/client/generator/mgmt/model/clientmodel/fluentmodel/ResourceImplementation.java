@@ -101,16 +101,16 @@ public class ResourceImplementation {
                 this.implementationMethodTemplate = groupedMethod.methodCreateWith.getMethodTemplate();
                 branchMethodNeeded = false;
             } else {
-                this.implementationMethodTemplate = MethodTemplate.builder()
-                    .methodSignature(groupedMethod.methodCreateWith.getImplementationMethodSignature())
-                    .method(block -> {
-                        block.ifBlock("isInCreateMode()", ifBlock -> {
-                            groupedMethod.methodCreateWith.getMethodTemplate().writeMethodContent(ifBlock);
-                        }).elseBlock(elseBlock -> {
-                            groupedMethod.methodUpdateWith.getMethodTemplate().writeMethodContent(elseBlock);
-                        });
-                    })
-                    .build();
+                this.implementationMethodTemplate
+                    = MethodTemplate.builder()
+                        .methodSignature(groupedMethod.methodCreateWith.getImplementationMethodSignature())
+                        .method(block -> block
+                            .ifBlock("isInCreateMode()",
+                                ifBlock -> groupedMethod.methodCreateWith.getMethodTemplate()
+                                    .writeMethodContent(ifBlock))
+                            .elseBlock(elseBlock -> groupedMethod.methodUpdateWith.getMethodTemplate()
+                                .writeMethodContent(elseBlock)))
+                        .build();
                 branchMethodNeeded = true;
             }
         }
@@ -133,10 +133,8 @@ public class ResourceImplementation {
             this.implementationMethodTemplate = MethodTemplate.builder()
                 .visibility(JavaVisibility.Private)
                 .methodSignature("boolean isInCreateMode()")
-                .method(block -> {
-                    block.methodReturn(String.format("this.%1$s() == null || this.%1$s().id() == null",
-                        ModelNaming.METHOD_INNER_MODEL));
-                })
+                .method(block -> block.methodReturn(
+                    String.format("this.%1$s() == null || this.%1$s().id() == null", ModelNaming.METHOD_INNER_MODEL)))
                 .build();
         }
 

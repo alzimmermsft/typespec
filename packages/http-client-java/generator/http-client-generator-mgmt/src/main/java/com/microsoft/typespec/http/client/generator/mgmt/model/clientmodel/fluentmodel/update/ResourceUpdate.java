@@ -27,10 +27,11 @@ import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluen
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel.method.FluentModelPropertyMethod;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel.method.FluentUpdateMethod;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 
@@ -106,9 +107,8 @@ public class ResourceUpdate extends ResourceOperation {
     @Override
     protected List<ModelProperty> getProperties() {
         return super.getProperties().stream()
-            .filter(p -> !p.isReadOnlyForUpdate())
-            .filter(p -> !isIdProperty(p) && !isLocationProperty(p))    // update should not be able to change id or
-                                                                        // location
+            // update should not be able to change id or location
+            .filter(p -> !p.isReadOnlyForUpdate() && !isIdProperty(p) && !isLocationProperty(p))
             .collect(Collectors.toList());
     }
 
@@ -148,19 +148,13 @@ public class ResourceUpdate extends ResourceOperation {
         String methodName = property.getSetterName();
         IType type = property.getClientType();
         if ((type instanceof ListType || type instanceof MapType) && resourceModel.getResourceCreate() != null) {
-            IType valueType = null;
-            if (type instanceof ListType) {
-                valueType = ((ListType) type).getElementType();
-            } else if (type instanceof MapType) {
-                valueType = ((MapType) type).getValueType();
-            }
-            IType valueTypeFinal = valueType;
+            IType valueType
+                = (type instanceof ListType) ? ((ListType) type).getElementType() : ((MapType) type).getValueType();
 
             hasDuplicate = resourceModel.getResourceCreate()
                 .getFluentMethods()
                 .stream()
-                .filter(m -> m.getType() == FluentMethodType.CREATE_WITH)
-                .filter(m -> methodName.equals(m.getName()))
+                .filter(m -> m.getType() == FluentMethodType.CREATE_WITH && methodName.equals(m.getName()))
                 .map(m -> {
                     IType t = null;
                     if (m instanceof FluentModelPropertyMethod) {
@@ -183,7 +177,7 @@ public class ResourceUpdate extends ResourceOperation {
                 })
                 .filter(Objects::nonNull)
                 // different type
-                .anyMatch(v -> !Objects.equals(valueTypeFinal.toString(), v.toString()));
+                .anyMatch(v -> !Objects.equals(valueType.toString(), v.toString()));
         }
         return hasDuplicate;
     }
@@ -227,12 +221,12 @@ public class ResourceUpdate extends ResourceOperation {
         }
     }
 
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
-        getUpdateStages().forEach(s -> s.addImportsTo(imports, includeImplementationImports));
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
+        getUpdateStages().forEach(s -> s.addImportsTo(importConsumer, includeImplementationImports));
         if (includeImplementationImports) {
-            getConstructor().addImportsTo(imports, true);
-            getUpdateMethod().addImportsTo(imports, true);
-            getApplyMethods().forEach(m -> m.addImportsTo(imports, true));
+            getConstructor().addImportsTo(importConsumer, true);
+            getUpdateMethod().addImportsTo(importConsumer, true);
+            getApplyMethods().forEach(m -> m.addImportsTo(importConsumer, true));
         }
     }
 }

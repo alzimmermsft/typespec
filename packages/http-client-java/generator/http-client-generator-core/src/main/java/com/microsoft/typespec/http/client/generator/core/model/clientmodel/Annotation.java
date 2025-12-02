@@ -4,7 +4,6 @@
 package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
-import java.util.Set;
 
 public class Annotation {
     private static final String CORE_ANNOTATIONS_PACKAGE = "com.azure.core.annotation";
@@ -73,10 +72,6 @@ public class Annotation {
 
     public final String getFullName() {
         return fullName;
-    }
-
-    public final void addImportsTo(Set<String> imports) {
-        imports.add(fullName);
     }
 
     private static Annotation withClientCoreReplacement(String clientCorePackage, String name) {

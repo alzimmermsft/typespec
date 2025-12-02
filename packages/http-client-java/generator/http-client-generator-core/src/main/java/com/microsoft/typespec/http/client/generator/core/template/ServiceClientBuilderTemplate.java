@@ -27,7 +27,6 @@ import com.microsoft.typespec.http.client.generator.core.util.TemplateUtil;
 import io.clientcore.core.traits.EndpointTrait;
 import io.clientcore.core.utils.CoreUtils;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -67,31 +66,25 @@ public class ServiceClientBuilderTemplate implements IJavaTemplate<ClientBuilder
             buildReturnType = serviceClient.getClassName();
         }
 
-        Set<String> imports = new HashSet<>();
-        serviceClient.addImportsTo(imports, false, true, settings);
-        commonProperties.forEach(p -> p.addImportsTo(imports, false));
-        imports.add("java.util.List");
-        imports.add("java.util.Map");
-        imports.add("java.util.HashMap");
-        imports.add("java.util.ArrayList");
-        ClassType.HTTP_HEADERS.addImportsTo(imports, false);
-        ClassType.HTTP_HEADER_NAME.addImportsTo(imports, false);
-        imports.add("java.util.Objects");
+        serviceClient.addImportsTo(javaFile::declareImport, false, true, settings);
+        commonProperties.forEach(p -> p.addImportsTo(javaFile::declareImport, false));
+        javaFile.declareImport("java.util.List", "java.util.Map", "java.util.HashMap", "java.util.ArrayList",
+            "java.util.Objects", ClassType.HTTP_HEADERS.getFullName(), ClassType.HTTP_HEADER_NAME.getFullName(),
+            Annotation.SERVICE_CLIENT_BUILDER.getFullName());
         if (settings.isUseClientLogger()) {
-            ClassType.CLIENT_LOGGER.addImportsTo(imports, false);
+            ClassType.CLIENT_LOGGER.addImportsTo(javaFile::declareImport, false);
         }
-        Annotation.SERVICE_CLIENT_BUILDER.addImportsTo(imports);
 
         if (!settings.isAzureV1()) {
-            ClassType.INSTRUMENTATION.addImportsTo(imports, false);
-            ClassType.SDK_INSTRUMENTATION_OPTIONS.addImportsTo(imports, false);
+            javaFile.declareImport(ClassType.INSTRUMENTATION.getFullName(),
+                ClassType.SDK_INSTRUMENTATION_OPTIONS.getFullName());
         }
 
-        addHttpPolicyImports(imports);
-        addImportForCoreUtils(imports);
-        addSerializerImport(imports, settings);
-        addGeneratedImport(imports);
-        addTraitsImports(clientBuilder, imports);
+        addHttpPolicyImports(javaFile);
+        addImportForCoreUtils(javaFile);
+        addSerializerImport(javaFile, settings);
+        addGeneratedImport(javaFile);
+        addTraitsImports(clientBuilder, javaFile);
 
         List<AsyncSyncClient> asyncClients = clientBuilder.getAsyncClients();
         List<AsyncSyncClient> syncClients = clientBuilder.getSyncClients();
@@ -112,7 +105,7 @@ public class ServiceClientBuilderTemplate implements IJavaTemplate<ClientBuilder
                 }
                 builderTypes.append(client.getClassName()).append(".class");
 
-                client.addImportsTo(imports, false);
+                client.addImportsTo(javaFile::declareImport, false);
             }
             // sub clients
             List<AsyncSyncClient> subClients = getSubClientsWithoutBuilder(clients);
@@ -120,13 +113,12 @@ public class ServiceClientBuilderTemplate implements IJavaTemplate<ClientBuilder
                 builderTypes.append(", ");
                 builderTypes.append(client.getClassName()).append(".class");
 
-                client.addImportsTo(imports, false);
+                client.addImportsTo(javaFile::declareImport, false);
             }
         } else {
             builderTypes.append(serviceClient.getClassName()).append(".class");
         }
         builderTypes.append("}");
-        javaFile.declareImport(imports);
 
         javaFile.javadocComment(comment -> {
             String clientTypeName
@@ -193,7 +185,7 @@ public class ServiceClientBuilderTemplate implements IJavaTemplate<ClientBuilder
             Stream<ServiceClientProperty> serviceClientPropertyStream
                 = serviceClient.getProperties().stream().filter(p -> !p.isReadOnly());
             if (!settings.isFluent()) {
-                addTraitMethods(clientBuilder, settings, serviceClientBuilderName, classBlock);
+                addTraitMethods(clientBuilder, serviceClientBuilderName, classBlock);
                 serviceClientPropertyStream
                     = serviceClientPropertyStream.filter(property -> clientBuilder.getBuilderTraits()
                         .stream()
@@ -427,8 +419,7 @@ public class ServiceClientBuilderTemplate implements IJavaTemplate<ClientBuilder
         return "this." + property.getName();
     }
 
-    private void addTraitMethods(ClientBuilder clientBuilder, JavaSettings settings, String serviceClientBuilderName,
-        JavaClass classBlock) {
+    private void addTraitMethods(ClientBuilder clientBuilder, String serviceClientBuilderName, JavaClass classBlock) {
         clientBuilder.getBuilderTraits()
             .stream()
             .flatMap(trait -> trait.getTraitMethods().stream())
@@ -514,45 +505,35 @@ public class ServiceClientBuilderTemplate implements IJavaTemplate<ClientBuilder
         return "serializerAdapter";
     }
 
-    protected void addSerializerImport(Set<String> imports, JavaSettings settings) {
-        imports.add(
+    protected void addSerializerImport(JavaFile javaFile, JavaSettings settings) {
+        javaFile.declareImport(
             settings.isFluent() ? ClassType.SERIALIZER_FACTORY.getFullName() : ClassType.JACKSON_ADAPTER.getFullName());
     }
 
-    protected void addImportForCoreUtils(Set<String> imports) {
-        ClassType.CORE_UTILS.addImportsTo(imports, false);
-        imports.add(ClassType.CLIENT_BUILDER_UTIL.getFullName());
+    protected void addImportForCoreUtils(JavaFile javaFile) {
+        javaFile.declareImport(ClassType.CORE_UTILS.getFullName(), ClassType.CLIENT_BUILDER_UTIL.getFullName());
     }
 
-    protected void addHttpPolicyImports(Set<String> imports) {
-        ClassType.BEARER_TOKEN_POLICY.addImportsTo(imports, false);
+    protected void addHttpPolicyImports(JavaFile javaFile) {
 
         // one of the key credential policy imports will be removed by the formatter depending
         // on which one is used
-        imports.add(ClassType.AZURE_KEY_CREDENTIAL_POLICY.getFullName());
-        ClassType.KEY_CREDENTIAL_POLICY.addImportsTo(imports, false);
-
-        imports.add(ClassType.HTTP_POLICY_PROVIDERS.getFullName());
-        ClassType.HTTP_PIPELINE_POLICY.addImportsTo(imports, false);
-        ClassType.HTTP_LOGGING_POLICY.addImportsTo(imports, false);
-        ClassType.USER_AGENT_POLICY.addImportsTo(imports, false);
-        ClassType.USER_AGENT_OPTIONS.addImportsTo(imports, false);
-        imports.add(ClassType.ADD_HEADERS_POLICY.getFullName());
-        imports.add(ClassType.REQUEST_ID_POLICY.getFullName());
-        imports.add(ClassType.ADD_HEADERS_FROM_CONTEXT_POLICY.getFullName());
-        imports.add(ClassType.ADD_DATE_POLICY.getFullName());
-        imports.add(ClassType.HTTP_PIPELINE_POSITION.getFullName());
-        imports.add(Collectors.class.getName());
-        ClassType.RETRY_POLICY.addImportsTo(imports, false);
-        ClassType.REDIRECT_POLICY.addImportsTo(imports, false);
+        javaFile.declareImport(ClassType.BEARER_TOKEN_POLICY.getFullName(),
+            ClassType.AZURE_KEY_CREDENTIAL_POLICY.getFullName(), ClassType.KEY_CREDENTIAL_POLICY.getFullName(),
+            ClassType.HTTP_POLICY_PROVIDERS.getFullName(), ClassType.HTTP_PIPELINE_POLICY.getFullName(),
+            ClassType.HTTP_LOGGING_POLICY.getFullName(), ClassType.USER_AGENT_POLICY.getFullName(),
+            ClassType.USER_AGENT_OPTIONS.getFullName(), ClassType.ADD_HEADERS_POLICY.getFullName(),
+            ClassType.REQUEST_ID_POLICY.getFullName(), ClassType.ADD_HEADERS_FROM_CONTEXT_POLICY.getFullName(),
+            ClassType.ADD_DATE_POLICY.getFullName(), ClassType.HTTP_PIPELINE_POSITION.getFullName(),
+            Collectors.class.getName(), ClassType.RETRY_POLICY.getFullName(), ClassType.REDIRECT_POLICY.getFullName());
     }
 
-    protected void addTraitsImports(ClientBuilder clientBuilder, Set<String> imports) {
-        clientBuilder.getBuilderTraits().forEach(trait -> imports.addAll(trait.getImportPackages()));
+    protected void addTraitsImports(ClientBuilder clientBuilder, JavaFile javaFile) {
+        clientBuilder.getBuilderTraits().forEach(trait -> javaFile.declareImport(trait.getImportPackages()));
     }
 
-    protected void addServiceClientBuilderAnnotationImport(Set<String> imports) {
-        Annotation.SERVICE_CLIENT_BUILDER.addImportsTo(imports);
+    protected void addServiceClientBuilderAnnotationImport(JavaFile javaFile) {
+        javaFile.declareImport(Annotation.SERVICE_CLIENT_BUILDER.getFullName());
     }
 
     protected void addCreateHttpPipelineMethod(JavaSettings settings, JavaClass classBlock,
@@ -619,12 +600,11 @@ public class ServiceClientBuilderTemplate implements IJavaTemplate<ClientBuilder
         return settings.isGenerateSyncAsyncClients() ? "buildInnerClient" : "buildClient";
     }
 
-    protected void addGeneratedImport(Set<String> imports) {
+    protected void addGeneratedImport(JavaFile javaFile) {
         if (JavaSettings.getInstance().isAzureV1()) {
-            Annotation.GENERATED.addImportsTo(imports);
+            javaFile.declareImport(Annotation.GENERATED.getFullName());
         } else {
-            Annotation.METADATA.addImportsTo(imports);
-            Annotation.METADATA_PROPERTIES.addImportsTo(imports);
+            javaFile.declareImport(Annotation.METADATA.getFullName(), Annotation.METADATA_PROPERTIES.getFullName());
         }
     }
 

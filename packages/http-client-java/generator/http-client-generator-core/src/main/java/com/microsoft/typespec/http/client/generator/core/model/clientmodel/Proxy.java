@@ -4,8 +4,9 @@
 package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * Details that describe the dynamic proxy.
@@ -14,19 +15,19 @@ public class Proxy {
     /**
      * Get the name of the REST API interface.
      */
-    private String name;
+    private final String name;
     /**
      * Get the name of the method group.
      */
-    private String clientTypeName;
+    private final String clientTypeName;
     /**
      * Get the base URL that will be used for each REST API method.
      */
-    private String baseURL;
+    private final String baseURL;
     /**
      * Get the methods of this REST API.
      */
-    private List<ProxyMethod> methods;
+    private final List<ProxyMethod> methods;
 
     /**
      * Create a new Proxy using the provided properties.
@@ -60,20 +61,20 @@ public class Proxy {
     }
 
     /**
-     * Add this property's imports to the provided set of imports.
+     * Consume this property's imports.
      * 
-     * @param imports The set of imports to add to.
+     * @param importConsumer The import consumer.
      * @param includeImplementationImports Whether to include imports that are only necessary for method
      * implementations.
      */
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports, JavaSettings settings) {
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports,
+        JavaSettings settings) {
         if (includeImplementationImports) {
-            Annotation.HOST.addImportsTo(imports);
-            Annotation.SERVICE_INTERFACE.addImportsTo(imports);
+            importConsumer.accept(List.of(Annotation.HOST.getFullName(), Annotation.SERVICE_INTERFACE.getFullName()));
         }
 
         for (ProxyMethod method : getMethods()) {
-            method.addImportsTo(imports, includeImplementationImports, settings);
+            method.addImportsTo(importConsumer, includeImplementationImports, settings);
         }
     }
 

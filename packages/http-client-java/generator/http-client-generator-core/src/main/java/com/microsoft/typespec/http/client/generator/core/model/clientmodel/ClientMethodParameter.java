@@ -4,9 +4,10 @@
 package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 
 import com.microsoft.typespec.http.client.generator.core.extension.model.codemodel.RequestParameterLocation;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -126,21 +127,21 @@ public class ClientMethodParameter extends MethodParameter {
     }
 
     /**
-     * Add this parameter's imports to the provided set of imports.
+     * Consume this parameter's imports.
      * 
-     * @param imports The set of imports to add to.
+     * @param importConsumer The consumer of imports.
      * @param includeImplementationImports Whether to include imports that are only necessary for method
      * implementations.
      */
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
         for (ClassType annotation : getAnnotations()) {
-            annotation.addImportsTo(imports, includeImplementationImports);
+            annotation.addImportsTo(importConsumer, includeImplementationImports);
         }
-        getClientType().addImportsTo(imports, includeImplementationImports);
+        getClientType().addImportsTo(importConsumer, includeImplementationImports);
         if (includeImplementationImports) {
-            getWireType().addImportsTo(imports, includeImplementationImports);
+            getWireType().addImportsTo(importConsumer, true);
             if (getRawType() != null) {
-                getRawType().addImportsTo(imports, includeImplementationImports);
+                getRawType().addImportsTo(importConsumer, true);
             }
         }
     }

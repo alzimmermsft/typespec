@@ -37,28 +37,26 @@ public class ClientMethodTestTemplate implements IJavaTemplate<TestContext<Clien
             CodeNamer.toCamelCase(clientMethodExample.getSyncClient().getClassName()),
             clientMethodExample.getProxyMethodExample());
 
-        Set<String> imports = writer.getImports();
-        clientMethod.getReturnValue().getType().addImportsTo(imports, false);
-        imports.addAll(caseWriter.getImports());
-        context.declareImport(imports);
+        context.declareImport(writer.getImports());
+        clientMethod.getReturnValue().getType().addImportsTo(context::declareImport, false);
+        context.declareImport(caseWriter.getImports());
 
         context.annotation("Disabled");
-        context.publicFinalClass(String.format("%1$s extends %2$s", className, testContext.getTestBaseClassName()),
-            classBlock -> {
-                classBlock.annotation("Test", "Disabled");  // "DoNotRecord(skipInPlayback = true)" not added
-                Set<ExampleHelperFeature> helperFeatures = caseWriter.getHelperFeatures();
-                String methodSignature = String.format("void test%1$s()", className);
-                if (helperFeatures.contains(ExampleHelperFeature.ThrowsIOException)) {
-                    methodSignature += " throws IOException";
-                }
-                classBlock.publicMethod(methodSignature, methodBlock -> {
-                    methodBlock.line("// method invocation");
-                    caseWriter.writeClientMethodInvocation(methodBlock, true);
-                    caseWriter.writeAssertion(methodBlock);
-                });
-                if (helperFeatures.contains(ExampleHelperFeature.MapOfMethod)) {
-                    ModelExampleWriter.writeMapOfMethod(classBlock);
-                }
+        context.publicFinalClass(className + " extends " + testContext.getTestBaseClassName(), classBlock -> {
+            classBlock.annotation("Test", "Disabled");  // "DoNotRecord(skipInPlayback = true)" not added
+            Set<ExampleHelperFeature> helperFeatures = caseWriter.getHelperFeatures();
+            String methodSignature = "void test" + className + "()";
+            if (helperFeatures.contains(ExampleHelperFeature.ThrowsIOException)) {
+                methodSignature += " throws IOException";
+            }
+            classBlock.publicMethod(methodSignature, methodBlock -> {
+                methodBlock.line("// method invocation");
+                caseWriter.writeClientMethodInvocation(methodBlock, true);
+                caseWriter.writeAssertion(methodBlock);
             });
+            if (helperFeatures.contains(ExampleHelperFeature.MapOfMethod)) {
+                ModelExampleWriter.writeMapOfMethod(classBlock);
+            }
+        });
     }
 }

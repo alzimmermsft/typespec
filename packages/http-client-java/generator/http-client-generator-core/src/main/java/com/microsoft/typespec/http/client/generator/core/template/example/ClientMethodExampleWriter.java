@@ -57,11 +57,9 @@ public class ClientMethodExampleWriter {
         String parameterInvocations = exampleNodes.stream().map(nodeVisitor::accept).collect(Collectors.joining(", "));
 
         // assertion
-        this.imports.add("org.junit.jupiter.api.Assertions");
-        imports.add(ClassType.LONG_RUNNING_OPERATION_STATUS.getFullName());
-        ClassType.HTTP_HEADER_NAME.addImportsTo(imports, false);
-
-        method.getReturnValue().getType().addImportsTo(imports, false);
+        this.imports.addAll(List.of("org.junit.jupiter.api.Assertions", ClassType.HTTP_HEADER_NAME.getFullName(),
+            ClassType.LONG_RUNNING_OPERATION_STATUS.getFullName()));
+        method.getReturnValue().getType().addImportsTo(imports::addAll, false);
 
         methodBodyWriter = (methodBlock, isTestCode) -> {
             StringBuilder methodInvocation = new StringBuilder();
@@ -134,8 +132,8 @@ public class ClientMethodExampleWriter {
                                         methodBlock.line("Assertions.assertEquals(0, response.stream().count());");
                                     } else {
                                         Object firstItem = itemArray.iterator().next();
-                                        methodBlock.line("%s firstItem = %s;", responseType.getTypeArguments()[0],
-                                            "response.iterator().next()");
+                                        methodBlock.line("%s firstItem = response.iterator().next();",
+                                            responseType.getTypeArguments()[0]);
                                         writeModelAssertion(methodBlock, nodeVisitor,
                                             responseType.getTypeArguments()[0], responseType.getTypeArguments()[0],
                                             firstItem, "firstItem", true);
@@ -190,9 +188,9 @@ public class ClientMethodExampleWriter {
         ModelExampleWriter.ExampleNodeModelInitializationVisitor nodeVisitor, IType modelClientType,
         IType modelWireType, Object modelValue, String modelReference, boolean rootModel) {
         if (modelValue != null) {
-            modelClientType.addImportsTo(this.imports, false);
+            modelClientType.addImportsTo(this.imports::addAll, false);
             if (modelWireType != null) {
-                modelWireType.addImportsTo(this.imports, false);
+                modelWireType.addImportsTo(this.imports::addAll, false);
             }
             if (isClientModel(modelClientType, modelValue)) {
                 methodBlock.line("Assertions.assertNotNull(%s);", modelReference);

@@ -13,8 +13,9 @@ import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.Fluen
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.ModelNaming;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel.FluentInterfaceStage;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel.LocalVariable;
+import java.util.Collection;
 import java.util.Objects;
-import java.util.Set;
+import java.util.function.Consumer;
 
 public class FluentModelPropertyMethod extends FluentMethod {
 
@@ -78,8 +79,8 @@ public class FluentModelPropertyMethod extends FluentMethod {
     }
 
     @Override
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
-        modelProperty.addImportsTo(imports);
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
+        modelProperty.addImportsTo(importConsumer);
     }
 
     @Override

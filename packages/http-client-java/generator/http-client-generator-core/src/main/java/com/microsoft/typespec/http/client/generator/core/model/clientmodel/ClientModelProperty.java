@@ -5,9 +5,11 @@ package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
 import com.microsoft.typespec.http.client.generator.core.util.CodeNamer;
+import io.clientcore.core.utils.CoreUtils;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * A property that exists within a model defined by the client.
@@ -283,56 +285,59 @@ public class ClientModelProperty implements ClientModelPropertyAccess {
     }
 
     /**
-     * Add this ServiceModelProperty's imports to the provided set of imports.
+     * Consume this ServiceModelProperty's imports.
      * 
-     * @param imports The set of imports to add to.
+     * @param importConsumer The consumer of imports.
+     * @param shouldGenerateXmlSerialization Whether to include imports necessary for XML serialization.
      */
-    public final void addImportsTo(Set<String> imports, boolean shouldGenerateXmlSerialization) {
+    public final void addImportsTo(Consumer<Collection<String>> importConsumer,
+        boolean shouldGenerateXmlSerialization) {
         JavaSettings settings = JavaSettings.getInstance();
         final boolean requireJackson = !settings.isStreamStyleSerialization();
 
-        if (getHeaderCollectionPrefix() != null && !getHeaderCollectionPrefix().isEmpty()) {
-            Annotation.HEADER_COLLECTION.addImportsTo(imports);
+        if (!CoreUtils.isNullOrEmpty(headerCollectionPrefix)) {
+            importConsumer.accept(List.of(Annotation.HEADER_COLLECTION.getFullName()));
         }
         if (isAdditionalProperties) {
             if (requireJackson) {
-                imports.add("com.fasterxml.jackson.annotation.JsonIgnore");
-                imports.add("com.fasterxml.jackson.annotation.JsonAnySetter");
-                imports.add("com.fasterxml.jackson.annotation.JsonAnyGetter");
+                importConsumer.accept(List.of("com.fasterxml.jackson.annotation.JsonIgnore",
+                    "com.fasterxml.jackson.annotation.JsonAnySetter",
+                    "com.fasterxml.jackson.annotation.JsonAnyGetter"));
             }
-            imports.add(LinkedHashMap.class.getName());
+            importConsumer.accept(List.of(LinkedHashMap.class.getName()));
         }
 
         if (settings.getClientFlattenAnnotationTarget() == JavaSettings.ClientFlattenAnnotationTarget.FIELD
             && needsFlatten) {
-            addJsonFlattenAnnotationImport(imports);
+            importConsumer.accept(List.of(Annotation.JSON_FLATTEN.getFullName()));
         }
 
         if (requireJackson && !isAdditionalProperties && getClientType() instanceof MapType) {
             // required for "@JsonInclude(value = JsonInclude.Include.NON_NULL, content = JsonInclude.Include.ALWAYS)"
-            imports.add("com.fasterxml.jackson.annotation.JsonInclude");
+            importConsumer.accept(List.of("com.fasterxml.jackson.annotation.JsonInclude"));
         }
 
         if (getWireType() != null) {
-            getWireType().addImportsTo(imports, false);
+            getWireType().addImportsTo(importConsumer, false);
         }
-        getClientType().addImportsTo(imports, false);
+        getClientType().addImportsTo(importConsumer, false);
 
         if (getClientType().equals(ArrayType.BYTE_ARRAY)) {
-            imports.add(ClassType.CORE_UTILS.getFullName());
+            importConsumer.accept(List.of(ClassType.CORE_UTILS.getFullName()));
         }
 
         if (requireJackson) {
             if (shouldGenerateXmlSerialization) {
-                imports.add("com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement");
-                if (isXmlWrapper()) {
-                    imports.add("com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty");
+                importConsumer.accept(List.of("com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement"));
+                if (isXmlWrapper) {
+                    importConsumer
+                        .accept(List.of("com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty"));
                 }
-                if (isXmlText()) {
-                    imports.add("com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText");
+                if (isXmlText) {
+                    importConsumer.accept(List.of("com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText"));
                 }
             } else {
-                imports.add("com.fasterxml.jackson.annotation.JsonProperty");
+                importConsumer.accept(List.of("com.fasterxml.jackson.annotation.JsonProperty"));
             }
         }
     }
@@ -347,10 +352,6 @@ public class ClientModelProperty implements ClientModelPropertyAccess {
 
     public boolean isAdditionalProperties() {
         return isAdditionalProperties;
-    }
-
-    protected void addJsonFlattenAnnotationImport(Set<String> imports) {
-        imports.add(Annotation.JSON_FLATTEN.getFullName());
     }
 
     /**

@@ -5,9 +5,10 @@ package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
+import java.util.function.Consumer;
 
 public class ClientBuilder {
 
@@ -22,7 +23,7 @@ public class ClientBuilder {
     private final List<AsyncSyncClient> syncClients;
     private final List<AsyncSyncClient> asyncClients;
     private final List<ClientBuilderTrait> builderTraits = new ArrayList<>();
-    private String crossLanguageDefinitionId;
+    private final String crossLanguageDefinitionId;
 
     public ClientBuilder(String packageName, String className, ServiceClient serviceClient,
         List<AsyncSyncClient> syncClients, List<AsyncSyncClient> asyncClients, String crossLanguageDefinitionId) {
@@ -64,12 +65,12 @@ public class ClientBuilder {
         return singleClient ? "buildAsyncClient" : ("build" + asyncClient.getClassName());
     }
 
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
         JavaSettings settings = JavaSettings.getInstance();
-        imports.add(String.format("%1$s.%2$s", getPackageName(), getClassName()));
-        serviceClient.addImportsTo(imports, includeImplementationImports, true, settings);
-        getSyncClients().forEach(c -> c.addImportsTo(imports, includeImplementationImports));
-        getAsyncClients().forEach(c -> c.addImportsTo(imports, includeImplementationImports));
+        importConsumer.accept(List.of(packageName + "." + className));
+        serviceClient.addImportsTo(importConsumer, includeImplementationImports, true, settings);
+        getSyncClients().forEach(c -> c.addImportsTo(importConsumer, includeImplementationImports));
+        getAsyncClients().forEach(c -> c.addImportsTo(importConsumer, includeImplementationImports));
     }
 
     public void addBuilderTrait(ClientBuilderTrait trait) {

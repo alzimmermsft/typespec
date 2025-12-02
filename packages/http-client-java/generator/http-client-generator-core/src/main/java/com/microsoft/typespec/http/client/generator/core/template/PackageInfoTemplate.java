@@ -27,11 +27,10 @@ public class PackageInfoTemplate implements IJavaTemplate<PackageInfo, JavaFile>
     public final void write(PackageInfo packageInfo, JavaFile javaFile) {
         JavaSettings settings = JavaSettings.getInstance();
         if (settings.getFileHeaderText() != null && !settings.getFileHeaderText().isEmpty()) {
-            javaFile.lineComment((comment) -> comment.line(settings.getFileHeaderText()));
-            javaFile.line();
+            javaFile.setFileHeader(settings.getFileHeaderText());
         }
 
-        javaFile.javadocComment((comment) -> {
+        javaFile.javadocComment(comment -> {
             if (settings.isHandlePartialUpdate()) {
                 comment.line(PartialUpdateHandler.START_GENERATED_JAVA_DOC);
             }

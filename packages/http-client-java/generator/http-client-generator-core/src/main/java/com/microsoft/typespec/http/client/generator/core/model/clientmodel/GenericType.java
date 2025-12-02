@@ -4,7 +4,9 @@
 package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 
 import java.util.Arrays;
-import java.util.Set;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -158,10 +160,11 @@ public class GenericType implements IType {
             || Arrays.stream(getTypeArguments()).anyMatch((IType typeArgument) -> typeArgument.contains(type));
     }
 
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
-        imports.add(String.format("%1$s.%2$s", getPackage(), getName()));
+    @Override
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
+        importConsumer.accept(List.of(packageName + "." + name));
         for (IType typeArgument : getTypeArguments()) {
-            typeArgument.addImportsTo(imports, includeImplementationImports);
+            typeArgument.addImportsTo(importConsumer, includeImplementationImports);
         }
     }
 

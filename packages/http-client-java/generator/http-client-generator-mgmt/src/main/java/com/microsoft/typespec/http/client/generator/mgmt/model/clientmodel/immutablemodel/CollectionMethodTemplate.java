@@ -23,9 +23,9 @@ public class CollectionMethodTemplate implements ImmutableMethod {
 
     public CollectionMethodTemplate(FluentCollectionMethod fluentMethod, IType innerType) {
         Set<String> imports = new HashSet<>();
-        fluentMethod.addImportsTo(imports, false);
+        fluentMethod.addImportsTo(imports::addAll, false);
         // Type inner = ...
-        innerType.addImportsTo(imports, false);
+        innerType.addImportsTo(imports::addAll, false);
         if (innerType instanceof ListType || innerType instanceof MapType) {
             // Collections.unmodifiableList
             imports.add(Collections.class.getName());
@@ -38,20 +38,17 @@ public class CollectionMethodTemplate implements ImmutableMethod {
                 String expression = String.format("this.%1$s().%2$s", ModelNaming.METHOD_SERVICE_CLIENT,
                     fluentMethod.getMethodInvocation());
                 if (innerType == PrimitiveType.VOID || innerType == PrimitiveType.VOID.asNullable()) {
-                    block.line(String.format("this.%1$s().%2$s;", ModelNaming.METHOD_SERVICE_CLIENT,
-                        fluentMethod.getMethodInvocation()));
+                    block.line("this.%1$s().%2$s;", ModelNaming.METHOD_SERVICE_CLIENT,
+                        fluentMethod.getMethodInvocation());
                 } else {
                     if (innerType instanceof ListType || innerType instanceof MapType) {
-                        block.line(String.format("%1$s %2$s = %3$s;", innerType, TypeConversionUtils.tempVariableName(),
-                            expression));
+                        block.line("%1$s %2$s = %3$s;", innerType, TypeConversionUtils.tempVariableName(), expression);
                         block
-                            .ifBlock(String.format("%1$s != null", TypeConversionUtils.tempVariableName()), ifBlock -> {
-                                block.methodReturn(TypeConversionUtils.objectOrUnmodifiableCollection(innerType,
-                                    TypeConversionUtils.tempVariableName()));
-                            })
-                            .elseBlock(elseBlock -> {
-                                block.methodReturn(TypeConversionUtils.nullOrEmptyCollection(innerType));
-                            });
+                            .ifBlock(String.format("%1$s != null", TypeConversionUtils.tempVariableName()),
+                                ifBlock -> ifBlock.methodReturn(TypeConversionUtils
+                                    .objectOrUnmodifiableCollection(innerType, TypeConversionUtils.tempVariableName())))
+                            .elseBlock(elseBlock -> elseBlock
+                                .methodReturn(TypeConversionUtils.nullOrEmptyCollection(innerType)));
                     } else {
                         block.methodReturn(expression);
                     }

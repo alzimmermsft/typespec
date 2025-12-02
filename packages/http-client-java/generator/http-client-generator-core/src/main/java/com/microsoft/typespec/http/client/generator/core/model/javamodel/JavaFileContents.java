@@ -6,15 +6,19 @@ package com.microsoft.typespec.http.client.generator.core.model.javamodel;
 import io.clientcore.core.utils.CoreUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class JavaFileContents {
     private static final String SINGLE_INDENT = "    ";
 
+    private String fileHeader;
+    private String packageName;
+    private final Set<String> imports = new HashSet<>();
     private final List<String> contents;
 
     private String currentLine;
@@ -34,7 +38,24 @@ public class JavaFileContents {
 
     @Override
     public String toString() {
-        return String.join("\n", contents) + currentLine;
+        StringBuilder builder = new StringBuilder();
+        if (!CoreUtils.isNullOrEmpty(fileHeader)) {
+            builder.append(false).append('\n').append('\n');
+        }
+
+        if (!CoreUtils.isNullOrEmpty(packageName)) {
+            builder.append("package ").append(packageName).append(';').append('\n').append('\n');
+        }
+
+        imports.stream()
+            .sorted(new JavaImportComparer())
+            .forEach(importStatement -> builder.append("import ").append(importStatement).append(';').append('\n'));
+
+        builder.append('\n');
+        builder.append(String.join("\n", contents));
+        builder.append(currentLine);
+
+        return builder.toString();
     }
 
     public boolean contains(String str) {
@@ -143,8 +164,12 @@ public class JavaFileContents {
         line("");
     }
 
-    public void declarePackage(String pkg) {
-        line("package " + pkg + ";");
+    public void setFileHeader(String fileHeader) {
+        this.fileHeader = fileHeader;
+    }
+
+    public void declarePackage(String packageName) {
+        this.packageName = packageName;
     }
 
     public void block(String text, Consumer<JavaBlock> bodyAction) {
@@ -153,21 +178,42 @@ public class JavaFileContents {
         line("}");
     }
 
-    public void declareImport(String... imports) {
-        declareImport(Arrays.asList(imports));
+    void declareImport(String... imports) {
+        for (String importStatement : imports) {
+            if (shouldSkipImport(importStatement)) {
+                continue;
+            }
+
+            this.imports.add(importStatement);
+        }
     }
 
-    public void declareImport(List<String> imports) {
-        if (imports != null && !imports.isEmpty()) {
-            Set<String> importSet = new TreeSet<>(new JavaImportComparer());
-            importSet.addAll(imports);
-            for (String toImport : importSet) {
-                if (toImport != null && !toImport.isEmpty()) {
-                    line("import " + toImport + ";");
-                }
+    void declareImport(Collection<String> imports) {
+        for (String importStatement : imports) {
+            if (shouldSkipImport(importStatement)) {
+                continue;
             }
-            line();
+
+            this.imports.add(importStatement);
         }
+    }
+
+    private boolean shouldSkipImport(String importStatement) {
+        // Certain imports should be excluded, such as those from the same package as the current class.
+        // Ex, if the class is declared in 'package com.foo', we should exclude imports from that same package, ex,
+        // 'import com.foo.Bar' and 'import com.foo.Buzz'. But we should add imports for subpackages of that package,
+        // ex, 'import com.foo.implementation.Fizz'.
+        if (CoreUtils.isNullOrEmpty(packageName)) {
+            // No package declared, always include the import.
+            return false;
+        }
+
+        if (importStatement.startsWith(packageName)) {
+            int lastPackageSeparator = importStatement.lastIndexOf('.');
+            return lastPackageSeparator == packageName.length();
+        }
+
+        return false;
     }
 
     public void lineComment(String text) {

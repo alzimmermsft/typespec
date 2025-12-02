@@ -11,6 +11,7 @@ import com.microsoft.typespec.http.client.generator.core.model.clientmodel.IType
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaBlock;
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaClass;
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaContext;
+import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaFile;
 import com.microsoft.typespec.http.client.generator.core.template.StreamSerializationModelTemplate;
 import com.microsoft.typespec.http.client.generator.mgmt.model.arm.ErrorClientModel;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.FluentStatic;
@@ -61,7 +62,7 @@ public class FluentStreamStyleSerializationModelTemplate extends StreamSerializa
     }
 
     @Override
-    protected void addGeneratedImport(Set<String> imports) {
+    protected void addGeneratedImport(JavaFile javaFile) {
     }
 
     @Override

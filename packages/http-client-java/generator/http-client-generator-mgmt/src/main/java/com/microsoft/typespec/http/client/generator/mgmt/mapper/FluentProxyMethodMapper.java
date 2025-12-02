@@ -24,7 +24,7 @@ public final class FluentProxyMethodMapper extends ProxyMethodMapper {
     }
 
     @Override
-    protected final void buildUnexpectedResponseExceptionFields(ProxyMethod.Builder builder, Operation operation,
+    protected void buildUnexpectedResponseExceptionFields(ProxyMethod.Builder builder, Operation operation,
         List<Integer> expectedStatusCodes, JavaSettings settings) {
         if (CoreUtils.isNullOrEmpty(operation.getExceptions())) {
             // use ManagementException
@@ -73,7 +73,7 @@ public final class FluentProxyMethodMapper extends ProxyMethodMapper {
     }
 
     @Override
-    protected final ClassType mapToExceptionClassType(ClassType errorType, JavaSettings settings) {
+    protected ClassType mapToExceptionClassType(ClassType errorType, JavaSettings settings) {
         if (!FluentType.nonManagementError(errorType)) {
             return FluentType.MANAGEMENT_EXCEPTION;
         } else {
@@ -82,12 +82,12 @@ public final class FluentProxyMethodMapper extends ProxyMethodMapper {
     }
 
     @Override
-    protected final ClassType getHttpResponseExceptionType() {
+    protected ClassType getHttpResponseExceptionType() {
         return FluentType.MANAGEMENT_EXCEPTION;
     }
 
     @Override
-    protected final boolean belongsToOperationGroup(Operation operation, JavaSettings settings) {
+    protected boolean belongsToOperationGroup(Operation operation, JavaSettings settings) {
         if (!super.belongsToOperationGroup(operation, settings)) {
             return false;
         }

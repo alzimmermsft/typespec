@@ -4,19 +4,20 @@
 package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
-import java.util.Set;
+import java.util.Collection;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
  * The details of an array type that is used by a client.
  */
-public class ArrayType implements IType {
+public final class ArrayType implements IType {
     /**
      * The {@code byte[]} type.
      */
     public static final ArrayType BYTE_ARRAY = new ArrayType(PrimitiveType.BYTE, defaultValueExpression -> {
         if (defaultValueExpression != null) {
-            return String.format("\"%1$s\".getBytes()", defaultValueExpression);
+            return "\"" + defaultValueExpression + "\".getBytes()";
         } else {
             return JavaSettings.getInstance().isNullByteArrayMapsToEmptyArray() ? "EMPTY_BYTE_ARRAY" : "null";
         }
@@ -37,7 +38,7 @@ public class ArrayType implements IType {
      *
      * @return The element type of the array.
      */
-    public final IType getElementType() {
+    public IType getElementType() {
         return elementType;
     }
 
@@ -47,22 +48,22 @@ public class ArrayType implements IType {
     }
 
     @Override
-    public final IType asNullable() {
+    public IType asNullable() {
         return this;
     }
 
     @Override
-    public final boolean contains(IType type) {
+    public boolean contains(IType type) {
         return this == type || getElementType().contains(type);
     }
 
     @Override
-    public final void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
-        getElementType().addImportsTo(imports, includeImplementationImports);
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
+        getElementType().addImportsTo(importConsumer, includeImplementationImports);
     }
 
     @Override
-    public final String defaultValueExpression(String sourceExpression) {
+    public String defaultValueExpression(String sourceExpression) {
         return defaultValueExpressionConverter.apply(sourceExpression);
     }
 
@@ -72,19 +73,19 @@ public class ArrayType implements IType {
     }
 
     @Override
-    public final IType getClientType() {
+    public IType getClientType() {
         // The only supported array type is byte[]
         return this;
     }
 
     @Override
-    public final String convertToClientType(String expression) {
+    public String convertToClientType(String expression) {
         // The only supported array type is byte[]
         return expression;
     }
 
     @Override
-    public final String convertFromClientType(String expression) {
+    public String convertFromClientType(String expression) {
         // The only supported array type is byte[]
         return expression;
     }

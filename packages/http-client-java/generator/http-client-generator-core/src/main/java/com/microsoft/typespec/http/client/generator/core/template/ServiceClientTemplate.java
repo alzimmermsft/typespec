@@ -26,10 +26,8 @@ import io.clientcore.core.serialization.ObjectSerializer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -53,35 +51,31 @@ public class ServiceClientTemplate implements IJavaTemplate<ServiceClient, JavaF
 
     public final void write(ServiceClient serviceClient, JavaFile javaFile) {
         JavaSettings settings = JavaSettings.getInstance();
-        String serviceClientClassDeclaration = String.format("%1$s", serviceClient.getClassName());
+        String serviceClientClassDeclaration = serviceClient.getClassName();
         if (settings.isFluentPremium()) {
-            serviceClientClassDeclaration += String.format(" extends %1$s", "AzureServiceClient");
+            serviceClientClassDeclaration += " extends AzureServiceClient";
         }
         if (settings.isGenerateClientInterfaces()) {
-            serviceClientClassDeclaration += String.format(" implements %1$s", serviceClient.getInterfaceName());
+            serviceClientClassDeclaration += " implements " + serviceClient.getInterfaceName();
         }
 
-        Set<String> imports = new HashSet<>();
-        imports.add(Objects.class.getName());
         if (settings.isUseClientLogger()) {
-            ClassType.CLIENT_LOGGER.addImportsTo(imports, false);
+            ClassType.CLIENT_LOGGER.addImportsTo(javaFile::declareImport, false);
         }
 
         if (settings.isFluent() && !settings.isGenerateSyncAsyncClients()) {
-            Annotation.SERVICE_CLIENT.addImportsTo(imports);
-            imports.add(String.format("%1$s.%2$s", ClientModelUtil.getServiceClientBuilderPackageName(serviceClient),
-                serviceClient.getInterfaceName() + ClientModelUtil.getBuilderSuffix()));
+            javaFile.declareImport(Annotation.SERVICE_CLIENT.getFullName(),
+                ClientModelUtil.getServiceClientBuilderPackageName(serviceClient) + "."
+                    + serviceClient.getInterfaceName() + ClientModelUtil.getBuilderSuffix());
         } else if (settings.isAzureV1()) {
-            imports.add(ClassType.JACKSON_ADAPTER.getFullName());
+            javaFile.declareImport(ClassType.JACKSON_ADAPTER.getFullName());
         }
 
-        imports.add(InvocationTargetException.class.getName());
-        imports.add(ObjectSerializer.class.getName());
-        ClassType.HTTP_PIPELINE.addImportsTo(imports, false);
+        javaFile.declareImport(InvocationTargetException.class.getName(), ObjectSerializer.class.getName(),
+            ClassType.HTTP_PIPELINE.getFullName(), Objects.class.getName());
 
-        serviceClient.addImportsTo(imports, true, false, settings);
-        additionalMethods.forEach(method -> method.addImportsTo(imports));
-        javaFile.declareImport(imports);
+        serviceClient.addImportsTo(javaFile::declareImport, true, false, settings);
+        additionalMethods.forEach(method -> method.addImportsTo(javaFile::declareImport));
 
         final JavaVisibility visibility = !serviceClient.isBuilderDisabled()
             && serviceClient.getPackage().equals(ClientModelUtil.getServiceClientBuilderPackageName(serviceClient))
@@ -253,11 +247,11 @@ public class ServiceClientTemplate implements IJavaTemplate<ServiceClient, JavaF
                                     "this(new HttpPipelineBuilder().policies(new UserAgentPolicy(), %1$s).build(), %2$s%3$s);",
                                     "new RetryPolicy()", initializeSerializer, constructorArgs);
                             } else if (constructor.getParameters()
-                                .equals(Arrays.asList(serviceClient.getHttpPipelineParameter()))) {
+                                .equals(List.of(serviceClient.getHttpPipelineParameter()))) {
                                 constructorBlock.line("this(httpPipeline, %1$s%2$s);", initializeSerializer,
                                     constructorArgs);
                             } else if (constructor.getParameters()
-                                .equals(Arrays.asList(serviceClient.getHttpPipelineParameter(),
+                                .equals(List.of(serviceClient.getHttpPipelineParameter(),
                                     serviceClient.getSerializerAdapterParameter()))) {
                                 writeMaxOverloadedDataPlaneConstructorImplementation(constructorBlock, serviceClient,
                                     constructorParametersCodes);

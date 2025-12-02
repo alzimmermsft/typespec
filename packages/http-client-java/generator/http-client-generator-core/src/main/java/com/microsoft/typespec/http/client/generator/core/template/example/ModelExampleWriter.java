@@ -119,7 +119,7 @@ public class ModelExampleWriter {
 
         public void accept(ExampleNode node, String getterCode) {
             if (node instanceof LiteralNode) {
-                node.getClientType().addImportsTo(imports, false);
+                node.getClientType().addImportsTo(imports::addAll, false);
 
                 addEqualsAssertion(node.getClientType().defaultValueExpression(((LiteralNode) node).getLiteralsValue()),
                     getterCode, node.getClientType().asNullable() == ClassType.BOOLEAN);
@@ -195,7 +195,7 @@ public class ModelExampleWriter {
         public String accept(ExampleNode node) {
             if (node instanceof LiteralNode) {
                 if (node.getClientType() != ClassType.CONTEXT) {
-                    node.getClientType().addImportsTo(imports, false);
+                    node.getClientType().addImportsTo(imports::addAll, false);
                 }
 
                 if (node.getClientType() == ClassType.URL) {

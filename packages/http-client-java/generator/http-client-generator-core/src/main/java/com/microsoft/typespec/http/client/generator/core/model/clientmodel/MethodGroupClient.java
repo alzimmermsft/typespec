@@ -6,8 +6,9 @@ package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
 import com.microsoft.typespec.http.client.generator.core.util.ClientModelUtil;
 import io.clientcore.core.utils.CoreUtils;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * The details of a group of methods within a ServiceClient.
@@ -147,43 +148,44 @@ public class MethodGroupClient {
     }
 
     /**
-     * Add this property's imports to the provided set of imports.
+     * Consume this property's imports.
      * 
-     * @param imports The set of imports to add to.
+     * @param importConsumer The import consumer.
      * @param includeImplementationImports Whether to include imports that are only necessary for method
      * implementations.
      */
-    public final void addImportsTo(Set<String> imports, boolean includeImplementationImports, JavaSettings settings) {
+    public final void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports,
+        JavaSettings settings) {
         if (!settings.isFluent() && settings.isGenerateClientInterfaces()) {
-            imports.add(String.format("%1$s.%2$s", settings.getPackage(), getInterfaceName()));
+            importConsumer.accept(List.of(settings.getPackage() + "." + getInterfaceName()));
         }
 
         for (IType type : supportedInterfaces) {
-            type.addImportsTo(imports, false);
+            type.addImportsTo(importConsumer, false);
         }
 
         if (includeImplementationImports) {
             // ClassType proxyType = settings.isAzureOrFluent() ? ClassType.AzureProxy : ClassType.RestProxy;
-            imports.add(ClassType.REST_PROXY.getFullName());
+            importConsumer.accept(List.of(ClassType.REST_PROXY.getFullName()));
 
             if (settings.isGenerateClientInterfaces()) {
                 String interfacePackage = ClientModelUtil.getServiceClientInterfacePackageName();
-                imports.add(String.format("%1$s.%2$s", interfacePackage, this.getInterfaceName()));
+                importConsumer.accept(List.of(interfacePackage + "." + this.getInterfaceName()));
             }
         }
 
         Proxy proxy = getProxy();
         if (proxy != null) {
-            proxy.addImportsTo(imports, includeImplementationImports, settings);
+            proxy.addImportsTo(importConsumer, includeImplementationImports, settings);
         }
 
         for (ClientMethod clientMethod : getClientMethods()) {
-            clientMethod.addImportsTo(imports, includeImplementationImports, settings);
+            clientMethod.addImportsTo(importConsumer, includeImplementationImports, settings);
         }
 
         if (includeImplementationImports && !CoreUtils.isNullOrEmpty(getProperties())) {
             for (ServiceClientProperty property : getProperties()) {
-                property.addImportsTo(imports, includeImplementationImports);
+                property.addImportsTo(importConsumer, true);
             }
         }
     }

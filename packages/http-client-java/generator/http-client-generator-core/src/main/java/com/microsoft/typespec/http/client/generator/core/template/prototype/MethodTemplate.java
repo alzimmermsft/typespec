@@ -38,8 +38,8 @@ public class MethodTemplate {
         this.method = method;
     }
 
-    public final void addImportsTo(Set<String> imports) {
-        imports.addAll(this.imports);
+    public final void addImportsTo(Consumer<Collection<String>> importConsumer) {
+        importConsumer.accept(imports);
     }
 
     public final void writeMethod(JavaClass javaClass) {

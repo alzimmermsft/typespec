@@ -15,8 +15,10 @@ import com.microsoft.typespec.http.client.generator.core.model.clientmodel.Primi
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaBlock;
 import com.microsoft.typespec.http.client.generator.core.util.TemplateUtil;
 import io.clientcore.core.utils.CoreUtils;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class ConvenienceAsyncMethodTemplate extends ConvenienceMethodTemplateBase {
 
@@ -29,17 +31,17 @@ public class ConvenienceAsyncMethodTemplate extends ConvenienceMethodTemplateBas
         return INSTANCE;
     }
 
-    public void addImports(Set<String> imports, List<ConvenienceMethod> convenienceMethods) {
+    public void addImports(Consumer<Collection<String>> importConsumer, List<ConvenienceMethod> convenienceMethods) {
         if (!CoreUtils.isNullOrEmpty(convenienceMethods)) {
-            super.addImports(imports, convenienceMethods);
+            super.addImports(importConsumer, convenienceMethods);
 
-            // async e.g. FluxUtil::toMono
-            imports.add(ClassType.FLUX_UTIL.getFullName());
+            importConsumer.accept(List.of(
+                // async e.g. FluxUtil::toMono
+                ClassType.FLUX_UTIL.getFullName(),
 
-            // async pageable
-            imports.add(ClassType.PAGED_RESPONSE.getFullName());
-            imports.add(ClassType.PAGED_RESPONSE_BASE.getFullName());
-            imports.add(ClassType.FLUX.getFullName());
+                // async pageable
+                ClassType.PAGED_RESPONSE.getFullName(), ClassType.PAGED_RESPONSE_BASE.getFullName(),
+                ClassType.FLUX.getFullName()));
         }
     }
 

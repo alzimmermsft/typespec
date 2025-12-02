@@ -44,9 +44,9 @@ public class ProtocolTestWriter {
                 "org.junit.jupiter.api.Disabled", "org.junit.jupiter.api.Test"));
         // client and builder
         syncClients.forEach(c -> {
-            c.addImportsTo(imports, false);
+            c.addImportsTo(imports::addAll, false);
             if (c.getClientBuilder() != null) {
-                c.getClientBuilder().addImportsTo(imports, false);
+                c.getClientBuilder().addImportsTo(imports::addAll, false);
             }
         });
         // base test class

@@ -11,6 +11,6 @@ public class DefinitionStageBlank extends DefinitionStage {
 
     @Override
     public String getDescription(String modelName) {
-        return String.format("The first stage of the %1$s definition.", modelName);
+        return "The first stage of the " + modelName + " definition.";
     }
 }

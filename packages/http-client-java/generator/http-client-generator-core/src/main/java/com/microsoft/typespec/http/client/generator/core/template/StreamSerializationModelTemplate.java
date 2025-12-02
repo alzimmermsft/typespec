@@ -68,33 +68,19 @@ public class StreamSerializationModelTemplate extends ModelTemplate {
     }
 
     @Override
-    protected void addSerializationImports(Set<String> imports, ClientModel model, JavaSettings settings) {
+    protected void addSerializationImports(JavaFile javaFile, ClientModel model, JavaSettings settings) {
         if (model.getXmlName() != null) {
-            imports.add(QName.class.getName());
-            imports.add(XMLStreamException.class.getName());
-
-            ClassType.XML_SERIALIZABLE.addImportsTo(imports, false);
-            ClassType.XML_WRITER.addImportsTo(imports, false);
-            ClassType.XML_READER.addImportsTo(imports, false);
-            ClassType.XML_TOKEN.addImportsTo(imports, false);
-
+            javaFile.declareImport(QName.class.getName(), XMLStreamException.class.getName(),
+                ClassType.XML_SERIALIZABLE.getFullName(), ClassType.XML_WRITER.getFullName(),
+                ClassType.XML_READER.getFullName(), ClassType.XML_TOKEN.getFullName());
         } else {
-            imports.add(IOException.class.getName());
-
-            ClassType.JSON_SERIALIZABLE.addImportsTo(imports, false);
-            ClassType.JSON_WRITER.addImportsTo(imports, false);
-            ClassType.JSON_READER.addImportsTo(imports, false);
-            ClassType.JSON_TOKEN.addImportsTo(imports, false);
+            javaFile.declareImport(IOException.class.getName(), ClassType.JSON_SERIALIZABLE.getFullName(),
+                ClassType.JSON_WRITER.getFullName(), ClassType.JSON_READER.getFullName(),
+                ClassType.JSON_TOKEN.getFullName());
         }
 
-        ClassType.CORE_UTILS.addImportsTo(imports, false);
-
-        imports.add(ArrayList.class.getName());
-        imports.add(Base64.class.getName());
-        imports.add(LinkedHashMap.class.getName());
-        imports.add(List.class.getName());
-        imports.add(Map.class.getName());
-        imports.add(Objects.class.getName());
+        javaFile.declareImport(ClassType.CORE_UTILS.getFullName(), ArrayList.class.getName(), Base64.class.getName(),
+            LinkedHashMap.class.getName(), List.class.getName(), Map.class.getName(), Objects.class.getName());
     }
 
     @Override
@@ -728,7 +714,7 @@ public class StreamSerializationModelTemplate extends ModelTemplate {
                 writeSerializeJsonPropertyViaFieldSerializationMethod(methodBlock, property, model, serializedName,
                     fieldSerializationMethod, fromSuperType);
                 if (isJsonMergePatch && wireType instanceof ClassType && ((ClassType) wireType).isSwaggerType()) {
-                    methodBlock.line("JsonMergePatchHelper.get" + clientType.toString()
+                    methodBlock.line("JsonMergePatchHelper.get" + clientType
                         + "Accessor().prepareModelForJsonMergePatch(" + propertyValueGetter + ", false);");
                 }
             } else if (wireType == ClassType.OBJECT) {

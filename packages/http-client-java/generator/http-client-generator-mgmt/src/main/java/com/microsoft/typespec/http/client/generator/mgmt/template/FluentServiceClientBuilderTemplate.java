@@ -6,8 +6,8 @@ package com.microsoft.typespec.http.client.generator.mgmt.template;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.AsyncSyncClient;
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaBlock;
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaContext;
+import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaFile;
 import com.microsoft.typespec.http.client.generator.core.template.ServiceClientBuilderTemplate;
-import java.util.Set;
 
 public class FluentServiceClientBuilderTemplate extends ServiceClientBuilderTemplate {
 
@@ -24,7 +24,7 @@ public class FluentServiceClientBuilderTemplate extends ServiceClientBuilderTemp
     }
 
     @Override
-    protected void addGeneratedImport(Set<String> imports) {
+    protected void addGeneratedImport(JavaFile javaFile) {
     }
 
     @Override

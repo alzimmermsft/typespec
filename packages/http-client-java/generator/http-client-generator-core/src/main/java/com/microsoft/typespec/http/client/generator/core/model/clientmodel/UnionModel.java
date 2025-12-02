@@ -3,9 +3,10 @@
 
 package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.function.Consumer;
 
 public class UnionModel {
 
@@ -47,16 +48,15 @@ public class UnionModel {
     }
 
     public final String getFullName() {
-        return String.format("%1$s.%2$s", getPackage(), getName());
+        return packageName + "." + name;
     }
 
-    public void addImportsTo(Set<String> imports) {
-        imports.add(this.getFullName());
-
-        imports.addAll(getImports());
+    public void addImportsTo(Consumer<Collection<String>> importConsumer) {
+        importConsumer.accept(List.of(this.getFullName()));
+        importConsumer.accept(imports);
 
         for (ClientModelProperty property : getProperties()) {
-            property.addImportsTo(imports, false);
+            property.addImportsTo(importConsumer, false);
         }
     }
 

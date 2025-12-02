@@ -16,9 +16,7 @@ import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluen
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.immutablemodel.ImmutableMethod;
 import com.microsoft.typespec.http.client.generator.mgmt.util.FluentUtils;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class FluentResourceModelImplementationTemplate implements IJavaTemplate<FluentResourceModel, JavaFile> {
 
@@ -37,28 +35,27 @@ public class FluentResourceModelImplementationTemplate implements IJavaTemplate<
         model.getProperties().forEach(p -> methodTemplates.add(p.getImplementationMethodTemplate()));
         methodTemplates.addAll(model.getAdditionalMethods());
 
-        Set<String> imports = new HashSet<>();
         /*
          * use full name for FooManager, to avoid naming conflict
          * // manager
          * imports.add(managerType.getFullName());
          */
-        model.addImportsTo(imports, true);
-        javaFile.declareImport(imports);
+        model.addImportsTo(javaFile::declareImport, true);
 
         List<String> implementInterfaces = new ArrayList<>();
         implementInterfaces.add(model.getInterfaceType().getName());
         if (model.getResourceCreate() != null) {
-            implementInterfaces.add(String.format("%1$s.%2$s", model.getInterfaceType().getName(),
-                ModelNaming.MODEL_FLUENT_INTERFACE_DEFINITION));
+            implementInterfaces
+                .add(model.getInterfaceType().getName() + "." + ModelNaming.MODEL_FLUENT_INTERFACE_DEFINITION);
         }
         if (model.getResourceUpdate() != null) {
-            implementInterfaces.add(String.format("%1$s.%2$s", model.getInterfaceType().getName(),
-                ModelNaming.MODEL_FLUENT_INTERFACE_UPDATE));
+            implementInterfaces
+                .add(model.getInterfaceType().getName() + "." + ModelNaming.MODEL_FLUENT_INTERFACE_UPDATE);
         }
 
-        javaFile.publicFinalClass(String.format("%1$s implements %2$s", model.getImplementationType().getName(),
-            String.join(", ", implementInterfaces)), classBlock -> {
+        javaFile.publicFinalClass(
+            model.getImplementationType().getName() + " implements" + String.join(", ", implementInterfaces),
+            classBlock -> {
                 // variable for inner model
                 classBlock.privateMemberVariable(model.getInnerModel().getName(), ModelNaming.MODEL_PROPERTY_INNER);
 
@@ -73,10 +70,8 @@ public class FluentResourceModelImplementationTemplate implements IJavaTemplate<
                             model.getInnerModel().getName(), ModelNaming.MODEL_PROPERTY_INNER,
                             managerType.getFullName(), ModelNaming.MODEL_PROPERTY_MANAGER),
                         methodBlock -> {
-                            methodBlock.line(String.format("this.%1$s = %2$s;", ModelNaming.MODEL_PROPERTY_INNER,
-                                ModelNaming.MODEL_PROPERTY_INNER));
-                            methodBlock.line(String.format("this.%1$s = %2$s;", ModelNaming.MODEL_PROPERTY_MANAGER,
-                                ModelNaming.MODEL_PROPERTY_MANAGER));
+                            methodBlock.line(String.format("this.%1$s = %1$s;", ModelNaming.MODEL_PROPERTY_INNER));
+                            methodBlock.line(String.format("this.%1$s = %1$s;", ModelNaming.MODEL_PROPERTY_MANAGER));
                         });
                 }
 
@@ -84,15 +79,13 @@ public class FluentResourceModelImplementationTemplate implements IJavaTemplate<
                 methodTemplates.forEach(m -> m.writeMethodWithoutJavadoc(classBlock));
 
                 // method for inner model
-                classBlock.publicMethod(model.getInnerMethodSignature(), methodBlock -> {
-                    methodBlock.methodReturn(String.format("this.%s", ModelNaming.MODEL_PROPERTY_INNER));
-                });
+                classBlock.publicMethod(model.getInnerMethodSignature(),
+                    methodBlock -> methodBlock.methodReturn("this." + ModelNaming.MODEL_PROPERTY_INNER));
 
                 // method for manager
-                classBlock.privateMethod(String.format("%1$s %2$s()", managerType.getFullName(),
-                    FluentUtils.getGetterName(ModelNaming.METHOD_MANAGER)), methodBlock -> {
-                        methodBlock.methodReturn(String.format("this.%s", ModelNaming.MODEL_PROPERTY_MANAGER));
-                    });
+                classBlock.privateMethod(
+                    managerType.getFullName() + " " + FluentUtils.getGetterName(ModelNaming.METHOD_MANAGER) + "()",
+                    methodBlock -> methodBlock.methodReturn("this." + ModelNaming.MODEL_PROPERTY_MANAGER));
 
                 // methods for fluent interfaces
                 // class variables
@@ -104,9 +97,7 @@ public class FluentResourceModelImplementationTemplate implements IJavaTemplate<
                     localVariables
                         .forEach(p -> classBlock.privateMemberVariable(p.getVariableType().toString(), p.getName()));
 
-                    fluentMethods.forEach(m -> {
-                        m.getMethodTemplate().writeMethod(classBlock);
-                    });
+                    fluentMethods.forEach(m -> m.getMethodTemplate().writeMethod(classBlock));
                 }
             });
     }

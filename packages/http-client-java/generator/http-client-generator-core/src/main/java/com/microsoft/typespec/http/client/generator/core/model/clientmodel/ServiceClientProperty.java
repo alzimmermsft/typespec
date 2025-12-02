@@ -4,8 +4,9 @@
 package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaVisibility;
+import java.util.Collection;
 import java.util.Objects;
-import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * A property that exists within a service's client.
@@ -41,7 +42,7 @@ public class ServiceClientProperty {
 
     private final boolean required;
 
-    private String requestParameterName;
+    private final String requestParameterName;
 
     /**
      * Create a new ServiceClientProperty with the provided properties.
@@ -116,14 +117,14 @@ public class ServiceClientProperty {
     }
 
     /**
-     * Add this property's imports to the provided set of imports.
+     * Consume this property's imports.
      * 
-     * @param imports The set of imports to add to.
+     * @param importConsumer The import consumer.
      * @param includeImplementationImports Whether to include imports that are only necessary for method
      * implementations.
      */
-    public final void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
-        getType().addImportsTo(imports, includeImplementationImports);
+    public final void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
+        getType().addImportsTo(importConsumer, includeImplementationImports);
     }
 
     @Override

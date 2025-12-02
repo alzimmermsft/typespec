@@ -3,9 +3,10 @@
 
 package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * An asynchronous and/or synchronous client.
@@ -86,13 +87,13 @@ public class AsyncSyncClient {
     }
 
     /**
-     * Adds the imports required by the client to the set of imports.
+     * Consume the imports required by the client.
      *
-     * @param imports The imports being added to.
+     * @param importConsumer The import consumer.
      * @param includeImplementationImports Whether implementation imports should be included.
      */
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
-        imports.add(packageName + "." + className);
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
+        importConsumer.accept(List.of(packageName + "." + className));
     }
 
     /**

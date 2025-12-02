@@ -5,8 +5,9 @@ package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -84,22 +85,22 @@ public class ClientAccessorMethod {
         return clientMethodParameters;
     }
 
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
         JavaSettings settings = JavaSettings.getInstance();
 
-        subClient.addImportsTo(imports, false, false, settings);
+        subClient.addImportsTo(importConsumer, false, false, settings);
 
         // wrapper classes
         if (subClient.getSyncClient() != null) {
-            subClient.getSyncClient().addImportsTo(imports, false);
+            subClient.getSyncClient().addImportsTo(importConsumer, false);
         }
         if (subClient.getAsyncClient() != null) {
-            subClient.getAsyncClient().addImportsTo(imports, false);
+            subClient.getAsyncClient().addImportsTo(importConsumer, false);
         }
 
         // properties
         for (ServiceClientProperty property : subClient.getProperties()) {
-            property.addImportsTo(imports, false);
+            property.addImportsTo(importConsumer, false);
         }
     }
 

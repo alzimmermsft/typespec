@@ -22,9 +22,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class FluentMethodMockTestTemplate
     implements IJavaTemplate<FluentMethodMockTestTemplate.ClientMethodInfo, JavaFile> {
@@ -51,13 +48,12 @@ public class FluentMethodMockTestTemplate
 
     @Override
     public void write(ClientMethodInfo info, JavaFile javaFile) {
-        Set<String> imports
-            = new HashSet<>(List.of(ClassType.ACCESS_TOKEN.getFullName(), ClassType.HTTP_CLIENT.getFullName(),
-                ClassType.HTTP_HEADERS.getFullName(), ClassType.HTTP_REQUEST.getFullName(),
-                ClassType.HTTP_RESPONSE.getFullName(), "com.azure.core.test.http.MockHttpResponse",
-                ClassType.AZURE_CLOUD.getFullName(), FluentType.AZURE_PROFILE.getFullName(),
-                "org.junit.jupiter.api.Test", ByteBuffer.class.getName(), ClassType.MONO.getFullName(),
-                ClassType.FLUX.getFullName(), StandardCharsets.class.getName(), OffsetDateTime.class.getName()));
+        javaFile.declareImport(ClassType.ACCESS_TOKEN.getFullName(), ClassType.HTTP_CLIENT.getFullName(),
+            ClassType.HTTP_HEADERS.getFullName(), ClassType.HTTP_REQUEST.getFullName(),
+            ClassType.HTTP_RESPONSE.getFullName(), "com.azure.core.test.http.MockHttpResponse",
+            ClassType.AZURE_CLOUD.getFullName(), FluentType.AZURE_PROFILE.getFullName(), "org.junit.jupiter.api.Test",
+            ByteBuffer.class.getName(), ClassType.MONO.getFullName(), ClassType.FLUX.getFullName(),
+            StandardCharsets.class.getName(), OffsetDateTime.class.getName());
 
         String className = info.className;
         FluentMethodMockUnitTest fluentMethodMockUnitTest = info.fluentMethodMockUnitTest;
@@ -92,9 +88,9 @@ public class FluentMethodMockTestTemplate
         } else {
             clientMethodInvocationWithResponse = clientMethodInvocation;
         }
-        imports.addAll(exampleMethod.getImports());
-        exampleMethod.getExample().getEntryType().addImportsTo(imports, false);
-        fluentReturnType.addImportsTo(imports, false);
+        javaFile.declareImport(exampleMethod.getImports());
+        exampleMethod.getExample().getEntryType().addImportsTo(javaFile::declareImport, false);
+        fluentReturnType.addImportsTo(javaFile::declareImport, false);
 
         // create response body with mocked data
         int statusCode = fluentMethodMockUnitTest.getResponse().getStatusCode();
@@ -114,13 +110,11 @@ public class FluentMethodMockTestTemplate
         ModelExampleWriter.ExampleNodeAssertionVisitor assertionVisitor
             = new ModelExampleWriter.ExampleNodeAssertionVisitor();
         if (hasReturnValue) {
-            imports.add("org.junit.jupiter.api.Assertions");
+            javaFile.declareImport("org.junit.jupiter.api.Assertions");
 
             assertionVisitor.accept(verificationNode, verificationObjectName);
-            imports.addAll(assertionVisitor.getImports());
+            javaFile.declareImport(assertionVisitor.getImports());
         }
-
-        javaFile.declareImport(imports);
 
         javaFile.publicFinalClass(className, classBlock -> {
             classBlock.annotation("Test");

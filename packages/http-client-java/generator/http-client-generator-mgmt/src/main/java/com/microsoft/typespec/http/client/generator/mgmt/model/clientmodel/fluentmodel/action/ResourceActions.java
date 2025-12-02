@@ -13,8 +13,10 @@ import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluen
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel.method.FluentMethod;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel.method.FluentMethodType;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 
@@ -59,8 +61,8 @@ public class ResourceActions {
         return resourceActionMethods;
     }
 
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
-        this.getFluentMethods().forEach(m -> m.addImportsTo(imports, includeImplementationImports));
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
+        this.getFluentMethods().forEach(m -> m.addImportsTo(importConsumer, includeImplementationImports));
     }
 
     private Set<String> getUnavailableMethodNames() {

@@ -22,10 +22,10 @@ public class PropertyTemplate implements ImmutableMethod {
 
     public PropertyTemplate(FluentModelProperty fluentProperty, ModelProperty property) {
         Set<String> imports = new HashSet<>();
-        fluentProperty.getFluentType().addImportsTo(imports, false);
+        fluentProperty.getFluentType().addImportsTo(imports::addAll, false);
         if (property.getClientType() instanceof ListType || property.getClientType() instanceof MapType) {
             // Type inner = ...
-            property.getClientType().addImportsTo(imports, false);
+            property.getClientType().addImportsTo(imports::addAll, false);
 
             // Collections.unmodifiableList
             imports.add(Collections.class.getName());
@@ -39,12 +39,12 @@ public class PropertyTemplate implements ImmutableMethod {
                     block.line(String.format("%1$s %2$s = this.%3$s().%4$s();", property.getClientType().toString(),
                         TypeConversionUtils.tempVariableName(), ModelNaming.METHOD_INNER_MODEL,
                         property.getGetterName()));
-                    block.ifBlock(String.format("%1$s != null", TypeConversionUtils.tempVariableName()), ifBlock -> {
-                        block.methodReturn(TypeConversionUtils.objectOrUnmodifiableCollection(property.getClientType(),
-                            TypeConversionUtils.tempVariableName()));
-                    }).elseBlock(elseBlock -> {
-                        block.methodReturn(TypeConversionUtils.nullOrEmptyCollection(property.getClientType()));
-                    });
+                    block
+                        .ifBlock(String.format("%1$s != null", TypeConversionUtils.tempVariableName()),
+                            ifBlock -> ifBlock.methodReturn(TypeConversionUtils.objectOrUnmodifiableCollection(
+                                property.getClientType(), TypeConversionUtils.tempVariableName())))
+                        .elseBlock(elseBlock -> elseBlock
+                            .methodReturn(TypeConversionUtils.nullOrEmptyCollection(property.getClientType())));
                 } else {
                     block.methodReturn(
                         String.format("this.%1$s().%2$s()", ModelNaming.METHOD_INNER_MODEL, property.getGetterName()));

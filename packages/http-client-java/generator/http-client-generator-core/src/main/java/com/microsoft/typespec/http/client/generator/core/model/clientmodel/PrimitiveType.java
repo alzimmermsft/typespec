@@ -5,7 +5,9 @@ package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
-import java.util.Set;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -169,10 +171,9 @@ public class PrimitiveType implements IType {
     }
 
     @Override
-    public final void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
+    public final void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
         if (this == PrimitiveType.UNIX_TIME_LONG) {
-            imports.add(Instant.class.getName());
-            imports.add(ZoneOffset.class.getName());
+            importConsumer.accept(List.of(Instant.class.getName(), ZoneOffset.class.getName()));
         }
     }
 

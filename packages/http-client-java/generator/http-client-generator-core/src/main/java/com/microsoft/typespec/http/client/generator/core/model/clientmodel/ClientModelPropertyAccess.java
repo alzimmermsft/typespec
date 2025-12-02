@@ -3,7 +3,8 @@
 
 package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 
-import java.util.Set;
+import java.util.Collection;
+import java.util.function.Consumer;
 
 /**
  * Access to the client model property.
@@ -34,5 +35,5 @@ public interface ClientModelPropertyAccess {
 
     boolean isConstant();
 
-    void addImportsTo(Set<String> imports, boolean shouldGenerateXmlSerialization);
+    void addImportsTo(Consumer<Collection<String>> importConsumer, boolean shouldGenerateXmlSerialization);
 }

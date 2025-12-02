@@ -17,7 +17,7 @@ public class DefinitionStageParent extends DefinitionStage {
 
     @Override
     public String getDescription(String modelName) {
-        return String.format("The stage of the %1$s definition allowing to specify parent resource.", modelName);
+        return "The stage of the " + modelName + " definition allowing to specify parent resource.";
     }
 
     @Override

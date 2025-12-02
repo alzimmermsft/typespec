@@ -14,7 +14,8 @@ import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.immut
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.immutablemodel.PropertyTemplate;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.immutablemodel.PropertyTypeConversionTemplate;
 import com.microsoft.typespec.http.client.generator.mgmt.util.FluentUtils;
-import java.util.Set;
+import java.util.Collection;
+import java.util.function.Consumer;
 
 public class FluentModelProperty {
 
@@ -46,18 +47,18 @@ public class FluentModelProperty {
 
     // method signature for model property
     public String getMethodSignature() {
-        return String.format("%1$s %2$s()", this.getFluentType(), this.getGetterName());
+        return fluentType + " " + getGetterName() + "()";
     }
 
     public String getMethodName() {
         return this.getGetterName();
     }
 
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
-        this.fluentType.addImportsTo(imports, false);
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
+        this.fluentType.addImportsTo(importConsumer, false);
 
         if (includeImplementationImports) {
-            this.immutableMethod.getMethodTemplate().addImportsTo(imports);
+            this.immutableMethod.getMethodTemplate().addImportsTo(importConsumer);
         }
     }
 

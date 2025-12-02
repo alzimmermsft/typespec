@@ -38,8 +38,8 @@ public class FluentLiveTestCase {
     }
 
     public static final class Builder {
-        private Set<ExampleHelperFeature> helperFeatures = new HashSet<>();
-        private List<FluentLiveTestStep> steps = new ArrayList<>();
+        private final Set<ExampleHelperFeature> helperFeatures = new HashSet<>();
+        private final List<FluentLiveTestStep> steps = new ArrayList<>();
         private String methodName;
         private String description;
 

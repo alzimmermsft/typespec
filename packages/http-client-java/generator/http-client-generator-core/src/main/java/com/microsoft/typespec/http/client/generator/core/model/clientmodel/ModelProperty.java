@@ -4,10 +4,11 @@
 package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 
 import com.microsoft.typespec.http.client.generator.core.util.ClientModelUtil;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class ModelProperty {
@@ -30,8 +31,8 @@ public class ModelProperty {
         return property.getSetterName();
     }
 
-    public void addImportsTo(Set<String> imports) {
-        property.addImportsTo(imports, false);
+    public void addImportsTo(Consumer<Collection<String>> importConsumer) {
+        property.addImportsTo(importConsumer, false);
     }
 
     public String getName() {

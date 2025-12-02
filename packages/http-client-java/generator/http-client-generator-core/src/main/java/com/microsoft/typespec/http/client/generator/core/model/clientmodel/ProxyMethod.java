@@ -10,10 +10,12 @@ import com.microsoft.typespec.http.client.generator.core.util.ClientModelUtil;
 import com.microsoft.typespec.http.client.generator.core.util.CodeNamer;
 import com.microsoft.typespec.http.client.generator.core.util.MethodNamer;
 import io.clientcore.core.http.models.HttpMethod;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -422,67 +424,67 @@ public class ProxyMethod {
     }
 
     /**
-     * Add this property's imports to the provided set of imports.
+     * Consume this property's imports.
      *
-     * @param imports The set of imports to add to.
+     * @param importConsumer The import consumer.
      * @param includeImplementationImports Whether to include imports that are only necessary for method
      * implementations.
      */
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports, JavaSettings settings) {
-        Annotation.HTTP_REQUEST_INFORMATION.addImportsTo(imports);
-        Annotation.UNEXPECTED_RESPONSE_EXCEPTION_INFORMATION.addImportsTo(imports);
-        ClassType.HTTP_RESPONSE_EXCEPTION.addImportsTo(imports, false);
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports,
+        JavaSettings settings) {
+        importConsumer.accept(List.of(Annotation.HTTP_REQUEST_INFORMATION.getFullName(),
+            Annotation.UNEXPECTED_RESPONSE_EXCEPTION_INFORMATION.getFullName()));
+        ClassType.HTTP_RESPONSE_EXCEPTION.addImportsTo(importConsumer, false);
         if (includeImplementationImports) {
             if (getUnexpectedResponseExceptionType() != null) {
-                Annotation.UNEXPECTED_RESPONSE_EXCEPTION_TYPE.addImportsTo(imports);
-                getUnexpectedResponseExceptionType().addImportsTo(imports, includeImplementationImports);
+                importConsumer.accept(List.of(Annotation.UNEXPECTED_RESPONSE_EXCEPTION_TYPE.getFullName()));
+                getUnexpectedResponseExceptionType().addImportsTo(importConsumer, true);
 
                 if (!settings.isAzureV1()) {
                     ClientModel errorModel
                         = ClientModelUtil.getErrorModelFromException(getUnexpectedResponseExceptionType());
                     if (errorModel != null) {
-                        errorModel.addImportsTo(imports, settings);
+                        errorModel.addImportsTo(importConsumer, settings);
                     }
                 }
             }
             if (getUnexpectedResponseExceptionTypes() != null) {
-                Annotation.UNEXPECTED_RESPONSE_EXCEPTION_TYPE.addImportsTo(imports);
-                getUnexpectedResponseExceptionTypes().keySet()
-                    .forEach(e -> e.addImportsTo(imports, includeImplementationImports));
+                importConsumer.accept(List.of(Annotation.UNEXPECTED_RESPONSE_EXCEPTION_TYPE.getFullName()));
+                getUnexpectedResponseExceptionTypes().keySet().forEach(e -> e.addImportsTo(importConsumer, true));
 
                 if (!settings.isAzureV1()) {
                     for (ClassType exceptionType : getUnexpectedResponseExceptionTypes().keySet()) {
                         ClientModel errorModel = ClientModelUtil.getErrorModelFromException(exceptionType);
                         if (errorModel != null) {
-                            errorModel.addImportsTo(imports, settings);
+                            errorModel.addImportsTo(importConsumer, settings);
                         }
                     }
                 }
             }
             if (isResumable()) {
-                imports.add("com.azure.core.annotation.ResumeOperation");
+                importConsumer.accept(List.of("com.azure.core.annotation.ResumeOperation"));
             }
-            imports.add(String.format("%1$s.annotation.%2$s", ExternalPackage.CORE.getPackageName(),
-                CodeNamer.toPascalCase(getHttpMethod().toString().toLowerCase())));
+            importConsumer.accept(List.of(String.format("%1$s.annotation.%2$s", ExternalPackage.CORE.getPackageName(),
+                CodeNamer.toPascalCase(getHttpMethod().toString().toLowerCase()))));
 
             if (settings.isFluent()) {
-                Annotation.HEADERS.addImportsTo(imports);
+                importConsumer.accept(List.of(Annotation.HEADERS.getFullName()));
             }
-            Annotation.EXPECTED_RESPONSE.addImportsTo(imports);
+            importConsumer.accept(List.of(Annotation.EXPECTED_RESPONSE.getFullName()));
 
             if (getReturnValueWireType() != null) {
-                Annotation.RETURN_VALUE_WIRE_TYPE.addImportsTo(imports);
-                returnValueWireType.addImportsTo(imports, includeImplementationImports);
+                importConsumer.accept(List.of(Annotation.RETURN_VALUE_WIRE_TYPE.getFullName()));
+                returnValueWireType.addImportsTo(importConsumer, true);
             }
 
-            returnType.addImportsTo(imports, includeImplementationImports);
+            returnType.addImportsTo(importConsumer, true);
 
             if ("application/x-www-form-urlencoded".equals(this.requestContentType)) {
-                Annotation.FORM_PARAM.addImportsTo(imports);
+                importConsumer.accept(List.of(Annotation.FORM_PARAM.getFullName()));
             }
 
             for (ProxyMethodParameter parameter : allParameters) {
-                parameter.addImportsTo(imports, includeImplementationImports, settings);
+                parameter.addImportsTo(importConsumer, true, settings);
             }
         }
     }

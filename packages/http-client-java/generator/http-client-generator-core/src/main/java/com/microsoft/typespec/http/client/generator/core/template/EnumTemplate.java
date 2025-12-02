@@ -19,8 +19,6 @@ import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaVis
 import com.microsoft.typespec.http.client.generator.core.util.CodeNamer;
 import io.clientcore.core.utils.CoreUtils;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Writes a EnumType to a JavaFile.
@@ -65,16 +63,13 @@ public class EnumTemplate implements IJavaTemplate<EnumType, JavaFile> {
     }
 
     private void writeExpandableStringEnum(EnumType enumType, JavaFile javaFile, JavaSettings settings) {
-        Set<String> imports = new HashSet<>();
-        imports.add("java.util.Collection");
-        imports.add(ClassType.EXPANDABLE_STRING_ENUM.getFullName());
+        javaFile.declareImport("java.util.Collection", ClassType.EXPANDABLE_STRING_ENUM.getFullName());
         if (!settings.isStreamStyleSerialization()) {
-            imports.add("com.fasterxml.jackson.annotation.JsonCreator");
+            javaFile.declareImport("com.fasterxml.jackson.annotation.JsonCreator");
         }
 
-        addGeneratedImport(imports);
+        addGeneratedImport(javaFile);
 
-        javaFile.declareImport(imports);
         javaFile.javadocComment(comment -> comment.description(enumType.getDescription()));
 
         String enumName = enumType.getName();
@@ -137,17 +132,15 @@ public class EnumTemplate implements IJavaTemplate<EnumType, JavaFile> {
     }
 
     private void writeEnum(EnumType enumType, JavaFile javaFile, JavaSettings settings) {
-        Set<String> imports = new HashSet<>();
         if (!settings.isStreamStyleSerialization()) {
-            imports.add("com.fasterxml.jackson.annotation.JsonCreator");
-            imports.add("com.fasterxml.jackson.annotation.JsonValue");
+            javaFile.declareImport("com.fasterxml.jackson.annotation.JsonCreator",
+                "com.fasterxml.jackson.annotation.JsonValue");
         }
 
-        addGeneratedImport(imports);
+        addGeneratedImport(javaFile);
         IType elementType = enumType.getElementType();
-        elementType.getClientType().addImportsTo(imports, false);
+        elementType.getClientType().addImportsTo(javaFile::declareImport, false);
 
-        javaFile.declareImport(imports);
         javaFile.javadocComment(comment -> comment.description(enumType.getDescription()));
         String declaration = enumType.getName();
 
@@ -210,28 +203,19 @@ public class EnumTemplate implements IJavaTemplate<EnumType, JavaFile> {
     }
 
     private void writeExpandableEnumInterface(EnumType enumType, JavaFile javaFile, JavaSettings settings) {
-        Set<String> imports = new HashSet<>();
-        imports.add("java.util.Collection");
-        imports.add("java.lang.IllegalArgumentException");
-        imports.add("java.util.Map");
-        imports.add("java.util.concurrent.ConcurrentHashMap");
-        imports.add("java.util.ArrayList");
-        imports.add("java.util.Objects");
-        imports.add(ClassType.EXPANDABLE_ENUM.getFullName());
-        imports.add("java.util.function.Function");
+        javaFile.declareImport("java.util.Collection", "java.lang.IllegalArgumentException", "java.util.Map",
+            "java.util.concurrent.ConcurrentHashMap", "java.util.ArrayList", "java.util.Objects",
+            ClassType.EXPANDABLE_ENUM.getFullName(), "java.util.function.Function");
         if (!settings.isStreamStyleSerialization()) {
-            imports.add("com.fasterxml.jackson.annotation.JsonCreator");
+            javaFile.declareImport("com.fasterxml.jackson.annotation.JsonCreator");
         } else {
-            imports.add(ClassType.JSON_READER.getFullName());
-            imports.add(ClassType.JSON_WRITER.getFullName());
-            imports.add(ClassType.JSON_SERIALIZABLE.getFullName());
-            imports.add(ClassType.JSON_TOKEN.getFullName());
-            imports.add(IOException.class.getName());
+            javaFile.declareImport(ClassType.JSON_READER.getFullName(), ClassType.JSON_WRITER.getFullName(),
+                ClassType.JSON_SERIALIZABLE.getFullName(), ClassType.JSON_TOKEN.getFullName(),
+                IOException.class.getName());
         }
 
-        addGeneratedImport(imports);
+        addGeneratedImport(javaFile);
 
-        javaFile.declareImport(imports);
         javaFile.javadocComment(comment -> comment.description(enumType.getDescription()));
 
         String enumName = enumType.getName();
@@ -262,9 +246,8 @@ public class EnumTemplate implements IJavaTemplate<EnumType, JavaFile> {
             }
 
             classBlock.variable(pascalTypeName + " value", JavaVisibility.Private, JavaModifier.Final);
-            classBlock.privateConstructor(enumName + "(" + pascalTypeName + " value)", ctor -> {
-                ctor.line("this.value = value;");
-            });
+            classBlock.privateConstructor(enumName + "(" + pascalTypeName + " value)",
+                ctor -> ctor.line("this.value = value;"));
 
             // fromValue(typeName)
             classBlock.javadocComment(comment -> {
@@ -279,12 +262,11 @@ public class EnumTemplate implements IJavaTemplate<EnumType, JavaFile> {
                 classBlock.annotation("JsonCreator");
             }
 
-            classBlock.publicStaticMethod(String.format("%1$s fromValue(%2$s value)", enumName, pascalTypeName),
-                function -> {
-                    function.ifBlock("value == null",
-                        ifBlock -> ifBlock.line("throw new IllegalArgumentException(\"'value' cannot be null.\");"));
-                    function.methodReturn("VALUES.computeIfAbsent(value, NEW_INSTANCE)");
-                });
+            classBlock.publicStaticMethod(enumName + " fromValue(" + pascalTypeName + " value)", function -> {
+                function.ifBlock("value == null",
+                    ifBlock -> ifBlock.line("throw new IllegalArgumentException(\"'value' cannot be null.\");"));
+                function.methodReturn("VALUES.computeIfAbsent(value, NEW_INSTANCE)");
+            });
 
             // values
             classBlock.javadocComment(comment -> {
@@ -309,10 +291,9 @@ public class EnumTemplate implements IJavaTemplate<EnumType, JavaFile> {
                 classBlock.javadocComment(JavaJavadocComment::inheritDoc);
                 addGeneratedAnnotation(classBlock);
                 classBlock.annotation("Override");
-                classBlock.publicMethod("JsonWriter toJson(JsonWriter jsonWriter) throws IOException", methodBlock -> {
-                    methodBlock.methodReturn(enumType.getElementType()
-                        .jsonSerializationMethodCall("jsonWriter", null, enumType.getToMethodName() + "()", false));
-                });
+                classBlock.publicMethod("JsonWriter toJson(JsonWriter jsonWriter) throws IOException",
+                    methodBlock -> methodBlock.methodReturn(enumType.getElementType()
+                        .jsonSerializationMethodCall("jsonWriter", null, enumType.getToMethodName() + "()", false)));
 
                 // fromJson
                 classBlock.javadocComment(javadocComment -> {
@@ -383,10 +364,9 @@ public class EnumTemplate implements IJavaTemplate<EnumType, JavaFile> {
         }
     }
 
-    protected void addGeneratedImport(Set<String> imports) {
-        Annotation.GENERATED.addImportsTo(imports);
-        Annotation.METADATA.addImportsTo(imports);
-        Annotation.METADATA_PROPERTIES.addImportsTo(imports);
+    protected void addGeneratedImport(JavaFile javaFile) {
+        javaFile.declareImport(Annotation.GENERATED.getFullName(), Annotation.METADATA.getFullName(),
+            Annotation.METADATA_PROPERTIES.getFullName());
     }
 
     protected void addGeneratedAnnotation(JavaContext classBlock) {

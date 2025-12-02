@@ -13,10 +13,11 @@ import com.microsoft.typespec.http.client.generator.mgmt.model.arm.UrlPathSegmen
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.FluentResourceModel;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.ModelNaming;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel.ResourceLocalVariables;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class FluentConstructorByInner extends FluentMethod {
@@ -38,10 +39,8 @@ public class FluentConstructorByInner extends FluentMethod {
             .visibility(JavaVisibility.PackagePrivate)
             .methodSignature(this.getImplementationMethodSignature())
             .method(block -> {
-                block.line(String.format("this.%1$s = %2$s;", ModelNaming.MODEL_PROPERTY_INNER,
-                    ModelNaming.MODEL_PROPERTY_INNER));
-                block.line(String.format("this.%1$s = %2$s;", ModelNaming.MODEL_PROPERTY_MANAGER,
-                    ModelNaming.MODEL_PROPERTY_MANAGER));
+                block.line("this.%1$s = %1$s;", ModelNaming.MODEL_PROPERTY_INNER);
+                block.line("this.%1$s = %1$s;", ModelNaming.MODEL_PROPERTY_MANAGER);
 
                 List<UrlPathSegments.ParameterSegment> segments = urlPathSegments.getReverseParameterSegments();
                 Collections.reverse(segments);
@@ -65,7 +64,7 @@ public class FluentConstructorByInner extends FluentMethod {
                     }
                     if (p.getClientMethodParameter().getClientType() != ClassType.STRING) {
                         valueFromIdText = String.format("%1$s.fromString(%2$s)",
-                            p.getClientMethodParameter().getClientType().toString(), valueFromIdText);
+                            p.getClientMethodParameter().getClientType(), valueFromIdText);
                     }
                     block.line(String.format("this.%1$s = %2$s;",
                         resourceLocalVariables.getLocalVariableByMethodParameter(p.getClientMethodParameter())
@@ -94,9 +93,9 @@ public class FluentConstructorByInner extends FluentMethod {
     }
 
     @Override
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
         if (includeImplementationImports) {
-            pathParameters.forEach(p -> p.getClientMethodParameter().addImportsTo(imports, false));
+            pathParameters.forEach(p -> p.getClientMethodParameter().addImportsTo(importConsumer, false));
             /*
              * use full name for FooManager, to avoid naming conflict
              * managerType.addImportsTo(imports, false);

@@ -12,7 +12,6 @@ import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaCla
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaFile;
 import com.microsoft.typespec.http.client.generator.core.util.CodeNamer;
 import java.util.ArrayList;
-import java.util.Set;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
@@ -39,23 +38,15 @@ public class XmlSequenceWrapperTemplate implements IJavaTemplate<XmlSequenceWrap
 
         IType sequenceType = xmlSequenceWrapper.getSequenceType();
 
-        Set<String> imports = xmlSequenceWrapper.getImports();
-
-        Annotation.METADATA.addImportsTo(imports);
-        Annotation.METADATA_PROPERTIES.addImportsTo(imports);
+        xmlSequenceWrapper.addImportsTo(javaFile::declareImport);
+        javaFile.declareImport(Annotation.METADATA.getFullName(), Annotation.METADATA_PROPERTIES.getFullName());
 
         if (settings.isStreamStyleSerialization()) {
-            ClassType.XML_READER.addImportsTo(imports, false);
-            ClassType.XML_SERIALIZABLE.addImportsTo(imports, false);
-            ClassType.XML_TOKEN.addImportsTo(imports, false);
-            ClassType.XML_WRITER.addImportsTo(imports, false);
-            Annotation.GENERATED.addImportsTo(imports);
-
             javaFile.declareImport(ArrayList.class.getName(), ClassType.CORE_UTILS.getFullName(), QName.class.getName(),
-                XMLStreamException.class.getName());
+                XMLStreamException.class.getName(), ClassType.XML_READER.getFullName(),
+                ClassType.XML_SERIALIZABLE.getFullName(), ClassType.XML_TOKEN.getFullName(),
+                ClassType.XML_WRITER.getFullName(), Annotation.GENERATED.getFullName());
         }
-
-        javaFile.declareImport(imports);
 
         javaFile.javadocComment(comment -> comment
             .description("A wrapper around " + sequenceType + " which provides top-level metadata for serialization."));

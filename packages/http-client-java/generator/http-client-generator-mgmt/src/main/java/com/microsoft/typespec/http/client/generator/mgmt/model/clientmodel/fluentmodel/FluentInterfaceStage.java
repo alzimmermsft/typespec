@@ -7,8 +7,9 @@ import com.microsoft.typespec.http.client.generator.core.model.clientmodel.Clien
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.ModelProperty;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel.method.FluentMethod;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+import java.util.function.Consumer;
 
 public class FluentInterfaceStage {
 
@@ -62,7 +63,7 @@ public class FluentInterfaceStage {
         return methods;
     }
 
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
-        this.getMethods().forEach(m -> m.addImportsTo(imports, includeImplementationImports));
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
+        this.getMethods().forEach(m -> m.addImportsTo(importConsumer, includeImplementationImports));
     }
 }

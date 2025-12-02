@@ -71,21 +71,18 @@ public class ModelTemplate implements IJavaTemplate<ClientModel, JavaFile> {
 
         JavaSettings settings = JavaSettings.getInstance();
         ClientModelPropertiesManager propertiesManager = new ClientModelPropertiesManager(model, settings);
-        Set<String> imports = settings.isStreamStyleSerialization() ? new StreamStyleImports() : new HashSet<>();
 
-        addImports(imports, model, settings);
+        addImports(javaFile, model, settings);
 
         List<ClientModelPropertyReference> propertyReferences = this.getClientModelPropertyReferences(model);
-        propertyReferences.forEach(p -> p.addImportsTo(imports, false));
+        propertyReferences.forEach(p -> p.addImportsTo(javaFile::declareImport, false));
 
         if (!CoreUtils.isNullOrEmpty(model.getPropertyReferences())) {
             if (settings.getClientFlattenAnnotationTarget() == JavaSettings.ClientFlattenAnnotationTarget.NONE) {
-                model.getPropertyReferences().forEach(p -> p.addImportsTo(imports, false));
+                model.getPropertyReferences().forEach(p -> p.addImportsTo(javaFile::declareImport, false));
             }
             propertyReferences.addAll(model.getPropertyReferences());
         }
-
-        javaFile.declareImport(imports);
 
         javaFile.javadocComment(comment -> comment.description(model.getDescription()));
 
@@ -410,7 +407,7 @@ public class ModelTemplate implements IJavaTemplate<ClientModel, JavaFile> {
         return null;
     }
 
-    private void addImports(Set<String> imports, ClientModel model, JavaSettings settings) {
+    private void addImports(JavaFile javaFile, ClientModel model, JavaSettings settings) {
         // If there is client side validation and the model will generate a ClientLogger to log the validation
         // exceptions add an import of 'com.azure.core.util.logging.ClientLogger' and
         // 'com.fasterxml.jackson.annotation.JsonIgnore'.
@@ -418,31 +415,24 @@ public class ModelTemplate implements IJavaTemplate<ClientModel, JavaFile> {
         // These are added to support adding the ClientLogger and then to JsonIgnore the ClientLogger so it isn't
         // included in serialization.
         if (settings.isClientSideValidations() && settings.isUseClientLogger()) {
-            ClassType.CLIENT_LOGGER.addImportsTo(imports, false);
+            ClassType.CLIENT_LOGGER.addImportsTo(javaFile::declareImport, false);
         }
 
-        addSerializationImports(imports, model, settings);
+        addSerializationImports(javaFile, model, settings);
 
         // Add HttpHeaders as an import when strongly-typed HTTP header objects use that as a constructor parameter.
         if (model.isStronglyTypedHeader()) {
-            ClassType.HTTP_HEADERS.addImportsTo(imports, false);
-            ClassType.HTTP_HEADER.addImportsTo(imports, false);
-            ClassType.HTTP_HEADER_NAME.addImportsTo(imports, false);
-
             // Also add any potential imports needed to convert the header to the strong type.
             // If the import isn't used it will be removed later on.
-            imports.add(Base64.class.getName());
-            imports.add(LinkedHashMap.class.getName());
-            imports.add(UUID.class.getName());
-            imports.add(URL.class.getName());
-            imports.add(IOException.class.getName());
-            imports.add(UncheckedIOException.class.getName());
-            imports.add(ClassType.CLIENT_LOGGER.getFullName());
+            javaFile.declareImport(ClassType.HTTP_HEADERS.getFullName(), ClassType.HTTP_HEADER.getFullName(),
+                ClassType.HTTP_HEADER_NAME.getFullName(), Base64.class.getName(), LinkedHashMap.class.getName(),
+                UUID.class.getName(), URL.class.getName(), IOException.class.getName(),
+                UncheckedIOException.class.getName(), ClassType.CLIENT_LOGGER.getFullName(),
 
-            // JacksonAdapter will be removed in the future once model types are converted to using stream-style
-            // serialization. For now, it's needed to handle the rare scenario where the strong type is a non-Java
-            // base type.
-            imports.add(ClassType.JACKSON_ADAPTER.getFullName());
+                // JacksonAdapter will be removed in the future once model types are converted to using stream-style
+                // serialization. For now, it's needed to handle the rare scenario where the strong type is a non-Java
+                // base type.
+                ClassType.JACKSON_ADAPTER.getFullName());
         }
 
         String lastParentName = model.getName();
@@ -451,42 +441,39 @@ public class ModelTemplate implements IJavaTemplate<ClientModel, JavaFile> {
             // implementation code of stream-style serialization refs to the element type of the Map
             for (ClientModelProperty parentProperty : parentModel.getProperties()) {
                 if (parentProperty.isAdditionalProperties()) {
-                    parentProperty.addImportsTo(imports, false);
+                    parentProperty.addImportsTo(javaFile::declareImport, false);
                 }
             }
 
-            imports.addAll(parentModel.getImports());
+            javaFile.declareImport(parentModel.getImports());
             lastParentName = parentModel.getName();
             parentModel = ClientModelUtil.getClientModel(parentModel.getParentModelName());
         }
 
-        addGeneratedImport(imports);
+        addGeneratedImport(javaFile);
 
         if (model.isUsedInXml()) {
             // Used in XML getter of unwrapped arrays
-            imports.add(Collections.class.getName());
+            javaFile.declareImport(Collections.class.getName());
         }
 
-        model.addImportsTo(imports, settings);
+        model.addImportsTo(javaFile::declareImport, settings);
 
         // add Json merge patch related imports
         if (ClientModelUtil.isJsonMergePatchModel(model, settings)) {
-            imports.add(settings.getPackage(settings.getImplementationSubpackage()) + "."
-                + ClientModelUtil.JSON_MERGE_PATCH_HELPER_CLASS_NAME);
-            imports.add(Set.class.getName());
-            imports.add(HashSet.class.getName());
+            String implementationPackage = settings.getPackage(settings.getImplementationSubpackage());
+            javaFile.declareImport(Set.class.getName(), HashSet.class.getName(),
+                implementationPackage + "." + ClientModelUtil.JSON_MERGE_PATCH_HELPER_CLASS_NAME);
         }
     }
 
-    protected void addSerializationImports(Set<String> imports, ClientModel model, JavaSettings settings) {
-        imports.add("com.fasterxml.jackson.annotation.JsonCreator");
+    protected void addSerializationImports(JavaFile javaFile, ClientModel model, JavaSettings settings) {
+        javaFile.declareImport("com.fasterxml.jackson.annotation.JsonCreator", Pattern.class.getName());
 
         if (settings.isGettersAndSettersAnnotatedForSerialization()) {
-            imports.add("com.fasterxml.jackson.annotation.JsonGetter");
-            imports.add("com.fasterxml.jackson.annotation.JsonSetter");
+            javaFile.declareImport("com.fasterxml.jackson.annotation.JsonGetter",
+                "com.fasterxml.jackson.annotation.JsonSetter");
         }
-
-        imports.add(Pattern.class.getName());
     }
 
     /**
@@ -614,7 +601,7 @@ public class ModelTemplate implements IJavaTemplate<ClientModel, JavaFile> {
                 if (!settings.isStreamStyleSerialization()) {
                     String xmlWrapperClassName = getPropertyXmlWrapperClassName(property);
                     classBlock.staticFinalClass(JavaVisibility.PackagePrivate, xmlWrapperClassName,
-                        innerClass -> addXmlWrapperClass(innerClass, property, xmlWrapperClassName, settings));
+                        innerClass -> addXmlWrapperClass(innerClass, property, xmlWrapperClassName));
 
                     fieldSignature = xmlWrapperClassName + " " + propertyName;
                 } else {
@@ -694,8 +681,7 @@ public class ModelTemplate implements IJavaTemplate<ClientModel, JavaFile> {
             .collect(Collectors.toList());
     }
 
-    protected void addXmlWrapperClass(JavaClass classBlock, ClientModelProperty property, String wrapperClassName,
-        JavaSettings settings) {
+    protected void addXmlWrapperClass(JavaClass classBlock, ClientModelProperty property, String wrapperClassName) {
         // While using a wrapping class for XML elements that are wrapped may seem inconvenient it is required.
         // There has been previous attempts to remove this by using JacksonXmlElementWrapper, which based on its
         // documentation should cover this exact scenario, but it doesn't. Jackson unfortunately doesn't always
@@ -1155,9 +1141,8 @@ public class ModelTemplate implements IJavaTemplate<ClientModel, JavaFile> {
         if (settings.isClientSideValidations()) {
 
             // javadoc
-            classBlock.javadocComment((comment) -> {
+            classBlock.javadocComment(comment -> {
                 comment.description("Validates the instance.");
-
                 comment.methodThrows("IllegalArgumentException", "thrown if the instance is not valid");
             });
 
@@ -1169,29 +1154,27 @@ public class ModelTemplate implements IJavaTemplate<ClientModel, JavaFile> {
                     methodBlock.line("super.validate();");
                 }
                 for (ClientModelProperty property : getValidationProperties(model)) {
-                    String validation = property.getClientType().validate(getGetterName(model, property) + "()");
+                    String getterName = getGetterName(model, property);
+                    String validation = property.getClientType().validate(getterName + "()");
                     if (property.isRequired()
                         && !property.isReadOnly()
                         && !property.isConstant()
                         && !(property.getClientType() instanceof PrimitiveType)) {
-                        JavaIfBlock nullCheck = methodBlock
-                            .ifBlock(String.format("%s() == null", getGetterName(model, property)), ifBlock -> {
-                                final String errorMessage
-                                    = String.format("\"Missing required property %s in model %s\"", property.getName(),
-                                        model.getName());
-                                if (settings.isUseClientLogger()) {
-                                    ifBlock.line("throw LOGGER.atError().log(new IllegalArgumentException("
-                                        + errorMessage + "));");
-                                } else {
-                                    ifBlock.line("throw new IllegalArgumentException(" + errorMessage + ");");
-                                }
-                            });
+                        JavaIfBlock nullCheck = methodBlock.ifBlock(getterName + " == null", ifBlock -> {
+                            String errorMessage = String.format("\"Missing required property %s in model %s\"",
+                                property.getName(), model.getName());
+                            if (settings.isUseClientLogger()) {
+                                ifBlock.line(
+                                    "throw LOGGER.atError().log(new IllegalArgumentException(" + errorMessage + "));");
+                            } else {
+                                ifBlock.line("throw new IllegalArgumentException(" + errorMessage + ");");
+                            }
+                        });
                         if (validation != null) {
                             nullCheck.elseBlock(elseBlock -> elseBlock.line(validation + ";"));
                         }
                     } else if (validation != null) {
-                        methodBlock.ifBlock(getGetterName(model, property) + "() != null",
-                            ifBlock -> ifBlock.line(validation + ";"));
+                        methodBlock.ifBlock(getterName + "() != null", ifBlock -> ifBlock.line(validation + ";"));
                     }
                 }
             });
@@ -1347,12 +1330,11 @@ public class ModelTemplate implements IJavaTemplate<ClientModel, JavaFile> {
         // No-op, meant for StreamSerializationModelTemplate.
     }
 
-    protected void addGeneratedImport(Set<String> imports) {
+    protected void addGeneratedImport(JavaFile javaFile) {
         if (JavaSettings.getInstance().isAzureV1()) {
-            Annotation.GENERATED.addImportsTo(imports);
+            javaFile.declareImport(Annotation.GENERATED.getFullName());
         } else {
-            Annotation.METADATA.addImportsTo(imports);
-            Annotation.METADATA_PROPERTIES.addImportsTo(imports);
+            javaFile.declareImport(Annotation.METADATA.getFullName(), Annotation.METADATA_PROPERTIES.getFullName());
         }
     }
 
@@ -1387,17 +1369,6 @@ public class ModelTemplate implements IJavaTemplate<ClientModel, JavaFile> {
             comment.param(property.getName(), "the " + property.getName() + " value to set");
             comment.methodReturns("the " + model.getName() + " object itself.");
         });
-    }
-
-    private static final class StreamStyleImports extends HashSet<String> {
-        @Override
-        public boolean add(String s) {
-            if (s != null && s.contains("fasterxml")) {
-                return true;
-            }
-
-            return super.add(s);
-        }
     }
 
     /**

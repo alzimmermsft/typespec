@@ -27,9 +27,9 @@ public class CollectionMethodTypeConversionTemplate implements ImmutableMethod {
 
     public CollectionMethodTypeConversionTemplate(FluentCollectionMethod fluentMethod, IType innerType) {
         Set<String> imports = new HashSet<>();
-        fluentMethod.addImportsTo(imports, false);
+        fluentMethod.addImportsTo(imports::addAll, false);
         // Type inner = ...
-        innerType.addImportsTo(imports, false);
+        innerType.addImportsTo(imports::addAll, false);
         if (innerType instanceof ListType || innerType instanceof MapType) {
             // Collectors.toList
             imports.add(Collectors.class.getName());
@@ -45,9 +45,8 @@ public class CollectionMethodTypeConversionTemplate implements ImmutableMethod {
             .imports(imports)
             .methodSignature(fluentMethod.getMethodSignature())
             .method(block -> {
-                block.line(
-                    String.format("%1$s %2$s = this.%3$s().%4$s;", innerType, TypeConversionUtils.tempVariableName(),
-                        ModelNaming.METHOD_SERVICE_CLIENT, fluentMethod.getMethodInvocation()));
+                block.line("%1$s %2$s = this.%3$s().%4$s;", innerType, TypeConversionUtils.tempVariableName(),
+                    ModelNaming.METHOD_SERVICE_CLIENT, fluentMethod.getMethodInvocation());
                 if (TypeConversionUtils.isPagedIterable(innerType)) {
                     block.methodReturn(
                         TypeConversionUtils.conversionExpression(innerType, TypeConversionUtils.tempVariableName()));
@@ -55,10 +54,10 @@ public class CollectionMethodTypeConversionTemplate implements ImmutableMethod {
                     block.ifBlock(String.format("%1$s != null", TypeConversionUtils.tempVariableName()), ifBlock -> {
                         String expression = TypeConversionUtils.conversionExpression(innerType,
                             TypeConversionUtils.tempVariableName());
-                        block.methodReturn(TypeConversionUtils.objectOrUnmodifiableCollection(innerType, expression));
-                    }).elseBlock(elseBlock -> {
-                        block.methodReturn(TypeConversionUtils.nullOrEmptyCollection(innerType));
-                    });
+                        ifBlock.methodReturn(TypeConversionUtils.objectOrUnmodifiableCollection(innerType, expression));
+                    })
+                        .elseBlock(
+                            elseBlock -> elseBlock.methodReturn(TypeConversionUtils.nullOrEmptyCollection(innerType)));
                 }
             })
             .build();

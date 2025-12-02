@@ -48,7 +48,7 @@ public class Changelog {
     public void updateForVersion(FluentProject project) {
         List<String> sectionBefore = new ArrayList<>();
         List<String> sectionAfter = new ArrayList<>();
-        String previousUnreleasedVersion = null;
+        String previousUnreleasedVersion;
         List<String> previousChangelog = new ArrayList<>();
 
         Pattern currentVersionPattern = Pattern.compile("^## " + Pattern.quote(project.getVersion()) + " \\(.*\\)");

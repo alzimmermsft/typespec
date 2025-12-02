@@ -17,8 +17,10 @@ import com.microsoft.typespec.http.client.generator.core.model.clientmodel.Primi
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaBlock;
 import com.microsoft.typespec.http.client.generator.core.util.TemplateUtil;
 import io.clientcore.core.utils.CoreUtils;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class ConvenienceSyncMethodTemplate extends ConvenienceMethodTemplateBase {
@@ -33,13 +35,13 @@ public class ConvenienceSyncMethodTemplate extends ConvenienceMethodTemplateBase
         return INSTANCE;
     }
 
-    public void addImports(Set<String> imports, List<ConvenienceMethod> convenienceMethods) {
+    public void addImports(Consumer<Collection<String>> importConsumer, List<ConvenienceMethod> convenienceMethods) {
         if (!CoreUtils.isNullOrEmpty(convenienceMethods)) {
-            super.addImports(imports, convenienceMethods);
+            super.addImports(importConsumer, convenienceMethods);
         }
 
         if (JavaSettings.getInstance().isUseClientLogger()) {
-            ClassType.CLIENT_LOGGER.addImportsTo(imports, false);
+            ClassType.CLIENT_LOGGER.addImportsTo(importConsumer, false);
         }
     }
 

@@ -52,7 +52,7 @@ public class ResourceLocalVariables {
                 .equals(resourceOperation.getResourceModel().getInnerModel().getName())) {
             LocalVariable var = new LocalVariable(prefix + CodeNamer.toPascalCase(bodyParameter.getName()),
                 bodyParameter.getClientType(), RequestParameterLocation.BODY, bodyParameter);
-            var.setInitializeExpression(String.format("new %1$s()", bodyParameter.getClientType().toString()));
+            var.setInitializeExpression(String.format("new %1$s()", bodyParameter.getClientType()));
             localVariablesMap.put(bodyParameter, var);
         }
     }

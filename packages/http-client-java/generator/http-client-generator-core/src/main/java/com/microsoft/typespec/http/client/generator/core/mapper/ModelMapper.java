@@ -133,10 +133,10 @@ public class ModelMapper implements IMapper<ObjectSchema, ClientModel>, NeedsPla
                 if (!autoRestProperty.isRequired()) {
                     propertyType = propertyType.asNullable();
                 }
-                propertyType.addImportsTo(modelImports, false);
+                propertyType.addImportsTo(modelImports::addAll, false);
 
                 IType propertyClientType = Mappers.getSchemaMapper().map(autoRestProperty.getSchema()).getClientType();
-                propertyClientType.addImportsTo(modelImports, false);
+                propertyClientType.addImportsTo(modelImports::addAll, false);
             }
 
             boolean compositeTypeUsedWithXml = SchemaUtil.treatAsXml(compositeType);

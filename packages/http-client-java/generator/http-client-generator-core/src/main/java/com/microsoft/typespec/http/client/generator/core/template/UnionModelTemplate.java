@@ -13,9 +13,7 @@ import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaMod
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaVisibility;
 import io.clientcore.core.utils.CoreUtils;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 
 public class UnionModelTemplate implements IJavaTemplate<UnionModel, JavaFile> {
@@ -36,13 +34,9 @@ public class UnionModelTemplate implements IJavaTemplate<UnionModel, JavaFile> {
         final boolean isAbstractClass = CoreUtils.isNullOrEmpty(model.getParentModelName());
         final String superClassName = model.getParentModelName();
 
-        Set<String> imports = new HashSet<>();
-        model.addImportsTo(imports);
+        model.addImportsTo(javaFile::declareImport);
 
-        imports.add(Annotation.IMMUTABLE.getFullName());
-        imports.add("com.fasterxml.jackson.annotation.JsonValue");
-
-        javaFile.declareImport(imports);
+        javaFile.declareImport(Annotation.IMMUTABLE.getFullName(), "com.fasterxml.jackson.annotation.JsonValue");
 
         List<JavaModifier> modifiers
             = Collections.singletonList(isAbstractClass ? JavaModifier.Abstract : JavaModifier.Final);

@@ -3,17 +3,17 @@
 
 package com.microsoft.typespec.http.client.generator.core.model.javamodel;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
-public class JavaFile implements JavaContext {
-    private String packageKeyword;
-    private int packageWithPeriodLength;
+/**
+ * Simple representation of a .java source file.
+ * <p>
+ * This type just holds the file path and the contents of the file.
+ */
+public final class JavaFile implements JavaContext {
     private final String filePath;
     private final JavaFileContents contents;
 
@@ -22,103 +22,81 @@ public class JavaFile implements JavaContext {
         this.contents = new JavaFileContents();
     }
 
-    public final String getFilePath() {
+    public String getFilePath() {
         return filePath;
     }
 
-    public final JavaFileContents getContents() {
+    public JavaFileContents getContents() {
         return contents;
     }
 
-    public final void text(String text) {
-        getContents().text(text);
+    public void line(String text) {
+        contents.line(text);
     }
 
-    public final void line(String text) {
-        getContents().line(text);
+    public void line() {
+        contents.line();
     }
 
-    public final void line() {
-        getContents().line();
+    public void indent(Runnable indentAction) {
+        contents.indent(indentAction);
     }
 
-    public final void indent(Runnable indentAction) {
-        getContents().indent(indentAction);
-    }
-
-    public final void publicFinalClass(String classDeclaration, Consumer<JavaClass> classAction) {
+    public void publicFinalClass(String classDeclaration, Consumer<JavaClass> classAction) {
         publicClass(Collections.singletonList(JavaModifier.Final), classDeclaration, classAction);
     }
 
-    public final void publicClass(List<JavaModifier> modifiers, String classDeclaration,
-        Consumer<JavaClass> classAction) {
+    public void publicClass(List<JavaModifier> modifiers, String classDeclaration, Consumer<JavaClass> classAction) {
         classBlock(JavaVisibility.Public, modifiers, classDeclaration, classAction);
     }
 
-    public final void classBlock(JavaVisibility visibility, List<JavaModifier> modifiers, String classDeclaration,
+    public void classBlock(JavaVisibility visibility, List<JavaModifier> modifiers, String classDeclaration,
         Consumer<JavaClass> classAction) {
         getContents().classBlock(visibility, modifiers, classDeclaration, classAction);
     }
 
-    public final void declarePackage(String packageKeyword) {
-        this.packageKeyword = packageKeyword;
-        if (packageKeyword == null || packageKeyword.isEmpty()) {
-            packageWithPeriodLength = 0;
-        } else {
-            packageWithPeriodLength = packageKeyword.length();
-            if (!packageKeyword.endsWith(".")) {
-                ++packageWithPeriodLength;
-            }
-        }
-        getContents().declarePackage(packageKeyword);
+    public void setFileHeader(String fileHeader) {
+        contents.setFileHeader(fileHeader);
     }
 
-    public final void declareImport(String... imports) {
-        declareImport(Arrays.asList(imports));
+    public void declarePackage(String packageName) {
+        contents.declarePackage(packageName);
     }
 
-    public final void declareImport(Set<String> imports) {
-        declareImport(new ArrayList<>(imports));
+    public void declareImport(String... imports) {
+        contents.declareImport(imports);
     }
 
-    public final void declareImport(List<String> imports) {
-        if (packageKeyword != null && !packageKeyword.isEmpty()) {
-            // Only import paths that don't start with this file's package, or if they do start
-            // with this file's package, then they must exist within a subpackage.
-            imports = imports.stream()
-                .filter(importKeyword -> !importKeyword.startsWith(packageKeyword)
-                    || importKeyword.indexOf('.', packageWithPeriodLength) != -1)
-                .collect(Collectors.toList());
-        }
-        getContents().declareImport(imports);
+    public void declareImport(Collection<String> imports) {
+        contents.declareImport(imports);
     }
 
-    public final void javadocComment(Consumer<JavaJavadocComment> commentAction) {
-        getContents().javadocComment(commentAction);
+    public void javadocComment(Consumer<JavaJavadocComment> commentAction) {
+        contents.javadocComment(commentAction);
     }
 
-    public final void lineComment(Consumer<JavaLineComment> commentAction) {
-        getContents().lineComment(commentAction);
+    public void lineComment(Consumer<JavaLineComment> commentAction) {
+        contents.lineComment(commentAction);
     }
 
-    public final void annotation(String... annotations) {
-        getContents().annotation(annotations);
+    public void annotation(String... annotations) {
+        contents.annotation(annotations);
     }
 
-    public final void publicEnum(String enumName, Consumer<JavaEnum> enumAction) {
+    public void publicEnum(String enumName, Consumer<JavaEnum> enumAction) {
         enumBlock(JavaVisibility.Public, enumName, enumAction);
     }
 
-    public final void enumBlock(JavaVisibility visibility, String enumName, Consumer<JavaEnum> enumAction) {
-        getContents().enumBlock(visibility, enumName, enumAction);
+    public void enumBlock(JavaVisibility visibility, String enumName, Consumer<JavaEnum> enumAction) {
+        contents.enumBlock(visibility, enumName, enumAction);
     }
 
-    public final void publicInterface(String interfaceName, Consumer<JavaInterface> interfaceAction) {
+    public void publicInterface(String interfaceName, Consumer<JavaInterface> interfaceAction) {
         interfaceBlock(JavaVisibility.Public, interfaceName, interfaceAction);
     }
 
-    public final void interfaceBlock(JavaVisibility visibility, String interfaceName,
+    public void interfaceBlock(JavaVisibility visibility, String interfaceName,
         Consumer<JavaInterface> interfaceAction) {
-        getContents().interfaceBlock(visibility, interfaceName, interfaceAction);
+        contents.interfaceBlock(visibility, interfaceName, interfaceAction);
     }
 }

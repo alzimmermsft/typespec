@@ -3,7 +3,8 @@
 
 package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 
-import java.util.Set;
+import java.util.Collection;
+import java.util.function.Consumer;
 
 public class IterableType extends GenericType {
     /**
@@ -27,8 +28,8 @@ public class IterableType extends GenericType {
     }
 
     @Override
-    public final void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
-        super.addImportsTo(imports, includeImplementationImports);
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
+        super.addImportsTo(importConsumer, includeImplementationImports);
     }
 
     @Override

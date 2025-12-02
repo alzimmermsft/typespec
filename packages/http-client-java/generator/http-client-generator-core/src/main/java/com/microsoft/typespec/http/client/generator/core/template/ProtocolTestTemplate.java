@@ -8,7 +8,6 @@ import com.microsoft.typespec.http.client.generator.core.model.clientmodel.TestC
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaFile;
 import com.microsoft.typespec.http.client.generator.core.template.example.ProtocolExampleWriter;
 import com.microsoft.typespec.http.client.generator.core.template.example.ProtocolTestWriter;
-import java.util.Set;
 
 public class ProtocolTestTemplate implements IJavaTemplate<TestContext<ProtocolExample>, JavaFile> {
 
@@ -29,17 +28,15 @@ public class ProtocolTestTemplate implements IJavaTemplate<TestContext<ProtocolE
         ProtocolTestWriter writer = new ProtocolTestWriter(testContext);
         ProtocolExampleWriter caseWriter = new ProtocolExampleWriter(testContext.getTestCase());
 
-        Set<String> imports = writer.getImports();
-        imports.addAll(caseWriter.getImports());
-        context.declareImport(imports);
+        context.declareImport(writer.getImports());
+        context.declareImport(caseWriter.getImports());
 
-        context.publicFinalClass(String.format("%1$s extends %2$s", className, testContext.getTestBaseClassName()),
-            classBlock -> {
-                classBlock.annotation("Test", "Disabled");  // "DoNotRecord(skipInPlayback = true)" not added
-                classBlock.publicMethod(String.format("void test%1$s()", className), methodBlock -> {
-                    caseWriter.writeClientMethodInvocation(methodBlock, true);
-                    caseWriter.writeAssertion(methodBlock);
-                });
+        context.publicFinalClass(className + " extends " + testContext.getTestBaseClassName(), classBlock -> {
+            classBlock.annotation("Test", "Disabled");  // "DoNotRecord(skipInPlayback = true)" not added
+            classBlock.publicMethod("void test" + className + "()", methodBlock -> {
+                caseWriter.writeClientMethodInvocation(methodBlock, true);
+                caseWriter.writeAssertion(methodBlock);
             });
+        });
     }
 }

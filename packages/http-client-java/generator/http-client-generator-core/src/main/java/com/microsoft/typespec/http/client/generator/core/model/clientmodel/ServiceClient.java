@@ -5,9 +5,10 @@ package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
 import com.microsoft.typespec.http.client.generator.core.util.ClientModelUtil;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * The details of a ServiceClient.
@@ -280,96 +281,94 @@ public class ServiceClient {
     }
 
     /**
-     * Add this property's imports to the provided set of imports.
+     * Consume this property's imports.
      * 
-     * @param imports The set of imports to add to.
+     * @param importConsumer The import consumer.
      * @param includeImplementationImports Whether to include imports that are only necessary for method
      * implementations.
      */
-    public final void addImportsTo(Set<String> imports, boolean includeImplementationImports,
+    public final void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports,
         boolean includeBuilderImports, JavaSettings settings) {
         if (!includeBuilderImports) {
             for (ClientMethod clientMethod : getClientMethods()) {
-                clientMethod.addImportsTo(imports, includeImplementationImports, settings);
+                clientMethod.addImportsTo(importConsumer, includeImplementationImports, settings);
             }
         }
 
         if (includeImplementationImports) {
             for (ClientAccessorMethod clientAccessorMethod : getClientAccessorMethods()) {
-                clientAccessorMethod.addImportsTo(imports, false);
+                clientAccessorMethod.addImportsTo(importConsumer, false);
             }
         }
 
         for (ServiceClientProperty serviceClientProperty : getProperties()) {
-            serviceClientProperty.addImportsTo(imports, includeImplementationImports);
+            serviceClientProperty.addImportsTo(importConsumer, includeImplementationImports);
         }
 
         if (includeImplementationImports) {
             if (settings.isFluent()) {
-                ClassType.HTTP_HEADER_NAME.addImportsTo(imports, includeImplementationImports);
+                ClassType.HTTP_HEADER_NAME.addImportsTo(importConsumer, true);
             }
             if (settings.isFluentPremium()) {
-                imports.add("com.azure.resourcemanager.resources.fluentcore.AzureServiceClient");
+                importConsumer.accept(List.of("com.azure.resourcemanager.resources.fluentcore.AzureServiceClient"));
             }
             if (!getClientMethods().isEmpty()) {
-                ClassType.REST_PROXY.addImportsTo(imports, false);
+                ClassType.REST_PROXY.addImportsTo(importConsumer, false);
             }
 
             for (Constructor constructor : getConstructors()) {
-                constructor.addImportsTo(imports, includeImplementationImports);
+                constructor.addImportsTo(importConsumer, true);
             }
 
             if (!settings.isGenerateClientInterfaces()) {
                 for (MethodGroupClient methodGroupClient : getMethodGroupClients()) {
-                    imports.add(
-                        String.format("%1$s.%2$s", methodGroupClient.getPackage(), methodGroupClient.getClassName()));
+                    importConsumer
+                        .accept(List.of(methodGroupClient.getPackage() + "." + methodGroupClient.getClassName()));
                 }
             } else {
                 String interfacePackage = ClientModelUtil.getServiceClientInterfacePackageName();
-                imports.add(String.format("%1$s.%2$s", interfacePackage, this.getInterfaceName()));
+                importConsumer.accept(List.of(interfacePackage + "." + this.getInterfaceName()));
                 for (MethodGroupClient methodGroupClient : this.getMethodGroupClients()) {
-                    imports.add(String.format("%1$s.%2$s", interfacePackage, methodGroupClient.getInterfaceName()));
+                    importConsumer.accept(List.of(interfacePackage + "." + methodGroupClient.getInterfaceName()));
                 }
             }
         }
 
         if (includeBuilderImports || includeImplementationImports) {
             if (!settings.isFluent() && settings.isGenerateClientInterfaces()) {
-                imports.add(String.format("%1$s.%2$s", settings.getPackage(), getInterfaceName()));
+                importConsumer.accept(List.of(settings.getPackage() + "." + getInterfaceName()));
                 for (MethodGroupClient methodGroupClient : getMethodGroupClients()) {
-                    imports
-                        .add(String.format("%1$s.%2$s", settings.getPackage(), methodGroupClient.getInterfaceName()));
+                    importConsumer.accept(List.of(settings.getPackage() + "." + methodGroupClient.getInterfaceName()));
                 }
             }
 
-            ClassType.HTTP_PIPELINE_BUILDER.addImportsTo(imports, false);
-            ClassType.RETRY_POLICY.addImportsTo(imports, false);
+            importConsumer
+                .accept(List.of(ClassType.HTTP_PIPELINE_BUILDER.getFullName(), ClassType.RETRY_POLICY.getFullName()));
             if (JavaSettings.getInstance().isAzureV1()) {
-                imports.add(ClassType.USER_AGENT_POLICY.getFullName());
+                importConsumer.accept(List.of(ClassType.USER_AGENT_POLICY.getFullName()));
             }
         }
 
         if (includeBuilderImports) {
-            imports.add(String.format("%1$s.%2$s", getPackage(), getClassName()));
+            importConsumer.accept(List.of(getPackage() + "." + getClassName()));
         }
 
         Proxy proxy = getProxy();
         if (proxy != null) {
-            proxy.addImportsTo(imports, includeImplementationImports, settings);
+            proxy.addImportsTo(importConsumer, includeImplementationImports, settings);
         }
     }
 
-    protected void addRestProxyImport(Set<String> imports) {
-        ClassType.REST_PROXY.addImportsTo(imports, false);
+    protected void addRestProxyImport(Consumer<Collection<String>> importConsumer) {
+        importConsumer.accept(List.of(ClassType.REST_PROXY.getFullName()));
     }
 
-    protected void addHttpPolicyImports(Set<String> imports) {
-        ClassType.RETRY_POLICY.addImportsTo(imports, false);
-        ClassType.USER_AGENT_POLICY.addImportsTo(imports, false);
+    protected void addHttpPolicyImports(Consumer<Collection<String>> importConsumer) {
+        importConsumer.accept(List.of(ClassType.RETRY_POLICY.getFullName(), ClassType.USER_AGENT_POLICY.getFullName()));
     }
 
-    protected void addPipelineBuilderImport(Set<String> imports) {
-        ClassType.HTTP_PIPELINE_BUILDER.addImportsTo(imports, false);
+    protected void addPipelineBuilderImport(Consumer<Collection<String>> importConsumer) {
+        importConsumer.accept(List.of(ClassType.HTTP_PIPELINE_BUILDER.getFullName()));
     }
 
     public static class Builder {

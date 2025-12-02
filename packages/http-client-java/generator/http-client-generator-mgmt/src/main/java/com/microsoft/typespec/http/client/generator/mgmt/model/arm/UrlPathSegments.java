@@ -76,13 +76,7 @@ public class UrlPathSegments {
 
         @Override
         public String toString() {
-            return new StringBuilder().append("Parameter: segName=")
-                .append(segmentName)
-                .append(", parameterName=")
-                .append(parameterName)
-                .append(", type=")
-                .append(type)
-                .toString();
+            return "Parameter: segName=" + segmentName + ", parameterName=" + parameterName + ", type=" + type;
         }
     }
 
@@ -105,7 +99,7 @@ public class UrlPathSegments {
 
         @Override
         public String toString() {
-            return new StringBuilder().append("Literal: segName=").append(segmentName).toString();
+            return "Literal: segName=" + segmentName;
         }
     }
 
@@ -120,19 +114,17 @@ public class UrlPathSegments {
 
         String currentParameterName = null;
         for (int i = segmentArray.length - 1; i >= 0; --i) {
-            String segmentStr = segmentArray[i].trim();
+            String segmentName = segmentArray[i].trim();
 
-            if (!segmentStr.isEmpty()) {
-                if (segmentStr.startsWith("{") && segmentStr.endsWith("}")) {
-                    String parameterName = segmentStr.substring(1, segmentStr.length() - 1);
+            if (!segmentName.isEmpty()) {
+                if (segmentName.startsWith("{") && segmentName.endsWith("}")) {
+                    String parameterName = segmentName.substring(1, segmentName.length() - 1);
 
                     if (currentParameterName != null) {
                         reverseSegments.add(new ParameterSegment(SEGMENT_NAME_EMPTY, currentParameterName));
                     }
                     currentParameterName = parameterName;
                 } else {
-                    String segmentName = segmentStr;
-
                     if (currentParameterName != null) {
                         reverseSegments.add(new ParameterSegment(segmentName, currentParameterName));
                         currentParameterName = null;

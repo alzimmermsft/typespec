@@ -14,7 +14,6 @@ import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaFil
 import com.microsoft.typespec.http.client.generator.core.template.example.ClientInitializationExampleWriter;
 import com.microsoft.typespec.http.client.generator.core.template.example.ClientMethodExampleWriter;
 import com.microsoft.typespec.http.client.generator.core.template.example.ModelExampleWriter;
-import java.util.HashSet;
 import java.util.Set;
 
 public class ClientMethodSampleTemplate implements IJavaTemplate<ClientMethodExample, JavaFile> {
@@ -39,11 +38,9 @@ public class ClientMethodSampleTemplate implements IJavaTemplate<ClientMethodExa
             clientInitializationExampleWriter.getClientVarName(), proxyMethodExample);
 
         // declare imports
-        Set<String> imports = new HashSet<>();
-        imports.addAll(clientInitializationExampleWriter.getImports());
-        imports.addAll(clientMethodExampleWriter.getImports());
-        method.getReturnValue().getType().addImportsTo(imports, false);
-        javaFile.declareImport(imports);
+        javaFile.declareImport(clientInitializationExampleWriter.getImports());
+        javaFile.declareImport(clientMethodExampleWriter.getImports());
+        method.getReturnValue().getType().addImportsTo(javaFile::declareImport, false);
 
         javaFile.publicClass(null, filename, classBlock -> {
             Set<ExampleHelperFeature> helperFeatures = clientMethodExampleWriter.getHelperFeatures();
@@ -57,16 +54,16 @@ public class ClientMethodSampleTemplate implements IJavaTemplate<ClientMethodExa
 
                 // write method invocation
 
-                // codesnippet begin
+                // code snippet begin
                 if (proxyMethodExample.getCodeSnippetIdentifier() != null) {
-                    methodBlock.line(String.format("// BEGIN:%s", proxyMethodExample.getCodeSnippetIdentifier()));
+                    methodBlock.line("// BEGIN:" + proxyMethodExample.getCodeSnippetIdentifier());
                 }
 
                 clientMethodExampleWriter.writeClientMethodInvocation(methodBlock, false);
 
-                // codesnippet end
+                // code snippet end
                 if (proxyMethodExample.getCodeSnippetIdentifier() != null) {
-                    methodBlock.line(String.format("// END:%s", proxyMethodExample.getCodeSnippetIdentifier()));
+                    methodBlock.line("// END:" + proxyMethodExample.getCodeSnippetIdentifier());
                 }
             });
             if (helperFeatures.contains(ExampleHelperFeature.MapOfMethod)) {

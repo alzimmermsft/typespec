@@ -21,9 +21,11 @@ import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluen
 import com.microsoft.typespec.http.client.generator.mgmt.util.FluentUtils;
 import com.microsoft.typespec.http.client.generator.mgmt.util.Utils;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -205,15 +207,15 @@ public class FluentResourceCollection {
         return additionalMethods;
     }
 
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
-        innerClientType.addImportsTo(imports, false);
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
+        innerClientType.addImportsTo(importConsumer, false);
 
-        this.getMethods().forEach(m -> m.addImportsTo(imports, includeImplementationImports));
+        this.getMethods().forEach(m -> m.addImportsTo(importConsumer, includeImplementationImports));
 
         if (includeImplementationImports) {
-            interfaceType.addImportsTo(imports, false);
+            interfaceType.addImportsTo(importConsumer, false);
         }
 
-        additionalMethods.forEach(m -> m.addImportsTo(imports));
+        additionalMethods.forEach(m -> m.addImportsTo(importConsumer));
     }
 }

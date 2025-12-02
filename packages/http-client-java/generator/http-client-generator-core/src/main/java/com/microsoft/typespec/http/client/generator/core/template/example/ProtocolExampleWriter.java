@@ -65,14 +65,14 @@ public class ProtocolExampleWriter {
 
         imports.addAll(this.clientInitializationExampleWriter.getImports());
 
-        ClassType.BINARY_DATA.addImportsTo(imports, false);
+        ClassType.BINARY_DATA.addImportsTo(imports::addAll, false);
         imports.add(java.util.Arrays.class.getName());
-        method.addImportsTo(imports, false, settings);
+        method.addImportsTo(imports::addAll, false, settings);
 
         // assertion
         imports.add("org.junit.jupiter.api.Assertions");
         imports.add(ClassType.LONG_RUNNING_OPERATION_STATUS.getFullName());
-        ClassType.HTTP_HEADER_NAME.addImportsTo(imports, false);
+        ClassType.HTTP_HEADER_NAME.addImportsTo(imports::addAll, false);
 
         // method invocation
         // parameter values and required invocation on RequestOptions

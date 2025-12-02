@@ -15,7 +15,8 @@ import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.Fluen
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.ModelNaming;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel.LocalVariable;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel.ResourceLocalVariables;
-import java.util.Set;
+import java.util.Collection;
+import java.util.function.Consumer;
 
 public class FluentConstructorByName extends FluentMethod {
 
@@ -45,13 +46,12 @@ public class FluentConstructorByName extends FluentMethod {
                 // Resource model can be immutable output-only(private-ctor), when PUT request body is not resource
                 // model itself.
                 if (!ClientModelUtil.isImmutableOutputModel(model.getInnerModel(), JavaSettings.getInstance())) {
-                    block.line(String.format("this.%1$s = new %2$s();", ModelNaming.MODEL_PROPERTY_INNER,
-                        model.getInnerModel().getName()));
+                    block.line("this.%1$s = new %2$s();", ModelNaming.MODEL_PROPERTY_INNER,
+                        model.getInnerModel().getName());
                 }
-                block.line(String.format("this.%1$s = %2$s;", ModelNaming.MODEL_PROPERTY_MANAGER,
-                    ModelNaming.MODEL_PROPERTY_MANAGER));
+                block.line("this.%1$s = %1$s;", ModelNaming.MODEL_PROPERTY_MANAGER);
                 if (!constantResourceName) {
-                    block.line(String.format("this.%1$s = name;", propertyNameForResourceName));
+                    block.line("this.%1$s = name;", propertyNameForResourceName);
                 }
 
                 // init
@@ -59,9 +59,7 @@ public class FluentConstructorByName extends FluentMethod {
                     .values()
                     .stream()
                     .filter(LocalVariable::isInitializeRequired)
-                    .forEach(var -> {
-                        block.line(String.format("this.%1$s = %2$s;", var.getName(), var.getInitializeExpression()));
-                    });
+                    .forEach(var -> block.line("this.%1$s = %2$s;", var.getName(), var.getInitializeExpression()));
             })
             .build();
     }
@@ -88,10 +86,10 @@ public class FluentConstructorByName extends FluentMethod {
     }
 
     @Override
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
         if (includeImplementationImports) {
             if (resourceNameType != null) {
-                resourceNameType.addImportsTo(imports, false);
+                resourceNameType.addImportsTo(importConsumer, false);
             }
             /*
              * use full name for FooManager, to avoid naming conflict

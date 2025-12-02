@@ -3,7 +3,8 @@
 
 package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 
-import java.util.Set;
+import java.util.Collection;
+import java.util.function.Consumer;
 
 /**
  * A return value from a ClientMethod.
@@ -12,11 +13,11 @@ public class ReturnValue {
     /**
      * The description of the return value.
      */
-    private String description;
+    private final String description;
     /**
      * The type of the return value.
      */
-    private IType type;
+    private final IType type;
 
     /**
      * Create a new ReturnValue object from the provided properties.
@@ -38,13 +39,13 @@ public class ReturnValue {
     }
 
     /**
-     * Add this return value's imports to the provided set of imports.
+     * Consume this return value's imports.
      * 
-     * @param imports The set of imports to add to.
+     * @param importConsumer The import consumer.
      * @param includeImplementationImports Whether to include imports that are only necessary for method
      * implementations.
      */
-    public final void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
-        getType().addImportsTo(imports, includeImplementationImports);
+    public final void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
+        getType().addImportsTo(importConsumer, includeImplementationImports);
     }
 }

@@ -33,9 +33,11 @@ import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluen
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel.method.FluentParentMethod;
 import com.microsoft.typespec.http.client.generator.mgmt.util.FluentUtils;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
@@ -190,7 +192,7 @@ public class ResourceCreate extends ResourceOperation {
 
         if (!optionalDefinitionStages.isEmpty()) {
             definitionStageCreate.setExtendStages(optionalDefinitionStages.stream()
-                .map(s -> String.format("%1$s.%2$s", ModelNaming.MODEL_FLUENT_INTERFACE_DEFINITION_STAGES, s.getName()))
+                .map(s -> ModelNaming.MODEL_FLUENT_INTERFACE_DEFINITION_STAGES + "." + s.getName())
                 .collect(Collectors.joining(", ")));
         }
 
@@ -215,7 +217,7 @@ public class ResourceCreate extends ResourceOperation {
     }
 
     private List<ModelProperty> getRequiredProperties() {
-        return this.getProperties().stream().filter(p -> p.isRequired()).collect(Collectors.toList());
+        return this.getProperties().stream().filter(ModelProperty::isRequired).collect(Collectors.toList());
     }
 
     private List<ModelProperty> getNonRequiredProperties() {
@@ -225,8 +227,7 @@ public class ResourceCreate extends ResourceOperation {
     @Override
     protected List<ModelProperty> getProperties() {
         return super.getProperties().stream()
-            .filter(p -> !p.isReadOnlyForCreate())
-            .filter(p -> !isIdProperty(p))           // create should not be able to set id
+            .filter(p -> !p.isReadOnlyForCreate() && !isIdProperty(p)) // create should not be able to set id
             .collect(Collectors.toList());
     }
 
@@ -431,7 +432,7 @@ public class ResourceCreate extends ResourceOperation {
         }
     }
 
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
-        getDefinitionStages().forEach(s -> s.addImportsTo(imports, includeImplementationImports));
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
+        getDefinitionStages().forEach(s -> s.addImportsTo(importConsumer, includeImplementationImports));
     }
 }

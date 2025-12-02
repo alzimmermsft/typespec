@@ -9,8 +9,6 @@ import com.microsoft.typespec.http.client.generator.core.model.clientmodel.Clien
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.GenericType;
 import com.microsoft.typespec.http.client.generator.core.model.clientmodel.IType;
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaFile;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Writes a ClientResponse to a JavaFile.
@@ -28,21 +26,17 @@ public class ResponseTemplate implements IJavaTemplate<ClientResponse, JavaFile>
     public final void write(ClientResponse response, JavaFile javaFile) {
         JavaSettings settings = JavaSettings.getInstance();
 
-        Set<String> imports = new HashSet<>();
-        imports.add(ClassType.HTTP_REQUEST.getFullName());
-        imports.add(ClassType.HTTP_HEADERS.getFullName());
+        javaFile.declareImport(ClassType.HTTP_REQUEST.getFullName(), ClassType.HTTP_HEADERS.getFullName());
         IType restResponseType = GenericType.restResponse(response.getHeadersType(), response.getBodyType());
-        restResponseType.addImportsTo(imports, true);
+        restResponseType.addImportsTo(javaFile::declareImport, true);
 
         boolean isStreamResponse = response.getBodyType().equals(GenericType.FLUX_BYTE_BUFFER);
 
         // Stream responses implement Closeable to offer a way for the Flux<ByteBuffer> response to be drained
         // if it isn't consumed.
         if (isStreamResponse) {
-            imports.add("java.io.Closeable");
+            javaFile.declareImport("java.io.Closeable");
         }
-
-        javaFile.declareImport(imports);
 
         String classSignature;
         if (isStreamResponse) {

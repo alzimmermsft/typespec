@@ -59,28 +59,26 @@ public class ServiceAsyncClientTemplate implements IJavaTemplate<AsyncSyncClient
             = samePackageAsBuilder ? JavaVisibility.PackagePrivate : JavaVisibility.Public;
         ClientBuilder rootClientBuilder = getClientBuilder(asyncClient);
 
-        Set<String> imports = new HashSet<>();
         if (wrapServiceClient) {
-            serviceClient.addImportsTo(imports, true, false, settings);
-            imports.add(serviceClient.getPackage() + "." + serviceClient.getClassName());
+            serviceClient.addImportsTo(javaFile::declareImport, true, false, settings);
+            javaFile.declareImport(serviceClient.getPackage() + "." + serviceClient.getClassName());
         } else {
-            methodGroupClient.addImportsTo(imports, true, settings);
-            imports.add(methodGroupClient.getPackage() + "." + methodGroupClient.getClassName());
+            methodGroupClient.addImportsTo(javaFile::declareImport, true, settings);
+            javaFile.declareImport(methodGroupClient.getPackage() + "." + methodGroupClient.getClassName());
         }
-        imports.add(builderPackageName + "." + builderClassName);
+        javaFile.declareImport(builderPackageName + "." + builderClassName);
         if (rootClientBuilder != null) {
-            rootClientBuilder.addImportsTo(imports, false);
+            rootClientBuilder.addImportsTo(javaFile::declareImport, false);
         }
-        Annotation.SERVICE_CLIENT.addImportsTo(imports);
-        Annotation.GENERATED.addImportsTo(imports);
+        javaFile.declareImport(Annotation.SERVICE_CLIENT.getFullName(), Annotation.GENERATED.getFullName());
 
         for (ClientAccessorMethod clientAccessorMethod : serviceClient.getClientAccessorMethods()) {
-            clientAccessorMethod.addImportsTo(imports, false);
+            clientAccessorMethod.addImportsTo(javaFile::declareImport, false);
         }
 
-        Templates.getConvenienceAsyncMethodTemplate().addImports(imports, asyncClient.getConvenienceMethods());
+        Templates.getConvenienceAsyncMethodTemplate()
+            .addImports(javaFile::declareImport, asyncClient.getConvenienceMethods());
 
-        javaFile.declareImport(imports);
         javaFile.javadocComment(comment -> comment.description(String
             .format("Initializes a new instance of the asynchronous %1$s type.", serviceClient.getInterfaceName())));
 

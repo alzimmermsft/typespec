@@ -4,73 +4,52 @@
 package com.microsoft.typespec.http.client.generator.core.model.javamodel;
 
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
+import io.clientcore.core.utils.CoreUtils;
 import java.io.File;
 import java.nio.file.Paths;
 
-public class JavaFileFactory {
+public final class JavaFileFactory {
     private final JavaSettings settings;
 
     public JavaFileFactory(JavaSettings settings) {
         this.settings = settings;
     }
 
-    public final JavaFile createEmptySourceFile(String packageKeyword, String fileNameWithoutExtension) {
-        String folderPath
-            = Paths.get("src", "main", "java", packageKeyword.replace('.', File.separatorChar)).toString();
+    public JavaFile createEmptySourceFile(String packageName, String fileNameWithoutExtension) {
+        return createFile(packageName, fileNameWithoutExtension, "main", false);
+    }
+
+    public JavaFile createSourceFile(String packageName, String fileNameWithoutExtension) {
+        return createFile(packageName, fileNameWithoutExtension, "main", true);
+    }
+
+    public JavaFile createSampleFile(String packageName, String fileNameWithoutExtension) {
+        return createFile(packageName, fileNameWithoutExtension, "samples", true);
+    }
+
+    public JavaFile createTestFile(String packageName, String fileNameWithoutExtension) {
+        return createFile(packageName, fileNameWithoutExtension, "test", true);
+    }
+
+    private JavaFile createFile(String packageName, String fileNameWithoutExtension, String kind,
+        boolean addHeaderAndPackage) {
+        String folderPath = Paths.get("src", kind, "java", packageName.replace('.', File.separatorChar)).toString();
         String filePath = Paths.get(folderPath)
-            .resolve(String.format("%1$s.java", fileNameWithoutExtension))
+            .resolve(fileNameWithoutExtension + ".java")
             .toString()
             .replace('\\', '/')
             .replace("//", "/");
-        return new JavaFile(filePath);
-    }
 
-    public final JavaFile createSourceFile(String packageKeyword, String fileNameWithoutExtension) {
-        JavaFile javaFile = createEmptySourceFile(packageKeyword, fileNameWithoutExtension);
-
-        addCommentAndPackage(javaFile, packageKeyword);
-
-        return javaFile;
-    }
-
-    public final JavaFile createSampleFile(String packageKeyword, String fileNameWithoutExtension) {
-        String folderPath
-            = Paths.get("src", "samples", "java", packageKeyword.replace('.', File.separatorChar)).toString();
-        String filePath = Paths.get(folderPath)
-            .resolve(String.format("%1$s.java", fileNameWithoutExtension))
-            .toString()
-            .replace('\\', '/')
-            .replace("//", "/");
         JavaFile javaFile = new JavaFile(filePath);
+        if (addHeaderAndPackage) {
+            String headerComment = settings.getFileHeaderText();
+            if (!CoreUtils.isNullOrEmpty(headerComment)) {
+                javaFile.setFileHeader(headerComment);
+            }
 
-        addCommentAndPackage(javaFile, packageKeyword);
-
-        return javaFile;
-    }
-
-    public final JavaFile createTestFile(String packageKeyword, String fileNameWithoutExtension) {
-        String folderPath
-            = Paths.get("src", "test", "java", packageKeyword.replace('.', File.separatorChar)).toString();
-        String filePath = Paths.get(folderPath)
-            .resolve(String.format("%1$s.java", fileNameWithoutExtension))
-            .toString()
-            .replace('\\', '/')
-            .replace("//", "/");
-        JavaFile javaFile = new JavaFile(filePath);
-
-        addCommentAndPackage(javaFile, packageKeyword);
-
-        return javaFile;
-    }
-
-    private void addCommentAndPackage(JavaFile javaFile, String packageName) {
-        String headerComment = settings.getFileHeaderText();
-        if (headerComment != null && !headerComment.isEmpty()) {
-            javaFile.lineComment(comment -> comment.line(headerComment));
-            javaFile.line();
+            javaFile.declarePackage(packageName);
         }
 
-        javaFile.declarePackage(packageName);
-        javaFile.line();
+        return javaFile;
     }
 }

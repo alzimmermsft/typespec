@@ -19,9 +19,10 @@ import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluen
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel.method.FluentRefreshMethod;
 import com.microsoft.typespec.http.client.generator.mgmt.util.Utils;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+import java.util.function.Consumer;
 import org.slf4j.Logger;
 
 public class ResourceRefresh extends ResourceOperation {
@@ -72,9 +73,9 @@ public class ResourceRefresh extends ResourceOperation {
         }
     }
 
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
         if (includeImplementationImports) {
-            getRefreshMethods().forEach(m -> m.addImportsTo(imports, true));
+            getRefreshMethods().forEach(m -> m.addImportsTo(importConsumer, true));
         }
     }
 

@@ -13,7 +13,6 @@ import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.Fluen
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.FluentLiveTestStep;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.FluentLiveTests;
 import io.clientcore.core.utils.CoreUtils;
-import java.util.ArrayList;
 
 public class FluentLiveTestsTemplate {
 
@@ -25,8 +24,14 @@ public class FluentLiveTestsTemplate {
 
     public void write(FluentLiveTests liveTests, JavaFile javaFile) {
         // write class
-        addImports(liveTests, javaFile);
-        javaFile.publicClass(new ArrayList<>(), liveTests.getClassName() + " extends TestBase", classBlock -> {
+        javaFile.declareImport(liveTests.getImports());
+        javaFile.declareImport(liveTests.getManagerType().getFullName(), "org.junit.jupiter.api.Test",
+            "org.junit.jupiter.api.BeforeEach", "com.azure.identity.DefaultAzureCredentialBuilder",
+            FluentType.AZURE_PROFILE.getFullName(), ClassType.AZURE_CLOUD.getFullName(),
+            "com.azure.core.test.annotation.DoNotRecord", "com.azure.core.test.TestBase",
+            ClassType.HTTP_LOG_OPTIONS.getFullName(), ClassType.HTTP_LOG_DETAIL_LEVEL.getFullName());
+
+        javaFile.publicClass(null, liveTests.getClassName() + " extends TestBase", classBlock -> {
             for (FluentLiveTestCase testCase : liveTests.getTestCases()) {
                 // write manager field
                 classBlock.privateMemberVariable(liveTests.getManagerType().getName(), liveTests.getManagerName());
@@ -69,14 +74,5 @@ public class FluentLiveTestsTemplate {
 
     private String getTestMethodName(String methodName) {
         return methodName.endsWith("Test") ? methodName : methodName + "Test";
-    }
-
-    private void addImports(FluentLiveTests liveTests, JavaFile javaFile) {
-        javaFile.declareImport(liveTests.getImports());
-        javaFile.declareImport(liveTests.getManagerType().getFullName(), "org.junit.jupiter.api.Test",
-            "org.junit.jupiter.api.BeforeEach", "com.azure.identity.DefaultAzureCredentialBuilder",
-            FluentType.AZURE_PROFILE.getFullName(), ClassType.AZURE_CLOUD.getFullName(),
-            "com.azure.core.test.annotation.DoNotRecord", "com.azure.core.test.TestBase",
-            ClassType.HTTP_LOG_OPTIONS.getFullName(), ClassType.HTTP_LOG_DETAIL_LEVEL.getFullName());
     }
 }

@@ -14,10 +14,11 @@ import io.clientcore.core.utils.CoreUtils;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -373,7 +374,7 @@ public class ClientMethod {
     }
 
     public final List<String> getProxyMethodArguments(JavaSettings settings) {
-        List<String> restAPIMethodArguments = getProxyMethod().getParameters().stream().map(parameter -> {
+        return getProxyMethod().getParameters().stream().map(parameter -> {
             String parameterName = parameter.getParameterReference();
             IType parameterWireType = parameter.getWireType();
             if (parameter.isNullable()) {
@@ -382,13 +383,8 @@ public class ClientMethod {
             IType parameterClientType = parameter.getClientType();
 
             if (parameterClientType != ClassType.BASE_64_URL
-                && parameter.getRequestParameterLocation() != RequestParameterLocation.BODY /*
-                                                                                             * && parameter.
-                                                                                             * getRequestParameterLocation
-                                                                                             * () !=
-                                                                                             * RequestParameterLocation.
-                                                                                             * FormData
-                                                                                             */
+                // && parameter.getRequestParameterLocation() != RequestParameterLocation.FormData
+                && parameter.getRequestParameterLocation() != RequestParameterLocation.BODY
                 && (parameterClientType instanceof ArrayType || parameterClientType instanceof IterableType)) {
                 parameterWireType = ClassType.STRING;
             }
@@ -405,7 +401,6 @@ public class ClientMethod {
             }
             return result;
         }).collect(Collectors.toList());
-        return restAPIMethodArguments;
     }
 
     public JavaVisibility getMethodVisibility() {
@@ -457,50 +452,41 @@ public class ClientMethod {
     }
 
     /**
-     * Add this ClientMethod's imports to the provided set of imports.
+     * Consume this ClientMethod's imports.
      *
-     * @param imports The set of imports to add to.
+     * @param importConsumer The consumer of imports.
      * @param includeImplementationImports Whether to include imports that are only necessary for method
      * implementations.
      */
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports, JavaSettings settings) {
-
-        Annotation.SERVICE_METHOD.addImportsTo(imports);
-        Annotation.RETURN_TYPE.addImportsTo(imports);
-
-        imports.add("java.util.Objects");
-        imports.add("java.util.stream.Collectors");
-        ClassType.BINARY_DATA.addImportsTo(imports, includeImplementationImports);
-        ClassType.RESPONSE.addImportsTo(imports, includeImplementationImports);
-        ClassType.SIMPLE_RESPONSE.addImportsTo(imports, includeImplementationImports);
-        ClassType.HTTP_HEADER_NAME.addImportsTo(imports, false);
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports,
+        JavaSettings settings) {
+        importConsumer.accept(
+            List.of(Annotation.SERVICE_METHOD.getFullName(), Annotation.RETURN_TYPE.getFullName(), "java.util.Objects",
+                "java.util.stream.Collectors", ClassType.BINARY_DATA.getFullName(), ClassType.RESPONSE.getFullName(),
+                ClassType.SIMPLE_RESPONSE.getFullName(), ClassType.HTTP_HEADER_NAME.getFullName()));
 
         if (settings.isDataPlaneClient()) {
             // for some processing on RequestOptions (get/set header)
-
             // for query parameter modification in RequestOptions (UrlBuilder.parse)
-            imports.add(ClassType.URL_BUILDER.getFullName());
-            imports.add("io.clientcore.core.utils.UriBuilder");
+            importConsumer.accept(List.of(ClassType.URL_BUILDER.getFullName()));
         }
 
-        getReturnValue().addImportsTo(imports, includeImplementationImports);
+        getReturnValue().addImportsTo(importConsumer, includeImplementationImports);
 
         for (ClientMethodParameter parameter : getParameters()) {
-            parameter.addImportsTo(imports, includeImplementationImports);
+            parameter.addImportsTo(importConsumer, includeImplementationImports);
         }
 
         if (includeImplementationImports) {
-            ClassType.CONTEXT.addImportsTo(imports, false);
+            ClassType.CONTEXT.addImportsTo(importConsumer, false);
 
             if (proxyMethod != null) {
-                proxyMethod.addImportsTo(imports, includeImplementationImports, settings);
+                proxyMethod.addImportsTo(importConsumer, true, settings);
             }
 
             if (getReturnValue().getType() == ClassType.INPUT_STREAM) {
-                imports.add("com.fasterxml.jackson.databind.util.ByteBufferBackedInputStream");
-                imports.add("java.io.SequenceInputStream");
-                imports.add("java.util.Enumeration");
-                imports.add("java.util.Iterator");
+                importConsumer.accept(List.of("com.fasterxml.jackson.databind.util.ByteBufferBackedInputStream",
+                    "java.io.SequenceInputStream", "java.util.Enumeration", "java.util.Iterator"));
             }
 
             // Add FluxUtil as an import if this is an asynchronous method and the last parameter isn't the Context
@@ -509,16 +495,14 @@ public class ClientMethod {
                 && !proxyMethod.isSync()
                 && (CoreUtils.isNullOrEmpty(parameters)
                     || parameters.get(parameters.size() - 1) != ClientMethodParameter.CONTEXT_PARAMETER)) {
-                imports.add(ClassType.FLUX_UTIL.getFullName());
+                importConsumer.accept(List.of(ClassType.FLUX_UTIL.getFullName()));
             }
 
             if (getMethodPageDetails() != null) {
-                imports.add(ClassType.PAGED_RESPONSE_BASE.getFullName());
+                importConsumer.accept(List.of(ClassType.PAGED_RESPONSE_BASE.getFullName()));
 
                 if (settings.isDataPlaneClient()) {
-                    imports.add("java.util.List");
-                    imports.add("java.util.Map");
-                    ClassType.BINARY_DATA.addImportsTo(imports, includeImplementationImports);
+                    importConsumer.accept(List.of("java.util.List", "java.util.Map"));
                 }
             }
 
@@ -528,21 +512,18 @@ public class ClientMethod {
                         .getTypeArguments()[0] instanceof GenericType) {
                         // pageable LRO
                         if (settings.isStreamStyleSerialization()) {
-                            imports.add(ClassType.TYPE_REFERENCE.getFullName());
+                            importConsumer.accept(List.of(ClassType.TYPE_REFERENCE.getFullName()));
                         } else {
-                            imports.add("com.fasterxml.jackson.core.type.TypeReference");
+                            importConsumer.accept(List.of("com.fasterxml.jackson.core.type.TypeReference"));
                         }
                     }
                 } else {
-                    imports.add(ClassType.TYPE_REFERENCE.getFullName());
+                    importConsumer.accept(List.of(ClassType.TYPE_REFERENCE.getFullName(), "java.time.Duration"));
                     if (!JavaSettings.getInstance().isAzureV1()) {
-                        imports.add(Type.class.getName());
-                        imports.add(ParameterizedType.class.getName());
+                        importConsumer.accept(List.of(Type.class.getName(), ParameterizedType.class.getName()));
                     }
 
-                    imports.add("java.time.Duration");
-
-                    ClassType.POLLING_STRATEGY_OPTIONS.addImportsTo(imports, false);
+                    ClassType.POLLING_STRATEGY_OPTIONS.addImportsTo(importConsumer, false);
 
                     if (getMethodPollingDetails() != null) {
                         for (String pollingStrategy : KNOWN_POLLING_STRATEGIES) {
@@ -550,9 +531,9 @@ public class ClientMethod {
                                 || getMethodPollingDetails().getSyncPollingStrategy().contains(pollingStrategy)) {
 
                                 if (JavaSettings.getInstance().isAzureV2()) {
-                                    imports.add("com.azure.v2.core.http.polling." + pollingStrategy);
+                                    importConsumer.accept(List.of("com.azure.v2.core.http.polling." + pollingStrategy));
                                 } else {
-                                    imports.add("com.azure.core.util.polling." + pollingStrategy);
+                                    importConsumer.accept(List.of("com.azure.core.util.polling." + pollingStrategy));
                                 }
                             }
                         }
@@ -565,24 +546,19 @@ public class ClientMethod {
                 if (this.getMethodPageDetails() != null
                     && this.getMethodPageDetails().getLroIntermediateType() != null) {
                     // pageable + LRO
-                    this.getMethodPageDetails()
-                        .getLroIntermediateType()
-                        .addImportsTo(imports, includeImplementationImports);
+                    this.getMethodPageDetails().getLroIntermediateType().addImportsTo(importConsumer, true);
                 }
             }
 
             if (MethodUtil.isMethodIncludeRepeatableRequestHeaders(this.proxyMethod)) {
                 // Repeatable Requests
-                ClassType.CORE_UTILS.addImportsTo(imports, false);
-                ClassType.DATE_TIME.addImportsTo(imports, false);
-                ClassType.DATE_TIME_RFC_1123.addImportsTo(imports, false);
-                imports.add("java.util.UUID");
+                ClassType.DATE_TIME.addImportsTo(importConsumer, false);
+                ClassType.DATE_TIME_RFC_1123.addImportsTo(importConsumer, false);
+                importConsumer.accept(List.of("java.util.UUID", ClassType.CORE_UTILS.getFullName()));
             }
 
             if (type == ClientMethodType.SendRequestAsync || type == ClientMethodType.SendRequestSync) {
-                imports.add(ClassType.SIMPLE_RESPONSE.getFullName());
-                ClassType.BINARY_DATA.addImportsTo(imports, false);
-                ClassType.HTTP_REQUEST.addImportsTo(imports, false);
+                importConsumer.accept(List.of(ClassType.HTTP_REQUEST.getFullName()));
             }
             // sync-stack, lro (+ pageable)
             if (settings.isSyncStackEnabled() && settings.isFluent()) {
@@ -590,7 +566,7 @@ public class ClientMethod {
                     && proxyMethod != null
                     && GenericType.response(ClassType.BINARY_DATA).equals(proxyMethod.getReturnType().getClientType()));
                 if (type == ClientMethodType.LongRunningBeginSync || isLroPageable) {
-                    ClassType.SYNC_POLLER_FACTORY.addImportsTo(imports, false);
+                    ClassType.SYNC_POLLER_FACTORY.addImportsTo(importConsumer, false);
                 }
             }
         }

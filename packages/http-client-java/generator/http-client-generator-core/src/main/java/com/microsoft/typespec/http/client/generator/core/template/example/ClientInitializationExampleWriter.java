@@ -31,16 +31,15 @@ public class ClientInitializationExampleWriter {
 
     public ClientInitializationExampleWriter(AsyncSyncClient syncClient, ClientMethod method,
         ProxyMethodExample proxyMethodExample, ServiceClient serviceClient) {
-        syncClient.addImportsTo(imports, false);
-        syncClient.getClientBuilder().addImportsTo(imports, false);
+        syncClient.addImportsTo(imports::addAll, false);
+        syncClient.getClientBuilder().addImportsTo(imports::addAll, false);
         clientVarName = CodeNamer.toCamelCase(syncClient.getClassName());
         final String builderName = syncClient.getClientBuilder().getClassName();
 
         // credential
-        imports.add("com.azure.identity.DefaultAzureCredentialBuilder");
-        ClassType.AZURE_KEY_CREDENTIAL.addImportsTo(imports, false);
-        ClassType.KEY_CREDENTIAL.addImportsTo(imports, false);
-        ClassType.CONFIGURATION.addImportsTo(imports, false);
+        imports.addAll(
+            List.of("com.azure.identity.DefaultAzureCredentialBuilder", ClassType.AZURE_KEY_CREDENTIAL.getFullName(),
+                ClassType.KEY_CREDENTIAL.getFullName(), ClassType.CONFIGURATION.getFullName()));
 
         // client initialization
         List<String> clientParameterLines = new ArrayList<>();

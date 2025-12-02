@@ -11,7 +11,8 @@ import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaJav
 import com.microsoft.typespec.http.client.generator.core.template.prototype.MethodTemplate;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.FluentResourceModel;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.ModelNaming;
-import java.util.Set;
+import java.util.Collection;
+import java.util.function.Consumer;
 
 public class FluentDefineMethod extends FluentMethod {
 
@@ -34,12 +35,11 @@ public class FluentDefineMethod extends FluentMethod {
 
         this.name = "define" + resourceName;
         String interfaceTypeName = model.getInterfaceType().getName();
-        this.description = String.format("Begins definition for a new %1$s resource.", interfaceTypeName);
+        this.description = "Begins definition for a new " + interfaceTypeName + " resource.";
 
-        this.interfaceReturnValue
-            = new ReturnValue(String.format("the first stage of the new %1$s definition.", interfaceTypeName),
-                new ClassType.Builder().name(String.format("%1$s.%2$s.Blank", interfaceTypeName,
-                    ModelNaming.MODEL_FLUENT_INTERFACE_DEFINITION_STAGES)).build());
+        this.interfaceReturnValue = new ReturnValue("the first stage of the new " + interfaceTypeName + " definition.",
+            new ClassType.Builder().name(String.format("%1$s.%2$s.Blank", interfaceTypeName,
+                ModelNaming.MODEL_FLUENT_INTERFACE_DEFINITION_STAGES)).build());
         this.implementationReturnValue = new ReturnValue("", model.getImplementationType());
 
         if (methodParameter != null) {
@@ -58,10 +58,10 @@ public class FluentDefineMethod extends FluentMethod {
                 = MethodTemplate.builder().methodSignature(this.getImplementationMethodSignature()).method(block -> {
                     if (constantResourceName) {
                         block.methodReturn(String.format("new %1$s(this.%2$s())",
-                            fluentResourceModel.getImplementationType().toString(), ModelNaming.METHOD_MANAGER));
+                            fluentResourceModel.getImplementationType(), ModelNaming.METHOD_MANAGER));
                     } else {
                         block.methodReturn(String.format("new %1$s(name, this.%2$s())",
-                            fluentResourceModel.getImplementationType().toString(), ModelNaming.METHOD_MANAGER));
+                            fluentResourceModel.getImplementationType(), ModelNaming.METHOD_MANAGER));
                     }
                 }).build();
         }
@@ -71,7 +71,7 @@ public class FluentDefineMethod extends FluentMethod {
     @Override
     protected String getBaseMethodSignature() {
         if (constantResourceName) {
-            return String.format("%1$s()", this.name);
+            return this.name + "()";
         } else {
             return String.format("%1$s(%2$s name)", this.name, resourceNameType.toString());
         }
@@ -87,14 +87,14 @@ public class FluentDefineMethod extends FluentMethod {
     }
 
     @Override
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
         if (includeImplementationImports) {
-            fluentResourceModel.getInterfaceType().addImportsTo(imports, false);
+            fluentResourceModel.getInterfaceType().addImportsTo(importConsumer, false);
         } else {
-            fluentResourceModel.getImplementationType().addImportsTo(imports, false);
+            fluentResourceModel.getImplementationType().addImportsTo(importConsumer, false);
         }
         if (resourceNameType != null) {
-            resourceNameType.addImportsTo(imports, false);
+            resourceNameType.addImportsTo(importConsumer, false);
         }
     }
 

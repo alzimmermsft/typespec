@@ -12,7 +12,6 @@ import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaFil
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaVisibility;
 import com.microsoft.typespec.http.client.generator.core.util.CodeNamer;
 import com.microsoft.typespec.http.client.generator.core.util.ModelNamer;
-import java.util.HashSet;
 
 /**
  * Writes a ServiceClient to a JavaFile as an interface.
@@ -29,19 +28,16 @@ public class ServiceClientInterfaceTemplate implements IJavaTemplate<ServiceClie
     }
 
     public void write(ServiceClient serviceClient, JavaFile javaFile) {
-        HashSet<String> imports = new HashSet<String>();
-        serviceClient.addImportsTo(imports, false, false, JavaSettings.getInstance());
-        javaFile.declareImport(imports);
+        serviceClient.addImportsTo(javaFile::declareImport, false, false, JavaSettings.getInstance());
 
-        javaFile.javadocComment(comment -> {
-            comment.description(String.format("The interface for %1$s class.", serviceClient.getInterfaceName()));
-        });
+        javaFile.javadocComment(
+            comment -> comment.description("The interface for " + serviceClient.getInterfaceName() + " class."));
         javaFile.publicInterface(serviceClient.getInterfaceName(), interfaceBlock -> {
             for (ServiceClientProperty property : serviceClient.getProperties()) {
                 if (property.getMethodVisibility() == JavaVisibility.Public) {
                     interfaceBlock.javadocComment(comment -> {
-                        comment.description(String.format("Gets %1$s", property.getDescription()));
-                        comment.methodReturns(String.format("the %1$s value", property.getName()));
+                        comment.description("Gets " + property.getDescription());
+                        comment.methodReturns("the " + property.getName() + " value");
                     });
                     interfaceBlock.publicMethod(String.format("%1$s %2$s()", property.getType(),
                         new ModelNamer().modelPropertyGetterName(property)));

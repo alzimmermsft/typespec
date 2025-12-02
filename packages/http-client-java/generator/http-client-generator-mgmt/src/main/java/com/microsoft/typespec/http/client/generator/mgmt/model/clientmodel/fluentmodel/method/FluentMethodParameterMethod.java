@@ -12,7 +12,8 @@ import com.microsoft.typespec.http.client.generator.core.util.CodeNamer;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.FluentResourceModel;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel.FluentInterfaceStage;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel.LocalVariable;
-import java.util.Set;
+import java.util.Collection;
+import java.util.function.Consumer;
 
 public class FluentMethodParameterMethod extends FluentMethod {
 
@@ -77,8 +78,8 @@ public class FluentMethodParameterMethod extends FluentMethod {
     }
 
     @Override
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
-        methodParameter.addImportsTo(imports, false);
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
+        methodParameter.addImportsTo(importConsumer, false);
     }
 
     @Override

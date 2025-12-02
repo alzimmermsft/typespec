@@ -6,7 +6,6 @@ package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
 import com.microsoft.typespec.http.client.generator.core.model.javamodel.JavaBlock;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -324,11 +323,8 @@ public class ClientBuilderTrait {
     private static ClientBuilderTrait createTokenCredentialTrait() {
         ClientBuilderTrait tokenCredentialTrait = new ClientBuilderTrait();
         tokenCredentialTrait.setTraitInterfaceName(ClassType.TOKEN_CREDENTIAL_TRAIT.getName());
-        Set<String> importPackages = new HashSet<>();
-        ClassType.TOKEN_CREDENTIAL_TRAIT.addImportsTo(importPackages, false);
-        ClassType.TOKEN_CREDENTIAL.addImportsTo(importPackages, false);
-        ClassType.OAUTH_TOKEN_REQUEST_CONTEXT.addImportsTo(importPackages, false);
-        tokenCredentialTrait.setImportPackages(importPackages);
+        tokenCredentialTrait.setImportPackages(Set.of(ClassType.TOKEN_CREDENTIAL_TRAIT.getFullName(),
+            ClassType.TOKEN_CREDENTIAL.getFullName(), ClassType.OAUTH_TOKEN_REQUEST_CONTEXT.getFullName()));
 
         List<ClientBuilderTraitMethod> clientBuilderTraitMethods = new ArrayList<>();
         tokenCredentialTrait.setTraitMethods(clientBuilderTraitMethods);

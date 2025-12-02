@@ -14,10 +14,8 @@ import com.microsoft.typespec.http.client.generator.mgmt.util.FluentUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -55,21 +53,17 @@ public class ResourceManagerUtilsTemplate implements IJavaTemplate<Void, JavaFil
         METHOD_TEMPLATES.add(getValueFromIdByParameterNameMethod);
     }
 
-    private static final List<String> IMPORTS_UTILS_PAGED_ITERABLE = List.of(ClassType.PAGED_FLUX.getFullName(),
-        ClassType.FLUX.getFullName(), ClassType.PAGED_ITERABLE.getFullName(), ClassType.PAGED_RESPONSE.getFullName(),
-        ClassType.PAGED_RESPONSE_BASE.getFullName(), Iterator.class.getName(), Function.class.getName(),
-        Collectors.class.getName(), Stream.class.getName());
-
     public void write(JavaFile javaFile) {
         write(null, javaFile);
     }
 
     @Override
     public void write(Void ignored, JavaFile javaFile) {
-        Set<String> imports = new HashSet<>();
-        METHOD_TEMPLATES.forEach(mt -> mt.addImportsTo(imports));
-        imports.addAll(IMPORTS_UTILS_PAGED_ITERABLE);
-        javaFile.declareImport(imports);
+        METHOD_TEMPLATES.forEach(mt -> mt.addImportsTo(javaFile::declareImport));
+        javaFile.declareImport(ClassType.PAGED_FLUX.getFullName(), ClassType.FLUX.getFullName(),
+            ClassType.PAGED_ITERABLE.getFullName(), ClassType.PAGED_RESPONSE.getFullName(),
+            ClassType.PAGED_RESPONSE_BASE.getFullName(), Iterator.class.getName(), Function.class.getName(),
+            Collectors.class.getName(), Stream.class.getName());
 
         javaFile.classBlock(JavaVisibility.PackagePrivate, Collections.singletonList(JavaModifier.Final),
             ModelNaming.CLASS_RESOURCE_MANAGER_UTILS, classBlock -> {
@@ -82,7 +76,7 @@ public class ResourceManagerUtilsTemplate implements IJavaTemplate<Void, JavaFil
                 javaFile.line();
                 String configurableClassText
                     = FluentUtils.loadTextFromResource("ResourceManagerUtils_PagedIterableImpl.txt");
-                javaFile.text(configurableClassText);
+                javaFile.getContents().text(configurableClassText);
             });
     }
 }

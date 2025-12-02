@@ -3,14 +3,15 @@
 
 package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 
-import java.util.Set;
+import java.util.Collection;
+import java.util.function.Consumer;
 
 /**
  * A map type used by a client.
  */
 public class MapType extends GenericType {
 
-    private boolean valueNullable = false;
+    private final boolean valueNullable;
 
     /**
      * Create a new MapType from the provided properties.
@@ -38,8 +39,8 @@ public class MapType extends GenericType {
     }
 
     @Override
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
-        super.addImportsTo(imports, includeImplementationImports);
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
+        super.addImportsTo(importConsumer, includeImplementationImports);
     }
 
     @Override

@@ -5,8 +5,9 @@ package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 
 import com.microsoft.typespec.http.client.generator.core.util.CodeNamer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+import java.util.function.Consumer;
 
 public class ClientModelPropertyReference implements ClientModelPropertyAccess {
 
@@ -157,7 +158,7 @@ public class ClientModelPropertyReference implements ClientModelPropertyAccess {
     }
 
     @Override
-    public void addImportsTo(Set<String> imports, boolean shouldGenerateXmlSerialization) {
-        referenceProperty.addImportsTo(imports, shouldGenerateXmlSerialization);
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean shouldGenerateXmlSerialization) {
+        referenceProperty.addImportsTo(importConsumer, shouldGenerateXmlSerialization);
     }
 }

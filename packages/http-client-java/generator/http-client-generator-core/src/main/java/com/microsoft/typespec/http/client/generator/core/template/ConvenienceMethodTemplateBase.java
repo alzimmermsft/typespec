@@ -395,58 +395,53 @@ abstract class ConvenienceMethodTemplateBase {
         return requestBodyClientParameter;
     }
 
-    protected void addImports(Set<String> imports, List<ConvenienceMethod> convenienceMethods) {
+    protected void addImports(Consumer<Collection<String>> importConsumer, List<ConvenienceMethod> convenienceMethods) {
         // methods
         JavaSettings settings = JavaSettings.getInstance();
         convenienceMethods.stream().flatMap(m -> m.getConvenienceMethods().stream()).forEach(m -> {
             // we need classes many of its parameters and models, hence "includeImplementationImports=true"
-            m.addImportsTo(imports, true, settings);
+            m.addImportsTo(importConsumer, true, settings);
 
             // add imports from models, as some convenience API need to process model properties
             for (ClientMethodParameter p : m.getParameters()) {
                 if (p.getWireType() instanceof ClassType) {
                     ClientModel model = ClientModelUtil.getClientModel(p.getWireType().toString());
                     if (model != null) {
-                        model.addImportsTo(imports, settings);
+                        model.addImportsTo(importConsumer, settings);
                     }
                 }
             }
         });
 
-        ClassType.HTTP_HEADER_NAME.addImportsTo(imports, false);
-        ClassType.BINARY_DATA.addImportsTo(imports, false);
-        ClassType.REQUEST_OPTIONS.addImportsTo(imports, false);
-        ClassType.REQUEST_CONTEXT.addImportsTo((imports), false);
-        imports.add(Collectors.class.getName());
-        imports.add(Objects.class.getName());
-        imports.add(ClassType.FLUX_UTIL.getFullName());
+        importConsumer.accept(List.of(ClassType.HTTP_HEADER_NAME.getFullName(), ClassType.BINARY_DATA.getFullName(),
+            ClassType.REQUEST_OPTIONS.getFullName(), ClassType.REQUEST_CONTEXT.getFullName(),
+            Collectors.class.getName(), Objects.class.getName(), ClassType.FLUX_UTIL.getFullName(),
 
-        // collection format
-        imports.add(ClassType.JACKSON_ADAPTER.getFullName());
-        imports.add(ClassType.COLLECTION_FORMAT.getFullName());
-        imports.add(ClassType.TYPE_REFERENCE.getFullName());
+            // collection format
+            ClassType.JACKSON_ADAPTER.getFullName(), ClassType.COLLECTION_FORMAT.getFullName(),
+            ClassType.TYPE_REFERENCE.getFullName(),
+
+            // byte[]
+            ClassType.BASE_64_URL.getFullName(),
+
+            // flatten payload
+            Map.class.getName(), HashMap.class.getName(),
+
+            // MultipartFormDataHelper class
+            settings.getPackage(settings.getImplementationSubpackage()) + "."
+                + ClientModelUtil.MULTI_PART_FORM_DATA_HELPER_CLASS_NAME,
+
+            // versioning
+            Arrays.class.getName(),
+
+            // JsonMergePatchHelper class
+            settings.getPackage(settings.getImplementationSubpackage()) + "."
+                + ClientModelUtil.JSON_MERGE_PATCH_HELPER_CLASS_NAME));
+
+        // Conditional collection format
         if (!JavaSettings.getInstance().isAzureV1() || JavaSettings.getInstance().isAzureV2()) {
-            imports.add(Type.class.getName());
-            imports.add(ParameterizedType.class.getName());
+            importConsumer.accept(List.of(Type.class.getName(), ParameterizedType.class.getName()));
         }
-
-        // byte[]
-        ClassType.BASE_64_URL.addImportsTo(imports, false);
-
-        // flatten payload
-        imports.add(Map.class.getName());
-        imports.add(HashMap.class.getName());
-
-        // MultipartFormDataHelper class
-        imports.add(settings.getPackage(settings.getImplementationSubpackage()) + "."
-            + ClientModelUtil.MULTI_PART_FORM_DATA_HELPER_CLASS_NAME);
-
-        // versioning
-        imports.add(Arrays.class.getName());
-
-        // JsonMergePatchHelper class
-        imports.add(settings.getPackage(settings.getImplementationSubpackage()) + "."
-            + ClientModelUtil.JSON_MERGE_PATCH_HELPER_CLASS_NAME);
     }
 
     protected void addGeneratedAnnotation(JavaType typeBlock) {

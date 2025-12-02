@@ -11,8 +11,9 @@ import com.microsoft.typespec.http.client.generator.core.template.prototype.Meth
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.FluentResourceModel;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel.FluentInterfaceStage;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel.ResourceLocalVariables;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class FluentParentMethod extends FluentMethod {
@@ -57,7 +58,7 @@ public class FluentParentMethod extends FluentMethod {
     }
 
     @Override
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
-        parameters.forEach(p -> p.addImportsTo(imports, false));
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
+        parameters.forEach(p -> p.addImportsTo(importConsumer, false));
     }
 }

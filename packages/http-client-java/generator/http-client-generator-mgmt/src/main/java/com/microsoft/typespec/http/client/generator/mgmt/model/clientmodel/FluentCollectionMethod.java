@@ -13,8 +13,9 @@ import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.immut
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.immutablemodel.CollectionMethodTypeConversionTemplate;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.immutablemodel.ImmutableMethod;
 import com.microsoft.typespec.http.client.generator.mgmt.util.FluentUtils;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class FluentCollectionMethod {
@@ -78,12 +79,12 @@ public class FluentCollectionMethod {
         return immutableMethod.getMethodTemplate();
     }
 
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
-        this.getFluentReturnType().addImportsTo(imports, false);
-        method.addImportsTo(imports, includeImplementationImports, JavaSettings.getInstance());
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
+        this.getFluentReturnType().addImportsTo(importConsumer, false);
+        method.addImportsTo(importConsumer, includeImplementationImports, JavaSettings.getInstance());
 
         if (includeImplementationImports) {
-            immutableMethod.getMethodTemplate().addImportsTo(imports);
+            immutableMethod.getMethodTemplate().addImportsTo(importConsumer);
         }
     }
 }

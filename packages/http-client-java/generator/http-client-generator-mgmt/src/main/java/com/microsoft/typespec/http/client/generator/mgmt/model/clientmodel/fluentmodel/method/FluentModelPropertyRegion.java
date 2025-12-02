@@ -12,7 +12,8 @@ import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.Fluen
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.ModelNaming;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel.FluentInterfaceStage;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.fluentmodel.LocalVariable;
-import java.util.Set;
+import java.util.Collection;
+import java.util.function.Consumer;
 
 public class FluentModelPropertyRegion {
 
@@ -46,9 +47,9 @@ public class FluentModelPropertyRegion {
         }
 
         @Override
-        public void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
-            super.addImportsTo(imports, includeImplementationImports);
-            FluentType.REGION.addImportsTo(imports, false);
+        public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
+            super.addImportsTo(importConsumer, includeImplementationImports);
+            FluentType.REGION.addImportsTo(importConsumer, false);
         }
     }
 

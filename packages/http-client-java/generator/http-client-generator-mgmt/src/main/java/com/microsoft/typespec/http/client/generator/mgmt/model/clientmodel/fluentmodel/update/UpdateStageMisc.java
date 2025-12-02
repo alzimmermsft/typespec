@@ -13,7 +13,7 @@ public class UpdateStageMisc extends UpdateStage {
     }
 
     public String getDescription(String modelName) {
-        return String.format("The stage of the %1$s update allowing to specify %2$s.", modelName, parameter.getName());
+        return "The stage of the " + modelName + " update allowing to specify " + parameter.getName() + ".";
     }
 
     public ClientMethodParameter getMethodParameter() {

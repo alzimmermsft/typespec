@@ -10,8 +10,9 @@ import com.microsoft.typespec.http.client.generator.core.template.prototype.Meth
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.FluentResourceModel;
 import com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.immutablemodel.ImmutableMethod;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+import java.util.function.Consumer;
 
 public abstract class FluentMethod implements ImmutableMethod {
 
@@ -33,20 +34,19 @@ public abstract class FluentMethod implements ImmutableMethod {
     }
 
     public String getInterfaceMethodSignature() {
-        return String.format("%1$s %2$s", this.interfaceReturnValue.getType().toString(),
-            this.getBaseMethodSignature());
+        return this.interfaceReturnValue.getType() + " " + this.getBaseMethodSignature();
     }
 
     public String getImplementationMethodSignature() {
-        return String.format("%1$s %2$s", this.implementationReturnValue.getType().toString(),
-            this.getBaseMethodSignature());
+        return this.implementationReturnValue.getType() + " " + this.getBaseMethodSignature();
     }
 
     protected abstract String getBaseMethodSignature();
 
     public abstract void writeJavadoc(JavaJavadocComment commentBlock);
 
-    public abstract void addImportsTo(Set<String> imports, boolean includeImplementationImports);
+    public abstract void addImportsTo(Consumer<Collection<String>> importConsumer,
+        boolean includeImplementationImports);
 
     public MethodTemplate getMethodTemplate() {
         return implementationMethodTemplate;

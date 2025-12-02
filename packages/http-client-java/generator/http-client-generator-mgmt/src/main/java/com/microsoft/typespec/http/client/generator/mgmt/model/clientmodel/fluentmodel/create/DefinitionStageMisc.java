@@ -13,8 +13,7 @@ public class DefinitionStageMisc extends DefinitionStage {
     }
 
     public String getDescription(String modelName) {
-        return String.format("The stage of the %1$s definition allowing to specify %2$s.", modelName,
-            parameter.getName());
+        return "The stage of the " + modelName + " definition allowing to specify " + parameter.getName() + ".";
     }
 
     public ClientMethodParameter getMethodParameter() {

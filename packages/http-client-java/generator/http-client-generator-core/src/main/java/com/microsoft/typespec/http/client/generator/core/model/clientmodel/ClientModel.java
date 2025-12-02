@@ -7,9 +7,11 @@ import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSe
 import com.microsoft.typespec.http.client.generator.core.util.ClientModelUtil;
 import io.clientcore.core.utils.CoreUtils;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * A model that is defined by the client.
@@ -460,71 +462,40 @@ public class ClientModel {
     }
 
     /**
-     * Add this ServiceModel's imports to the provided set of imports.
+     * Consume this ServiceModel's imports.
      *
-     * @param imports The set of imports to add to.
+     * @param importConsumer The consumer of imports.
      * @param settings The settings for this Java generator session.
      */
-    public void addImportsTo(Set<String> imports, JavaSettings settings) {
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, JavaSettings settings) {
         // whether annotated as Immutable or Fluent is also determined by its superclass
-        imports.add(this.getFullName());
-        addFluentAnnotationImport(imports);
-        addImmutableAnnotationImport(imports);
+        importConsumer
+            .accept(List.of(this.getFullName(), Annotation.FLUENT.getFullName(), Annotation.IMMUTABLE.getFullName()));
+
+        if (!JavaSettings.getInstance().isAzureV1()) {
+            importConsumer
+                .accept(List.of(Annotation.METADATA.getFullName(), Annotation.METADATA_PROPERTIES.getFullName()));
+        }
 
         if (settings.getClientFlattenAnnotationTarget() == JavaSettings.ClientFlattenAnnotationTarget.TYPE
             && needsFlatten) {
-            addJsonFlattenAnnotationImport(imports);
+            importConsumer.accept(List.of(Annotation.JSON_FLATTEN.getFullName()));
         }
 
-        imports.addAll(getImports());
+        importConsumer.accept(imports);
 
         if (isPolymorphic()) {
-            imports.add("com.fasterxml.jackson.annotation.JsonTypeInfo");
-            imports.add("com.fasterxml.jackson.annotation.JsonTypeName");
+            importConsumer.accept(List.of("com.fasterxml.jackson.annotation.JsonTypeInfo",
+                "com.fasterxml.jackson.annotation.JsonTypeName"));
 
-            if (getDerivedModels() != null && getDerivedModels().size() > 0) {
-                imports.add("com.fasterxml.jackson.annotation.JsonSubTypes");
-                getDerivedModels().forEach(m -> imports.add(m.getFullName()));
+            if (getDerivedModels() != null && !getDerivedModels().isEmpty()) {
+                importConsumer.accept(List.of("com.fasterxml.jackson.annotation.JsonSubTypes"));
+                getDerivedModels().forEach(m -> importConsumer.accept(List.of(m.getFullName())));
             }
         }
 
         for (ClientModelProperty property : getProperties()) {
-            property.addImportsTo(imports, usedInXml);
-        }
-    }
-
-    /**
-     * Add the Fluent annotation import to the provided set of imports.
-     *
-     * @param imports The set of imports to add to.
-     */
-    private void addJsonFlattenAnnotationImport(Set<String> imports) {
-        imports.add(Annotation.JSON_FLATTEN.getFullName());
-    }
-
-    /**
-     * Add the Immutable annotation import to the provided set of imports.
-     *
-     * @param imports The set of imports to add to.
-     */
-    private void addImmutableAnnotationImport(Set<String> imports) {
-        Annotation.IMMUTABLE.addImportsTo(imports);
-        if (!JavaSettings.getInstance().isAzureV1()) {
-            Annotation.METADATA.addImportsTo(imports);
-            Annotation.METADATA_PROPERTIES.addImportsTo(imports);
-        }
-    }
-
-    /**
-     * Add the Fluent annotation import to the provided set of imports.
-     *
-     * @param imports The set of imports to add to.
-     */
-    private void addFluentAnnotationImport(Set<String> imports) {
-        Annotation.FLUENT.addImportsTo(imports);
-        if (!JavaSettings.getInstance().isAzureV1()) {
-            Annotation.METADATA.addImportsTo(imports);
-            Annotation.METADATA_PROPERTIES.addImportsTo(imports);
+            property.addImportsTo(importConsumer, usedInXml);
         }
     }
 

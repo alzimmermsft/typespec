@@ -3,7 +3,8 @@
 
 package com.microsoft.typespec.http.client.generator.core.model.clientmodel;
 
-import java.util.Set;
+import java.util.Collection;
+import java.util.function.Consumer;
 
 /**
  * A type used by a client.
@@ -57,13 +58,13 @@ public interface IType {
     boolean contains(IType type);
 
     /**
-     * Add this type's imports to the provided set of imports.
+     * Consume this type's imports.
      *
-     * @param imports The set of imports to add to.
+     * @param importConsumer The import consumer.
      * @param includeImplementationImports Whether to include imports that are only necessary for method
      * implementations.
      */
-    void addImportsTo(Set<String> imports, boolean includeImplementationImports);
+    void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports);
 
     /**
      * Convert the provided default value expression to this type's default value expression.

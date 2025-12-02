@@ -33,27 +33,23 @@ public class FluentExampleTemplate {
 
     public final void write(com.microsoft.typespec.http.client.generator.mgmt.model.clientmodel.FluentExample example,
         JavaFile javaFile) {
-        String className = example.getClassName();
-
         List<ExampleMethod> exampleMethods = getExampleMethods(example);
 
-        Set<String> imports
-            = exampleMethods.stream().flatMap(em -> em.getImports().stream()).collect(Collectors.toSet());
-        javaFile.declareImport(imports);
+        exampleMethods.forEach(em -> javaFile.declareImport(em.getImports()));
 
         Set<ExampleHelperFeature> helperFeatures
             = exampleMethods.stream().flatMap(em -> em.getHelperFeatures().stream()).collect(Collectors.toSet());
 
         javaFile.javadocComment(commentBlock -> commentBlock
             .description(String.format("Samples for %1$s %2$s", example.getGroupName(), example.getMethodName())));
-        javaFile.publicFinalClass(className, classBlock -> {
+        javaFile.publicFinalClass(example.getClassName(), classBlock -> {
             for (ExampleMethod exampleMethod : exampleMethods) {
                 if (!CoreUtils.isNullOrEmpty(exampleMethod.getExample().getOriginalFileName())) {
                     classBlock.blockComment(getExampleTag(exampleMethod.getExample()));
                 }
 
                 classBlock.javadocComment(commentBlock -> {
-                    commentBlock.description(String.format("Sample code: %1$s", exampleMethod.getExample().getName()));
+                    commentBlock.description("Sample code: " + exampleMethod.getExample().getName());
                     commentBlock.param(exampleMethod.getExample().getEntryName(),
                         exampleMethod.getExample().getEntryDescription());
                 });
@@ -129,7 +125,7 @@ public class FluentExampleTemplate {
                 IType clientType = parameter.getExampleNodes().iterator().next().getClientType();
                 if (clientType instanceof PrimitiveType) {
                     // for primitive type, use language default value
-                    parameterInvocations = String.format("%1$s", clientType.defaultValueExpression());
+                    parameterInvocations = clientType.defaultValueExpression();
                 } else {
                     // avoid ambiguous type on "null"
                     parameterInvocations = String.format("(%1$s) %2$s", clientType, parameterInvocations);
@@ -184,7 +180,7 @@ public class FluentExampleTemplate {
         resourceUpdateExample.getResourceUpdate()
             .getResourceModel()
             .getInterfaceType()
-            .addImportsTo(visitor.getImports(), false);
+            .addImportsTo(visitor.getImports()::addAll, false);
 
         return new ExampleMethod().setExample(resourceUpdateExample)
             .setImports(visitor.getImports())

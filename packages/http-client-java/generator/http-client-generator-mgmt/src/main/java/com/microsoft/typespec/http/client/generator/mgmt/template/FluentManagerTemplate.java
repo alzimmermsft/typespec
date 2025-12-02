@@ -20,11 +20,9 @@ import com.microsoft.typespec.http.client.generator.mgmt.util.FluentUtils;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 
@@ -69,7 +67,7 @@ public class FluentManagerTemplate {
 
         String managerName = manager.getType().getName();
 
-        Set<String> imports = new HashSet<>(List.of(
+        javaFile.declareImport(
             // java
             Objects.class.getName(), Duration.class.getName(), ChronoUnit.class.getName(), List.class.getName(),
             ArrayList.class.getName(), Collectors.class.getName(), Map.class.getName(),
@@ -84,23 +82,20 @@ public class FluentManagerTemplate {
             ClassType.HTTP_LOGGING_POLICY.getFullName(), ClassType.HTTP_LOG_OPTIONS.getFullName(),
             ClassType.BEARER_TOKEN_POLICY.getFullName(), ClassType.USER_AGENT_POLICY.getFullName(),
             // azure-core-management
-            FluentType.AZURE_PROFILE.getFullName()));
+            FluentType.AZURE_PROFILE.getFullName());
 
         if (requiresSubscriptionIdParameter && subscriptionIdParameterType != null) {
-            subscriptionIdParameterType.addImportsTo(imports, false);
+            subscriptionIdParameterType.addImportsTo(javaFile::declareImport, false);
         }
 
-        imports.add(String.format("%1$s.%2$s", builderPackageName, builderTypeName));
-        imports.add(String.format("%1$s.%2$s", serviceClientPackageName, serviceClientTypeName));
+        javaFile.declareImport(builderPackageName + "." + builderTypeName,
+            serviceClientPackageName + "." + serviceClientTypeName);
 
-        manager.getProperties().forEach(property -> {
-            imports.add(property.getFluentType().getFullName());
-            imports.add(property.getFluentImplementType().getFullName());
-        });
+        manager.getProperties()
+            .forEach(property -> javaFile.declareImport(property.getFluentType().getFullName(),
+                property.getFluentImplementType().getFullName()));
 
-        ClassType.CORE_UTILS.addImportsTo(imports, false);
-
-        javaFile.declareImport(imports);
+        ClassType.CORE_UTILS.addImportsTo(javaFile::declareImport, false);
 
         javaFile.javadocComment(comment -> comment.description(manager.getDescription()));
 
@@ -186,7 +181,7 @@ public class FluentManagerTemplate {
                     manager.getServiceName(), TemplateUtil.MANAGER_CLASS, manager.getType().getName(),
                     TemplateUtil.PACKAGE_NAME, project.getNamespace(), TemplateUtil.ARTIFACT_VERSION,
                     project.getVersion(), TemplateUtil.ARTIFACT_ID, FluentUtils.getArtifactId());
-            javaFile.text(configurableClassText);
+            javaFile.getContents().text(configurableClassText);
 
             manager.getProperties().forEach(property -> {
                 classBlock.javadocComment(comment -> {

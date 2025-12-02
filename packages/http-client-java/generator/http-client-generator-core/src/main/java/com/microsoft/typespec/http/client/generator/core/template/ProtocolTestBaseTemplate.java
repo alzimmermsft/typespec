@@ -21,22 +21,16 @@ public class ProtocolTestBaseTemplate implements IJavaTemplate<TestContext<?>, J
 
     @Override
     public void write(TestContext<?> testContext, JavaFile context) {
-
         ProtocolTestWriter writer = new ProtocolTestWriter(testContext);
 
-        context.lineComment(javaLineComment -> {
-            javaLineComment.line("The Java test files under 'generated' package are generated for your reference.");
-            javaLineComment.line(
-                "If you wish to modify these files, please copy them out of the 'generated' package, and modify there.");
-            javaLineComment.line("See https://aka.ms/azsdk/dpg/java/tests for guide on adding a test.");
-        });
-        context.line();
+        context.setFileHeader("The Java test files under 'generated' package are generated for your reference.\n"
+            + "If you wish to modify these files, please copy them out of the 'generated' package, and modify there.\n"
+            + "See https://aka.ms/azsdk/dpg/java/tests for guide on adding a test.");
 
         context.declareImport(writer.getImports());
 
         context.classBlock(JavaVisibility.PackagePrivate, null,
             testContext.getTestBaseClassName() + " extends TestProxyTestBase", classBlock -> {
-
                 writer.writeClientVariables(classBlock);
 
                 classBlock.annotation("Override");

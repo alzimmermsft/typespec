@@ -18,15 +18,16 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
  * The details of a class type that is used by a client.
  */
-public class ClassType implements IType {
+public final class ClassType implements IType {
     private static ClassType withClientCoreReplacement(String azureClass, String clientCoreClass) {
         return withClientCoreAndVNextReplacement(azureClass, clientCoreClass, clientCoreClass);
     }
@@ -566,16 +567,12 @@ public class ClassType implements IType {
         this.usedInXml = usedInXml;
     }
 
-    public final String getPackage() {
+    public String getPackage() {
         return packageName;
     }
 
-    public final String getName() {
+    public String getName() {
         return name;
-    }
-
-    private List<String> getImplementationImports() {
-        return implementationImports;
     }
 
     public XmsExtensions getExtensions() {
@@ -586,7 +583,7 @@ public class ClassType implements IType {
         return defaultValueExpressionConverter;
     }
 
-    public final boolean isBoxedType() {
+    public boolean isBoxedType() {
         // TODO (alzimmer): This should be a property on the ClassType
         return this.equals(ClassType.VOID)
             || this.equals(ClassType.BOOLEAN)
@@ -619,50 +616,49 @@ public class ClassType implements IType {
         return Objects.hash(packageName, name);
     }
 
-    public final IType asNullable() {
+    public IType asNullable() {
         return this;
     }
 
-    public final boolean contains(IType type) {
+    public boolean contains(IType type) {
         return this.equals(type);
     }
 
-    public final String getFullName() {
+    public String getFullName() {
         return fullName;
     }
 
-    public final void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
+    @Override
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
         if (!getPackage().equals("java.lang")) {
-            imports.add(fullName);
+            importConsumer.accept(List.of(fullName));
         }
 
         if (this == ClassType.UNIX_TIME_LONG) {
-            imports.add(Instant.class.getName());
-            imports.add(ZoneOffset.class.getName());
+            importConsumer.accept(List.of(Instant.class.getName(), ZoneOffset.class.getName()));
         }
 
         if (this == ClassType.DATE_TIME) {
-            imports.add(DateTimeFormatter.class.getName());
+            importConsumer.accept(List.of(DateTimeFormatter.class.getName()));
         }
 
         if (this == ClassType.DATE_TIME_RFC_1123) {
             // May need OffsetDateTime when consuming DateTimeRfc1123 APIs as DateTimeRfc1123 APIs consume and return
             // OffsetDateTime.
             // If OffsetDateTime isn't needed, when running Spotless the unused import will be removed.
-            imports.add(OffsetDateTime.class.getName());
+            importConsumer.accept(List.of(OffsetDateTime.class.getName()));
         }
 
         if (this == ClassType.URL) {
-            imports.add(java.net.URL.class.getName());
-            imports.add(java.net.MalformedURLException.class.getName());
+            importConsumer.accept(List.of(ClassType.URL.getFullName(), java.net.MalformedURLException.class.getName()));
         }
 
-        if (includeImplementationImports && getImplementationImports() != null) {
-            imports.addAll(getImplementationImports());
+        if (includeImplementationImports && implementationImports != null) {
+            importConsumer.accept(implementationImports);
         }
     }
 
-    public final String defaultValueExpression(String sourceExpression) {
+    public String defaultValueExpression(String sourceExpression) {
         String result = sourceExpression;
         if (result != null) {
             if (getDefaultValueExpressionConverter() != null) {
@@ -679,7 +675,7 @@ public class ClassType implements IType {
         return "null";
     }
 
-    public final IType getClientType() {
+    public IType getClientType() {
         IType clientType = this;
         if (this == ClassType.DATE_TIME_RFC_1123) {
             clientType = ClassType.DATE_TIME;

@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * Model for Azure resource instance.
@@ -31,8 +31,6 @@ public class FluentResourceModel {
 
     // inner model. E.g. StorageAccountInner.
     private final ClientModel innerModel;
-    // all parent models of the inner model (property of which need to be put to resource class as well)
-    private final List<ClientModel> parentModels;
 
     // class type for interface and implementation
     private final ClassType interfaceType;
@@ -54,7 +52,7 @@ public class FluentResourceModel {
         JavaSettings settings = JavaSettings.getInstance();
 
         this.innerModel = innerModel;
-        this.parentModels = parentModels;
+        // all parent models of the inner model (property of which need to be put to resource class as well)
 
         interfaceType = FluentUtils.resourceModelInterfaceClassType(innerModel.getName());
         implementationType
@@ -119,8 +117,7 @@ public class FluentResourceModel {
 
     // method signature for inner model
     public String getInnerMethodSignature() {
-        return String.format("%1$s %2$s()", this.getInnerModel().getName(),
-            FluentUtils.getGetterName(ModelNaming.METHOD_INNER_MODEL));
+        return getInnerModel().getName() + " " + FluentUtils.getGetterName(ModelNaming.METHOD_INNER_MODEL) + "()";
     }
 
     public ModelCategory getCategory() {
@@ -171,27 +168,27 @@ public class FluentResourceModel {
         return additionalMethods;
     }
 
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports) {
-        imports.add(this.getInnerModel().getFullName());
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports) {
+        importConsumer.accept(List.of(this.getInnerModel().getFullName()));
 
-        this.getProperties().forEach(p -> p.addImportsTo(imports, includeImplementationImports));
+        this.getProperties().forEach(p -> p.addImportsTo(importConsumer, includeImplementationImports));
 
         if (includeImplementationImports) {
-            interfaceType.addImportsTo(imports, false);
+            interfaceType.addImportsTo(importConsumer, false);
         }
 
         if (resourceCreate != null) {
-            resourceCreate.addImportsTo(imports, includeImplementationImports);
+            resourceCreate.addImportsTo(importConsumer, includeImplementationImports);
         }
         if (resourceUpdate != null) {
-            resourceUpdate.addImportsTo(imports, includeImplementationImports);
+            resourceUpdate.addImportsTo(importConsumer, includeImplementationImports);
         }
         if (resourceRefresh != null) {
-            resourceRefresh.addImportsTo(imports, includeImplementationImports);
+            resourceRefresh.addImportsTo(importConsumer, includeImplementationImports);
         }
         if (resourceActions != null) {
-            resourceActions.addImportsTo(imports, includeImplementationImports);
+            resourceActions.addImportsTo(importConsumer, includeImplementationImports);
         }
-        additionalMethods.forEach(m -> m.addImportsTo(imports));
+        additionalMethods.forEach(m -> m.addImportsTo(importConsumer));
     }
 }

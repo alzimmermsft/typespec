@@ -10,7 +10,9 @@ import com.microsoft.typespec.http.client.generator.core.util.CollectionFormat;
 import com.microsoft.typespec.http.client.generator.core.util.MethodUtil;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Set;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * A parameter for a ProxyMethod.
@@ -228,33 +230,35 @@ public class ProxyMethodParameter extends MethodParameter {
     }
 
     /**
-     * Add this property's imports to the provided set of imports.
+     * Consume this property's imports.
      *
-     * @param imports The set of imports to add to.
+     * @param importConsumer The import consumer.
      * @param includeImplementationImports Whether to include imports that are only necessary for method
      * implementations.
      */
-    public void addImportsTo(Set<String> imports, boolean includeImplementationImports, JavaSettings settings) {
+    public void addImportsTo(Consumer<Collection<String>> importConsumer, boolean includeImplementationImports,
+        JavaSettings settings) {
         if (getRequestParameterLocation()
             != RequestParameterLocation.NONE/* && getRequestParameterLocation() != RequestParameterLocation.FormData */) {
             if (settings.isAzureV1()) {
-                imports.add(String.format("%1$s.annotation.%2$sParam", ExternalPackage.CORE.getPackageName(),
-                    CodeNamer.toPascalCase(getRequestParameterLocation().toString())));
+                importConsumer
+                    .accept(List.of(String.format("%1$s.annotation.%2$sParam", ExternalPackage.CORE.getPackageName(),
+                        CodeNamer.toPascalCase(getRequestParameterLocation().toString()))));
             } else {
-                imports.add(String.format("%1$s.http.annotations.%2$sParam", ExternalPackage.CORE.getPackageName(),
-                    CodeNamer.toPascalCase(getRequestParameterLocation().toString())));
+                importConsumer.accept(
+                    List.of(String.format("%1$s.http.annotations.%2$sParam", ExternalPackage.CORE.getPackageName(),
+                        CodeNamer.toPascalCase(getRequestParameterLocation().toString()))));
             }
         }
         if (getRequestParameterLocation() != RequestParameterLocation.BODY) {
             if (getClientType() == ArrayType.BYTE_ARRAY) {
-                ClassType.BASE_64_UTIL.addImportsTo(imports, false);
-                imports.add(Base64.class.getName());
+                importConsumer.accept(List.of(ClassType.BASE_64_UTIL.getFullName(), Base64.class.getName()));
             } else if (getClientType() instanceof IterableType) {
                 if (getExplode()) {
-                    imports.add("java.util.stream.Collectors");
+                    importConsumer.accept(List.of("java.util.stream.Collectors"));
                 } else {
-                    imports.add(ClassType.COLLECTION_FORMAT.getFullName());
-                    imports.add(ClassType.JACKSON_ADAPTER.getFullName());
+                    importConsumer.accept(
+                        List.of(ClassType.COLLECTION_FORMAT.getFullName(), ClassType.JACKSON_ADAPTER.getFullName()));
                 }
             }
         }
@@ -263,20 +267,18 @@ public class ProxyMethodParameter extends MethodParameter {
 //        }
 
         if (!settings.isAzureV1()) {
-            imports.add("io.clientcore.core.http.models.HttpMethod");
+            importConsumer.accept(List.of("io.clientcore.core.http.models.HttpMethod"));
         }
 
         if (includeImplementationImports) {
-            getWireType().addImportsTo(imports, includeImplementationImports);
+            getWireType().addImportsTo(importConsumer, true);
             if (getRawType() != null) {
-                getRawType().addImportsTo(imports, includeImplementationImports);
+                getRawType().addImportsTo(importConsumer, true);
             }
 
             if (getExplode()) {
-                imports.add("java.util.Optional");
-                imports.add("java.util.stream.Stream");
-                imports.add(ArrayList.class.getName());
-                imports.add("java.util.Collection");
+                importConsumer.accept(List.of("java.util.Optional", "java.util.stream.Stream",
+                    ArrayList.class.getName(), "java.util.Collection"));
             }
         }
     }
