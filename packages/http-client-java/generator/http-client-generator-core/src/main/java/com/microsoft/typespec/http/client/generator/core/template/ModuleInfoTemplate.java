@@ -21,11 +21,7 @@ public class ModuleInfoTemplate implements IJavaTemplate<ModuleInfo, JavaFile> {
 
     @Override
     public void write(ModuleInfo model, JavaFile javaFile) {
-        JavaSettings settings = JavaSettings.getInstance();
-        if (settings.getFileHeaderText() != null && !settings.getFileHeaderText().isEmpty()) {
-            javaFile.lineComment(comment -> comment.line(settings.getFileHeaderText()));
-            javaFile.line();
-        }
+        javaFile.setFileHeader(JavaSettings.getInstance().getFileHeaderText());
 
         javaFile.line(String.format("module %1$s {", model.getModuleName()));
         javaFile.indent(() -> {

@@ -23,11 +23,15 @@ public class ProtocolTestBaseTemplate implements IJavaTemplate<TestContext<?>, J
     public void write(TestContext<?> testContext, JavaFile context) {
         ProtocolTestWriter writer = new ProtocolTestWriter(testContext);
 
-        context.setFileHeader("The Java test files under 'generated' package are generated for your reference.\n"
-            + "If you wish to modify these files, please copy them out of the 'generated' package, and modify there.\n"
-            + "See https://aka.ms/azsdk/dpg/java/tests for guide on adding a test.");
-
         context.declareImport(writer.getImports());
+
+        context.lineComment(javaLineComment -> {
+            javaLineComment.line("The Java test files under 'generated' package are generated for your reference.");
+            javaLineComment.line(
+                "If you wish to modify these files, please copy them out of the 'generated' package, and modify there.");
+            javaLineComment.line("See https://aka.ms/azsdk/dpg/java/tests for guide on adding a test.");
+        });
+        context.line();
 
         context.classBlock(JavaVisibility.PackagePrivate, null,
             testContext.getTestBaseClassName() + " extends TestProxyTestBase", classBlock -> {

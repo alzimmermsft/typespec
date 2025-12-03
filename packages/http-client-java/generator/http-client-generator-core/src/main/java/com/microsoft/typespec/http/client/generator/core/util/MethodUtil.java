@@ -321,7 +321,7 @@ public class MethodUtil {
     public static String methodParameterDescriptionOrDefault(ClientMethodParameter p) {
         String doc = p.getDescription();
         if (CoreUtils.isNullOrEmpty(doc)) {
-            doc = String.format("The %1$s parameter", p.getName());
+            doc = "The " + p.getName() + " parameter";
         }
         return doc;
     }

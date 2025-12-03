@@ -4,7 +4,6 @@
 package com.microsoft.typespec.http.client.generator.core.model.javamodel;
 
 import com.microsoft.typespec.http.client.generator.core.extension.plugin.JavaSettings;
-import io.clientcore.core.utils.CoreUtils;
 import java.io.File;
 import java.nio.file.Paths;
 
@@ -42,11 +41,7 @@ public final class JavaFileFactory {
 
         JavaFile javaFile = new JavaFile(filePath);
         if (addHeaderAndPackage) {
-            String headerComment = settings.getFileHeaderText();
-            if (!CoreUtils.isNullOrEmpty(headerComment)) {
-                javaFile.setFileHeader(headerComment);
-            }
-
+            javaFile.setFileHeader(JavaSettings.getInstance().getFileHeaderText());
             javaFile.declarePackage(packageName);
         }
 

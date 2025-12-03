@@ -3,6 +3,8 @@
 
 package com.microsoft.typespec.http.client.generator.core.model.javamodel;
 
+import com.microsoft.typespec.http.client.generator.core.util.CodeNamer;
+import com.microsoft.typespec.http.client.generator.core.util.Constants;
 import io.clientcore.core.utils.CoreUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,19 +42,33 @@ public class JavaFileContents {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         if (!CoreUtils.isNullOrEmpty(fileHeader)) {
-            builder.append(false).append('\n').append('\n');
+            for (String line : fileHeader.split(Constants.NEW_LINE)) {
+                builder.append("// ")
+                    .append(CodeNamer.escapeIllegalUnicodeEscape(CodeNamer.escapeComment(line)))
+                    .append(Constants.NEW_LINE);
+            }
+            builder.append(Constants.NEW_LINE);
         }
 
         if (!CoreUtils.isNullOrEmpty(packageName)) {
-            builder.append("package ").append(packageName).append(';').append('\n').append('\n');
+            builder.append("package ")
+                .append(packageName)
+                .append(';')
+                .append(Constants.NEW_LINE)
+                .append(Constants.NEW_LINE);
         }
 
-        imports.stream()
-            .sorted(new JavaImportComparer())
-            .forEach(importStatement -> builder.append("import ").append(importStatement).append(';').append('\n'));
+        if (!CoreUtils.isNullOrEmpty(imports)) {
+            imports.stream()
+                .sorted(new JavaImportComparer())
+                .forEach(importStatement -> builder.append("import ")
+                    .append(importStatement)
+                    .append(';')
+                    .append(Constants.NEW_LINE));
+            builder.append(Constants.NEW_LINE);
+        }
 
-        builder.append('\n');
-        builder.append(String.join("\n", contents));
+        builder.append(String.join(Constants.NEW_LINE, contents));
         builder.append(currentLine);
 
         return builder.toString();
@@ -98,7 +114,7 @@ public class JavaFileContents {
             int lineStartIndex = 0;
             int textLength = text.length();
             while (lineStartIndex < textLength) {
-                int newLineCharacterIndex = text.indexOf('\n', lineStartIndex);
+                int newLineCharacterIndex = text.indexOf(Constants.NEW_LINE, lineStartIndex);
                 if (newLineCharacterIndex == -1) {
                     handleLine(text.substring(lineStartIndex), prefix, true, completeLastLine);
                     break;
@@ -164,7 +180,7 @@ public class JavaFileContents {
         line("");
     }
 
-    public void setFileHeader(String fileHeader) {
+    void setFileHeader(String fileHeader) {
         this.fileHeader = fileHeader;
     }
 

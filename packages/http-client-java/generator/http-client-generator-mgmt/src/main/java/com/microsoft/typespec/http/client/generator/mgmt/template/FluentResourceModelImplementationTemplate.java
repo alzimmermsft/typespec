@@ -54,7 +54,7 @@ public class FluentResourceModelImplementationTemplate implements IJavaTemplate<
         }
 
         javaFile.publicFinalClass(
-            model.getImplementationType().getName() + " implements" + String.join(", ", implementInterfaces),
+            model.getImplementationType().getName() + " implements " + String.join(", ", implementInterfaces),
             classBlock -> {
                 // variable for inner model
                 classBlock.privateMemberVariable(model.getInnerModel().getName(), ModelNaming.MODEL_PROPERTY_INNER);

@@ -25,10 +25,12 @@ public class PackageInfoTemplate implements IJavaTemplate<PackageInfo, JavaFile>
     }
 
     public final void write(PackageInfo packageInfo, JavaFile javaFile) {
+        // package-info.java gets handled slightly differently than standard JavaFile's as the package declaration
+        // itself will have Javadocs. Since this is a one-off, instead of making a proper system for this, for now
+        // just treat the package declaration as a normal line.
+        // TODO (alzimmer): In the future use a proper system to track the package declarations Javadoc.
         JavaSettings settings = JavaSettings.getInstance();
-        if (settings.getFileHeaderText() != null && !settings.getFileHeaderText().isEmpty()) {
-            javaFile.setFileHeader(settings.getFileHeaderText());
-        }
+        javaFile.setFileHeader(settings.getFileHeaderText());
 
         javaFile.javadocComment(comment -> {
             if (settings.isHandlePartialUpdate()) {
@@ -44,6 +46,6 @@ public class PackageInfoTemplate implements IJavaTemplate<PackageInfo, JavaFile>
             }
         });
 
-        javaFile.declarePackage(packageInfo.getPackage());
+        javaFile.line("package " + packageInfo.getPackage() + ";");
     }
 }
